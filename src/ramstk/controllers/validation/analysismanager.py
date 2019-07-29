@@ -68,6 +68,18 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # attributes to pass to the various analysis methods/functions.
         pub.sendMessage('request_get_validation_tree')
 
+        _program_cost_remaining = 0.0
+        _program_time_remaining = 0.0
+
         for _node in self._tree.all_nodes()[1:]:
             _node.data['validation'].calculate_task_time()
             _node.data['validation'].calculate_task_cost()
+
+            _program_cost_remaining += (_node.data['validation'].cost_average
+                                        * _node.data['validation'].status)
+            _program_time_remaining += (_node.data['validation'].time_average
+                                        * _node.data['validation'].status)
+
+        pub.sendMessage('succeed_calculate_tasks',
+                        cost_remaining=_program_cost_remaining,
+                        time_remaining=_program_time_remaining)

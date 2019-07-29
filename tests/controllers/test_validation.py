@@ -19,7 +19,7 @@ from treelib import Tree
 from ramstk import Configuration
 from ramstk.controllers.validation import amValidation, dmValidation
 from ramstk.dao import DAO
-from ramstk.models.programdb import RAMSTKValidation
+from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
 ATTRIBUTES = {
     'acceptable_maximum': 0.0,
@@ -114,6 +114,18 @@ class TestSelectMethods():
 
         DUT = dmValidation(test_program_dao)
         DUT.do_select_all(1)
+
+        assert isinstance(
+            DUT.status_tree.get_node(date(2019, 7, 21)).data, dict)
+        assert isinstance(
+            DUT.status_tree.get_node(date(2019, 7, 21)).data['status'],
+            RAMSTKProgramStatus)
+        assert DUT.status_tree.get_node(date(2019, 7,
+                                             21)).data['status'].status_id == 1
+        assert DUT.status_tree.get_node(date(
+            2019, 7, 21)).data['status'].cost_remaining == 0.0
+        assert DUT.status_tree.get_node(date(
+            2019, 7, 21)).data['status'].time_remaining == 0.0
 
         pub.unsubscribe(self.on_succeed_retrieve_validations,
                         'succeed_retrieve_validations')
@@ -332,6 +344,10 @@ class TestUpdateMethods():
             'ID 100.')
         print("\033[35m\nfail_update_validation topic was broadcast")
 
+    def on_succeed_update_status(self, node_id):
+        assert node_id == date.today()
+        print("\033[36m\nsucceed_update_program_status topic was broadcast")
+
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao):
         """ do_update() should return a zero error code on success. """
@@ -361,6 +377,25 @@ class TestUpdateMethods():
         DUT = dmValidation(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_update(100)
+
+    @pytest.mark.integration
+    def test_do_update_status(self, test_program_dao):
+        """_do_update_program_status() should broadcast the 'succeed_update_program_status' message on success."""
+        pub.subscribe(self.on_succeed_update_status,
+                      'succeed_update_program_status')
+
+        DUT = dmValidation(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT._do_update_program_status(47832.00, 528.3)
+
+        DUT.do_select_all(revision_id=1)
+        assert DUT.status_tree.get_node(
+            date.today()).data['status'].cost_remaining == 47832.00
+        assert DUT.status_tree.get_node(
+            date.today()).data['status'].time_remaining == 528.3
+
+        pub.unsubscribe(self.on_succeed_update_status,
+                        'succeed_update_program_status')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')

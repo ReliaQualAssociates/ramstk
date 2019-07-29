@@ -29,7 +29,7 @@ from .ramstknswc import RAMSTKNSWC
 from .RAMSTKOpLoad import RAMSTKOpLoad
 from .RAMSTKOpStress import RAMSTKOpStress
 from .RAMSTKProgramInfo import RAMSTKProgramInfo
-from .RAMSTKProgramStatus import RAMSTKProgramStatus
+from .ramstkprogramstatus import RAMSTKProgramStatus
 from .ramstkreliability import RAMSTKReliability
 from .ramstkrequirement import RAMSTKRequirement
 from .ramstkrevision import RAMSTKRevision
