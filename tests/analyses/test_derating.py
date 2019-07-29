@@ -11,14 +11,14 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses import Derating
+from ramstk.analyses import derating
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_check_overstress():
     """check_overstress() should return a dict of environ:condition pairs on success."""
-    _overstress = Derating.check_overstress(
+    _overstress = derating.check_overstress(
         0.625, {
             'mild': [0.0, 0.9],
             'harsh': [0.0, 0.75],
@@ -33,7 +33,7 @@ def test_check_overstress():
 @pytest.mark.calculation
 def test_check_overstress_under_limit():
     """check_overstress() should return a dict of environ:condition pairs on success with the below lower limit set to True."""
-    _overstress = Derating.check_overstress(
+    _overstress = derating.check_overstress(
         -0.625, {
             'mild': [0.0, 0.9],
             'harsh': [0.0, 0.75],
@@ -48,7 +48,7 @@ def test_check_overstress_under_limit():
 @pytest.mark.calculation
 def test_check_overstress_over_limit_harsh():
     """check_overstress() should return a dict of environ:condition pairs on success with the above upper limit set to True for a harsh environment."""
-    _overstress = Derating.check_overstress(
+    _overstress = derating.check_overstress(
         0.825, {
             'mild': [0.0, 0.9],
             'harsh': [0.0, 0.75],
@@ -63,7 +63,7 @@ def test_check_overstress_over_limit_harsh():
 @pytest.mark.calculation
 def test_check_overstress_over_limit_harsh_mild():
     """check_overstress() should return a dict of environ:condition pairs on success with the above upper limit set to True for both mild and harsh environments."""
-    _overstress = Derating.check_overstress(
+    _overstress = derating.check_overstress(
         0.925, {
             'mild': [0.0, 0.9],
             'harsh': [0.0, 0.75],
@@ -79,7 +79,7 @@ def test_check_overstress_over_limit_harsh_mild():
 def test_check_overstress_limits_not_lists():
     """check_overstress() should raise a TypeError if the limits passed are not a list."""
     with pytest.raises(TypeError):
-        _overstress = Derating.check_overstress(
+        _overstress = derating.check_overstress(
             0.625, {
                 'mild': 0.9,
                 'harsh': 0.75,
@@ -92,7 +92,7 @@ def test_check_overstress_limits_not_lists():
 def test_check_overstress_only_one_limit():
     """check_overstress() should raise an IndexError if only one limit is passed in the list."""
     with pytest.raises(IndexError):
-        _overstress = Derating.check_overstress(
+        _overstress = derating.check_overstress(
             0.625, {
                 'mild': [
                     0.9,
@@ -109,7 +109,7 @@ def test_check_overstress_only_one_limit():
 def test_check_overstress_string_input():
     """check_overstress() should raise an TypeError if a limit or stress is passed as string."""
     with pytest.raises(TypeError):
-        _overstress = Derating.check_overstress(
+        _overstress = derating.check_overstress(
             0.625, {
                 'mild': [0.0, '0.9'],
                 'harsh': [0.0, 0.75],
@@ -117,7 +117,7 @@ def test_check_overstress_string_input():
         )
 
     with pytest.raises(TypeError):
-        _overstress = Derating.check_overstress(
+        _overstress = derating.check_overstress(
             '0.625', {
                 'mild': [0.0, 0.9],
                 'harsh': [0.0, 0.75],
@@ -129,7 +129,7 @@ def test_check_overstress_string_input():
 @pytest.mark.calculation
 def test_check_overstress_more_than_two_environs():
     """check_overstress() should work with any number of environments passed."""
-    _overstress = Derating.check_overstress(
+    _overstress = derating.check_overstress(
         0.625, {
             'mild': [0.0, 0.9],
             'harsh': [0.0, 0.75],

@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKMissionPhase import RAMSTKMissionPhase
+from ramstk.models.programdb import RAMSTKMissionPhase
 
 ATTRIBUTES = {
     'description': b'Test Mission Phase 1',

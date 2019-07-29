@@ -5,14 +5,14 @@
 #
 # All rights reserved.
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for the MilHdbk217f class."""
+"""Test class for the milhdbk217f class."""
 
 # Third Party Imports
 import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f import MilHdbk217f
+from ramstk.analyses.milhdbk217f import milhdbk217f
 
 ATTRIBUTES = {
     'hardware_id': 12,
@@ -81,7 +81,7 @@ ATTRIBUTES = {
 def test_get_part_count_quality_factor(category_id, subcategory_id):
     """_get_part_count_quality_factor() should return a float value for piQ on success."""
     ATTRIBUTES['type_id'] = 1
-    _pi_q = MilHdbk217f._get_part_count_quality_factor(category_id,
+    _pi_q = milhdbk217f._get_part_count_quality_factor(category_id,
                                                        subcategory_id, 2)
 
     assert isinstance(_pi_q, float)
@@ -110,7 +110,7 @@ def test_get_part_count_quality_factor(category_id, subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
 def test_do_calculate_part_count_integrated_circuit(subcategory_id):
-    """_do_calculate_part_count() should return the IntegratedCircuit attribute dict with updated values on success."""
+    """_do_calculate_part_count() should return the integratedcircuit attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 1
     ATTRIBUTES['technology_id'] = 2
     if subcategory_id in [1, 2, 9]:
@@ -122,7 +122,7 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id):
     elif subcategory_id in [5, 6, 7, 8]:
         ATTRIBUTES['n_elements'] = 64000
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -148,7 +148,7 @@ def test_do_calculate_part_count_semiconductor(subcategory_id):
     ATTRIBUTES['type_id'] = 1
     ATTRIBUTES['quality_id'] = 2
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -191,7 +191,7 @@ def test_do_calculate_part_count_resistor(subcategory_id):
     """_do_calculate_part_count() should return the Resistor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 3
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -222,7 +222,7 @@ def test_do_calculate_part_count_capacitor(subcategory_id):
     """_do_calculate_part_count() should return the Capacitor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 4
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -255,7 +255,7 @@ def test_do_calculate_part_count_inductor(subcategory_id):
     """_do_calculate_part_count() should return the Inductor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 5
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -271,7 +271,7 @@ def test_do_calculate_part_count_relay(subcategory_id):
     """_do_calculate_part_count() should return the Relay attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 6
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -287,7 +287,7 @@ def test_do_calculate_part_count_switch(subcategory_id):
     """_do_calculate_part_count() should return the Switch attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 7
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -306,7 +306,7 @@ def test_do_calculate_part_count_connection(subcategory_id):
     """_do_calculate_part_count() should return the Connection attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 8
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -325,7 +325,7 @@ def test_do_calculate_part_count_meter(subcategory_id):
     """_do_calculate_part_count() should return the Meter attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 9
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -341,7 +341,7 @@ def test_do_calculate_part_count_miscellaneous(subcategory_id):
     """_do_calculate_part_count() should return the misscellaneous component attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 10
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
     assert attributes['lambda_b'] == {
@@ -363,7 +363,7 @@ def test_get_environment_factor(category_id, subcategory_id):
     """_get_environment_factor() should return a float value on success."""
     if category_id == 9 and subcategory_id in [3, 4]:
         subcategory_id = subcategory_id - 2
-    _pi_e = MilHdbk217f._get_environment_factor(category_id, subcategory_id, 1,
+    _pi_e = milhdbk217f._get_environment_factor(category_id, subcategory_id, 1,
                                                 1)
 
     assert isinstance(_pi_e, float)
@@ -435,7 +435,7 @@ def test_get_part_stress_quality_factor(category_id, subcategory_id):
         subcategory_id = subcategory_id + 3
     elif category_id == 9:
         subcategory_id = 2
-    _pi_q = MilHdbk217f._get_part_stress_quality_factor(
+    _pi_q = milhdbk217f._get_part_stress_quality_factor(
         category_id, subcategory_id, 2)
 
     assert isinstance(_pi_q, float)
@@ -469,7 +469,7 @@ def test_get_part_stress_quality_factor(category_id, subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
 def test_do_calculate_part_stress_integrated_circuit(subcategory_id):
-    """_do_calculate_part_stress() should return the IntegratedCircuit attribute dict with updated values on success."""
+    """_do_calculate_part_stress() should return the integratedcircuit attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 1
     ATTRIBUTES['technology_id'] = 2
     if subcategory_id in [1, 2, 9]:
@@ -481,7 +481,7 @@ def test_do_calculate_part_stress_integrated_circuit(subcategory_id):
     elif subcategory_id in [5, 6, 7, 8]:
         ATTRIBUTES['n_elements'] = 64000
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['hazard_rate_active'] == pytest.approx({
@@ -505,7 +505,7 @@ def test_do_calculate_part_stress_semiconductor(subcategory_id):
     """_do_calculate_stress_count() should return the Semiconductor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 2
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == {
@@ -533,7 +533,7 @@ def test_do_calculate_part_stress_resistor(subcategory_id):
     """_do_calculate_part_stress() should return the Resistor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 3
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx({
@@ -564,7 +564,7 @@ def test_do_calculate_part_stress_capacitor(subcategory_id):
     """_do_calculate_part_stress() should return the Capacitor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 4
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx({
@@ -597,7 +597,7 @@ def test_do_calculate_part_stress_inductor(subcategory_id):
     """_do_calculate_part_stress() should return the Inductor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 5
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx({
@@ -613,7 +613,7 @@ def test_do_calculate_part_stress_relay(subcategory_id):
     """_do_calculate_part_stress() should return the Relay attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 6
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx({
@@ -629,7 +629,7 @@ def test_do_calculate_part_stress_switch(subcategory_id):
     """_do_calculate_part_stress() should return the Switch attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 7
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == {1: 0.034, 5: 0.02}[subcategory_id]
@@ -642,7 +642,7 @@ def test_do_calculate_part_stress_connection(subcategory_id):
     """_do_calculate_part_stress() should return the Connection attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 8
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['hazard_rate_active'] == pytest.approx({
@@ -661,7 +661,7 @@ def test_do_calculate_part_stress_meter(subcategory_id):
     """_do_calculate_part_stress() should return the Meter attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 9
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == {1: 20.0, 2: 0.09}[subcategory_id]
@@ -675,7 +675,7 @@ def test_do_calculate_part_stress_miscellaneous(subcategory_id):
     ATTRIBUTES['category_id'] = 10
     ATTRIBUTES['piE'] = 10.0
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_stress(**ATTRIBUTES)
+    _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['hazard_rate_active'] == pytest.approx({
@@ -702,7 +702,7 @@ def test_do_calculate_active_hazard_rate(hazard_rate_method_id):
 
     pub.subscribe(on_message, 'succeed_predict_reliability')
 
-    assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+    assert milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
 
 
 @pytest.mark.unit
@@ -724,7 +724,7 @@ def test_do_calculate_active_hazard_rate_negative_input():
 
     pub.subscribe(on_message, 'fail_predict_reliability')
 
-    assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+    assert milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
 
 
 @pytest.mark.unit
@@ -752,4 +752,4 @@ def test_do_calculate_active_hazard_rate_zero_input():
 
     pub.subscribe(on_message, 'fail_predict_reliability')
 
-    assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+    assert milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None

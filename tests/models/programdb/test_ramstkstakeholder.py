@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKStakeholder import RAMSTKStakeholder
+from ramstk.models.programdb import RAMSTKStakeholder
 
 ATTRIBUTES = {
     'customer_rank': 1,

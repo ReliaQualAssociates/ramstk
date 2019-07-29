@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKReliability import RAMSTKReliability
+from ramstk.models.programdb import RAMSTKReliability
 
 ATTRIBUTES = {
     'add_adj_factor': 0.0,

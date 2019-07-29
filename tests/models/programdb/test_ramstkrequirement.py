@@ -13,7 +13,7 @@ from datetime import date
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKRequirement import RAMSTKRequirement
+from ramstk.models.programdb import RAMSTKRequirement
 
 ATTRIBUTES = {
     'derived': 0,

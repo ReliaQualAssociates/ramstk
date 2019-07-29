@@ -12,7 +12,7 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.analyses import Allocation
+from ramstk.analyses import allocation
 
 ATTRIBUTES = {
     'availability_alloc': 0.9998,
@@ -43,7 +43,7 @@ ATTRIBUTES = {
 @pytest.mark.calculation
 def test_calculate_agree_apportionment():
     """_calculate_agree_apportionment() should return a tuple of allocated measures on success."""
-    _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
+    _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_agree_apportionment(
         100.0, 1, 4, 2, 0.999)
 
     assert _mtbf_alloc == pytest.approx(199899.98332499)
@@ -65,7 +65,7 @@ def test_calculate_agree_apportionment_zero_sub_elements():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_agree_apportionment(100.0, 1, 4, 0, 0.999)
+    allocation._calculate_agree_apportionment(100.0, 1, 4, 0, 0.999)
 
 
 @pytest.mark.unit
@@ -73,23 +73,23 @@ def test_calculate_agree_apportionment_zero_sub_elements():
 def test_calculate_agree_apportionment_string_input():
     """_calculate_agree_apportionment() should raise a TypeError when passed a string for any input."""
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_agree_apportionment(
             '100.0', 1, 4, 2, 0.999)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_agree_apportionment(
             100.0, '1', 4, 2, 0.999)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_agree_apportionment(
             100.0, 1, '4', 2, 0.999)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_agree_apportionment(
             100.0, 1, 4, '2', 0.999)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_agree_apportionment(
             100.0, 1, 4, 2, '0.999')
 
 
@@ -106,14 +106,14 @@ def test_calculate_agree_apportionment_negative_parent_goal():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_agree_apportionment(100.0, 1, 4, 0, -0.999)
+    allocation._calculate_agree_apportionment(100.0, 1, 4, 0, -0.999)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_arinc_apportionment():
     """_calculate_arinc_apportionment() should return a tuple of allocated measures on success."""
-    _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_arinc_apportionment(
+    _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_arinc_apportionment(
         100.0, 0.025730994152, 0.0000482)
 
     assert _mtbf_alloc == pytest.approx(806299.50961901)
@@ -134,7 +134,7 @@ def test_calculate_arinc_apportionment_zero_weight_factor():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_arinc_apportionment(100.0, 0.0, 0.0000482)
+    allocation._calculate_arinc_apportionment(100.0, 0.0, 0.0000482)
 
 
 @pytest.mark.unit
@@ -150,7 +150,7 @@ def test_calculate_arinc_apportionment_zero_parent_goal():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_arinc_apportionment(100.0, 0.025730994152, 0.0)
+    allocation._calculate_arinc_apportionment(100.0, 0.025730994152, 0.0)
 
 
 @pytest.mark.unit
@@ -158,15 +158,15 @@ def test_calculate_arinc_apportionment_zero_parent_goal():
 def test_calculate_arinc_apportionment_string_input():
     """_calculate_arinc_apportionment() should raise a TypeError when passed a string for any argument."""
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_arinc_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_arinc_apportionment(
             '100.0', 0.000342, 0.0000482)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_arinc_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_arinc_apportionment(
             100.0, '0.000342', 0.0000482)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_arinc_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_arinc_apportionment(
             100.0, 0.000342, '0.0000482')
 
 
@@ -174,7 +174,7 @@ def test_calculate_arinc_apportionment_string_input():
 @pytest.mark.calculation
 def test_calculate_equal_apportionment():
     """_calculate_equal_apportionment() should return a tuple of allocated measures on success."""
-    _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_equal_apportionment(
+    _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_equal_apportionment(
         100.0, 1 / 3, 0.999)
 
     assert _mtbf_alloc == pytest.approx(299849.9749875)
@@ -195,7 +195,7 @@ def test_calculate_equal_zero_weight_factor():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_equal_apportionment(100.0, 0, 0.999)
+    allocation._calculate_equal_apportionment(100.0, 0, 0.999)
 
 
 @pytest.mark.unit
@@ -211,7 +211,7 @@ def test_calculate_equal_zero_mission_time():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_equal_apportionment(0.0, 1 / 3, 0.999)
+    allocation._calculate_equal_apportionment(0.0, 1 / 3, 0.999)
 
 
 @pytest.mark.unit
@@ -227,7 +227,7 @@ def test_calculate_equal_zero_goal():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_equal_apportionment(100.0, 1 / 3, 0.0)
+    allocation._calculate_equal_apportionment(100.0, 1 / 3, 0.0)
 
 
 @pytest.mark.unit
@@ -243,7 +243,7 @@ def test_calculate_equal_negative_goal():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_equal_apportionment(100.0, 1 / 3, -0.99995)
+    allocation._calculate_equal_apportionment(100.0, 1 / 3, -0.99995)
 
 
 @pytest.mark.unit
@@ -251,15 +251,15 @@ def test_calculate_equal_negative_goal():
 def test_calculate_equal_string_input():
     """_calculate_equal_apportionment() should raise a TypeError if passed a string for any input."""
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_equal_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_equal_apportionment(
             '100.0', 1 / 3, 0.999)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_equal_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_equal_apportionment(
             100.0, '1/3', 0.999)
 
     with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_equal_apportionment(
+        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = allocation._calculate_equal_apportionment(
             100.0, 1 / 3, '0.999')
 
 
@@ -268,7 +268,7 @@ def test_calculate_equal_string_input():
 def test_calculate_foo_apportionment():
     """_calulcate_foo_apportionment() should return a tuple of allocated measures on success."""
     (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc, _weight_factor,
-     _percent_weight_factor) = Allocation._calculate_foo_apportionment(
+     _percent_weight_factor) = allocation._calculate_foo_apportionment(
          {
              'intricacy': 4,
              'state_of_art': 6,
@@ -298,7 +298,7 @@ def test_calculate_foo_zero_cum_weight():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_foo_apportionment(
+    allocation._calculate_foo_apportionment(
         {
             'intricacy': 4,
             'state_of_art': 6,
@@ -322,7 +322,7 @@ def test_calculate_foo_zero_factor():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_foo_apportionment(
+    allocation._calculate_foo_apportionment(
         {
             'intricacy': 4,
             'state_of_art': 0,
@@ -346,7 +346,7 @@ def test_calculate_foo_zero_goal():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_foo_apportionment(
+    allocation._calculate_foo_apportionment(
         {
             'intricacy': 4,
             'state_of_art': 6,
@@ -361,7 +361,7 @@ def test_calculate_foo_string_input():
     """_calculate_foo_apportionment() should raise a TypeError if passed a string argument."""
     with pytest.raises(TypeError):
         (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc, _weight_factor,
-         _percent_weight_factor) = Allocation._calculate_foo_apportionment(
+         _percent_weight_factor) = allocation._calculate_foo_apportionment(
              {
                  'intricacy': 4,
                  'state_of_art': 6,
@@ -371,7 +371,7 @@ def test_calculate_foo_string_input():
 
     with pytest.raises(TypeError):
         (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc, _weight_factor,
-         _percent_weight_factor) = Allocation._calculate_foo_apportionment(
+         _percent_weight_factor) = allocation._calculate_foo_apportionment(
              {
                  'intricacy': 4,
                  'state_of_art': 6,
@@ -384,7 +384,7 @@ def test_calculate_foo_string_input():
 @pytest.mark.calculation
 @pytest.mark.parametrize("method_id", [1, 2, 3, 4, 5])
 def test_do_allocate_reliability(method_id):
-    """do_allocate_reliability() should return the Allocation attributes dict with updated values on success."""
+    """do_allocate_reliability() should return the allocation attributes dict with updated values on success."""
     ATTRIBUTES['allocation_method_id'] = method_id
     ATTRIBUTES['system_hr'] = 0.003418
     ATTRIBUTES['hazard_rate'] = 0.00004328
@@ -433,14 +433,14 @@ def test_do_allocate_reliability(method_id):
     elif method_id == 5:
         _goal = 0.99975
 
-    Allocation.do_allocate_reliability(_goal, 3528, **ATTRIBUTES)
+    allocation.do_allocate_reliability(_goal, 3528, **ATTRIBUTES)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 @pytest.mark.parametrize("goal_measure_id", [1, 2, 3, 4])
 def test_calculate_goals(goal_measure_id):
-    """calculate_goals() should return the Allocation attributes dict with updated values on success."""
+    """calculate_goals() should return the allocation attributes dict with updated values on success."""
     ATTRIBUTES['goal_measure_id'] = goal_measure_id
     if goal_measure_id == 1:
         ATTRIBUTES['hazard_rate_goal'] = 0.0
@@ -455,7 +455,7 @@ def test_calculate_goals(goal_measure_id):
         ATTRIBUTES['mtbf_goal'] = 400000
         ATTRIBUTES['reliability_goal'] = 0.0
 
-    _attributes = Allocation.do_calculate_goals(**ATTRIBUTES)
+    _attributes = allocation.do_calculate_goals(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['hazard_rate_goal'] == pytest.approx({
@@ -492,7 +492,7 @@ def test_calculate_goals_negative_reliability():
 
     pub.subscribe(on_message, 'fail_calculate_allocation_goal')
 
-    Allocation.do_calculate_goals(**ATTRIBUTES)
+    allocation.do_calculate_goals(**ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -509,7 +509,7 @@ def test_calculate_goals_zero_reliability_goal():
 
     pub.subscribe(on_message, 'fail_calculate_allocation_goal')
 
-    Allocation.do_calculate_goals(**ATTRIBUTES)
+    allocation.do_calculate_goals(**ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -526,7 +526,7 @@ def test_calculate_goals_zero_hazard_rate_goal():
 
     pub.subscribe(on_message, 'fail_calculate_allocation_goal')
 
-    Allocation.do_calculate_goals(**ATTRIBUTES)
+    allocation.do_calculate_goals(**ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -543,7 +543,7 @@ def test_calculate_goals_zero_mtbf_goal():
 
     pub.subscribe(on_message, 'fail_calculate_allocation_goal')
 
-    Allocation.do_calculate_goals(**ATTRIBUTES)
+    allocation.do_calculate_goals(**ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -556,7 +556,7 @@ def test_get_allocation_goal(method_id):
     ATTRIBUTES['mtbf_goal'] = 175.0
     ATTRIBUTES['reliability_goal'] = 0.99995
 
-    _goal = Allocation.get_allocation_goal(**ATTRIBUTES)
+    _goal = allocation.get_allocation_goal(**ATTRIBUTES)
 
     assert isinstance(_goal, float)
     assert _goal == {

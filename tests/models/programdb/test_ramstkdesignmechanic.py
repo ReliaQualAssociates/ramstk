@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKDesignMechanic import RAMSTKDesignMechanic
+from ramstk.models.programdb import RAMSTKDesignMechanic
 
 ATTRIBUTES = {
     'pressure_upstream': 0.0,

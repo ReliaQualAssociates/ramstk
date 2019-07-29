@@ -14,7 +14,7 @@ from datetime import date, timedelta
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKAction import RAMSTKAction
+from ramstk.models.programdb import RAMSTKAction
 
 ATTRIBUTES = {
     'action_due_date': date(2019, 8, 20),
@@ -34,7 +34,7 @@ ATTRIBUTES = {
 class TestRAMSTKAction():
     """Class for testing the RAMSTKAction model."""
     @pytest.mark.integration
-    def test_ramstkaction_create(self,  test_program_dao):
+    def test_ramstkaction_create(self, test_program_dao):
         """__init__() should create an RAMSTKAction model."""
         DUT = test_program_dao.session.query(RAMSTKAction).first()
         assert isinstance(DUT, RAMSTKAction)

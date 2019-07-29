@@ -1,7 +1,8 @@
 # pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_filter.py is part of The RAMSTK Project
+#       tests.analyses.milhdbk217f.models.test_filter.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import Filter
+from ramstk.analyses.milhdbk217f import efilter
 
 ATTRIBUTES = {
     'category_id': 10,
@@ -48,7 +49,7 @@ def test_get_part_count_lambda_b(
         environment_active_id,
 ):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Filter.get_part_count_lambda_b(type_id, environment_active_id)
+    _lambda_b = efilter.get_part_count_lambda_b(type_id, environment_active_id)
 
     assert isinstance(_lambda_b, float)
     if type_id == 1:
@@ -73,7 +74,7 @@ def test_get_part_count_lambda_b(
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Filter.get_part_count_lambda_b(1, 28)
+        _lambda_b = efilter.get_part_count_lambda_b(1, 28)
 
 
 @pytest.mark.unit
@@ -81,7 +82,7 @@ def test_get_part_count_lambda_b_no_environment():
 def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Filter.get_part_count_lambda_b(14, 8)
+        _lambda_b = efilter.get_part_count_lambda_b(14, 8)
 
 
 @pytest.mark.unit
@@ -94,7 +95,7 @@ def test_calculate_part_count(environment_active_id, ):
     """calculate_part_count() should return a float value for the base hazard rate on success."""
     ATTRIBUTES['type_id'] = 1
     ATTRIBUTES['environment_active_id'] = environment_active_id
-    _lambda_b = Filter.calculate_part_count(**ATTRIBUTES)
+    _lambda_b = efilter.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == [
@@ -122,7 +123,7 @@ def test_calculate_part_stress(type_id):
     """calculate_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['type_id'] = type_id
 
-    _attributes = Filter.calculate_part_stress(**ATTRIBUTES)
+    _attributes = efilter.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == {
@@ -145,4 +146,4 @@ def test_calculate_part_stress_missing_type():
     """calculate_part_stress() should raise a KeyError if passed an unknown type ID."""
     ATTRIBUTES['type_id'] = 6
     with pytest.raises(KeyError):
-        _attributes = Filter.calculate_part_stress(**ATTRIBUTES)
+        _attributes = efilter.calculate_part_stress(**ATTRIBUTES)

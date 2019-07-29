@@ -1,7 +1,8 @@
 # pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_resistor.py is part of The RAMSTK Project
+#       tests.analyses.milhdbk271f.models.test_resistor.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import Resistor
+from ramstk.analyses.milhdbk217f import resistor
 
 ATTRIBUTES = {
     'category_id': 3,
@@ -38,7 +39,7 @@ ATTRIBUTES = {
                          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
 def test_get_part_count_lambda_b(subcategory_id, environment_active_id):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on succes."""
-    _lambda_b = Resistor.get_part_count_lambda_b(subcategory_id,
+    _lambda_b = resistor.get_part_count_lambda_b(subcategory_id,
                                                  environment_active_id,
                                                  specification_id=1)
 
@@ -67,7 +68,7 @@ def test_get_part_count_lambda_b(subcategory_id, environment_active_id):
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError if passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Resistor.get_part_count_lambda_b(28, 2, 1)
+        _lambda_b = resistor.get_part_count_lambda_b(28, 2, 1)
 
 
 @pytest.mark.unit
@@ -75,7 +76,7 @@ def test_get_part_count_lambda_b_no_subcategory():
 def test_get_part_count_lambda_b_no_specification():
     """get_part_count_lambda_b() should raise a KeyError if passed an unknown specification ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Resistor.get_part_count_lambda_b(2, 1, 24)
+        _lambda_b = resistor.get_part_count_lambda_b(2, 1, 24)
 
 
 @pytest.mark.unit
@@ -83,14 +84,14 @@ def test_get_part_count_lambda_b_no_specification():
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError if passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Resistor.get_part_count_lambda_b(2, 24, 1)
+        _lambda_b = resistor.get_part_count_lambda_b(2, 24, 1)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_count():
     """calculate_part_count() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = Resistor.calculate_part_count(**ATTRIBUTES)
+    _lambda_b = resistor.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == 0.0071
@@ -101,7 +102,7 @@ def test_calculate_part_count():
 @pytest.mark.parametrize("subcategory_id", [1, 2, 4, 8])
 def test_calculate_part_stress_lambda_b(subcategory_id):
     """calculate_part_stress_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Resistor.calculate_part_stress_lambda_b(
+    _lambda_b = resistor.calculate_part_stress_lambda_b(
         subcategory_id, 1, 1, 39.5, 0.45)
 
     assert isinstance(_lambda_b, float)
@@ -120,7 +121,7 @@ def test_calculate_part_stress_lambda_b(subcategory_id):
 @pytest.mark.parametrize("subcategory_id", [1, 4, 6])
 def test_get_resistance_factor(subcategory_id):
     """calculate_resistance_factor() should return a float value for piR on success."""
-    _pi_r = Resistor.get_resistance_factor(subcategory_id, 1, 2, 3300)
+    _pi_r = resistor.get_resistance_factor(subcategory_id, 1, 2, 3300)
 
     assert isinstance(_pi_r, float)
     if subcategory_id == 1:
@@ -136,7 +137,7 @@ def test_get_resistance_factor(subcategory_id):
 def test_get_resistance_factor_no_specification():
     """calculate_resistance_factor() should raise an IndexError when passed an unknown specification ID."""
     with pytest.raises(IndexError):
-        _pi_r = Resistor.get_resistance_factor(6, 12, 2, 3300)
+        _pi_r = resistor.get_resistance_factor(6, 12, 2, 3300)
 
 
 @pytest.mark.unit
@@ -144,7 +145,7 @@ def test_get_resistance_factor_no_specification():
 def test_get_resistance_factor_no_family():
     """calculate_resistance_factor() should raise an IndexError when passed an unknown family ID."""
     with pytest.raises(IndexError):
-        _pi_r = Resistor.get_resistance_factor(6, 1, 21, 3300)
+        _pi_r = resistor.get_resistance_factor(6, 1, 21, 3300)
 
 
 @pytest.mark.unit
@@ -152,7 +153,7 @@ def test_get_resistance_factor_no_family():
 def test_get_resistance_factor_no_subcategory():
     """calculate_resistance_factor() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_r = Resistor.get_resistance_factor(61, 1, 2, 3300)
+        _pi_r = resistor.get_resistance_factor(61, 1, 2, 3300)
 
 
 @pytest.mark.unit
@@ -160,7 +161,7 @@ def test_get_resistance_factor_no_subcategory():
 def test_calculate_temperature_factor():
     """calculate_temperature_factor() should return a tuple of two float values for case temperature and piT on success."""
     (_temperature_case,
-     _pi_r) = Resistor.calculate_temperature_factor(38.2, 0.45)
+     _pi_r) = resistor.calculate_temperature_factor(38.2, 0.45)
 
     assert isinstance(_temperature_case, float)
     assert isinstance(_pi_r, float)
@@ -173,10 +174,10 @@ def test_calculate_temperature_factor():
 def test_calculate_temperature_factor_string_inputs():
     """calculate_temperature_factor() should raise a TypeError if passed a string for either input."""
     with pytest.raises(TypeError):
-        _pi_r = Resistor.calculate_temperature_factor('38.2', 0.45)
+        _pi_r = resistor.calculate_temperature_factor('38.2', 0.45)
 
     with pytest.raises(TypeError):
-        _pi_r = Resistor.calculate_temperature_factor(38.2, '0.45')
+        _pi_r = resistor.calculate_temperature_factor(38.2, '0.45')
 
 
 @pytest.mark.unit
@@ -184,7 +185,7 @@ def test_calculate_temperature_factor_string_inputs():
 @pytest.mark.parametrize("subcategory_id", [9, 13])
 def test_get_voltage_factor(subcategory_id):
     """get_voltage_factor() should return a float value for piV on success."""
-    _pi_v = Resistor.get_voltage_factor(subcategory_id, 0.85)
+    _pi_v = resistor.get_voltage_factor(subcategory_id, 0.85)
 
     assert isinstance(_pi_v, float)
     assert _pi_v == {9: 1.4, 13: 1.05}[subcategory_id]
@@ -195,7 +196,7 @@ def test_get_voltage_factor(subcategory_id):
 def test_get_voltage_factor_no_subcategory():
     """get_voltage_factor() should raise a KeyError if passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_v = Resistor.get_voltage_factor(28, 0.85)
+        _pi_v = resistor.get_voltage_factor(28, 0.85)
 
 
 @pytest.mark.unit
@@ -204,7 +205,7 @@ def test_get_voltage_factor_no_subcategory():
 def test_calculate_part_stress(subcategory_id):
     """calculate_part_stress() should return the attributes dict with updated values on success."""
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = Resistor.calculate_part_stress(**ATTRIBUTES)
+    _attributes = resistor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['hazard_rate_active'] == {

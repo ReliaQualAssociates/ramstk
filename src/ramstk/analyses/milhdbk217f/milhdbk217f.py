@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.MilHdbk217f.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""MilHdbk217f Calculations Class."""
+"""milhdbk217f Calculations Class."""
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Local Imports
 from .models import (
-    Capacitor, Connection, Crystal, Filter, Fuse, Inductor,
-    IntegratedCircuit, Lamp, Meter, Relay, Resistor, Semiconductor, Switch
+    capacitor, connection, crystal, efilter, fuse, inductor,
+    integratedcircuit, lamp, meter, relay, resistor, semiconductor, switch
 )
 
 
@@ -28,20 +28,20 @@ def _do_calculate_part_count(**attributes):
     :raise: KeyError if there is no entry for category ID or subcategory ID.
     """
     _part_count = {
-        1: IntegratedCircuit.calculate_part_count,
-        2: Semiconductor.calculate_part_count,
-        3: Resistor.calculate_part_count,
-        4: Capacitor.calculate_part_count,
-        5: Inductor.calculate_part_count,
-        6: Relay.calculate_part_count,
-        7: Switch.calculate_part_count,
-        8: Connection.calculate_part_count,
-        9: Meter.calculate_part_count,
+        1: integratedcircuit.calculate_part_count,
+        2: semiconductor.calculate_part_count,
+        3: resistor.calculate_part_count,
+        4: capacitor.calculate_part_count,
+        5: inductor.calculate_part_count,
+        6: relay.calculate_part_count,
+        7: switch.calculate_part_count,
+        8: connection.calculate_part_count,
+        9: meter.calculate_part_count,
         10: {
-            1: Crystal.calculate_part_count,
-            2: Filter.calculate_part_count,
-            3: Fuse.calculate_part_count,
-            4: Lamp.calculate_part_count
+            1: crystal.calculate_part_count,
+            2: efilter.calculate_part_count,
+            3: fuse.calculate_part_count,
+            4: lamp.calculate_part_count
         }
     }
 
@@ -61,7 +61,7 @@ def _do_calculate_part_count(**attributes):
             attributes['quality_id'],
         )
     else:
-        attributes['piQ'] = Semiconductor.get_part_count_quality_factor(
+        attributes['piQ'] = semiconductor.get_part_count_quality_factor(
             attributes['subcategory_id'], attributes['quality_id'],
             attributes['type_id'])
 
@@ -83,20 +83,20 @@ def _do_calculate_part_stress(**attributes):
     :raise: KeyError if there is no entry for category ID or subcategory ID.
     """
     _functions = {
-        1: IntegratedCircuit.calculate_part_stress,
-        2: Semiconductor.calculate_part_stress,
-        3: Resistor.calculate_part_stress,
-        4: Capacitor.calculate_part_stress,
-        5: Inductor.calculate_part_stress,
-        6: Relay.calculate_part_stress,
-        7: Switch.calculate_part_stress,
-        8: Connection.calculate_part_stress,
-        9: Meter.calculate_part_stress,
+        1: integratedcircuit.calculate_part_stress,
+        2: semiconductor.calculate_part_stress,
+        3: resistor.calculate_part_stress,
+        4: capacitor.calculate_part_stress,
+        5: inductor.calculate_part_stress,
+        6: relay.calculate_part_stress,
+        7: switch.calculate_part_stress,
+        8: connection.calculate_part_stress,
+        9: meter.calculate_part_stress,
         10: {
-            1: Crystal.calculate_part_stress,
-            2: Filter.calculate_part_stress,
-            3: Fuse.calculate_part_stress,
-            4: Lamp.calculate_part_stress
+            1: crystal.calculate_part_stress,
+            2: efilter.calculate_part_stress,
+            3: fuse.calculate_part_stress,
+            4: lamp.calculate_part_stress
         },
     }
 
@@ -149,19 +149,19 @@ def _get_environment_factor(
         subcategory ID, quality ID when appllicable).
     """
     _pi_e_lists = {
-        1: IntegratedCircuit.PI_E,
-        2: Semiconductor.PI_E,
-        3: Resistor.PI_E,
-        4: Capacitor.PI_E,
-        5: Inductor.PI_E,
-        7: Switch.PI_E,
-        8: Connection.PI_E,
-        9: Meter.PI_E,
+        1: integratedcircuit.PI_E,
+        2: semiconductor.PI_E,
+        3: resistor.PI_E,
+        4: capacitor.PI_E,
+        5: inductor.PI_E,
+        7: switch.PI_E,
+        8: connection.PI_E,
+        9: meter.PI_E,
         10: {
-            1: Crystal.PI_E,
-            2: Filter.PI_E,
-            3: Fuse.PI_E,
-            4: Lamp.PI_E
+            1: crystal.PI_E,
+            2: efilter.PI_E,
+            3: fuse.PI_E,
+            4: lamp.PI_E
         },
     }
 
@@ -199,17 +199,17 @@ def _get_part_count_quality_factor(category_id, subcategory_id, quality_id):
     :raise: KeyError if there is no piQ list for the passed category ID.
     """
     _pi_q_lists = {
-        1: IntegratedCircuit.PI_Q,
-        3: Resistor.PART_COUNT_PI_Q,
-        4: Capacitor.PART_COUNT_PI_Q,
-        5: Inductor.PART_COUNT_PI_Q,
-        6: Relay.PART_COUNT_PI_Q,
-        7: Switch.PART_COUNT_PI_Q,
-        8: Connection.PART_COUNT_PI_Q,
-        9: Meter.PART_COUNT_PI_Q,
+        1: integratedcircuit.PI_Q,
+        3: resistor.PART_COUNT_PI_Q,
+        4: capacitor.PART_COUNT_PI_Q,
+        5: inductor.PART_COUNT_PI_Q,
+        6: relay.PART_COUNT_PI_Q,
+        7: switch.PART_COUNT_PI_Q,
+        8: connection.PART_COUNT_PI_Q,
+        9: meter.PART_COUNT_PI_Q,
         10: {
-            1: Crystal.PART_COUNT_PI_Q,
-            2: Filter.PI_Q
+            1: crystal.PART_COUNT_PI_Q,
+            2: efilter.PI_Q
         },
     }
 
@@ -240,16 +240,16 @@ def _get_part_stress_quality_factor(category_id, subcategory_id, quality_id):
     :raise: KeyError if there is no piQ list for the passed category ID.
     """
     _pi_q_lists = {
-        1: IntegratedCircuit.PI_Q,
-        3: Resistor.PART_STRESS_PI_Q,
-        4: Capacitor.PART_STRESS_PI_Q,
-        6: Relay.PART_STRESS_PI_Q,
-        7: Switch.PART_STRESS_PI_Q,
-        8: Connection.PART_STRESS_PI_Q,
-        9: Meter.PART_STRESS_PI_Q,
+        1: integratedcircuit.PI_Q,
+        3: resistor.PART_STRESS_PI_Q,
+        4: capacitor.PART_STRESS_PI_Q,
+        6: relay.PART_STRESS_PI_Q,
+        7: switch.PART_STRESS_PI_Q,
+        8: connection.PART_STRESS_PI_Q,
+        9: meter.PART_STRESS_PI_Q,
         10: {
-            1: Crystal.PART_STRESS_PI_Q,
-            2: Filter.PI_Q
+            1: crystal.PART_STRESS_PI_Q,
+            2: efilter.PI_Q
         },
     }
 

@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKMission import RAMSTKMission
+from ramstk.models.programdb import RAMSTKMission
 
 ATTRIBUTES = {
     'description': b'Test Mission',

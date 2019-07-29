@@ -11,7 +11,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKHazardAnalysis import RAMSTKHazardAnalysis
+from ramstk.models.programdb import RAMSTKHazardAnalysis
 
 ATTRIBUTES = {
     'user_blob_3': b'',
