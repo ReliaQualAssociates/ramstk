@@ -1,7 +1,7 @@
 ROOT = $(shell git rev-parse --show-toplevel)
 
 REPO?=ReliaQualAssociates/ramstk
-REQFILE?=requirements.txt
+REQFILE?=requirements_run.txt
 DEVREQFILE?=requirements_dev.txt
 DOCREQFILE?=requirements_doc.txt
 
