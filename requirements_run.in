@@ -15,4 +15,4 @@ treelib>=1.5.3
 xlrd
 XlsxWriter
 xlwt
-pygobject
+pygobject>=3.27

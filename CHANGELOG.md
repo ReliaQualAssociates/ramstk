@@ -20,6 +20,9 @@
 - Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods to eliminate duplicate code [\#200](https://github.com/ReliaQualAssociates/ramstk/issues/200) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
 - PyGTK deprecation [\#58](https://github.com/ReliaQualAssociates/ramstk/issues/58)
 - Support Python 3 [\#57](https://github.com/ReliaQualAssociates/ramstk/issues/57)
+- refactor\(Val\): add matrix manager [\#265](https://github.com/ReliaQualAssociates/ramstk/pull/265) [[module:validation](https://github.com/ReliaQualAssociates/ramstk/labels/module:validation)] ([weibullguy](https://github.com/weibullguy))
+- refactor: add status to validation [\#264](https://github.com/ReliaQualAssociates/ramstk/pull/264) [[module:validation](https://github.com/ReliaQualAssociates/ramstk/labels/module:validation)] ([weibullguy](https://github.com/weibullguy))
+- chore: The Great Renaming [\#263](https://github.com/ReliaQualAssociates/ramstk/pull/263) ([weibullguy](https://github.com/weibullguy))
 - update validation to new API [\#262](https://github.com/ReliaQualAssociates/ramstk/pull/262) [[module:validation](https://github.com/ReliaQualAssociates/ramstk/labels/module:validation)] ([weibullguy](https://github.com/weibullguy))
 - update stakeholder model/controller [\#261](https://github.com/ReliaQualAssociates/ramstk/pull/261) [[module:requirement](https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement)] [[module:stakeholder](https://github.com/ReliaQualAssociates/ramstk/labels/module:stakeholder)] ([weibullguy](https://github.com/weibullguy))
 - update requirement module to new API [\#260](https://github.com/ReliaQualAssociates/ramstk/pull/260) [[module:requirement](https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement)] ([weibullguy](https://github.com/weibullguy))
