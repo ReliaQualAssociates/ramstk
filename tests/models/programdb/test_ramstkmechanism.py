@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_ramstkmechanism.py is part of The RAMSTK Project
+#       tests.models.programdb.test_ramstkmechanism.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -10,7 +11,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKMechanism import RAMSTKMechanism
+from ramstk.models.programdb import RAMSTKMechanism
 
 ATTRIBUTES = {
     'rpn_new': 0,

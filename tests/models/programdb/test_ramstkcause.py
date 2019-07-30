@@ -11,7 +11,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKCause import RAMSTKCause
+from ramstk.models.programdb import RAMSTKCause
 
 ATTRIBUTES = {
     'rpn_new': 0,

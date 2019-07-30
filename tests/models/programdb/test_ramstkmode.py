@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKMode import RAMSTKMode
+from ramstk.models.programdb import RAMSTKMode
 
 ATTRIBUTES = {
     'effect_local': '',
