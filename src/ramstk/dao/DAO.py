@@ -540,12 +540,13 @@ class DAO():
         try:
             self.session.commit()
         except (exc.SQLAlchemyError, exc.DBAPIError) as _error:
+            print(_error)
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
             self.session.rollback()
             _error_code = 1
             _msg = (
                 "RAMSTK ERROR: Updating the RAMSTK Program database failed "
-                "with error: {0:s}.").format(_error)
+                "with error: {0:s}.").format(str(_error))
 
         return _error_code, _msg
 

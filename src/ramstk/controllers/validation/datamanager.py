@@ -301,20 +301,16 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        for _table in ['validation']:
-            _attributes = self.do_select(node_id,
-                                         table=_table).get_attributes()
-            if key in _attributes:
-                _attributes[key] = value
+        _attributes = self.do_select(node_id,
+                                     table='validation').get_attributes()
+        if key in _attributes:
+            _attributes[key] = value
 
-                try:
-                    _attributes.pop('revision_id')
-                except KeyError:
-                    pass
-                _attributes.pop('validation_id')
+            _attributes.pop('revision_id')
+            _attributes.pop('validation_id')
 
-                self.do_select(node_id,
-                               table=_table).set_attributes(_attributes)
+            self.do_select(node_id,
+                           table='validation').set_attributes(_attributes)
 
     def do_update(self, node_id):
         """
