@@ -52,6 +52,10 @@ check-manifest==0.39 \
 codacy-coverage==1.3.11 \
     --hash=sha256:b94651934745c638a980ad8d67494077e60f71e19e29aad1c275b66e0a070cbc \
     --hash=sha256:d8a1ce56b0dd156d6b1de14fa6217d32ec86097902f08a17ff2f95ba27264474
+colorama==0.4.1 \
+    --hash=sha256:05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d \
+    --hash=sha256:f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48 \
+    # via radon
 coverage==4.5.3 \
     --hash=sha256:3684fabf6b87a369017756b551cef29e505cb155ddb892a7a29277b978da88b9 \
     --hash=sha256:39e088da9b284f1bd17c750ac672103779f7954ce6125fd4382134ac8d152d74 \
@@ -99,10 +103,17 @@ entrypoints==0.3 \
     --hash=sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19 \
     --hash=sha256:c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451 \
     # via flake8
+flake8-polyfill==1.0.2 \
+    --hash=sha256:12be6a34ee3ab795b19ca73505e7b55826d5f6ad7230d31b18e106400169b9e9 \
+    --hash=sha256:e44b087597f6da52ec6393a709e7108b2905317d0c0b744cdca6208e670d8eda \
+    # via radon
 flake8==3.7.8 \
     --hash=sha256:19241c1cbc971b9962473e4438a2ca19749a7dd002dd1a946eaba171b4114548 \
     --hash=sha256:8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696 \
-    # via pre-commit-hooks
+    # via flake8-polyfill, pre-commit-hooks
+future==0.17.1 \
+    --hash=sha256:67045236dcfd6816dc439556d009594abf643e5eb48992e36beac09c2ca659b8 \
+    # via radon
 gitdb2==2.0.5 \
     --hash=sha256:83361131a1836661a155172932a13c08bda2db3674e4caa32368aa6eb02f38c2 \
     --hash=sha256:e3a0141c5f2a3f635c7209d56c496ebe1ad35da82fe4d3ec4aaa36278d70648a \
@@ -149,6 +160,10 @@ lazy-object-proxy==1.4.1 \
     --hash=sha256:dd6e2b598849b3d7aee2295ac765a578879830fb8966f70be8cd472e6069932e \
     --hash=sha256:e408f1eacc0a68fed0c08da45f31d0ebb38079f043328dce69ff133b95c29dc1 \
     # via astroid
+mando==0.6.4 \
+    --hash=sha256:4ce09faec7e5192ffc3c57830e26acba0fd6cd11e1ee81af0d4df0657463bd1c \
+    --hash=sha256:79feb19dc0f097daa64a1243db578e7674909b75f88ac2220f1c065c10a0d960 \
+    # via radon
 mccabe==0.6.1 \
     --hash=sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42 \
     --hash=sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f \
@@ -224,6 +239,9 @@ pyyaml==5.1.1 \
     --hash=sha256:ceacb9e5f8474dcf45b940578591c7f3d960e82f926c707788a570b51ba59190 \
     --hash=sha256:fe6a88094b64132c4bb3b631412e90032e8cfe9745a58370462240b8cb7553cd \
     # via aspy.yaml, bandit, pre-commit
+radon==3.0.3 \
+    --hash=sha256:0cde1953547a164d24420ed6ccdfa18b61f1457b96a2b99ff0de76b22d504a0f \
+    --hash=sha256:ee20308ce8bae7a89b067425b63b141a0077632ab318d5288da649c830882b3d
 requests==2.22.0 \
     --hash=sha256:11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4 \
     --hash=sha256:9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31 \
@@ -254,7 +272,7 @@ seed-isort-config==1.9.2 \
 six==1.12.0 \
     --hash=sha256:3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c \
     --hash=sha256:d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73 \
-    # via astroid, bandit, cfgv, packaging, pre-commit, pre-commit-hooks, stevedore
+    # via astroid, bandit, cfgv, mando, packaging, pre-commit, pre-commit-hooks, stevedore
 smmap2==2.0.5 \
     --hash=sha256:0555a7bf4df71d1ef4218e4807bbf9b201f910174e6e08af2e138d4e517b4dde \
     --hash=sha256:29a9ffa0497e7f2be94ca0ed1ca1aa3cd4cf25a1f6b4f5f87f74b46ed91d609a \
@@ -319,4 +337,4 @@ zipp==0.5.2 \
 
 # WARNING: The following packages were not pinned, but pip requires them to be
 # pinned when the requirements file includes hashes. Consider using the --allow-unsafe flag.
-# pip==19.1.1               # via pipdeptree
+# pip==19.2.1               # via pipdeptree

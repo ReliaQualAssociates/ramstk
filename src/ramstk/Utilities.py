@@ -17,7 +17,6 @@ _ = gettext.gettext
 
 class OutOfRangeError(Exception):
     """Exception raised when an input value is outside legal limits."""
-
     def __init__(self, message):
         """
         Initialize OutOfRangeError instance.
@@ -55,8 +54,7 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
 
     _logger = logging.getLogger(log_name)
     _formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    )
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s', )
 
     if log_level == 'DEBUG':
         log_level = logging.ERROR
@@ -124,8 +122,7 @@ def error_handler(message):
     elif 'float division by zero' in message[0]:  # Zero division error
         _error_code = 20
     elif 'integer division or modulo by zero' in message[
-            0
-    ]:  # Zero division error
+            0]:  # Zero division error
         _error_code = 20
     elif 'index out of range' in message[0]:  # Index error
         _error_code = 40
@@ -272,10 +269,8 @@ def string_to_boolean(string):
 
     _string = str(string)
 
-    if (
-            _string.lower() == 'true' or _string.lower() == 'yes'
-            or _string.lower() == 't' or _string.lower() == 'y'
-    ):
+    if (_string.lower() == 'true' or _string.lower() == 'yes'
+            or _string.lower() == 't' or _string.lower() == 'y'):
         _result = True
 
     return _result
