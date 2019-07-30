@@ -17,7 +17,9 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import Configuration
-from ramstk.controllers.validation import amValidation, dmValidation
+from ramstk.controllers.validation import (
+    amValidation, dmValidation, mmValidation
+)
 from ramstk.dao import DAO
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
@@ -96,6 +98,37 @@ class TestCreateControllers():
                                 'succeed_get_all_validation_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_validation_tree')
 
+    @pytest.mark.unit
+    def test_matrix_manager_create(self, test_configuration):
+        """__init__() should create an instance of the validation matrix manager."""
+        DUT = mmValidation()
+
+        assert isinstance(DUT, mmValidation)
+        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT.dic_matrices, dict)
+        assert DUT.n_row == 1
+        assert DUT.n_col == 1
+        assert pub.isSubscribed(DUT.do_load, 'succeed_retrieve_matrix')
+        assert pub.isSubscribed(DUT._do_create, 'succeed_select_revision')
+        assert pub.isSubscribed(DUT._do_delete_requirement,
+                                'succeed_delete_requirement')
+        assert pub.isSubscribed(DUT._do_delete_hardware,
+                                'succeed_delete_hardware')
+        assert pub.isSubscribed(DUT.do_delete_row, 'succeed_delete_validation')
+        assert pub.isSubscribed(DUT.do_insert_row, 'succeed_insert_validation')
+        assert pub.isSubscribed(DUT._do_insert_requirement,
+                                'succeed_insert_requirement')
+        assert pub.isSubscribed(DUT._do_insert_hardware,
+                                'succeed_insert_hardware')
+        assert pub.isSubscribed(DUT.do_update,
+                                'request_update_validation_matrix')
+        assert pub.isSubscribed(DUT._on_get_tree,
+                                'succeed_get_validation_tree')
+        assert pub.isSubscribed(DUT._on_get_tree,
+                                'succeed_get_requirement_tree')
+        assert pub.isSubscribed(DUT._on_get_tree, 'succeed_get_hardware_tree')
+
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestSelectMethods():
@@ -159,6 +192,36 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='validation') is None
 
+    @pytest.mark.integration
+    def test_do_create_matrix(self, test_program_dao):
+        """_do_create() should create an instance of the validation matrix manager."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='requirements',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0001',
+                                  identifier=1,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='FUNC-0001',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0002',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        assert DUT.do_select('vldtn_rqrmnt', 1, 0) == 'REL-0001'
+        assert DUT.do_select('vldtn_rqrmnt', 2, 0) == 'FUNC-0001'
+        assert DUT.do_select('vldtn_rqrmnt', 3, 0) == 'REL-0002'
+        assert DUT.do_select('vldtn_rqrmnt', 1, 1) == 0
+
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestDeleteMethods():
@@ -184,6 +247,9 @@ class TestDeleteMethods():
 
         assert DUT.last_id == 2
 
+        pub.unsubscribe(self.on_succeed_delete_validation,
+                        'succeed_delete_validation')
+
     @pytest.mark.integration
     def test_do_delete_validation_non_existent_id(self, test_program_dao):
         """_do_delete() should send the fail message."""
@@ -192,6 +258,99 @@ class TestDeleteMethods():
         DUT = dmValidation(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete(300)
+
+    @pytest.mark.integration
+    def test_do_delete_matrix_column_hardware(self, test_program_dao):
+        """do_delete_column() should remove the appropriate column from the requested validation matrix."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='hardware',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='S1', identifier=1, parent=0, data=None)
+        DUT._col_tree.create_node(tag='S1:SS1',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='S1:SS2',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        assert DUT.do_select('vldtn_hrdwr', 1, 1) == 0
+
+        pub.sendMessage('succeed_delete_hardware', node_id=1)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_hrdwr', 1, 1)
+
+    @pytest.mark.integration
+    def test_do_delete_matrix_column_requirement(self, test_program_dao):
+        """do_delete_column() should remove the appropriate column from the requested validation matrix."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='requirements',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0001',
+                                  identifier=1,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='FUNC-0001',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0002',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        assert DUT.do_select('vldtn_rqrmnt', 1, 1) == 0
+
+        pub.sendMessage('succeed_delete_requirement', node_id=1)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_rqrmnt', 1, 1)
+
+    @pytest.mark.integration
+    def test_do_delete_row(self, test_program_dao):
+        """do_delete_row() should remove the appropriate row from the validation matrices."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='requirements',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0001',
+                                  identifier=1,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='FUNC-0001',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0002',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        assert DUT.do_select('vldtn_rqrmnt', 1, 2) == 0
+
+        pub.sendMessage('succeed_delete_validation', node_id=2)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_rqrmnt', 1, 2)
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
@@ -205,15 +364,6 @@ class TestInsertMethods():
         assert error_msg == ('Attempting to add a validation as a child of '
                              'non-existent parent node 40.')
         print("\033[35m\nfail_insert_validation topic was broadcast.")
-
-    def on_succeed_insert_hazard(self, node_id):
-        assert node_id == 4
-        print("\033[36m\nsucceed_insert_hazard topic was broadcast.")
-
-    def on_fail_insert_hazard(self, error_msg):
-        assert error_msg == ('Attempting to add a hazard to a non-existent '
-                             'validation ID 10.')
-        print("\033[35m\nfail_insert_hazard topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_insert_validation(self, test_program_dao):
@@ -233,6 +383,99 @@ class TestInsertMethods():
 
         pub.unsubscribe(self.on_succeed_insert_validation,
                         'succeed_insert_validation')
+
+    @pytest.mark.integration
+    def test_do_insert_matrix_column_hardware(self, test_program_dao):
+        """do_insert_column() should add a column to the right of the requested validation matrix."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='hardware',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='S1', identifier=1, parent=0, data=None)
+        DUT._col_tree.create_node(tag='S1:SS1',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='S1:SS2',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_hrdwr', 4, 1)
+
+        pub.sendMessage('succeed_insert_hardware', node_id=4)
+
+        assert DUT.do_select('vldtn_hrdwr', 4, 1) == 0
+
+    @pytest.mark.integration
+    def test_do_insert_matrix_column_requirement(self, test_program_dao):
+        """do_insert_column() should add a column to the right of the requested validation matrix."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='requirements',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0001',
+                                  identifier=1,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='FUNC-0001',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0002',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_rqrmnt', 4, 1)
+
+        pub.sendMessage('succeed_insert_requirement', node_id=4)
+
+        assert DUT.do_select('vldtn_rqrmnt', 4, 1) == 0
+
+    @pytest.mark.integration
+    def test_do_insert_row(self, test_program_dao):
+        """do_insert_row() should add a row to the end of each validation matrix."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='requirements',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0001',
+                                  identifier=1,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='FUNC-0001',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0002',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_rqrmnt', 1, 5)
+
+        pub.sendMessage('succeed_insert_validation', node_id=5)
+
+        assert DUT.do_select('vldtn_rqrmnt', 1, 5) == 0
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
@@ -297,6 +540,22 @@ class TestGetterSetter():
             1, table='validation').task_specification == 'MIL-HDBK-217F'
 
     @pytest.mark.integration
+    def test_do_set_attributes_unknown_attr(self, test_program_dao):
+        """do_set_attributes() should return None and leave all attributes unchanged if passed an attribute key that does not exist."""
+        DUT = dmValidation(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+
+        pub.sendMessage('request_set_validation_attributes',
+                        node_id=1,
+                        key='task_filliwonga',
+                        value='This is a filli-wonga.')
+
+        with pytest.raises(AttributeError):
+            assert DUT.do_select(
+                1,
+                table='validation').task_filliwonga == 'This is a filli-wonga.'
+
+    @pytest.mark.integration
     def test_do_set_all_attributes(self, test_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmValidation(test_program_dao)
@@ -330,6 +589,44 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_validation_tree,
                         'succeed_get_validation_tree')
 
+    @pytest.mark.integration
+    def test_on_get_validation_tree(self, test_program_dao):
+        """_on_get_tree() should respond to the 'succeed_get_validation_tree' message and assign the tree to the _row_tree attribute."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+
+        pub.sendMessage('request_get_validation_tree')
+
+        assert isinstance(DUT._row_tree, Tree)
+        assert isinstance(DUT._row_tree.get_node(1).data, dict)
+        assert isinstance(
+            DUT._row_tree.get_node(1).data['validation'], RAMSTKValidation)
+        assert DUT._row_tree.get_node(1).data['validation'].validation_id == 1
+        assert DUT._row_tree.get_node(1).data[
+            'validation'].description == b'This is a description added by a test.'
+
+    @pytest.mark.integration
+    def test_on_get_requirement_tree(self, test_program_dao):
+        """_on_get_tree() should respond to the 'succeed_get_requirement_tree' message and assign the tree to the _col_tree attribute."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+
+        _tree = Tree()
+        _tree.create_node(tag='requirements',
+                          identifier=0,
+                          parent=None,
+                          data=None)
+        _tree.create_node(tag='REL-0001', identifier=1, parent=0, data=None)
+        _tree.create_node(tag='FUNC-0001', identifier=2, parent=0, data=None)
+        _tree.create_node(tag='REL-0002', identifier=3, parent=0, data=None)
+
+        pub.sendMessage('succeed_get_requirement_tree', dmtree=_tree)
+
+        assert isinstance(DUT._col_tree, Tree)
+        assert DUT._col_tree.get_node(1).data is None
+
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestUpdateMethods():
@@ -347,6 +644,10 @@ class TestUpdateMethods():
     def on_succeed_update_status(self, node_id):
         assert node_id == date.today()
         print("\033[36m\nsucceed_update_program_status topic was broadcast")
+
+    def on_succeed_update_matrix(self):
+        assert True
+        print("\033[36m\nsucceed_update_matrix topic was broadcast")
 
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao):
@@ -396,6 +697,42 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_succeed_update_status,
                         'succeed_update_program_status')
+
+    @pytest.mark.integration
+    def test_do_update_matrix_manager(self, test_program_dao):
+        """do_update() should broadcast the 'succeed_update_matrix' on success."""
+        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmValidation()
+        DUT._col_tree.create_node(tag='requirements',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0001',
+                                  identifier=1,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='FUNC-0001',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0002',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        DUT.dic_matrices['vldtn_rqrmnt'][1][2] = 1
+        DUT.dic_matrices['vldtn_rqrmnt'][1][3] = 2
+        DUT.dic_matrices['vldtn_rqrmnt'][2][2] = 2
+        DUT.dic_matrices['vldtn_rqrmnt'][3][5] = 1
+
+        DUT.do_update(revision_id=1, matrix_type='vldtn_rqrmnt')
+
+        pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
