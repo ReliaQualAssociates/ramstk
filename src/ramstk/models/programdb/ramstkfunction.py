@@ -118,7 +118,6 @@ class RAMSTKFunction(RAMSTK_BASE):
     hazard = relationship('RAMSTKHazardAnalysis',
                           back_populates='function',
                           cascade='all,delete')
-    mode = relationship('RAMSTKMode', back_populates='function')
 
     def get_attributes(self):
         """

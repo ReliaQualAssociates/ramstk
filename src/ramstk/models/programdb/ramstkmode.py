@@ -7,7 +7,7 @@
 """RAMSTKMode Table Module."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import BLOB, Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -57,23 +57,21 @@ class RAMSTKMode(RAMSTK_BASE):
     function_id = Column(
         'fld_function_id',
         Integer,
-        ForeignKey('ramstk_function.fld_function_id'),
         default=-1,
-        nullable=False,
+        nullable=False
     )
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
-        ForeignKey('ramstk_hardware.fld_hardware_id'),
         default=-1,
-        nullable=False,
+        nullable=False
     )
     mode_id = Column(
         'fld_mode_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False,
+        nullable=False
     )
 
     critical_item = Column('fld_critical_item',
@@ -149,8 +147,6 @@ class RAMSTKMode(RAMSTK_BASE):
     type_id = Column('fld_type_id', Integer, default=__defaults__['type_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    function = relationship('RAMSTKFunction', back_populates='mode')
-    hardware = relationship('RAMSTKHardware', back_populates='mode')
     mechanism = relationship('RAMSTKMechanism',
                              back_populates='mode',
                              cascade='all,delete')
