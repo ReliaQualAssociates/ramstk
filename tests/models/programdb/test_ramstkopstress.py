@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.test_ramstkopstress.py is part of The RAMSTK
@@ -11,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKOpStress import RAMSTKOpStress
+from ramstk.models.programdb import RAMSTKOpStress
 
 ATTRIBUTES = {
     'description': 'Test Operating Stress',
