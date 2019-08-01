@@ -6,6 +6,7 @@ DEVREQFILE	= requirements_dev.txt
 DOCREQFILE	= requirements_doc.txt
 TESTOPTS	= --addopts="-x"
 VIRTENV		= ramstk-venv
+PY		= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 
 ROOT 		= $(shell git rev-parse --show-toplevel)
 
@@ -15,23 +16,35 @@ ROOT 		= $(shell git rev-parse --show-toplevel)
 .DEFAULT: help
 
 help:
-	@echo "You can use \`make <target>' where <target> is one of:"
-	@echo "	venv		to create a virtual environment. Defaults to $(VIRTENV), but can be set with VIRTENV=<name>."
-	@echo "	depends		to install the packages found in the requirements files into the current (virtual) environment.  Uses pip-tools."
-	@echo "	install 	to install RAMSTK in the current (virtualenv) environment.  Uses setup.py."
-	@echo "	test 		to run the RAMSTK test suite.  Uses setup.py and pytest."
-	@echo "	clean		to remove *.pyc and *.pyo files."
-	@echo "	requirements	to create/update the requirements_run.txt, requirements_dev.txt, and requirements_doc.txt files.  Uses pip-tools."
-	@echo "	update		to update the the (virtual) environment.  Uses pip-tools."
-	@echo "	format		to format FILE=<file> using isort and yapf.  Helpful to map in IDE or editor."
-	@echo "	stylecheck	to check FILE=<file> using pycodestyle and pydocstyle.  Helpful to map in IDE or editor."
-	@echo "	lint		to lint FILE=<file> or FILE=<dir> using pylint and flake8.  Helpful to map in IDE or editor."
-	@echo "			If passing a directory, all files will be recusively checked."
-	@echo "	maintain	to check maintainbility of FILE=<file> using mccabe and radon.  Helpful to map in IDE or editor."
-	@echo "			Pass wildcard (*) at end of FILE=<directory> path to analyze all files in directory."
-	@echo "	changelog	to create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
-	@echo "	pyvailable	to list all the Python versions provided by pyenv."
-	@echo "	pyversions	to list all the locally installed Python versions managed by pyenv."
+	@echo "You can use \`make <trtualenvarget>' where <target> is one of:"
+	@echo "	mk.venv PY=<version> VIRTENV=<name>	to create a virtual environment. VIRTENV defaults to $(VIRTENV) and PY defaults to the global Python version $(PY)."
+	@echo "	list.venv				to list all the available virtual environments.  Uses pyenv."
+	@echo "	use.venv VIRTENV=<name>			to use the VIRTENV requested.  Uses pyenv."
+	@echo "	depends					to install the packages found in the requirements files into the current (virtual) environment.  Uses pip-tools."
+	@echo "	install 				to install RAMSTK in the current (virtualenv) environment.  Uses setup.py."
+	@echo "	test 					to run the RAMSTK test suite.  Uses setup.py and pytest."
+	@echo "	clean					to remove *.pyc and *.pyo files."
+	@echo "	requirements				to create/update the requirements_run.txt, requirements_dev.txt, and requirements_doc.txt files.  Uses pip-tools."
+	@echo "	update					to update the the (virtual) environment.  Uses pip-tools."
+	@echo "	format FILE=<file>			to format using isort and yapf.  Helpful to map in IDE or editor."
+	@echo "	stylecheck FILE=<file>			to check using pycodestyle and pydocstyle.  Helpful to map in IDE or editor."
+	@echo "	lint FILE=<file>, FILE=<dir>		to lint using pylint and flake8.  Helpful to map in IDE or editor."
+	@echo "						If passing a directory, all files will be recusively checked."
+	@echo "	maintain FILE=<file>, FILE=>dir>	to check maintainability using mccabe and radon.  Helpful to map in IDE or editor."
+	@echo "						Pass wildcard (*) at end of FILE=<dir> path to analyze all files in directory."
+	@echo "	changelog				to create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
+	@echo "	pyvailable				to list all the Python versions provided by pyenv."
+	@echo "	pystall PY=<version>			to install the requested version of Python using pyenv."
+	@echo "	pyversions				to list all the locally installed Python versions managed by pyenv."
+
+mk.venv:
+	pyenv virtualenv $(PY) $(VIRTENV)
+
+list.venv:
+	pyenv virtualenvs
+
+use.venv:
+	pyenv activate $(VIRTENV)
 
 clean:
 	find . -name '*.pyc' -exec rm -f '{}' \;
@@ -40,6 +53,9 @@ clean:
 
 changelog:
 	github_changelog_generator $(REPO)
+
+bumpver:
+	$(shell sh ./devtools/bump_version.sh)
 
 install:
 	python setup.py install
@@ -84,6 +100,10 @@ maintain:
 
 pyvailable:
 	pyenv install --list
+
+pystall:
+	pyenv install $(PY)
+	pyenv rehash
 
 pyversions:
 	pyenv versions
