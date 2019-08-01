@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.test_ramstkopload.py is part of The RAMSTK Project
@@ -9,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKOpLoad import RAMSTKOpLoad
+from ramstk.models.programdb import RAMSTKOpLoad
 
 ATTRIBUTES = {
     'damage_model': '',

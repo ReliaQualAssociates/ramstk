@@ -26,8 +26,8 @@ from .ramstkmission import RAMSTKMission
 from .ramstkmissionphase import RAMSTKMissionPhase
 from .ramstkmode import RAMSTKMode
 from .ramstknswc import RAMSTKNSWC
-from .RAMSTKOpLoad import RAMSTKOpLoad
-from .RAMSTKOpStress import RAMSTKOpStress
+from .ramstkopload import RAMSTKOpLoad
+from .ramstkopstress import RAMSTKOpStress
 from .RAMSTKProgramInfo import RAMSTKProgramInfo
 from .ramstkprogramstatus import RAMSTKProgramStatus
 from .ramstkreliability import RAMSTKReliability
@@ -35,5 +35,5 @@ from .ramstkrequirement import RAMSTKRequirement
 from .ramstkrevision import RAMSTKRevision
 from .ramstksimilaritem import RAMSTKSimilarItem
 from .ramstkstakeholder import RAMSTKStakeholder
-from .RAMSTKTestMethod import RAMSTKTestMethod
+from .ramstktestmethod import RAMSTKTestMethod
 from .ramstkvalidation import RAMSTKValidation
