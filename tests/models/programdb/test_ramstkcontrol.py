@@ -11,7 +11,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKControl import RAMSTKControl
+from ramstk.models.programdb import RAMSTKControl
 
 ATTRIBUTES = {
     'description': 'Test Control',

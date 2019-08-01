@@ -510,6 +510,10 @@ class DAO():
                     _error_code = 6
                     _msg = ('RAMSTK ERROR: The data base is locked and cannot '
                             'be written to.')
+                elif 'FOREIGN KEY constraint failed' in _error:
+                    _error_code = 7
+                    _msg = ('RAMSTK ERROR: A foreign key constraint failed '
+                            'when attempting to add an item to the database.')
                 else:
                     # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
                     print(_error)

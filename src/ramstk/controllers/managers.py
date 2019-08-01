@@ -33,7 +33,6 @@ class RAMSTKAnalysisManager():
         associated with this analysis manager.
     :type RAMSTK_CONFIGURATION: :class:`ramstk.configuration.Configuration`
     """
-
     def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the hardware analysis manager.
@@ -90,7 +89,6 @@ class RAMSTKDataManager():
         Program database.
     :type dao: :class:`ramstk.dao.DAO`
     """
-
     def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an RAMSTK data model instance.

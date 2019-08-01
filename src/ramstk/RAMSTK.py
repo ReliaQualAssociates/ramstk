@@ -18,6 +18,7 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
+from ramstk.controllers.fmea import dmFMEA
 from ramstk.controllers.function import dmFunction
 from ramstk.controllers.hardware import dmHardware
 from ramstk.controllers.requirement import dmRequirement
@@ -45,7 +46,6 @@ from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
 from ramstk.modules.exports import dtcExports
-from ramstk.modules.fmea import dtcFMEA
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.options import dtcOptions
 from ramstk.modules.preferences import dtcPreferences
@@ -808,20 +808,16 @@ class RAMSTK():
             self.dic_controllers['validation'] = dmValidation(
                 self.ramstk_model.program_dao
             )
-            self.dic_controllers['ffmea'] = dtcFMEA(
+            self.dic_controllers['ffmea'] = dmFMEA(
                 self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-                functional=True,
+                functional=True
             )
             self.dic_controllers['stakeholder'] = dmStakeholder(
                 self.ramstk_model.program_dao
             )
-            self.dic_controllers['dfmeca'] = dtcFMEA(
+            self.dic_controllers['dfmeca'] = dmFMEA(
                 self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-                functional=False,
+                functional=False
             )
 
             # Find which modules are active for the program being opened.

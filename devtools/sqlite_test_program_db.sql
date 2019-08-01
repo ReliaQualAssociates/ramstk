@@ -20,6 +20,8 @@ INSERT INTO "ramstk_action" VALUES(1,1,X'5265636F6D6D656E64656420616374696F6E206
 INSERT INTO "ramstk_action" VALUES(2,2,X'546573742046756E6374696F6E616C20464D4541205265636F6D6D656E64656420416374696F6E20233220666F722043617573652049442032','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 INSERT INTO "ramstk_action" VALUES(3,3,X'546573742046756E6374696F6E616C20464D4541205265636F6D6D656E64656420416374696F6E20233320666F722043617573652049442033','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 INSERT INTO "ramstk_action" VALUES(4,4,X'5465737420464D4541205265636F6D6D656E64656420416374696F6E20233120666F722043617573652049442034','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
+INSERT INTO "ramstk_action" VALUES(5,5,X'5465737420464D4541205265636F6D6D656E64656420416374696F6E20233120666F722043617573652049442034','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
+INSERT INTO "ramstk_action" VALUES(6,6,X'5465737420464D4541205265636F6D6D656E64656420416374696F6E20233120666F722043617573652049442034','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 CREATE TABLE ramstk_allocation (
     fld_revision_id INTEGER,
     fld_hardware_id INTEGER,
@@ -71,10 +73,12 @@ CREATE TABLE ramstk_cause (
     FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_cause" VALUES(1,-1,1,'Test Functional FMEA Cause #1 for Mode ID 1',0,0,0,0,0,0);
-INSERT INTO "ramstk_cause" VALUES(2,-1,2,'Test Functional FMEA Cause #2 for Mode ID 2',0,0,0,0,0,0);
-INSERT INTO "ramstk_cause" VALUES(3,-1,3,'Test Functional FMEA Cause #3 for Mode ID 3',0,0,0,0,0,0);
+INSERT INTO "ramstk_cause" VALUES(1,-1,1,'Test Functional FMEA Cause #1 for Mode ID 1',0,2,1,0,8,5);
+INSERT INTO "ramstk_cause" VALUES(1,-1,2,'Test Functional FMEA Cause #2 for Mode ID 2',0,4,3,0,4,3);
+INSERT INTO "ramstk_cause" VALUES(1,-1,3,'Test Functional FMEA Cause #3 for Mode ID 3',0,3,3,0,6,4);
 INSERT INTO "ramstk_cause" VALUES(4,1,4,'Test Failure Cause #1 for Mechanism ID 1',0,0,0,0,0,0);
+INSERT INTO "ramstk_cause" VALUES(5,2,5,'Test Failure Cause #2 for Mechanism ID 2',0,0,0,0,0,0);
+INSERT INTO "ramstk_cause" VALUES(6,3,6,'Test Failure Cause #1 for Mechanism ID 3',0,0,0,0,0,0);
 CREATE TABLE ramstk_control (
     fld_cause_id INTEGER,
     fld_control_id INTEGER NOT NULL,
@@ -87,6 +91,8 @@ INSERT INTO "ramstk_control" VALUES(1,1,'Test Functional FMEA Control #1 for Cau
 INSERT INTO "ramstk_control" VALUES(2,2,'Test Functional FMEA Control #2 for Cause ID 2','');
 INSERT INTO "ramstk_control" VALUES(3,3,'Test Functional FMEA Control #3 for Cause ID 3','');
 INSERT INTO "ramstk_control" VALUES(4,4,'Test FMEA Control #1 for Cause ID 4','');
+INSERT INTO "ramstk_control" VALUES(5,5,'Test FMEA Control #1 for Cause ID 5','');
+INSERT INTO "ramstk_control" VALUES(6,6,'Test FMEA Control #1 for Cause ID 6','');
 CREATE TABLE ramstk_design_electric (
     fld_hardware_id INTEGER,
     fld_application_id INTEGER,
@@ -602,7 +608,9 @@ CREATE TABLE ramstk_mechanism (
     PRIMARY KEY (fld_mechanism_id),
     FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_mechanism" VALUES(4,1,'Test Failure Mechanism #1 for Mode ID 4',1,0,0,0,0,0,0);
+INSERT INTO "ramstk_mechanism" VALUES(4,1,'Test Failure Mechanism #1 for Mode ID 4',1,0,8,7,0,2,2);
+INSERT INTO "ramstk_mechanism" VALUES(5,2,'Test Failure Mechanism #1 for Mode ID 5',1,0,2,5,0,4,4);
+INSERT INTO "ramstk_mechanism" VALUES(6,3,'Test Failure Mechanism #1 for Mode ID 6',1,0,5,2,0,7,5);
 CREATE TABLE ramstk_mil_hdbk_f (
     fld_hardware_id INTEGER,
     fld_a_one FLOAT,
@@ -679,7 +687,7 @@ INSERT INTO "ramstk_mission_phase" VALUES(3,3,X'54657374204D697373696F6E20506861
 CREATE TABLE ramstk_mode (
     fld_function_id INTEGER,
     fld_hardware_id INTEGER,
-    fld_mode_id INTEGER NOT NULL,
+    fld_mode_id INTEGER PRIMARY KEY NOT NULL,
     fld_critical_item INTEGER,
     fld_description VARCHAR(512),
     fld_design_provisions BLOB,
@@ -704,17 +712,14 @@ CREATE TABLE ramstk_mode (
     fld_rpn_severity_new INTEGER,
     fld_severity_class VARCHAR(64),
     fld_single_point INTEGER,
-    fld_type_id INTEGER,
-    PRIMARY KEY (fld_mode_id),
-    CONSTRAINT fk_function
-        FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE,
-    CONSTRAINT fk_hardware
-        FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
+    fld_type_id INTEGER
 );
 INSERT INTO "ramstk_mode" VALUES(1,-1,1,0,'Test Functional Failure Mode #1',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(2,-1,2,0,'Test Functional Failure Mode #2',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(3,-1,3,0,'Test Functional Failure Mode #3',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(-1,1,4,0,'System Test Failure Mode',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(1,-1,2,0,'Test Functional Failure Mode #2',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(1,-1,3,0,'Test Functional Failure Mode #3',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,4,0,'System Test Failure Mode #1',X'','','','','',1.0,'','','Default Mission','',0.0,0.0,10.0,'',0.5,X'','',X'',1,1,'IV',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,5,0,'System Test Failure Mode #2',X'','','','','',0.75,'','','Default Mission','',0.0,0.0,5.0,'',0.2,X'','',X'',1,1,'I',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,6,0,'System Test Failure Mode #3',X'','','','','',0.9,'','','Default Mission','',0.0,0.0,10.0,'',0.3,X'','',X'',1,1,'I',0,0);
 CREATE TABLE ramstk_nswc (
     fld_hardware_id INTEGER,
     fld_c_ac FLOAT,

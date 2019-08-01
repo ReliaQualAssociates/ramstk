@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.test_ramstkcause.py is part of The RAMSTK
@@ -11,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKCause import RAMSTKCause
+from ramstk.models.programdb import RAMSTKCause
 
 ATTRIBUTES = {
     'rpn_new': 0,
@@ -40,11 +41,11 @@ class TestRAMSTKCause():
         assert DUT.cause_id == 1
         assert DUT.description == 'Test Functional FMEA Cause #1 for Mode ID 1'
         assert DUT.rpn == 0
-        assert DUT.rpn_detection == 0
-        assert DUT.rpn_detection_new == 0
+        assert DUT.rpn_detection == 2
+        assert DUT.rpn_detection_new == 1
         assert DUT.rpn_new == 0
-        assert DUT.rpn_occurrence == 0
-        assert DUT.rpn_occurrence_new == 0
+        assert DUT.rpn_occurrence == 8
+        assert DUT.rpn_occurrence_new == 5
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -57,14 +58,15 @@ class TestRAMSTKCause():
         assert _attributes['mode_id'] == 1
         assert _attributes['mechanism_id'] == -1
         assert _attributes['cause_id'] == 1
-        assert _attributes['description'] == ('Test Functional FMEA Cause #1 for '
-                                              'Mode ID 1')
+        assert _attributes['description'] == (
+            'Test Functional FMEA Cause #1 for '
+            'Mode ID 1')
         assert _attributes['rpn'] == 0
-        assert _attributes['rpn_detection'] == 0
-        assert _attributes['rpn_detection_new'] == 0
+        assert _attributes['rpn_detection'] == 2
+        assert _attributes['rpn_detection_new'] == 1
         assert _attributes['rpn_new'] == 0
-        assert _attributes['rpn_occurrence'] == 0
-        assert _attributes['rpn_occurrence_new'] == 0
+        assert _attributes['rpn_occurrence'] == 8
+        assert _attributes['rpn_occurrence_new'] == 5
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):

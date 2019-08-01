@@ -188,11 +188,6 @@ class RAMSTKHardware(RAMSTK_BASE):
         back_populates='hardware',
         cascade='all,delete',
     )
-    mode = relationship(
-        'RAMSTKMode',
-        back_populates='hardware',
-        cascade='all,delete',
-    )
     reliability = relationship(
         'RAMSTKReliability',
         uselist=False,
