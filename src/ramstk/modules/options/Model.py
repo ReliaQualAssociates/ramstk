@@ -7,7 +7,7 @@
 """Options Data Model."""
 
 # RAMSTK Package Imports
-from ramstk.dao.commondb import RAMSTKSiteInfo
+from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.models.programdb import RAMSTKProgramInfo
 from ramstk.modules import RAMSTKDataModel
 

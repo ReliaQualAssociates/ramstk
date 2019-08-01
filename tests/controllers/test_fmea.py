@@ -685,6 +685,8 @@ class TestGetterSetter():
             '4',
             table='mode').effect_local == ('Some really bad shit will happen.')
 
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
+
     @pytest.mark.integration
     def test_do_set_mechanism_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
@@ -705,6 +707,8 @@ class TestGetterSetter():
                              table='mechanism').description == 'Jared Kushner'
         assert DUT.do_select('4.1', table='mechanism').rpn_detection == 8
 
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
+
     @pytest.mark.integration
     def test_do_set_cause_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure cause attributes."""
@@ -724,6 +728,8 @@ class TestGetterSetter():
         assert DUT.do_select('4.1.4',
                              table='cause').description == 'Jared Kushner'
         assert DUT.do_select('4.1.4', table='cause').rpn_detection == 8
+
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
     @pytest.mark.integration
     def test_do_set_control_attributes(self, test_program_dao):
@@ -746,6 +752,8 @@ class TestGetterSetter():
         assert DUT.do_select('4.1.4.4.c',
                              table='control').type_id == 'Prevention'
 
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
+
     @pytest.mark.integration
     def test_do_set_action_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting action attributes."""
@@ -766,6 +774,8 @@ class TestGetterSetter():
             '4.1.4.4.a', table='action').action_recommended == b'Kick his ass'
         assert DUT.do_select('4.1.4.4.a',
                              table='action').action_owner == 'Doyle Rowland'
+
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self, test_program_dao):
