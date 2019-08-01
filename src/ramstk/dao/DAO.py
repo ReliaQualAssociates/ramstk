@@ -16,6 +16,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 # RAMSTK Package Imports
 from ramstk.exceptions import DataAccessError
+from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
     RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
@@ -29,9 +30,9 @@ from ramstk.models.programdb import (
 
 # RAMSTK Local Imports
 from .commondb import (
-    RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode, RAMSTKGroup,
-    RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
-    RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
+    RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode,
+    RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer,
+    RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel, RAMSTKStakeholders,
     RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
 )
 from .RAMSTKCommonDB import (

@@ -36,7 +36,6 @@ from ramstk.dao.commondb.RAMSTKMeasurement import RAMSTKMeasurement
 from ramstk.dao.commondb.RAMSTKMethod import RAMSTKMethod
 from ramstk.dao.commondb.RAMSTKModel import RAMSTKModel
 from ramstk.dao.commondb.RAMSTKRPN import RAMSTKRPN
-from ramstk.dao.commondb.RAMSTKSiteInfo import RAMSTKSiteInfo
 from ramstk.dao.commondb.RAMSTKStakeholders import RAMSTKStakeholders
 from ramstk.dao.commondb.RAMSTKStatus import RAMSTKStatus
 from ramstk.dao.commondb.RAMSTKSubCategory import RAMSTKSubCategory
@@ -46,6 +45,7 @@ from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
+from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.options import dtcOptions
