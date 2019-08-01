@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.fmea.datamanager.py is part of The RAMSTK Project
+#       ramstk.controllers.pof.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""FMEA Package Data Model."""
+"""PoF Package Data Model."""
 
 # Third Party Imports
 from pubsub import pub
@@ -21,10 +21,10 @@ from ramstk.models.programdb import (
 
 class DataManager(RAMSTKDataManager):
     """
-    Contain the attributes and methods of the FMEA data manager.
+    Contain the attributes and methods of the PoF data manager.
 
-    This class manages the fmea data from the RAMSTKFMEA and
-    RAMSTKHazardAnalysis data models.
+    This class manages the PoF data from the RAMSTKMode, RAMSTKMechains,
+    RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod data models.
     """
 
     _tag = 'pof'
@@ -32,7 +32,7 @@ class DataManager(RAMSTKDataManager):
 
     def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
         """
-        Initialize a FMEA data manager instance.
+        Initialize a PoF data manager instance.
 
         :param dao: the data access object for communicating with the RAMSTK
             Program database.
@@ -275,9 +275,9 @@ class DataManager(RAMSTKDataManager):
 
     def do_get_attributes(self, node_id, table):
         """
-        Retrieve the RAMSTK data table attributes for the FMEA.
+        Retrieve the RAMSTK data table attributes for the PoF.
 
-        :param str node_id: the node ID in the FMEA tree to get the attributes
+        :param str node_id: the node ID in the PoF tree to get the attributes
             for.
         :param str table: the RAMSTK data table to retrieve the attributes
             from.
@@ -300,10 +300,10 @@ class DataManager(RAMSTKDataManager):
 
     def do_select_all(self, parent_id):  # pylint: disable=arguments-differ
         """
-        Retrieve all the FMEA data from the RAMSTK Program database.
+        Retrieve all the PoF data from the RAMSTK Program database.
 
         :param int parent_id: the parent (function or hardware) ID to select
-            the FMEA for.
+            the PoF for.
         :return: None
         :rtype: None
         """
@@ -358,7 +358,7 @@ class DataManager(RAMSTKDataManager):
         """
         Update the record associated with node ID in RAMSTK Program database.
 
-        :param int node_id: the node ID of the FMEA item to save.
+        :param int node_id: the node ID of the PoF item to save.
         :return: None
         :rtype: None
         """

@@ -21,6 +21,7 @@ from treelib import Tree
 from ramstk.controllers.fmea import dmFMEA
 from ramstk.controllers.function import dmFunction
 from ramstk.controllers.hardware import dmHardware
+from ramstk.controllers.pof import dmPoF
 from ramstk.controllers.requirement import dmRequirement
 from ramstk.controllers.revision import dmRevision
 from ramstk.controllers.stakeholder import dmStakeholder
@@ -588,6 +589,7 @@ class RAMSTK():
             'survival'
             'matrices'
             'fmea'
+            'pof'
             'stakeholder'
             'growth'
             'options'
@@ -664,6 +666,7 @@ class RAMSTK():
             'matrices': None,
             'ffmea': None,
             'fmea': None,
+            'pof': None,
             'stakeholder': None,
             'imports': None,
             'exports': None,
@@ -818,6 +821,9 @@ class RAMSTK():
             self.dic_controllers['dfmeca'] = dmFMEA(
                 self.ramstk_model.program_dao,
                 functional=False
+            )
+            self.dic_controllers['pof'] = dmPoF(
+                self.ramstk_model.program_dao
             )
 
             # Find which modules are active for the program being opened.
