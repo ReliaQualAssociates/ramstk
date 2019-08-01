@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.test_ramstkmechanism.py is part of The RAMSTK
@@ -42,12 +43,11 @@ class TestRAMSTKMechanism():
         assert DUT.description == 'Test Failure Mechanism #1 for Mode ID 4'
         assert DUT.pof_include == 1
         assert DUT.rpn == 0
-        assert DUT.rpn_detection == 0
-        assert DUT.rpn_detection_new == 0
+        assert DUT.rpn_detection == 8
+        assert DUT.rpn_detection_new == 7
         assert DUT.rpn_new == 0
-        assert DUT.rpn_occurrence == 0
-        assert DUT.rpn_occurrence_new == 0
-
+        assert DUT.rpn_occurrence == 2
+        assert DUT.rpn_occurrence_new == 2
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -60,16 +60,16 @@ class TestRAMSTKMechanism():
 
         assert _attributes['mode_id'] == 4
         assert _attributes['mechanism_id'] == 1
-        assert _attributes['description'] == ('Test Failure Mechanism #1 for Mode '
-                                              'ID 4')
+        assert _attributes['description'] == (
+            'Test Failure Mechanism #1 for Mode '
+            'ID 4')
         assert _attributes['pof_include'] == 1
         assert _attributes['rpn'] == 0
-        assert _attributes['rpn_detection'] == 0
-        assert _attributes['rpn_detection_new'] == 0
+        assert _attributes['rpn_detection'] == 8
+        assert _attributes['rpn_detection_new'] == 7
         assert _attributes['rpn_new'] == 0
-        assert _attributes['rpn_occurrence'] == 0
-        assert _attributes['rpn_occurrence_new'] == 0
-
+        assert _attributes['rpn_occurrence'] == 2
+        assert _attributes['rpn_occurrence_new'] == 2
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -77,7 +77,6 @@ class TestRAMSTKMechanism():
         DUT = test_program_dao.session.query(RAMSTKMechanism).first()
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-
 
     @pytest.mark.integration
     def test_set_attributes_none_value(self, test_program_dao):
@@ -88,7 +87,6 @@ class TestRAMSTKMechanism():
 
         assert DUT.set_attributes(ATTRIBUTES) is None
         assert DUT.get_attributes()['description'] == ''
-
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

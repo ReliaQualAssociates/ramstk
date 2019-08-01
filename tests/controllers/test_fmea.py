@@ -63,16 +63,7 @@ class TestCreateControllers():
         assert DUT._revision_id == 0
         assert not DUT._is_functional
         assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_hardware')
-        assert pub.isSubscribed(DUT._do_delete_action,
-                                'request_delete_fmea_action')
-        assert pub.isSubscribed(DUT._do_delete_cause,
-                                'request_delete_fmea_cause')
-        assert pub.isSubscribed(DUT._do_delete_control,
-                                'request_delete_fmea_control')
-        assert pub.isSubscribed(DUT._do_delete_mechanism,
-                                'request_delete_fmea_mechanism')
-        assert pub.isSubscribed(DUT._do_delete_mode,
-                                'request_delete_fmea_mode')
+        assert pub.isSubscribed(DUT._do_delete, 'request_delete_fmea')
         assert pub.isSubscribed(DUT._do_insert_action,
                                 'request_insert_fmea_action')
         assert pub.isSubscribed(DUT._do_insert_cause,
@@ -108,30 +99,56 @@ class TestCreateControllers():
         assert isinstance(DUT._attributes, dict)
         assert DUT._attributes == {}
         assert DUT._tree is None
-        assert pub.isSubscribed(DUT.on_get_all_attributes,
-                                'succeed_get_all_fmea_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_fmea_tree')
-        #assert pub.isSubscribed(DUT._do_calculate_criticality, 'request_calculate_criticality')
-        #assert pub.isSubscribed(DUT._do_calculate_rpn, 'request_calculate_rpn')
+        assert pub.isSubscribed(DUT._do_calculate_criticality,
+                                'request_calculate_criticality')
+        assert pub.isSubscribed(DUT._do_calculate_rpn, 'request_calculate_rpn')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
-    def on_succeed_retrieve_fmea(self, tree):
+    def on_succeed_retrieve_functional_fmea(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node('1').data['mode'], RAMSTKMode)
+        print(
+            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when selecting a functional FMEA."
+        )
+
+    def on_succeed_retrieve_hardware_fmea(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node('4').data['mode'], RAMSTKMode)
-        print("\033[36m\nsucceed_retrieve_fmea topic was broadcast.")
+        print(
+            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when selecting a hardware FMEA."
+        )
 
     @pytest.mark.integration
-    def test_do_select_all(self, test_program_dao):
+    def test_do_select_all_functional(self, test_program_dao):
+        """do_select_all() should return a Tree() object populated with RAMSTKMode, RAMSTKCause, RAMSTKControl, and RAMSTKAction instances on success."""
+        pub.subscribe(self.on_succeed_retrieve_functional_fmea,
+                      'succeed_retrieve_functional_fmea')
+
+        DUT = dmFMEA(test_program_dao, functional=True)
+        DUT.do_select_all(1)
+
+        assert isinstance(DUT.tree.get_node('1').data['mode'], RAMSTKMode)
+
+        pub.unsubscribe(self.on_succeed_retrieve_functional_fmea,
+                        'succeed_retrieve_functional_fmea')
+
+    @pytest.mark.integration
+    def test_do_select_all_hardware(self, test_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKMode, RAMSTKMechansim, RAMSTKCause, RAMSTKControl, and RAMSTKAction instances on success."""
-        pub.subscribe(self.on_succeed_retrieve_fmea, 'succeed_retrieve_fmea')
+        pub.subscribe(self.on_succeed_retrieve_hardware_fmea,
+                      'succeed_retrieve_hardware_fmea')
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(1)
 
-        pub.unsubscribe(self.on_succeed_retrieve_fmea, 'succeed_retrieve_fmea')
+        assert isinstance(DUT.tree.get_node('4').data['mode'], RAMSTKMode)
+
+        pub.unsubscribe(self.on_succeed_retrieve_hardware_fmea,
+                        'succeed_retrieve_hardware_fmea')
 
     @pytest.mark.integration
     def test_do_select_mode(self, test_program_dao):
@@ -142,7 +159,7 @@ class TestSelectMethods():
         _mode = DUT.do_select('4', table='mode')
 
         assert isinstance(_mode, RAMSTKMode)
-        assert _mode.effect_probability == 0.0
+        assert _mode.effect_probability == 1.0
         assert _mode.mission == 'Default Mission'
 
     @pytest.mark.integration
@@ -155,7 +172,7 @@ class TestSelectMethods():
 
         assert isinstance(_mechanism, RAMSTKMechanism)
         assert _mechanism.pof_include == 1
-        assert _mechanism.rpn_detection_new == 0
+        assert _mechanism.rpn_detection_new == 7
 
     @pytest.mark.integration
     def test_do_select_cause(self, test_program_dao):
@@ -267,7 +284,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_action('6.3.6.6.a')
+        DUT._do_delete('6.3.6.6.a')
 
     @pytest.mark.integration
     def test_do_delete_action_non_existent_id(self, test_program_dao):
@@ -276,7 +293,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_action('300')
+        DUT._do_delete('300')
 
     @pytest.mark.integration
     def test_do_delete_control(self, test_program_dao):
@@ -285,7 +302,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_control('6.3.6.6.c')
+        DUT._do_delete('6.3.6.6.c')
 
     @pytest.mark.integration
     def test_do_delete_control_non_existent_id(self, test_program_dao):
@@ -294,7 +311,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_control('300')
+        DUT._do_delete('300')
 
     @pytest.mark.integration
     def test_do_delete_cause(self, test_program_dao):
@@ -303,7 +320,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_cause('6.3.6')
+        DUT._do_delete('6.3.6')
 
     @pytest.mark.integration
     def test_do_delete_cause_non_existent_id(self, test_program_dao):
@@ -312,7 +329,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_cause('300')
+        DUT._do_delete('300')
 
     @pytest.mark.integration
     def test_do_delete_mechanism(self, test_program_dao):
@@ -322,7 +339,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_mechanism('6.3')
+        DUT._do_delete('6.3')
 
     @pytest.mark.integration
     def test_do_delete_mechanism_non_existent_id(self, test_program_dao):
@@ -331,7 +348,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_mechanism('300')
+        DUT._do_delete('300')
 
     @pytest.mark.integration
     def test_do_delete_mode(self, test_program_dao):
@@ -340,7 +357,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_mode('6')
+        DUT._do_delete('6')
 
     @pytest.mark.integration
     def test_do_delete_mode_non_existent_id(self, test_program_dao):
@@ -349,7 +366,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_delete_mode('300')
+        DUT._do_delete('300')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
@@ -761,41 +778,24 @@ class TestGetterSetter():
 
         pub.unsubscribe(self.on_succeed_get_fmea_tree, 'succeed_get_fmea_tree')
 
+    @pytest.mark.integration
+    def test_on_get_tree_analysis_manager(self, test_program_dao,
+                                          test_configuration):
+        """on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_fmea_tree message."""
+        DATAMGR = dmFMEA(test_program_dao)
+        DATAMGR.do_select_all(parent_id=1)
+        DUT = amFMEA(test_configuration)
+        DATAMGR.do_get_tree()
 
-#    @pytest.mark.integration
-#    def test_get_all_attributes_analysis_manager(self, test_program_dao,
-#                                                 test_configuration):
-#        """_get_all_attributes() should update the attributes dict on success."""
-#        DATAMGR = dmFMEA(test_program_dao)
-#        DATAMGR.do_select_all(parent_id=1)
-#        DUT = amFMEA(test_configuration)
-
-#        pub.sendMessage('request_get_all_fmea_attributes', node_id=1)
-
-#        assert isinstance(DUT._attributes['hazards'][1], RAMSTKHazardAnalysis)
-#        assert DUT._attributes['revision_id'] == 1
-#        assert DUT._attributes['fmea_id'] == 1
-#        assert DUT._attributes['availability_logistics'] == 1.0
-
-#    @pytest.mark.integration
-#    def test_on_get_tree_analysis_manager(self, test_program_dao,
-#                                          test_configuration):
-#        """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_fmea_tree message."""
-#        DATAMGR = dmFMEA(test_program_dao)
-#        DATAMGR.do_select_all(parent_id=1)
-#        DUT = amFMEA(test_configuration)
-#        DATAMGR.do_get_tree()
-
-#        assert isinstance(DUT._tree, Tree)
-#        assert isinstance(
-#            DUT._tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
+        assert isinstance(DUT._tree, Tree)
+        assert isinstance(DUT._tree.get_node('4').data['mode'], RAMSTKMode)
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_fmea(self, node_id):
-        assert node_id == 1
+        assert node_id == '5'
         print("\033[36m\nsucceed_update_fmea topic was broadcast")
 
     def on_fail_update_fmea(self, error_msg):
@@ -840,55 +840,74 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_fmea, 'fail_update_fmea')
 
 
-#@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
-#class TestAnalysisMethods():
-#    """Class for testing analytical methods."""
-#    @pytest.mark.integration
-#    def test_do_calculate_hri(self, test_program_dao, test_configuration):
-#        """do_calculate_hri() should calculate the hazard risk index hazard analysis."""
-#        DATAMGR = dmFMEA(test_program_dao)
-#        DATAMGR.do_select_all(revision_id=1)
-#        DUT = amFMEA(test_configuration)
+@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+class TestAnalysisMethods():
+    """Class for testing analytical methods."""
+    def on_succeed_calculate_criticality(self, item_criticality):
+        assert isinstance(item_criticality, dict)
+        assert item_criticality['I'] == 0.00212865
+        assert item_criticality['IV'] == 0.003085
+        print(
+            "\033[36m\nsucceed_calculate_fmea_criticality topic was broadcast")
 
-#        pub.sendMessage('request_get_fmea_tree')
+    def on_succeed_calculate_rpn(self):
+        print("\033[36m\nsucceed_calculate_rpn topic was broadcast")
 
-#        _hazard = DATAMGR.do_select(1, 'hazards')[1]
-#        _hazard.assembly_severity = 'Major'
-#        _hazard.assembly_probability = 'Level A - Frequent'
-#        _hazard.system_severity = 'Medium'
-#        _hazard.system_probability = 'Level A - Frequent'
-#        _hazard.assembly_severity_f = 'Medium'
-#        _hazard.assembly_probability_f = 'Level B - Reasonably Probable'
-#        _hazard.system_severity_f = 'Medium'
-#        _hazard.system_probability_f = 'Level C - Occasional'
-#        DATAMGR.do_update(1)
+    @pytest.mark.integration
+    def test_do_calculate_criticality(self, test_program_dao,
+                                      test_configuration):
+        """do_calculate_criticality() should calculate the criticality for all failure modes and the hardware item."""
+        pub.subscribe(self.on_succeed_calculate_criticality,
+                      'succeed_calculate_fmea_criticality')
 
-#        pub.sendMessage('request_calculate_fha', node_id=1)
+        DATAMGR = dmFMEA(test_program_dao)
+        DATAMGR.do_select_all(parent_id=1)
+        DUT = amFMEA(test_configuration)
 
-#        assert DUT._attributes['hazards'][1].assembly_hri == 30
-#        assert DUT._attributes['hazards'][1].system_hri == 20
-#        assert DUT._attributes['hazards'][1].assembly_hri_f == 16
-#        assert DUT._attributes['hazards'][1].system_hri_f == 12
+        pub.sendMessage('request_get_fmea_tree')
+        pub.sendMessage('request_calculate_criticality', item_hr=0.000617)
 
-#    @pytest.mark.integration
-#    def test_do_calculate_user_defined(self, test_program_dao,
-#                                       test_configuration):
-#        """do_calculate_user_defined() should calculate the user-defined hazard analysis."""
-#        DATAMGR = dmFMEA(test_program_dao)
-#        DATAMGR.do_select_all(revision_id=1)
-#        DUT = amFMEA(test_configuration)
+        assert DUT._tree.get_node(
+            '4').data['mode'].mode_hazard_rate == 0.0003085
+        assert DUT._tree.get_node(
+            '4').data['mode'].mode_criticality == 0.003085
 
-#        pub.sendMessage('request_get_fmea_tree')
+    @pytest.mark.integration
+    def test_do_calculate_rpn_using_mechanism(self, test_program_dao,
+                                              test_configuration):
+        """do_calculate_rpn() should calculate the risk priority number (RPN) for all failure modes when using the mechanism for O and D values."""
+        pub.subscribe(self.on_succeed_calculate_rpn, 'succeed_calculate_rpn')
 
-#        _hazard = DATAMGR.do_select(1, 'hazards')[1]
-#        _hazard.user_float_1 = 1.5
-#        _hazard.user_float_2 = 0.8
-#        _hazard.user_int_1 = 2
-#        _hazard.fmea_1 = 'uf1*uf2'
-#        _hazard.fmea_2 = 'res1/ui1'
-#        DATAMGR.do_update(1)
+        DATAMGR = dmFMEA(test_program_dao)
+        DATAMGR.do_select_all(parent_id=1)
+        DUT = amFMEA(test_configuration)
 
-#        pub.sendMessage('request_calculate_fha', node_id=1)
+        pub.sendMessage('request_get_fmea_tree')
+        pub.sendMessage('request_calculate_rpn')
 
-#        assert DUT._attributes['hazards'][1].result_1 == pytest.approx(1.2)
-#        assert DUT._attributes['hazards'][1].result_2 == pytest.approx(0.6)
+        assert DUT._tree.get_node('4.1').data['mechanism'].rpn == 16
+        assert DUT._tree.get_node('5.2').data['mechanism'].rpn == 8
+        assert DUT._tree.get_node('6.3').data['mechanism'].rpn == 35
+        assert DUT._tree.get_node('4.1').data['mechanism'].rpn_new == 14
+        assert DUT._tree.get_node('5.2').data['mechanism'].rpn_new == 20
+        assert DUT._tree.get_node('6.3').data['mechanism'].rpn_new == 10
+
+    @pytest.mark.integration
+    def test_do_calculate_rpn_using_cause(self, test_program_dao,
+                                          test_configuration):
+        """do_calculate_rpn() should calculate the risk priority number (RPN) for all failure modes when using the cause for O and D values."""
+        DATAMGR = dmFMEA(test_program_dao, functional=True)
+        DATAMGR.do_select_all(parent_id=1)
+        DUT = amFMEA(test_configuration)
+
+        pub.sendMessage('request_get_fmea_tree')
+        pub.sendMessage('request_calculate_rpn', method='cause')
+
+        assert DUT._tree.get_node('1.1').data['cause'].rpn == 16
+        assert DUT._tree.get_node('1.2').data['cause'].rpn == 16
+        assert DUT._tree.get_node('1.3').data['cause'].rpn == 18
+        assert DUT._tree.get_node('1.1').data['cause'].rpn_new == 5
+        assert DUT._tree.get_node('1.2').data['cause'].rpn_new == 9
+        assert DUT._tree.get_node('1.3').data['cause'].rpn_new == 12
+
+        pub.unsubscribe(self.on_succeed_calculate_rpn, 'succeed_calculate_rpn')

@@ -58,12 +58,7 @@ class DataManager(RAMSTKDataManager):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_all, 'succeed_select_hardware')
-        pub.subscribe(self._do_delete_action, 'request_delete_fmea_action')
-        pub.subscribe(self._do_delete_cause, 'request_delete_fmea_cause')
-        pub.subscribe(self._do_delete_control, 'request_delete_fmea_control')
-        pub.subscribe(self._do_delete_mechanism,
-                      'request_delete_fmea_mechanism')
-        pub.subscribe(self._do_delete_mode, 'request_delete_fmea_mode')
+        pub.subscribe(self._do_delete, 'request_delete_fmea')
         pub.subscribe(self._do_insert_action, 'request_insert_fmea_action')
         pub.subscribe(self._do_insert_cause, 'request_insert_fmea_cause')
         pub.subscribe(self._do_insert_control, 'request_insert_fmea_control')
@@ -80,120 +75,78 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_tree, 'request_get_fmea_tree')
         pub.subscribe(self.do_set_attributes, 'request_set_fmea_attributes')
 
-    def _do_delete_action(self, node_id):
+    def _add_cause_node(self, cause, parent_id):
         """
-        Remove a FMEA action.
+        Add a node to the treelib Tree() to hold a failure cause.
+
+        This is a helper method to allow causes to be children of either a
+        failure mode (functional FMEA) or a failure mechanism (hardware FMEA).
+
+        :param cause: an instance of RAMSTKCause.
+        :type cause: :class:`ramstk.models.programdb.RAMSTKCause`
+        :parem str parent_id: the parent node ID the causes are associated
+            with.
+        :return: None
+        :rtype: None
+        """
+        _data_package = {'cause': cause}
+
+        _identifier = '{0:s}.{1:d}'.format(parent_id, cause.cause_id)
+
+        self.tree.create_node(tag=_identifier,
+                              identifier=_identifier,
+                              parent=parent_id,
+                              data=_data_package)
+
+        self._do_select_all_control(cause.cause_id, _identifier)
+        self._do_select_all_action(cause.cause_id, _identifier)
+
+    def _add_mode_node(self, mode):
+        """
+        Add a node to the treelib Tree() to hold a failure mode.
+
+        This is a helper method to allow modes to be children of either a
+        function (functional FMEA) or a hardware item (hardware FMEA).
+
+        :param mode: an instance of RAMSTKMode.
+        :type cause: :class:`ramstk.models.programdb.RAMSTKMode`
+        :parem str parent_id: the parent node ID the causes are associated
+            with.
+        :return: None
+        :rtype: None
+        """
+        _data_package = {'mode': mode}
+
+        self.tree.create_node(tag=str(mode.mode_id),
+                              identifier=str(mode.mode_id),
+                              parent=self._root,
+                              data=_data_package)
+
+    def _do_delete(self, node_id):
+        """
+        Remove a FMEA element.
 
         :param int node_id: the node (FMEA action) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
         """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'action')
+        try:
+            _table = list(self.tree.get_node(node_id).data.keys())[0]
 
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
-            self.tree.remove_node(node_id)
+            (_error_code,
+             _error_msg) = RAMSTKDataManager.do_delete(self, node_id, _table)
 
-            pub.sendMessage('succeed_delete_action', node_id=node_id)
-        else:
-            _error_msg = ("Attempted to delete non-existent action ID "
+            if _error_code == 0:
+                self.tree.remove_node(node_id)
+
+                pub.sendMessage('succeed_delete_fmea', node_id=node_id)
+            else:
+                print(_error_code, _error_msg)
+        except AttributeError:
+            _error_msg = ("Attempted to delete non-existent FMEA element ID "
                           "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_action', error_msg=_error_msg)
-
-    def _do_delete_cause(self, node_id):
-        """
-        Remove a FMEA cause.
-
-        :param int node_id: the node (FMEA cause) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'cause')
-
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
-            self.tree.remove_node(node_id)
-
-            pub.sendMessage('succeed_delete_cause', node_id=node_id)
-        else:
-            _error_msg = ("Attempted to delete non-existent failure cause ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_cause', error_msg=_error_msg)
-
-    def _do_delete_control(self, node_id):
-        """
-        Remove a FMEA control.
-
-        :param int node_id: the node (FMEA control) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'control')
-
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
-            self.tree.remove_node(node_id)
-
-            pub.sendMessage('succeed_delete_control', node_id=node_id)
-        else:
-            _error_msg = ("Attempted to delete non-existent control ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_control', error_msg=_error_msg)
-
-    def _do_delete_mechanism(self, node_id):
-        """
-        Remove a FMEA mechanism.
-
-        :param int node_id: the node (FMEA mechanism) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'mechanism')
-
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
-            self.tree.remove_node(node_id)
-
-            pub.sendMessage('succeed_delete_mechanism', node_id=node_id)
-        else:
-            _error_msg = ("Attempted to delete non-existent failure mechanism "
-                          "ID {0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_mechanism', error_msg=_error_msg)
-
-    def _do_delete_mode(self, node_id):
-        """
-        Remove a FMEA mode.
-
-        :param str node_id: the node (FMEA mode) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'mode')
-
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
-            self.tree.remove_node(node_id)
-
-            pub.sendMessage('succeed_delete_mode', node_id=node_id)
-        else:
-            _error_msg = ("Attempted to delete non-existent failure mode ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_mode', error_msg=_error_msg)
+            pub.sendMessage('fail_delete_fmea', error_msg=_error_msg)
 
     def _do_insert_action(self, cause_id, parent_id):
         """
@@ -220,7 +173,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_insert_action', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError) as _error:
-            print(_error)
             _error_msg = ('Attempting to add an action to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_action", error_msg=_error_msg)
@@ -252,7 +204,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_insert_cause', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError) as _error:
-            print(_error)
             _error_msg = (
                 'Attempting to add a failure cause to unknown '
                 'failure mode ID {0:d} or mechanism ID {1:d}.'.format(
@@ -286,7 +237,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_insert_control', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError) as _error:
-            print(_error)
             _error_msg = ('Attempting to add a control to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_control", error_msg=_error_msg)
@@ -316,7 +266,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_insert_mechanism', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError) as _error:
-            print(_error)
             _error_msg = ('Attempting to add a failure mechanism to unknown '
                           'failure mode ID {0:s}.'.format(mode_id))
             pub.sendMessage("fail_insert_mechanism", error_msg=_error_msg)
@@ -342,7 +291,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_insert_mode', node_id=str(_mode.mode_id))
         except (DataAccessError, NodeIDAbsentError) as _error:
-            print(_error)
             pub.sendMessage("fail_insert_mode", error_msg=_error)
 
     def _do_select_all_action(self, cause_id, parent_id):
@@ -377,20 +325,16 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        for _cause in self.dao.session.query(RAMSTKCause).filter(
-                RAMSTKCause.mechanism_id == mechanism_id).all():
+        if not self._is_functional:
+            for _cause in self.dao.session.query(RAMSTKCause).filter(
+                    RAMSTKCause.mechanism_id == mechanism_id).all():
 
-            _data_package = {'cause': _cause}
+                self._add_cause_node(_cause, parent_id)
+        elif self._is_functional:
+            for _cause in self.dao.session.query(RAMSTKCause).filter(
+                    RAMSTKCause.mode_id == mechanism_id).all():
 
-            _identifier = '{0:s}.{1:d}'.format(parent_id, _cause.cause_id)
-
-            self.tree.create_node(tag=_identifier,
-                                  identifier=_identifier,
-                                  parent=parent_id,
-                                  data=_data_package)
-
-            self._do_select_all_control(_cause.cause_id, _identifier)
-            self._do_select_all_action(_cause.cause_id, _identifier)
+                self._add_cause_node(_cause, parent_id)
 
     def _do_select_all_control(self, cause_id, parent_id):
         """
@@ -456,7 +400,7 @@ class DataManager(RAMSTKDataManager):
 
     def do_get_tree(self):
         """
-        Retrieve the fmea treelib Tree.
+        Retrieve the FMEA treelib Tree.
 
         :return: None
         :rtype: None
@@ -477,19 +421,23 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _mode in self.dao.session.query(RAMSTKMode).filter(
-                RAMSTKMode.hardware_id == self._parent_id).all():
+        if not self._is_functional:
+            for _mode in self.dao.session.query(RAMSTKMode).filter(
+                    RAMSTKMode.hardware_id == self._parent_id).all():
 
-            _data_package = {'mode': _mode}
+                self._add_mode_node(_mode)
+                self._do_select_all_mechanism(_mode.mode_id)
 
-            self.tree.create_node(tag=str(_mode.mode_id),
-                                  identifier=str(_mode.mode_id),
-                                  parent=self._root,
-                                  data=_data_package)
+            pub.sendMessage('succeed_retrieve_hardware_fmea', tree=self.tree)
 
-            self._do_select_all_mechanism(_mode.mode_id)
+        elif self._is_functional:
+            for _mode in self.dao.session.query(RAMSTKMode).filter(
+                    RAMSTKMode.function_id == self._parent_id).all():
 
-        pub.sendMessage('succeed_retrieve_fmea', tree=self.tree)
+                self._add_mode_node(_mode)
+                self._do_select_all_cause(_mode.mode_id, str(parent_id))
+
+            pub.sendMessage('succeed_retrieve_functional_fmea', tree=self.tree)
 
     def do_set_attributes(self, node_id, key, value, table):
         """
@@ -530,7 +478,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _table = self.tree.get_node(node_id).data.keys()
+            _table = list(self.tree.get_node(node_id).data.keys())[0]
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
             _error_code, _error_msg = self.dao.db_update()

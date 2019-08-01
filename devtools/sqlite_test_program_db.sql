@@ -73,9 +73,9 @@ CREATE TABLE ramstk_cause (
     FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_cause" VALUES(1,-1,1,'Test Functional FMEA Cause #1 for Mode ID 1',0,0,0,0,0,0);
-INSERT INTO "ramstk_cause" VALUES(2,-1,2,'Test Functional FMEA Cause #2 for Mode ID 2',0,0,0,0,0,0);
-INSERT INTO "ramstk_cause" VALUES(3,-1,3,'Test Functional FMEA Cause #3 for Mode ID 3',0,0,0,0,0,0);
+INSERT INTO "ramstk_cause" VALUES(1,-1,1,'Test Functional FMEA Cause #1 for Mode ID 1',0,2,1,0,8,5);
+INSERT INTO "ramstk_cause" VALUES(1,-1,2,'Test Functional FMEA Cause #2 for Mode ID 2',0,4,3,0,4,3);
+INSERT INTO "ramstk_cause" VALUES(1,-1,3,'Test Functional FMEA Cause #3 for Mode ID 3',0,3,3,0,6,4);
 INSERT INTO "ramstk_cause" VALUES(4,1,4,'Test Failure Cause #1 for Mechanism ID 1',0,0,0,0,0,0);
 INSERT INTO "ramstk_cause" VALUES(5,2,5,'Test Failure Cause #2 for Mechanism ID 2',0,0,0,0,0,0);
 INSERT INTO "ramstk_cause" VALUES(6,3,6,'Test Failure Cause #1 for Mechanism ID 3',0,0,0,0,0,0);
@@ -608,9 +608,9 @@ CREATE TABLE ramstk_mechanism (
     PRIMARY KEY (fld_mechanism_id),
     FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_mechanism" VALUES(4,1,'Test Failure Mechanism #1 for Mode ID 4',1,0,0,0,0,0,0);
-INSERT INTO "ramstk_mechanism" VALUES(5,2,'Test Failure Mechanism #1 for Mode ID 5',1,0,0,0,0,0,0);
-INSERT INTO "ramstk_mechanism" VALUES(6,3,'Test Failure Mechanism #1 for Mode ID 6',1,0,0,0,0,0,0);
+INSERT INTO "ramstk_mechanism" VALUES(4,1,'Test Failure Mechanism #1 for Mode ID 4',1,0,8,7,0,2,2);
+INSERT INTO "ramstk_mechanism" VALUES(5,2,'Test Failure Mechanism #1 for Mode ID 5',1,0,2,5,0,4,4);
+INSERT INTO "ramstk_mechanism" VALUES(6,3,'Test Failure Mechanism #1 for Mode ID 6',1,0,5,2,0,7,5);
 CREATE TABLE ramstk_mil_hdbk_f (
     fld_hardware_id INTEGER,
     fld_a_one FLOAT,
@@ -715,11 +715,11 @@ CREATE TABLE ramstk_mode (
     fld_type_id INTEGER
 );
 INSERT INTO "ramstk_mode" VALUES(1,-1,1,0,'Test Functional Failure Mode #1',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(2,-1,2,0,'Test Functional Failure Mode #2',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(3,-1,3,0,'Test Functional Failure Mode #3',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(-1,1,4,0,'System Test Failure Mode #1',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(-1,1,5,0,'System Test Failure Mode #2',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(-1,1,6,0,'System Test Failure Mode #3',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(1,-1,2,0,'Test Functional Failure Mode #2',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(1,-1,3,0,'Test Functional Failure Mode #3',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,4,0,'System Test Failure Mode #1',X'','','','','',1.0,'','','Default Mission','',0.0,0.0,10.0,'',0.5,X'','',X'',1,1,'IV',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,5,0,'System Test Failure Mode #2',X'','','','','',0.75,'','','Default Mission','',0.0,0.0,5.0,'',0.2,X'','',X'',1,1,'I',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,6,0,'System Test Failure Mode #3',X'','','','','',0.9,'','','Default Mission','',0.0,0.0,10.0,'',0.3,X'','',X'',1,1,'I',0,0);
 CREATE TABLE ramstk_nswc (
     fld_hardware_id INTEGER,
     fld_c_ac FLOAT,
