@@ -76,7 +76,7 @@ INSERT INTO "ramstk_category" VALUES(43,'VANDV','Verification & Validation','act
 CREATE TABLE ramstk_condition (
     fld_condition_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
-    fld_type VARCHAR(256),
+    fld_condition_type VARCHAR(256),
     PRIMARY KEY (fld_condition_id)
 );
 INSERT INTO "ramstk_condition" VALUES(1,'Cavitation','operating');

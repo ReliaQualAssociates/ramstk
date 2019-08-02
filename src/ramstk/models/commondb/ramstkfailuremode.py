@@ -18,6 +18,11 @@ from ramstk.Utilities import none_to_default
 class RAMSTKFailureMode(RAMSTK_BASE):
     """Class to represent the table ramstk_failuremode in the RAMSTK Common database."""
 
+    __defaults__ = {
+        'description': 'Failure Mode Decription',
+        'mode_ratio': 1.0,
+        'source': ''
+    }
     __tablename__ = 'ramstk_failure_mode'
     __table_args__ = {'extend_existing': True}
 
@@ -41,10 +46,10 @@ class RAMSTKFailureMode(RAMSTK_BASE):
         nullable=False,
     )
     description = Column(
-        'fld_description', String(512), default='Failure Mode Decription',
+        'fld_description', String(512), default=__defaults__['description'],
     )
-    mode_ratio = Column('fld_mode_ratio', Float, default=1.0)
-    source = Column('fld_source', String(128), default='')
+    mode_ratio = Column('fld_mode_ratio', Float, default=__defaults__['mode_ratio'])
+    source = Column('fld_source', String(128), default=__defaults__['source'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     category = relationship('RAMSTKCategory', back_populates='mode')
@@ -70,36 +75,19 @@ class RAMSTKFailureMode(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKFailureMode data model attributes.
+        Set one or more RAMSTKSiteInfo attributes.
 
-        :param dict attributes: dict containing the key:value pairs to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the site ID entries from the attributes dict
+            before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKFailureMode {0:d} attributes.". \
-            format(self.mode_id)
-
-        try:
-            self.description = str(
-                none_to_default(
-                    attributes['description'],
-                    'Failure Mode Description',
-                ),
-            )
-            self.mode_ratio = float(
-                none_to_default(attributes['mode_ratio'], 1.0),
-            )
-            self.source = str(none_to_default(attributes['source'], ''))
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
