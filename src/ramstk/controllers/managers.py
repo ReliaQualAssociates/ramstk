@@ -191,7 +191,8 @@ class RAMSTKDataManager():
         :rtype: None
         """
         pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
-                        attributes=self.do_select(node_id, table=table).get_attributes())
+                        attributes=self.do_select(
+                            node_id, table=table).get_attributes())
 
     def do_select(self, node_id, table):
         """
