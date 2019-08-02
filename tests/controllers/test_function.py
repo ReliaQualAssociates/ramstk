@@ -62,12 +62,17 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_insert, 'request_insert_function')
         assert pub.isSubscribed(DUT.do_insert_hazard, 'request_insert_hazard')
         assert pub.isSubscribed(DUT.do_update, 'request_update_function')
-        assert pub.isSubscribed(DUT.do_update_all, 'request_update_all_functions')
-        assert pub.isSubscribed(DUT.do_get_attributes, 'request_get_function_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes, 'request_get_all_function_attributes')
+        assert pub.isSubscribed(DUT.do_update_all,
+                                'request_update_all_functions')
+        assert pub.isSubscribed(DUT._do_get_attributes,
+                                'request_get_function_attributes')
+        assert pub.isSubscribed(DUT.do_get_all_attributes,
+                                'request_get_all_function_attributes')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_function_tree')
-        assert pub.isSubscribed(DUT.do_set_attributes, 'request_set_function_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes, 'request_set_all_function_attributes')
+        assert pub.isSubscribed(DUT.do_set_attributes,
+                                'request_set_function_attributes')
+        assert pub.isSubscribed(DUT.do_set_all_attributes,
+                                'request_set_all_function_attributes')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_configuration):
@@ -90,8 +95,7 @@ class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_functions(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data['function'], RAMSTKFunction)
+        assert isinstance(tree.get_node(1).data['function'], RAMSTKFunction)
         assert isinstance(tree.get_node(1).data['hazards'], dict)
         assert isinstance(
             tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
@@ -100,12 +104,14 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_all(self, test_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKFunction instances on success."""
-        pub.subscribe(self.on_succeed_retrieve_functions, 'succeed_retrieve_functions')
+        pub.subscribe(self.on_succeed_retrieve_functions,
+                      'succeed_retrieve_functions')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(1)
 
-        pub.unsubscribe(self.on_succeed_retrieve_functions, 'succeed_retrieve_functions')
+        pub.unsubscribe(self.on_succeed_retrieve_functions,
+                        'succeed_retrieve_functions')
 
     @pytest.mark.integration
     def test_do_select_function(self, test_program_dao):
@@ -173,7 +179,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete_function(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree."""
-        pub.subscribe(self.on_succeed_delete_function, 'succeed_delete_function')
+        pub.subscribe(self.on_succeed_delete_function,
+                      'succeed_delete_function')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
@@ -235,18 +242,21 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_sibling_function(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a sibling function."""
-        pub.subscribe(self.on_succeed_insert_function, 'succeed_insert_function')
+        pub.subscribe(self.on_succeed_insert_function,
+                      'succeed_insert_function')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert()
 
-        assert isinstance(DUT.tree.get_node(4).data['function'], RAMSTKFunction)
+        assert isinstance(
+            DUT.tree.get_node(4).data['function'], RAMSTKFunction)
         assert DUT.tree.get_node(4).data['function'].function_id == 4
         assert DUT.tree.get_node(4).data['function'].name == 'New Function'
         assert DUT.tree.get_node(4).data['hazards'] == {}
 
-        pub.unsubscribe(self.on_succeed_insert_function, 'succeed_insert_function')
+        pub.unsubscribe(self.on_succeed_insert_function,
+                        'succeed_insert_function')
 
     @pytest.mark.integration
     def test_do_insert_child_function(self, test_program_dao):
@@ -255,7 +265,8 @@ class TestInsertMethods():
         DUT.do_select_all(revision_id=1)
         DUT.do_insert(parent_id=4)
 
-        assert isinstance(DUT.tree.get_node(5).data['function'], RAMSTKFunction)
+        assert isinstance(
+            DUT.tree.get_node(5).data['function'], RAMSTKFunction)
         assert DUT.tree.get_node(5).data['function'].function_id == 5
         assert DUT.tree.get_node(5).data['function'].name == 'New Function'
         assert DUT.tree.get_node(5).data['hazards'] == {}
@@ -278,8 +289,8 @@ class TestInsertMethods():
         DUT.do_select_all(revision_id=1)
         DUT.do_insert_hazard(1)
 
-        assert isinstance(DUT.tree.get_node(1).data['hazards'][4],
-                          RAMSTKHazardAnalysis)
+        assert isinstance(
+            DUT.tree.get_node(1).data['hazards'][4], RAMSTKHazardAnalysis)
 
     @pytest.mark.integration
     def test_insert_hazard_no_function(self, test_program_dao):
@@ -320,8 +331,7 @@ class TestGetterSetter():
 
     def on_succeed_get_function_tree(self, dmtree):
         assert isinstance(dmtree, Tree)
-        assert isinstance(
-            dmtree.get_node(1).data['function'], RAMSTKFunction)
+        assert isinstance(dmtree.get_node(1).data['function'], RAMSTKFunction)
         assert isinstance(dmtree.get_node(1).data['hazards'], dict)
         assert isinstance(
             dmtree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
@@ -329,32 +339,36 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_attributes_function(self, test_program_dao):
-        """do_get_attributes() should return a dict of function attributes on success."""
-        pub.subscribe(self.on_succeed_get_function_attrs, 'succeed_get_function_attributes')
+        """_do_get_attributes() should return a dict of function attributes on success."""
+        pub.subscribe(self.on_succeed_get_function_attrs,
+                      'succeed_get_function_attributes')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
-        DUT.do_get_attributes(1, 'function')
+        DUT._do_get_attributes(1, 'function')
 
     @pytest.mark.integration
     def test_do_get_attributes_hazards(self, test_program_dao):
-        """do_get_attributes() should return a dict of failure definition records on success."""
-        pub.subscribe(self.on_succeed_get_hazard_attrs, 'succeed_get_hazards_attributes')
+        """_do_get_attributes() should return a dict of failure definition records on success."""
+        pub.subscribe(self.on_succeed_get_hazard_attrs,
+                      'succeed_get_hazards_attributes')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
-        DUT.do_get_attributes(1, 'hazards')
+        DUT._do_get_attributes(1, 'hazards')
 
     @pytest.mark.integration
     def test_do_get_all_attributes_data_manager(self, test_program_dao):
         """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
-        pub.subscribe(self.on_succeed_get_all_attrs, 'succeed_get_all_function_attributes')
+        pub.subscribe(self.on_succeed_get_all_attrs,
+                      'succeed_get_all_function_attributes')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_get_all_attributes(1)
 
-        pub.unsubscribe(self.on_succeed_get_all_attrs, 'succeed_get_all_function_attributes')
+        pub.unsubscribe(self.on_succeed_get_all_attrs,
+                        'succeed_get_all_function_attributes')
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
@@ -411,13 +425,15 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self, test_program_dao):
         """on_get_tree() should return the function treelib Tree."""
-        pub.subscribe(self.on_succeed_get_function_tree, 'succeed_get_function_tree')
+        pub.subscribe(self.on_succeed_get_function_tree,
+                      'succeed_get_function_tree')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_get_tree()
 
-        pub.unsubscribe(self.on_succeed_get_function_tree, 'succeed_get_function_tree')
+        pub.unsubscribe(self.on_succeed_get_function_tree,
+                        'succeed_get_function_tree')
 
     @pytest.mark.integration
     def test_get_all_attributes_analysis_manager(self, test_program_dao,
@@ -463,7 +479,8 @@ class TestUpdateMethods():
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao):
         """ do_update() should return a zero error code on success. """
-        pub.subscribe(self.on_succeed_update_function, 'succeed_update_function')
+        pub.subscribe(self.on_succeed_update_function,
+                      'succeed_update_function')
 
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
@@ -474,9 +491,11 @@ class TestUpdateMethods():
 
         DUT.do_select_all(revision_id=1)
         assert DUT.tree.get_node(1).data['function'].name == 'Test Function'
-        assert DUT.tree.get_node(1).data['hazards'][1].potential_hazard == 'Big Hazard'
+        assert DUT.tree.get_node(
+            1).data['hazards'][1].potential_hazard == 'Big Hazard'
 
-        pub.unsubscribe(self.on_succeed_update_function, 'succeed_update_function')
+        pub.unsubscribe(self.on_succeed_update_function,
+                        'succeed_update_function')
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_program_dao):

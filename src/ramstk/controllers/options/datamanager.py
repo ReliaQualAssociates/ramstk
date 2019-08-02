@@ -57,22 +57,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_tree, 'request_get_options_tree')
         pub.subscribe(self.do_set_attributes, 'request_set_option_attributes')
 
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the Options.
-
-        :param str node_id: the node ID in the Options tree to get the
-            attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
-                        attributes=_attributes)
-
     def do_get_tree(self):
         """
         Retrieve the Options treelib Tree.
@@ -164,9 +148,3 @@ class DataManager(RAMSTKDataManager):
                             error_msg=('Attempted to save non-existent '
                                        'Option with Options ID '
                                        '{0:s}.').format(str(node_id)))
-        except TypeError:
-            if node_id != 0:
-                pub.sendMessage('fail_update_options',
-                                error_msg=('No data package found for '
-                                           'Options ID {0:s}.').format(
-                                               str(node_id)))

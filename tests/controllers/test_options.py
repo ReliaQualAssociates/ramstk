@@ -297,14 +297,22 @@ class TestUpdateMethods():
         DUT.tree.get_node('siteinfo').data['siteinfo'].vandv_enabled = 1
         DUT.do_update('siteinfo')
 
+        pub.unsubscribe(self.on_succeed_update_options,
+                        'succeed_update_options')
+
+        DUT.tree.get_node('programinfo').data['programinfo'].hardware_active = 0
+        DUT.tree.get_node('programinfo').data['programinfo'].vandv_active = 0
+        DUT.do_update('programinfo')
+
         DUT.do_select_all(1)
         assert DUT.tree.get_node(
             'siteinfo').data['siteinfo'].hardware_enabled == 1
         assert DUT.tree.get_node(
             'siteinfo').data['siteinfo'].vandv_enabled == 1
-
-        pub.unsubscribe(self.on_succeed_update_options,
-                        'succeed_update_options')
+        assert DUT.tree.get_node(
+            'programinfo').data['programinfo'].hardware_active == 0
+        assert DUT.tree.get_node(
+            'programinfo').data['programinfo'].vandv_active == 0
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_program_dao,

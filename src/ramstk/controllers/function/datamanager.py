@@ -58,7 +58,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_insert_hazard, 'request_insert_hazard')
         pub.subscribe(self.do_update, 'request_update_function')
         pub.subscribe(self.do_update_all, 'request_update_all_functions')
-        pub.subscribe(self.do_get_attributes,
+        pub.subscribe(self._do_get_attributes,
                       'request_get_function_attributes')
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_function_attributes')
@@ -117,6 +117,35 @@ class DataManager(RAMSTKDataManager):
                                        "{1:s}.").format(
                                            str(node_id), str(function_id)))
 
+    def _do_get_attributes(self, node_id, table):
+        """
+        Retrieve the RAMSTK data table attributes for the function.
+
+        .. important:: the failure definition will return a dict of all the
+            failure definitions associated with the node (function) ID.  This
+            dict uses the definition ID as the key and the instance of the
+            RAMSTKFailureDefinition as the value.  The subscibing methods and
+            functions will need to unpack this dict.
+
+        .. important:: the usage profile will return a treelib Tree() of all
+            the usage profiles associated with the node (function) ID.  The
+            subscribing methods and functions will need to parse this Tree().
+
+        :param int node_id: the node (function) ID of the function to get the
+            attributes for.
+        :param str table: the RAMSTK data table to retrieve the attributes
+            from.
+        :return: None
+        :rtype: None
+        """
+        if table in ['hazards']:
+            _attributes = self.do_select(node_id, table=table)
+        else:
+            _attributes = self.do_select(node_id, table=table).get_attributes()
+
+        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
+                        attributes=_attributes)
+
     def _do_set_hazard(self, node_id, key, value, hazard_id):
         """
         Set the attributes of the record associated with hazard ID.
@@ -172,35 +201,6 @@ class DataManager(RAMSTKDataManager):
                     self.do_select(node_id, table=_table).get_attributes())
 
         pub.sendMessage('succeed_get_all_function_attributes',
-                        attributes=_attributes)
-
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the function.
-
-        .. important:: the failure definition will return a dict of all the
-            failure definitions associated with the node (function) ID.  This
-            dict uses the definition ID as the key and the instance of the
-            RAMSTKFailureDefinition as the value.  The subscibing methods and
-            functions will need to unpack this dict.
-
-        .. important:: the usage profile will return a treelib Tree() of all
-            the usage profiles associated with the node (function) ID.  The
-            subscribing methods and functions will need to parse this Tree().
-
-        :param int node_id: the node (function) ID of the function to get the
-            attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        if table in ['hazards']:
-            _attributes = self.do_select(node_id, table=table)
-        else:
-            _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
                         attributes=_attributes)
 
     def do_get_tree(self):

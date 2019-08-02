@@ -86,7 +86,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_update, 'request_update_revision')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_revisions')
-        assert pub.isSubscribed(DUT.do_get_attributes,
+        assert pub.isSubscribed(DUT._do_get_attributes,
                                 'request_get_revision_attributes')
         assert pub.isSubscribed(DUT.do_get_all_attributes,
                                 'request_get_all_revision_attributes')
@@ -395,33 +395,33 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_attributes_revision(self, test_program_dao):
-        """do_get_attributes() should return a dict of revision attributes on success."""
+        """_do_get_attributes() should return a dict of revision attributes on success."""
         pub.subscribe(self.on_succeed_get_revision_attrs,
                       'succeed_get_revision_attributes')
 
         DUT = dmRevision(test_program_dao)
         DUT.do_select_all()
-        DUT.do_get_attributes(1, 'revision')
+        DUT._do_get_attributes(1, 'revision')
 
     @pytest.mark.integration
     def test_do_get_attributes_failure_definitions(self, test_program_dao):
-        """do_get_attributes() should return a dict of failure definition records on success."""
+        """_do_get_attributes() should return a dict of failure definition records on success."""
         pub.subscribe(self.on_succeed_get_failure_definition_attrs,
                       'succeed_get_failure_definitions_attributes')
 
         DUT = dmRevision(test_program_dao)
         DUT.do_select_all()
-        DUT.do_get_attributes(1, 'failure_definitions')
+        DUT._do_get_attributes(1, 'failure_definitions')
 
     @pytest.mark.integration
     def test_do_get_attributes_usage_profile(self, test_program_dao):
-        """do_get_attributes() should return treelib Tree() on success."""
+        """_do_get_attributes() should return treelib Tree() on success."""
         pub.subscribe(self.on_succeed_get_usage_profile_attrs,
                       'succeed_get_usage_profile_attributes')
 
         DUT = dmRevision(test_program_dao)
         DUT.do_select_all()
-        DUT.do_get_attributes(1, 'usage_profile')
+        DUT._do_get_attributes(1, 'usage_profile')
 
     @pytest.mark.integration
     def test_do_get_all_attributes_data_manager(self, test_program_dao):

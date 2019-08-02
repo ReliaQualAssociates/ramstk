@@ -179,6 +179,20 @@ class RAMSTKDataManager():
         """
         return self.dao.db_delete(self.do_select(node_id, table))
 
+    def do_get_attributes(self, node_id, table):
+        """
+        Retrieve the RAMSTK data table attributes for node ID.
+
+        :param str node_id: the node ID in the treelib Tree to get the
+            attributes for.
+        :param str table: the RAMSTK data table to retrieve the attributes
+            from.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
+                        attributes=self.do_select(node_id, table=table).get_attributes())
+
     def do_select(self, node_id, table):
         """
         Retrieve the RAMSTK data table record for the Node ID passed.
