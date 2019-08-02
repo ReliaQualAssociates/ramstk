@@ -1,10 +1,11 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.dao.commondb.test_ramstkloadhistory.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKLoadHistory module algorithms and models."""
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Test class for testing RAMSTKLoadHistory module algorithms and models."""
 
 # Third Party Imports
 import pytest
@@ -12,71 +13,57 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKLoadHistory
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
-
-ATTRIBUTES = {'history_id': 1, 'description': 'Load History Description'}
+ATTRIBUTES = {'description': 'Load History Description'}
 
 
-@pytest.mark.integration
-def test_ramstkloadhistory_create(test_common_dao):
-    """ __init__() should create an RAMSTKLoadHistory model."""
-    _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKLoadHistory).first()
+@pytest.mark.usefixtures('test_common_dao')
+class TestRAMSTKLoadHistory():
+    """Class for testing the RAMSTKLoadHistory model."""
+    @pytest.mark.integration
+    def test_ramstkloadhistory_create(self, test_common_dao):
+        """ __init__() should create an RAMSTKLoadHistory model."""
+        DUT = test_common_dao.session.query(RAMSTKLoadHistory).first()
 
-    assert isinstance(DUT, RAMSTKLoadHistory)
+        assert isinstance(DUT, RAMSTKLoadHistory)
 
-    # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'ramstk_load_history'
-    assert DUT.history_id == 1
-    assert DUT.description == 'Cycle Counts'
+        # Verify class attributes are properly initialized.
+        assert DUT.__tablename__ == 'ramstk_load_history'
+        assert DUT.history_id == 1
+        assert DUT.description == 'Cycle Counts'
 
+    @pytest.mark.integration
+    def test_get_attributes(self, test_common_dao):
+        """ get_attributes() should return a dict of attribute:value pairs. """
+        DUT = test_common_dao.session.query(RAMSTKLoadHistory).first()
 
-@pytest.mark.integration
-def test_get_attributes(test_common_dao):
-    """ get_attributes() should return a dict of attribute:value pairs. """
-    _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKLoadHistory).first()
+        _attributes = DUT.get_attributes()
 
-    _attributes = DUT.get_attributes()
+        assert isinstance(_attributes, dict)
+        assert _attributes['history_id'] == 1
+        assert _attributes['description'] == 'Cycle Counts'
 
-    assert isinstance(_attributes, dict)
+    @pytest.mark.integration
+    def test_set_attributes(self, test_common_dao):
+        """ set_attributes() should return a zero error code on success. """
+        DUT = test_common_dao.session.query(RAMSTKLoadHistory).first()
 
-    assert _attributes['history_id'] == 1
-    assert _attributes['description'] == 'Cycle Counts'
+        assert DUT.set_attributes(ATTRIBUTES) is None
 
+    @pytest.mark.integration
+    def test_set_attributes_none_value(self, test_common_dao):
+        """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
+        DUT = test_common_dao.session.query(RAMSTKLoadHistory).first()
 
-@pytest.mark.integration
-def test_set_attributes(test_common_dao):
-    """ set_attributes() should return a zero error code on success. """
-    _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKLoadHistory).first()
+        ATTRIBUTES['description'] = None
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+        assert DUT.set_attributes(ATTRIBUTES) is None
+        assert DUT.get_attributes(
+        )['description'] == 'Load History Description'
 
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKLoadHistory {0:d} "
-                    "attributes.".format(DUT.history_id))
+    @pytest.mark.integration
+    def test_set_attributes_unknown_attributes(self, test_common_dao):
+        """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+        DUT = test_common_dao.session.query(RAMSTKLoadHistory).first()
 
-
-@pytest.mark.integration
-def test_set_attributes_missing_key(test_common_dao):
-    """ set_attributes() should return a 40 error code when passed a dict with a missing key."""
-    _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKLoadHistory).first()
-
-    ATTRIBUTES.pop('description')
-
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'description' in attribute "
-                    "dictionary passed to RAMSTKLoadHistory.set_attributes().")
-
-    ATTRIBUTES['description'] = 'Load History Description'
+        with pytest.raises(AttributeError):
+            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

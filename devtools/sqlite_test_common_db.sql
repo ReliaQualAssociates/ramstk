@@ -355,9 +355,9 @@ INSERT INTO "ramstk_hazards" VALUES(184,'Unannunciated Utility Outages','Lubrica
 INSERT INTO "ramstk_hazards" VALUES(185,'Unannunciated Utility Outages','Steam');
 INSERT INTO "ramstk_hazards" VALUES(186,'Unannunciated Utility Outages','Ventilation');
 CREATE TABLE ramstk_load_history (
-    fld_load_history_id INTEGER NOT NULL,
+    fld_history_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
-    PRIMARY KEY (fld_load_history_id)
+    PRIMARY KEY (fld_history_id)
 );
 INSERT INTO "ramstk_load_history" VALUES(1,'Cycle Counts');
 INSERT INTO "ramstk_load_history" VALUES(2,'Histogram');

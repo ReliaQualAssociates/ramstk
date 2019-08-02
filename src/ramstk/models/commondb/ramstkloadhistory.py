@@ -17,19 +17,18 @@ from ramstk.Utilities import none_to_default
 class RAMSTKLoadHistory(RAMSTK_BASE):
     """Class to represent the table ramstk_load_history."""
 
+    __defaults__ = {'description': 'Load History Description'}
     __tablename__ = 'ramstk_load_history'
     __table_args__ = {'extend_existing': True}
 
-    history_id = Column(
-        'fld_load_history_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False,
-    )
-    description = Column(
-        'fld_description', String(512), default='Load History Description',
-    )
+    history_id = Column('fld_history_id',
+                        Integer,
+                        primary_key=True,
+                        autoincrement=True,
+                        nullable=False)
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
 
     def get_attributes(self):
         """
@@ -47,27 +46,19 @@ class RAMSTKLoadHistory(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKLoadHistory data model attributes.
+        Set one or more RAMSTKLoadHistory attributes.
 
-        :param tuple attributes: tuple containing the values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the history ID entries from the attributes
+            dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKLoadHistory {0:d} attributes.". \
-            format(self.history_id)
-
-        try:
-            self.description = str(
-                none_to_default(
-                    attributes['description'],
-                    'Load History Description',
-                ),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKLoadHistory.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
