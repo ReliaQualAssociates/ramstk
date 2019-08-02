@@ -113,22 +113,6 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_stakeholder_attributes',
                         attributes=_attributes)
 
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the stakeholder.
-
-        :param int node_id: the node (stakeholder) ID of the stakeholder to get
-            the attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_stakeholder_attributes',
-                        attributes=_attributes)
-
     def do_get_tree(self):
         """
         Retrieve the stakeholder treelib Tree.

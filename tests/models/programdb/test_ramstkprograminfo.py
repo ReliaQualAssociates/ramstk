@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.Test_ramstkprograminfo.py is part of the RAMSTK
@@ -14,7 +15,7 @@ from datetime import date
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKProgramInfo import RAMSTKProgramInfo
+from ramstk.models.programdb import RAMSTKProgramInfo
 
 ATTRIBUTES = {
     'created_by': '',
@@ -74,24 +75,24 @@ class TestRAMSTKProgramInfo():
         DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
 
         _attributes = DUT.get_attributes()
-        _attributes['revision_id'] == 1
-        _attributes['function_active'] == 1
-        _attributes['requirement_active'] == 1
-        _attributes['hardware_active'] == 1
-        _attributes['vandv_active'] == 1
-        _attributes['fmea_active'] == 1
-        _attributes['software_active'] == 1
-        _attributes['testing_active'] == 1
-        _attributes['fraca_active'] == 1
-        _attributes['survival_active'] == 1
-        _attributes['rcm_active'] == 0
-        _attributes['rbd_active'] == 0
-        _attributes['fta_active'] == 0
-        _attributes['created_on'] == date(2019, 7, 21)
-        _attributes['created_by'] == ''
-        _attributes['last_saved'] == date(2019, 7, 21)
-        _attributes['last_saved_by'] == ''
-        _attributes['method'] == 'STANDARD'
+        assert _attributes['revision_id'] == 1
+        assert _attributes['function_active'] == 1
+        assert _attributes['requirement_active'] == 1
+        assert _attributes['hardware_active'] == 1
+        assert _attributes['vandv_active'] == 1
+        assert _attributes['fmea_active'] == 1
+        assert _attributes['software_active'] == 1
+        assert _attributes['testing_active'] == 1
+        assert _attributes['fraca_active'] == 1
+        assert _attributes['survival_active'] == 1
+        assert _attributes['rcm_active'] == 0
+        assert _attributes['rbd_active'] == 0
+        assert _attributes['fta_active'] == 0
+        assert _attributes['created_on'] == date(2019, 7, 21)
+        assert _attributes['created_by'] == ''
+        assert _attributes['last_saved'] == date(2019, 7, 21)
+        assert _attributes['last_saved_by'] == ''
+        assert _attributes['method'] == 'STANDARD'
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):

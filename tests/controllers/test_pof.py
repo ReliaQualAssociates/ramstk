@@ -1,11 +1,11 @@
 # pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_fmea.py is part of The RAMSTK Project
+#       tests.controllers.test_pof.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing FMEA algorithms and models."""
+"""Test class for testing PoF algorithms and models."""
 
 # Third Party Imports
 import pytest
@@ -547,6 +547,8 @@ class TestGetterSetter():
             '4',
             table='mode').effect_local == ('Some really bad shit will happen.')
 
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
+
     @pytest.mark.integration
     def test_do_set_mechanism_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
@@ -566,6 +568,8 @@ class TestGetterSetter():
         assert DUT.do_select('4.1',
                              table='mechanism').description == 'Jared Kushner'
         assert DUT.do_select('4.1', table='mechanism').rpn_detection == 8
+
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
     @pytest.mark.integration
     def test_do_set_opload_attributes(self, test_program_dao):
@@ -587,6 +591,8 @@ class TestGetterSetter():
                              table='opload').description == 'Jared Kushner'
         assert DUT.do_select(
             '4.1.1', table='opload').damage_model == ('Fancy math model')
+
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
     @pytest.mark.integration
     def test_do_set_opstress_attributes(self, test_program_dao):
@@ -610,6 +616,8 @@ class TestGetterSetter():
             '4.1.1.1.s',
             table='opstress').load_history == ('Waterfall histogram')
 
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
+
     @pytest.mark.integration
     def test_do_set_test_method_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting test method attributes."""
@@ -630,6 +638,8 @@ class TestGetterSetter():
                              table='testmethod').description == 'Kick his ass'
         assert DUT.do_select('4.1.1.1.t',
                              table='testmethod').remarks == b'Doyle Rowland'
+
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self, test_program_dao):

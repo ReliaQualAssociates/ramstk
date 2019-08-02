@@ -72,7 +72,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_insert_environment, 'request_insert_environment')
         pub.subscribe(self.do_update, 'request_update_revision')
         pub.subscribe(self.do_update_all, 'request_update_all_revisions')
-        pub.subscribe(self.do_get_attributes,
+        pub.subscribe(self._do_get_attributes,
                       'request_get_revision_attributes')
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_revision_attributes')
@@ -215,6 +215,35 @@ class DataManager(RAMSTKDataManager):
         if _error_code == 0:
             _profile.remove_node(str(node_id))
             self.tree.get_node(revision_id).data['usage_profile'] = _profile
+
+    def _do_get_attributes(self, node_id, table):
+        """
+        Retrieve the RAMSTK data table attributes for the revision.
+
+        .. important:: the failure definition will return a dict of all the
+            failure definitions associated with the node (revision) ID.  This
+            dict uses the definition ID as the key and the instance of the
+            RAMSTKFailureDefinition as the value.  The subscibing methods and
+            functions will need to unpack this dict.
+
+        .. important:: the usage profile will return a treelib Tree() of all
+            the usage profiles associated with the node (revision) ID.  The
+            subscribing methods and functions will need to parse this Tree().
+
+        :param int node_id: the node (revision) ID of the revision to get the
+            attributes for.
+        :param str table: the RAMSTK data table to retrieve the attributes
+            from.
+        :return: None
+        :rtype: None
+        """
+        if table in ['failure_definitions', 'usage_profile']:
+            _attributes = self.do_select(node_id, table=table)
+        else:
+            _attributes = self.do_select(node_id, table=table).get_attributes()
+
+        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
+                        attributes=_attributes)
 
     def _do_select_usage_profile(self, revision_id):
         """
@@ -359,35 +388,6 @@ class DataManager(RAMSTKDataManager):
                     self.do_select(node_id, table=_table).get_attributes())
 
         pub.sendMessage('succeed_get_all_revision_attributes',
-                        attributes=_attributes)
-
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the revision.
-
-        .. important:: the failure definition will return a dict of all the
-            failure definitions associated with the node (revision) ID.  This
-            dict uses the definition ID as the key and the instance of the
-            RAMSTKFailureDefinition as the value.  The subscibing methods and
-            functions will need to unpack this dict.
-
-        .. important:: the usage profile will return a treelib Tree() of all
-            the usage profiles associated with the node (revision) ID.  The
-            subscribing methods and functions will need to parse this Tree().
-
-        :param int node_id: the node (revision) ID of the revision to get the
-            attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        if table in ['failure_definitions', 'usage_profile']:
-            _attributes = self.do_select(node_id, table=table)
-        else:
-            _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
                         attributes=_attributes)
 
     def do_get_tree(self):

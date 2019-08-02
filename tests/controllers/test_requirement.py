@@ -61,8 +61,7 @@ class TestCreateControllers():
         assert DUT._tag == 'requirement'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all,
-                                'succeed_select_revision')
+        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_revision')
         assert pub.isSubscribed(DUT._do_delete_requirement,
                                 'request_delete_requirement')
         assert pub.isSubscribed(DUT.do_insert_requirement,
@@ -71,7 +70,7 @@ class TestCreateControllers():
                                 'request_update_requirement')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_requirements')
-        assert pub.isSubscribed(DUT.do_get_attributes,
+        assert pub.isSubscribed(DUT._do_get_attributes,
                                 'request_get_requirement_attributes')
         assert pub.isSubscribed(DUT.do_get_all_attributes,
                                 'request_get_all_requirement_attributes')
@@ -381,13 +380,13 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_attributes_requirement(self, test_program_dao):
-        """do_get_attributes() should return a dict of requirement attributes on success."""
+        """_do_get_attributes() should return a dict of requirement attributes on success."""
         pub.subscribe(self.on_succeed_get_requirement_attrs,
                       'succeed_get_requirement_attributes')
 
         DUT = dmRequirement(test_program_dao)
         DUT.do_select_all(1)
-        DUT.do_get_attributes(1, 'requirement')
+        DUT._do_get_attributes(1, 'requirement')
 
     @pytest.mark.integration
     def test_do_get_all_attributes_data_manager(self, test_program_dao):

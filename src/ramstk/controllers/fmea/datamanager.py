@@ -382,22 +382,6 @@ class DataManager(RAMSTKDataManager):
 
             self._do_select_all_cause(_mechanism.mechanism_id, _identifier)
 
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the FMEA.
-
-        :param str node_id: the node ID in the FMEA tree to get the attributes
-            for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
-                        attributes=_attributes)
-
     def do_get_tree(self):
         """
         Retrieve the FMEA treelib Tree.

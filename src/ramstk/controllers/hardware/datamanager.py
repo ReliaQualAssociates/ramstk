@@ -119,21 +119,6 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_hardware_attributes',
                         attributes=_attributes)
 
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the hardware item.
-
-        :param int node_id: the node (hardware) ID of the hardware item to
-            get the attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_hardware_attributes',
-                        attributes=self.do_select(
-                            node_id, table=table).get_attributes())
-
     def do_get_tree(self):
         """
         Retrieve the hardware treelib Tree.

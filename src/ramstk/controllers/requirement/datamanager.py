@@ -57,7 +57,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')
         pub.subscribe(self.do_update_requirement, 'request_update_requirement')
         pub.subscribe(self.do_update_all, 'request_update_all_requirements')
-        pub.subscribe(self.do_get_attributes,
+        pub.subscribe(self._do_get_attributes,
                       'request_get_requirement_attributes')
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_requirement_attributes')
@@ -92,6 +92,25 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_requirement', error_msg=_error_msg)
 
+    def _do_get_attributes(self, node_id, table):
+        """
+        Retrieve the RAMSTK data table attributes for the requirement.
+
+        :param int node_id: the node (requirement) ID of the requirement to get
+            the attributes for.
+        :param str table: the RAMSTK data table to retrieve the attributes
+            from.
+        :return: None
+        :rtype: None
+        """
+        if table in ['stakeholders', 'usage_profile']:
+            _attributes = self.do_select(node_id, table=table)
+        else:
+            _attributes = self.do_select(node_id, table=table).get_attributes()
+
+        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
+                        attributes=_attributes)
+
     def do_get_all_attributes(self, node_id):
         """
         Retrieve all RAMSTK data tables' attributes for the requirement.
@@ -111,25 +130,6 @@ class DataManager(RAMSTKDataManager):
                 self.do_select(node_id, table=_table).get_attributes())
 
         pub.sendMessage('succeed_get_all_requirement_attributes',
-                        attributes=_attributes)
-
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the requirement.
-
-        :param int node_id: the node (requirement) ID of the requirement to get
-            the attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        if table in ['stakeholders', 'usage_profile']:
-            _attributes = self.do_select(node_id, table=table)
-        else:
-            _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
                         attributes=_attributes)
 
     def do_get_tree(self):

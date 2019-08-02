@@ -21,9 +21,6 @@ import xml.etree.ElementTree as ET
 # Third Party Imports
 import pytest
 import xlwt
-from pubsub.utils.notification import (
-    IgnoreNotificationsMixin, useNotifyByWriteFile
-)
 
 # RAMSTK Package Imports
 import ramstk.Utilities as Utilities
@@ -242,19 +239,7 @@ ROW_DATA = [
 ]
 
 
-# Create a special notification handler that traces pypunsub calls.
-class MyPubsubNotifHandler(IgnoreNotificationsMixin):
-    def notifySubscribe(self, pubListener, topicObj, newSub):
-        newSubMsg = ''
-        if not newSub:
-            newSubMsg = ' was already'
-        msg = 'MyPubsubNotifHandler: listener %s%s subscribed to %s'
-        print(msg % (pubListener.name(), newSubMsg, topicObj.getName()))
-
-#pub.addNotificationHandler(MyPubsubNotifHandler())
-#useNotifyByWriteFile(sys.stdout, prefix='NotifyByWriteFile:')
-
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='class')
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
     # Create the tmp directory if it doesn't exist.

@@ -52,7 +52,7 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False,
+        nullable=False
     )
     function_active = Column('fld_function_active',
                              Integer,

@@ -28,7 +28,7 @@ from .ramstkmode import RAMSTKMode
 from .ramstknswc import RAMSTKNSWC
 from .ramstkopload import RAMSTKOpLoad
 from .ramstkopstress import RAMSTKOpStress
-from .RAMSTKProgramInfo import RAMSTKProgramInfo
+from .ramstkprograminfo import RAMSTKProgramInfo
 from .ramstkprogramstatus import RAMSTKProgramStatus
 from .ramstkreliability import RAMSTKReliability
 from .ramstkrequirement import RAMSTKRequirement

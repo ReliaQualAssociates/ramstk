@@ -21,6 +21,7 @@ from treelib import Tree
 from ramstk.controllers.fmea import dmFMEA
 from ramstk.controllers.function import dmFunction
 from ramstk.controllers.hardware import dmHardware
+from ramstk.controllers.options import dmOptions
 from ramstk.controllers.pof import dmPoF
 from ramstk.controllers.requirement import dmRequirement
 from ramstk.controllers.revision import dmRevision
@@ -36,7 +37,6 @@ from ramstk.dao.commondb.RAMSTKMeasurement import RAMSTKMeasurement
 from ramstk.dao.commondb.RAMSTKMethod import RAMSTKMethod
 from ramstk.dao.commondb.RAMSTKModel import RAMSTKModel
 from ramstk.dao.commondb.RAMSTKRPN import RAMSTKRPN
-from ramstk.dao.commondb.RAMSTKSiteInfo import RAMSTKSiteInfo
 from ramstk.dao.commondb.RAMSTKStakeholders import RAMSTKStakeholders
 from ramstk.dao.commondb.RAMSTKStatus import RAMSTKStatus
 from ramstk.dao.commondb.RAMSTKSubCategory import RAMSTKSubCategory
@@ -46,9 +46,9 @@ from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
+from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.imports import dtcImports
-from ramstk.modules.options import dtcOptions
 from ramstk.modules.preferences import dtcPreferences
 
 # RAMSTK Local Imports
@@ -693,11 +693,9 @@ class RAMSTK():
 
         # Create an Options module instance and read the Site options.
         _attributes = {'site': True, 'program': False, 'user': True}
-        self.dic_controllers['options'] = dtcOptions(
+        self.dic_controllers['options'] = dmOptions(
             self.ramstk_model.program_dao,
-            self.RAMSTK_CONFIGURATION,
-            site_dao=_dao,
-            test=False,
+            common_dao=_dao
         )
         self.dic_controllers['options'].request_do_select_all(_attributes)
 

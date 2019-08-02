@@ -18,7 +18,6 @@ from .RAMSTKMeasurement import RAMSTKMeasurement
 from .RAMSTKMethod import RAMSTKMethod
 from .RAMSTKModel import RAMSTKModel
 from .RAMSTKRPN import RAMSTKRPN
-from .RAMSTKSiteInfo import RAMSTKSiteInfo
 from .RAMSTKStakeholders import RAMSTKStakeholders
 from .RAMSTKStatus import RAMSTKStatus
 from .RAMSTKSubCategory import RAMSTKSubCategory
