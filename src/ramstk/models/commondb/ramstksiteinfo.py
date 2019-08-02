@@ -18,7 +18,7 @@ from ramstk.Utilities import none_to_default
 
 
 class RAMSTKSiteInfo(RAMSTK_BASE):
-    """Class to represent the table ramstk_site_info in the RAMSTK Common database."""
+    """Class to represent ramstk_site_info in the RAMSTK Common database."""
 
     __defaults__ = {
         'product_key': '',
@@ -27,7 +27,8 @@ class RAMSTKSiteInfo(RAMSTK_BASE):
         'requirement_enabled': 0,
         'hardware_enabled': 0,
         'vandv_enabled': 0,
-        'fmea_enabled': 0}
+        'fmea_enabled': 0
+    }
     __tablename__ = 'ramstk_site_info'
     __table_args__ = {'extend_existing': True}
 
@@ -36,19 +37,33 @@ class RAMSTKSiteInfo(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False,
+        nullable=False
     )
-    product_key = Column('fld_product_key', String(512), default=__defaults__['product_key'])
-    expire_on = Column('fld_expire_on', Date, default=__defaults__['expire_on'])
-    function_enabled = Column('fld_function_enabled', Integer, default=__defaults__['function_enabled'])
-    requirement_enabled = Column('fld_requirement_enabled', Integer, default=__defaults__['requirement_enabled'])
-    hardware_enabled = Column('fld_hardware_enabled', Integer, default=__defaults__['hardware_enabled'])
-    vandv_enabled = Column('fld_vandv_enabled', Integer, default=__defaults__['vandv_enabled'])
-    fmea_enabled = Column('fld_fmea_enabled', Integer, default=__defaults__['fmea_enabled'])
+    product_key = Column('fld_product_key',
+                         String(512),
+                         default=__defaults__['product_key'])
+    expire_on = Column('fld_expire_on',
+                       Date,
+                       default=__defaults__['expire_on'])
+    function_enabled = Column('fld_function_enabled',
+                              Integer,
+                              default=__defaults__['function_enabled'])
+    requirement_enabled = Column('fld_requirement_enabled',
+                                 Integer,
+                                 default=__defaults__['requirement_enabled'])
+    hardware_enabled = Column('fld_hardware_enabled',
+                              Integer,
+                              default=__defaults__['hardware_enabled'])
+    vandv_enabled = Column('fld_vandv_enabled',
+                           Integer,
+                           default=__defaults__['vandv_enabled'])
+    fmea_enabled = Column('fld_fmea_enabled',
+                          Integer,
+                          default=__defaults__['fmea_enabled'])
 
     def get_attributes(self):
         """
-        Retrieve the current values of the RAMSTKSiteInfo data model attributes.
+        Retrieve current values of the RAMSTKSiteInfo data model attributes.
 
         :return: {site_id, product_key, expire_on, function_enabled,
                   requirement_enabled, vandv_enabled, fmea_enabled} pairs.

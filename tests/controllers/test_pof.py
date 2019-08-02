@@ -1,11 +1,11 @@
 # pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_fmea.py is part of The RAMSTK Project
+#       tests.controllers.test_pof.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing FMEA algorithms and models."""
+"""Test class for testing PoF algorithms and models."""
 
 # Third Party Imports
 import pytest
