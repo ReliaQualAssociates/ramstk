@@ -6,9 +6,11 @@
 # All rights reserved.
 """Test class for testing the RAMSTKLoadHistory module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.commondb.RAMSTKLoadHistory import RAMSTKLoadHistory
+# RAMSTK Package Imports
+from ramstk.models.commondb import RAMSTKLoadHistory
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

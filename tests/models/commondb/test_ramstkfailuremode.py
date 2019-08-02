@@ -1,43 +1,44 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_ramstkcondition.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstkfailuremode.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKCondition module algorithms and models."""
+"""Test class for the RAMSTKFailureMode module algorithms and models. """
 
 # Third Party Imports
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.dao.commondb.RAMSTKCondition import RAMSTKCondition
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+from ramstk.models.commondb import RAMSTKFailureMode
 
 ATTRIBUTES = {
-    'condition_type': 'operating',
-    'condition_id': 1,
-    'description': 'Cavitation',
+    'mode_id': 3,
+    'description': 'Parameter Change',
+    'subcategory_id': 24,
+    'source': 'FMD-97',
+    'category_id': 3,
+    'mode_ratio': 0.2,
 }
 
 
 @pytest.mark.integration
-def test_ramstkcondition_create(test_common_dao):
-    """ __init__() should create an RAMSTKCondition model. """
+def test_ramstkfailuremode_create(test_common_dao):
+    """ __init__() should create an RAMSTKFailureMode model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
     )
-    DUT = _session.query(RAMSTKCondition).first()
+    DUT = _session.query(RAMSTKFailureMode).first()
 
-    assert isinstance(DUT, RAMSTKCondition)
+    assert isinstance(DUT, RAMSTKFailureMode)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'ramstk_condition'
-    assert DUT.condition_id == 1
-    assert DUT.description == 'Cavitation'
-    assert DUT.cond_type == 'operating'
+    assert DUT.__tablename__ == 'ramstk_failure_mode'
+    assert DUT.category_id == 3
+    assert DUT.subcategory_id == 24
+    assert DUT.mode_id == 3
+    assert DUT.description == 'Parameter Change'
+    assert DUT.mode_ratio == 0.2
+    assert DUT.source == 'FMD-97'
 
 
 @pytest.mark.integration
@@ -46,7 +47,7 @@ def test_get_attributes(test_common_dao):
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
     )
-    DUT = _session.query(RAMSTKCondition).first()
+    DUT = _session.query(RAMSTKFailureMode).first()
 
     assert DUT.get_attributes() == ATTRIBUTES
 
@@ -57,14 +58,14 @@ def test_set_attributes(test_common_dao):
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
     )
-    DUT = _session.query(RAMSTKCondition).first()
+    DUT = _session.query(RAMSTKFailureMode).first()
 
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 0
     assert _msg == (
-        "RAMSTK SUCCESS: Updating RAMSTKCondition {0:d} "
-        "attributes.".format(DUT.condition_id)
+        "RAMSTK SUCCESS: Updating RAMSTKFailureMode {0:d} "
+        "attributes.".format(DUT.mode_id)
     )
 
 
@@ -74,17 +75,16 @@ def test_set_attributes_missing_key(test_common_dao):
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
     )
-    DUT = _session.query(RAMSTKCondition).first()
+    DUT = _session.query(RAMSTKFailureMode).first()
 
-    ATTRIBUTES.pop('condition_type')
+    ATTRIBUTES.pop('mode_ratio')
 
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 40
     assert _msg == (
-        "RAMSTK ERROR: Missing attribute 'condition_type' in "
-        "attribute dictionary passed to "
-        "RAMSTKCondition.set_attributes()."
+        "RAMSTK ERROR: Missing attribute 'mode_ratio' in attribute "
+        "dictionary passed to RAMSTKFailureMode.set_attributes()."
     )
 
-    ATTRIBUTES['condition_type'] = 'operating'
+    ATTRIBUTES['mode_ratio'] = 0.2

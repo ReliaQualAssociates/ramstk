@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.dao.commondb import RAMSTKCategory
+from ramstk.models.commondb import RAMSTKCategory
 
 ATTRIBUTES = {
     'category_type': 'hardware',

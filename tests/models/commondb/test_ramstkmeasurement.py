@@ -5,9 +5,11 @@
 # All rights reserved.
 """Test class for testing the RAMSTKMeasurement module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.commondb.RAMSTKMeasurement import RAMSTKMeasurement
+# RAMSTK Package Imports
+from ramstk.models.commondb import RAMSTKMeasurement
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

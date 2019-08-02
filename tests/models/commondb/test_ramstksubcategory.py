@@ -1,41 +1,38 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_ramstkhazards.py is part of The RAMSTK Project
-
+#       tests.dao.commondb.test_ramstksubcategory.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKHazard module algorithms and models."""
+"""Test class for testing the RAMSTKSubCategory module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.commondb.RAMSTKHazards import RAMSTKHazards
+# RAMSTK Package Imports
+from ramstk.models.commondb import RAMSTKSubCategory
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
-ATTRIBUTES = {
-    'category': 'Acceleration/Gravity',
-    'hazard_id': 1,
-    'subcategory': 'Falls'
-}
+ATTRIBUTES = {'category_id': 1, 'subcategory_id': 1, 'description': 'Linear'}
 
 
 @pytest.mark.integration
-def test_ramstkhazards_create(test_common_dao):
-    """ __init__() should create an RAMSTKHazard model. """
+def test_ramstksubcategory_create(test_common_dao):
+    """ __init__() should create an RAMSTKSubCategory model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazards).first()
+    DUT = _session.query(RAMSTKSubCategory).first()
 
-    assert isinstance(DUT, RAMSTKHazards)
+    assert isinstance(DUT, RAMSTKSubCategory)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'ramstk_hazards'
-    assert DUT.hazard_id == 1
-    assert DUT.category == 'Acceleration/Gravity'
-    assert DUT.subcategory == 'Falls'
+    assert DUT.__tablename__ == 'ramstk_subcategory'
+    assert DUT.category_id == 1
+    assert DUT.subcategory_id == 1
+    assert DUT.description == 'Linear'
 
 
 @pytest.mark.integration
@@ -43,7 +40,7 @@ def test_get_attributes(test_common_dao):
     """ get_attributes() should return a tuple of attributes values on success. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazards).first()
+    DUT = _session.query(RAMSTKSubCategory).first()
 
     assert DUT.get_attributes() == ATTRIBUTES
 
@@ -53,13 +50,13 @@ def test_set_attributes(test_common_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazards).first()
+    DUT = _session.query(RAMSTKSubCategory).first()
 
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKHazard {0:d} "
-                    "attributes.".format(DUT.hazard_id))
+    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKSubCategory {0:d} "
+                    "attributes.".format(DUT.subcategory_id))
 
 
 @pytest.mark.integration
@@ -67,12 +64,14 @@ def test_set_attributes_missing_key(test_common_dao):
     """ set_attributes() should return a 40 error code when passed too few attributes. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazards).first()
+    DUT = _session.query(RAMSTKSubCategory).first()
 
-    ATTRIBUTES.pop('category')
+    ATTRIBUTES.pop('category_id')
 
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'category' in attribute "
-                    "dictionary passed to RAMSTKHazards.set_attributes().")
+    assert _msg == ("RAMSTK ERROR: Missing attribute 'category_id' in attribute "
+                    "dictionary passed to RAMSTKSubCategory.set_attributes().")
+
+    ATTRIBUTES['category_id'] = 1

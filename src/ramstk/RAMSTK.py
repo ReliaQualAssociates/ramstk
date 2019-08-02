@@ -27,26 +27,16 @@ from ramstk.controllers.requirement import dmRequirement
 from ramstk.controllers.revision import dmRevision
 from ramstk.controllers.stakeholder import dmStakeholder
 from ramstk.controllers.validation import dmValidation
-from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
-from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
-from ramstk.dao.commondb.RAMSTKGroup import RAMSTKGroup
-from ramstk.dao.commondb.RAMSTKHazards import RAMSTKHazards
-from ramstk.dao.commondb.RAMSTKLoadHistory import RAMSTKLoadHistory
-from ramstk.dao.commondb.RAMSTKManufacturer import RAMSTKManufacturer
-from ramstk.dao.commondb.RAMSTKMeasurement import RAMSTKMeasurement
-from ramstk.dao.commondb.RAMSTKMethod import RAMSTKMethod
-from ramstk.dao.commondb.RAMSTKModel import RAMSTKModel
-from ramstk.dao.commondb.RAMSTKRPN import RAMSTKRPN
-from ramstk.dao.commondb.RAMSTKStakeholders import RAMSTKStakeholders
-from ramstk.dao.commondb.RAMSTKStatus import RAMSTKStatus
-from ramstk.dao.commondb.RAMSTKSubCategory import RAMSTKSubCategory
-from ramstk.dao.commondb.RAMSTKType import RAMSTKType
-from ramstk.dao.commondb.RAMSTKUser import RAMSTKUser
 from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
-from ramstk.models.commondb import RAMSTKSiteInfo
+from ramstk.models.commondb import (
+    RAMSTKRPN, RAMSTKCategory, RAMSTKFailureMode, RAMSTKGroup,
+    RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
+    RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
+    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
+)
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.preferences import dtcPreferences
