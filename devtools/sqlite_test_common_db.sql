@@ -419,7 +419,7 @@ CREATE TABLE ramstk_method (
     fld_method_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
     fld_description VARCHAR(512),
-    fld_type VARCHAR(256),
+    fld_method_type VARCHAR(256),
     PRIMARY KEY (fld_method_id)
 );
 INSERT INTO "ramstk_method" VALUES(1,'Code Reviews','','detection');
@@ -431,7 +431,7 @@ INSERT INTO "ramstk_method" VALUES(6,'Branch Testing','','detection');
 CREATE TABLE ramstk_model (
     fld_model_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
-    fld_type INTEGER,
+    fld_model_type INTEGER,
     PRIMARY KEY (fld_model_id)
 );
 INSERT INTO "ramstk_model" VALUES(1,'Adhesion Wear Model for Bearings','damage');

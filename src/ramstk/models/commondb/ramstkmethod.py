@@ -36,7 +36,7 @@ class RAMSTKMethod(RAMSTK_BASE):
     description = Column('fld_description',
                          String(512),
                          default=__defaults__['description'])
-    method_type = Column('fld_type',
+    method_type = Column('fld_method_type',
                          String(256),
                          default=__defaults__['method_type'])
 
