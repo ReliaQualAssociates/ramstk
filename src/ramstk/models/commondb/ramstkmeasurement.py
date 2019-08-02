@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.commondb.RAMSTKMeasurement.py is part of The RAMSTK Project
+#       ramstk.models.commondb.RAMSTKMeasurement.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -19,7 +20,7 @@ class RAMSTKMeasurement(RAMSTK_BASE):
 
     __defaults__ = {
         'code': 'Measurement Code',
-        'description': 'Measurement Decription',
+        'description': 'Measurement Description',
         'measurement_type': 'unknown'
     }
     __tablename__ = 'ramstk_measurement'

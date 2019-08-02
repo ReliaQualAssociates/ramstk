@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.commondb.RAMSTKMethod.py is part of The RAMSTK Project
+#       ramstk.models.commondb.RAMSTKMethod.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -15,8 +15,13 @@ from ramstk.Utilities import none_to_default
 
 
 class RAMSTKMethod(RAMSTK_BASE):
-    """Class to represent the table ramstk_method in the RAMSTK Common database."""
+    """Class to representramstk_method in the RAMSTK Common database."""
 
+    __defaults__ = {
+        'description': 'Method Description',
+        'method_type': 'unknown',
+        'name': 'Method Name'
+    }
     __tablename__ = 'ramstk_method'
     __table_args__ = {'extend_existing': True}
 
@@ -27,11 +32,13 @@ class RAMSTKMethod(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    name = Column('fld_name', String(256), default='Method Name')
-    description = Column(
-        'fld_description', String(512), default='Method Description',
-    )
-    method_type = Column('fld_type', String(256), default='unknown')
+    name = Column('fld_name', String(256), default=__defaults__['name'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    method_type = Column('fld_type',
+                         String(256),
+                         default=__defaults__['method_type'])
 
     def get_attributes(self):
         """
@@ -51,36 +58,19 @@ class RAMSTKMethod(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKMethod data model attributes.
+        Set one or more RAMSTKMethod attributes.
 
-        :param dict attributes: dict containing the key:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the method ID entries from the attributes dict
+            before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKMethod {0:d} attributes.". \
-            format(self.method_id)
-
-        try:
-            self.name = str(none_to_default(attributes['name'], 'Method Name'))
-            self.description = str(
-                none_to_default(
-                    attributes['description'],
-                    'Method Description',
-                ),
-            )
-            self.method_type = str(
-                none_to_default(attributes['method_type'], 'unknown'),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
