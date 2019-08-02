@@ -21,6 +21,7 @@ class RAMSTKGroup(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_user.
     """
 
+    __defaults__ = {'description': 'Group Description', 'group_type': ''}
     __tablename__ = 'ramstk_group'
     __table_args__ = {'extend_existing': True}
 
@@ -31,10 +32,12 @@ class RAMSTKGroup(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    description = Column(
-        'fld_description', String(512), default='Group Description',
-    )
-    group_type = Column('fld_type', String(256), default='')
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    group_type = Column('fld_group_type',
+                        String(256),
+                        default=__defaults__['group_type'])
 
     def get_attributes(self):
         """
@@ -53,36 +56,19 @@ class RAMSTKGroup(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKGroup data model attributes.
+        Set one or more RAMSTKGroup attributes.
 
-        :param dict attributes: dict containing the pair:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the group ID entries from the attributes dict
+            before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKGroup {0:d} attributes.".\
-            format(self.group_id)
-
-        try:
-            self.description = str(
-                none_to_default(
-                    attributes['description'],
-                    'Group Description',
-                ),
-            )
-            self.group_type = str(
-                none_to_default(attributes['group_type'], ''),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

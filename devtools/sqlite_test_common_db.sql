@@ -150,7 +150,7 @@ INSERT INTO "ramstk_failure_mode" VALUES(3,24,3,'Parameter Change',0.2,'FMD-97')
 CREATE TABLE ramstk_group (
     fld_group_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
-    fld_type VARCHAR(256),
+    fld_group_type VARCHAR(256),
     PRIMARY KEY (fld_group_id)
 );
 INSERT INTO "ramstk_group" VALUES(1,'Engineering, Design','workgroup');
