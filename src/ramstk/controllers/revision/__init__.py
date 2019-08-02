@@ -6,6 +6,3 @@
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK revision controllers package."""
-
-# RAMSTK Local Imports
-from .datamanager import DataManager as dmRevision

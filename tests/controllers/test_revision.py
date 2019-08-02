@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_revision.py is part of The RAMSTK Project
@@ -13,7 +13,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers.revision import dmRevision
+from ramstk.controllers import dmRevision
 from ramstk.dao import DAO
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,

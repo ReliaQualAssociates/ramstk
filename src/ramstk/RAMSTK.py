@@ -18,15 +18,10 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers.fmea import dmFMEA
-from ramstk.controllers.function import dmFunction
-from ramstk.controllers.hardware import dmHardware
-from ramstk.controllers.options import dmOptions
-from ramstk.controllers.pof import dmPoF
-from ramstk.controllers.requirement import dmRequirement
-from ramstk.controllers.revision import dmRevision
-from ramstk.controllers.stakeholder import dmStakeholder
-from ramstk.controllers.validation import dmValidation
+from ramstk.controllers import (
+    dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
+    dmRequirement, dmRevision, dmStakeholder, dmValidation
+)
 from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook

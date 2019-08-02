@@ -14,7 +14,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import Configuration
-from ramstk.controllers.function import amFunction, dmFunction
+from ramstk.controllers import amFunction, dmFunction
 from ramstk.dao import DAO
 from ramstk.models.programdb import RAMSTKFunction, RAMSTKHazardAnalysis
 

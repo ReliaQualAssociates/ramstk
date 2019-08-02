@@ -17,7 +17,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import Configuration
-from ramstk.controllers.fmea import amFMEA, dmFMEA
+from ramstk.controllers import amFMEA, dmFMEA
 from ramstk.dao import DAO
 from ramstk.models.programdb import (
     RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
