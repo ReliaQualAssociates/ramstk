@@ -16,10 +16,10 @@ from ramstk.Utilities import none_to_default
 
 
 class RAMSTKFailureMode(RAMSTK_BASE):
-    """Class to represent the table ramstk_failuremode in the RAMSTK Common database."""
+    """Class to represent ramstk_failuremode in the RAMSTK Common database."""
 
     __defaults__ = {
-        'description': 'Failure Mode Decription',
+        'description': 'Failure Mode Description',
         'mode_ratio': 1.0,
         'source': ''
     }
@@ -46,9 +46,13 @@ class RAMSTKFailureMode(RAMSTK_BASE):
         nullable=False,
     )
     description = Column(
-        'fld_description', String(512), default=__defaults__['description'],
+        'fld_description',
+        String(512),
+        default=__defaults__['description'],
     )
-    mode_ratio = Column('fld_mode_ratio', Float, default=__defaults__['mode_ratio'])
+    mode_ratio = Column('fld_mode_ratio',
+                        Float,
+                        default=__defaults__['mode_ratio'])
     source = Column('fld_source', String(128), default=__defaults__['source'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -75,10 +79,11 @@ class RAMSTKFailureMode(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set one or more RAMSTKSiteInfo attributes.
+        Set one or more RAMSTKFailureMode attributes.
 
-        .. note:: you should pop the site ID entries from the attributes dict
-            before passing it to this method.
+        .. note:: you should pop the category ID, subcategory ID, and
+            failuremode ID entries from the attributes dict before passing it
+            to this method.
 
         :param dict attributes: dict of key:value pairs to assign to the
             instance attributes.
