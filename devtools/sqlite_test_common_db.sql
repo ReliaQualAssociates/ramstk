@@ -446,7 +446,7 @@ CREATE TABLE ramstk_rpn (
     fld_rpn_id INTEGER NOT NULL,
     fld_name VARCHAR(512),
     fld_description VARCHAR(512),
-    fld_type VARCHAR(256),
+    fld_rpn_type VARCHAR(256),
     fld_value INTEGER,
     PRIMARY KEY (fld_rpn_id)
 );
