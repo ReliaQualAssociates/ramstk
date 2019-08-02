@@ -279,7 +279,7 @@ class Model():
         # tree.                                                               #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'hardware').all():
+                filter(RAMSTKCategory.category_type == 'hardware').all():
 
             _subcats = {}
             configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
@@ -328,7 +328,7 @@ class Model():
         # Load dictionaries from RAMSTKCategory.                                 #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'action').all():
+                filter(RAMSTKCategory.category_type == 'action').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
                 _attributes['name'],
@@ -338,7 +338,7 @@ class Model():
             )
 
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'incident').all():
+                filter(RAMSTKCategory.category_type == 'incident').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
                 _attributes['name'],
@@ -348,7 +348,7 @@ class Model():
             )
 
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'risk').all():
+                filter(RAMSTKCategory.category_type == 'risk').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_SEVERITY[_record.category_id] = (
                 _attributes['name'],

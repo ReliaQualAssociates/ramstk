@@ -27,6 +27,22 @@ class RAMSTKCategory(RAMSTK_BASE):
         # 5. Action
     """
 
+    __defaults__ = {
+        'name': 'Category Name',
+        'description': 'Category Description',
+        'category_type': 'unknown',
+        'value': 1,
+        'harsh_ir_limit': 0.8,
+        'mild_ir_limit': 0.9,
+        'harsh_pr_limit': 1.0,
+        'mild_pr_limit': 1.0,
+        'harsh_vr_limit': 1.0,
+        'mild_vr_limit': 1.0,
+        'harsh_deltat_limit': 0.0,
+        'mild_deltat_limit': 0.0,
+        'harsh_maxt_limit': 125.0,
+        'mild_maxt_limit': 125.0
+    }
     __tablename__ = 'ramstk_category'
     __table_args__ = {'extend_existing': True}
 
@@ -37,24 +53,44 @@ class RAMSTKCategory(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    name = Column('fld_name', String(256), default='Category Name')
-    description = Column(
-        'fld_description',
-        String(512),
-        default='Category Description',
-    )
-    cat_type = Column('fld_type', String(256), default='unknown')
-    value = Column('fld_value', Integer, default=1)
-    harsh_ir_limit = Column('fld_harsh_ir_limit', Float, default=0.8)
-    mild_ir_limit = Column('fld_mild_ir_limit', Float, default=0.9)
-    harsh_pr_limit = Column('fld_harsh_pr_limit', Float, default=1.0)
-    mild_pr_limit = Column('fld_mild_pr_limit', Float, default=1.0)
-    harsh_vr_limit = Column('fld_harsh_vr_limit', Float, default=1.0)
-    mild_vr_limit = Column('fld_mild_vr_limit', Float, default=1.0)
-    harsh_deltat_limit = Column('fld_harsh_deltat_limit', Float, default=0.0)
-    mild_deltat_limit = Column('fld_mild_deltat_limit', Float, default=0.0)
-    harsh_maxt_limit = Column('fld_harsh_maxt_limit', Float, default=125.0)
-    mild_maxt_limit = Column('fld_mild_maxt_limit', Float, default=125.0)
+    name = Column('fld_name', String(256), default=__defaults__['name'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    category_type = Column('fld_category_type',
+                           String(256),
+                           default=__defaults__['category_type'])
+    value = Column('fld_value', Integer, default=__defaults__['value'])
+    harsh_ir_limit = Column('fld_harsh_ir_limit',
+                            Float,
+                            default=__defaults__['harsh_ir_limit'])
+    mild_ir_limit = Column('fld_mild_ir_limit',
+                           Float,
+                           default=__defaults__['mild_ir_limit'])
+    harsh_pr_limit = Column('fld_harsh_pr_limit',
+                            Float,
+                            default=__defaults__['harsh_pr_limit'])
+    mild_pr_limit = Column('fld_mild_pr_limit',
+                           Float,
+                           default=__defaults__['mild_pr_limit'])
+    harsh_vr_limit = Column('fld_harsh_vr_limit',
+                            Float,
+                            default=__defaults__['harsh_vr_limit'])
+    mild_vr_limit = Column('fld_mild_vr_limit',
+                           Float,
+                           default=__defaults__['mild_vr_limit'])
+    harsh_deltat_limit = Column('fld_harsh_deltat_limit',
+                                Float,
+                                default=__defaults__['harsh_deltat_limit'])
+    mild_deltat_limit = Column('fld_mild_deltat_limit',
+                               Float,
+                               default=__defaults__['mild_deltat_limit'])
+    harsh_maxt_limit = Column('fld_harsh_maxt_limit',
+                              Float,
+                              default=__defaults__['harsh_maxt_limit'])
+    mild_maxt_limit = Column('fld_mild_maxt_limit',
+                             Float,
+                             default=__defaults__['mild_maxt_limit'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     subcategory = relationship(
@@ -72,7 +108,7 @@ class RAMSTKCategory(RAMSTK_BASE):
         """
         Retrieve current values of the RAMSTKCategory data model attributes.
 
-        :return: {category_id, name, description, cat_type, value,
+        :return: {category_id, name, description, category_type, value,
                   harsh_ir_limit, mild_ir_limit, harsh_pr_limit,
                   mild_pr_limit, harsh_vr_limit, mild_vr_limit,
                   harsh_deltat_limit, mild_deltat_limit, harsh_maxt_limit,
@@ -83,7 +119,7 @@ class RAMSTKCategory(RAMSTK_BASE):
             'category_id': self.category_id,
             'name': self.name,
             'description': self.description,
-            'category_type': self.cat_type,
+            'category_type': self.category_type,
             'value': self.value,
             'harsh_ir_limit': self.harsh_ir_limit,
             'mild_ir_limit': self.mild_ir_limit,
@@ -101,51 +137,19 @@ class RAMSTKCategory(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKCategory data model attributes.
+        Set one or more RAMSTKCategory attributes.
 
-        :param dict attributes: dict containing the values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the category ID entries from the attributes
+            dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKCategory {0:d} attributes.". \
-            format(self.category_id)
-
-        try:
-            self.name = str(
-                none_to_default(attributes['name'], 'Category Name'), )
-            self.description = str(
-                none_to_default(
-                    attributes['description'],
-                    'Category Description',
-                ), )
-            self.cat_type = str(
-                none_to_default(attributes['category_type'], 'unknown'), )
-            self.value = int(none_to_default(attributes['value'], 1))
-            self.harsh_ir_limit = float(
-                none_to_default(attributes['harsh_ir_limit'], 1.0), )
-            self.mild_ir_limit = float(
-                none_to_default(attributes['mild_ir_limit'], 1.0), )
-            self.harsh_pr_limit = float(
-                none_to_default(attributes['harsh_pr_limit'], 1.0), )
-            self.mild_pr_limit = float(
-                none_to_default(attributes['mild_pr_limit'], 1.0), )
-            self.harsh_vr_limit = float(
-                none_to_default(attributes['harsh_vr_limit'], 1.0), )
-            self.mild_vr_limit = float(
-                none_to_default(attributes['mild_vr_limit'], 1.0), )
-            self.harsh_deltat_limit = float(
-                none_to_default(attributes['harsh_deltat_limit'], 1.0), )
-            self.mild_deltat_limit = float(
-                none_to_default(attributes['mild_deltat_limit'], 1.0), )
-            self.harsh_maxt_limit = float(
-                none_to_default(attributes['harsh_maxt_limit'], 1.0), )
-            self.mild_maxt_limit = float(
-                none_to_default(attributes['mild_maxt_limit'], 1.0), )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKCategory.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
