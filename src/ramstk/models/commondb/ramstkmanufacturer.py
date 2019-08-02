@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.commondb.RAMSTKManufacturer.py is part of The RAMSTK Project
+#       ramstk.models.commondb.RAMSTKManufacturer.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -15,8 +16,13 @@ from ramstk.Utilities import none_to_default
 
 
 class RAMSTKManufacturer(RAMSTK_BASE):
-    """Class to represent the table ramstk_manufacturer in the RAMSTK Common database."""
+    """Class to represent ramstk_manufacturer in the RAMSTK Common database."""
 
+    __defaults__ = {
+        'description': 'Manufacturer Description',
+        'location': 'unknown',
+        'cage_code': 'CAGE Code'
+    }
     __tablename__ = 'ramstk_manufacturer'
     __table_args__ = {'extend_existing': True}
 
@@ -27,11 +33,9 @@ class RAMSTKManufacturer(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    description = Column(
-        'fld_description', String(512), default='Manufacturer Description',
-    )
-    location = Column('fld_location', String(512), default='unknown')
-    cage_code = Column('fld_cage_code', String(512), default='CAGE Code')
+    description = Column('fld_description', String(512), default=__defaults__['description'])
+    location = Column('fld_location', String(512), default=__defaults__['location'])
+    cage_code = Column('fld_cage_code', String(512), default=__defaults__['cage_code'])
 
     def get_attributes(self):
         """
@@ -51,38 +55,19 @@ class RAMSTKManufacturer(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKManufacturer data model attributes.
+        Set one or more RAMSTKManufacturer attributes.
 
-        :param dict attributes: dict containing the key:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the manufacturer ID entries from the
+            attributes dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKManufacturer {0:d} attributes.". \
-            format(self.manufacturer_id)
-
-        try:
-            self.description = str(
-                none_to_default(
-                    attributes['description'],
-                    'Manufacturer Description',
-                ),
-            )
-            self.location = str(
-                none_to_default(attributes['location'], 'unknown'),
-            )
-            self.cage_code = str(
-                none_to_default(attributes['cage_code'], 'CAGE Code'),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
