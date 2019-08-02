@@ -472,8 +472,8 @@ class Model():
         for _record in self.site_session.query(RAMSTKHazards).all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
-                _attributes['category'],
-                _attributes['subcategory'],
+                _attributes['hazard_category'],
+                _attributes['hazard_subcategory'],
             )
 
         for _record in self.site_session.query(RAMSTKLoadHistory).all():

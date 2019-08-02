@@ -164,8 +164,8 @@ INSERT INTO "ramstk_group" VALUES(8,'Durability','affinity');
 INSERT INTO "ramstk_group" VALUES(9,'Cost','affinity');
 CREATE TABLE ramstk_hazards (
     fld_hazard_id INTEGER NOT NULL,
-    fld_category VARCHAR(512),
-    fld_subcategory VARCHAR(512),
+    fld_hazard_category VARCHAR(512),
+    fld_hazard_subcategory VARCHAR(512),
     PRIMARY KEY (fld_hazard_id)
 );
 INSERT INTO "ramstk_hazards" VALUES(1,'Acceleration/Gravity','Falls');

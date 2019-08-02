@@ -17,6 +17,10 @@ from ramstk.Utilities import none_to_default
 class RAMSTKHazards(RAMSTK_BASE):
     """Class to represent the table ramstk_hazard in the RAMSTK Common database."""
 
+    __defaults__ = {
+        'hazard_category': 'Hazard Category',
+        'hazard_subcategory': 'Hazard Subcategory'
+    }
     __tablename__ = 'ramstk_hazards'
     __table_args__ = {'extend_existing': True}
 
@@ -27,10 +31,12 @@ class RAMSTKHazards(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    category = Column('fld_category', String(512), default='Hazard Category')
-    subcategory = Column(
-        'fld_subcategory', String(512), default='Hazard Subcategory',
-    )
+    hazard_category = Column('fld_hazard_category',
+                             String(512),
+                             default='Hazard Category')
+    hazard_subcategory = Column('fld_hazard_subcategory',
+                                String(512),
+                                default='Hazard Subcategory')
 
     def get_attributes(self):
         """
@@ -41,43 +47,27 @@ class RAMSTKHazards(RAMSTK_BASE):
         """
         _attributes = {
             'hazard_id': self.hazard_id,
-            'category': self.category,
-            'subcategory': self.subcategory,
+            'hazard_category': self.hazard_category,
+            'hazard_subcategory': self.hazard_subcategory,
         }
 
         return _attributes
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKHazard data model attributes.
+        Set one or more RAMSTKHazards attributes.
 
-        :param dict attributes: dict containing the key:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the hazard ID entries from the attributes dict
+            before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKHazard {0:d} attributes.". \
-            format(self.hazard_id)
-
-        try:
-            self.category = str(
-                none_to_default(attributes['category'], 'Hazard Category'),
-            )
-            self.subcategory = str(
-                none_to_default(
-                    attributes['subcategory'],
-                    'Hazard Subcategory',
-                ),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
