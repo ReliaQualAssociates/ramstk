@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.test_ramstkaction.py is part of The RAMSTK
@@ -8,7 +9,7 @@
 """Test class for testing the RAMSTKAction module algorithms and models."""
 
 # Standard Library Imports
-from datetime import date, timedelta
+from datetime import date
 
 # Third Party Imports
 import pytest

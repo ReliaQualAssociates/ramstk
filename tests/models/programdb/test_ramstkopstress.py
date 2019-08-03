@@ -3,7 +3,6 @@
 #
 #       tests.models.programdb.test_ramstkopstress.py is part of The RAMSTK
 #       Project
-
 #
 # All rights reserved.
 """Test class for testing the RAMSTKOpStress module algorithms and models."""
