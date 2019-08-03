@@ -12,10 +12,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKControl(RAMSTK_BASE):
+class RAMSTKControl(RAMSTK_BASE, RAMSTKBaseTable):
     """
     Class to represent the table ramstk_control in the RAMSTK Program database.
 
@@ -71,22 +71,3 @@ class RAMSTKControl(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set one or more RAMSTKControl attributes.
-
-        .. note:: you should pop the cause ID and control ID entries from
-            the attributes dict before passing it to this method.
-
-        :param dict attributes: dict of key:value pairs to assign to the
-            instance attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

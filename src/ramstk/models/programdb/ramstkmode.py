@@ -12,10 +12,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKMode(RAMSTK_BASE):
+class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
     """
     Class to represent table ramstk_mode in the RAMSTK Program database.
 
@@ -54,25 +54,19 @@ class RAMSTKMode(RAMSTK_BASE):
     __tablename__ = 'ramstk_mode'
     __table_args__ = {'extend_existing': True}
 
-    function_id = Column(
-        'fld_function_id',
-        Integer,
-        default=-1,
-        nullable=False
-    )
-    hardware_id = Column(
-        'fld_hardware_id',
-        Integer,
-        default=-1,
-        nullable=False
-    )
-    mode_id = Column(
-        'fld_mode_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False
-    )
+    function_id = Column('fld_function_id',
+                         Integer,
+                         default=-1,
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         default=-1,
+                         nullable=False)
+    mode_id = Column('fld_mode_id',
+                     Integer,
+                     primary_key=True,
+                     autoincrement=True,
+                     nullable=False)
 
     critical_item = Column('fld_critical_item',
                            Integer,
@@ -209,22 +203,3 @@ class RAMSTKMode(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set one or more RAMSTKMode attributes.
-
-        .. note:: you should pop the function ID, hardware ID, and mode ID
-            entries from the attributes dict before passing it to this method.
-
-        :param dict attributes: dict of key:value pairs to assign to the
-            instance attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

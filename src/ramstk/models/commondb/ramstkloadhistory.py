@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.commondb.RAMSTKLoadHistory.py is part of The RAMSTK Project
+#       ramstk.models.commondb.RAMSTKLoadHistory.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,10 +12,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKLoadHistory(RAMSTK_BASE):
+class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to represent the table ramstk_load_history."""
 
     __defaults__ = {'description': 'Load History Description'}
@@ -43,22 +44,3 @@ class RAMSTKLoadHistory(RAMSTK_BASE):
         }
 
         return _values
-
-    def set_attributes(self, attributes):
-        """
-        Set one or more RAMSTKLoadHistory attributes.
-
-        .. note:: you should pop the history ID entries from the attributes
-            dict before passing it to this method.
-
-        :param dict attributes: dict of key:value pairs to assign to the
-            instance attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

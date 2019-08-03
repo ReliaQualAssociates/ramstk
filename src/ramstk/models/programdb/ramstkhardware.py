@@ -15,10 +15,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKHardware(RAMSTK_BASE):
+class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseTable):
     """
     Class to represent ramstk_hardware table in the RAMSTK Program database.
 
@@ -272,24 +272,3 @@ class RAMSTKHardware(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set the current values of the RAMSTKHardware data model attributes.
-
-        .. note:: you should pop the revision ID and hardware ID entries from
-            the attributes dict before passing it to this method.
-
-        :param tuple attributes: tuple of attribute values to assign to the
-            attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        :raise: KeyError if passed an attribute dict containing a key that
-            doesn't exist in the __defaults__ dict.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

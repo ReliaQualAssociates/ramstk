@@ -13,12 +13,12 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKMissionPhase(RAMSTK_BASE):
+class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
     """
-    Class to represent the ramstk_mission_phase table in the RAMSTK Program database.
+    Class to represent ramstk_mission_phase in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mission.
     This table shares a One-to-Many relationship with ramstk_environment.
@@ -87,22 +87,3 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
         }
 
         return _values
-
-    def set_attributes(self, attributes):
-        """
-        Set the current values of RAMSTKMissionPhase data model attributes.
-
-        .. note:: you should pop the mission ID and phase ID entries from
-            the attributes dict before passing it to this method.
-
-        :param dict attributes: dict of values to assign to the instance
-            attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

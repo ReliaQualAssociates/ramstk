@@ -3,7 +3,7 @@
 #       ramstk.models.commondb.RAMSTKUser.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKUser Table Module."""
 
 # Third Party Imports
@@ -11,10 +11,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKUser(RAMSTK_BASE):
+class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseTable):
     """
     Class to represent the table ramstk_user in the RAMSTK Common database.
 
@@ -72,22 +72,3 @@ class RAMSTKUser(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set one or more RAMSTKUser attributes.
-
-        .. note:: you should pop the user ID entries from the attributes dict
-            before passing it to this method.
-
-        :param dict attributes: dict of key:value pairs to assign to the
-            instance attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

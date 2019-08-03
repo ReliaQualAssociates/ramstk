@@ -11,10 +11,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKMethod(RAMSTK_BASE):
+class RAMSTKMethod(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to representramstk_method in the RAMSTK Common database."""
 
     __defaults__ = {
@@ -55,22 +55,3 @@ class RAMSTKMethod(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set one or more RAMSTKMethod attributes.
-
-        .. note:: you should pop the method ID entries from the attributes dict
-            before passing it to this method.
-
-        :param dict attributes: dict of key:value pairs to assign to the
-            instance attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

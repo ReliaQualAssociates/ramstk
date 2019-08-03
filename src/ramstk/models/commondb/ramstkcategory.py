@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.commondb.RAMSTKCategory.py is part of The RAMSTK Project
+#       ramstk.models.commondb.RAMSTKCategory.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -12,10 +12,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKCategory(RAMSTK_BASE):
+class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseTable):
     """
     Class to represent the table ramstk_category in the RAMSTK Common database.
 
@@ -134,22 +134,3 @@ class RAMSTKCategory(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set one or more RAMSTKCategory attributes.
-
-        .. note:: you should pop the category ID entries from the attributes
-            dict before passing it to this method.
-
-        :param dict attributes: dict of key:value pairs to assign to the
-            instance attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))
