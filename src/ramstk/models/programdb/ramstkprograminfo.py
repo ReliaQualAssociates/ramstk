@@ -15,10 +15,10 @@ from sqlalchemy import Column, Date, Integer, String
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKProgramInfo(RAMSTK_BASE):
+class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseTable):
     """
     Class to represent table ramstk_program_info in RAMSTK Program database.
 
@@ -47,13 +47,11 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
     __tablename__ = 'ramstk_program_info'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column(
-        'fld_revision_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False
-    )
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         primary_key=True,
+                         autoincrement=True,
+                         nullable=False)
     function_active = Column('fld_function_active',
                              Integer,
                              default=__defaults__['function_active'])
@@ -137,22 +135,3 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set one or more RAMSTKProgramInfo attributes.
-
-        .. note:: you should pop the revision ID entries from the attributes
-            dict before passing it to this method.
-
-        :param dict attributes: dict of key:value pairs to assign to the
-            instance attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

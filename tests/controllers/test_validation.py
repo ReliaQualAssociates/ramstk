@@ -17,9 +17,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import Configuration
-from ramstk.controllers.validation import (
-    amValidation, dmValidation, mmValidation
-)
+from ramstk.controllers import amValidation, dmValidation, mmValidation
 from ramstk.dao import DAO
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
@@ -99,7 +97,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_validation_tree')
 
     @pytest.mark.unit
-    def test_matrix_manager_create(self, test_configuration):
+    def test_matrix_manager_create(self):
         """__init__() should create an instance of the validation matrix manager."""
         DUT = mmValidation()
 

@@ -18,7 +18,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao.commondb import RAMSTKUser
+from ramstk.models.commondb import RAMSTKUser
 from ramstk.modules.preferences import dtcPreferences, dtmPreferences
 from ramstk.modules.preferences.Model import (
     SitePreferencesDataModel, UserPreferencesDataModel

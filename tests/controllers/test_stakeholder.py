@@ -14,7 +14,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import Configuration
-from ramstk.controllers.stakeholder import amStakeholder, dmStakeholder
+from ramstk.controllers import amStakeholder, dmStakeholder
 from ramstk.dao import DAO
 from ramstk.models.programdb import RAMSTKStakeholder
 

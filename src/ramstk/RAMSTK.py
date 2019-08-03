@@ -18,35 +18,20 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers.fmea import dmFMEA
-from ramstk.controllers.function import dmFunction
-from ramstk.controllers.hardware import dmHardware
-from ramstk.controllers.options import dmOptions
-from ramstk.controllers.pof import dmPoF
-from ramstk.controllers.requirement import dmRequirement
-from ramstk.controllers.revision import dmRevision
-from ramstk.controllers.stakeholder import dmStakeholder
-from ramstk.controllers.validation import dmValidation
-from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
-from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
-from ramstk.dao.commondb.RAMSTKGroup import RAMSTKGroup
-from ramstk.dao.commondb.RAMSTKHazards import RAMSTKHazards
-from ramstk.dao.commondb.RAMSTKLoadHistory import RAMSTKLoadHistory
-from ramstk.dao.commondb.RAMSTKManufacturer import RAMSTKManufacturer
-from ramstk.dao.commondb.RAMSTKMeasurement import RAMSTKMeasurement
-from ramstk.dao.commondb.RAMSTKMethod import RAMSTKMethod
-from ramstk.dao.commondb.RAMSTKModel import RAMSTKModel
-from ramstk.dao.commondb.RAMSTKRPN import RAMSTKRPN
-from ramstk.dao.commondb.RAMSTKStakeholders import RAMSTKStakeholders
-from ramstk.dao.commondb.RAMSTKStatus import RAMSTKStatus
-from ramstk.dao.commondb.RAMSTKSubCategory import RAMSTKSubCategory
-from ramstk.dao.commondb.RAMSTKType import RAMSTKType
-from ramstk.dao.commondb.RAMSTKUser import RAMSTKUser
+from ramstk.controllers import (
+    dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
+    dmRequirement, dmRevision, dmStakeholder, dmValidation
+)
 from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
-from ramstk.models.commondb import RAMSTKSiteInfo
+from ramstk.models.commondb import (
+    RAMSTKRPN, RAMSTKCategory, RAMSTKFailureMode, RAMSTKGroup,
+    RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
+    RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
+    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
+)
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.preferences import dtcPreferences
@@ -294,7 +279,7 @@ class Model():
         # tree.                                                               #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'hardware').all():
+                filter(RAMSTKCategory.category_type == 'hardware').all():
 
             _subcats = {}
             configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
@@ -343,7 +328,7 @@ class Model():
         # Load dictionaries from RAMSTKCategory.                                 #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'action').all():
+                filter(RAMSTKCategory.category_type == 'action').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
                 _attributes['name'],
@@ -353,7 +338,7 @@ class Model():
             )
 
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'incident').all():
+                filter(RAMSTKCategory.category_type == 'incident').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
                 _attributes['name'],
@@ -363,7 +348,7 @@ class Model():
             )
 
         for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.cat_type == 'risk').all():
+                filter(RAMSTKCategory.category_type == 'risk').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_SEVERITY[_record.category_id] = (
                 _attributes['name'],
@@ -487,8 +472,8 @@ class Model():
         for _record in self.site_session.query(RAMSTKHazards).all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
-                _attributes['category'],
-                _attributes['subcategory'],
+                _attributes['hazard_category'],
+                _attributes['hazard_subcategory'],
             )
 
         for _record in self.site_session.query(RAMSTKLoadHistory).all():

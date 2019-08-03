@@ -13,7 +13,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers.requirement import dmRequirement, mmRequirement
+from ramstk.controllers import dmRequirement, mmRequirement
 from ramstk.dao import DAO
 from ramstk.models.programdb import RAMSTKRequirement
 

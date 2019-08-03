@@ -1,34 +1,34 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 CREATE TABLE ramstk_site_info (
-	fld_site_id INTEGER NOT NULL,
-	fld_product_key VARCHAR(512),
-	fld_expire_on DATE,
-	fld_function_enabled INTEGER,
-	fld_requirement_enabled INTEGER,
-	fld_hardware_enabled INTEGER,
-	fld_vandv_enabled INTEGER,
-	fld_fmea_enabled INTEGER,
-	PRIMARY KEY (fld_site_id)
+    fld_site_id INTEGER NOT NULL,
+    fld_product_key VARCHAR(512),
+    fld_expire_on DATE,
+    fld_function_enabled INTEGER,
+    fld_requirement_enabled INTEGER,
+    fld_hardware_enabled INTEGER,
+    fld_vandv_enabled INTEGER,
+    fld_fmea_enabled INTEGER,
+    PRIMARY KEY (fld_site_id)
 );
 INSERT INTO "ramstk_site_info" VALUES(1,'0000','2019-08-20',0,0,0,0,0);
 CREATE TABLE ramstk_category (
-	fld_category_id INTEGER NOT NULL,
-	fld_name VARCHAR(256),
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(256),
-	fld_value INTEGER,
-	fld_harsh_ir_limit FLOAT,
-	fld_mild_ir_limit FLOAT,
-	fld_harsh_pr_limit FLOAT,
-	fld_mild_pr_limit FLOAT,
-	fld_harsh_vr_limit FLOAT,
-	fld_mild_vr_limit FLOAT,
-	fld_harsh_deltat_limit FLOAT,
-	fld_mild_deltat_limit FLOAT,
-	fld_harsh_maxt_limit FLOAT,
-	fld_mild_maxt_limit FLOAT,
-	PRIMARY KEY (fld_category_id)
+    fld_category_id INTEGER NOT NULL,
+    fld_name VARCHAR(256),
+    fld_description VARCHAR(512),
+    fld_category_type VARCHAR(256),
+    fld_value INTEGER,
+    fld_harsh_ir_limit FLOAT,
+    fld_mild_ir_limit FLOAT,
+    fld_harsh_pr_limit FLOAT,
+    fld_mild_pr_limit FLOAT,
+    fld_harsh_vr_limit FLOAT,
+    fld_mild_vr_limit FLOAT,
+    fld_harsh_deltat_limit FLOAT,
+    fld_mild_deltat_limit FLOAT,
+    fld_harsh_maxt_limit FLOAT,
+    fld_mild_maxt_limit FLOAT,
+    PRIMARY KEY (fld_category_id)
 );
 INSERT INTO "ramstk_category" VALUES(1,'IC','Integrated Circuit','hardware',1,0.8,0.9,1.0,1.0,1.0,1.0,0.0,0.0,125.0,125.0);
 INSERT INTO "ramstk_category" VALUES(2,'SEMI','Semiconductor','hardware',1,1.0,1.0,0.7,0.9,1.0,1.0,0.0,0.0,125.0,125.0);
@@ -74,10 +74,10 @@ INSERT INTO "ramstk_category" VALUES(41,'MAN','Manufacturing','action',1,1.0,1.0
 INSERT INTO "ramstk_category" VALUES(42,'TEST','Test','action',1,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_category" VALUES(43,'VANDV','Verification & Validation','action',1,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_condition (
-	fld_condition_id INTEGER NOT NULL,
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(256),
-	PRIMARY KEY (fld_condition_id)
+    fld_condition_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_condition_type VARCHAR(256),
+    PRIMARY KEY (fld_condition_id)
 );
 INSERT INTO "ramstk_condition" VALUES(1,'Cavitation','operating');
 INSERT INTO "ramstk_condition" VALUES(2,'Cold Start','operating');
@@ -136,22 +136,22 @@ INSERT INTO "ramstk_condition" VALUES(54,'Weather, Sleet','environmental');
 INSERT INTO "ramstk_condition" VALUES(55,'Weather, Snow','environmental');
 INSERT INTO "ramstk_condition" VALUES(56,'Weather, Wind','environmental');
 CREATE TABLE ramstk_failure_mode (
-	fld_category_id INTEGER NOT NULL,
-	fld_subcategory_id INTEGER NOT NULL,
-	fld_failuremode_id INTEGER NOT NULL,
-	fld_description VARCHAR(512),
-	fld_mode_ratio FLOAT,
-	fld_source VARCHAR(128),
-	PRIMARY KEY (fld_failuremode_id),
-	FOREIGN KEY(fld_category_id) REFERENCES ramstk_category (fld_category_id),
-	FOREIGN KEY(fld_subcategory_id) REFERENCES ramstk_subcategory (fld_subcategory_id)
+    fld_category_id INTEGER NOT NULL,
+    fld_subcategory_id INTEGER NOT NULL,
+    fld_failuremode_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_mode_ratio FLOAT,
+    fld_source VARCHAR(128),
+    PRIMARY KEY (fld_failuremode_id),
+    FOREIGN KEY(fld_category_id) REFERENCES ramstk_category (fld_category_id),
+    FOREIGN KEY(fld_subcategory_id) REFERENCES ramstk_subcategory (fld_subcategory_id)
 );
 INSERT INTO "ramstk_failure_mode" VALUES(3,24,3,'Parameter Change',0.2,'FMD-97');
 CREATE TABLE ramstk_group (
-	fld_group_id INTEGER NOT NULL,
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(256),
-	PRIMARY KEY (fld_group_id)
+    fld_group_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_group_type VARCHAR(256),
+    PRIMARY KEY (fld_group_id)
 );
 INSERT INTO "ramstk_group" VALUES(1,'Engineering, Design','workgroup');
 INSERT INTO "ramstk_group" VALUES(2,'Engineering, Logistics Support','workgroup');
@@ -163,10 +163,10 @@ INSERT INTO "ramstk_group" VALUES(7,'Reliability','affinity');
 INSERT INTO "ramstk_group" VALUES(8,'Durability','affinity');
 INSERT INTO "ramstk_group" VALUES(9,'Cost','affinity');
 CREATE TABLE ramstk_hazards (
-	fld_hazard_id INTEGER NOT NULL,
-	fld_category VARCHAR(512),
-	fld_subcategory VARCHAR(512),
-	PRIMARY KEY (fld_hazard_id)
+    fld_hazard_id INTEGER NOT NULL,
+    fld_hazard_category VARCHAR(512),
+    fld_hazard_subcategory VARCHAR(512),
+    PRIMARY KEY (fld_hazard_id)
 );
 INSERT INTO "ramstk_hazards" VALUES(1,'Acceleration/Gravity','Falls');
 INSERT INTO "ramstk_hazards" VALUES(2,'Acceleration/Gravity','Falling Objects');
@@ -355,9 +355,9 @@ INSERT INTO "ramstk_hazards" VALUES(184,'Unannunciated Utility Outages','Lubrica
 INSERT INTO "ramstk_hazards" VALUES(185,'Unannunciated Utility Outages','Steam');
 INSERT INTO "ramstk_hazards" VALUES(186,'Unannunciated Utility Outages','Ventilation');
 CREATE TABLE ramstk_load_history (
-	fld_load_history_id INTEGER NOT NULL,
-	fld_description VARCHAR(512),
-	PRIMARY KEY (fld_load_history_id)
+    fld_history_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    PRIMARY KEY (fld_history_id)
 );
 INSERT INTO "ramstk_load_history" VALUES(1,'Cycle Counts');
 INSERT INTO "ramstk_load_history" VALUES(2,'Histogram');
@@ -369,21 +369,21 @@ INSERT INTO "ramstk_load_history" VALUES(7,'Time at Load');
 INSERT INTO "ramstk_load_history" VALUES(8,'Time at Maximum');
 INSERT INTO "ramstk_load_history" VALUES(9,'Time at Minimum');
 CREATE TABLE ramstk_manufacturer (
-	fld_manufacturer_id INTEGER NOT NULL,
-	fld_description VARCHAR(512),
-	fld_location VARCHAR(512),
-	fld_cage_code VARCHAR(512),
-	PRIMARY KEY (fld_manufacturer_id)
+    fld_manufacturer_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_location VARCHAR(512),
+    fld_cage_code VARCHAR(512),
+    PRIMARY KEY (fld_manufacturer_id)
 );
 INSERT INTO "ramstk_manufacturer" VALUES(1,'Sprague','New Hampshire','13606');
 INSERT INTO "ramstk_manufacturer" VALUES(2,'Xilinx','','');
 INSERT INTO "ramstk_manufacturer" VALUES(3,'National Semiconductor','California','27014');
 CREATE TABLE ramstk_measurement (
-	fld_measurement_id INTEGER NOT NULL,
-	fld_code VARCHAR(128),
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(128),
-	PRIMARY KEY (fld_measurement_id)
+    fld_measurement_id INTEGER NOT NULL,
+    fld_code VARCHAR(128),
+    fld_description VARCHAR(512),
+    fld_type VARCHAR(128),
+    PRIMARY KEY (fld_measurement_id)
 );
 INSERT INTO "ramstk_measurement" VALUES(1,'lbf','Pounds Force','unit');
 INSERT INTO "ramstk_measurement" VALUES(2,'lbm','Pounds Mass','unit');
@@ -416,11 +416,11 @@ INSERT INTO "ramstk_measurement" VALUES(28,'TPEAK','Temperature, Peak','damage')
 INSERT INTO "ramstk_measurement" VALUES(29,'TEMP','Temperature = f(Time)','damage');
 INSERT INTO "ramstk_measurement" VALUES(30,'T','Torque','damage');
 CREATE TABLE ramstk_method (
-	fld_method_id INTEGER NOT NULL,
-	fld_name VARCHAR(256),
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(256),
-	PRIMARY KEY (fld_method_id)
+    fld_method_id INTEGER NOT NULL,
+    fld_name VARCHAR(256),
+    fld_description VARCHAR(512),
+    fld_method_type VARCHAR(256),
+    PRIMARY KEY (fld_method_id)
 );
 INSERT INTO "ramstk_method" VALUES(1,'Code Reviews','','detection');
 INSERT INTO "ramstk_method" VALUES(2,'Error/Anomaly Detection','','detection');
@@ -429,10 +429,10 @@ INSERT INTO "ramstk_method" VALUES(4,'Random Testing','','detection');
 INSERT INTO "ramstk_method" VALUES(5,'Functional Testing','','detection');
 INSERT INTO "ramstk_method" VALUES(6,'Branch Testing','','detection');
 CREATE TABLE ramstk_model (
-	fld_model_id INTEGER NOT NULL,
-	fld_description VARCHAR(512),
-	fld_type INTEGER,
-	PRIMARY KEY (fld_model_id)
+    fld_model_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_model_type INTEGER,
+    PRIMARY KEY (fld_model_id)
 );
 INSERT INTO "ramstk_model" VALUES(1,'Adhesion Wear Model for Bearings','damage');
 INSERT INTO "ramstk_model" VALUES(2,'Arrhenius','damage');
@@ -443,12 +443,12 @@ INSERT INTO "ramstk_model" VALUES(6,'Inverse Power Law (IPL)','damage');
 INSERT INTO "ramstk_model" VALUES(7,'IPL - Arrhenius','damage');
 INSERT INTO "ramstk_model" VALUES(8,'Time Fraction of Damaging Operating Conditions','damage');
 CREATE TABLE ramstk_rpn (
-	fld_rpn_id INTEGER NOT NULL,
-	fld_name VARCHAR(512),
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(256),
-	fld_value INTEGER,
-	PRIMARY KEY (fld_rpn_id)
+    fld_rpn_id INTEGER NOT NULL,
+    fld_name VARCHAR(512),
+    fld_description VARCHAR(512),
+    fld_rpn_type VARCHAR(256),
+    fld_value INTEGER,
+    PRIMARY KEY (fld_rpn_id)
 );
 INSERT INTO "ramstk_rpn" VALUES(1,'None','No effect.','severity',1);
 INSERT INTO "ramstk_rpn" VALUES(2,'Very Minor','System operable with minimal interference.','severity',2);
@@ -481,20 +481,20 @@ INSERT INTO "ramstk_rpn" VALUES(28,'Remote','Remote chance the existing design c
 INSERT INTO "ramstk_rpn" VALUES(29,'Very Remote','Very remote chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.','detection',9);
 INSERT INTO "ramstk_rpn" VALUES(30,'Absolute Uncertainty','Existing design controls will not or cannot detect a potential mechanism/cause and subsequent failure mode; there is no design control.','detection',10);
 CREATE TABLE ramstk_stakeholders (
-	fld_stakeholders_id INTEGER NOT NULL,
-	fld_stakeholder VARCHAR(512),
-	PRIMARY KEY (fld_stakeholders_id)
+    fld_stakeholders_id INTEGER NOT NULL,
+    fld_stakeholder VARCHAR(512),
+    PRIMARY KEY (fld_stakeholders_id)
 );
 INSERT INTO "ramstk_stakeholders" VALUES(1,'Customer');
 INSERT INTO "ramstk_stakeholders" VALUES(2,'Service');
 INSERT INTO "ramstk_stakeholders" VALUES(3,'Manufacturing');
 INSERT INTO "ramstk_stakeholders" VALUES(4,'Management');
 CREATE TABLE ramstk_status (
-	fld_status_id INTEGER NOT NULL,
-	fld_name VARCHAR(256),
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(256),
-	PRIMARY KEY (fld_status_id)
+    fld_status_id INTEGER NOT NULL,
+    fld_name VARCHAR(256),
+    fld_description VARCHAR(512),
+    fld_status_type VARCHAR(256),
+    PRIMARY KEY (fld_status_id)
 );
 INSERT INTO "ramstk_status" VALUES(1,'Initiated','Incident has been initiated.','incident');
 INSERT INTO "ramstk_status" VALUES(2,'Reviewed','Incident has been reviewed.','incident');
@@ -512,11 +512,11 @@ INSERT INTO "ramstk_status" VALUES(13,'Approved','Action has been approved.','ac
 INSERT INTO "ramstk_status" VALUES(14,'Ready for Closure','Action is ready to be closed.','action');
 INSERT INTO "ramstk_status" VALUES(15,'Closed','Action has been closed.','action');
 CREATE TABLE ramstk_subcategory (
-	fld_category_id INTEGER NOT NULL,
-	fld_subcategory_id INTEGER NOT NULL,
-	fld_description VARCHAR(512),
-	PRIMARY KEY (fld_subcategory_id),
-	FOREIGN KEY(fld_category_id) REFERENCES ramstk_category (fld_category_id)
+    fld_category_id INTEGER NOT NULL,
+    fld_subcategory_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    PRIMARY KEY (fld_subcategory_id),
+    FOREIGN KEY(fld_category_id) REFERENCES ramstk_category (fld_category_id)
 );
 INSERT INTO "ramstk_subcategory" VALUES(1,1,'Linear');
 INSERT INTO "ramstk_subcategory" VALUES(1,2,'Logic');
@@ -596,11 +596,11 @@ INSERT INTO "ramstk_subcategory" VALUES(10,75,'Filter, Non-Tunable Electronic');
 INSERT INTO "ramstk_subcategory" VALUES(10,76,'Fuse');
 INSERT INTO "ramstk_subcategory" VALUES(10,77,'Lamp');
 CREATE TABLE ramstk_type (
-	fld_type_id INTEGER NOT NULL,
-	fld_code VARCHAR(256),
-	fld_description VARCHAR(512),
-	fld_type VARCHAR(256),
-	PRIMARY KEY (fld_type_id)
+    fld_type_id INTEGER NOT NULL,
+    fld_code VARCHAR(256),
+    fld_description VARCHAR(512),
+    fld_type VARCHAR(256),
+    PRIMARY KEY (fld_type_id)
 );
 INSERT INTO "ramstk_type" VALUES(1,'PLN','Planning','incident');
 INSERT INTO "ramstk_type" VALUES(2,'CON','Concept','incident');
@@ -644,13 +644,13 @@ INSERT INTO "ramstk_type" VALUES(39,'THA','System Engineering, Thermal Analysis'
 INSERT INTO "ramstk_type" VALUES(40,'TOL','System Engineering, Tolerance Analysis','validation');
 INSERT INTO "ramstk_type" VALUES(41,'WCA','System Engineering, Worst Case Analysis','validation');
 CREATE TABLE ramstk_user (
-	fld_user_id INTEGER NOT NULL,
-	fld_user_lname VARCHAR(256),
-	fld_user_fname VARCHAR(256),
-	fld_user_email VARCHAR(256),
-	fld_user_phone VARCHAR(256),
-	fld_user_group VARCHAR(256),
-	PRIMARY KEY (fld_user_id)
+    fld_user_id INTEGER NOT NULL,
+    fld_user_lname VARCHAR(256),
+    fld_user_fname VARCHAR(256),
+    fld_user_email VARCHAR(256),
+    fld_user_phone VARCHAR(256),
+    fld_user_group_id VARCHAR(256),
+    PRIMARY KEY (fld_user_id)
 );
 INSERT INTO "ramstk_user" VALUES(1,'Tester','Johnny','tester.johnny@reliaqual.com','+1.269.867.5309','1');
 COMMIT;

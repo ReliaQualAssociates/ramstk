@@ -12,10 +12,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import none_to_default
+from ramstk.models import RAMSTKBaseTable
 
 
-class RAMSTKReliability(RAMSTK_BASE):
+class RAMSTKReliability(RAMSTK_BASE, RAMSTKBaseTable):
     """
     Class to represent ramstk_reliability table in the RAMSTK Program database.
 
@@ -216,10 +216,9 @@ class RAMSTKReliability(RAMSTK_BASE):
     shape_parameter = Column('fld_shape_parameter',
                              Float,
                              default=__defaults__['shape_parameter'])
-    survival_analysis_id = Column(
-        'fld_survival_analysis_id',
-        Integer,
-        default=__defaults__['survival_analysis_id'])
+    survival_analysis_id = Column('fld_survival_analysis_id',
+                                  Integer,
+                                  default=__defaults__['survival_analysis_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     hardware = relationship('RAMSTKHardware', back_populates='reliability')
@@ -292,22 +291,3 @@ class RAMSTKReliability(RAMSTK_BASE):
         }
 
         return _attributes
-
-    def set_attributes(self, attributes):
-        """
-        Set the current values of the RAMSTKReliability attributes.
-
-        .. note:: you should pop the revision ID and hardware ID entries from
-            the attributes dict before passing it to this method.
-
-        :param dict attributes: dict of attribute values to assign to the
-            attributes.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if passed an attribute key that doesn't exist as
-            a table field.
-        """
-        for _key in attributes:
-            getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))

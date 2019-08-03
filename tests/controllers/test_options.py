@@ -16,7 +16,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers.options import dmOptions
+from ramstk.controllers import dmOptions
 from ramstk.dao import DAO
 from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.models.programdb import RAMSTKProgramInfo

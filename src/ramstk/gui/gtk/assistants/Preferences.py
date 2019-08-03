@@ -14,15 +14,15 @@ from os.path import basename
 import defusedxml.lxml as lxml
 
 # RAMSTK Package Imports
-from ramstk.dao.commondb import (
-    RAMSTKRPN, RAMSTKCondition, RAMSTKGroup,
-    RAMSTKLoadHistory, RAMSTKMeasurement, RAMSTKUser,
-)
 from ramstk.gui.gtk.ramstk import (
     RAMSTKBaseView, RAMSTKCheckButton, RAMSTKComboBox,
-    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog,
+    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, Pango, _
+from ramstk.models.commondb import (
+    RAMSTKRPN, RAMSTKCondition, RAMSTKGroup,
+    RAMSTKLoadHistory, RAMSTKMeasurement, RAMSTKUser
+)
 
 
 class Preferences(Gtk.Window, RAMSTKBaseView):

@@ -13,7 +13,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers.pof import dmPoF
+from ramstk.controllers import dmPoF
 from ramstk.dao import DAO
 from ramstk.models.programdb import (
     RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,

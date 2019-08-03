@@ -1,4 +1,4 @@
-# pylint: disable=protected-access
+# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.hardware.test_hardware.py is part of The RAMSTK
@@ -15,7 +15,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import Configuration
-from ramstk.controllers.hardware import amHardware, dmHardware, mmHardware
+from ramstk.controllers import amHardware, dmHardware, mmHardware
 from ramstk.dao import DAO
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
@@ -334,7 +334,6 @@ ATTRIBUTES = {
     'function_4': '0',
     'function_5': '0',
     'similar_item_method_id': 1,
-    'parent_id': 0,
     'quality_from_id': 0,
     'quality_to_id': 0,
     'result_1': 0.0,
