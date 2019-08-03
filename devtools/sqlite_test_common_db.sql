@@ -649,7 +649,7 @@ CREATE TABLE ramstk_user (
     fld_user_fname VARCHAR(256),
     fld_user_email VARCHAR(256),
     fld_user_phone VARCHAR(256),
-    fld_user_group VARCHAR(256),
+    fld_user_group_id VARCHAR(256),
     PRIMARY KEY (fld_user_id)
 );
 INSERT INTO "ramstk_user" VALUES(1,'Tester','Johnny','tester.johnny@reliaqual.com','+1.269.867.5309','1');

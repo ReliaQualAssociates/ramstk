@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.commondb.RAMSTKUser.py is part of The RAMSTK Project
+#       ramstk.models.commondb.RAMSTKUser.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -21,6 +21,13 @@ class RAMSTKUser(RAMSTK_BASE):
     This table shares a One-to-Many relationship with ramstk_workgroup.
     """
 
+    __defaults__ = {
+        'user_lname': 'Last Name',
+        'user_fname': 'First Name',
+        'user_email': 'EMail',
+        'user_phone': '867.5309',
+        'user_group_id': '0'
+    }
     __tablename__ = 'ramstk_user'
     __table_args__ = {'extend_existing': True}
 
@@ -31,11 +38,21 @@ class RAMSTKUser(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    user_lname = Column('fld_user_lname', String(256), default='Last Name')
-    user_fname = Column('fld_user_fname', String(256), default='First Name')
-    user_email = Column('fld_user_email', String(256), default='EMail')
-    user_phone = Column('fld_user_phone', String(256), default='867.5309')
-    user_group_id = Column('fld_user_group', String(256), default='0')
+    user_lname = Column('fld_user_lname',
+                        String(256),
+                        default=__defaults__['user_lname'])
+    user_fname = Column('fld_user_fname',
+                        String(256),
+                        default=__defaults__['user_fname'])
+    user_email = Column('fld_user_email',
+                        String(256),
+                        default=__defaults__['user_email'])
+    user_phone = Column('fld_user_phone',
+                        String(256),
+                        default=__defaults__['user_phone'])
+    user_group_id = Column('fld_user_group_id',
+                           String(256),
+                           default=__defaults__['user_group_id'])
 
     def get_attributes(self):
         """
@@ -58,41 +75,19 @@ class RAMSTKUser(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKUser data model attributes.
+        Set one or more RAMSTKUser attributes.
 
-        :param dict attributes: dict containing the key:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the user ID entries from the attributes dict
+            before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKUser {0:d} attributes.".\
-            format(self.user_id)
-
-        try:
-            self.user_lname = str(
-                none_to_default(attributes['user_lname'], 'Last Name'),
-            )
-            self.user_fname = str(
-                none_to_default(attributes['user_fname'], 'First Name'),
-            )
-            self.user_email = str(
-                none_to_default(attributes['user_email'], 'EMail'),
-            )
-            self.user_phone = str(
-                none_to_default(attributes['user_phone'], '867.5309'),
-            )
-            self.user_group_id = str(
-                none_to_default(attributes['user_group_id'], '0'),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
