@@ -109,5 +109,5 @@ fi
 # branches get tagged.
 if [ ${new_tag} != ${last_tag//v} ];
 then
-    echo 'Run this command git tag -s v${new_tag} -m "${this_commit} update v${new_tag}'
+    echo "Run this command git tag -s v${new_tag} -m 'Set tag v${new_tag}'"
 fi
