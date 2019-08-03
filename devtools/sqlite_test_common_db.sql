@@ -493,7 +493,7 @@ CREATE TABLE ramstk_status (
     fld_status_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
     fld_description VARCHAR(512),
-    fld_type VARCHAR(256),
+    fld_status_type VARCHAR(256),
     PRIMARY KEY (fld_status_id)
 );
 INSERT INTO "ramstk_status" VALUES(1,'Initiated','Incident has been initiated.','incident');

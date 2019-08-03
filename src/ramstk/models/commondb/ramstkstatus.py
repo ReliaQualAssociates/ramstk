@@ -15,8 +15,13 @@ from ramstk.Utilities import none_to_default
 
 
 class RAMSTKStatus(RAMSTK_BASE):
-    """Class to represent the table ramstk_status in the RAMSTK Common database."""
+    """Class to represent ramstk_status in the RAMSTK Common database."""
 
+    __defaults__ = {
+        'name': 'Status Name',
+        'description': 'Status Decription',
+        'status_type': ''
+    }
     __tablename__ = 'ramstk_status'
     __table_args__ = {'extend_existing': True}
 
@@ -27,11 +32,13 @@ class RAMSTKStatus(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    name = Column('fld_name', String(256), default='Status Name')
-    description = Column(
-        'fld_description', String(512), default='Status Decription',
-    )
-    status_type = Column('fld_type', String(256), default='')
+    name = Column('fld_name', String(256), default=__defaults__['name'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    status_type = Column('fld_status_type',
+                         String(256),
+                         default=__defaults__['status_type'])
 
     def get_attributes(self):
         """
@@ -51,36 +58,19 @@ class RAMSTKStatus(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKStatus data model attributes.
+        Set one or more RAMSTKStatus attributes.
 
-        :param dict attributes: dict containing the key:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the status ID entries from the attributes dict
+            before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKStatus {0:d} attributes.". \
-            format(self.status_id)
-
-        try:
-            self.name = str(none_to_default(attributes['name'], 'Status Name'))
-            self.description = str(
-                none_to_default(
-                    attributes['description'],
-                    'Status Description',
-                ),
-            )
-            self.status_type = str(
-                none_to_default(attributes['status_type'], ''),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

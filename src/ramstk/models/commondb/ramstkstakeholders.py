@@ -28,7 +28,9 @@ class RAMSTKStakeholders(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    stakeholder = Column('fld_stakeholder', String(512), default='Stakeholder')
+    stakeholder = Column('fld_stakeholder',
+                         String(512),
+                         default=__defaults__['stakeholder'])
 
     def get_attributes(self):
         """
