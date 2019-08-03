@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.test_ramstkrequirement.py is part of The RAMSTK

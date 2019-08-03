@@ -250,17 +250,25 @@ def test_common_dao():
     if os.path.exists(TEST_COMMON_DB_PATH):
         os.remove(TEST_COMMON_DB_PATH)
 
+    # We create a new database for each class-level grouping of tests.  This
+    # should prevent errors (e.g., database locked) caused by attempting to
+    # access the database to0 rapidly from test-to-test.  PyTest causes each
+    # temporary directory to be deleted when it is finished with it.
+    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
+    tempdb = str(tempdir.name) + '/TestCommonDB.ramstk'
+    tempuri = 'sqlite:///' + tempdb
+
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_common_db.sql', 'r')
     script_str = sql_file.read().strip()
-    conn = sqlite3.connect(TEST_COMMON_DB_PATH)
+    conn = sqlite3.connect(tempdb)
     conn.executescript(script_str)
     conn.commit()
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = DAO()
-    dao.db_connect(TEST_COMMON_DB_URI)
+    dao.db_connect(tempuri)
 
     yield dao
 
@@ -287,17 +295,25 @@ def test_program_dao():
     if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
         os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
 
+    # We create a new database for each class-level grouping of tests.  This
+    # should prevent errors (e.g., database locked) caused by attempting to
+    # access the database to0 rapidly from test-to-test.  PyTest causes each
+    # temporary directory to be deleted when it is finished with it.
+    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
+    tempdb = str(tempdir.name) + '/TestProgramDB.ramstk'
+    tempuri = 'sqlite:///' + tempdb
+
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
     script_str = sql_file.read().strip()
-    conn = sqlite3.connect(TEST_PROGRAM_DB_PATH)
+    conn = sqlite3.connect(tempdb)
     conn.executescript(script_str)
     conn.commit()
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = DAO()
-    dao.db_connect(TEST_PROGRAM_DB_URI)
+    dao.db_connect(tempuri)
 
     yield dao
 

@@ -1,7 +1,8 @@
 # pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
-#       tests.models.programdb.test_ramstkopload.py is part of The RAMSTK Project
+#       tests.models.programdb.test_ramstkopload.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKOpLoad module algorithms and models."""

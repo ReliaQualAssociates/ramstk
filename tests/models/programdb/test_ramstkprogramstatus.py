@@ -1,6 +1,8 @@
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
-#       tests.moels.progrmdb.test_ramstkprogramstatus.py is part of The RAMSTK Project
+#       tests.models.progrmdb.test_ramstkprogramstatus.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 """Test class for testing RAMSTKProgramStatus module algorithms and models."""
