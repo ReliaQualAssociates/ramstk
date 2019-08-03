@@ -14,8 +14,8 @@ import pytest
 from ramstk.models.commondb import RAMSTKRPN
 
 ATTRIBUTES = {
-    'description': 'Adhesion Wear Model for Bearings',
-    'rpn_type': 'damage'
+    'description': 'System operable with minimal interference.',
+    'rpn_type': 'severity'
 }
 
 
