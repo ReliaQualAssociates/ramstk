@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.commondb.RAMSTKType.py is part of The RAMSTK Project
+#       ramstk.models.commondb.RAMSTKType.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -15,8 +15,13 @@ from ramstk.Utilities import none_to_default
 
 
 class RAMSTKType(RAMSTK_BASE):
-    """Class to represent the table ramstk_type in the RAMSTK Common database."""
+    """Class to represent tramstk_type in the RAMSTK Common database."""
 
+    __defaults__ = {
+        'code': 'Type Code',
+        'description': 'Type Description',
+        'type_type': 'unknown'
+    }
     __tablename__ = 'ramstk_type'
     __table_args__ = {'extend_existing': True}
 
@@ -27,11 +32,9 @@ class RAMSTKType(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    code = Column('fld_code', String(256), default='Type Code')
-    description = Column(
-        'fld_description', String(512), default='Type Description',
-    )
-    type_type = Column('fld_type', String(256), default='unknown')
+    code = Column('fld_code', String(256), default=__defaults__['code'])
+    description = Column('fld_description', String(512), default=__defaults__['description'])
+    type_type = Column('fld_type', String(256), default=__defaults__['type_type'])
 
     def get_attributes(self):
         """
@@ -51,32 +54,19 @@ class RAMSTKType(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKType data model attributes.
+        Set one or more RAMSTKSiteInfo attributes.
 
-        :param dict attributes: dict containing the key:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the site ID entries from the attributes dict
+            before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKType {0:d} attributes.". \
-            format(self.type_id)
-
-        try:
-            self.code = str(none_to_default(attributes['code'], ''))
-            self.description = str(
-                none_to_default(attributes['description'], ''),
-            )
-            self.type_type = str(none_to_default(attributes['type_type'], ''))
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
