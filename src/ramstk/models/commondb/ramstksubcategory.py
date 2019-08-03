@@ -16,8 +16,9 @@ from ramstk.Utilities import none_to_default
 
 
 class RAMSTKSubCategory(RAMSTK_BASE):
-    """Class to represent the table ramstk_subcategory in the RAMSTK Common database."""
+    """Class to represent ramstk_subcategory in the RAMSTK Common database."""
 
+    __defaults__ = {'description': 'Subcategory Description'}
     __tablename__ = 'ramstk_subcategory'
     __table_args__ = {'extend_existing': True}
 
@@ -34,14 +35,16 @@ class RAMSTKSubCategory(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    description = Column(
-        'fld_description', String(512), default='Type Description',
-    )
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     category = relationship('RAMSTKCategory', back_populates='subcategory')
     mode = relationship(
-        'RAMSTKFailureMode', back_populates='subcategory', cascade='delete',
+        'RAMSTKFailureMode',
+        back_populates='subcategory',
+        cascade='delete',
     )
 
     def get_attributes(self):
@@ -61,32 +64,19 @@ class RAMSTKSubCategory(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKSubCategory data model attributes.
+        Set one or more RAMSTKSubcategory attributes.
 
-        :param dict attributes: dict containing the key:values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the category ID and subcategory ID entries
+            from the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKSubCategory {0:d} attributes.". \
-            format(self.subcategory_id)
-
-        try:
-            self.category_id = int(
-                none_to_default(attributes['category_id'], -1),
-            )
-            self.description = str(
-                none_to_default(attributes['description'], ''),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = (
-                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                "dictionary passed to "
-                "{1:s}.set_attributes()."
-            ).format(
-                str(_err),
-                self.__class__.__name__,
-            )
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
