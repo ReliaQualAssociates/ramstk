@@ -4,7 +4,7 @@ REPO		= ReliaQualAssociates/ramstk
 REQFILE		= requirements_run.txt
 DEVREQFILE	= requirements_dev.txt
 DOCREQFILE	= requirements_doc.txt
-TESTOPTS	= --addopts="-x"
+TESTOPTS	= -x
 VIRTENV		= ramstk-venv
 PY		= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 
@@ -47,6 +47,7 @@ use.venv:
 	pyenv activate $(VIRTENV)
 
 clean:
+	python setup.py clean --all
 	find . -name '*.pyc' -exec rm -f '{}' \;
 	find . -name '*.pyo' -exec rm -f '{}' \;
 	find ./src -name '*.egg-info' -exec rm -fr '{}' \;
@@ -61,7 +62,7 @@ install:
 	python setup.py install
 
 test:
-	python setup.py test $(TESTOPTS)
+	pytest $(TESTOPTS) tests/
 
 requirements:
 	pip-compile --generate-hashes --output-file $(REQFILE) requirements_run.in
