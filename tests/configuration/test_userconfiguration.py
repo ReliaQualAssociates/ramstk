@@ -273,14 +273,14 @@ class TestCreateUserConfiguration():
                         'fail_create_user_configuration')
 
 
-@pytest.mark.usefixtures('test_toml_user_configuration', 'make_shibboly')
+@pytest.mark.usefixtures('test_toml_user_configuration', 'make_shibboly', 'make_config_dir')
 class TestGetterSetter():
     """Class for testing that the user configuration module can be read."""
     def on_fail_get_user_configuration(self, error_message):
         assert error_message == (
             "Failed to read user's RAMSTK configuration "
-            "file /home/andrew/.pyenv/versions/3.7.2/envs/ramstk-py3-pygobject/share/RAMSTK/RAMSTKtoml.toml."
-        )
+            "file {0:s}/share/RAMSTK/RAMSTKtoml.toml."
+        ).format(VIRTUAL_ENV)
         print("\033[35m\nfail_get_user_configuration topic was broadcast.")
 
     def on_succeed_set_user_configuration(self, configuration):
@@ -433,6 +433,7 @@ class TestGetterSetter():
     def test_set_user_directories_not_first_run(self):
         """set_user_directories() should return False when not a first run of RAMSTK."""
         DUT = RAMSTKUserConfiguration()
+        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV
 
         assert not DUT.set_user_directories(first_run=False)
         assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK"

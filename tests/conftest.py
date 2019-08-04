@@ -250,6 +250,21 @@ def make_shibboly():
 
     os.mkdir('/tmp/shibboly', 0o0444)
 
+@pytest.fixture
+def make_config_dir():
+    """
+    Create a configuration directory if one doesn't exist.
+
+    This creates a configuration directory in the virtual environment base to
+    allow testing certain functions/methods that look for a user configuration
+    directory otherwise defaulting to the site-wide configuration directory.
+    """
+    if os.path.exists(VIRTUAL_ENV + '/.config'):
+        shutil.rmtree(VIRTUAL_ENV + '/.config')
+
+    os.mkdir(VIRTUAL_ENV + '/.config')
+    os.mkdir(VIRTUAL_ENV + '/.config/RAMSTK')
+
 @pytest.fixture(scope='class')
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
