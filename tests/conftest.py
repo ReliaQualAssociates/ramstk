@@ -13,6 +13,7 @@ import gettext
 import glob
 import os
 import platform
+import shutil
 import sqlite3
 import sys
 import tempfile
@@ -20,6 +21,7 @@ import xml.etree.ElementTree as ET
 
 # Third Party Imports
 import pytest
+import toml
 import xlwt
 
 # RAMSTK Package Imports
@@ -50,6 +52,7 @@ DATA_DIR = CONF_DIR + '/layouts'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
+PROG_DIR = TMP_DIR + '/analyses/ramstk'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestProgramDB.ramstk'
 TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
 TEST_PROGRAM_DB_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
@@ -239,6 +242,14 @@ ROW_DATA = [
 ]
 
 
+@pytest.fixture(scope='function')
+def make_shibboly():
+    """Create a read-only directory."""
+    if os.path.exists('/tmp/shibboly'):
+        shutil.rmtree('/tmp/shibboly')
+
+    os.mkdir('/tmp/shibboly', 0o0444)
+
 @pytest.fixture(scope='class')
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
@@ -317,7 +328,6 @@ def test_program_dao():
 
     yield dao
 
-
 # TODO: Delete the test_dao() function after all tests have been updated to use
 # the test_program_dao.
 @pytest.fixture(scope='session')
@@ -353,6 +363,69 @@ def test_dao():
     dao.db_connect(_TEST_PROGRAM_DB_URI)
 
     yield dao
+
+@pytest.fixture(scope='session')
+def test_toml_user_configuration():
+    """Create a toml user configuration file."""
+    RAMSTK_PROG_CONF = VIRTUAL_ENV + '/share/RAMSTK/RAMSTK.toml'
+    _dic_user_configuration = {
+        "title": "RAMSTK User Configuration",
+        "general": {
+            "firstrun": "True",
+            "reportsize": "letter",
+            "frmultiplier": "1000000.0",
+            "calcreltime": "100.0",
+            "decimal": "6",
+            "modesource": "1",
+            "moduletabpos": "top",
+            "listtabpos": "bottom",
+            "worktabpos": "bottom"
+        },
+        "backend": {
+            "type": "sqlite",
+            "host": "localhost",
+            "socket": "3306",
+            "database": "",
+            "user": "johnny.tester",
+            "password": "clear.text.password"
+        },
+        "directories": {
+            "datadir": DATA_DIR,
+            "icondir": ICON_DIR,
+            "logdir": LOG_DIR,
+            "progdir": PROG_DIR
+        },
+        "layouts": {
+            "allocation": "Allocation.toml",
+            "failure_definition": "FailureDefinition.toml",
+            "fmea": "FMEA.toml",
+            "function": "Function.toml",
+            "hardware": "Hardware.toml",
+            "hazops": "HazOps.toml",
+            "pof": "PoF.toml",
+            "requirement": "Requirement.toml",
+            "revision": "Revision.toml",
+            "similaritem": "SimilarItem.toml",
+            "stakeholder": "Stakeholder.toml",
+            "validation": "Validation.toml"
+        },
+        "colors": {
+            "functionbg": "#FFFFFF",
+            "functionfg": "#000000",
+            "hardwarebg": "#FFFFFF",
+            "hardwarefg": "#000000",
+            "requirementbg": "#FFFFFF",
+            "requirementfg": "#000000",
+            "revisionbg": "#FFFFFF",
+            "revisionfg": "#000000",
+            "stakeholderbg": "#FFFFFF",
+            "stakeholderfg": "#000000",
+            "validationbg": "#FFFFFF",
+            "validationfg": "#000000"
+        }
+    }
+
+    toml.dump(_dic_user_configuration, open(RAMSTK_PROG_CONF, "w"))
 
 
 @pytest.fixture(scope='session')
