@@ -6,8 +6,8 @@ DEVREQFILE	= requirements_dev.txt
 DOCREQFILE	= requirements_doc.txt
 TESTOPTS	= -x
 VIRTENV		= ramstk-venv
-PY		= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
-
+COVDIR		= docs/coverage
+PY			= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 ROOT 		= $(shell git rev-parse --show-toplevel)
 
 .PHONY: changelog install test requirements reqs.update depends format \
@@ -63,6 +63,9 @@ install:
 
 test:
 	pytest $(TESTOPTS) tests/
+
+coverage:
+	coverage html -d $(COVDIR)
 
 requirements:
 	pip-compile --generate-hashes --output-file $(REQFILE) requirements_run.in

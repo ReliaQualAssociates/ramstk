@@ -47,6 +47,7 @@ _templates/
 .coverage
 .python-version
 _temp/
+coverage/
 devtools/update_docs.txt
 pylintout
 coverage.xml
