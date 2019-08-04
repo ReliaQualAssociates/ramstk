@@ -88,7 +88,6 @@ class TestCreateUserConfiguration():
         assert isinstance(DUT, RAMSTKUserConfiguration)
         assert DUT.RAMSTK_MODE == ''
         assert DUT.RAMSTK_PROG_CONF == ''
-        assert DUT.RAMSTK_SITE_CONF == ''
         assert DUT.RAMSTK_DEBUG_LOG == ''
         assert DUT.RAMSTK_IMPORT_LOG == ''
         assert DUT.RAMSTK_USER_LOG == ''
@@ -98,9 +97,7 @@ class TestCreateUserConfiguration():
 
         assert DUT.RAMSTK_RISK_POINTS == [4, 10]
         assert DUT.RAMSTK_MODE_SOURCE == 1
-        assert DUT.RAMSTK_COM_BACKEND == ''
         assert DUT.RAMSTK_BACKEND == ''
-        assert DUT.RAMSTK_COM_INFO == {}
         assert DUT.RAMSTK_PROG_INFO == {}
         assert DUT.RAMSTK_MODULES == {}
         assert DUT.RAMSTK_HR_MULTIPLIER == 1000000.0
@@ -112,7 +109,7 @@ class TestCreateUserConfiguration():
             'workbook': 'bottom',
         }
         assert DUT.RAMSTK_GUI_LAYOUT == 'advanced'
-        assert DUT.RAMSTK_METHOD == 'STANDARD'
+        assert DUT.RAMSTK_WORKFLOW == 'STANDARD'
         assert DUT._lst_colors == [
             "revisionfg",
             "functionfg",

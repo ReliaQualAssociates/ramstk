@@ -196,7 +196,7 @@ class RAMSTKUserConfiguration:
     :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
     def __init__(self):
-        """Initialize the RAMSTK configuration parser."""
+        """Initialize the RAMSTK user configuration."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -264,7 +264,6 @@ class RAMSTKUserConfiguration:
         self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
         self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
-        self.RAMSTK_SITE_CONF = ""
         self.RAMSTK_PROG_CONF = ""
         self.RAMSTK_DEBUG_LOG = ""
         self.RAMSTK_IMPORT_LOG = ""
@@ -272,14 +271,13 @@ class RAMSTKUserConfiguration:
 
         self.RAMSTK_MODE = ""
         self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
-        self.RAMSTK_COM_BACKEND = ""
         self.RAMSTK_BACKEND = ""
         self.RAMSTK_REPORT_SIZE = "letter"
         self.RAMSTK_HR_MULTIPLIER = 1000000.0
         self.RAMSTK_DEC_PLACES = 6
         self.RAMSTK_MTIME = 100.0
         self.RAMSTK_GUI_LAYOUT = "advanced"
-        self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
+        self.RAMSTK_WORKFLOW = "STANDARD"  # STANDARD or LRM
         self.RAMSTK_LOCALE = "en_US"
 
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.

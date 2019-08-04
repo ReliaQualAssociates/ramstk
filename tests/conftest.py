@@ -380,6 +380,24 @@ def test_dao():
     yield dao
 
 @pytest.fixture(scope='session')
+def test_toml_site_configuration():
+    """Create a toml user configuration file."""
+    RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
+    _dic_site_configuration = {
+        "title": "RAMSTK Site Configuration",
+        "backend": {
+            "type": "sqlite",
+            "host": "localhost",
+            "socket": "3306",
+            "database": "",
+            "user": "johnny.tester",
+            "password": "clear.text.password"
+        }
+    }
+
+    toml.dump(_dic_site_configuration, open(RAMSTK_SITE_CONF, "w"))
+
+@pytest.fixture(scope='session')
 def test_toml_user_configuration():
     """Create a toml user configuration file."""
     RAMSTK_PROG_CONF = VIRTUAL_ENV + '/share/RAMSTK/RAMSTK.toml'

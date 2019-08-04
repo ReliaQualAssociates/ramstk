@@ -8,4 +8,5 @@
 """The RAMSTK configuration package."""
 
 # RAMSTK Local Imports
+from .site import RAMSTKSiteConfiguration
 from .user import RAMSTKUserConfiguration
