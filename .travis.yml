@@ -19,11 +19,11 @@ install:
     - pip install --only-binary=scipy scipy==1.2.1
     - pip install -r requirements_run.txt
     - pip install -r requirements_dev.txt
-    - python setup.py install
+    - make install
 
 # Command to run tests.
 script:
-    - python setup.py test
+    - make test
 
 # After the build was successful what to do?
 after_success:
