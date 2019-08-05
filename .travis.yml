@@ -19,9 +19,9 @@ install:
     - make depends
     - make install
 
-# Command to run tests.
+# Commands to run tests.
 script:
-    - make test
+    - make test.unit
 
 # After the build was successful what to do?
 after_success:

@@ -39,7 +39,7 @@ class TestCreateSiteConfiguration():
         print(
             "\033[36m\nsucceed_create_site_configuration topic was broadcast.")
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_initialize_configuration(self):
         """ __init__() should create an instance of the site configuration class. """
         DUT = RAMSTKSiteConfiguration()
@@ -76,7 +76,7 @@ class TestCreateSiteConfiguration():
         assert DUT.RAMSTK_WORKGROUPS == {}
         assert DUT.RAMSTK_COM_BACKEND == ''
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_create_site_configuration(self):
         """do_create_site_configuration() should broadcast the succcess message on success."""
         pub.subscribe(self.on_create_site_configuration,
@@ -107,7 +107,7 @@ class TestGetterSetter():
         assert isinstance(configuration, str)
         print("\033[36m\nsucceed_set_site_configuration topic was broadcast.")
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_get_site_configuration(self):
         """get_site_configuration() should broadcast the succcess message on success."""
         DUT = RAMSTKSiteConfiguration()
@@ -121,7 +121,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_COM_INFO["user"] == 'johnny.tester'
         assert DUT.RAMSTK_COM_INFO["password"] == 'clear.text.password'
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_get_site_configuration_no_conf_file(self):
         """get_site_configuration() should broadcast the fail message when attempting to read a non-existent site configuration."""
         pub.subscribe(self.on_fail_get_site_configuration,
@@ -135,7 +135,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_fail_get_site_configuration,
                         'fail_get_site_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_site_directories_no_home_config(self):
         """set_site_directories() should set directory paths to system directories when no $HOME configuration directory exists."""
         DUT = RAMSTKSiteConfiguration()
@@ -149,7 +149,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_LOG_DIR == '/var/log/RAMSTK'
         assert DUT.RAMSTK_SITE_CONF == DUT.RAMSTK_CONF_DIR + "/Site.conf"
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_site_directories_with_home_config(self):
         """set_site_directories() should set directory paths to $HOME directories when a $HOME configuration directory exists."""
         DUT = RAMSTKSiteConfiguration()

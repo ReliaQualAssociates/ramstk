@@ -64,7 +64,16 @@ bumpver:
 install:
 	python setup.py install
 
-test:
+test.unit:
+	pytest $(TESTOPTS) -m unit tests/
+
+test.integration:
+	pytest $(TESTOPTS) -m integration tests/
+
+test.calcs:
+	pytest $(TESTOPTS) -m calculation tests/
+
+test.all:
 	pytest $(TESTOPTS) tests/
 
 coverage:

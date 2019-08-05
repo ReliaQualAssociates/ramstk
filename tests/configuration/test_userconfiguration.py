@@ -80,7 +80,7 @@ class TestCreateUserConfiguration():
                                  "configuration file.")
         print("\033[35m\nfail_create_user_configuration topic was broadcast.")
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_initialize_configuration(self):
         """ __init__() should create an instance of the Configuration class. """
         DUT = RAMSTKUserConfiguration()
@@ -151,7 +151,7 @@ class TestCreateUserConfiguration():
         elif sys.platform == "win32":
             assert DUT.RAMSTK_OS == "Windows"
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_create_user_configuration(self):
         """do_create_user_configuration() should broadcast the succcess message on success."""
         pub.subscribe(self.on_create_user_configuration,
@@ -189,7 +189,7 @@ class TestCreateUserConfiguration():
         pub.unsubscribe(self.on_create_user_configuration,
                         'succeed_create_user_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_create_user_configuration_no_confdir(self):
         """do_create_user_configuration() should broadcast the fail message and raise a FileNotFoundError when attempting to create a configuration directory the user lacks write access to."""
         pub.subscribe(self.fail_create_user_configuration_no_confdir,
@@ -205,7 +205,7 @@ class TestCreateUserConfiguration():
         pub.unsubscribe(self.fail_create_user_configuration_no_confdir,
                         'fail_create_user_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_create_user_configuration_no_datadir(self):
         """do_create_user_configuration() should broadcast the fail message and raise a FileNotFoundError when attempting to create a data directory the user lacks write access to."""
         pub.subscribe(self.fail_create_user_configuration_no_datadir,
@@ -221,7 +221,7 @@ class TestCreateUserConfiguration():
         pub.unsubscribe(self.fail_create_user_configuration_no_datadir,
                         'fail_create_user_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_create_user_configuration_no_icondir(self):
         """do_create_user_configuration() should broadcast the fail message and raise a FileNotFoundError when attempting to create an icon directory the user lacks write access to."""
         pub.subscribe(self.fail_create_user_configuration_no_icondir,
@@ -237,7 +237,7 @@ class TestCreateUserConfiguration():
         pub.unsubscribe(self.fail_create_user_configuration_no_icondir,
                         'fail_create_user_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_create_user_configuration_no_logdir(self):
         """do_create_user_configuration() should broadcast the fail message and raise a FileNotFoundError when attempting to create a log directory the user lacks write access to."""
         pub.subscribe(self.fail_create_user_configuration_no_logdir,
@@ -253,7 +253,7 @@ class TestCreateUserConfiguration():
         pub.unsubscribe(self.fail_create_user_configuration_no_logdir,
                         'fail_create_user_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_create_user_configuration_no_progdir(self):
         """do_create_user_configuration() should broadcast the fail message and raise a FileNotFoundError when attempting to create a program directory the user lacks write access to."""
         pub.subscribe(self.fail_create_user_configuration_no_progdir,
@@ -284,7 +284,7 @@ class TestGetterSetter():
         assert isinstance(configuration, str)
         print("\033[36m\nsucceed_set_user_configuration topic was broadcast.")
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_get_user_configuration(self):
         """get_user_configuration() should broadcast the succcess message on success."""
         DUT = RAMSTKUserConfiguration()
@@ -339,7 +339,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_TABPOS["modulebook"] == 'top'
         assert DUT.RAMSTK_TABPOS["workbook"] == 'bottom'
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):
         """get_user_configuration() should broadcast the fail message when attempting to read a non-existent user configuration."""
         pub.subscribe(self.on_fail_get_user_configuration,
@@ -353,7 +353,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_fail_get_user_configuration,
                         'fail_get_user_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_user_configuration(self):
         """get_user_configuration() should broadcast the fail message when attempting to read a non-existent user configuration."""
         pub.subscribe(self.on_succeed_set_user_configuration,
@@ -402,7 +402,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_set_user_configuration,
                         'succeed_set_user_configuration')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_user_configuration_missing_global_data(self):
         """get_user_configuration() should raise a KeyError if one or more global dict variables is missing information."""
         DUT = RAMSTKUserConfiguration()
@@ -417,7 +417,7 @@ class TestGetterSetter():
         with pytest.raises(KeyError):
             DUT.set_user_configuration()
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_user_directories_first_run(self):
         """set_user_directories() should return True on a first run of RAMSTK."""
         DUT = RAMSTKUserConfiguration()
@@ -426,7 +426,7 @@ class TestGetterSetter():
         assert DUT.set_user_directories()
         assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_SITE_DIR
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_user_directories_not_first_run(self):
         """set_user_directories() should return False when not a first run of RAMSTK."""
         DUT = RAMSTKUserConfiguration()
