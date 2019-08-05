@@ -32,7 +32,7 @@ except KeyError:
         sys.exit(1)
 
 
-@pytest.mark.usefixtures('test_configuration', 'make_shibboly')
+@pytest.mark.usefixtures('make_shibboly')
 class TestCreateSiteConfiguration():
     """Class for testing the site configuration module."""
     def on_create_site_configuration(self):

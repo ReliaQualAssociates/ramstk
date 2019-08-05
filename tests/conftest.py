@@ -26,7 +26,9 @@ import xlwt
 
 # RAMSTK Package Imports
 import ramstk.Utilities as Utilities
-from ramstk.Configuration import Configuration
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.dao import DAO
 
 _ = gettext.gettext
@@ -250,6 +252,7 @@ def make_shibboly():
 
     os.mkdir('/tmp/shibboly', 0o0444)
 
+
 @pytest.fixture
 def make_config_dir():
     """
@@ -264,6 +267,7 @@ def make_config_dir():
 
     os.mkdir(VIRTUAL_ENV + '/.config')
     os.mkdir(VIRTUAL_ENV + '/.config/RAMSTK')
+
 
 @pytest.fixture(scope='class')
 def test_common_dao():
@@ -299,6 +303,7 @@ def test_common_dao():
     yield dao
 
     dao.db_close()
+
 
 @pytest.fixture(scope='class')
 def test_program_dao():
@@ -386,6 +391,7 @@ def test_dao():
 
     yield dao
 
+
 @pytest.fixture(scope='session')
 def test_toml_site_configuration():
     """Create a toml user configuration file."""
@@ -403,6 +409,7 @@ def test_toml_site_configuration():
     }
 
     toml.dump(_dic_site_configuration, open(RAMSTK_SITE_CONF, "w"))
+
 
 @pytest.fixture(scope='session')
 def test_toml_user_configuration():
@@ -469,8 +476,8 @@ def test_toml_user_configuration():
 
 
 @pytest.fixture(scope='session')
-def test_configuration():
-    """Create configuration object to use for testing."""
+def test_site_configuration():
+    """Create a site configuration object to use for testing."""
     # Create the data directory if it doesn't exist.
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
@@ -479,7 +486,7 @@ def test_configuration():
     if not os.path.exists(LOG_DIR):
         os.makedirs(LOG_DIR)
 
-    configuration = Configuration()
+    configuration = RAMSTKSiteConfiguration()
 
     configuration._INSTALL_PREFIX = VIRTUAL_ENV
 
@@ -487,8 +494,6 @@ def test_configuration():
     configuration.RAMSTK_CONF_DIR = CONF_DIR
     configuration.RAMSTK_SITE_CONF = configuration.RAMSTK_CONF_DIR + \
         '/Site.conf'
-    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + \
-        '/RAMSTK.conf'
 
     configuration.RAMSTK_COM_BACKEND = 'sqlite'
     configuration.RAMSTK_COM_INFO['host'] = 'localhost'
@@ -496,6 +501,33 @@ def test_configuration():
     configuration.RAMSTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
     configuration.RAMSTK_COM_INFO['user'] = 'ramstkcom'
     configuration.RAMSTK_COM_INFO['password'] = 'ramstkcom'
+
+    configuration.set_site_directories()
+
+    yield configuration
+
+
+@pytest.fixture(scope='session')
+def test_user_configuration():
+    """Create a user configuration object to use for testing."""
+    # Create the data directory if it doesn't exist.
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+
+    # Create the log directory if it doesn't exist.
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
+
+    configuration = RAMSTKUserConfiguration()
+
+    configuration._INSTALL_PREFIX = VIRTUAL_ENV
+
+    configuration.RAMSTK_SITE_DIR = CONF_DIR
+    configuration.RAMSTK_CONF_DIR = CONF_DIR
+    configuration.RAMSTK_SITE_CONF = configuration.RAMSTK_CONF_DIR + \
+        '/Site.toml'
+    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + \
+        '/RAMSTK.toml'
 
     configuration.RAMSTK_REPORT_SIZE = 'letter'
     configuration.RAMSTK_HR_MULTIPLIER = '1000000.0'
@@ -549,7 +581,6 @@ def test_configuration():
         'validationfg': '#000000',
     }
 
-    configuration._set_site_configuration()
     configuration.set_user_configuration()
 
     configuration.RAMSTK_DEBUG_LOG = \

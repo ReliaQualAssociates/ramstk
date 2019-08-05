@@ -29,17 +29,17 @@ class RAMSTKAnalysisManager():
     :ivar tree: the treelib Tree() used to hold a copy of the data manager's
         tree.  This do not remain in-sync automatically.
     :type tree: :class:`treelib.Tree`
-    :ivar RAMSTK_CONFIGURATION: the instance of the Configuration class
+    :ivar RAMSTK_USER_CONFIGURATION: the instance of the RAMSTKUserConfiguration class
         associated with this analysis manager.
-    :type RAMSTK_CONFIGURATION: :class:`ramstk.configuration.Configuration`
+    :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
     def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the hardware analysis manager.
 
-        :param configuration: the Configuration instance associated with the
+        :param configuration: the RAMSTKUserConfiguration instance associated with the
             current instance of the RAMSTK application.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :type configuration: :class:`ramstk.RAMSTKUserConfiguration.RAMSTKUserConfiguration`
         """
         # Initialize private dictionary attributes.
         self._attributes = {}
@@ -54,7 +54,7 @@ class RAMSTKAnalysisManager():
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.RAMSTK_CONFIGURATION = configuration
+        self.RAMSTK_USER_CONFIGURATION = configuration
 
     def on_get_all_attributes(self, attributes):
         """

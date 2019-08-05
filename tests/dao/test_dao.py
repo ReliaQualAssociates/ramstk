@@ -38,22 +38,22 @@ def test_dao_create():
 
 
 @pytest.mark.integration
-def test_dao_db_connect(test_configuration):
+def test_dao_db_connect(test_user_configuration):
     """ db_connect() should return False on success connecting to an SQLite database. """
     DUT = DAO()
 
-    _database = test_configuration.RAMSTK_BACKEND + ':///' + \
-                test_configuration.RAMSTK_PROG_INFO['database']
+    _database = test_user_configuration.RAMSTK_BACKEND + ':///' + \
+                test_user_configuration.RAMSTK_PROG_INFO['database']
 
     assert not DUT.db_connect(_database)
 
 
 @pytest.mark.integration
-def test_dao_db_create_common(test_configuration):
+def test_dao_db_create_common(test_site_configuration):
     """ db_create_common() should return False on success. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_COM_BACKEND + ':///' + TEMPDIR +
+        test_site_configuration.RAMSTK_COM_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_common_db.ramstk'
     )
 
@@ -63,11 +63,11 @@ def test_dao_db_create_common(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_create_common_bad_db_name(test_configuration):
+def test_dao_db_create_common_bad_db_name(test_site_configuration):
     """ db_create_common() should return True on failure. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_COM_BACKEND + ':/' + TEMPDIR +
+        test_site_configuration.RAMSTK_COM_BACKEND + ':/' + TEMPDIR +
         '/_ramstk_common_db.ramstk'
     )
 
@@ -75,7 +75,7 @@ def test_dao_db_create_common_bad_db_name(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_create_program(test_configuration):
+def test_dao_db_create_program(test_user_configuration):
     """db_create_program() should return False on success."""
     # Remove test program database from earlier runs if there is one.
     if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
@@ -83,7 +83,7 @@ def test_dao_db_create_program(test_configuration):
 
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
 
@@ -91,11 +91,11 @@ def test_dao_db_create_program(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_create_program_bad_db_name(test_configuration):
+def test_dao_db_create_program_bad_db_name(test_user_configuration):
     """ db_create_program() should return True on failure. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':/' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':/' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
 
@@ -103,11 +103,11 @@ def test_dao_db_create_program_bad_db_name(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_add(test_configuration):
+def test_dao_db_add(test_user_configuration):
     """ db_add() should return a zero error code on success when adding a single record to the database. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
     DUT.db_connect(_database)
@@ -126,11 +126,11 @@ def test_dao_db_add(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_add_no_item(test_configuration):
+def test_dao_db_add_no_item(test_user_configuration):
     """db_add() should raise a DataAccessError when no item is passed to add."""
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
     DUT.db_connect(_database)
@@ -140,11 +140,11 @@ def test_dao_db_add_no_item(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_add_many(test_configuration):
+def test_dao_db_add_many(test_user_configuration):
     """ db_add() should return a zero error code on success when adding multiple records to the database. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
     DUT.db_connect(_database)
@@ -166,11 +166,11 @@ def test_dao_db_add_many(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_update(test_configuration):
+def test_dao_db_update(test_user_configuration):
     """ db_update() should return a zero error code on success. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
     DUT.db_connect(_database)
@@ -192,11 +192,11 @@ def test_dao_db_update(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_delete(test_configuration):
+def test_dao_db_delete(test_user_configuration):
     """ db_delete() should return a zero error code on success. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
     DUT.db_connect(_database)
@@ -218,11 +218,11 @@ def test_dao_db_delete(test_configuration):
 
 
 @pytest.mark.integration
-def test_dao_db_delete_no_item(test_configuration):
+def test_dao_db_delete_no_item(test_user_configuration):
     """ db_delete() should return a 1005 error code on failure. """
     DUT = DAO()
     _database = (
-        test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        test_user_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
         '/_ramstk_program_db.ramstk'
     )
     DUT.db_connect(_database)

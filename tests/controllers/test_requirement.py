@@ -47,7 +47,7 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -115,7 +115,7 @@ class TestCreateControllers():
                                 'succeed_get_validation_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_requirements(self, tree):
@@ -215,7 +215,7 @@ class TestSelectMethods():
         assert DUT.do_select('rqrmnt_hrdwr', 1, 1) == 0
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_requirement(self, node_id):
@@ -351,7 +351,7 @@ class TestDeleteMethods():
             DUT.do_select('rqrmnt_hrdwr', 1, 3)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_requirement_attrs(self, attributes):
@@ -446,7 +446,7 @@ class TestGetterSetter():
                         'succeed_get_requirement_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_requirement(self, node_id):
@@ -601,7 +601,7 @@ class TestInsertMethods():
         assert DUT.do_select('rqrmnt_hrdwr', 1, 5) == 0
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_requirement(self, node_id):

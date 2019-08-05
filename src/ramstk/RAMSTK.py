@@ -75,10 +75,10 @@ def _initialize_loggers(configuration):
     """
     Create loggers for the RAMSTK application.
 
-    :param configuration: the RAMSTK Configuration() object instance holding all
+    :param configuration: the RAMSTK RASMTKConfiguration() object instance holding all
                           the configuration values for the current instance of
                           RAMSTK.
-    :type configuration: :class:`ramstk.Configuration.Configuration()`
+    :type configuration: :class:`ramstk.RASMTKConfiguration.RASMTKConfiguration()`
     :return: (_debug_log, _user_log, _import_log)
     :rtype: tuple
     """
@@ -268,9 +268,9 @@ class Model():
         """
         Load the RAMSTK Program global constants.
 
-        :param configuration: the currently active RAMSTK Program Configuration()
+        :param configuration: the currently active RAMSTK Program RASMTKConfiguration()
                               object.
-        :type configuration: :class:`ramstk.Configuration.Configuration()`
+        :type configuration: :class:`ramstk.RASMTKConfiguration.RASMTKConfiguration()`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -755,7 +755,7 @@ class RAMSTK():
 
     def request_do_load_globals(self):
         """
-        Request to load all the global Configuration variables.
+        Request to load all the global RASMTKConfiguration variables.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

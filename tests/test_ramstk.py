@@ -15,7 +15,6 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.Configuration import Configuration
 from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk.mwi.ListBook import ListBook
 from ramstk.gui.gtk.mwi.ModuleBook import ModuleBook
@@ -25,7 +24,7 @@ from ramstk.RAMSTK import RAMSTK, Model, _initialize_loggers
 TEMPDIR = tempfile.gettempdir()
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_initialize_logger(test_configuration):
     """ _initialize_loggers() should return a tuple of logging.Logger instances. """
     _configuration = test_configuration
@@ -44,7 +43,7 @@ def test_initialize_logger(test_configuration):
     assert os.path.isfile(_configuration.RAMSTK_LOG_DIR + '/RAMSTK_import.log')
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_initialize_model(test_common_dao, test_dao):
     """ __init__() should create an instance of the RAMSTK.Model object. """
     DUT = Model(test_common_dao, test_dao)
@@ -56,7 +55,7 @@ def test_initialize_model(test_common_dao, test_dao):
     assert DUT.program_session is None
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
     """ do_create_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
@@ -75,7 +74,7 @@ def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
     )
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_do_create_new_program_failed(test_common_dao, test_dao):
     """ do_create_program() should return a non-zero error code on failure. """
     DUT = Model(test_common_dao, test_dao)
@@ -90,7 +89,7 @@ def test_do_create_new_program_failed(test_common_dao, test_dao):
     )
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_do_open_program(test_common_dao, test_dao, test_configuration):
     """ do_open_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
@@ -107,7 +106,7 @@ def test_do_open_program(test_common_dao, test_dao, test_configuration):
     )
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_load_globals(test_common_dao, test_dao):
     """ load_globals() should return False on success. """
     DUT = Model(test_common_dao, test_dao)
@@ -836,7 +835,7 @@ def test_load_globals(test_common_dao, test_dao):
     }
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_do_validate_license(test_common_dao, test_dao):
     """ do_validate_license() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
@@ -847,7 +846,7 @@ def test_do_validate_license(test_common_dao, test_dao):
     assert _msg == ('RAMSTK SUCCESS: Validating RAMSTK License.')
 
 
-@pytest.mark.integration
+@pytest.mark.skip
 def test_do_validate_license_wrong_key(test_common_dao, test_dao):
     """ do_validate_license() should return a 1 error code when the license key is wrong. """
     DUT = Model(test_common_dao, test_dao)
@@ -919,7 +918,7 @@ def test_request_do_load_globals(test_configuration):
 def test_request_do_create_program(test_configuration):
     """ request_create_program() should return False on success. """
     DUT = RAMSTK(test=True)
-    DUT.RAMSTK_CONFIGURATION = test_configuration
+    DUT.RAMSTK_USER_CONFIGURATION = test_configuration
 
     assert not DUT.request_do_create_program()
 
@@ -928,10 +927,10 @@ def test_request_do_create_program(test_configuration):
 def test_request_do_open_program(test_configuration):
     """ request_open_program() should return False on success. """
     DUT = RAMSTK(test=True)
-    DUT.RAMSTK_CONFIGURATION = test_configuration
+    DUT.RAMSTK_USER_CONFIGURATION = test_configuration
 
     assert not DUT.request_do_open_program()
-    assert DUT.RAMSTK_CONFIGURATION.RAMSTK_PREFIX == {
+    assert DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_PREFIX == {
         'function': ['FUNC', 0],
         'requirement': ['RQMT', 0],
         'assembly': ['ASSY', 0],
@@ -943,7 +942,7 @@ def test_request_do_open_program(test_configuration):
         'cause': ['CAUSE', 0],
         'revision': ['REV', 0],
     }
-    assert DUT.RAMSTK_CONFIGURATION.RAMSTK_MODULES == {
+    assert DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_MODULES == {
         'function': 1,
         'fta': 0,
         'requirement': 1,
@@ -963,8 +962,8 @@ def test_request_do_open_program(test_configuration):
 def test_request_do_save_program():
     """ request_save_program() should return False on success. """
     DUT = RAMSTK(test=True)
-    DUT.RAMSTK_CONFIGURATION.RAMSTK_BACKEND = 'sqlite'
-    DUT.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO = {
+    DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND = 'sqlite'
+    DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = {
         'host': 'localhost',
         'socket': 3306,
         'database': TEMPDIR + '/TestDB.ramstk',
@@ -980,8 +979,8 @@ def test_request_do_save_program():
 def test_request_do_close_program():
     """ request_close_program() should return False on success. """
     DUT = RAMSTK(test=True)
-    DUT.RAMSTK_CONFIGURATION.RAMSTK_BACKEND = 'sqlite'
-    DUT.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO = {
+    DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND = 'sqlite'
+    DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = {
         'host': 'localhost',
         'socket': 3306,
         'database': TEMPDIR + '/TestDB.ramstk',

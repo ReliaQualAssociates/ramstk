@@ -21,7 +21,7 @@ from ramstk.models.programdb import (
 )
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -59,7 +59,7 @@ class TestCreateControllers():
                                 'request_set_pof_attributes')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_pof(self, tree):
@@ -157,7 +157,7 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='mode') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_mode(self, node_id):
@@ -273,7 +273,7 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_pof, 'fail_delete_pof')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_opload(self, node_id):
@@ -401,7 +401,7 @@ class TestInsertMethods():
                         'fail_insert_test_method')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
 
@@ -656,7 +656,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_pof_tree, 'succeed_get_pof_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_pof(self, node_id):

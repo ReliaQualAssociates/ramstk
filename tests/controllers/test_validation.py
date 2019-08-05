@@ -16,7 +16,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import Configuration
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import amValidation, dmValidation, mmValidation
 from ramstk.dao import DAO
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
@@ -52,7 +52,7 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -83,12 +83,12 @@ class TestCreateControllers():
                                 'request_set_all_validation_attributes')
 
     @pytest.mark.unit
-    def test_analysis_manager_create(self, test_configuration):
+    def test_analysis_manager_create(self, test_user_configuration):
         """__init__() should create an instance of the validation analysis manager."""
-        DUT = amValidation(test_configuration)
+        DUT = amValidation(test_user_configuration)
 
         assert isinstance(DUT, amValidation)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, Configuration)
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert DUT._attributes == {}
         assert DUT._tree is None
@@ -128,7 +128,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._on_get_tree, 'succeed_get_hardware_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_validations(self, tree):
@@ -221,7 +221,7 @@ class TestSelectMethods():
         assert DUT.do_select('vldtn_rqrmnt', 1, 1) == 0
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_validation(self, node_id):
@@ -351,7 +351,7 @@ class TestDeleteMethods():
             DUT.do_select('vldtn_rqrmnt', 1, 2)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_validation(self, node_id):
@@ -476,7 +476,7 @@ class TestInsertMethods():
         assert DUT.do_select('vldtn_rqrmnt', 1, 5) == 0
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_validation_attrs(self, attributes):
@@ -626,7 +626,7 @@ class TestGetterSetter():
         assert DUT._col_tree.get_node(1).data is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_validation(self, node_id):
@@ -733,15 +733,15 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
     @pytest.mark.integration
-    def test_do_calculate_tasks(self, test_program_dao, test_configuration):
+    def test_do_calculate_tasks(self, test_program_dao, test_user_configuration):
         """do_calculate_tasks() should calculate the validation task time and cost."""
         DATAMGR = dmValidation(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amValidation(test_configuration)
+        DUT = amValidation(test_user_configuration)
 
         pub.sendMessage('request_get_validation_tree')
 

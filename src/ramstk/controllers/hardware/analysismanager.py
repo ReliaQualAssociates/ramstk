@@ -619,7 +619,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        _hr_multiplier = float(self.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER)
+        _hr_multiplier = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER)
 
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hardware item.  We need to build a comprehensive dict of
@@ -744,7 +744,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # attributes to pass to the various analysis methods/functions.
         pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
 
-        _limits = self.RAMSTK_CONFIGURATION.RAMSTK_STRESS_LIMITS[
+        _limits = self.RAMSTK_USER_CONFIGURATION.RAMSTK_STRESS_LIMITS[
             self._attributes['category_id']]
         _current_limits = {
             'harsh': [0.0, _limits[0]],

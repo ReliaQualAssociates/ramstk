@@ -32,7 +32,7 @@ except KeyError:
         sys.exit(1)
 
 
-@pytest.mark.usefixtures('test_configuration', 'make_shibboly')
+@pytest.mark.usefixtures('make_shibboly')
 class TestCreateUserConfiguration():
     """Class for testing the user configuration module."""
     TMP_DIR = ''

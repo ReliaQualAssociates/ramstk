@@ -13,7 +13,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import Configuration
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import amFunction, dmFunction
 from ramstk.dao import DAO
 from ramstk.models.programdb import RAMSTKFunction, RAMSTKHazardAnalysis
@@ -42,7 +42,7 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -75,12 +75,12 @@ class TestCreateControllers():
                                 'request_set_all_function_attributes')
 
     @pytest.mark.unit
-    def test_analysis_manager_create(self, test_configuration):
+    def test_analysis_manager_create(self, test_user_configuration):
         """__init__() should create an instance of the function analysis manager."""
-        DUT = amFunction(test_configuration)
+        DUT = amFunction(test_user_configuration)
 
         assert isinstance(DUT, amFunction)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, Configuration)
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert DUT._attributes == {}
         assert DUT._tree is None
@@ -90,7 +90,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_calculate_fha, 'request_calculate_fha')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_functions(self, tree):
@@ -155,7 +155,7 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='function') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_function(self, node_id):
@@ -218,7 +218,7 @@ class TestDeleteMethods():
         DUT._do_delete_hazard(1, 10)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_function(self, node_id):
@@ -302,7 +302,7 @@ class TestInsertMethods():
         DUT.do_insert_hazard(function_id=10)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_function_attrs(self, attributes):
@@ -437,11 +437,11 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_get_all_attributes_analysis_manager(self, test_program_dao,
-                                                 test_configuration):
+                                                 test_user_configuration):
         """_get_all_attributes() should update the attributes dict on success."""
         DATAMGR = dmFunction(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amFunction(test_configuration)
+        DUT = amFunction(test_user_configuration)
 
         pub.sendMessage('request_get_all_function_attributes', node_id=1)
 
@@ -452,11 +452,11 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_on_get_tree_analysis_manager(self, test_program_dao,
-                                          test_configuration):
+                                          test_user_configuration):
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_function_tree message."""
         DATAMGR = dmFunction(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amFunction(test_configuration)
+        DUT = amFunction(test_user_configuration)
         DATAMGR.do_get_tree()
 
         assert isinstance(DUT._tree, Tree)
@@ -464,7 +464,7 @@ class TestGetterSetter():
             DUT._tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_function(self, node_id):
@@ -507,15 +507,15 @@ class TestUpdateMethods():
         DUT.do_update(100)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_user_configuration')
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
     @pytest.mark.integration
-    def test_do_calculate_hri(self, test_program_dao, test_configuration):
+    def test_do_calculate_hri(self, test_program_dao, test_user_configuration):
         """do_calculate_hri() should calculate the hazard risk index hazard analysis."""
         DATAMGR = dmFunction(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amFunction(test_configuration)
+        DUT = amFunction(test_user_configuration)
 
         pub.sendMessage('request_get_function_tree')
 
@@ -539,11 +539,11 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_user_defined(self, test_program_dao,
-                                       test_configuration):
+                                       test_user_configuration):
         """do_calculate_user_defined() should calculate the user-defined hazard analysis."""
         DATAMGR = dmFunction(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amFunction(test_configuration)
+        DUT = amFunction(test_user_configuration)
 
         pub.sendMessage('request_get_function_tree')
 

@@ -124,7 +124,7 @@ if __name__ == '__main__':
         packages=find_packages('src', exclude=['tests']),
         package_dir={'': 'src'},
         py_modules=[
-            'ramstk.Configuration', 'ramstk.RAMSTK', 'ramstk.Utilities',
+            'ramstk.RAMSTK', 'ramstk.Utilities',
         ],
         classifiers=__trove__,
         entry_points={
