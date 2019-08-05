@@ -861,7 +861,7 @@ def test_do_validate_license_wrong_key(test_common_dao, test_dao):
     )
 
 
-@pytest.mark.broken_test
+@pytest.mark.skip
 def test_initialize_controller():
     """ __init__() should create an instance of the ramstk.RAMSTK object. """
     DUT = RAMSTK(test=True)
@@ -894,7 +894,7 @@ def test_initialize_controller():
     assert DUT.dic_controllers['component'] is None
 
 
-@pytest.mark.broken_test
+@pytest.mark.skip
 def test_request_do_validate_license():
     """ do_request_validate_license() should return False on success. """
     DUT = RAMSTK(test=True)
@@ -902,7 +902,7 @@ def test_request_do_validate_license():
     assert not DUT.request_do_validate_license()
 
 
-@pytest.mark.broken_test
+@pytest.mark.skip
 def test_request_do_load_globals(test_configuration):
     """ request_load_globals() should return False on success. """
     _configuration = test_configuration
@@ -915,7 +915,7 @@ def test_request_do_load_globals(test_configuration):
     assert not DUT.request_do_load_globals()
 
 
-@pytest.mark.broken_test
+@pytest.mark.skip
 def test_request_do_create_program(test_configuration):
     """ request_create_program() should return False on success. """
     DUT = RAMSTK(test=True)
@@ -924,7 +924,7 @@ def test_request_do_create_program(test_configuration):
     assert not DUT.request_do_create_program()
 
 
-@pytest.mark.broken_test
+@pytest.mark.skip
 def test_request_do_open_program(test_configuration):
     """ request_open_program() should return False on success. """
     DUT = RAMSTK(test=True)
@@ -959,7 +959,7 @@ def test_request_do_open_program(test_configuration):
     }
 
 
-@pytest.mark.broken_test
+@pytest.mark.skip
 def test_request_do_save_program():
     """ request_save_program() should return False on success. """
     DUT = RAMSTK(test=True)
@@ -976,7 +976,7 @@ def test_request_do_save_program():
     assert not DUT.request_do_save_program()
 
 
-@pytest.mark.broken_test
+@pytest.mark.skip
 def test_request_do_close_program():
     """ request_close_program() should return False on success. """
     DUT = RAMSTK(test=True)

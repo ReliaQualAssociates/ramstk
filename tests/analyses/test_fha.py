@@ -164,7 +164,8 @@ def test_set_user_defined_results_set_unused_zero():
     assert _fha['res5'] == 0.0
 
 
-@pytest.mark.integration
+@pytest.mark.unit
+@pytest.mark.calculation
 def test_calculate_user_defined():
     """calculate() should return False when calculating user-defined risks."""
     _fha = fha.set_user_defined_functions(
