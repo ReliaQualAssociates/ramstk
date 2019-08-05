@@ -19,7 +19,7 @@ import pytest
 from ramstk.Utilities import (
     create_logger, date_to_ordinal, dir_exists, error_handler,
     file_exists, none_to_default, none_to_string,
-    ordinal_to_date, split_string, string_to_boolean,
+    ordinal_to_date, split_string, string_to_boolean
 )
 
 TEMPDIR = tempfile.gettempdir()
@@ -137,14 +137,12 @@ def test_file_does_not_exist():
 
 
 @pytest.mark.unit
-@pytest.mark.utilities
 def test_none_to_default():
     """ none_to_default() should return the default value if the original value is None. """
     assert none_to_default(None, 10) == 10
 
 
 @pytest.mark.unit
-@pytest.mark.utilities
 def test_none_to_default_not_none():
     """ none_to_default() should return the original value if it is not missing. """
     assert none_to_default(40, 10) == 40

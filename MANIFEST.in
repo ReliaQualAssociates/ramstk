@@ -6,10 +6,12 @@ exclude .coverage
 exclude .coveragerc
 exclude .gitattributes
 exclude .gitcommittemplate.txt
+exclude .github_changelog_generator
 exclude .gitignore
 exclude .isort.cfg
 exclude .pre-commit-config.yaml
 exclude .pylintrc
+exclude .python-version
 exclude .travis.yml
 exclude appveyor.yml*
 exclude coverage.xml
@@ -21,4 +23,13 @@ graft data
 graft docs
 graft locale
 
+prune docs/_build*
+prune docs/theme*
+prune docs/user*
+
+global-exclude Makefile
+global-exclude *.nojekyll
+global-exclude *.rst
 global-exclude *.py[co]
+global-exclude Guardfile
+global-exclude conf.py
