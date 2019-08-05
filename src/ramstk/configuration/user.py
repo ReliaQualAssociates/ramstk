@@ -195,6 +195,57 @@ class RAMSTKUserConfiguration:
         value is *en_US*.
     :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
+    # Define private scalar attributes.
+    _INSTALL_PREFIX = Utilities.prefix()
+
+    # Define public dictionary attributes.
+    RAMSTK_FORMAT_FILE: Dict[str, str] = {}
+    RAMSTK_COLORS: Dict[str, str] = {}
+    RAMSTK_COM_INFO: Dict[str, str] = {}
+    RAMSTK_PROG_INFO: Dict[str, str] = {}
+    RAMSTK_TABPOS = {
+        "listbook": "top",
+        "modulebook": "bottom",
+        "workbook": "bottom",
+    }
+    RAMSTK_MODULES: Dict[str, str] = {}  # Static.
+
+    # Define public list attributes.
+    RAMSTK_RISK_POINTS = [4, 10]
+
+    # Define public scalar attributes.
+    if sys.platform == "linux" or sys.platform == "linux2":
+        RAMSTK_OS = "Linux"
+        RAMSTK_SITE_DIR = _INSTALL_PREFIX + "/share/RAMSTK"
+        RAMSTK_HOME_DIR = environ["HOME"]
+        RAMSTK_LOG_DIR = "/var/log/RAMSTK"
+    elif sys.platform == "win32":
+        RAMSTK_OS = "Windows"
+        RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
+        RAMSTK_HOME_DIR = environ["USERPROFILE"]
+        RAMSTK_LOG_DIR = RAMSTK_SITE_DIR + "/logs"
+
+    RAMSTK_DATA_DIR = RAMSTK_SITE_DIR + "/layouts"
+    RAMSTK_ICON_DIR = RAMSTK_SITE_DIR + "/icons"
+    RAMSTK_PROG_DIR = RAMSTK_HOME_DIR + "/analyses/ramstk/"
+    RAMSTK_CONF_DIR = RAMSTK_SITE_DIR
+
+    RAMSTK_PROG_CONF = ""
+    RAMSTK_DEBUG_LOG = ""
+    RAMSTK_IMPORT_LOG = ""
+    RAMSTK_USER_LOG = ""
+
+    RAMSTK_MODE = ""
+    RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
+    RAMSTK_BACKEND = ""
+    RAMSTK_REPORT_SIZE = "letter"
+    RAMSTK_HR_MULTIPLIER = 1000000.0
+    RAMSTK_DEC_PLACES = 6
+    RAMSTK_MTIME = 100.0
+    RAMSTK_GUI_LAYOUT = "advanced"
+    RAMSTK_WORKFLOW = "STANDARD"  # STANDARD or LRM
+    RAMSTK_LOCALE = "en_US"
+
     def __init__(self):
         """Initialize the RAMSTK user configuration."""
         # Initialize private dictionary attributes.
@@ -230,57 +281,16 @@ class RAMSTKUserConfiguration:
         ]
 
         # Initialize private scalar attributes.
-        self._INSTALL_PREFIX = Utilities.prefix()
 
         # Initialize public dictionary attributes.
-        self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
-        self.RAMSTK_COLORS: Dict[str, str] = {}
-        self.RAMSTK_COM_INFO: Dict[str, str] = {}
-        self.RAMSTK_PROG_INFO: Dict[str, str] = {}
-        self.RAMSTK_TABPOS = {
-            "listbook": "top",
-            "modulebook": "bottom",
-            "workbook": "bottom",
-        }
 
         # Initialize public list attributes.
-        self.RAMSTK_RISK_POINTS = [4, 10]
 
         # Initialize public scalar attributes.
-        if sys.platform == "linux" or sys.platform == "linux2":
-            self.RAMSTK_OS = "Linux"
-            self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
-            self.RAMSTK_HOME_DIR = environ["HOME"]
-            self.RAMSTK_LOG_DIR = "/var/log/RAMSTK"
-
-        elif sys.platform == "win32":
-            self.RAMSTK_OS = "Windows"
-            self.RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
-            self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
-            self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + "/logs"
-
-        self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + "/layouts"
-        self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + "/icons"
-        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
-        self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
-
-        self.RAMSTK_PROG_CONF = ""
-        self.RAMSTK_DEBUG_LOG = ""
-        self.RAMSTK_IMPORT_LOG = ""
-        self.RAMSTK_USER_LOG = ""
-
-        self.RAMSTK_MODE = ""
-        self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
-        self.RAMSTK_BACKEND = ""
-        self.RAMSTK_REPORT_SIZE = "letter"
-        self.RAMSTK_HR_MULTIPLIER = 1000000.0
-        self.RAMSTK_DEC_PLACES = 6
-        self.RAMSTK_MTIME = 100.0
-        self.RAMSTK_GUI_LAYOUT = "advanced"
-        self.RAMSTK_WORKFLOW = "STANDARD"  # STANDARD or LRM
-        self.RAMSTK_LOCALE = "en_US"
-
-        self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
+        #self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + "/layouts"
+        #self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + "/icons"
+        #self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
+        #self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
     def _do_make_configuration_dir(self):
         """

@@ -666,7 +666,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_action_attrs,
                         'succeed_get_action_attributes')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_set_mode_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mode attributes."""
         DUT = dmFMEA(test_program_dao)
@@ -689,7 +689,7 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_set_mechanism_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
         DUT = dmFMEA(test_program_dao)
@@ -711,7 +711,7 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_set_cause_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure cause attributes."""
         DUT = dmFMEA(test_program_dao)
@@ -733,7 +733,7 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_set_control_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting control attributes."""
         DUT = dmFMEA(test_program_dao)
@@ -756,7 +756,7 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_set_action_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting action attributes."""
         DUT = dmFMEA(test_program_dao)
