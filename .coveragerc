@@ -28,10 +28,9 @@ omit =
 exclude_lines =
     pragma: no cover
     import
-    if self._test
     if __name__ == __main__:
 show_missing = True
 
 [html]
-directory = .reports/coverage/html
+directory = docs/coverage
 title = "RAMSTK Test Coverage Report"

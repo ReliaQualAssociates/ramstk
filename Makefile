@@ -1,3 +1,4 @@
+# A Makefile because It beats trying to remember all the commands.
 # These variables can be passed from the command line when invoking make.
 CHANGELOG	= CHANGELOG.md
 REPO		= ReliaQualAssociates/ramstk
@@ -47,7 +48,6 @@ use.venv:
 	pyenv activate $(VIRTENV)
 
 clean:
-	python setup.py clean --all
 	find . -name '*.pyc' -exec rm -f '{}' \;
 	find . -name '*.pyo' -exec rm -f '{}' \;
 	find ./src -name '*.egg-info' -exec rm -fr '{}' \;
@@ -73,7 +73,9 @@ requirements:
 	pip-compile --generate-hashes --output-file $(DOCREQFILE) requirements_doc.in
 
 reqs.update:
-	pip-compile --upgrade
+	pip-compile --upgrade --generate-hashes --output-file $(REQFILE) requirements_run.in
+	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements_dev.in
+	pip-compile --upgrade --generate-hashes --output-file $(DOCREQFILE) requirements_doc.in
 
 update: clean reqs.update
 

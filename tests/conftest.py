@@ -298,9 +298,11 @@ def test_common_dao():
 
     yield dao
 
+    dao.db_close()
+
 @pytest.fixture(scope='class')
 def test_program_dao():
-    """Create a test DAO object for testing against an RAMSTK Program DB."""
+    """Create a test database for testing against an RAMSTK Program DB."""
     # This will create a RAMSTK Program database using the
     # <DB>_test_program_db.sql file in devtools/ (where <DB> = the database
     # engine to use) for each group of tests collected in a class.  Group tests
@@ -341,7 +343,12 @@ def test_program_dao():
     dao = DAO()
     dao.db_connect(tempuri)
 
+    #print("\n\tTest DOA object created in conftest for this test class:", dao)
+    #print("\n\tTest database created in conftest for this test class: {0:s}".format(tempuri))
+
     yield dao
+
+    dao.db_close()
 
 # TODO: Delete the test_dao() function after all tests have been updated to use
 # the test_program_dao.

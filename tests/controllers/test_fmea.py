@@ -609,6 +609,8 @@ class TestGetterSetter():
         DUT.do_select_all(parent_id=1)
         DUT.do_get_attributes('6', 'mode')
 
+        assert isinstance(DUT.tree.get_node('6').data['mode'], RAMSTKMode)
+
         pub.unsubscribe(self.on_succeed_get_mode_attrs,
                         'succeed_get_mode_attributes')
 
