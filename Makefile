@@ -48,9 +48,12 @@ use.venv:
 	pyenv activate $(VIRTENV)
 
 clean:
+	python setup.py clean --all
+
+distclean:
 	find . -name '*.pyc' -exec rm -f '{}' \;
 	find . -name '*.pyo' -exec rm -f '{}' \;
-	find ./src -name '*.egg-info' -exec rm -fr '{}' \;
+	rm -f src/RAMSTK.egg-info
 
 changelog:
 	github_changelog_generator $(REPO)

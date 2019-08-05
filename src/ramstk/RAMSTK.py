@@ -18,6 +18,9 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.controllers import (
     dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
     dmRequirement, dmRevision, dmStakeholder, dmValidation
@@ -38,7 +41,6 @@ from ramstk.modules.preferences import dtcPreferences
 
 # RAMSTK Local Imports
 from . import Utilities
-from .Configuration import Configuration
 
 
 def main():
@@ -57,12 +59,12 @@ def main():
 
     # Create RAMSTK Books.  These need to be initialized after reading the
     # configuration.
-    if _app.RAMSTK_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
+    if _app.RAMSTK_USER_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
         pass
     else:  # Multiple windows.
-        ListBook(_app.RAMSTK_CONFIGURATION)
-        ModuleBook(_app.RAMSTK_CONFIGURATION)
-        WorkBook(_app.RAMSTK_CONFIGURATION)
+        ListBook(_app.RAMSTK_USER_CONFIGURATION)
+        ModuleBook(_app.RAMSTK_USER_CONFIGURATION)
+        WorkBook(_app.RAMSTK_USER_CONFIGURATION)
 
     Gtk.main()
 
@@ -592,13 +594,14 @@ class RAMSTK():
     :ivar ramstk_model: the instance of :class:`ramstk.RAMSTK.Model` managed by
         this data controller.
     """
-    RAMSTK_CONFIGURATION = Configuration()
+    RAMSTK_SITE_CONFIGURATION = RAMSTKSiteConfiguration()
+    RAMSTK_USER_CONFIGURATION = RAMSTKUserConfiguration()
 
     def __init__(self, **kwargs):
         """Initialize an instance of the RAMSTK data controller."""
         # Read the site configuration file.
-        self.RAMSTK_CONFIGURATION.set_site_variables()
-        if self.RAMSTK_CONFIGURATION.set_user_variables():
+        self.RAMSTK_SITE_CONFIGURATION.set_site_directories()
+        if self.RAMSTK_USER_CONFIGURATION.set_user_directories():
             _prompt = _(
                 "A user-specific configuration directory could not "
                 "be found at {0:s}.  You will be given the option to "
@@ -606,26 +609,26 @@ class RAMSTK():
                 "not to, you will recieve this prompt every time you "
                 "execute RAMSTK.  Would you like to create and populate "
                 "a user-specific configuration directory?", ).format(
-                    self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_HOME_DIR
                     + "/.config/RAMSTK", )
             _dialog = ramstk.RAMSTKMessageDialog(_prompt, '', 'question')
             _response = _dialog.do_run()
             _dialog.do_destroy()
 
             if _response == Gtk.ResponseType.YES:
-                self.RAMSTK_CONFIGURATION.create_user_configuration()
+                self.RAMSTK_USER_CONFIGURATION.create_user_configuration()
 
-            self.RAMSTK_CONFIGURATION.set_user_variables(first_run=False)
+            self.RAMSTK_USER_CONFIGURATION.set_user_directories(first_run=False)
 
-        self.RAMSTK_CONFIGURATION.get_user_configuration()
+        self.RAMSTK_USER_CONFIGURATION.get_user_configuration()
 
         # Create loggers.
         (
-            self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG,
-            self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG,
-            self.RAMSTK_CONFIGURATION.RAMSTK_IMPORT_LOG,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEBUG_LOG,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_USER_LOG,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_IMPORT_LOG,
         ) = \
-            _initialize_loggers(self.RAMSTK_CONFIGURATION)
+            _initialize_loggers(self.RAMSTK_USER_CONFIGURATION)
 
         # Initialize private dictionary instance attributes.
 
@@ -661,14 +664,14 @@ class RAMSTK():
 
         # Define public scalar attributes.
         self.icoStatus = Gtk.StatusIcon()
-        self.RAMSTK_CONFIGURATION.loaded = False
+        self.RAMSTK_USER_CONFIGURATION.loaded = False
 
         # Connect to the RAMSTK Common database.
         _database = None
-        if self.RAMSTK_CONFIGURATION.RAMSTK_COM_BACKEND == 'sqlite':
-            _database = self.RAMSTK_CONFIGURATION.RAMSTK_COM_BACKEND + \
+        if self.RAMSTK_USER_CONFIGURATION.RAMSTK_COM_BACKEND == 'sqlite':
+            _database = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COM_BACKEND + \
                         ':///' + \
-                        self.RAMSTK_CONFIGURATION.RAMSTK_COM_INFO['database']
+                        self.RAMSTK_USER_CONFIGURATION.RAMSTK_COM_INFO['database']
         _dao = DAO()
         _dao.db_connect(_database)
 
@@ -687,7 +690,7 @@ class RAMSTK():
         # Create a Preferences module instance and read the user preferences.
         self.dic_controllers['preferences'] = dtcPreferences(
             self.ramstk_model.program_dao,
-            self.RAMSTK_CONFIGURATION,
+            self.RAMSTK_USER_CONFIGURATION,
             site_dao=_dao,
             test=False,
         )
@@ -696,14 +699,14 @@ class RAMSTK():
         # Create an Import module instance.
         self.dic_controllers['imports'] = dtcImports(
             self.ramstk_model.program_dao,
-            self.RAMSTK_CONFIGURATION,
+            self.RAMSTK_USER_CONFIGURATION,
             test=False,
         )
 
         # Create an Export module instance.
         self.dic_controllers['exports'] = dtcExports(
             self.ramstk_model.program_dao,
-            self.RAMSTK_CONFIGURATION,
+            self.RAMSTK_USER_CONFIGURATION,
             test=False,
         )
 
@@ -711,7 +714,7 @@ class RAMSTK():
         # if self._validate_license():
         #    sys.exit(2)
 
-        _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
@@ -733,19 +736,19 @@ class RAMSTK():
         _return = False
         _database = None
 
-        if self.RAMSTK_CONFIGURATION.RAMSTK_BACKEND == 'sqlite':
-            _database = self.RAMSTK_CONFIGURATION.RAMSTK_BACKEND + ':///' + \
-                self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']
+        if self.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND == 'sqlite':
+            _database = self.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND + ':///' + \
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']
 
         _error_code, _msg = self.ramstk_model.do_create_program(_database)
         if _error_code == 0:
             self.request_do_open_program()
-            self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
 
             if not self.__test:
                 pub.sendMessage('createdProgram')
         else:
-            self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
             _return = True
 
         return _return
@@ -757,7 +760,7 @@ class RAMSTK():
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self.ramstk_model.do_load_globals(self.RAMSTK_CONFIGURATION)
+        return self.ramstk_model.do_load_globals(self.RAMSTK_USER_CONFIGURATION)
 
     def request_do_open_program(self):
         """
@@ -770,9 +773,9 @@ class RAMSTK():
 
         _database = None
 
-        if self.RAMSTK_CONFIGURATION.RAMSTK_BACKEND == 'sqlite':
-            _database = self.RAMSTK_CONFIGURATION.RAMSTK_BACKEND + ':///' + \
-                self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']
+        if self.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND == 'sqlite':
+            _database = self.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND + ':///' + \
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']
 
         # If the database was successfully opened, create an instance of each
         # of the slave data controllers.
@@ -818,25 +821,25 @@ class RAMSTK():
                 site=False,
                 program=True,
             )
-            self.RAMSTK_CONFIGURATION.RAMSTK_MODULES['function'] = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MODULES['function'] = \
                 _program_info['function_active']
-            self.RAMSTK_CONFIGURATION.RAMSTK_MODULES['requirement'] = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MODULES['requirement'] = \
                 _program_info['requirement_active']
-            self.RAMSTK_CONFIGURATION.RAMSTK_MODULES['hardware'] = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MODULES['hardware'] = \
                 _program_info['hardware_active']
-            self.RAMSTK_CONFIGURATION.RAMSTK_MODULES['validation'] = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MODULES['validation'] = \
                 _program_info['vandv_active']
 
             _page = 1
             for _module in self._lst_modules:
-                if self.RAMSTK_CONFIGURATION.RAMSTK_MODULES[_module] == 1:
-                    self.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[
+                if self.RAMSTK_USER_CONFIGURATION.RAMSTK_MODULES[_module] == 1:
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[
                         _page
                     ] = _module
                     _page += 1
 
             # ISSUE: See issue #228 at https://github.com/ReliaQualAssociates/ramstk/issues/228
-            _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+            _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
                 '/32x32/db-connected.png'
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
@@ -844,18 +847,18 @@ class RAMSTK():
             #self.icoStatus.set_tooltip(
             #    _(u"RAMSTK is connected to program database "
             #      u"{0:s}.".format(
-            #          self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
+            #          self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
 
-            self.RAMSTK_CONFIGURATION.loaded = True
+            self.RAMSTK_USER_CONFIGURATION.loaded = True
 
-            self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
             if not self.__test:
                 _attributes = {'revision_id': -1}
                 self.dic_controllers['revision'].request_do_select_all(
                     _attributes, )
 
         else:
-            self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
             _return = True
 
         return _return
@@ -867,7 +870,7 @@ class RAMSTK():
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
@@ -880,7 +883,7 @@ class RAMSTK():
             pub.sendMessage('closed_program')
 
         if not self.ramstk_model.do_close_program():
-            self.RAMSTK_CONFIGURATION.loaded = False
+            self.RAMSTK_USER_CONFIGURATION.loaded = False
 
     def request_do_save_program(self):
         """
@@ -894,12 +897,12 @@ class RAMSTK():
         _error_code, _msg = self.ramstk_model.do_save_program()
 
         if _error_code == 0:
-            self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
 
             if not self.__test:
                 pub.sendMessage('savedProgram')
         else:
-            self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
             _return = True
 
         return _return
@@ -915,7 +918,7 @@ class RAMSTK():
 
         # Read the license file and compare to the product key in the site
         # database.  If they are not equal, quit the application.
-        _license_file = self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR + '/license.key'
+        _license_file = self.RAMSTK_USER_CONFIGURATION.RAMSTK_DATA_DIR + '/license.key'
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
@@ -926,7 +929,7 @@ class RAMSTK():
             #        "it in {1:s}.",
             #    ).format(
             #      _license_file,
-            #      self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR,
+            #      self.RAMSTK_USER_CONFIGURATION.RAMSTK_DATA_DIR,
             #    ),
             #)
             _return = True
