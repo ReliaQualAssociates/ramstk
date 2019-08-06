@@ -103,6 +103,7 @@ fi
 if [ $new_version != $cur_version ];
 then
     sed -i "s/^\(__version__\s*=\s*\).*$/\1'$new_version'/" $PWD/setup.py
+    sed -i "s/^\(version\s*=\s*\).*$/\1'$new_version'/" $PWD/setup.cfg
 fi
 
 # Now tag the branch with the new tag.  Only master, develop, and release

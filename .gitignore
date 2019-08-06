@@ -38,6 +38,7 @@ _templates/
 
 # RAMSTK specific directories and files to ignore
 .gtm/
+.reports/
 *.csv
 *.glade
 *.html
@@ -53,8 +54,8 @@ coverage.xml
 
 # Override settings for some specific files.
 !/license.txt
-!/requirements_dev.txt
-!/requirements_doc.txt
-!/requirements_run.txt
+!/requirements-dev.txt
+!/requirements-test.txt
+!/requirements.txt
 /.gtm/
 /.project

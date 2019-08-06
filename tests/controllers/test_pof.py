@@ -21,7 +21,7 @@ from ramstk.models.programdb import (
 )
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -59,7 +59,7 @@ class TestCreateControllers():
                                 'request_set_pof_attributes')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_pof(self, tree):
@@ -157,7 +157,7 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='mode') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_mode(self, node_id):
@@ -273,7 +273,7 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_pof, 'fail_delete_pof')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_opload(self, node_id):
@@ -401,7 +401,7 @@ class TestInsertMethods():
                         'fail_insert_test_method')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_mode_attrs(self, attributes):
@@ -532,19 +532,17 @@ class TestGetterSetter():
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4',
-                        key='effect_local',
-                        value='Some really bad shit will happen.',
-                        table='mode')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4',
-                        key='description',
-                        value='Ivanka Trump',
-                        table='mode')
-        assert DUT.do_select('4', table='mode').description == 'Ivanka Trump'
+        DUT.do_set_attributes(node_id='6',
+                              key='effect_local',
+                              value='Some really bad shit will happen.',
+                              table='mode')
+        DUT.do_set_attributes(node_id='6',
+                              key='description',
+                              value='Ivanka Trump',
+                              table='mode')
+        assert DUT.do_select('6', table='mode').description == 'Ivanka Trump'
         assert DUT.do_select(
-            '4',
+            '6',
             table='mode').effect_local == ('Some really bad shit will happen.')
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
@@ -555,16 +553,14 @@ class TestGetterSetter():
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1',
-                        key='rpn_detection',
-                        value=8,
-                        table='mechanism')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1',
-                        key='description',
-                        value='Jared Kushner',
-                        table='mechanism')
+        DUT.do_set_attributes(node_id='4.1',
+                              key='rpn_detection',
+                              value=8,
+                              table='mechanism')
+        DUT.do_set_attributes(node_id='4.1',
+                              key='description',
+                              value='Jared Kushner',
+                              table='mechanism')
         assert DUT.do_select('4.1',
                              table='mechanism').description == 'Jared Kushner'
         assert DUT.do_select('4.1', table='mechanism').rpn_detection == 8
@@ -577,16 +573,14 @@ class TestGetterSetter():
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1',
-                        key='damage_model',
-                        value='Fancy math model',
-                        table='opload')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1',
-                        key='description',
-                        value='Jared Kushner',
-                        table='opload')
+        DUT.do_set_attributes(node_id='4.1.1',
+                              key='damage_model',
+                              value='Fancy math model',
+                              table='opload')
+        DUT.do_set_attributes(node_id='4.1.1',
+                              key='description',
+                              value='Jared Kushner',
+                              table='opload')
         assert DUT.do_select('4.1.1',
                              table='opload').description == 'Jared Kushner'
         assert DUT.do_select(
@@ -600,16 +594,14 @@ class TestGetterSetter():
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.s',
-                        key='load_history',
-                        value='Waterfall histogram',
-                        table='opstress')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.s',
-                        key='description',
-                        value='Lock and chain',
-                        table='opstress')
+        DUT.do_set_attributes(node_id='4.1.1.1.s',
+                              key='load_history',
+                              value='Waterfall histogram',
+                              table='opstress')
+        DUT.do_set_attributes(node_id='4.1.1.1.s',
+                              key='description',
+                              value='Lock and chain',
+                              table='opstress')
         assert DUT.do_select('4.1.1.1.s',
                              table='opstress').description == 'Lock and chain'
         assert DUT.do_select(
@@ -624,16 +616,14 @@ class TestGetterSetter():
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.t',
-                        key='description',
-                        value='Kick his ass',
-                        table='testmethod')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.t',
-                        key='remarks',
-                        value=b'Doyle Rowland',
-                        table='testmethod')
+        DUT.do_set_attributes(node_id='4.1.1.1.t',
+                              key='description',
+                              value='Kick his ass',
+                              table='testmethod')
+        DUT.do_set_attributes(node_id='4.1.1.1.t',
+                              key='remarks',
+                              value=b'Doyle Rowland',
+                              table='testmethod')
         assert DUT.do_select('4.1.1.1.t',
                              table='testmethod').description == 'Kick his ass'
         assert DUT.do_select('4.1.1.1.t',
@@ -653,7 +643,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_pof_tree, 'succeed_get_pof_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_pof(self, node_id):

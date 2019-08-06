@@ -382,7 +382,7 @@ class DataManager(RAMSTKDataManager):
 
             self._do_select_all_cause(_mechanism.mechanism_id, _identifier)
 
-    def do_get_tree(self):
+    def do_get_tree(self) -> None:
         """
         Retrieve the FMEA treelib Tree.
 
@@ -453,7 +453,7 @@ class DataManager(RAMSTKDataManager):
 
             self.do_select(node_id, table=table).set_attributes(_attributes)
 
-    def do_update(self, node_id):
+    def do_update(self, node_id: int) -> None:
         """
         Update the record associated with node ID in RAMSTK Program database.
 

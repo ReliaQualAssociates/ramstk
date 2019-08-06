@@ -229,7 +229,7 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='mode') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_mode(self, node_id):
@@ -369,7 +369,7 @@ class TestDeleteMethods():
         DUT._do_delete('300')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_mode(self, node_id):
@@ -670,16 +670,14 @@ class TestGetterSetter():
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4',
-                        key='effect_local',
-                        value='Some really bad shit will happen.',
-                        table='mode')
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4',
-                        key='description',
-                        value='Ivanka Trump',
-                        table='mode')
+        DUT.do_set_attributes(node_id='4',
+                              key='effect_local',
+                              value='Some really bad shit will happen.',
+                              table='mode')
+        DUT.do_set_attributes(node_id='4',
+                              key='description',
+                              value='Ivanka Trump',
+                              table='mode')
         assert DUT.do_select('4', table='mode').description == 'Ivanka Trump'
         assert DUT.do_select(
             '4',
@@ -693,16 +691,14 @@ class TestGetterSetter():
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1',
-                        key='rpn_detection',
-                        value=8,
-                        table='mechanism')
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1',
-                        key='description',
-                        value='Jared Kushner',
-                        table='mechanism')
+        DUT.do_set_attributes(node_id='4.1',
+                              key='rpn_detection',
+                              value=8,
+                              table='mechanism')
+        DUT.do_set_attributes(node_id='4.1',
+                              key='description',
+                              value='Jared Kushner',
+                              table='mechanism')
         assert DUT.do_select('4.1',
                              table='mechanism').description == 'Jared Kushner'
         assert DUT.do_select('4.1', table='mechanism').rpn_detection == 8
@@ -715,16 +711,14 @@ class TestGetterSetter():
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1.4',
-                        key='rpn_detection',
-                        value=8,
-                        table='cause')
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1.4',
-                        key='description',
-                        value='Jared Kushner',
-                        table='cause')
+        DUT.do_set_attributes(node_id='4.1.4',
+                              key='rpn_detection',
+                              value=8,
+                              table='cause')
+        DUT.do_set_attributes(node_id='4.1.4',
+                              key='description',
+                              value='Jared Kushner',
+                              table='cause')
         assert DUT.do_select('4.1.4',
                              table='cause').description == 'Jared Kushner'
         assert DUT.do_select('4.1.4', table='cause').rpn_detection == 8
@@ -737,16 +731,14 @@ class TestGetterSetter():
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1.4.4.c',
-                        key='type_id',
-                        value='Prevention',
-                        table='control')
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1.4.4.c',
-                        key='description',
-                        value='Lock and chain',
-                        table='control')
+        DUT.do_set_attributes(node_id='4.1.4.4.c',
+                              key='type_id',
+                              value='Prevention',
+                              table='control')
+        DUT.do_set_attributes(node_id='4.1.4.4.c',
+                              key='description',
+                              value='Lock and chain',
+                              table='control')
         assert DUT.do_select('4.1.4.4.c',
                              table='control').description == 'Lock and chain'
         assert DUT.do_select('4.1.4.4.c',
@@ -760,16 +752,14 @@ class TestGetterSetter():
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1.4.4.a',
-                        key='action_recommended',
-                        value=b'Kick his ass',
-                        table='action')
-        pub.sendMessage('request_set_fmea_attributes',
-                        node_id='4.1.4.4.a',
-                        key='action_owner',
-                        value='Doyle Rowland',
-                        table='action')
+        DUT.do_set_attributes(node_id='4.1.4.4.a',
+                              key='action_recommended',
+                              value=b'Kick his ass',
+                              table='action')
+        DUT.do_set_attributes(node_id='4.1.4.4.a',
+                              key='action_owner',
+                              value='Doyle Rowland',
+                              table='action')
         assert DUT.do_select(
             '4.1.4.4.a', table='action').action_recommended == b'Kick his ass'
         assert DUT.do_select('4.1.4.4.a',
@@ -801,7 +791,7 @@ class TestGetterSetter():
         assert isinstance(DUT._tree.get_node('4').data['mode'], RAMSTKMode)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_fmea(self, node_id):

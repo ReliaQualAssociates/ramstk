@@ -52,7 +52,6 @@ TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestProgramDB.ramstk'
 TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
-TEST_PROGRAM_DB_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 
 DEBUG_LOG = LOG_DIR + '/RAMSTK_debug.log'
@@ -272,6 +271,8 @@ def test_common_dao():
 
     yield dao
 
+    dao.db_close()
+
 @pytest.fixture(scope='class')
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
@@ -301,7 +302,7 @@ def test_program_dao():
     # temporary directory to be deleted when it is finished with it.
     tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
     tempdb = str(tempdir.name) + '/TestProgramDB.ramstk'
-    tempuri = 'sqlite:///' + tempdb
+    test_program_db_uri = 'sqlite:///' + tempdb
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
@@ -313,10 +314,11 @@ def test_program_dao():
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = DAO()
-    dao.db_connect(tempuri)
+    dao.db_connect(test_program_db_uri)
 
     yield dao
 
+    dao.db_close()
 
 # TODO: Delete the test_dao() function after all tests have been updated to use
 # the test_program_dao.

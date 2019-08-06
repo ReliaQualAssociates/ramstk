@@ -384,7 +384,6 @@ class DAO():
         :rtype: None
         """
         self.session.close()
-        self.RAMSTK_SESSION.close_all()
         self.engine.dispose()
         self.session = None
         self.engine = None
