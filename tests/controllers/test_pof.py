@@ -526,22 +526,20 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_test_method_attrs,
                         'succeed_get_test_method_attributes')
 
-    @pytest.mark.xfail
+    @pytest.mark.integration
     def test_do_set_mode_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mode attributes."""
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='6',
-                        key='effect_local',
-                        value='Some really bad shit will happen.',
-                        table='mode')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='6',
-                        key='description',
-                        value='Ivanka Trump',
-                        table='mode')
+        DUT.do_set_attributes(node_id='6',
+                              key='effect_local',
+                              value='Some really bad shit will happen.',
+                              table='mode')
+        DUT.do_set_attributes(node_id='6',
+                              key='description',
+                              value='Ivanka Trump',
+                              table='mode')
         assert DUT.do_select('6', table='mode').description == 'Ivanka Trump'
         assert DUT.do_select(
             '6',
@@ -549,44 +547,40 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
-    @pytest.mark.xfail
+    @pytest.mark.integration
     def test_do_set_mechanism_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1',
-                        key='rpn_detection',
-                        value=8,
-                        table='mechanism')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1',
-                        key='description',
-                        value='Jared Kushner',
-                        table='mechanism')
+        DUT.do_set_attributes(node_id='4.1',
+                              key='rpn_detection',
+                              value=8,
+                              table='mechanism')
+        DUT.do_set_attributes(node_id='4.1',
+                              key='description',
+                              value='Jared Kushner',
+                              table='mechanism')
         assert DUT.do_select('4.1',
                              table='mechanism').description == 'Jared Kushner'
         assert DUT.do_select('4.1', table='mechanism').rpn_detection == 8
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
-    @pytest.mark.xfail
+    @pytest.mark.integration
     def test_do_set_opload_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting operating load attributes."""
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1',
-                        key='damage_model',
-                        value='Fancy math model',
-                        table='opload')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1',
-                        key='description',
-                        value='Jared Kushner',
-                        table='opload')
+        DUT.do_set_attributes(node_id='4.1.1',
+                              key='damage_model',
+                              value='Fancy math model',
+                              table='opload')
+        DUT.do_set_attributes(node_id='4.1.1',
+                              key='description',
+                              value='Jared Kushner',
+                              table='opload')
         assert DUT.do_select('4.1.1',
                              table='opload').description == 'Jared Kushner'
         assert DUT.do_select(
@@ -594,22 +588,20 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
-    @pytest.mark.xfail
+    @pytest.mark.integration
     def test_do_set_opstress_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting control attributes."""
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.s',
-                        key='load_history',
-                        value='Waterfall histogram',
-                        table='opstress')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.s',
-                        key='description',
-                        value='Lock and chain',
-                        table='opstress')
+        DUT.do_set_attributes(node_id='4.1.1.1.s',
+                              key='load_history',
+                              value='Waterfall histogram',
+                              table='opstress')
+        DUT.do_set_attributes(node_id='4.1.1.1.s',
+                              key='description',
+                              value='Lock and chain',
+                              table='opstress')
         assert DUT.do_select('4.1.1.1.s',
                              table='opstress').description == 'Lock and chain'
         assert DUT.do_select(
@@ -618,22 +610,20 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
-    @pytest.mark.xfail
+    @pytest.mark.integration
     def test_do_set_test_method_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting test method attributes."""
         DUT = dmPoF(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.t',
-                        key='description',
-                        value='Kick his ass',
-                        table='testmethod')
-        pub.sendMessage('request_set_pof_attributes',
-                        node_id='4.1.1.1.t',
-                        key='remarks',
-                        value=b'Doyle Rowland',
-                        table='testmethod')
+        DUT.do_set_attributes(node_id='4.1.1.1.t',
+                              key='description',
+                              value='Kick his ass',
+                              table='testmethod')
+        DUT.do_set_attributes(node_id='4.1.1.1.t',
+                              key='remarks',
+                              value=b'Doyle Rowland',
+                              table='testmethod')
         assert DUT.do_select('4.1.1.1.t',
                              table='testmethod').description == 'Kick his ass'
         assert DUT.do_select('4.1.1.1.t',

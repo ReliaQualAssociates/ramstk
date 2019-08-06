@@ -167,7 +167,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='requirement') is None
 
-    @pytest.mark.integration
+    @pytest.mark.xfail
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
         DATAMGR = dmRequirement(test_program_dao)
