@@ -36,7 +36,8 @@ help:
 	@echo "	test.integration			run all tests decorated with the 'integration' marker."
 	@echo "	test					run the complete RAMSTK test suite without coverage."
 	@echo "	test-all				run the complete RAMSTK test suite on every Python version using tox. <FUTURE>"
-	@echo "	coverage				run the complete RAMSTK test suite with coverage and generate an html coverage report in $(COVDIR)."
+	@echo "	coverage				run the complete RAMSTK test suite with coverage."
+	@echo "	reports					generate an html coverage report in $(COVDIR)."
 	@echo "Targets related to static code checking tools:"
 	@echo "	format SRCFILE=<file>			format using isort and yapf.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
@@ -142,6 +143,8 @@ test-all:
 
 coverage: clean-test
 	py.test $(TESTOPTS) --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term $(TESTFILE)
+
+reports:
 	coverage html -d $(COVDIR)
 
 format:
