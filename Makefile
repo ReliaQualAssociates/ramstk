@@ -7,7 +7,7 @@ REPO		= ReliaQualAssociates/ramstk
 REQFILE		= requirements.txt
 DEVREQFILE	= requirements-dev.txt
 TSTREQFILE	= requirements-test.txt
-SRCFILE		= src/ramstk/*
+SRCFILE		= src/ramstk/
 TESTOPTS	= -x
 TESTFILE	= tests/
 VIRTENV		= ramstk-venv
@@ -40,6 +40,7 @@ help:
 	@echo "Targets related to static code checking tools:"
 	@echo "	format SRCFILE=<file>			format using isort and yapf.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
+	@echo "	typecheck SRCFILE=<file>		check using mypy.  Helpful to keymap in IDE or editor."
 	@echo "	lint SRCFILE=<file>			lint using pylint and flake8.  Helpful to keymap in IDE or editor."
 	@echo "						If passing a directory, all files will be recusively checked."
 	@echo "	maintain SRCFILE=<file>			check maintainability using mccabe and radon.  Helpful to keymap in IDE or editor."
@@ -153,6 +154,9 @@ stylecheck:
 	pycodestyle --statistics --count $(SRCFILE)
 	pydocstyle --count $(SRCFILE)
 
+typecheck:
+	mypy $(SRCFILE)
+
 lint:
 	$(info Linting $(SRCFILE)...)
 	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
@@ -160,10 +164,10 @@ lint:
 
 maintain:
 	$(info Checking maintainability of $(SRCFILE)...)
-	python -m mccabe -m 9 $(SRCFILE)
-	radon cc -s $(SRCFILE)
-	radon mi -s $(SRCFILE)
-	radon hal $(SRCFILE)
+	python -m mccabe -m 9 $(SRCFILE)*
+	radon cc -s $(SRCFILE)*
+	radon mi -s $(SRCFILE)*
+	radon hal $(SRCFILE)*
 
 changelog:
 	github_changelog_generator $(REPO)

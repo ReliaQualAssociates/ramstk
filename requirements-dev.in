@@ -16,6 +16,7 @@ yapf
 bandit
 flake8
 mccabe
+mypy
 pycodestyle
 pydocstyle
 pylint
