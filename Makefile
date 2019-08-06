@@ -4,9 +4,9 @@
 # These variables can be passed from the command line when invoking make.
 CHANGELOG	= CHANGELOG.md
 REPO		= ReliaQualAssociates/ramstk
-REQFILE		= requirements_run.txt
-DEVREQFILE	= requirements_dev.txt
-DOCREQFILE	= requirements_doc.txt
+REQFILE		= requirements.txt
+DEVREQFILE	= requirements-dev.txt
+TSTREQFILE	= requirements-test.txt
 SRCFILE		= src/ramstk/*
 TESTOPTS	= -x
 TESTFILE	= tests/
@@ -88,22 +88,22 @@ pyversions:
 	pyenv versions
 
 requirements:
-	pip-compile --generate-hashes --output-file $(REQFILE) requirements_run.in
-	pip-compile --generate-hashes --output-file $(DEVREQFILE) requirements_dev.in
-	pip-compile --generate-hashes --output-file $(DOCREQFILE) requirements_doc.in
+	pip-compile --generate-hashes --output-file $(REQFILE) requirements.in
+	pip-compile --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
+	pip-compile --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 upgrade:
-	pip-compile --upgrade --generate-hashes --output-file $(REQFILE) requirements_run.in
-	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements_dev.in
-	pip-compile --upgrade --generate-hashes --output-file $(DOCREQFILE) requirements_doc.in
+	pip-compile --upgrade --generate-hashes --output-file $(REQFILE) requirements.in
+	pip-compile --upgrade --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
+	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 depends:
-	pip-sync $(REQFILE) $(DEVREQFILE) $(DOCREQFILE)
+	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
 
 clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
 
 clean-build:	## remove build artifacts
-	rm -fr builds/
+	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr '{}' +

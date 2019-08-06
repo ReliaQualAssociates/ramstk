@@ -5,14 +5,15 @@ matplotlib
 openpyxl
 pandas
 pycairo
+pygobject>=3.27
 pypubsub
 sortedcontainers
 sqlalchemy-utils
 sqlalchemy>=1.3.0
 statsmodels
 sympy
+toml
 treelib>=1.5.3
 xlrd
 XlsxWriter
 xlwt
-pygobject>=3.27
