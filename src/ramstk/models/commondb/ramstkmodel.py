@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKModel Table Module."""
 
+# Standard Library Imports
+from typing import Dict
+
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
 
@@ -24,21 +27,21 @@ class RAMSTKModel(RAMSTK_BASE, RAMSTKBaseTable):
     __tablename__ = 'ramstk_model'
     __table_args__ = {'extend_existing': True}
 
-    model_id = Column(
+    model_id: int = Column(
         'fld_model_id',
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
-    model_type = Column('fld_model_type',
-                        Integer,
-                        default=__defaults__['model_type'])
+    description: str = Column('fld_description',
+                              String(512),
+                              default=__defaults__['description'])
+    model_type: int = Column('fld_model_type',
+                             Integer,
+                             default=__defaults__['model_type'])
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, object]:
         """
         Retrieve the current values of the RAMSTKModel data model attributes.
 

@@ -239,6 +239,41 @@ ROW_DATA = [
 
 
 @pytest.fixture(scope='class')
+def test_simple_database():
+    """Create a simple test database using SQLite3."""
+    # This temporary database has two tables (RAMSTKRevision and
+    # RAMSTKSiteInfo) and is used primarily to test the connect, insert,
+    # insert_many, delete, and update methods of the database drivers.
+    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
+    tempdb = str(tempdir.name) + '/SimpleTestDB.ramstk'
+    test_program_db_uri = 'sqlite:///' + tempdb
+
+    # Create the test database.
+    sql_file = open('./devtools/sqlite_test_simple_db.sql', 'r')
+    script_str = sql_file.read().strip()
+    conn = sqlite3.connect(tempdb)
+    conn.executescript(script_str)
+    conn.commit()
+    conn.close()
+
+    yield test_program_db_uri
+
+
+@pytest.fixture(scope='function')
+def test_license_file():
+    """Create a license key file for testing."""
+    _cwd = os.getcwd()
+    _license_file = open(_cwd + '/license.key', 'w')
+    _license_file.write('apowdigfb3rh9214839qu\n')
+    _license_file.write('2019-08-07')
+    _license_file.close()
+
+    yield _license_file
+
+    os.remove(_cwd + '/license.key')
+
+
+@pytest.fixture(scope='class')
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
     # Create the tmp directory if it doesn't exist.
