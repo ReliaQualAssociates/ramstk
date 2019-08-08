@@ -25,7 +25,7 @@ import xlwt
 # RAMSTK Package Imports
 import ramstk.Utilities as Utilities
 from ramstk.Configuration import Configuration
-from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
 
@@ -239,6 +239,41 @@ ROW_DATA = [
 
 
 @pytest.fixture(scope='class')
+def test_simple_database():
+    """Create a simple test database using SQLite3."""
+    # This temporary database has two tables (RAMSTKRevision and
+    # RAMSTKSiteInfo) and is used primarily to test the connect, insert,
+    # insert_many, delete, and update methods of the database drivers.
+    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
+    tempdb = str(tempdir.name) + '/SimpleTestDB.ramstk'
+    test_program_db_uri = 'sqlite:///' + tempdb
+
+    # Create the test database.
+    sql_file = open('./devtools/sqlite_test_simple_db.sql', 'r')
+    script_str = sql_file.read().strip()
+    conn = sqlite3.connect(tempdb)
+    conn.executescript(script_str)
+    conn.commit()
+    conn.close()
+
+    yield test_program_db_uri
+
+
+@pytest.fixture(scope='function')
+def test_license_file():
+    """Create a license key file for testing."""
+    _cwd = os.getcwd()
+    _license_file = open(_cwd + '/license.key', 'w')
+    _license_file.write('apowdigfb3rh9214839qu\n')
+    _license_file.write('2019-08-07')
+    _license_file.close()
+
+    yield _license_file
+
+    os.remove(_cwd + '/license.key')
+
+
+@pytest.fixture(scope='class')
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
     # Create the tmp directory if it doesn't exist.
@@ -266,12 +301,12 @@ def test_common_dao():
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
-    dao = DAO()
-    dao.db_connect(tempuri)
+    dao = BaseDatabase()
+    dao.do_connect(tempuri)
 
     yield dao
 
-    dao.db_close()
+    dao.do_disconnect()
 
 @pytest.fixture(scope='class')
 def test_program_dao():
@@ -313,48 +348,12 @@ def test_program_dao():
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
-    dao = DAO()
-    dao.db_connect(test_program_db_uri)
+    dao = BaseDatabase()
+    dao.do_connect(test_program_db_uri)
 
     yield dao
 
-    dao.db_close()
-
-# TODO: Delete the test_dao() function after all tests have been updated to use
-# the test_program_dao.
-@pytest.fixture(scope='session')
-def test_dao():
-    """Create a test DAO object for testing against an RAMSTK Program DB."""
-    _TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
-    _TEST_PROGRAM_DB_URI = 'sqlite:///' + _TEST_PROGRAM_DB_PATH
-
-    # Create the tmp directory if it doesn't exist.
-    if not os.path.exists(TMP_DIR):
-        os.makedirs(TMP_DIR)
-
-    # If there are existing test databases, delete them.
-    if os.path.exists(_TEST_PROGRAM_DB_PATH):
-        os.remove(_TEST_PROGRAM_DB_PATH)
-    if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
-        os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
-    if os.path.exists(TEMPDIR + '/_ramstk_common_db.ramstk'):
-        os.remove(TEMPDIR + '/_ramstk_common_db.ramstk')
-    if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
-        os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
-
-    # Create the test database.
-    sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
-    script_str = sql_file.read().strip()
-    conn = sqlite3.connect(_TEST_PROGRAM_DB_PATH)
-    conn.executescript(script_str)
-    conn.commit()
-    conn.close()
-
-    # Use the RAMSTK DAO to connect to the fresh, new test database.
-    dao = DAO()
-    dao.db_connect(_TEST_PROGRAM_DB_URI)
-
-    yield dao
+    dao.do_disconnect()
 
 
 @pytest.fixture(scope='session')

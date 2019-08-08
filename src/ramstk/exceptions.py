@@ -27,7 +27,7 @@ class RAMSTKError(Exception):
 class DataAccessError(RAMSTKError):
     """Exception raised by methods in the data access package."""
 
-    def __init__(self, msg):
+    def __init__(self, msg) -> Exception:
         """
         Initialize DataAccessError instance.
 

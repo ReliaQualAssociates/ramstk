@@ -76,18 +76,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id,
-                                                   'stakeholder')
+        try:
+            RAMSTKDataManager.do_delete(self, node_id, 'stakeholder')
 
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_stakeholder', node_id=node_id)
-        else:
+        except DataAccessError:
             _error_msg = ("Attempted to delete non-existent stakeholder ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_stakeholder', error_msg=_error_msg)
@@ -138,17 +134,15 @@ class DataManager(RAMSTKDataManager):
         try:
             _stakeholder = RAMSTKStakeholder(
                 description=b'New Stakeholder Input')
-            _error_code, _msg = self.dao.db_add([_stakeholder])
-            if _error_code == 0:
-                self.last_id = _stakeholder.stakeholder_id
-                self.tree.create_node(tag=_stakeholder.description,
-                                      identifier=self.last_id,
-                                      parent=parent_id,
-                                      data={'stakeholder': _stakeholder})
-                pub.sendMessage('succeed_insert_stakeholder',
-                                node_id=self.last_id)
-            else:
-                raise DataAccessError(_msg)
+            self.dao.do_insert(_stakeholder)
+
+            self.last_id = _stakeholder.stakeholder_id
+            self.tree.create_node(tag=_stakeholder.description,
+                                  identifier=self.last_id,
+                                  parent=parent_id,
+                                  data={'stakeholder': _stakeholder})
+            pub.sendMessage('succeed_insert_stakeholder',
+                            node_id=self.last_id)
         except NodeIDAbsentError:
             pub.sendMessage("fail_insert_stakeholder",
                             error_msg=("Attempting to add child stakeholder "
@@ -240,13 +234,9 @@ class DataManager(RAMSTKDataManager):
         try:
             self.dao.session.add(
                 self.tree.get_node(node_id).data['stakeholder'])
-            _error_code, _error_msg = self.dao.db_update()
+            self.dao.do_update()
 
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_stakeholder', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_stakeholder',
-                                error_msg=_error_msg)
+            pub.sendMessage('succeed_update_stakeholder', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_stakeholder',
                             error_msg=('Attempted to save non-existent '

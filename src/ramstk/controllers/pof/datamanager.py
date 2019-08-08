@@ -84,15 +84,10 @@ class DataManager(RAMSTKDataManager):
         try:
             _table = list(self.tree.get_node(node_id).data.keys())[0]
 
-            (_error_code,
-             _error_msg) = RAMSTKDataManager.do_delete(self, node_id, _table)
+            RAMSTKDataManager.do_delete(self, node_id, _table)
 
-            if _error_code == 0:
-                self.tree.remove_node(node_id)
-
-                pub.sendMessage('succeed_delete_pof', node_id=node_id)
-            else:
-                print(_error_code, _error_msg)
+            self.tree.remove_node(node_id)
+            pub.sendMessage('succeed_delete_pof', node_id=node_id)
         except AttributeError:
             _error_msg = ("Attempted to delete non-existent PoF element ID "
                           "{0:s}.").format(str(node_id))
@@ -112,7 +107,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _opload = RAMSTKOpLoad(mechanism_id=mechanism_id,
                                    description='New Operating Load')
-            _error_code, _msg = self.dao.db_add([_opload])
+            self.dao.do_insert(_opload)
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _opload.load_id)
 
@@ -142,7 +137,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _opstress = RAMSTKOpStress(load_id=load_id,
                                        description='New Operating Stress')
-            _error_code, _msg = self.dao.db_add([_opstress])
+            self.dao.do_insert(_opstress)
 
             _identifier = '{0:s}.{1:d}.s'.format(parent_id,
                                                  _opstress.stress_id)
@@ -172,7 +167,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _method = RAMSTKTestMethod(load_id=load_id,
                                        description='New Test Method')
-            _error_code, _msg = self.dao.db_add([_method])
+            self.dao.do_insert(_method)
 
             _identifier = '{0:s}.{1:d}.t'.format(parent_id, _method.test_id)
             self.tree.create_node(tag=_method.description,
@@ -350,12 +345,9 @@ class DataManager(RAMSTKDataManager):
             _table = list(self.tree.get_node(node_id).data.keys())[0]
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
-            _error_code, _error_msg = self.dao.db_update()
+            self.dao.do_update()
 
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_pof', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_pof', error_msg=_error_msg)
+            pub.sendMessage('succeed_update_pof', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_pof',
                             error_msg=('Attempted to save non-existent '

@@ -160,17 +160,21 @@ stylecheck:
 typecheck:
 	mypy $(SRCFILE)
 
-lint:
-	$(info Linting $(SRCFILE)...)
-	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
-	flake8 $(SRCFILE)
-
 maintain:
 	$(info Checking maintainability of $(SRCFILE)...)
 	python -m mccabe -m 9 $(SRCFILE)*
 	radon cc -s $(SRCFILE)*
 	radon mi -s $(SRCFILE)*
 	radon hal $(SRCFILE)*
+
+security:
+	$(info Security linting $(SRCFILE)...)
+	bandit --ini .bandit -c .bandit.conf -b .bandit.baseline $(SRCFILE)
+
+lint:
+	$(info Linting $(SRCFILE)...)
+	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
+	flake8 $(SRCFILE)
 
 changelog:
 	github_changelog_generator $(REPO)

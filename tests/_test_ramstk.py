@@ -16,7 +16,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.Configuration import Configuration
-from ramstk.dao.DAO import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.gui.gtk.mwi.ListBook import ListBook
 from ramstk.gui.gtk.mwi.ModuleBook import ModuleBook
 from ramstk.gui.gtk.mwi.WorkBook import WorkBook
@@ -45,21 +45,21 @@ def test_initialize_logger(test_configuration):
 
 
 @pytest.mark.integration
-def test_initialize_model(test_common_dao, test_dao):
+def test_initialize_model(test_common_dao, test_program_dao):
     """ __init__() should create an instance of the RAMSTK.Model object. """
-    DUT = Model(test_common_dao, test_dao)
+    DUT = Model(test_common_dao, test_program_dao)
 
     assert isinstance(DUT, Model)
     assert isinstance(DUT.tree, Tree)
-    assert isinstance(DUT.site_dao, DAO)
-    assert isinstance(DUT.program_dao, DAO)
+    assert isinstance(DUT.site_dao, BaseDatabase)
+    assert isinstance(DUT.program_dao, BaseDatabase)
     assert DUT.program_session is None
 
 
 @pytest.mark.integration
-def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
+def test_do_create_new_program(test_common_dao, test_program_dao, test_configuration):
     """ do_create_program() should return a zero error code on success. """
-    DUT = Model(test_common_dao, test_dao)
+    DUT = Model(test_common_dao, test_program_dao)
     print(TEMPDIR)
     _configuration = test_configuration
     _database = (
@@ -76,9 +76,9 @@ def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_create_new_program_failed(test_common_dao, test_dao):
+def test_do_create_new_program_failed(test_common_dao, test_program_dao):
     """ do_create_program() should return a non-zero error code on failure. """
-    DUT = Model(test_common_dao, test_dao)
+    DUT = Model(test_common_dao, test_program_dao)
 
     _database = 'sqlite:/' + TEMPDIR + '/BigAssTestDB.ramstk'
     _error_code, _msg = DUT.do_create_program(_database)
@@ -91,9 +91,9 @@ def test_do_create_new_program_failed(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_do_open_program(test_common_dao, test_dao, test_configuration):
+def test_do_open_program(test_common_dao, test_program_dao, test_configuration):
     """ do_open_program() should return a zero error code on success. """
-    DUT = Model(test_common_dao, test_dao)
+    DUT = Model(test_common_dao, test_program_dao)
 
     _configuration = test_configuration
     _database = _configuration.RAMSTK_BACKEND + ':///' + \
@@ -108,9 +108,9 @@ def test_do_open_program(test_common_dao, test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_load_globals(test_common_dao, test_dao):
+def test_load_globals(test_common_dao, test_program_dao):
     """ load_globals() should return False on success. """
-    DUT = Model(test_common_dao, test_dao)
+    DUT = Model(test_common_dao, test_program_dao)
     _configuration = Configuration()
 
     assert not DUT.do_load_globals(_configuration)
@@ -837,9 +837,9 @@ def test_load_globals(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_do_validate_license(test_common_dao, test_dao):
+def test_do_validate_license(test_common_dao, test_program_dao):
     """ do_validate_license() should return a zero error code on success. """
-    DUT = Model(test_common_dao, test_dao)
+    DUT = Model(test_common_dao, test_program_dao)
 
     (_error_code, _msg) = DUT.do_validate_license('0000')
 
@@ -848,9 +848,9 @@ def test_do_validate_license(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_do_validate_license_wrong_key(test_common_dao, test_dao):
+def test_do_validate_license_wrong_key(test_common_dao, test_program_dao):
     """ do_validate_license() should return a 1 error code when the license key is wrong. """
-    DUT = Model(test_common_dao, test_dao)
+    DUT = Model(test_common_dao, test_program_dao)
 
     _error_code, _msg = DUT.do_validate_license('')
 

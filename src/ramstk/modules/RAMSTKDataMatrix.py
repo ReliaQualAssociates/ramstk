@@ -106,7 +106,7 @@ class RAMSTKDataMatrix():
         _lst_value = []
         _dic_column = {}
 
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine,
             autoflush=False,
             expire_on_commit=False,
@@ -205,7 +205,7 @@ class RAMSTKDataMatrix():
             'vldtn_hrdwr': 'Validation',
         }
 
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine,
             autoflush=False,
             expire_on_commit=False,
@@ -377,7 +377,7 @@ class RAMSTKDataMatrix():
         _error_code = 0
         _msg = 'RAMSTK SUCCESS: Updating Matrix {0:s}.'.format(matrix_type)
 
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,

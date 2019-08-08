@@ -18,7 +18,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import Configuration
 from ramstk.controllers import amFMEA, dmFMEA
-from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
 )
@@ -57,7 +57,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmFMEA)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'fmea'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -83,7 +83,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmFMEA)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'fmea'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -386,7 +386,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     def on_succeed_insert_cause(self, node_id):
-        assert node_id == '7.5.7'
+        assert node_id == '7.4.7'
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
     def on_fail_insert_cause(self, error_msg):
@@ -395,7 +395,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     def on_succeed_insert_control(self, node_id):
-        assert node_id == '7.6.8.7.c'
+        assert node_id == '7.4.7.7.c'
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
     def on_fail_insert_control(self, error_msg):
@@ -404,7 +404,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
     def on_succeed_insert_action(self, node_id):
-        assert node_id == '7.6.9.7.a'
+        assert node_id == '7.4.7.7.a'
         print("\033[36m\nsucceed_insert_action topic was broadcast.")
 
     def on_fail_insert_action(self, error_msg):
@@ -465,14 +465,13 @@ class TestInsertMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_mechanism('7')
-        DUT._do_insert_cause(7, 5, '7.5')
+        DUT._do_insert_cause(7, 4, '7.4')
 
         assert isinstance(
-            DUT.tree.get_node('7.5.7').data['cause'], RAMSTKCause)
-        assert DUT.tree.get_node('7.5.7').data['cause'].cause_id == 7
+            DUT.tree.get_node('7.4.7').data['cause'], RAMSTKCause)
+        assert DUT.tree.get_node('7.4.7').data['cause'].cause_id == 7
         assert DUT.tree.get_node(
-            '7.5.7').data['cause'].description == 'New Failure Cause'
+            '7.4.7').data['cause'].description == 'New Failure Cause'
 
         pub.unsubscribe(self.on_succeed_insert_cause, 'succeed_insert_cause')
 
@@ -483,7 +482,6 @@ class TestInsertMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_mechanism('7')
         DUT._do_insert_cause(7, 40, '7.40')
 
         pub.unsubscribe(self.on_fail_insert_cause, 'fail_insert_cause')
@@ -495,15 +493,13 @@ class TestInsertMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_mechanism('7')
-        DUT._do_insert_cause(7, 6, '7.6')
-        DUT._do_insert_control(8, '7.6.8')
+        DUT._do_insert_control(7, '7.4.7')
 
         assert isinstance(
-            DUT.tree.get_node('7.6.8.7.c').data['control'], RAMSTKControl)
-        assert DUT.tree.get_node('7.6.8.7.c').data['control'].control_id == 7
+            DUT.tree.get_node('7.4.7.7.c').data['control'], RAMSTKControl)
+        assert DUT.tree.get_node('7.4.7.7.c').data['control'].control_id == 7
         assert DUT.tree.get_node(
-            '7.6.8.7.c').data['control'].description == 'New Control'
+            '7.4.7.7.c').data['control'].description == 'New Control'
 
         pub.unsubscribe(self.on_succeed_insert_control,
                         'succeed_insert_control')
@@ -528,13 +524,12 @@ class TestInsertMethods():
 
         DUT = dmFMEA(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_mechanism('7')
-        DUT._do_insert_action(9, '7.6.9')
+        DUT._do_insert_action(7, '7.4.7')
 
         assert isinstance(
-            DUT.tree.get_node('7.6.9.7.a').data['action'], RAMSTKAction)
-        assert DUT.tree.get_node('7.6.9.7.a').data['action'].action_id == 7
-        assert DUT.tree.get_node('7.6.9.7.a').data[
+            DUT.tree.get_node('7.4.7.7.a').data['action'], RAMSTKAction)
+        assert DUT.tree.get_node('7.4.7.7.a').data['action'].action_id == 7
+        assert DUT.tree.get_node('7.4.7.7.a').data[
             'action'].action_recommended == b'Recommended Action'
 
         pub.unsubscribe(self.on_succeed_insert_action, 'succeed_insert_action')

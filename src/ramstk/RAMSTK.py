@@ -22,7 +22,7 @@ from ramstk.controllers import (
     dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
     dmRequirement, dmRevision, dmStakeholder, dmValidation
 )
-from ramstk.dao.DAO import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
@@ -148,19 +148,19 @@ class Model():
 
     :ivar site_dao: the data access object used to communicate with the RAMSTK
         Common database.
-    :type site_dao: :class:`ramstk.dao.DAO.DAO()`
+    :type site_dao: :class:`ramstk.dao.BaseDatabase.BaseDatabase()`
     :ivar program_dao: the data access object used to communicate with the
         RAMSTK Program database
-    :type program_dao: :class:`ramstk.dao.DAO.DAO()`
+    :type program_dao: :class:`ramstk.dao.BaseDatabase.BaseDatabase()`
     """
 
     def __init__(self, sitedao, programdao):
         """
         Initialize an instance of the RAMSTK data model.
 
-        :param sitedao: the :class:`ramstk.dao.DAO.DAO` instance connected to
+        :param sitedao: the :class:`ramstk.dao.BaseDatabase.BaseDatabase` instance connected to
                         the RAMSTK Common database.
-        :param programdao: the :class:`ramstk.dao.DAO.DAO` instance connected
+        :param programdao: the :class:`ramstk.dao.BaseDatabase.BaseDatabase` instance connected
                            to the RAMSTK Program database.
         """
         # Initialize private dictionary attributes.
@@ -179,7 +179,7 @@ class Model():
         self.program_dao = programdao
 
         # Create a session for communicating with the RAMSTK Common database
-        site_session = self.site_dao.RAMSTK_SESSION
+        site_session = self.site_dao.session
         site_session.configure(
             bind=self.site_dao.engine,
             autoflush=False,
@@ -222,7 +222,7 @@ class Model():
             format(database)
 
         if not self.program_dao.db_connect(database):
-            program_session = self.program_dao.RAMSTK_SESSION
+            program_session = self.program_dao.session
             program_session.configure(
                 bind=self.program_dao.engine,
                 autoflush=False,
@@ -669,11 +669,11 @@ class RAMSTK():
             _database = self.RAMSTK_CONFIGURATION.RAMSTK_COM_BACKEND + \
                         ':///' + \
                         self.RAMSTK_CONFIGURATION.RAMSTK_COM_INFO['database']
-        _dao = DAO()
+        _dao = BaseDatabase()
         _dao.db_connect(_database)
 
         # Create an instance of the RAMSTK Data Model and load global constants.
-        self.ramstk_model = Model(_dao, DAO())
+        self.ramstk_model = Model(_dao, BaseDatabase())
         self.request_do_load_globals()
 
         # Create an Options module instance and read the Site options.
