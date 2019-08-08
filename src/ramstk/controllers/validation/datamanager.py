@@ -168,7 +168,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_update_program_status',
                             node_id=_status.date_status)
         except DataAccessError:
-            _error_msg=("Failed to update program status.")
+            _error_msg = ("Failed to update program status.")
             pub.sendMessage('fail_update_update_program', error_msg=_error_msg)
 
     def do_get_all_attributes(self, node_id):
