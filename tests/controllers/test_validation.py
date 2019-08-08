@@ -18,7 +18,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import Configuration
 from ramstk.controllers import amValidation, dmValidation, mmValidation
-from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
 ATTRIBUTES = {
@@ -62,7 +62,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmValidation)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'validation'
         assert DUT._root == 0
         assert DUT._revision_id == 0

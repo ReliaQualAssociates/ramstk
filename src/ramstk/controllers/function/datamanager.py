@@ -77,17 +77,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'function')
+        try:
+            RAMSTKDataManager.do_delete(self, node_id, 'function')
 
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_function', node_id=node_id)
-        else:
+        except(AttributeError, DataAccessError):
             _error_msg = ("Attempted to delete non-existent function ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_function', error_msg=_error_msg)
@@ -103,14 +100,13 @@ class DataManager(RAMSTKDataManager):
         """
         _hazards = RAMSTKDataManager.do_select(self, function_id, 'hazards')
         try:
-            _error_code, _error_msg = self.dao.db_delete(_hazards[node_id])
+            self.dao.do_delete(_hazards[node_id])
 
-            if _error_code == 0:
-                _hazards.pop(node_id)
-                self.tree.get_node(function_id).data['hazards'] = _hazards
+            _hazards.pop(node_id)
+            self.tree.get_node(function_id).data['hazards'] = _hazards
 
-                pub.sendMessage('succeed_delete_hazard', node_id=node_id)
-        except KeyError:
+            pub.sendMessage('succeed_delete_hazard', node_id=node_id)
+        except(DataAccessError, KeyError):
             pub.sendMessage('fail_delete_hazard',
                             error_msg=("Attempted to delete non-existent "
                                        "hazard ID {0:s} from function ID "
@@ -228,7 +224,7 @@ class DataManager(RAMSTKDataManager):
                 _function = RAMSTKFunction(revision_id=self._revision_id,
                                            name='New Function',
                                            parent_id=parent_id)
-                _error_code, _msg = self.dao.db_add([_function])
+                self.dao.do_insert(_function)
 
                 self.last_id = _function.function_id
 
@@ -264,7 +260,7 @@ class DataManager(RAMSTKDataManager):
             try:
                 _hazard = RAMSTKHazardAnalysis(revision_id=self._revision_id,
                                                function_id=function_id)
-                _error_code, _msg = self.dao.db_add([_hazard])
+                self.dao.do_insert(_hazard)
 
                 _node.data['hazards'][_hazard.hazard_id] = _hazard
 
@@ -379,12 +375,8 @@ class DataManager(RAMSTKDataManager):
                 self.dao.session.add(
                     self.tree.get_node(node_id).data['hazards'][_key])
 
-            _error_code, _error_msg = self.dao.db_update()
-
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_function', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_function', error_msg=_error_msg)
+            self.dao.do_update()
+            pub.sendMessage('succeed_update_function', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_function',
                             error_msg=('Attempted to save non-existent '

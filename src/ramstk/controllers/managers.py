@@ -87,7 +87,7 @@ class RAMSTKDataManager():
     :type tree: :class:`treelib.Tree`
     :ivar dao: the data access object used to communicate with the RAMSTK
         Program database.
-    :type dao: :class:`ramstk.dao.DAO`
+    :type dao: :class:`ramstk.db.BaseDatabase`
     """
     def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
         """
@@ -177,7 +177,7 @@ class RAMSTKDataManager():
             message from the DAO.
         :rtype: (int, str)
         """
-        return self.dao.db_delete(self.do_select(node_id, table))
+        return self.dao.do_delete(self.do_select(node_id, table))
 
     def do_get_attributes(self, node_id, table):
         """
@@ -300,12 +300,10 @@ class RAMSTKDataManager():
 
                 self.dao.session.add(_entity)
 
-        (_error_code, _error_msg) = self.dao.db_update()
+        self.dao.do_update()
 
-        if _error_code == 0:
-            pub.sendMessage('succeed_update_matrix')
-        else:
-            pub.sendMessage('fail_update_matrix', error_msg=_error_msg)
+        pub.sendMessage('succeed_update_matrix')
+
 
 
 class RAMSTKMatrixManager():

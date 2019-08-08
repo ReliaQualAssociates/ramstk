@@ -134,16 +134,12 @@ class DataManager(RAMSTKDataManager):
         try:
             _table = list(self.tree.get_node(node_id).data.keys())[0]
 
-            (_error_code,
-             _error_msg) = RAMSTKDataManager.do_delete(self, node_id, _table)
+            RAMSTKDataManager.do_delete(self, node_id, _table)
 
-            if _error_code == 0:
-                self.tree.remove_node(node_id)
+            self.tree.remove_node(node_id)
+            pub.sendMessage('succeed_delete_fmea', node_id=node_id)
 
-                pub.sendMessage('succeed_delete_fmea', node_id=node_id)
-            else:
-                print(_error_code, _error_msg)
-        except AttributeError:
+        except(AttributeError, DataAccessError):
             _error_msg = ("Attempted to delete non-existent FMEA element ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_fmea', error_msg=_error_msg)
@@ -161,7 +157,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _action = RAMSTKAction(cause_id=cause_id,
                                    action_recommended=b'Recommended Action')
-            _error_code, _msg = self.dao.db_add([_action])
+            self.dao.do_insert(_action)
 
             _data_package = {'action': _action}
 
@@ -192,7 +188,7 @@ class DataManager(RAMSTKDataManager):
             _cause = RAMSTKCause(mode_id=mode_id,
                                  mechanism_id=mechanism_id,
                                  description='New Failure Cause')
-            _error_code, _msg = self.dao.db_add([_cause])
+            self.dao.do_insert(_cause)
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _cause.cause_id)
 
@@ -224,7 +220,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _control = RAMSTKControl(cause_id=cause_id,
                                      description='New Control')
-            _error_code, _msg = self.dao.db_add([_control])
+            self.dao.do_insert(_control)
 
             _data_package = {'control': _control}
 
@@ -253,7 +249,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _mechanism = RAMSTKMechanism(mode_id=mode_id,
                                          description='New Failure Mechanism')
-            _error_code, _msg = self.dao.db_add([_mechanism])
+            self.dao.do_insert(_mechanism)
 
             _identifier = '{0:s}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
@@ -281,7 +277,7 @@ class DataManager(RAMSTKDataManager):
             _mode = RAMSTKMode(function_id=-1,
                                hardware_id=self._parent_id,
                                description='New Failure Mode')
-            _error_code, _msg = self.dao.db_add([_mode])
+            self.dao.do_insert(_mode)
 
             _data_package = {'mode': _mode}
             self.tree.create_node(tag=_mode.description,
@@ -465,12 +461,8 @@ class DataManager(RAMSTKDataManager):
             _table = list(self.tree.get_node(node_id).data.keys())[0]
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
-            _error_code, _error_msg = self.dao.db_update()
-
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_fmea', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_fmea', error_msg=_error_msg)
+            self.dao.do_update()
+            pub.sendMessage('succeed_update_fmea', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_fmea',
                             error_msg=('Attempted to save non-existent '

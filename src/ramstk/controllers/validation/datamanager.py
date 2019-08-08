@@ -87,17 +87,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'validation')
+        try:
+            RAMSTKDataManager.do_delete(self, node_id, 'validation')
 
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_validation', node_id=node_id)
-        else:
+        except DataAccessError:
             _error_msg = ("Attempted to delete non-existent validation ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_validation', error_msg=_error_msg)
@@ -111,7 +108,7 @@ class DataManager(RAMSTKDataManager):
         """
         _status = RAMSTKProgramStatus(revision_id=self._revision_id)
 
-        _error_code, _msg = self.dao.db_add([_status], None)
+        self.dao.do_insert(_status)
 
         _data_package = {'status': _status}
         self.status_tree.create_node(tag=_status.status_id,
@@ -161,16 +158,17 @@ class DataManager(RAMSTKDataManager):
         except AttributeError:
             _status = self._do_insert_status()
 
-        _status.cost_remaining = cost_remaining
-        _status.time_remaining = time_remaining
+        try:
+            _status.cost_remaining = cost_remaining
+            _status.time_remaining = time_remaining
 
-        self.dao.session.add(_status)
-        _error_code, _error_msg = self.dao.db_update()
+            self.dao.session.add(_status)
+            self.dao.do_update()
 
-        if _error_code == 0:
             pub.sendMessage('succeed_update_program_status',
                             node_id=_status.date_status)
-        else:
+        except DataAccessError:
+            _error_msg=("Failed to update program status.")
             pub.sendMessage('fail_update_update_program', error_msg=_error_msg)
 
     def do_get_all_attributes(self, node_id):
@@ -214,7 +212,7 @@ class DataManager(RAMSTKDataManager):
             _validation = RAMSTKValidation(revision_id=self._revision_id,
                                            name="New Validation Task")
 
-            _error_code, _msg = self.dao.db_add([_validation], None)
+            self.dao.do_insert(_validation)
 
             self.last_id = _validation.validation_id
 
@@ -308,12 +306,9 @@ class DataManager(RAMSTKDataManager):
         try:
             self.dao.session.add(
                 self.tree.get_node(node_id).data['validation'])
-            _error_code, _error_msg = self.dao.db_update()
+            self.dao.do_update()
 
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_validation', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_validation', error_msg=_error_msg)
+            pub.sendMessage('succeed_update_validation', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_validation',
                             error_msg=('Attempted to save non-existent '

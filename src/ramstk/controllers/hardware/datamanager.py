@@ -79,17 +79,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'hardware')
+        try:
+            RAMSTKDataManager.do_delete(self, node_id, 'hardware')
 
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_hardware', node_id=node_id)
-        else:
+        except(AttributeError, DataAccessError):
             _error_msg = ("Attempted to delete non-existent hardware ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hardware', error_msg=_error_msg)
@@ -150,7 +147,7 @@ class DataManager(RAMSTKDataManager):
                                            parent_id=parent_id,
                                            part=part)
 
-                _error_code, _msg = self.dao.db_add([_hardware], None)
+                self.dao.do_insert(_hardware)
 
                 self.last_id = _hardware.hardware_id
 
@@ -166,7 +163,7 @@ class DataManager(RAMSTKDataManager):
                                                  hardware_id=self.last_id,
                                                  parent_id=parent_id)
 
-                _error_code, _msg = self.dao.db_add(
+                self.dao.do_insert_many(
                     [_design_e, _design_m, _milhdbkf, _nswc, _reliability,
                      _allocation, _similaritem])
 
@@ -353,13 +350,10 @@ class DataManager(RAMSTKDataManager):
                 self.tree.get_node(node_id).data['reliability'])
             self.dao.session.add(
                 self.tree.get_node(node_id).data['allocation'])
-            _error_code, _error_msg = self.dao.db_update()
+            self.dao.do_update()
 
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_hardware', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_hardware', error_msg=_error_msg)
-        except AttributeError:
+            pub.sendMessage('succeed_update_hardware', node_id=node_id)
+        except(AttributeError, DataAccessError):
             pub.sendMessage('fail_update_hardware',
                             error_msg=('Attempted to save non-existent '
                                        'hardware item with hardware ID '

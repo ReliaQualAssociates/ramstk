@@ -91,17 +91,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        (_error_code,
-         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'revision')
+        try:
+            RAMSTKDataManager.do_delete(self, node_id, 'revision')
 
-        # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataManager.__init__
-        if _error_code == 0:
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_revision', node_id=node_id)
-        else:
+        except DataAccessError:
             _error_msg = ("Attempted to delete non-existent revision ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_revision', error_msg=_error_msg)
@@ -119,15 +116,14 @@ class DataManager(RAMSTKDataManager):
         _definitions = RAMSTKDataManager.do_select(self, revision_id,
                                                    'failure_definitions')
         try:
-            _error_code, _error_msg = self.dao.db_delete(_definitions[node_id])
+            self.dao.do_delete(_definitions[node_id])
 
-            if _error_code == 0:
-                _definitions.pop(node_id)
-                self.tree.get_node(
-                    revision_id).data['failure_definitions'] = _definitions
+            _definitions.pop(node_id)
+            self.tree.get_node(
+                revision_id).data['failure_definitions'] = _definitions
 
-                pub.sendMessage('succeed_delete_failure_definition',
-                                node_id=node_id)
+            pub.sendMessage('succeed_delete_failure_definition',
+                            node_id=node_id)
         except KeyError:
             pub.sendMessage('fail_delete_failure_definition',
                             error_msg=("Attempted to delete non-existent "
@@ -209,12 +205,9 @@ class DataManager(RAMSTKDataManager):
         _profile = RAMSTKDataManager.do_select(self, revision_id,
                                                'usage_profile')
 
-        (_error_code, _error_msg) = self.dao.db_delete(
-            _profile.get_node(str(node_id)).data)
-
-        if _error_code == 0:
-            _profile.remove_node(str(node_id))
-            self.tree.get_node(revision_id).data['usage_profile'] = _profile
+        self.dao.do_delete(_profile.get_node(str(node_id)).data)
+        _profile.remove_node(str(node_id))
+        self.tree.get_node(revision_id).data['usage_profile'] = _profile
 
     def _do_get_attributes(self, node_id, table):
         """
@@ -410,26 +403,24 @@ class DataManager(RAMSTKDataManager):
 
         try:
             _revision = RAMSTKRevision(name='New Revision')
-            _error_code, _msg = self.dao.db_add([_revision])
-            if _error_code == 0:
-                self.last_id = _revision.revision_id
-                _tree.create_node(tag='usage_profile',
+            self.dao.do_insert(_revision)
+
+            self.last_id = _revision.revision_id
+            _tree.create_node(tag='usage_profile',
+                              identifier=self.last_id,
+                              parent=None)
+            self.tree.create_node(tag=_revision.name,
                                   identifier=self.last_id,
-                                  parent=None)
-                self.tree.create_node(tag=_revision.name,
-                                      identifier=self.last_id,
-                                      parent=self._root,
-                                      data={
-                                          'revision': _revision,
-                                          'failure_definitions': {},
-                                          'usage_profile': _tree
-                                      })
-                self.do_insert_failure_definition(self.last_id)
-                self.do_insert_mission(self.last_id)
-                pub.sendMessage('succeed_insert_revision',
-                                node_id=self.last_id)
-            else:
-                raise DataAccessError(_msg)
+                                  parent=self._root,
+                                  data={
+                                      'revision': _revision,
+                                      'failure_definitions': {},
+                                      'usage_profile': _tree
+                                  })
+            self.do_insert_failure_definition(self.last_id)
+            self.do_insert_mission(self.last_id)
+            pub.sendMessage('succeed_insert_revision',
+                            node_id=self.last_id)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_revision",
@@ -448,21 +439,19 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _environment = RAMSTKEnvironment(phase_id=phase_id)
-            _error_code, _msg = self.dao.db_add([_environment])
-            if _error_code == 0:
-                _phase_id = '{0:d}.{1:d}'.format(mission_id, phase_id)
-                _environment_id = '{0:d}.{1:d}.{2:d}'.format(
-                    mission_id, phase_id, _environment.environment_id)
-                self.tree.get_node(
-                    revision_id).data['usage_profile'].create_node(
-                        tag=_environment.name,
-                        identifier=_environment_id,
-                        parent=str(_phase_id),
-                        data=_environment)
-                pub.sendMessage("succeed_insert_environment",
-                                node_id=_environment_id)
-            else:
-                raise DataAccessError(_msg)
+            self.dao.do_insert(_environment)
+
+            _phase_id = '{0:d}.{1:d}'.format(mission_id, phase_id)
+            _environment_id = '{0:d}.{1:d}.{2:d}'.format(
+                mission_id, phase_id, _environment.environment_id)
+            self.tree.get_node(
+                revision_id).data['usage_profile'].create_node(
+                    tag=_environment.name,
+                    identifier=_environment_id,
+                    parent=str(_phase_id),
+                    data=_environment)
+            pub.sendMessage("succeed_insert_environment",
+                            node_id=_environment_id)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_environment", error_message=_error)
@@ -479,14 +468,12 @@ class DataManager(RAMSTKDataManager):
         try:
             _failure_definition = RAMSTKFailureDefinition(
                 revision_id=revision_id)
-            _error_code, _msg = self.dao.db_add([_failure_definition])
-            if _error_code == 0:
-                self.tree.get_node(revision_id).data['failure_definitions'][
-                    _failure_definition.definition_id] = _failure_definition
-                pub.sendMessage("succeed_insert_failure_definition",
-                                node_id=_failure_definition.definition_id)
-            else:
-                raise DataAccessError(_msg)
+            self.dao.do_insert(_failure_definition)
+
+            self.tree.get_node(revision_id).data['failure_definitions'][
+                _failure_definition.definition_id] = _failure_definition
+            pub.sendMessage("succeed_insert_failure_definition",
+                            node_id=_failure_definition.definition_id)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_failure_definition", error_msg=_error)
@@ -501,18 +488,16 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _mission = RAMSTKMission(revision_id=revision_id)
-            _error_code, _msg = self.dao.db_add([_mission])
-            if _error_code == 0:
-                self.tree.get_node(
-                    revision_id).data['usage_profile'].create_node(
-                        tag=_mission.description,
-                        identifier='{0:d}'.format(_mission.mission_id),
-                        parent=revision_id,
-                        data=_mission)
-                pub.sendMessage("succeed_insert_mission",
-                                node_id=_mission.mission_id)
-            else:
-                raise DataAccessError(_msg)
+            self.dao.do_insert(_mission)
+
+            self.tree.get_node(
+                revision_id).data['usage_profile'].create_node(
+                    tag=_mission.description,
+                    identifier='{0:d}'.format(_mission.mission_id),
+                    parent=revision_id,
+                    data=_mission)
+            pub.sendMessage("succeed_insert_mission",
+                            node_id=_mission.mission_id)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_mission", error_message=_error)
@@ -528,19 +513,17 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _phase = RAMSTKMissionPhase(mission_id=mission_id)
-            _error_code, _msg = self.dao.db_add([_phase])
-            if _error_code == 0:
-                _phase_id = '{0:d}.{1:d}'.format(mission_id, _phase.phase_id)
-                self.tree.get_node(
-                    revision_id).data['usage_profile'].create_node(
-                        tag=_phase.description,
-                        identifier=_phase_id,
-                        parent=str(mission_id),
-                        data=_phase)
-                pub.sendMessage("succeed_insert_mission_phase",
-                                node_id=_phase_id)
-            else:
-                raise DataAccessError(_msg)
+            self.dao.do_insert(_phase)
+
+            _phase_id = '{0:d}.{1:d}'.format(mission_id, _phase.phase_id)
+            self.tree.get_node(
+                revision_id).data['usage_profile'].create_node(
+                    tag=_phase.description,
+                    identifier=_phase_id,
+                    parent=str(mission_id),
+                    data=_phase)
+            pub.sendMessage("succeed_insert_mission_phase",
+                            node_id=_phase_id)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_mission_phase", error_message=_error)
@@ -655,13 +638,10 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             self.dao.session.add(self.tree.get_node(node_id).data['revision'])
-            _error_code, _error_msg = self.dao.db_update()
+            self.dao.do_update()
 
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_revision', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_revision', error_msg=_error_msg)
-        except AttributeError:
+            pub.sendMessage('succeed_update_revision', node_id=node_id)
+        except(AttributeError, DataAccessError):
             pub.sendMessage('fail_update_revision',
                             error_msg=('Attempted to save non-existent '
                                        'revision with revision ID '

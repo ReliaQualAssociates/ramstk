@@ -27,9 +27,7 @@ class TestRAMSTKMissionPhase():
     @pytest.mark.integration
     def test_ramstkmissionphase_create(self, test_program_dao):
         """ __init__() should create an RAMSTKPhase model. """
-        _session = test_program_dao.RAMSTK_SESSION(
-            bind=test_program_dao.engine, autoflush=False, expire_on_commit=False)
-        DUT = _session.query(RAMSTKMissionPhase).first()
+        DUT = test_program_dao.session.query(RAMSTKMissionPhase).first()
 
         assert isinstance(DUT, RAMSTKMissionPhase)
 

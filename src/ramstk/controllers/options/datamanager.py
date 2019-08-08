@@ -137,12 +137,9 @@ class DataManager(RAMSTKDataManager):
             elif node_id in ['programinfo']:
                 self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
-            _error_code, _error_msg = self.dao.db_update()
+            self.dao.do_update()
 
-            if _error_code == 0:
-                pub.sendMessage('succeed_update_options', node_id=node_id)
-            else:
-                pub.sendMessage('fail_update_options', error_msg=_error_msg)
+            pub.sendMessage('succeed_update_options', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_options',
                             error_msg=('Attempted to save non-existent '

@@ -18,7 +18,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import Configuration
 from ramstk.controllers import amFMEA, dmFMEA
-from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
 )
@@ -57,7 +57,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmFMEA)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'fmea'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -83,7 +83,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmFMEA)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'fmea'
         assert DUT._root == 0
         assert DUT._revision_id == 0

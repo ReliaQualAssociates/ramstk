@@ -14,7 +14,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmRequirement, mmRequirement
-from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKRequirement
 
 ATTRIBUTES = {
@@ -57,7 +57,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmRequirement)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'requirement'
         assert DUT._root == 0
         assert DUT._revision_id == 0

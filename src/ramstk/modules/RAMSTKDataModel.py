@@ -98,7 +98,7 @@ class RAMSTKDataModel():
         for _node in self.tree.children(_root):
             self.tree.remove_node(_node.identifier)
 
-        return self.dao.RAMSTK_SESSION(
+        return self.dao.session(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
     def do_insert(self, **kwargs):
@@ -124,7 +124,7 @@ class RAMSTKDataModel():
         """
         _msg = ''
 
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False,
         )
 
@@ -154,7 +154,7 @@ class RAMSTKDataModel():
         _error_code = 0
         _msg = ''
 
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,

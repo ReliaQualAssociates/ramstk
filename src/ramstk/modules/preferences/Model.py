@@ -130,7 +130,7 @@ class SitePreferencesDataModel(RAMSTKDataModel):
         :return: None
         :rtype: None
         """
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False,
         )
 
@@ -227,7 +227,7 @@ class SitePreferencesDataModel(RAMSTKDataModel):
         """
         _return = False
 
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
@@ -252,7 +252,7 @@ class SitePreferencesDataModel(RAMSTKDataModel):
         """
         _return = False
 
-        _session = self.dao.RAMSTK_SESSION(
+        _session = self.dao.session(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,

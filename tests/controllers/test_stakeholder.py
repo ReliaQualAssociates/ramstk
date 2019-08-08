@@ -15,7 +15,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import Configuration
 from ramstk.controllers import amStakeholder, dmStakeholder
-from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKStakeholder
 
 ATTRIBUTES = {
@@ -46,7 +46,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmStakeholder)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'stakeholder'
         assert DUT._root == 0
         assert DUT._revision_id == 0

@@ -26,6 +26,7 @@ import xlwt
 import ramstk.Utilities as Utilities
 from ramstk.Configuration import Configuration
 from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
 
@@ -301,12 +302,12 @@ def test_common_dao():
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
-    dao = DAO()
-    dao.db_connect(tempuri)
+    dao = BaseDatabase()
+    dao.do_connect(tempuri)
 
     yield dao
 
-    dao.db_close()
+    dao.do_disconnect()
 
 @pytest.fixture(scope='class')
 def test_program_dao():
@@ -348,12 +349,12 @@ def test_program_dao():
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
-    dao = DAO()
-    dao.db_connect(test_program_db_uri)
+    dao = BaseDatabase()
+    dao.do_connect(test_program_db_uri)
 
     yield dao
 
-    dao.db_close()
+    dao.do_disconnect()
 
 # TODO: Delete the test_dao() function after all tests have been updated to use
 # the test_program_dao.

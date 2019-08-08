@@ -16,7 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import Configuration
 from ramstk.controllers import amHardware, dmHardware, mmHardware
-from ramstk.dao import DAO
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
@@ -371,7 +371,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmHardware)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, DAO)
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'hardware'
         assert DUT._root == 0
 
