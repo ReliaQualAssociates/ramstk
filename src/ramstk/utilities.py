@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.Utilities.py is part of The RAMSTK Project
+#       ramstk.utilities.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -8,68 +8,55 @@
 
 # Standard Library Imports
 import gettext
+import logging
 import os
 import os.path
 import sys
+from datetime import datetime
+from typing import Any, List
+
+# Third Party Imports
+from dateutil.parser import parse
 
 _ = gettext.gettext
 
 
-class OutOfRangeError(Exception):
-    """Exception raised when an input value is outside legal limits."""
-    def __init__(self, message):
-        """
-        Initialize OutOfRangeError instance.
-
-        :param str message: the message to display to the user when this
-                            exception is raised.
-        """
-        Exception.__init__(self)
-
-        self.message = message
-
-
-class NoParentError(Exception):
-    """Exception raised when a parent element does not exist."""
-
-
-class NoMatrixError(Exception):
-    """Exception raised when no Matrices are returned."""
-
-
-def create_logger(log_name, log_level, log_file, to_tty=False):
+def create_logger(log_name: str,
+                  log_level: str,
+                  log_file: str,
+                  to_tty: bool = False) -> object:
     """
     Create a logger instance.
 
     :param str log_name: the name of the log used in the application.
     :param str log_level: the level of messages to log.
     :param str log_file: the full path of the log file for this logger instance
-                         to write to.
+        to write to.
     :keyword boolean to_tty: boolean indicating whether this logger will also
-                             dump messages to the terminal.
+        dump messages to the terminal.
     :return: _logger
-    :rtype:
+    :rtype: object
     """
-    import logging
-
     _logger = logging.getLogger(log_name)
     _formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s', )
 
     if log_level == 'DEBUG':
-        log_level = logging.ERROR
+        _log_level = logging.ERROR
     elif log_level == 'INFO':
-        log_level = logging.INFO
+        _log_level = logging.INFO
+    else:
+        _log_level = logging.WARNING
 
     if not to_tty:
         _fh = logging.FileHandler(log_file)
-        _fh.setLevel(log_level)
+        _fh.setLevel(_log_level)
         _fh.setFormatter(_formatter)
 
         _logger.addHandler(_fh)
     else:
         _ch = logging.StreamHandler()
-        _ch.setLevel(log_level)
+        _ch.setLevel(_log_level)
         _ch.setFormatter(_formatter)
 
         _logger.addHandler(_ch)
@@ -77,7 +64,7 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     return _logger
 
 
-def date_to_ordinal(date):
+def date_to_ordinal(date: str) -> int:
     """
     Convert date strings to ordinal dates for use in the database.
 
@@ -85,15 +72,13 @@ def date_to_ordinal(date):
     :return: ordinal representation of the passed date.
     :rtype: int
     """
-    from dateutil.parser import parse
-
     try:
         return parse(str(date)).toordinal()
     except (ValueError, TypeError):
         return parse('01/01/70').toordinal()
 
 
-def dir_exists(directory):
+def dir_exists(directory: str) -> bool:
     """
     Check if a directory exists.
 
@@ -105,35 +90,7 @@ def dir_exists(directory):
     return os.path.isdir(directory)
 
 
-def error_handler(message):
-    """
-    Convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-    if 'argument must be a string or a number' in message[0]:  # Type error
-        _error_code = 10  # pragma: no cover
-    elif 'invalid literal for int() with base 10' in message[0]:  # Value error
-        _error_code = 10
-    elif 'could not convert string to float' in message[0]:  # Value error
-        _error_code = 10
-    elif 'float division by zero' in message[0]:  # Zero division error
-        _error_code = 20
-    elif 'integer division or modulo by zero' in message[
-            0]:  # Zero division error
-        _error_code = 20
-    elif 'index out of range' in message[0]:  # Index error
-        _error_code = 40
-    else:  # Unhandled error
-        # ISSUE: See issue #227 at https://github.com/ReliaQualAssociates/ramstk/issues/227
-        _error_code = 1000  # pragma: no cover
-
-    return _error_code
-
-
-def file_exists(_file):
+def file_exists(_file: str) -> bool:
     """
     Check if a file exists.
 
@@ -144,7 +101,7 @@ def file_exists(_file):
     return os.path.isfile(_file)
 
 
-def missing_to_default(field, default):
+def missing_to_default(field: Any, default: Any) -> Any:
     """
     Convert missing values into default values.
 
@@ -157,7 +114,7 @@ def missing_to_default(field, default):
     return none_to_default(field, default)
 
 
-def none_to_default(field, default):
+def none_to_default(field: Any, default: Any) -> Any:
     """
     Convert None values into default values.
 
@@ -174,7 +131,7 @@ def none_to_default(field, default):
     return _return
 
 
-def none_to_string(string):
+def none_to_string(string: None) -> str:
     """
     Convert None types to an empty string.
 
@@ -189,7 +146,7 @@ def none_to_string(string):
     return _return
 
 
-def ordinal_to_date(ordinal):
+def ordinal_to_date(ordinal: int) -> str:
     """
     Convert ordinal dates to date strings in ISO-8601 format.
 
@@ -197,10 +154,8 @@ def ordinal_to_date(ordinal):
 
     :param int ordinal: the ordinal date to convert.
     :return: the ISO-8601 date representation of the passed ordinal.
-    :rtype: date
+    :rtype: str
     """
-    from datetime import datetime
-
     try:
         return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
     except ValueError:
@@ -208,12 +163,12 @@ def ordinal_to_date(ordinal):
         return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
 
 
-def split_string(string):
+def split_string(string: str) -> List[str]:
     """
     Split a colon-delimited string into its constituent parts.
 
-    :param list string: the colon delimited string that needs to be split into
-                        a list.
+    :param str string: the colon delimited string that needs to be split into
+        a list.
     :return: _strlist
     :rtype: list of strings
     """
@@ -222,7 +177,7 @@ def split_string(string):
     return _strlist
 
 
-def boolean_to_integer(boolean):
+def boolean_to_integer(boolean: bool) -> int:
     """
     Convert boolean representations of TRUE/FALSE to an integer value.
 
@@ -238,7 +193,7 @@ def boolean_to_integer(boolean):
     return _result
 
 
-def integer_to_boolean(integer):
+def integer_to_boolean(integer: int) -> bool:
     """
     Convert an integer to boolean value.
 
@@ -257,7 +212,7 @@ def integer_to_boolean(integer):
     return _result
 
 
-def string_to_boolean(string):
+def string_to_boolean(string: str) -> bool:
     """
     Convert string representations of TRUE/FALSE to an boolean value.
 
@@ -276,9 +231,9 @@ def string_to_boolean(string):
     return _result
 
 
-def prefix(join=None):
+def get_prefix(join: str = '') -> str:
     """Return the prefix that this code was installed into."""
-    _return = False
+    _return = '/usr/'
 
     # constants for this execution
     _path = os.path.abspath(__file__)
@@ -286,7 +241,7 @@ def prefix(join=None):
     _this = os.path.basename(_path)
 
     # rule set
-    _rules = [
+    _rules: List[Any] = [
         # to match: /usr/lib/python2.5/site-packages/project/prefix.py
         # or: /usr/local/lib/python2.6/dist-packages/project/prefix.py
         lambda x: x == 'lib',
@@ -301,10 +256,10 @@ def prefix(join=None):
         (_path, _token) = os.path.split(_path)
         _rule = _rules.pop()
         if not _rule(_token):
-            _return = True
+            _return = '/usr/'
 
     # usually returns: /usr/ or /usr/local/ (but without slash postfix)
-    if join is None:
+    if join == '':
         _return = _path
     else:
         _return = os.path.join(_path, join)  # add on join if it exists!
@@ -312,7 +267,7 @@ def prefix(join=None):
     return _return
 
 
-def name(pop, suffix=None):
+def name(pop: List[str], suffix: str = '') -> str:
     """
     Return the name of this particular project.
 
@@ -331,7 +286,7 @@ def name(pop, suffix=None):
             raise ValueError('Element doesnʼt match path tail.')
 
     _path = os.path.basename(_path)
-    if suffix is not None and _path.endswith(suffix):
+    if suffix != '' and _path.endswith(suffix):
         _path = _path[0:-len(suffix)]
 
     return _path

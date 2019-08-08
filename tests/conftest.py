@@ -23,7 +23,7 @@ import pytest
 import xlwt
 
 # RAMSTK Package Imports
-import ramstk.Utilities as Utilities
+from ramstk import create_logger
 from ramstk.Configuration import Configuration
 from ramstk.db.base import BaseDatabase
 
@@ -441,11 +441,11 @@ def test_configuration():
     configuration.set_user_configuration()
 
     configuration.RAMSTK_DEBUG_LOG = \
-        Utilities.create_logger("RAMSTK.debug", 'DEBUG', DEBUG_LOG)
+        create_logger("RAMSTK.debug", 'DEBUG', DEBUG_LOG)
     configuration.RAMSTK_USER_LOG = \
-        Utilities.create_logger("RAMSTK.user", 'INFO', USER_LOG)
+        create_logger("RAMSTK.user", 'INFO', USER_LOG)
     configuration.RAMSTK_IMPORT_LOG = \
-        Utilities.create_logger("RAMSTK.user", 'INFO', IMPORT_LOG)
+        create_logger("RAMSTK.user", 'INFO', IMPORT_LOG)
 
     configuration.RAMSTK_STRESS_LIMITS = {
         1: (0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),

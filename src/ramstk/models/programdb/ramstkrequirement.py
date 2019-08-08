@@ -15,9 +15,8 @@ from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk import RAMSTK_BASE
+from ramstk import RAMSTK_BASE, none_to_default
 from ramstk.models import RAMSTKBaseTable
-from ramstk.Utilities import none_to_default
 
 
 class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):

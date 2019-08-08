@@ -9,16 +9,15 @@
 
 class RAMSTKError(Exception):
     """Basic exception for errors raised by RAMSTK."""
-
-    def __init__(self, msg=None):
+    def __init__(self, msg: str = '') -> None:
         """
         Initialize the basic RAMSTK exception.
 
         :keyword str msg: the message to display to the user when this
             exception is raised.
         """
-        if msg is None:
-            # Set some default useful error message
+        if msg == '':
+            # Set some default useless error message
             msg = "An error occured with RAMSTK."
 
         super(RAMSTKError, self).__init__(msg)
@@ -26,8 +25,7 @@ class RAMSTKError(Exception):
 
 class DataAccessError(RAMSTKError):
     """Exception raised by methods in the data access package."""
-
-    def __init__(self, msg) -> Exception:
+    def __init__(self, msg: str) -> None:
         """
         Initialize DataAccessError instance.
 
@@ -41,8 +39,7 @@ class DataAccessError(RAMSTKError):
 
 class OutOfRangeError(RAMSTKError):
     """Exception raised when an input value is outside legal limits."""
-
-    def __init__(self, msg):
+    def __init__(self, msg: str) -> None:
         """
         Initialize OutOfRangeError instance.
 
@@ -50,35 +47,5 @@ class OutOfRangeError(RAMSTKError):
             exception is raised.
         """
         super(OutOfRangeError, self).__init__(msg=msg)
-
-        self.msg = msg
-
-
-class NoParentError(RAMSTKError):
-    """Exception raised when a parent element does not exist."""
-
-    def __init__(self, msg):
-        """
-        Initialize NoParentError instance.
-
-        :param str msg: the message to display to the user when this
-            exception is raised.
-        """
-        super(NoParentError, self).__init__(msg=msg)
-
-        self.msg = msg
-
-
-class NoMatrixError(RAMSTKError):
-    """Exception raised when no Matrices are returned."""
-
-    def __init__(self, msg):
-        """
-        Initialize a NoMatrixError instance.
-
-        :param str msg: the message to display to the user when this
-            exception is raised.
-        """
-        super(NoMatrixError, self).__init__(msg=msg)
 
         self.msg = msg

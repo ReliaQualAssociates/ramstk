@@ -16,10 +16,9 @@ from datetime import datetime
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.Utilities import (
-    create_logger, date_to_ordinal, dir_exists, error_handler,
-    file_exists, none_to_default, none_to_string,
-    ordinal_to_date, split_string, string_to_boolean
+from ramstk import (
+    create_logger, date_to_ordinal, dir_exists, file_exists, none_to_default,
+    none_to_string, ordinal_to_date, split_string, string_to_boolean
 )
 
 TEMPDIR = tempfile.gettempdir()
@@ -146,42 +145,3 @@ def test_none_to_default():
 def test_none_to_default_not_none():
     """ none_to_default() should return the original value if it is not missing. """
     assert none_to_default(40, 10) == 40
-
-
-def test_error_handler_type_error():
-    """ error_handler() should return a 10 error code when passed a TypeError string. """
-    _error_code = error_handler(
-        ['The argument must be a string or a number dude!'], )
-    assert _error_code == 10
-
-
-def test_error_handler_value_error():
-    """ error_handler() should return a 10 error code when passed a ValueError string. """
-    _error_code = error_handler(
-        ['That is invalid literal for int() with base 10'], )
-    assert _error_code == 10
-
-    _error_code = error_handler(['I could not convert string to float'])
-    assert _error_code == 10
-
-
-def test_error_handler_zero_division_error():
-    """ error_handler() should return a 20 error code when passed a ZeroDivisionError string. """
-    _error_code = error_handler(['float division by zero dunna work dude'])
-    assert _error_code == 20
-
-    _error_code = error_handler(
-        ['That was integer division or modulo by zero'], )
-    assert _error_code == 20
-
-
-def test_error_handler_index_error():
-    """ error_handler() should return a 40 error code when passed a IndexError string. """
-    _error_code = error_handler(['That index out of range'])
-    assert _error_code == 40
-
-
-def test_error_handler_default():
-    """ error_handler() should return a 1000 error code when passed a error string it can't parse. """
-    _error_code = error_handler(['Some kinda error message'])
-    assert _error_code == 1000

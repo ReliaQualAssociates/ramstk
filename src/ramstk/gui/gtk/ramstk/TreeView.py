@@ -15,7 +15,7 @@ import defusedxml.lxml as lxml
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
-from ramstk.Utilities import integer_to_boolean
+from ramstk import integer_to_boolean
 
 # RAMSTK Local Imports
 from .Label import RAMSTKLabel

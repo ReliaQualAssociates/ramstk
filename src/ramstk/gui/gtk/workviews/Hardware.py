@@ -14,17 +14,17 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
+from ramstk import boolean_to_integer
 from ramstk.Configuration import (
     RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_COST_TYPES, RAMSTK_DORMANT_ENVIRONMENTS,
-    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS, RAMSTK_HR_TYPES,
+    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS, RAMSTK_HR_TYPES
 )
 from ramstk.gui.gtk.ramstk import (
     RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group,
+    RAMSTKLabel, RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 from ramstk.gui.gtk.workviews.components import Component
-from ramstk.Utilities import boolean_to_integer
 
 # RAMSTK Local Imports
 from .components import (
@@ -32,7 +32,7 @@ from .components import (
     wvwInductorAI, wvwInductorAR, wvwIntegratedCircuitAI,
     wvwIntegratedCircuitAR, wvwMeterAI, wvwMeterAR, wvwMiscellaneousAI,
     wvwMiscellaneousAR, wvwRelayAI, wvwRelayAR, wvwResistorAI, wvwResistorAR,
-    wvwSemiconductorAI, wvwSemiconductorAR, wvwSwitchAI, wvwSwitchAR,
+    wvwSemiconductorAI, wvwSemiconductorAR, wvwSwitchAI, wvwSwitchAR
 )
 from .WorkView import RAMSTKWorkView
 

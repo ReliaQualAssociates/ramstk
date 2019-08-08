@@ -7,7 +7,7 @@
 """RAMSTKBaseTable Module."""
 
 # RAMSTK Package Imports
-from ramstk.Utilities import none_to_default
+from ramstk import none_to_default
 
 
 class RAMSTKBaseTable:

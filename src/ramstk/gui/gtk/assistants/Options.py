@@ -8,9 +8,9 @@
 """RAMSTK Configuration Options Module."""
 
 # RAMSTK Package Imports
+from ramstk import boolean_to_integer, integer_to_boolean
 from ramstk.gui.gtk.ramstk import RAMSTKButton, RAMSTKCheckButton
 from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, _
-from ramstk.Utilities import boolean_to_integer, integer_to_boolean
 
 
 class Options(Gtk.Window):

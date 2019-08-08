@@ -14,7 +14,7 @@ from os import environ, makedirs, path
 from typing import Dict
 
 # RAMSTK Package Imports
-import ramstk.Utilities as Utilities
+import ramstk.utilities as Utilities
 
 _ = gettext.gettext
 
@@ -399,7 +399,7 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         ]
 
         # Initialize private scalar attributes.
-        self._INSTALL_PREFIX = Utilities.prefix()
+        self._INSTALL_PREFIX = Utilities.get_prefix()
 
         # Initialize public dictionary attributes.
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}

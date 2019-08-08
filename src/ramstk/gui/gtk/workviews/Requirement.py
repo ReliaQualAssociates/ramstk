@@ -10,14 +10,13 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk import boolean_to_integer
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKButton, RAMSTKCheckButton,
-    RAMSTKComboBox, RAMSTKDateSelect,
-    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-    RAMSTKScrolledWindow, do_make_label_group,
+    RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox,
+    RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
+    RAMSTKLabel, RAMSTKScrolledWindow, do_make_label_group
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, Pango, _
-from ramstk.Utilities import boolean_to_integer
 
 # RAMSTK Local Imports
 from .WorkView import RAMSTKWorkView

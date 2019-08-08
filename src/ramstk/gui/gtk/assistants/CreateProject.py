@@ -10,9 +10,9 @@
 from os import remove
 
 # RAMSTK Package Imports
+from ramstk import file_exists
 from ramstk.gui.gtk.ramstk import RAMSTKDialog, RAMSTKLabel
 from ramstk.gui.gtk.ramstk.Widget import Gtk, _
-from ramstk.Utilities import file_exists
 
 
 class CreateProject():
