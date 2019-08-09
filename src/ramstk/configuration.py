@@ -19,6 +19,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 import ramstk.utilities as Utilities
+from ramstk.utilities import dir_exists, file_exists, get_prefix
 
 _ = gettext.gettext
 
@@ -188,7 +189,6 @@ RAMSTK_S_DIST = [
 
 class RAMSTKSiteConfiguration:
     """Class for site-wide RAMSTK configuration settings."""
-
     def __init__(self) -> None:
         """Initialize the RAMSTK site configuration class."""
         # Initialize private dictionary attributes.
@@ -196,6 +196,7 @@ class RAMSTKSiteConfiguration:
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._INSTALL_PREFIX = get_prefix()
 
         # Initialize public dictionary attributes.
         self.RAMSTK_COM_INFO: Dict[str, str] = {}
@@ -225,13 +226,30 @@ class RAMSTKSiteConfiguration:
         self.RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User.
         self.RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
         self.RAMSTK_USERS: Dict[str, str] = {}  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}    # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}  # Admin.
         self.RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
         self.RAMSTK_COM_BACKEND = ""
+        if sys.platform == "linux" or sys.platform == "linux2":
+            self.RAMSTK_OS = "Linux"
+            self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+            self.RAMSTK_HOME_DIR = environ["HOME"]
+            self.RAMSTK_LOG_DIR = "/var/log/RAMSTK"
+
+        elif sys.platform == "win32":
+            self.RAMSTK_OS = "Windows"
+            self.RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
+            self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
+            self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + "/logs"
+
+        self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + "/layouts"
+        self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + "/icons"
+        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
+        self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
+        self.RAMSTK_SITE_CONF = ""
 
     def do_create_site_configuration(self) -> None:
         """
@@ -256,7 +274,7 @@ class RAMSTKSiteConfiguration:
 
         pub.sendMessage('succeed_create_site_configuration')
 
-    def get_site_configuration(self):
+    def get_site_configuration(self) -> None:
         """
         Read the site configuration file.
         :return: None
@@ -274,12 +292,42 @@ class RAMSTKSiteConfiguration:
 
         else:
             _error_msg = ("Failed to read Site configuration file "
-                          "{0:s}.").format(self.RAMSTK_PROG_CONF)
+                          "{0:s}.").format(self.RAMSTK_SITE_CONF)
             pub.sendMessage('fail_get_site_configuration',
                             error_message=_error_msg)
 
+    def set_site_directories(self) -> None:
+        """
+        Set the site-wide RAMSTK directories.
 
-class Configuration:    # pylint: disable=too-many-instance-attributes
+        .. note:: RAMSTK will prefer directories in a user's $HOME over the
+            system-wide directories.
+
+        :return: None
+        :rtype: None
+        """
+        self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+
+        if dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
+            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
+        else:
+            self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
+
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + '/layouts'
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + '/icons'
+
+        if dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"):
+            self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
+        else:
+            self.RAMSTK_LOG_DIR = '/var/log/RAMSTK'
+
+        self.RAMSTK_SITE_CONF = self.RAMSTK_CONF_DIR + "/Site.toml"
+
+        if not file_exists(self.RAMSTK_SITE_CONF):
+            self.do_create_site_configuration()
+
+
+class Configuration:  # pylint: disable=too-many-instance-attributes
     r"""
     RAMSTK configuration class.
 
@@ -460,7 +508,6 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         value is *en_US*.
     :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
-
     def __init__(self):
         """Initialize the RAMSTK configuration parser."""
         # Initialize private dictionary attributes.
@@ -751,10 +798,7 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
                 _(
                     "\033[1;31mRAMSTK ERROR: Unable to read program "
                     "configuration file {0:s}.\033[0m".format(
-                        self.RAMSTK_PROG_CONF,
-                    ),
-                ),
-            )
+                        self.RAMSTK_PROG_CONF, ), ), )
             _return = True
 
         return _return

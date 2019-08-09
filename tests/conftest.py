@@ -249,7 +249,7 @@ def make_shibboly():
     os.mkdir('/tmp/shibboly', 0o0444)
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def make_config_dir():
     """
     Create a configuration directory if one doesn't exist.
@@ -257,11 +257,10 @@ def make_config_dir():
     allow testing certain functions/methods that look for a user configuration
     directory otherwise defaulting to the site-wide configuration directory.
     """
-    if os.path.exists(VIRTUAL_ENV + '/.config'):
-        shutil.rmtree(VIRTUAL_ENV + '/.config')
+    if os.path.exists(VIRTUAL_ENV + '/share/RAMSTK'):
+        shutil.rmtree(VIRTUAL_ENV + '/share/RAMSTK')
 
-    os.mkdir(VIRTUAL_ENV + '/.config')
-    os.mkdir(VIRTUAL_ENV + '/.config/RAMSTK')
+    os.mkdir(VIRTUAL_ENV + '/share/RAMSTK')
 
 
 @pytest.fixture(scope='class')
@@ -392,7 +391,7 @@ def test_toml_site_configuration():
             "type": "sqlite",
             "host": "localhost",
             "socket": "3306",
-            "database": "",
+            "database": "ramstk_common.ramstk",
             "user": "johnny.tester",
             "password": "clear.text.password"
         }
@@ -422,13 +421,6 @@ def test_configuration():
         '/Site.conf'
     configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + \
         '/RAMSTK.conf'
-
-    configuration.RAMSTK_COM_BACKEND = 'sqlite'
-    configuration.RAMSTK_COM_INFO['host'] = 'localhost'
-    configuration.RAMSTK_COM_INFO['socket'] = '3306'
-    configuration.RAMSTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
-    configuration.RAMSTK_COM_INFO['user'] = 'ramstkcom'
-    configuration.RAMSTK_COM_INFO['password'] = 'ramstkcom'
 
     configuration.RAMSTK_REPORT_SIZE = 'letter'
     configuration.RAMSTK_HR_MULTIPLIER = '1000000.0'
@@ -482,7 +474,6 @@ def test_configuration():
         'validationfg': '#000000',
     }
 
-    configuration._set_site_configuration()
     configuration.set_user_configuration()
 
     configuration.RAMSTK_DEBUG_LOG = \
