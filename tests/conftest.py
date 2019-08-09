@@ -13,6 +13,7 @@ import gettext
 import glob
 import os
 import platform
+import shutil
 import sqlite3
 import sys
 import tempfile
@@ -20,11 +21,12 @@ import xml.etree.ElementTree as ET
 
 # Third Party Imports
 import pytest
+import toml
 import xlwt
 
 # RAMSTK Package Imports
 from ramstk import create_logger
-from ramstk.Configuration import Configuration
+from ramstk.configuration import Configuration
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -238,6 +240,30 @@ ROW_DATA = [
 ]
 
 
+@pytest.fixture(scope='function')
+def make_shibboly():
+    """Create a read-only directory."""
+    if os.path.exists('/tmp/shibboly'):
+        shutil.rmtree('/tmp/shibboly')
+
+    os.mkdir('/tmp/shibboly', 0o0444)
+
+
+@pytest.fixture
+def make_config_dir():
+    """
+    Create a configuration directory if one doesn't exist.
+    This creates a configuration directory in the virtual environment base to
+    allow testing certain functions/methods that look for a user configuration
+    directory otherwise defaulting to the site-wide configuration directory.
+    """
+    if os.path.exists(VIRTUAL_ENV + '/.config'):
+        shutil.rmtree(VIRTUAL_ENV + '/.config')
+
+    os.mkdir(VIRTUAL_ENV + '/.config')
+    os.mkdir(VIRTUAL_ENV + '/.config/RAMSTK')
+
+
 @pytest.fixture(scope='class')
 def test_simple_database():
     """Create a simple test database using SQLite3."""
@@ -354,6 +380,25 @@ def test_program_dao():
     yield dao
 
     dao.do_disconnect()
+
+
+@pytest.fixture(scope='session')
+def test_toml_site_configuration():
+    """Create a toml user configuration file."""
+    RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
+    _dic_site_configuration = {
+        "title": "RAMSTK Site Configuration",
+        "backend": {
+            "type": "sqlite",
+            "host": "localhost",
+            "socket": "3306",
+            "database": "",
+            "user": "johnny.tester",
+            "password": "clear.text.password"
+        }
+    }
+
+    toml.dump(_dic_site_configuration, open(RAMSTK_SITE_CONF, "w"))
 
 
 @pytest.fixture(scope='session')

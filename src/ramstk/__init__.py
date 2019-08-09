@@ -10,7 +10,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 
 # RAMSTK Local Imports
-from .Configuration import (
+from .configuration import (
     RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_ALLOCATION_MODELS, RAMSTK_CONTROL_TYPES,
     RAMSTK_COST_TYPES, RAMSTK_CRITICALITY, RAMSTK_DORMANT_ENVIRONMENTS,
     RAMSTK_FAILURE_PROBABILITY, RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,

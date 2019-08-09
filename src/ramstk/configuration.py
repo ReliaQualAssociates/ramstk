@@ -13,6 +13,10 @@ import sys
 from os import environ, makedirs, path
 from typing import Dict
 
+# Third Party Imports
+import toml
+from pubsub import pub
+
 # RAMSTK Package Imports
 import ramstk.utilities as Utilities
 
@@ -180,6 +184,99 @@ RAMSTK_S_DIST = [
     ["Uniform"],
     ["Weibull"],
 ]
+
+
+class RAMSTKSiteConfiguration:
+    """Class for site-wide RAMSTK configuration settings."""
+
+    def __init__(self) -> None:
+        """Initialize the RAMSTK site configuration class."""
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+        self.RAMSTK_COM_INFO: Dict[str, str] = {}
+        self.RAMSTK_ACTION_CATEGORY: Dict[str, str] = {}
+        self.RAMSTK_ACTION_STATUS: Dict[str, str] = {}
+        self.RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User.
+        self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User.
+        self.RAMSTK_DETECTION_METHODS: Dict[str, str] = {}
+        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
+        self.RAMSTK_HAZARDS: Dict[str, str] = {}  # User.
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, str] = {}
+        self.RAMSTK_INCIDENT_STATUS: Dict[str, str] = {}
+        self.RAMSTK_INCIDENT_TYPE: Dict[str, str] = {}
+        self.RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User.
+        self.RAMSTK_MANUFACTURERS: Dict[str, str] = {}  # User.
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}  # Admin.
+        self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
+        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, str] = {}
+        self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
+        self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
+        self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
+        self.RAMSTK_SEVERITY: Dict[str, str] = {}
+        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
+        self.RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User.
+        self.RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_USERS: Dict[str, str] = {}  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}    # Admin.
+        self.RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.RAMSTK_COM_BACKEND = ""
+
+    def do_create_site_configuration(self) -> None:
+        """
+        Create the default site configuration file.
+
+        :return: None
+        :rtype: None
+        """
+        _dic_site_configuration = {
+            "title": "RAMSTK Site Configuration",
+            "backend": {
+                "type": "sqlite",
+                "host": "localhost",
+                "socket": "3306",
+                "database": self.RAMSTK_SITE_DIR + "/ramstk_common.ramstk",
+                "user": "ramstk",
+                "password": "ramstk"
+            }
+        }
+
+        toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF, "w"))
+
+        pub.sendMessage('succeed_create_site_configuration')
+
+    def get_site_configuration(self):
+        """
+        Read the site configuration file.
+        :return: None
+        :rtype: None
+        """
+        if file_exists(self.RAMSTK_SITE_CONF):
+            _config = toml.load(self.RAMSTK_SITE_CONF)
+
+            self.RAMSTK_COM_BACKEND = _config['backend']['type']
+            self.RAMSTK_COM_INFO["host"] = _config['backend']['host']
+            self.RAMSTK_COM_INFO["socket"] = _config['backend']['socket']
+            self.RAMSTK_COM_INFO["database"] = _config['backend']['database']
+            self.RAMSTK_COM_INFO["user"] = _config['backend']['user']
+            self.RAMSTK_COM_INFO["password"] = _config['backend']['password']
+
+        else:
+            _error_msg = ("Failed to read Site configuration file "
+                          "{0:s}.").format(self.RAMSTK_PROG_CONF)
+            pub.sendMessage('fail_get_site_configuration',
+                            error_message=_error_msg)
 
 
 class Configuration:    # pylint: disable=too-many-instance-attributes
@@ -404,42 +501,12 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         # Initialize public dictionary attributes.
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
         self.RAMSTK_COLORS: Dict[str, str] = {}
-        self.RAMSTK_COM_INFO: Dict[str, str] = {}
         self.RAMSTK_PROG_INFO: Dict[str, str] = {}
         self.RAMSTK_TABPOS = {
             "listbook": "top",
             "modulebook": "bottom",
             "workbook": "bottom",
         }
-
-        self.RAMSTK_ACTION_CATEGORY: Dict[str, str] = {}
-        self.RAMSTK_ACTION_STATUS: Dict[str, str] = {}
-        self.RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User.
-        self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User.
-        self.RAMSTK_DETECTION_METHODS: Dict[str, str] = {}
-        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
-        self.RAMSTK_HAZARDS: Dict[str, str] = {}  # User.
-        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, str] = {}
-        self.RAMSTK_INCIDENT_STATUS: Dict[str, str] = {}
-        self.RAMSTK_INCIDENT_TYPE: Dict[str, str] = {}
-        self.RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User.
-        self.RAMSTK_MANUFACTURERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}  # Admin.
-        self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
-        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, str] = {}
-        self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
-        self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
-        self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
-        self.RAMSTK_SEVERITY: Dict[str, str] = {}
-        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User.
-        self.RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_USERS: Dict[str, str] = {}  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}    # Admin.
-        self.RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin.
 
         # Initialize public list attributes.
         self.RAMSTK_RISK_POINTS = [4, 10]
@@ -470,7 +537,6 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
 
         self.RAMSTK_MODE = ""
         self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
-        self.RAMSTK_COM_BACKEND = ""
         self.RAMSTK_BACKEND = ""
         self.RAMSTK_REPORT_SIZE = "letter"
         self.RAMSTK_HR_MULTIPLIER = 1000000.0
@@ -479,84 +545,6 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         self.RAMSTK_GUI_LAYOUT = "advanced"
         self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
         self.RAMSTK_LOCALE = "en_US"
-
-    def get_site_configuration(self):
-        """
-        Read the site configuration file.
-
-        :return: False of successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        if Utilities.file_exists(self.RAMSTK_SITE_CONF):
-            _config = configparser.ConfigParser()
-            _config.read(self.RAMSTK_SITE_CONF)
-
-            self.RAMSTK_COM_BACKEND = _config.get("Backend", "type")
-            self.RAMSTK_COM_INFO["host"] = _config.get("Backend", "host")
-            self.RAMSTK_COM_INFO["socket"] = _config.get("Backend", "socket")
-            self.RAMSTK_COM_INFO["database"] = _config.get(
-                "Backend",
-                "database",
-            )
-            self.RAMSTK_COM_INFO["user"] = _config.get("Backend", "user")
-            self.RAMSTK_COM_INFO["password"] = _config.get(
-                "Backend",
-                "password",
-            )
-            self.RAMSTK_COM_INFO["path"] = _config.get("Backend", "password")
-        else:
-            print(
-                _(
-                    "\033[1;31mRAMSTK ERROR: Unable to read site "
-                    "configuration file {0:s}.\033[0m".format(
-                        self.RAMSTK_SITE_CONF,
-                    ),
-                ),
-            )
-            _return = True
-
-        return _return
-
-    def _set_site_configuration(self):
-        """
-        Create the default site configuration file.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _common_db = self.RAMSTK_SITE_DIR + "/ramstk_common.ramstk"
-
-        _config = configparser.ConfigParser()
-
-        _config.add_section("Backend")
-        _config.set("Backend", "host", "localhost")
-        _config.set("Backend", "socket", "3306")
-        _config.set("Backend", "database", _common_db)
-        _config.set("Backend", "user", "ramstkcom")
-        _config.set("Backend", "password", "ramstkcom")
-        _config.set("Backend", "type", "sqlite")
-        _config.set("Backend", "path", self.RAMSTK_SITE_DIR)
-
-        try:
-            _parser = open(self.RAMSTK_SITE_CONF, "w")
-            _config.write(_parser)
-            _parser.close()
-        except EnvironmentError:
-            print(
-                _(
-                    "\033[1;31mRAMSTK ERROR: Unable to write to site "
-                    "configuration file {0:s}.\033[0m".format(
-                        self.RAMSTK_SITE_CONF,
-                    ),
-                ),
-            )
-            _return = True
-
-        return _return
 
     def create_user_configuration(self):
         """
