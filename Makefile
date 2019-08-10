@@ -135,7 +135,7 @@ test.calc:
 test.integration:
 	py.test $(TESTOPTS) -m integration $(TESTFILE)
 
-test: clean-test
+test:
 	py.test $(TESTOPTS) $(TESTFILE)
 
 test-all:
@@ -144,7 +144,7 @@ test-all:
 coverage: clean-test
 	py.test $(TESTOPTS) --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term $(TESTFILE)
 
-reports:
+reports: coverage
 	coverage html -d $(COVDIR)
 
 format:

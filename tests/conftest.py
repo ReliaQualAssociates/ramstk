@@ -18,6 +18,7 @@ import sqlite3
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
+from distutils import dir_util
 
 # Third Party Imports
 import pytest
@@ -25,8 +26,7 @@ import toml
 import xlwt
 
 # RAMSTK Package Imports
-from ramstk import create_logger
-from ramstk.configuration import Configuration
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -257,10 +257,42 @@ def make_config_dir():
     allow testing certain functions/methods that look for a user configuration
     directory otherwise defaulting to the site-wide configuration directory.
     """
-    if os.path.exists(VIRTUAL_ENV + '/share/RAMSTK'):
-        shutil.rmtree(VIRTUAL_ENV + '/share/RAMSTK')
+    _config_dir = VIRTUAL_ENV + '/share/RAMSTK'
+    os.mkdir(_config_dir)
 
-    os.mkdir(VIRTUAL_ENV + '/share/RAMSTK')
+    dir_util.copy_tree(
+                os.getcwd() + "/data/icons/",
+                _config_dir + '/icons/'
+    )
+
+    dir_util.copy_tree(
+                os.getcwd() + "/data/layouts/",
+                _config_dir + '/layouts/'
+    )
+
+    yield _config_dir
+
+    shutil.rmtree(VIRTUAL_ENV + '/share/RAMSTK')
+
+
+@pytest.fixture(scope='session')
+def make_home_config_dir():
+    """
+    Create a configuration directory to mimic a user's configuration directory.
+    """
+    _config_dir = VIRTUAL_ENV + '/tmp/.config/RAMSTK'
+    os.mkdir(VIRTUAL_ENV + '/tmp/.config')
+    os.mkdir(_config_dir)
+    os.mkdir(_config_dir + '/layouts')
+    os.mkdir(_config_dir + '/icons')
+    os.mkdir(_config_dir + '/log')
+    os.mkdir(VIRTUAL_ENV + '/tmp/analyses')
+    os.mkdir(VIRTUAL_ENV + '/tmp/analyses/ramstk')
+
+    yield _config_dir
+
+    shutil.rmtree(VIRTUAL_ENV + '/tmp/.config')
+    shutil.rmtree(VIRTUAL_ENV + '/tmp/analyses')
 
 
 @pytest.fixture(scope='class')
@@ -333,6 +365,7 @@ def test_common_dao():
 
     dao.do_disconnect()
 
+
 @pytest.fixture(scope='class')
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
@@ -383,7 +416,7 @@ def test_program_dao():
 
 @pytest.fixture(scope='session')
 def test_toml_site_configuration():
-    """Create a toml user configuration file."""
+    """Create a toml site configuration file."""
     RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
     _dic_site_configuration = {
         "title": "RAMSTK Site Configuration",
@@ -401,102 +434,89 @@ def test_toml_site_configuration():
 
 
 @pytest.fixture(scope='session')
-def test_configuration():
-    """Create configuration object to use for testing."""
-    # Create the data directory if it doesn't exist.
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
-
-    # Create the log directory if it doesn't exist.
-    if not os.path.exists(LOG_DIR):
-        os.makedirs(LOG_DIR)
-
-    configuration = Configuration()
-
-    configuration._INSTALL_PREFIX = VIRTUAL_ENV
-
-    configuration.RAMSTK_SITE_DIR = CONF_DIR
-    configuration.RAMSTK_CONF_DIR = CONF_DIR
-    configuration.RAMSTK_SITE_CONF = configuration.RAMSTK_CONF_DIR + \
-        '/Site.conf'
-    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + \
-        '/RAMSTK.conf'
-
-    configuration.RAMSTK_REPORT_SIZE = 'letter'
-    configuration.RAMSTK_HR_MULTIPLIER = '1000000.0'
-    configuration.RAMSTK_MTIME = '100.0'
-    configuration.RAMSTK_DEC_PLACES = '6'
-    configuration.RAMSTK_MODE_SOURCE = '1'
-    configuration.RAMSTK_TABPOS = {
-        'modulebook': 'top',
-        'listbook': 'bottom',
-        'workbook': 'bottom',
+def test_toml_user_configuration():
+    """Create a toml user configuration file."""
+    _user_config = RAMSTKUserConfiguration()
+    _user_config._INSTALL_PREFIX = VIRTUAL_ENV
+    _user_config.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/tmp'
+    _user_config.RAMSTK_CONF_DIR = VIRTUAL_ENV + '/tmp/.config/RAMSTK'
+    _user_config.RAMSTK_PROG_CONF = _user_config.RAMSTK_CONF_DIR + '/RAMSTK.toml'
+    _user_config.RAMSTK_DATA_DIR = _user_config.RAMSTK_CONF_DIR + '/layouts'
+    _user_config.RAMSTK_ICON_DIR = _user_config.RAMSTK_CONF_DIR + '/icons'
+    _user_config.RAMSTK_LOG_DIR = _user_config.RAMSTK_CONF_DIR + '/logs'
+    _user_config.RAMSTK_PROG_DIR = VIRTUAL_ENV + '/tmp/analyses/ramstk'
+    _dic_user_configuration = {
+        "title": "RAMSTK User Configuration",
+        "general": {
+            "firstrun": "True",
+            "reportsize": "letter",
+            "frmultiplier": "1000000.0",
+            "calcreltime": "100.0",
+            "decimal": "6",
+            "modesource": "1",
+            "moduletabpos": "top",
+            "listtabpos": "bottom",
+            "worktabpos": "bottom"
+        },
+        "backend": {
+            "type": "sqlite",
+            "host": "localhost",
+            "socket": "3306",
+            "database": "",
+            "user": "",
+            "password": ""
+        },
+        "directories": {
+            "datadir": _user_config.RAMSTK_DATA_DIR,
+            "icondir": _user_config.RAMSTK_ICON_DIR,
+            "logdir": _user_config.RAMSTK_LOG_DIR,
+            "progdir": _user_config.RAMSTK_PROG_DIR
+        },
+        "layouts": {
+            "allocation": "Allocation.xml",
+            "failure_definition": "FailureDefinition.xml",
+            "fmea": "FMEA.xml",
+            "function": "Function.xml",
+            "hardware": "Hardware.xml",
+            "hazops": "HazOps.xml",
+            "pof": "PoF.xml",
+            "requirement": "Requirement.xml",
+            "revision": "Revision.xml",
+            "similaritem": "SimilarItem.xml",
+            "stakeholder": "Stakeholder.xml",
+            "validation": "Validation.xml"
+        },
+        "colors": {
+            "functionbg": "#FFFFFF",
+            "functionfg": "#000000",
+            "hardwarebg": "#FFFFFF",
+            "hardwarefg": "#000000",
+            "requirementbg": "#FFFFFF",
+            "requirementfg": "#000000",
+            "revisionbg": "#FFFFFF",
+            "revisionfg": "#000000",
+            "stakeholderbg": "#FFFFFF",
+            "stakeholderfg": "#000000",
+            "validationbg": "#FFFFFF",
+            "validationfg": "#000000"
+        },
+        "stress": {
+            'integratedcircuit': [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'semiconductor': [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'resistor': [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'capacitor': [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
+            'inductor': [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
+            'relay': [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'switch': [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'connection': [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
+            'meter': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'miscellaneous': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
+        }
     }
 
-    configuration.RAMSTK_BACKEND = 'sqlite'
-    configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
-    configuration.RAMSTK_PROG_INFO['socket'] = '3306'
-    configuration.RAMSTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
-    configuration.RAMSTK_PROG_INFO['user'] = 'johnny.tester'
-    configuration.RAMSTK_PROG_INFO['password'] = 'clear.text.password'
+    toml.dump(_dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF, "w"))
 
-    configuration.RAMSTK_DATA_DIR = DATA_DIR
-    configuration.RAMSTK_ICON_DIR = ICON_DIR
-    configuration.RAMSTK_LOG_DIR = LOG_DIR
-    configuration.RAMSTK_PROG_DIR = TMP_DIR
-
-    configuration.RAMSTK_FORMAT_FILE = {
-        'allocation': 'Allocation.xml',
-        'failure_definition': 'FailureDefinition.xml',
-        'fmea': 'FMEA.xml',
-        'function': 'Function.xml',
-        'hardware': 'Hardware.xml',
-        'hazops': 'HazOps.xml',
-        'pof': 'PoF.xml',
-        'requirement': 'Requirement.xml',
-        'revision': 'Revision.xml',
-        'similaritem': 'SimilarItem.xml',
-        'stakeholder': 'Stakeholder.xml',
-        'validation': 'Validation.xml',
-    }
-    configuration.RAMSTK_COLORS = {
-        'functionbg': '#FFFFFF',
-        'functionfg': '#000000',
-        'hardwarebg': '#FFFFFF',
-        'hardwarefg': '#000000',
-        'requirementbg': '#FFFFFF',
-        'requirementfg': '#000000',
-        'revisionbg': '#FFFFFF',
-        'revisionfg': '#000000',
-        'stakeholderbg': '#FFFFFF',
-        'stakeholderfg': '#000000',
-        'validationbg': '#FFFFFF',
-        'validationfg': '#000000',
-    }
-
-    configuration.set_user_configuration()
-
-    configuration.RAMSTK_DEBUG_LOG = \
-        create_logger("RAMSTK.debug", 'DEBUG', DEBUG_LOG)
-    configuration.RAMSTK_USER_LOG = \
-        create_logger("RAMSTK.user", 'INFO', USER_LOG)
-    configuration.RAMSTK_IMPORT_LOG = \
-        create_logger("RAMSTK.user", 'INFO', IMPORT_LOG)
-
-    configuration.RAMSTK_STRESS_LIMITS = {
-        1: (0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
-        2: (1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
-        3: (1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
-        4: (1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0),
-        5: (0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0),
-        6: (0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
-        7: (0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
-        8: (0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0),
-        9: (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
-        10: (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0)
-    }
-
-    yield configuration
+    yield _user_config
 
 
 @pytest.fixture

@@ -13,7 +13,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import Configuration
+from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amStakeholder, dmStakeholder
 from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKStakeholder
@@ -36,7 +36,7 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -72,12 +72,12 @@ class TestCreateControllers():
                                 'request_set_all_stakeholder_attributes')
 
     @pytest.mark.unit
-    def test_analysis_manager_create(self, test_configuration):
+    def test_analysis_manager_create(self, test_toml_user_configuration):
         """__init__() should create an instance of the function analysis manager."""
-        DUT = amStakeholder(test_configuration)
+        DUT = amStakeholder(test_toml_user_configuration)
 
         assert isinstance(DUT, amStakeholder)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, Configuration)
+        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert DUT._attributes == {}
         assert DUT._tree is None
@@ -89,7 +89,7 @@ class TestCreateControllers():
                                 'request_calculate_stakeholder')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_stakeholders(self, tree):
@@ -142,7 +142,7 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='stakeholder') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_stakeholder(self, node_id):
@@ -180,7 +180,7 @@ class TestDeleteMethods():
         DUT._do_delete_stakeholder(300)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_stakeholder_attrs(self, attributes):
@@ -279,7 +279,7 @@ class TestGetterSetter():
                         'succeed_get_stakeholder_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_stakeholder(self, node_id):
@@ -311,7 +311,7 @@ class TestInsertMethods():
                         'succeed_insert_stakeholder')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_stakeholder(self, node_id):
@@ -359,16 +359,16 @@ class TestUpdateMethods():
                         'fail_update_stakeholder')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
     @pytest.mark.integration
     def test_do_calculate_improvement(self, test_program_dao,
-                                      test_configuration):
+                                      test_toml_user_configuration):
         """do_calculate_stakeholder() should calculate the improvement factor and overall weight of a stakeholder input."""
         DATAMGR = dmStakeholder(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amStakeholder(test_configuration)
+        DUT = amStakeholder(test_toml_user_configuration)
 
         pub.sendMessage('request_get_stakeholder_tree')
 

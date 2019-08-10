@@ -14,7 +14,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import Configuration
+from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amHardware, dmHardware, mmHardware
 from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
@@ -361,7 +361,7 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -376,12 +376,12 @@ class TestCreateControllers():
         assert DUT._root == 0
 
     @pytest.mark.unit
-    def test_analysis_manager_create(self, test_configuration):
+    def test_analysis_manager_create(self, test_toml_user_configuration):
         """__init__() should create an instance of the hardware analysis manager."""
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         assert isinstance(DUT, amHardware)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, Configuration)
+        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert DUT._attributes == {}
         assert DUT._tree is None
@@ -400,7 +400,7 @@ class TestCreateControllers():
         assert DUT.n_col == 1
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     @pytest.mark.integration
@@ -574,7 +574,7 @@ class TestSelectMethods():
         assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 0
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     @pytest.mark.integration
@@ -669,7 +669,7 @@ class TestDeleteMethods():
             DUT.do_select('hrdwr_rqrmnt', 1, 1)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     @pytest.mark.integration
@@ -713,11 +713,11 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_get_all_attributes_analysis_manager(self, test_program_dao,
-                                                 test_configuration):
+                                                 test_toml_user_configuration):
         """_get_all_attributes() should update the attributes dict on success."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=8)
 
@@ -730,11 +730,11 @@ class TestGetterSetter():
         assert DUT._attributes['ref_des'] == 'C1'
 
     @pytest.mark.integration
-    def test_on_get_tree(self, test_program_dao, test_configuration):
+    def test_on_get_tree(self, test_program_dao, test_toml_user_configuration):
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_hardware_tree message."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(dmtree):
             assert isinstance(dmtree, Tree)
@@ -779,12 +779,12 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     @pytest.mark.parametrize("method_id", [1, 2, 3, 4])
-    def test_do_get_allocation_goal(self, test_program_dao, test_configuration,
+    def test_do_get_allocation_goal(self, test_program_dao, test_toml_user_configuration,
                                     method_id):
         """do_calculate_goal() should return the proper allocation goal measure."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
         pub.sendMessage('request_get_all_hardware_attributes', node_id=6)
@@ -801,7 +801,7 @@ class TestGetterSetter():
             assert _goal == 0.9995
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     @pytest.mark.integration
@@ -1018,7 +1018,7 @@ class TestInsertMethods():
                              table='hardware').comp_ref_des == 'S1:SS9:A10:C1'
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     @pytest.mark.integration
@@ -1115,16 +1115,16 @@ class TestUpdateMethods():
                         matrix_type='hrdwr_rqrmnt')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
     @pytest.mark.integration
     def test_do_calculate_assembly_specified_hazard_rate(
-            self, test_program_dao, test_configuration):
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the h(t)."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1177,11 +1177,11 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_assembly_specified_mtbf(self, test_program_dao,
-                                                  test_configuration):
+                                                  test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the MTBF."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1217,11 +1217,11 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_assembly_zero_hazard_rates(self, test_program_dao,
-                                                     test_configuration):
+                                                     test_toml_user_configuration):
         """do_calculate() should send the fail message when all hazard rates=0.0."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        amHardware(test_configuration)
+        amHardware(test_toml_user_configuration)
 
         def on_message(error_msg):
             assert error_msg == (
@@ -1242,11 +1242,11 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_assembly_zero_specified_mtbf(self, test_program_dao,
-                                                       test_configuration):
+                                                       test_toml_user_configuration):
         """do_calculate() should send the fail message when the specified MTBF=0.0."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        amHardware(test_configuration)
+        amHardware(test_toml_user_configuration)
 
         def on_message(error_msg):
             assert error_msg == (
@@ -1267,11 +1267,11 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_all_hardware(self, test_program_dao,
-                                       test_configuration):
+                                       test_toml_user_configuration):
         """do_calculate_all_hardware() should calculate the entire system and roll-up results from child to parent hardware items."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(module_tree):
             assert isinstance(module_tree, Tree)
@@ -1323,16 +1323,16 @@ class TestAnalysisMethods():
         pub.sendMessage('request_calculate_all_hardware')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestMilHdbk217FPredictions():
     """Class for prediction methods using MIL-HDBK-217F test suite."""
     @pytest.mark.integration
     def test_do_calculate_part_mil_hdbk_217f_parts_count(
-            self, test_program_dao, test_configuration):
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F parts count prediction."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1391,11 +1391,11 @@ class TestMilHdbk217FPredictions():
 
     @pytest.mark.integration
     def test_do_calculate_part_mil_hdbk_217f_parts_stress(
-            self, test_program_dao, test_configuration):
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F part stress prediction."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1464,16 +1464,16 @@ class TestMilHdbk217FPredictions():
         pub.sendMessage('request_calculate_hardware', node_id=8)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestStressCalculations():
     """Class for stress-related calculations test suite."""
     @pytest.mark.integration
     def test_do_calculate_part_zero_rated_current(self, test_program_dao,
-                                                  test_configuration):
+                                                  test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated current is zero."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        amHardware(test_configuration)
+        amHardware(test_toml_user_configuration)
 
         def on_message(error_msg):
             assert error_msg == (
@@ -1490,11 +1490,11 @@ class TestStressCalculations():
 
     @pytest.mark.integration
     def test_do_calculate_part_zero_rated_power(self, test_program_dao,
-                                                test_configuration):
+                                                test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated power is zero."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        amHardware(test_configuration)
+        amHardware(test_toml_user_configuration)
 
         def on_message(error_msg):
             assert error_msg == (
@@ -1515,11 +1515,11 @@ class TestStressCalculations():
 
     @pytest.mark.integration
     def test_do_calculate_part_zero_rated_voltage(self, test_program_dao,
-                                                  test_configuration):
+                                                  test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated voltage is zero."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        amHardware(test_configuration)
+        amHardware(test_toml_user_configuration)
 
         def on_message(error_msg):
             assert error_msg == (
@@ -1539,11 +1539,11 @@ class TestStressCalculations():
 
     @pytest.mark.integration
     def test_do_derating_analysis_current_stress(self, test_program_dao,
-                                                 test_configuration):
+                                                 test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is current overstressed."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1567,11 +1567,11 @@ class TestStressCalculations():
 
     @pytest.mark.integration
     def test_do_derating_analysis_power_stress(self, test_program_dao,
-                                               test_configuration):
+                                               test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is power overstressed."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1594,11 +1594,11 @@ class TestStressCalculations():
 
     @pytest.mark.integration
     def test_do_derating_analysis_voltage_stress(self, test_program_dao,
-                                                 test_configuration):
+                                                 test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is voltage overstressed."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1622,11 +1622,11 @@ class TestStressCalculations():
 
     @pytest.mark.integration
     def test_do_derating_analysis_no_overstress(self, test_program_dao,
-                                                test_configuration):
+                                                test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute False and the reason message should='' when a component is not overstressed."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert float(
@@ -1647,16 +1647,16 @@ class TestStressCalculations():
         pub.sendMessage('request_derate_hardware', node_id=8)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestAllocation():
     """Class for allocation methods test suite."""
     @pytest.mark.integration
     def test_do_calculate_goals_reliability_specified(self, test_program_dao,
-                                                      test_configuration):
+                                                      test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent h(t) and MTBF goals from a specified reliability goal."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=6)
         DUT._attributes['goal_measure_id'] = 1
@@ -1669,11 +1669,11 @@ class TestAllocation():
 
     @pytest.mark.integration
     def test_do_calculate_goals_hazard_rate_specified(self, test_program_dao,
-                                                      test_configuration):
+                                                      test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent MTBF and R(t) goals from a specified hazard rate goal."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=6)
         DUT._attributes['goal_measure_id'] = 2
@@ -1686,11 +1686,11 @@ class TestAllocation():
 
     @pytest.mark.integration
     def test_do_calculate_goals_mtbf_specified(self, test_program_dao,
-                                               test_configuration):
+                                               test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent h(t) and R(t) goals from a specified MTBF goal."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=6)
         DUT._attributes['goal_measure_id'] = 3
@@ -1704,11 +1704,11 @@ class TestAllocation():
 
     @pytest.mark.integration
     def test_do_calculate_agree_allocation(self, test_program_dao,
-                                           test_configuration):
+                                           test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the AGREE method."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -1750,11 +1750,11 @@ class TestAllocation():
 
     @pytest.mark.integration
     def test_do_calculate_arinc_allocation(self, test_program_dao,
-                                           test_configuration):
+                                           test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the ARINC method."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -1794,11 +1794,11 @@ class TestAllocation():
 
     @pytest.mark.integration
     def test_do_calculate_arinc_allocation_zero_parent_hazard_rate(
-            self, test_program_dao, test_configuration):
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate_allocation() should send an error message when attempting to allocate an assembly with a zero hazard rate using the ARINC method."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(error_msg):
             assert error_msg == ('Failed to allocate the reliability for '
@@ -1817,11 +1817,11 @@ class TestAllocation():
 
     @pytest.mark.integration
     def test_do_calculate_equal_allocation(self, test_program_dao,
-                                           test_configuration):
+                                           test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the equal apportionment method."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -1843,11 +1843,11 @@ class TestAllocation():
 
     @pytest.mark.integration
     def test_do_calculate_foo_allocation(self, test_program_dao,
-                                         test_configuration):
+                                         test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the feasibility of objectives method."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -1890,16 +1890,16 @@ class TestAllocation():
         pub.sendMessage('request_allocate_reliability', node_id=2)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestSimilarItem():
     """Class for similar item methods test suite."""
     @pytest.mark.integration
     def test_do_calculate_topic_633(self, test_program_dao,
-                                    test_configuration):
+                                    test_toml_user_configuration):
         """do_calculate_goal() should calculate the Topic 6.3.3 similar item."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
 
@@ -1926,11 +1926,11 @@ class TestSimilarItem():
 
     @pytest.mark.integration
     def test_do_calculate_user_defined(self, test_program_dao,
-                                       test_configuration):
+                                       test_toml_user_configuration):
         """do_calculate_goal() should calculate the Topic 644 similar item."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
 
@@ -1958,11 +1958,11 @@ class TestSimilarItem():
 
     @pytest.mark.integration
     def test_do_roll_up_change_descriptions(self, test_program_dao,
-                                            test_configuration):
+                                            test_toml_user_configuration):
         """do_roll_up_change_descriptions() should combine all child change descriptions into a single change description for the parent."""
         DATAMGR = dmHardware(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
-        DUT = amHardware(test_configuration)
+        DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
             assert attributes['change_description_1'] == (

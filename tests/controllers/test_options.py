@@ -22,8 +22,7 @@ from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.models.programdb import RAMSTKProgramInfo
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_common_dao',
-                         'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_common_dao')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -47,8 +46,7 @@ class TestCreateControllers():
                                 'request_set_option_attributes')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_common_dao',
-                         'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_common_dao')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_options(self, tree):
@@ -130,8 +128,7 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='siteinfo') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_common_dao',
-                         'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_common_dao')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_site_info_attrs(self, attributes):
@@ -272,8 +269,7 @@ class TestGetterSetter():
                         'succeed_get_options_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_common_dao',
-                         'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_common_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_options(self, node_id):

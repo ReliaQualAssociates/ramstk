@@ -7,11 +7,13 @@
 """Configuration information and methods for RAMSTK."""
 
 # Standard Library Imports
-import configparser
 import gettext
+import glob
 import sys
-from os import environ, makedirs, path
-from typing import Dict
+from distutils import dir_util, file_util
+from distutils.errors import DistutilsFileError
+from os import environ, makedirs
+from typing import Dict, Tuple
 
 # Third Party Imports
 import toml
@@ -234,22 +236,11 @@ class RAMSTKSiteConfiguration:
         # Initialize public scalar attributes.
         self.RAMSTK_COM_BACKEND = ""
         if sys.platform == "linux" or sys.platform == "linux2":
-            self.RAMSTK_OS = "Linux"
             self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
-            self.RAMSTK_HOME_DIR = environ["HOME"]
-            self.RAMSTK_LOG_DIR = "/var/log/RAMSTK"
-
         elif sys.platform == "win32":
-            self.RAMSTK_OS = "Windows"
             self.RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
-            self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
-            self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + "/logs"
 
-        self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + "/layouts"
-        self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + "/icons"
-        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
-        self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
-        self.RAMSTK_SITE_CONF = ""
+        self.RAMSTK_SITE_CONF = self.RAMSTK_SITE_DIR + "/Site.toml"
 
     def do_create_site_configuration(self) -> None:
         """
@@ -300,34 +291,17 @@ class RAMSTKSiteConfiguration:
         """
         Set the site-wide RAMSTK directories.
 
-        .. note:: RAMSTK will prefer directories in a user's $HOME over the
-            system-wide directories.
-
         :return: None
         :rtype: None
         """
         self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
-
-        if dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
-            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
-        else:
-            self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
-
-        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + '/layouts'
-        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + '/icons'
-
-        if dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"):
-            self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
-        else:
-            self.RAMSTK_LOG_DIR = '/var/log/RAMSTK'
-
-        self.RAMSTK_SITE_CONF = self.RAMSTK_CONF_DIR + "/Site.toml"
+        self.RAMSTK_SITE_CONF = self.RAMSTK_SITE_DIR + "/Site.toml"
 
         if not file_exists(self.RAMSTK_SITE_CONF):
             self.do_create_site_configuration()
 
 
-class Configuration:  # pylint: disable=too-many-instance-attributes
+class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
     r"""
     RAMSTK configuration class.
 
@@ -508,8 +482,8 @@ class Configuration:  # pylint: disable=too-many-instance-attributes
         value is *en_US*.
     :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
-    def __init__(self):
-        """Initialize the RAMSTK configuration parser."""
+    def __init__(self) -> None:
+        """Class for user-specific RAMSTK configuration settings."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -541,6 +515,11 @@ class Configuration:  # pylint: disable=too-many-instance-attributes
             "stakeholder",
             "validation",
         ]
+        self._lst_categories = [
+            'integratedcircuit', 'semiconductor', 'resistor', 'capacitor',
+            'inductor', 'relay', 'switch', 'connection', 'meter',
+            'miscellaneous'
+        ]
 
         # Initialize private scalar attributes.
         self._INSTALL_PREFIX = Utilities.get_prefix()
@@ -554,30 +533,12 @@ class Configuration:  # pylint: disable=too-many-instance-attributes
             "modulebook": "bottom",
             "workbook": "bottom",
         }
+        self.RAMSTK_STRESS_LIMITS: Dict[str, Tuple[str]] = {}
 
         # Initialize public list attributes.
         self.RAMSTK_RISK_POINTS = [4, 10]
 
         # Initialize public scalar attributes.
-        if sys.platform == "linux" or sys.platform == "linux2":
-            self.RAMSTK_OS = "Linux"
-            self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
-            self.RAMSTK_HOME_DIR = environ["HOME"]
-            self.RAMSTK_LOG_DIR = "/var/log/RAMSTK"
-
-        elif sys.platform == "win32":
-            self.RAMSTK_OS = "Windows"
-            self.RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
-            self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
-            self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + "/logs"
-
-        self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + "/layouts"
-        self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + "/icons"
-        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
-        self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
-
-        self.RAMSTK_SITE_CONF = ""
-        self.RAMSTK_PROG_CONF = ""
         self.RAMSTK_DEBUG_LOG = ""
         self.RAMSTK_IMPORT_LOG = ""
         self.RAMSTK_USER_LOG = ""
@@ -592,353 +553,399 @@ class Configuration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_GUI_LAYOUT = "advanced"
         self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
         self.RAMSTK_LOCALE = "en_US"
+        if sys.platform == "linux" or sys.platform == "linux2":
+            self.RAMSTK_OS = "Linux"
+            self.RAMSTK_CONF_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+            self.RAMSTK_HOME_DIR = environ["HOME"]
+        elif sys.platform == "win32":
+            self.RAMSTK_OS = "Windows"
+            self.RAMSTK_CONF_DIR = environ["PYTHONPATH"] + "/RAMSTK"
+            self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
 
-    def create_user_configuration(self):
-        """
-        Create the default user configuration file.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        import glob
-        from distutils import dir_util, file_util  # pylint: disable=no-name-in-module
-
-        _return = False
-
-        _config = configparser.ConfigParser()
-
-        # Create the directories needed for the user.  Always prefer the RAMSTK
-        # directories in the user's $HOME over the system-wide directories.
-        # Configuration directory.
-        self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
-        try:
-            makedirs(self.RAMSTK_CONF_DIR)
-            self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.conf"
-        except OSError:
-            pass
-
-        # Data directory.
         self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + "/layouts"
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
+        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
+        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
+        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
 
-        if not Utilities.dir_exists(self.RAMSTK_DATA_DIR):
+    def _do_make_configuration_dir(self) -> None:
+        """
+        Creates the user configuration directory.
+        :return: None
+        :rtype: None
+        """
+        self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
+        if not dir_exists(self.RAMSTK_CONF_DIR):
+            try:
+                makedirs(self.RAMSTK_CONF_DIR)
+                self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
+            except OSError:
+                _error_msg = ("User's configuration directory {0:s} does not "
+                              "exist and could not be created when attempting "
+                              "to create a new user configuration "
+                              "file.".format(self.RAMSTK_CONF_DIR))
+                pub.sendMessage('fail_create_user_configuration',
+                                error_message=_error_msg)
+
+    def _do_make_data_dir(self) -> None:
+        """
+        Creates the user data directory.
+        :return: None
+        :rtype: None
+        """
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + "/layouts"
+        if not dir_exists(self.RAMSTK_DATA_DIR):
             try:
                 makedirs(self.RAMSTK_DATA_DIR)
             except OSError:
-                pass
+                _error_msg = ("User's data directory {0:s} does not exist and "
+                              "could not be created when attempting to create "
+                              "a new user configuration file.".format(
+                                  self.RAMSTK_DATA_DIR))
+                pub.sendMessage('fail_create_user_configuration',
+                                error_message=_error_msg)
 
-        # Icon directory.
+    def _do_make_icon_dir(self) -> None:
+        """
+        Creates the user icon directory.
+        :return: None
+        :rtype: None
+        """
         self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
 
-        if not Utilities.dir_exists(self.RAMSTK_ICON_DIR):
+        if not dir_exists(self.RAMSTK_ICON_DIR):
             try:
                 makedirs(self.RAMSTK_ICON_DIR)
             except OSError:
-                pass
+                _error_msg = ("User's icon directory {0:s} does not exist and "
+                              "could not be created when attempting to create "
+                              "a new user configuration file.".format(
+                                  self.RAMSTK_ICON_DIR))
+                pub.sendMessage('fail_create_user_configuration',
+                                error_message=_error_msg)
 
-        # Log directory.
+    def _do_make_log_dir(self) -> None:
+        """
+        Creates the user log directory.
+        :return: None
+        :rtype: None
+        """
         self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
 
-        if not Utilities.dir_exists(self.RAMSTK_LOG_DIR):
+        if not dir_exists(self.RAMSTK_LOG_DIR):
             try:
                 makedirs(self.RAMSTK_LOG_DIR)
             except OSError:
-                pass
+                _error_msg = ("User's log directory {0:s} does not exist and "
+                              "could not be created when attempting to create "
+                              "a new user configuration file.".format(
+                                  self.RAMSTK_LOG_DIR))
+                pub.sendMessage('fail_create_user_configuration',
+                                error_message=_error_msg)
 
-        # Program directory.
-
-        if not Utilities.dir_exists(self.RAMSTK_PROG_DIR):
+    def _do_make_program_dir(self) -> None:
+        """
+        Creates the user program directory.
+        :return: None
+        :rtype: None
+        """
+        if not dir_exists(self.RAMSTK_PROG_DIR):
             try:
                 makedirs(self.RAMSTK_PROG_DIR)
             except OSError:
-                pass
+                _error_msg = ("Program directory {0:s} does not exist and "
+                              "could not be created when attempting to create "
+                              "a new user configuration file.".format(
+                                  self.RAMSTK_PROG_DIR))
+                pub.sendMessage('fail_create_user_configuration',
+                                error_message=_error_msg)
+
+    def do_create_user_configuration(self) -> None:
+        """
+        Create the default user configuration file.
+
+        :return: None
+        :rtype: None
+        """
+        # Create the directories needed for the user.  Always prefer the RAMSTK
+        # directories in the user's $HOME over the system-wide directories.
+        # Configuration directory.
+        self._do_make_configuration_dir()
+        self._do_make_data_dir()
+        self._do_make_icon_dir()
+        self._do_make_log_dir()
+        self._do_make_program_dir()
 
         # Copy format files from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_CONF_DIR.
-
-        for _file in glob.glob(self.RAMSTK_SITE_DIR + "/layouts/*.xml"):
+        for _file in glob.glob(self._INSTALL_PREFIX
+                               + "/share/RAMSTK/layouts/*.xml"):
             file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
 
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_ICON_DIR.
         try:
-            dir_util.copy_tree(
-                self.RAMSTK_SITE_DIR + "/icons/",
-                self.RAMSTK_ICON_DIR,
-            )
-        except IOError:
-            _return = True
+            dir_util.copy_tree(self._INSTALL_PREFIX + "/share/RAMSTK/icons/",
+                               self.RAMSTK_ICON_DIR)
+        except DistutilsFileError:
+            _error_msg = ('Attempt to copy RAMSTK icons from site-wide icon '
+                          'directory {0:s} to user\'s icon directory {1:s} '
+                          'failed.'.format(
+                              self._INSTALL_PREFIX + "/share/RAMSTK/icons/",
+                              self.RAMSTK_ICON_DIR))
+            pub.sendMessage('fail_copy_icons_to_user',
+                            error_message=_error_msg)
 
         # Create the default RAMSTK user configuration file.
-        _config.add_section("General")
-        _config.set("General", "firstrun", "True")
-        _config.set("General", "reportsize", "letter")
-        _config.set("General", "frmultiplier", "1000000.0")
-        _config.set("General", "calcreltime", "100.0")
-        _config.set("General", "autoaddlistitems", "False")
-        _config.set("General", "decimal", "6")
-        _config.set("General", "modesource", "1")
-        _config.set("General", "parallelcalcs", "False")
-        _config.set("General", "moduletabpos", "top")
-        _config.set("General", "listtabpos", "bottom")
-        _config.set("General", "worktabpos", "bottom")
+        _dic_user_configuration = {
+            "title": "RAMSTK User Configuration",
+            "general": {
+                "firstrun": "True",
+                "reportsize": "letter",
+                "frmultiplier": "1000000.0",
+                "calcreltime": "100.0",
+                "decimal": "6",
+                "modesource": "1",
+                "moduletabpos": "top",
+                "listtabpos": "bottom",
+                "worktabpos": "bottom"
+            },
+            "backend": {
+                "type": "sqlite",
+                "host": "localhost",
+                "socket": "3306",
+                "database": "",
+                "user": "",
+                "password": ""
+            },
+            "directories": {
+                "datadir": self.RAMSTK_DATA_DIR,
+                "icondir": self.RAMSTK_ICON_DIR,
+                "logdir": self.RAMSTK_LOG_DIR,
+                "progdir": self.RAMSTK_PROG_DIR
+            },
+            "layouts": {
+                "allocation": "Allocation.xml",
+                "failure_definition": "FailureDefinition.xml",
+                "fmea": "FMEA.xml",
+                "function": "Function.xml",
+                "hardware": "Hardware.xml",
+                "hazops": "HazOps.xml",
+                "pof": "PoF.xml",
+                "requirement": "Requirement.xml",
+                "revision": "Revision.xml",
+                "similaritem": "SimilarItem.xml",
+                "stakeholder": "Stakeholder.xml",
+                "validation": "Validation.xml"
+            },
+            "colors": {
+                "functionbg": "#FFFFFF",
+                "functionfg": "#000000",
+                "hardwarebg": "#FFFFFF",
+                "hardwarefg": "#000000",
+                "requirementbg": "#FFFFFF",
+                "requirementfg": "#000000",
+                "revisionbg": "#FFFFFF",
+                "revisionfg": "#000000",
+                "stakeholderbg": "#FFFFFF",
+                "stakeholderfg": "#000000",
+                "validationbg": "#FFFFFF",
+                "validationfg": "#000000"
+            },
+            "stress": {
+                'integratedcircuit':
+                [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                'semiconductor':
+                [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                'resistor':
+                [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                'capacitor':
+                [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
+                'inductor':
+                [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
+                'relay':
+                [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                'switch':
+                [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                'connection':
+                [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
+                'meter':
+                [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                'miscellaneous':
+                [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
+            }
+        }
 
-        _config.add_section("Backend")
-        _config.set("Backend", "type", "sqlite")
-        _config.set("Backend", "host", "localhost")
-        _config.set("Backend", "socket", "3306")
-        _config.set("Backend", "database", "")
-        _config.set("Backend", "user", "")
-        _config.set("Backend", "password", "")
+        toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
 
-        _config.add_section("Directories")
-        _config.set("Directories", "datadir", self.RAMSTK_DATA_DIR)
-        _config.set("Directories", "icondir", self.RAMSTK_ICON_DIR)
-        _config.set("Directories", "logdir", self.RAMSTK_LOG_DIR)
-        _config.set("Directories", "progdir", self.RAMSTK_PROG_DIR)
+        pub.sendMessage('succeed_create_user_configuration')
 
-        _config.add_section("Files")
-        _config.set("Files", "allocation", "Allocation.xml")
-        _config.set("Files", "failure_definition", "FailureDefinition.xml")
-        _config.set("Files", "fmea", "FMEA.xml")
-        _config.set("Files", "function", "Function.xml")
-        _config.set("Files", "hardware", "Hardware.xml")
-        _config.set("Files", "hazops", "HazOps.xml")
-        _config.set("Files", "pof", "PoF.xml")
-        _config.set("Files", "requirement", "Requirement.xml")
-        _config.set("Files", "revision", "Revision.xml")
-        _config.set("Files", "similaritem", "SimilarItem.xml")
-        _config.set("Files", "stakeholder", "Stakeholder.xml")
-        _config.set("Files", "validation", "Validation.xml")
-
-        _config.add_section("Colors")
-        _config.set("Colors", "functionbg", "#FFFFFF")
-        _config.set("Colors", "functionfg", "#000000")
-        _config.set("Colors", "hardwarebg", "#FFFFFF")
-        _config.set("Colors", "hardwarefg", "#000000")
-        _config.set("Colors", "requirementbg", "#FFFFFF")
-        _config.set("Colors", "requirementfg", "#000000")
-        _config.set("Colors", "revisionbg", "#FFFFFF")
-        _config.set("Colors", "revisionfg", "#000000")
-        _config.set("Colors", "stakeholderbg", "#FFFFFF")
-        _config.set("Colors", "stakeholderfg", "#000000")
-        _config.set("Colors", "validationbg", "#FFFFFF")
-        _config.set("Colors", "validationfg", "#000000")
-
-        try:
-            _parser = open(self.RAMSTK_PROG_CONF, "w")
-            _config.write(_parser)
-            _parser.close()
-        except EnvironmentError:
-            _return = True
-
-        self._set_site_configuration()
-
-        return _return
-
-    def get_user_configuration(self):
+    def get_user_configuration(self) -> None:
         """
-        Read the RAMSTK configuration file.
+        Read the RAMSTK user configuration file.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        if Utilities.file_exists(self.RAMSTK_PROG_CONF):
-            _config = configparser.ConfigParser()
-            _config.read(self.RAMSTK_PROG_CONF)
+        if file_exists(self.RAMSTK_PROG_CONF):
+            _config = toml.load(self.RAMSTK_PROG_CONF)
 
             for _color in self._lst_colors:
-                self.RAMSTK_COLORS[_color] = _config.get("Colors", _color)
+                self.RAMSTK_COLORS[_color] = _config["colors"][_color]
 
             for _file in self._lst_format_files:
-                self.RAMSTK_FORMAT_FILE[_file] = _config.get("Files", _file)
+                self.RAMSTK_FORMAT_FILE[_file] = _config["layouts"][_file]
 
-            self.RAMSTK_BACKEND = _config.get("Backend", "type")
-            self.RAMSTK_PROG_INFO["host"] = _config.get("Backend", "host")
-            self.RAMSTK_PROG_INFO["socket"] = _config.get("Backend", "socket")
-            self.RAMSTK_PROG_INFO["database"] = _config.get(
-                "Backend",
-                "database",
-            )
-            self.RAMSTK_PROG_INFO["user"] = _config.get("Backend", "user")
-            self.RAMSTK_PROG_INFO["password"] = _config.get(
-                "Backend",
-                "password",
-            )
+            # Hardware categories are stored as integers, but configuration
+            # file keys are human-readable nouns.  This converts the noun key
+            # to the equivalent integer key.
+            for _category in enumerate(self._lst_categories):
+                self.RAMSTK_STRESS_LIMITS[
+                    _category[0] + 1] = _config["stress"][_category[1]]
 
-            self.RAMSTK_DATA_DIR = _config.get("Directories", "datadir")
-            self.RAMSTK_ICON_DIR = _config.get("Directories", "icondir")
-            self.RAMSTK_LOG_DIR = _config.get("Directories", "logdir")
-            self.RAMSTK_PROG_DIR = _config.get("Directories", "progdir")
+            self.RAMSTK_BACKEND = _config["backend"]["type"]
+            self.RAMSTK_PROG_INFO["host"] = _config["backend"]["host"]
+            self.RAMSTK_PROG_INFO["socket"] = int(_config["backend"]["socket"])
+            self.RAMSTK_PROG_INFO["database"] = _config["backend"]["database"]
+            self.RAMSTK_PROG_INFO["user"] = _config["backend"]["user"]
+            self.RAMSTK_PROG_INFO["password"] = _config["backend"]["password"]
 
-            self.RAMSTK_REPORT_SIZE = _config.get("General", "reportsize")
+            self.RAMSTK_DATA_DIR = _config["directories"]["datadir"]
+            self.RAMSTK_ICON_DIR = _config["directories"]["icondir"]
+            self.RAMSTK_LOG_DIR = _config["directories"]["logdir"]
+            self.RAMSTK_PROG_DIR = _config["directories"]["progdir"]
+
+            self.RAMSTK_REPORT_SIZE = _config["general"]["reportsize"]
             self.RAMSTK_HR_MULTIPLIER = float(
-                _config.get("General", "frmultiplier"), )
-            self.RAMSTK_DEC_PLACES = int(_config.get("General", "decimal"))
-            self.RAMSTK_MTIME = float(_config.get("General", "calcreltime"))
-            self.RAMSTK_MODE_SOURCE = _config.get("General", "modesource")
-            self.RAMSTK_TABPOS["listbook"] = _config.get(
-                "General",
-                "listtabpos",
-            )
-            self.RAMSTK_TABPOS["modulebook"] = _config.get(
-                "General",
-                "moduletabpos",
-            )
-            self.RAMSTK_TABPOS["workbook"] = _config.get(
-                "General",
-                "worktabpos",
-            )
+                _config["general"]["frmultiplier"])
+            self.RAMSTK_DEC_PLACES = int(_config["general"]["decimal"])
+            self.RAMSTK_MTIME = float(_config["general"]["calcreltime"])
+            self.RAMSTK_MODE_SOURCE = _config["general"]["modesource"]
+            self.RAMSTK_TABPOS["listbook"] = _config["general"]["listtabpos"]
+            self.RAMSTK_TABPOS["modulebook"] = _config["general"][
+                "moduletabpos"]
+            self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
+
         else:
-            print(
-                _(
-                    "\033[1;31mRAMSTK ERROR: Unable to read program "
-                    "configuration file {0:s}.\033[0m".format(
-                        self.RAMSTK_PROG_CONF, ), ), )
-            _return = True
+            _error_msg = ("Failed to read User configuration file "
+                          "{0:s}.").format(self.RAMSTK_PROG_CONF)
+            pub.sendMessage('fail_get_user_configuration',
+                            error_message=_error_msg)
 
-        return _return
-
-    def set_site_variables(self):
-        """
-        Set the site configuration variables.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
-
-        # Prefer user-specific directories in their $HOME directory over the
-        # system-wide directories.
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
-            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
-        else:
-            self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
-
-        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + '/layouts'
-        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + '/icons'
-
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"):
-            self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
-        else:
-            self.RAMSTK_LOG_DIR = '/var/log/RAMSTK'
-
-        self.RAMSTK_SITE_CONF = self.RAMSTK_CONF_DIR + "/Site.conf"
-
-        if not Utilities.file_exists(self.RAMSTK_SITE_CONF):
-            self._set_site_configuration()
-
-        return self.get_site_configuration()
-
-    def set_user_configuration(self):
+    def set_user_configuration(self) -> None:
         """
         Write changes to the user's configuration file.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        _dic_user_configuration = {
+            "title": "RAMSTK User Configuration",
+            "general": {
+                "reportsize": self.RAMSTK_REPORT_SIZE,
+                "frmultiplier": str(self.RAMSTK_HR_MULTIPLIER),
+                "calcreltime": str(self.RAMSTK_MTIME),
+                "decimal": str(self.RAMSTK_DEC_PLACES),
+                "modesource": str(self.RAMSTK_MODE_SOURCE),
+                "moduletabpos": self.RAMSTK_TABPOS["modulebook"],
+                "listtabpos": self.RAMSTK_TABPOS["listbook"],
+                "worktabpos": self.RAMSTK_TABPOS["workbook"]
+            },
+            "backend": {
+                "type": self.RAMSTK_BACKEND,
+                "host": str(self.RAMSTK_PROG_INFO["host"]),
+                "socket": str(self.RAMSTK_PROG_INFO["socket"]),
+                "database": str(self.RAMSTK_PROG_INFO["database"]),
+                "user": str(self.RAMSTK_PROG_INFO["user"]),
+                "password": str(self.RAMSTK_PROG_INFO["password"])
+            },
+            "directories": {
+                "datadir": self.RAMSTK_DATA_DIR,
+                "icondir": self.RAMSTK_ICON_DIR,
+                "logdir": self.RAMSTK_LOG_DIR,
+                "progdir": self.RAMSTK_PROG_DIR
+            },
+            "layouts": {
+                "allocation": self.RAMSTK_FORMAT_FILE['allocation'],
+                "failure_definition":
+                self.RAMSTK_FORMAT_FILE['failure_definition'],
+                "fmea": self.RAMSTK_FORMAT_FILE['fmea'],
+                "function": self.RAMSTK_FORMAT_FILE['function'],
+                "hardware": self.RAMSTK_FORMAT_FILE['hardware'],
+                "hazops": self.RAMSTK_FORMAT_FILE['hazops'],
+                "pof": self.RAMSTK_FORMAT_FILE['pof'],
+                "requirement": self.RAMSTK_FORMAT_FILE['requirement'],
+                "revision": self.RAMSTK_FORMAT_FILE['revision'],
+                "similaritem": self.RAMSTK_FORMAT_FILE['similaritem'],
+                "stakeholder": self.RAMSTK_FORMAT_FILE['stakeholder'],
+                "validation": self.RAMSTK_FORMAT_FILE['validation']
+            },
+            "colors": {
+                "functionbg": self.RAMSTK_COLORS['functionbg'],
+                "functionfg": self.RAMSTK_COLORS['functionfg'],
+                "hardwarebg": self.RAMSTK_COLORS['hardwarebg'],
+                "hardwarefg": self.RAMSTK_COLORS['hardwarefg'],
+                "requirementbg": self.RAMSTK_COLORS['requirementbg'],
+                "requirementfg": self.RAMSTK_COLORS['requirementfg'],
+                "revisionbg": self.RAMSTK_COLORS['revisionbg'],
+                "revisionfg": self.RAMSTK_COLORS['revisionfg'],
+                "stakeholderbg": self.RAMSTK_COLORS['stakeholderbg'],
+                "stakeholderfg": self.RAMSTK_COLORS['stakeholderfg'],
+                "validationbg": self.RAMSTK_COLORS['validationbg'],
+                "validationfg": self.RAMSTK_COLORS['validationfg']
+            },
+            "stress": {
+                "integratedcircuit": self.RAMSTK_STRESS_LIMITS[1],
+                "semiconductor": self.RAMSTK_STRESS_LIMITS[2],
+                "resistor": self.RAMSTK_STRESS_LIMITS[3],
+                "capacitor": self.RAMSTK_STRESS_LIMITS[4],
+                "inductor": self.RAMSTK_STRESS_LIMITS[5],
+                "relay": self.RAMSTK_STRESS_LIMITS[6],
+                "switch": self.RAMSTK_STRESS_LIMITS[7],
+                "connection": self.RAMSTK_STRESS_LIMITS[8],
+                "meter": self.RAMSTK_STRESS_LIMITS[9],
+                "miscellaneous": self.RAMSTK_STRESS_LIMITS[10]
+            }
+        }
 
-        if Utilities.file_exists(self.RAMSTK_PROG_CONF):
-            _config = configparser.ConfigParser()
-            _config.add_section("General")
-            _config.set("General", "reportsize", self.RAMSTK_REPORT_SIZE)
-            _config.set("General", "parallelcalcs", "False")
-            _config.set(
-                "General",
-                "frmultiplier",
-                str(self.RAMSTK_HR_MULTIPLIER),
-            )
-            _config.set("General", "calcreltime", str(self.RAMSTK_MTIME))
-            _config.set("General", "autoaddlistitems", "False")
-            _config.set("General", "decimal", str(self.RAMSTK_DEC_PLACES))
-            _config.set("General", "modesource", self.RAMSTK_MODE_SOURCE)
-            _config.set(
-                "General",
-                "moduletabpos",
-                self.RAMSTK_TABPOS["modulebook"],
-            )
-            _config.set(
-                "General",
-                "listtabpos",
-                self.RAMSTK_TABPOS["listbook"],
-            )
-            _config.set(
-                "General",
-                "worktabpos",
-                self.RAMSTK_TABPOS["workbook"],
-            )
+        toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
 
-            _config.add_section("Backend")
-            _config.set("Backend", "type", self.RAMSTK_BACKEND)
-            _config.set("Backend", "host", self.RAMSTK_PROG_INFO["host"])
-            _config.set(
-                "Backend",
-                "socket",
-                str(self.RAMSTK_PROG_INFO["socket"]),
-            )
-            _config.set(
-                "Backend",
-                "database",
-                self.RAMSTK_PROG_INFO["database"],
-            )
-            _config.set("Backend", "user", self.RAMSTK_PROG_INFO["user"])
-            _config.set(
-                "Backend",
-                "password",
-                self.RAMSTK_PROG_INFO["password"],
-            )
-
-            _config.add_section("Directories")
-            _config.set("Directories", "datadir", self.RAMSTK_DATA_DIR)
-            _config.set("Directories", "icondir", self.RAMSTK_ICON_DIR)
-            _config.set("Directories", "logdir", self.RAMSTK_LOG_DIR)
-            _config.set("Directories", "progdir", self.RAMSTK_PROG_DIR)
-
-            _config.add_section("Files")
-
-            for _file in self._lst_format_files:
-                _config.set(
-                    "Files",
-                    _file,
-                    path.basename(self.RAMSTK_FORMAT_FILE[_file]),
-                )
-
-            _config.add_section("Colors")
-
-            for _color in self._lst_colors:
-                _config.set("Colors", _color, self.RAMSTK_COLORS[_color])
-
-            try:
-                _parser = open(self.RAMSTK_PROG_CONF, "w")
-                _config.write(_parser)
-                _parser.close()
-            except EnvironmentError:
-                _return = True
-
-        return _return
-
-    def set_user_variables(self, first_run=True):
+    def set_user_directories(self) -> None:
         """
-        Set the user-specific configuration variables.
+        Set the user-specific configuration directories.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
+        if dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
             self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
         else:
-            self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
-            _return = first_run
+            self.RAMSTK_CONF_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
 
-        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.conf"
+        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
 
-        return _return
+        if dir_exists(self.RAMSTK_CONF_DIR + "/layouts"):
+            self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + "/layouts"
+        else:
+            self.RAMSTK_DATA_DIR = (self._INSTALL_PREFIX
+                                    + "/share/RAMSTK/layouts")
+
+        if dir_exists(self.RAMSTK_CONF_DIR + "/icons"):
+            self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
+        else:
+            self.RAMSTK_ICON_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/icons"
+
+        if dir_exists(self.RAMSTK_CONF_DIR + "/log"):
+            self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/log"
+        else:
+            self.RAMSTK_LOG_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/log"
+
+        if dir_exists(self.RAMSTK_HOME_DIR + "/analyses/ramstk"):
+            self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk"
+        else:
+            self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR
