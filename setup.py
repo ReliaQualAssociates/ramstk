@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""``RAMSTK`` lives on `GitHub <https://github.com/weibullguy/ramstk>`_."""
+"""``RAMSTK`` lives on `GitHub <https://github.com/ReliaQualAssociates/ramstk>`_."""
 
 # Standard Library Imports
 import glob
@@ -130,7 +130,7 @@ if __name__ == '__main__':
         author=__author__,
         author_email=__email__,
         license='BSD-3',
-        url='https://github.com/weibullguy/ramstk',
+        url='https://github.com/ReliaQualAssociates/ramstk',
         python_requires='>=2.7, <4',
         install_requires=INSTALL_REQUIRES,
         setup_requires=['pytest_runner', 'Babel'],
@@ -141,9 +141,9 @@ if __name__ == '__main__':
         packages=find_packages('src', exclude=['tests']),
         package_dir={'': 'src'},
         py_modules=[
-            'ramstk.Configuration',
+            'ramstk.configuration',
             'ramstk.RAMSTK',
-            'ramstk.Utilities',
+            'ramstk.utilities',
         ],
         classifiers=__trove__,
         entry_points={
@@ -152,9 +152,9 @@ if __name__ == '__main__':
         data_files=[
             ('share/applications', ['data/RAMSTK.desktop']),
             ('share/pixmaps', ['data/icons/RAMSTK.png']),
-            ('share/RAMSTK', ['data/RAMSTK.conf']),
-            ('share/RAMSTK', ['data/Site.conf']),
-            ('share/RAMSTK', ['data/ramstk_common.rtk']),
+            ('share/RAMSTK', ['data/RAMSTK.toml']),
+            ('share/RAMSTK', ['data/Site.toml']),
+            ('share/RAMSTK', ['data/ramstk_common.ramstk']),
             ('share/RAMSTK/layouts', LAYOUT_FILES[0]),
             ('share/RAMSTK/icons/16x16', ICON16_FILES[0]),
             ('share/RAMSTK/icons/32x32', ICON32_FILES[0]),
