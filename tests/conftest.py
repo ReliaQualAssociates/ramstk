@@ -258,7 +258,8 @@ def make_config_dir():
     directory otherwise defaulting to the site-wide configuration directory.
     """
     _config_dir = VIRTUAL_ENV + '/share/RAMSTK'
-    os.mkdir(_config_dir)
+    if not os.path.exists(_config_dir):
+        os.mkdir(_config_dir)
 
     dir_util.copy_tree(
                 os.getcwd() + "/data/icons/",
