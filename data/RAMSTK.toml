@@ -1,0 +1,65 @@
+title = "RAMSTK User Configuration"
+
+[general]
+reportsize = "letter"
+frmultiplier = "1000000.0"
+calcreltime = "24.0"
+decimal = "6"
+modesource = "1"
+moduletabpos = "top"
+listtabpos = "bottom"
+worktabpos = "bottom"
+
+[backend]
+type = "sqllite"
+host = "localhost"
+socket = "3306"
+database = ""
+user = ""
+password = ""
+
+[directories]
+datadir = ""
+icondir = ""
+logdir = ""
+progdir = ""
+
+[layouts]
+allocation = "Allocation.xml"
+failure_definition = "FailureDefinition.xml"
+fmea = "FMEA.xml"
+function = "Function.xml"
+hardware = "Hardware.xml"
+hazops = "HazOps.xml"
+pof = "PoF.xml"
+requirement = "Requirement.xml"
+revision = "Revision.xml"
+similaritem = "SimilarItem.xml"
+stakeholder = "Stakeholder.xml"
+validation = "Validation.xml"
+
+[colors]
+functionbg = "#FFFFFF"
+functionfg = "#000000"
+hardwarebg = "#FFFFFF"
+hardwarefg = "#000000"
+requirementbg = "#FFFFFF"
+requirementfg = "#000000"
+revisionbg = "#FFFFFF"
+revisionfg = "#000000"
+stakeholderbg = "#FFFFFF"
+stakeholderfg = "#000000"
+validationbg = "#FFFFFF"
+validationfg = "#000000"
+
+[stress]
+integratedcircuit = [ 0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0,]
+semiconductor = [ 1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0,]
+resistor = [ 1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0,]
+capacitor = [ 1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0,]
+inductor = [ 0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0,]
+relay = [ 0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0,]
+switch = [ 0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0,]
+connection = [ 0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0,]
+meter = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0,]
+miscellaneous = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0,]

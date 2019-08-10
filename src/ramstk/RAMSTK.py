@@ -18,6 +18,7 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
+from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import (
     dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
     dmRequirement, dmRevision, dmStakeholder, dmValidation
@@ -38,7 +39,6 @@ from ramstk.modules.preferences import dtcPreferences
 
 # RAMSTK Local Imports
 from . import Utilities
-from .Configuration import Configuration
 
 
 def main():
@@ -73,10 +73,10 @@ def _initialize_loggers(configuration):
     """
     Create loggers for the RAMSTK application.
 
-    :param configuration: the RAMSTK Configuration() object instance holding all
+    :param configuration: the RAMSTK RAMSTKUserConfiguration() object instance holding all
                           the configuration values for the current instance of
                           RAMSTK.
-    :type configuration: :class:`ramstk.Configuration.Configuration()`
+    :type configuration: :class:`ramstk.RAMSTKUserConfiguration.RAMSTKUserConfiguration()`
     :return: (_debug_log, _user_log, _import_log)
     :rtype: tuple
     """
@@ -266,9 +266,9 @@ class Model():
         """
         Load the RAMSTK Program global constants.
 
-        :param configuration: the currently active RAMSTK Program Configuration()
+        :param configuration: the currently active RAMSTK Program RAMSTKUserConfiguration()
                               object.
-        :type configuration: :class:`ramstk.Configuration.Configuration()`
+        :type configuration: :class:`ramstk.RAMSTKUserConfiguration.RAMSTKUserConfiguration()`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -592,7 +592,7 @@ class RAMSTK():
     :ivar ramstk_model: the instance of :class:`ramstk.RAMSTK.Model` managed by
         this data controller.
     """
-    RAMSTK_CONFIGURATION = Configuration()
+    RAMSTK_CONFIGURATION = RAMSTKUserConfiguration()
 
     def __init__(self, **kwargs):
         """Initialize an instance of the RAMSTK data controller."""
@@ -752,7 +752,7 @@ class RAMSTK():
 
     def request_do_load_globals(self):
         """
-        Request to load all the global Configuration variables.
+        Request to load all the global RAMSTKUserConfiguration variables.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

@@ -51,7 +51,7 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -97,7 +97,7 @@ class TestCreateControllers():
                                 'request_set_all_revision_attributes')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     @pytest.mark.integration
@@ -173,7 +173,7 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='revision') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_revision(self, node_id):
@@ -334,7 +334,7 @@ class TestDeleteMethods():
         DUT._do_delete_environment(1, '3.3', '3.3.30')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_revision_attrs(self, attributes):
@@ -499,7 +499,7 @@ class TestGetterSetter():
         DUT.do_get_tree()
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_revision(self, node_id):
@@ -602,7 +602,7 @@ class TestInsertMethods():
                 str('1.1.4')).data, RAMSTKEnvironment)
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_revision(self, node_id):

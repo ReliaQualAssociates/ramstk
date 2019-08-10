@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_fmea.py is part of The RAMSTK Project
@@ -16,7 +16,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import Configuration
+from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amFMEA, dmFMEA
 from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
@@ -47,7 +47,7 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -90,12 +90,12 @@ class TestCreateControllers():
         assert DUT._is_functional
 
     @pytest.mark.unit
-    def test_analysis_manager_create(self, test_configuration):
+    def test_analysis_manager_create(self, test_toml_user_configuration):
         """__init__() should create an instance of the fmea analysis manager."""
-        DUT = amFMEA(test_configuration)
+        DUT = amFMEA(test_toml_user_configuration)
 
         assert isinstance(DUT, amFMEA)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, Configuration)
+        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert DUT._attributes == {}
         assert DUT._tree is None
@@ -105,7 +105,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_calculate_rpn, 'request_calculate_rpn')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_functional_fmea(self, tree):
@@ -547,7 +547,7 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_fail_insert_action, 'fail_insert_action')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_mode_attrs(self, attributes):
@@ -775,11 +775,11 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_on_get_tree_analysis_manager(self, test_program_dao,
-                                          test_configuration):
+                                          test_toml_user_configuration):
         """on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_fmea_tree message."""
         DATAMGR = dmFMEA(test_program_dao)
         DATAMGR.do_select_all(parent_id=1)
-        DUT = amFMEA(test_configuration)
+        DUT = amFMEA(test_toml_user_configuration)
         DATAMGR.do_get_tree()
 
         assert isinstance(DUT._tree, Tree)
@@ -835,7 +835,7 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_fmea, 'fail_update_fmea')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
     def on_succeed_calculate_criticality(self, item_criticality):
@@ -850,14 +850,14 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_criticality(self, test_program_dao,
-                                      test_configuration):
+                                      test_toml_user_configuration):
         """do_calculate_criticality() should calculate the criticality for all failure modes and the hardware item."""
         pub.subscribe(self.on_succeed_calculate_criticality,
                       'succeed_calculate_fmea_criticality')
 
         DATAMGR = dmFMEA(test_program_dao)
         DATAMGR.do_select_all(parent_id=1)
-        DUT = amFMEA(test_configuration)
+        DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')
         pub.sendMessage('request_calculate_criticality', item_hr=0.000617)
@@ -869,13 +869,13 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_rpn_using_mechanism(self, test_program_dao,
-                                              test_configuration):
+                                              test_toml_user_configuration):
         """do_calculate_rpn() should calculate the risk priority number (RPN) for all failure modes when using the mechanism for O and D values."""
         pub.subscribe(self.on_succeed_calculate_rpn, 'succeed_calculate_rpn')
 
         DATAMGR = dmFMEA(test_program_dao)
         DATAMGR.do_select_all(parent_id=1)
-        DUT = amFMEA(test_configuration)
+        DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')
         pub.sendMessage('request_calculate_rpn')
@@ -889,11 +889,11 @@ class TestAnalysisMethods():
 
     @pytest.mark.integration
     def test_do_calculate_rpn_using_cause(self, test_program_dao,
-                                          test_configuration):
+                                          test_toml_user_configuration):
         """do_calculate_rpn() should calculate the risk priority number (RPN) for all failure modes when using the cause for O and D values."""
         DATAMGR = dmFMEA(test_program_dao, functional=True)
         DATAMGR.do_select_all(parent_id=1)
-        DUT = amFMEA(test_configuration)
+        DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')
         pub.sendMessage('request_calculate_rpn', method='cause')
