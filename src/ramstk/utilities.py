@@ -39,27 +39,16 @@ def create_logger(log_name: str,
     """
     _logger = logging.getLogger(log_name)
     _formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s', )
-
-    if log_level == 'DEBUG':
-        _log_level = logging.ERROR
-    elif log_level == 'INFO':
-        _log_level = logging.INFO
-    else:
-        _log_level = logging.WARNING
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     if not to_tty:
-        _fh = logging.FileHandler(log_file)
-        _fh.setLevel(_log_level)
-        _fh.setFormatter(_formatter)
-
-        _logger.addHandler(_fh)
+        _handler = logging.FileHandler(log_file)
     else:
-        _ch = logging.StreamHandler()
-        _ch.setLevel(_log_level)
-        _ch.setFormatter(_formatter)
+        _handler = logging.StreamHandler()
+    _handler.setFormatter(_formatter)
 
-        _logger.addHandler(_ch)
+    _logger.addHandler(_handler)
+    _logger.setLevel(log_level)
 
     return _logger
 
@@ -99,19 +88,6 @@ def file_exists(_file: str) -> bool:
     :rtype: bool
     """
     return os.path.isfile(_file)
-
-
-def missing_to_default(field: Any, default: Any) -> Any:
-    """
-    Convert missing values into default values.
-
-    :param field: the original, missing, value.
-    :param default: the new, default, value.
-    :return: field; the new value if field is an empty string, the old value
-             otherwise.
-    :rtype: any
-    """
-    return none_to_default(field, default)
 
 
 def none_to_default(field: Any, default: Any) -> Any:
@@ -177,6 +153,7 @@ def split_string(string: str) -> List[str]:
     return _strlist
 
 
+# TODO: This is probably not needed and should be retired.
 def boolean_to_integer(boolean: bool) -> int:
     """
     Convert boolean representations of TRUE/FALSE to an integer value.
@@ -193,6 +170,7 @@ def boolean_to_integer(boolean: bool) -> int:
     return _result
 
 
+# TODO: This is probably not needed and should be retired.
 def integer_to_boolean(integer: int) -> bool:
     """
     Convert an integer to boolean value.
@@ -203,6 +181,7 @@ def integer_to_boolean(integer: int) -> bool:
     :param int integer: the integer to convert.
     :return: _result
     :rtype: bool
+    :raise: TypeError if passed a string.
     """
     _result = False
 
@@ -231,16 +210,14 @@ def string_to_boolean(string: str) -> bool:
     return _result
 
 
-def get_prefix(join: str = '') -> str:
+def get_install_prefix() -> str:
     """Return the prefix that this code was installed into."""
-    _return = '/usr/'
-
-    # constants for this execution
+    # Constants for this execution
     _path = os.path.abspath(__file__)
     _name = os.path.basename(os.path.dirname(_path))
     _this = os.path.basename(_path)
 
-    # rule set
+    # Rule set
     _rules: List[Any] = [
         # to match: /usr/lib/python2.5/site-packages/project/prefix.py
         # or: /usr/local/lib/python2.6/dist-packages/project/prefix.py
@@ -251,42 +228,11 @@ def get_prefix(join: str = '') -> str:
         lambda x: x == _this,  # 'prefix.py'
     ]
 
-    # matching engine
+    # Matching engine
     while _rules:
         (_path, _token) = os.path.split(_path)
         _rule = _rules.pop()
         if not _rule(_token):
-            _return = '/usr/'
-
-    # usually returns: /usr/ or /usr/local/ (but without slash postfix)
-    if join == '':
-        _return = _path
-    else:
-        _return = os.path.join(_path, join)  # add on join if it exists!
-
-    return _return
-
-
-def name(pop: List[str], suffix: str = '') -> str:
-    """
-    Return the name of this particular project.
-
-    If pop is a list containing more than one element, name() will remove those
-    items from the path tail before deciding on the project name. If there is
-    an element which does not exist in the path tail, then raise.  If a suffix
-    is specified, then it is removed if found at end.
-    """
-    _path = os.path.dirname(os.path.abspath(__file__))
-    if isinstance(pop, str):
-        pop = [pop]  # force single strings to list
-
-    while pop:
-        (_path, _tail) = os.path.split(_path)
-        if pop.pop() != _tail:
-            raise ValueError('Element doesnʼt match path tail.')
-
-    _path = os.path.basename(_path)
-    if suffix != '' and _path.endswith(suffix):
-        _path = _path[0:-len(suffix)]
+            _path = '/usr/'
 
     return _path
