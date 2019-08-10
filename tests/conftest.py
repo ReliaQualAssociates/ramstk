@@ -258,7 +258,8 @@ def make_config_dir():
     directory otherwise defaulting to the site-wide configuration directory.
     """
     _config_dir = VIRTUAL_ENV + '/share/RAMSTK'
-    os.mkdir(_config_dir)
+    if not os.path.exists(_config_dir):
+        os.mkdir(_config_dir)
 
     dir_util.copy_tree(
                 os.getcwd() + "/data/icons/",
@@ -281,6 +282,8 @@ def make_home_config_dir():
     Create a configuration directory to mimic a user's configuration directory.
     """
     _config_dir = VIRTUAL_ENV + '/tmp/.config/RAMSTK'
+    if not os.path.exists(VIRTUAL_ENV + '/tmp/'):
+        os.mkdir(VIRTUAL_ENV + '/tmp/')
     os.mkdir(VIRTUAL_ENV + '/tmp/.config')
     os.mkdir(_config_dir)
     os.mkdir(_config_dir + '/layouts')
@@ -291,8 +294,7 @@ def make_home_config_dir():
 
     yield _config_dir
 
-    shutil.rmtree(VIRTUAL_ENV + '/tmp/.config')
-    shutil.rmtree(VIRTUAL_ENV + '/tmp/analyses')
+    shutil.rmtree(VIRTUAL_ENV + '/tmp')
 
 
 @pytest.fixture(scope='class')
