@@ -20,8 +20,8 @@ from .configuration import (
 )
 from .utilities import (
     boolean_to_integer, create_logger, date_to_ordinal, dir_exists,
-    file_exists, integer_to_boolean, missing_to_default, none_to_default,
-    none_to_string, ordinal_to_date, split_string, string_to_boolean
+    file_exists, integer_to_boolean, none_to_default, none_to_string,
+    ordinal_to_date, split_string, string_to_boolean
 )
 
 RAMSTK_BASE = declarative_base()

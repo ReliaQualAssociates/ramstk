@@ -17,27 +17,50 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk import (
-    create_logger, date_to_ordinal, dir_exists, file_exists, none_to_default,
-    none_to_string, ordinal_to_date, split_string, string_to_boolean
+    boolean_to_integer, create_logger, date_to_ordinal, dir_exists,
+    file_exists, integer_to_boolean, none_to_default, none_to_string,
+    ordinal_to_date, split_string, string_to_boolean
 )
 
 TEMPDIR = tempfile.gettempdir()
 
 
-def test_create_logger():
-    """create_logger() should return a logging.Logger instance."""
-    _testlog = TEMPDIR + '/test.log'
-    _log = create_logger("test.debug", logging.DEBUG, _testlog)
+def test_create_debug_logger():
+    """create_logger() should return a logging.Logger instance for the debug log."""
+    _testlog = TEMPDIR + '/test_debug.log'
+    _log = create_logger("test.debug", 'DEBUG', _testlog)
 
     assert isinstance(_log, logging.Logger)
+    assert _log.getEffectiveLevel() == 10
     assert os.path.isfile(_testlog)
 
 
-def test_create_logger_to_tty():
+def test_create_debug_logger_to_tty():
     """create_logger() should return a logging.Logger instance."""
     _log = create_logger("test.debug", logging.DEBUG, '', True)
 
     assert isinstance(_log, logging.Logger)
+    assert _log.getEffectiveLevel() == 10
+
+
+def test_create_info_logger():
+    """create_logger() should return a logging.Logger instance for the debug log."""
+    _testlog = TEMPDIR + '/test_info.log'
+    _log = create_logger("test.info", logging.INFO, _testlog)
+
+    assert isinstance(_log, logging.Logger)
+    assert _log.getEffectiveLevel() == 20
+    assert os.path.isfile(_testlog)
+
+
+def test_create_warning_logger():
+    """create_logger() should return a logging.Logger instance for the warning log."""
+    _testlog = TEMPDIR + '/test_warning.log'
+    _log = create_logger("test.warning", logging.WARNING, _testlog)
+
+    assert isinstance(_log, logging.Logger)
+    assert _log.getEffectiveLevel() == 30
+    assert os.path.isfile(_testlog)
 
 
 def test_split_string():
@@ -145,3 +168,48 @@ def test_none_to_default():
 def test_none_to_default_not_none():
     """ none_to_default() should return the original value if it is not missing. """
     assert none_to_default(40, 10) == 40
+
+
+@pytest.mark.unit
+def test_boolean_to_integer_true_to_one():
+    """boolean_to_integer() should return a one when passed True."""
+    assert boolean_to_integer(True) == 1
+
+
+@pytest.mark.unit
+def test_boolean_to_integer_false_to_zero():
+    """boolean_to_integer() should return a zero when passed False."""
+    assert boolean_to_integer(False) == 0
+
+
+@pytest.mark.unit
+def test_boolean_to_integer_any_text_to_one():
+    """boolean_to_integer() should return a one when passed a string."""
+    assert boolean_to_integer('ChillyMonga') == 1
+
+
+@pytest.mark.unit
+def test_boolean_to_integer_any_number_to_one():
+    """boolean_to_integer() should return a one when passed any number > 0."""
+    assert boolean_to_integer(486) == 1
+
+
+@pytest.mark.unit
+def test_integer_to_boolean_zero_to_false():
+    """integer_to_boolean() should return False when passed any number <= 0."""
+    assert not integer_to_boolean(0)
+    assert not integer_to_boolean(-1)
+
+
+@pytest.mark.unit
+def test_integer_to_boolean_any_number_to_true():
+    """integer_to_boolean() should return True when passed anything number > 0."""
+    assert integer_to_boolean(1)
+    assert integer_to_boolean(188)
+
+
+@pytest.mark.unit
+def test_integer_to_boolean_type_error():
+    """integer_to_boolean() should raise a TypeError when passed a string."""
+    with pytest.raises(TypeError):
+        integer_to_boolean('1')
