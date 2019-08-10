@@ -20,8 +20,7 @@ import toml
 from pubsub import pub
 
 # RAMSTK Package Imports
-import ramstk.utilities as Utilities
-from ramstk.utilities import dir_exists, file_exists, get_prefix
+from ramstk.utilities import dir_exists, file_exists, get_install_prefix
 
 _ = gettext.gettext
 
@@ -198,7 +197,7 @@ class RAMSTKSiteConfiguration:
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._INSTALL_PREFIX = get_prefix()
+        self._INSTALL_PREFIX = get_install_prefix()
 
         # Initialize public dictionary attributes.
         self.RAMSTK_COM_INFO: Dict[str, str] = {}
@@ -522,7 +521,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         ]
 
         # Initialize private scalar attributes.
-        self._INSTALL_PREFIX = Utilities.get_prefix()
+        self._INSTALL_PREFIX = get_install_prefix()
 
         # Initialize public dictionary attributes.
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
