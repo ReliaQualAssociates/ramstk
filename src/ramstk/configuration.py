@@ -532,16 +532,12 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "modulebook": "bottom",
             "workbook": "bottom",
         }
-        self.RAMSTK_STRESS_LIMITS: Dict[str, Tuple[str]] = {}
+        self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}
 
         # Initialize public list attributes.
         self.RAMSTK_RISK_POINTS = [4, 10]
 
         # Initialize public scalar attributes.
-        self.RAMSTK_DEBUG_LOG = ""
-        self.RAMSTK_IMPORT_LOG = ""
-        self.RAMSTK_USER_LOG = ""
-
         self.RAMSTK_MODE = ""
         self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
         self.RAMSTK_BACKEND = ""
@@ -552,6 +548,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_GUI_LAYOUT = "advanced"
         self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
         self.RAMSTK_LOCALE = "en_US"
+        self.RAMSTK_LOGLEVEL = "INFO"
         if sys.platform == "linux" or sys.platform == "linux2":
             self.RAMSTK_OS = "Linux"
             self.RAMSTK_CONF_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
@@ -565,7 +562,10 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
         self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
         self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
+
         self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
+        self.RAMSTK_USER_LOG = self.RAMSTK_LOG_DIR + "/ramstk_run.log"
+        self.RAMSTK_IMPORT_LOG = self.RAMSTK_LOG_DIR + "/ramstk_import.log"
 
     def _do_make_configuration_dir(self) -> None:
         """
@@ -707,7 +707,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "modesource": "1",
                 "moduletabpos": "top",
                 "listtabpos": "bottom",
-                "worktabpos": "bottom"
+                "worktabpos": "bottom",
+                "loglevel": "INFO"
             },
             "backend": {
                 "type": "sqlite",
@@ -807,7 +808,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
             self.RAMSTK_BACKEND = _config["backend"]["type"]
             self.RAMSTK_PROG_INFO["host"] = _config["backend"]["host"]
-            self.RAMSTK_PROG_INFO["socket"] = int(_config["backend"]["socket"])
+            self.RAMSTK_PROG_INFO["socket"] = _config["backend"]["socket"]
             self.RAMSTK_PROG_INFO["database"] = _config["backend"]["database"]
             self.RAMSTK_PROG_INFO["user"] = _config["backend"]["user"]
             self.RAMSTK_PROG_INFO["password"] = _config["backend"]["password"]
@@ -827,6 +828,10 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_TABPOS["modulebook"] = _config["general"][
                 "moduletabpos"]
             self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
+            self.RAMSTK_LOGLEVEL = _config["general"]["loglevel"]
+            self.RAMSTK_USER_LOG = (self.RAMSTK_LOG_DIR + "/ramstk_run.log")
+            self.RAMSTK_IMPORT_LOG = (self.RAMSTK_LOG_DIR
+                                      + "/ramstk_import.log")
 
         else:
             _error_msg = ("Failed to read User configuration file "
@@ -851,7 +856,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "modesource": str(self.RAMSTK_MODE_SOURCE),
                 "moduletabpos": self.RAMSTK_TABPOS["modulebook"],
                 "listtabpos": self.RAMSTK_TABPOS["listbook"],
-                "worktabpos": self.RAMSTK_TABPOS["workbook"]
+                "worktabpos": self.RAMSTK_TABPOS["workbook"],
+                "loglevel": self.RAMSTK_LOGLEVEL
             },
             "backend": {
                 "type": self.RAMSTK_BACKEND,

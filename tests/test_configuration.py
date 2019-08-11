@@ -331,9 +331,6 @@ class TestCreateConfiguration():
         }
         assert DUT.RAMSTK_STRESS_LIMITS == {}
         assert DUT.RAMSTK_RISK_POINTS == [4, 10]
-        assert DUT.RAMSTK_DEBUG_LOG == ""
-        assert DUT.RAMSTK_IMPORT_LOG == ""
-        assert DUT.RAMSTK_USER_LOG == ""
         assert DUT.RAMSTK_MODE == ""
         assert DUT.RAMSTK_MODE_SOURCE == 1  # 1=FMD-97
         assert DUT.RAMSTK_BACKEND == ""
@@ -344,6 +341,7 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_GUI_LAYOUT == "advanced"
         assert DUT.RAMSTK_METHOD == "STANDARD"  # STANDARD or LRM
         assert DUT.RAMSTK_LOCALE == "en_US"
+        assert DUT.RAMSTK_LOGLEVEL == "INFO"
 
         # If testing RAMSTK that was installed by `pip install -e .`, then you
         # won't be testing files installed in the VIRTUAL_ENV.  Since the
@@ -364,7 +362,11 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + "/icons"
         assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + "/logs"
         assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR + "/analyses/ramstk/"
+
         assert DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_CONF_DIR + "/RAMSTK.toml"
+        assert DUT.RAMSTK_USER_LOG == DUT.RAMSTK_LOG_DIR + "/ramstk_run.log"
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
+                                         + "/ramstk_import.log")
 
     @pytest.mark.unit
     def test_create_site_configuration(self, make_config_dir):
@@ -609,26 +611,20 @@ class TestGetterSetter():
             'validation': 'Validation.xml',
         }
         assert DUT.RAMSTK_STRESS_LIMITS == {
-            1:
-            [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            2:
-            [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            1: [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            2: [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
             3: [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            4:
-            [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
-            5:
-            [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
+            4: [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
+            5: [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
             6: [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
             7: [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            8:
-            [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
+            8: [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
             9: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            10:
-            [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
+            10: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
         }
         assert DUT.RAMSTK_BACKEND == 'sqlite'
         assert DUT.RAMSTK_PROG_INFO["host"] == 'localhost'
-        assert DUT.RAMSTK_PROG_INFO["socket"] == 3306
+        assert DUT.RAMSTK_PROG_INFO["socket"] == '3306'
         assert DUT.RAMSTK_PROG_INFO["database"] == ''
         assert DUT.RAMSTK_PROG_INFO["user"] == ''
         assert DUT.RAMSTK_PROG_INFO["password"] == ''
@@ -644,6 +640,9 @@ class TestGetterSetter():
         assert DUT.RAMSTK_TABPOS["listbook"] == 'bottom'
         assert DUT.RAMSTK_TABPOS["modulebook"] == 'top'
         assert DUT.RAMSTK_TABPOS["workbook"] == 'bottom'
+        assert DUT.RAMSTK_USER_LOG == (DUT.RAMSTK_LOG_DIR + "/ramstk_run.log")
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
+                                         + "/ramstk_import.log")
 
     @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):
@@ -676,7 +675,7 @@ class TestGetterSetter():
         DUT.RAMSTK_BACKEND = 'mysql'
         DUT.RAMSTK_PROG_INFO = {
             "host": 'treebeard',
-            'socket': 3306,
+            'socket': '3306',
             'database': 'test',
             'user': 'me',
             'password': 'big.password'
@@ -694,7 +693,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_BACKEND == 'mysql'
         assert DUT.RAMSTK_PROG_INFO == {
             "host": 'treebeard',
-            'socket': 3306,
+            'socket': '3306',
             'database': 'test',
             'user': 'me',
             'password': 'big.password'

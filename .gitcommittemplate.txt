@@ -1,7 +1,7 @@
 # ----------- This is 50 characters ----------> |
 # Remember to format your commit message thusly...
 #
-# <type>(<primary scope::secondary scope>): Subject
+# <type>(<primary scope::secondary scope>): subject
 # Try to keep the subject line <=50 characters
 # <BLANK LINE>
 # <body>
@@ -23,6 +23,9 @@
 #    * Function or Func
 #    * Hardware or HW
 #    * Validation or Val
+#    * Utilities or Util
+#    * Configuration or Conf
+#    * Logger or Log
 #    * GUI
 # You may use an asterick (*) if the changes affect multiple primary scopes or
 # the change is docs or chore type.
