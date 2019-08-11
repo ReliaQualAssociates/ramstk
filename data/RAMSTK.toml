@@ -9,6 +9,7 @@ modesource = "1"
 moduletabpos = "top"
 listtabpos = "bottom"
 worktabpos = "bottom"
+loglevel = "INFO"
 
 [backend]
 type = "sqllite"

@@ -458,7 +458,8 @@ def test_toml_user_configuration():
             "modesource": "1",
             "moduletabpos": "top",
             "listtabpos": "bottom",
-            "worktabpos": "bottom"
+            "worktabpos": "bottom",
+            "loglevel": "INFO"
         },
         "backend": {
             "type": "sqlite",
