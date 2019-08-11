@@ -197,7 +197,7 @@ def test_dir_does_not_exist():
 
 def test_file_exists():
     """ file_exists() should return True if the file exists. """
-    _testlog = TEMPDIR + '/test_info.log'
+    _testlog = './test_info.log'
     assert file_exists(_testlog)
 
 
