@@ -17,7 +17,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk import (
-    boolean_to_integer, create_logger, date_to_ordinal, dir_exists,
+    boolean_to_integer, date_to_ordinal, dir_exists, do_create_logger,
     file_exists, integer_to_boolean, none_to_default, none_to_string,
     ordinal_to_date, split_string, string_to_boolean
 )
@@ -25,42 +25,90 @@ from ramstk import (
 TEMPDIR = tempfile.gettempdir()
 
 
-def test_create_debug_logger():
-    """create_logger() should return a logging.Logger instance for the debug log."""
-    _testlog = TEMPDIR + '/test_debug.log'
-    _log = create_logger("test.debug", 'DEBUG', _testlog)
+def test_create_logger():
+    """do_create_logger() should return a logging.Logger instance on success."""
+    _testlog = './test_debug.log'
+    if os.path.exists(_testlog):
+        os.remove(_testlog)
+
+    _log = do_create_logger('file.log', 'DEBUG', _testlog)
+
+    _log.debug("Test debug message")
+    _log.info("Test information message")
+    _log.warning("Test warning message")
+    _log.error("Test error message")
+    _log.critical("Test critical message")
 
     assert isinstance(_log, logging.Logger)
     assert _log.getEffectiveLevel() == 10
     assert os.path.isfile(_testlog)
 
 
-def test_create_debug_logger_to_tty():
+def test_create_info_logger_to_tty():
     """create_logger() should return a logging.Logger instance."""
-    _log = create_logger("test.debug", logging.DEBUG, '', True)
+    _testlog = './test_info.log'
+    if os.path.exists(_testlog):
+        os.remove(_testlog)
 
-    assert isinstance(_log, logging.Logger)
-    assert _log.getEffectiveLevel() == 10
+    _log = do_create_logger(__name__, 'INFO', _testlog, True)
 
-
-def test_create_info_logger():
-    """create_logger() should return a logging.Logger instance for the debug log."""
-    _testlog = TEMPDIR + '/test_info.log'
-    _log = create_logger("test.info", logging.INFO, _testlog)
+    print("\n\nNo DEBUG message should print below:")
+    _log.debug("Test debug message")
+    _log.info("Test information message")
+    _log.warning("Test warning message")
+    _log.error("Test error message")
+    _log.critical("Test critical message")
 
     assert isinstance(_log, logging.Logger)
     assert _log.getEffectiveLevel() == 20
-    assert os.path.isfile(_testlog)
 
 
 def test_create_warning_logger():
-    """create_logger() should return a logging.Logger instance for the warning log."""
-    _testlog = TEMPDIR + '/test_warning.log'
-    _log = create_logger("test.warning", logging.WARNING, _testlog)
+    """do_create_logger() should return a logging.Logger instance for the debug log."""
+    _log = logging.getLogger(__name__)
+    _log.setLevel('WARN')
+
+    print("\n\nNo DEBUG or INFO messages should print below:")
+    _log.debug("Test debug message")
+    _log.info("Test information message")
+    _log.warning("Test warning message")
+    _log.error("Test error message")
+    _log.critical("Test critical message")
 
     assert isinstance(_log, logging.Logger)
     assert _log.getEffectiveLevel() == 30
-    assert os.path.isfile(_testlog)
+
+
+def test_create_error_logger():
+    """create_logger() should return a logging.Logger instance for the warning log."""
+    _log = logging.getLogger(__name__)
+    _log.setLevel('ERROR')
+
+    print("\n\nNo DEBUG, INFO, or WARNING messages should print below:")
+    _log.debug("Test debug message")
+    _log.info("Test information message")
+    _log.warning("Test warning message")
+    _log.error("Test error message")
+    _log.critical("Test critical message")
+
+    assert isinstance(_log, logging.Logger)
+    assert _log.getEffectiveLevel() == 40
+
+
+def test_create_critical_logger():
+    """create_logger() should return a logging.Logger instance for the warning log."""
+    _log = logging.getLogger(__name__)
+    _log.setLevel('CRITICAL')
+
+    print("\n\nOnly CRITICAL messages should print below:")
+    _log.debug("Test debug message")
+    _log.info("Test information message")
+    _log.warning("Test warning message")
+    _log.error("Test error message")
+    _log.critical("Test critical message")
+
+    assert isinstance(_log, logging.Logger)
+    assert _log.getEffectiveLevel() == 50
 
 
 def test_split_string():
@@ -149,7 +197,7 @@ def test_dir_does_not_exist():
 
 def test_file_exists():
     """ file_exists() should return True if the file exists. """
-    _testlog = TEMPDIR + '/test_info.log'
+    _testlog = './test_info.log'
     assert file_exists(_testlog)
 
 

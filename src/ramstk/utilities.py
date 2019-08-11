@@ -20,15 +20,18 @@ from dateutil.parser import parse
 
 _ = gettext.gettext
 
+LOGFORMAT = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-def create_logger(log_name: str,
-                  log_level: str,
-                  log_file: str,
-                  to_tty: bool = False) -> object:
+
+def do_create_logger(logger_name: str,
+                     log_level: str,
+                     log_file: str,
+                     to_tty: bool = False) -> object:
     """
     Create a logger instance.
 
-    :param str log_name: the name of the log used in the application.
+    :param str logger_name: the name of the logger used in the application.
     :param str log_level: the level of messages to log.
     :param str log_file: the full path of the log file for this logger instance
         to write to.
@@ -37,20 +40,41 @@ def create_logger(log_name: str,
     :return: _logger
     :rtype: object
     """
-    _logger = logging.getLogger(log_name)
-    _formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-    if not to_tty:
-        _handler = logging.FileHandler(log_file)
-    else:
-        _handler = logging.StreamHandler()
-    _handler.setFormatter(_formatter)
-
-    _logger.addHandler(_handler)
+    _logger = logging.getLogger(logger_name)
     _logger.setLevel(log_level)
+    _logger.addHandler(get_file_handler(log_file))
+    if to_tty:
+        _logger.addHandler(get_console_handler())
 
     return _logger
+
+
+def get_console_handler():
+    """
+    Create the log handler for console output.
+
+    :return: _c_handler
+    :rtype: :class:`logging.Handler`
+    """
+    _c_handler = logging.StreamHandler(sys.stdout)
+    _c_handler.setFormatter(LOGFORMAT)
+
+    return _c_handler
+
+
+def get_file_handler(log_file):
+    """
+    Create the log handler for file output.
+
+    :param str log_file: the full path of the log file for this logger instance
+        to write to.
+    :return: _f_handler
+    :rtype: :class:`logging.Handler`
+    """
+    _f_handler = logging.FileHandler(log_file)
+    _f_handler.setFormatter(LOGFORMAT)
+
+    return _f_handler
 
 
 def date_to_ordinal(date: str) -> int:
