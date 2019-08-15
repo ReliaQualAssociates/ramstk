@@ -85,7 +85,7 @@ class Install(_install):
         """Execute after install."""
         print(
             "{0:s}{1:s}Your shiny new RAMSTK-{2:s} is "
-            "installed!!{3:s}".format(FG_GREEN, BOLD, __version__, RESET), )
+            "installed!!{3:s}".format(FG_GREEN, BOLD, __version__, RESET))
 
     def run(self):
         """Run the install."""
@@ -147,18 +147,8 @@ if __name__ == '__main__':
         ],
         classifiers=__trove__,
         entry_points={
-            'console_scripts': ['ramstk = ramstk.RAMSTK:main'],
+            'console_scripts': ['ramstk = ramstk:__main__'],
         },
-        data_files=[
-            ('share/applications', ['data/RAMSTK.desktop']),
-            ('share/pixmaps', ['data/icons/RAMSTK.png']),
-            ('share/RAMSTK', ['data/RAMSTK.toml']),
-            ('share/RAMSTK', ['data/Site.toml']),
-            ('share/RAMSTK', ['data/ramstk_common.ramstk']),
-            ('share/RAMSTK/layouts', LAYOUT_FILES[0]),
-            ('share/RAMSTK/icons/16x16', ICON16_FILES[0]),
-            ('share/RAMSTK/icons/32x32', ICON32_FILES[0]),
-        ],
         package_data={},
         dependency_links=[],
         zip_safe=True,
