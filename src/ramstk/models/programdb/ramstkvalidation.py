@@ -15,8 +15,8 @@ from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk import RAMSTK_BASE
 from ramstk.analyses.statistics import do_calculate_beta_bounds
+from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseTable
 
 
