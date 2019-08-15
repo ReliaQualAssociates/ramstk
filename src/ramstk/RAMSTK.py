@@ -511,60 +511,6 @@ class RAMSTK():
 
         return _return
 
-    def request_do_validate_license(self):
-        """
-        Request the RAMSTK license be validated.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # Read the license file and compare to the product key in the site
-        # database.  If they are not equal, quit the application.
-        _license_file = self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR + '/license.key'
-        try:
-            _license_file = open(_license_file, 'r')
-        except IOError:
-            #ramstk_warning(
-            #    _(
-            #        "Cannot find license file {0:s}.  If your "
-            #        "license file is elsewhere, please place "
-            #        "it in {1:s}.",
-            #    ).format(
-            #      _license_file,
-            #      self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR,
-            #    ),
-            #)
-            _return = True
-
-        _license_key = _license_file.readline().rstrip('\n')
-        _expire_date = _license_file.readline().rstrip('\n')
-        _license_file.close()
-
-        _error_code, _msg = self.ramstk_model.validate_license(_license_key)
-        if _error_code == 1:
-            #ramstk_error(
-            #    _(
-            #        "Invalid license (Invalid key).  Your "
-            #        "license key is incorrect.  Closing the RAMSTK "
-            #        "application.",
-            #    ),
-            #)
-            _return = True
-        elif _error_code == 2:
-            # noinspection PyUnresolvedReferences
-            #ramstk_error(
-            #    _(
-            #        "Invalid license (Expired).  Your license "
-            #        "expired on {0:s}.  Closing the RAMSTK "
-            #        "application.",
-            #    ).format(_expire_date.strftime('%Y-%d-%m')),
-            #)
-            _return = True
-
-        return _return
-
     def __del__(self):
         """Delete the running instance of RAMSTK."""
         del self
