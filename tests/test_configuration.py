@@ -533,7 +533,8 @@ class TestGetterSetter():
         assert DUT.RAMSTK_COM_BACKEND == 'sqlite'
         assert DUT.RAMSTK_COM_INFO["host"] == 'localhost'
         assert DUT.RAMSTK_COM_INFO["socket"] == '3306'
-        assert DUT.RAMSTK_COM_INFO["database"] == 'ramstk_common.ramstk'
+        assert DUT.RAMSTK_COM_INFO["database"] == (
+            VIRTUAL_ENV + '/share/RAMSTK/ramstk_common.ramstk')
         assert DUT.RAMSTK_COM_INFO["user"] == 'johnny.tester'
         assert DUT.RAMSTK_COM_INFO["password"] == 'clear.text.password'
 

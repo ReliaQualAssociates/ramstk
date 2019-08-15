@@ -27,7 +27,7 @@ LOGFORMAT = logging.Formatter(
 def do_create_logger(logger_name: str,
                      log_level: str,
                      log_file: str,
-                     to_tty: bool = False) -> object:
+                     to_tty: bool = False) -> logging.Logger:
     """
     Create a logger instance.
 
@@ -42,6 +42,10 @@ def do_create_logger(logger_name: str,
     """
     _logger = logging.getLogger(logger_name)
     _logger.setLevel(log_level)
+
+    if file_exists(log_file):
+        os.remove(log_file)
+
     _logger.addHandler(get_file_handler(log_file))
     if to_tty:
         _logger.addHandler(get_console_handler())
@@ -243,20 +247,22 @@ def get_install_prefix() -> str:
 
     # Rule set
     _rules: List[Any] = [
-        # to match: /usr/lib/python2.5/site-packages/project/prefix.py
-        # or: /usr/local/lib/python2.6/dist-packages/project/prefix.py
-        lambda x: x == 'lib',
+        # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
+        # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
+        lambda x: x in ['lib64', 'lib'],
         lambda x: x == ('python%s' % sys.version[:3]),
         lambda x: x in ['site-packages', 'dist-packages'],
         lambda x: x == _name,  # 'project'
-        lambda x: x == _this,  # 'prefix.py'
+        lambda x: x == _this   # 'prefix.py'
     ]
 
     # Matching engine
     while _rules:
         (_path, _token) = os.path.split(_path)
         _rule = _rules.pop()
-        if not _rule(_token):
-            _path = '/usr/'
+        # To account for the possibility python is using lib instead of lib64
+        # on a 64-bit or multilib system.
+        if not _rule(_token) and _token != 'lib64':
+            _path = '/usr'
 
     return _path

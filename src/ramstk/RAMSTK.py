@@ -8,8 +8,6 @@
 """This is the main program for the RAMSTK application."""
 
 # Standard Library Imports
-import logging
-import os
 from datetime import date
 
 # Third Party Imports
@@ -25,119 +23,11 @@ from ramstk.controllers import (
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
-from ramstk.models.commondb import (
-    RAMSTKRPN, RAMSTKCategory, RAMSTKFailureMode, RAMSTKGroup,
-    RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
-    RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
-    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
-)
+from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.preferences import dtcPreferences
-
-# RAMSTK Local Imports
-from . import Utilities
-
-
-def main():
-    """Launch the RAMSTK application."""
-    # splScreen = SplashScreen()
-
-    # If you don't do this, the splash screen will show, but wont render it's
-    # contents
-    # while Gtk.events_pending():
-    #     Gtk.main_iteration()
-
-    # sleep(3)
-    _app = RAMSTK(test=False)
-
-    # splScreen.window.destroy()
-
-    # Create RAMSTK Books.  These need to be initialized after reading the
-    # configuration.
-    if _app.RAMSTK_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
-        pass
-    else:  # Multiple windows.
-        ListBook(_app.RAMSTK_CONFIGURATION)
-        ModuleBook(_app.RAMSTK_CONFIGURATION)
-        WorkBook(_app.RAMSTK_CONFIGURATION)
-
-    Gtk.main()
-
-    return 0
-
-
-def _initialize_loggers(configuration):
-    """
-    Create loggers for the RAMSTK application.
-
-    :param configuration: the RAMSTK RAMSTKUserConfiguration() object instance holding all
-                          the configuration values for the current instance of
-                          RAMSTK.
-    :type configuration: :class:`ramstk.RAMSTKUserConfiguration.RAMSTKUserConfiguration()`
-    :return: (_debug_log, _user_log, _import_log)
-    :rtype: tuple
-    """
-    # Create loggers for the application.  The first is to store log
-    # information for RAMSTK developers.  The second is to log errors for the
-    # user.  The user can use these errors to help find problems with their
-    # inputs and sich.  The third is for logging errors encountered when
-    # importing data to RAMSTK.
-    __error_log = configuration.RAMSTK_LOG_DIR + '/RAMSTK_debug.log'
-    __user_log = configuration.RAMSTK_LOG_DIR + '/RAMSTK_user.log'
-    __import_log = configuration.RAMSTK_LOG_DIR + '/RAMSTK_import.log'
-
-    if not Utilities.dir_exists(configuration.RAMSTK_LOG_DIR):
-        os.makedirs(configuration.RAMSTK_LOG_DIR)
-
-    if Utilities.file_exists(__user_log):
-        try:
-            os.remove(__user_log)
-        except OSError as _error:
-            print(("Could not delete {0:s} because {1:s}.").format(
-                __user_log,
-                _error,
-            ))
-    if Utilities.file_exists(__error_log):
-        try:
-            os.remove(__error_log)
-        except OSError as _error:
-            print(("Could not delete {0:s} because {1:s}.").format(
-                __user_log,
-                _error,
-            ))
-    if Utilities.file_exists(__import_log):
-        try:
-            os.remove(__import_log)
-        except OSError as _error:
-            print(("Could not delete {0:s} because {1:s}.").format(
-                __user_log,
-                _error,
-            ))
-
-    _debug_log = Utilities.create_logger(
-        "RAMSTK.debug",
-        logging.DEBUG,
-        __error_log,
-    )
-    _user_log = Utilities.create_logger(
-        "RAMSTK.user",
-        logging.WARNING,
-        __user_log,
-    )
-    _import_log = Utilities.create_logger(
-        "RAMSTK.import",
-        logging.WARNING,
-        __import_log,
-    )
-
-    return (_debug_log, _user_log, _import_log)
-
-
-class NoOptionError(Exception):
-    """Raise error when no option is available in the configuration file."""
 
 
 class Model():
@@ -261,271 +151,6 @@ class Model():
         :return:
         """
 
-    # pylint: disable=too-many-branches
-    def do_load_globals(self, configuration):
-        """
-        Load the RAMSTK Program global constants.
-
-        :param configuration: the currently active RAMSTK Program RAMSTKUserConfiguration()
-                              object.
-        :type configuration: :class:`ramstk.RAMSTKUserConfiguration.RAMSTKUserConfiguration()`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # ------------------------------------------------------------------- #
-        # Build the component category, component subcategory, failure modes  #
-        # tree.                                                               #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.category_type == 'hardware').all():
-
-            _subcats = {}
-            configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
-            configuration.RAMSTK_STRESS_LIMITS[_record.category_id] = (
-                _record.harsh_ir_limit,
-                _record.mild_ir_limit,
-                _record.harsh_pr_limit,
-                _record.mild_pr_limit,
-                _record.harsh_vr_limit,
-                _record.mild_vr_limit,
-                _record.harsh_deltat_limit,
-                _record.mild_deltat_limit,
-                _record.harsh_maxt_limit,
-                _record.mild_maxt_limit,
-            )
-            for _subcat in self.site_session.query(RAMSTKSubCategory).\
-                    filter(RAMSTKSubCategory.category_id == _record.category_id).\
-                    all():
-                _subcats[_subcat.subcategory_id] = _subcat.description
-
-                _modes = {}
-                configuration.RAMSTK_FAILURE_MODES[_record.category_id][
-                    _subcat.subcategory_id
-                ] = {}
-
-                for _mode in self.site_session.query(RAMSTKFailureMode).\
-                        filter(RAMSTKFailureMode.category_id == _record.category_id).\
-                        filter(RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id).\
-                        all():
-                    _modes[_mode.mode_id] = [
-                        _mode.description,
-                        _mode.mode_ratio,
-                        _mode.source,
-                    ]
-
-                configuration.RAMSTK_FAILURE_MODES[_record.category_id][
-                    _subcat.subcategory_id
-                ] = _modes
-
-            configuration.RAMSTK_CATEGORIES[
-                _record.category_id
-            ] = _record.description
-            configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
-
-        # ------------------------------------------------------------------- #
-        # Load dictionaries from RAMSTKCategory.                                 #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.category_type == 'action').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
-                _attributes['name'],
-                _attributes['description'],
-                _attributes['category_type'],
-                _attributes['value'],
-            )
-
-        for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.category_type == 'incident').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
-                _attributes['name'],
-                _attributes['description'],
-                _attributes['category_type'],
-                _attributes['value'],
-            )
-
-        for _record in self.site_session.query(RAMSTKCategory).\
-                filter(RAMSTKCategory.category_type == 'risk').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_SEVERITY[_record.category_id] = (
-                _attributes['name'],
-                _attributes['description'],
-                _attributes['category_type'],
-                _attributes['value'],
-            )
-
-        # ------------------------------------------------------------------- #
-        # Load dictionaries from RAMSTKGroup.                                    #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKGroup).\
-                filter(RAMSTKGroup.group_type == 'affinity').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_AFFINITY_GROUPS[_record.group_id] = (
-                _attributes['description'],
-                _attributes['group_type'],
-            )
-
-        for _record in self.site_session.query(RAMSTKGroup).\
-                filter(RAMSTKGroup.group_type == 'workgroup').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_WORKGROUPS[_record.group_id] = (
-                _attributes['description'],
-                _attributes['group_type'],
-            )
-
-        # ------------------------------------------------------------------- #
-        # Load the dictionaries from RAMSTKMethod.                               #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKMethod).\
-                filter(RAMSTKMethod.method_type == 'detection').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_DETECTION_METHODS[_record.method_id] = (
-                _attributes['name'],
-                _attributes['description'],
-                _attributes['method_type'],
-            )
-
-        # ------------------------------------------------------------------- #
-        # Load the dictionaries from RAMSTKModel.                                #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKModel).\
-            filter(RAMSTKModel.model_type == 'damage').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_DAMAGE_MODELS[_record.model_id] = (
-                _attributes['description'], )
-
-        # ------------------------------------------------------------------- #
-        # Load dictionaries from RAMSTKRPN.                                      #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKRPN).\
-                filter(RAMSTKRPN.rpn_type == 'detection').all():
-            configuration.RAMSTK_RPN_DETECTION[_record.value] = \
-                _record.get_attributes()
-
-        for _record in self.site_session.query(RAMSTKRPN).\
-                filter(RAMSTKRPN.rpn_type == 'occurrence').all():
-            configuration.RAMSTK_RPN_OCCURRENCE[_record.value] = \
-                _record.get_attributes()
-
-        for _record in self.site_session.query(RAMSTKRPN). \
-                filter(RAMSTKRPN.rpn_type == 'severity').all():
-            configuration.RAMSTK_RPN_SEVERITY[_record.value] = \
-                _record.get_attributes()
-
-        # ------------------------------------------------------------------- #
-        # Load dictionaries from RAMSTKStatus.                                   #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKStatus).\
-                filter(RAMSTKStatus.status_type == 'action').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_ACTION_STATUS[_record.status_id] = (
-                _attributes['name'],
-                _attributes['description'],
-                _attributes['status_type'],
-            )
-
-        for _record in self.site_session.query(RAMSTKStatus).\
-                filter(RAMSTKStatus.status_type == 'incident').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_INCIDENT_STATUS[_record.status_id] = (
-                _attributes['name'],
-                _attributes['description'],
-                _attributes['status_type'],
-            )
-
-        # ------------------------------------------------------------------- #
-        # Load dictionaries from RAMSTKType.                                     #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKType).\
-                filter(RAMSTKType.type_type == 'incident').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_INCIDENT_TYPE[_record.type_id] = (
-                _attributes['code'],
-                _attributes['description'],
-                _attributes['type_type'],
-            )
-
-        for _record in self.site_session.query(RAMSTKType).\
-                filter(RAMSTKType.type_type == 'requirement').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_REQUIREMENT_TYPE[_record.type_id] = (
-                _attributes['code'],
-                _attributes['description'],
-                _attributes['type_type'],
-            )
-
-        for _record in self.site_session.query(RAMSTKType).\
-                filter(RAMSTKType.type_type == 'validation').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_VALIDATION_TYPE[_record.type_id] = (
-                _attributes['code'],
-                _attributes['description'],
-                _attributes['type_type'],
-            )
-
-        # ------------------------------------------------------------------- #
-        # Load dictionaries from tables not requiring a filter.               #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RAMSTKHazards).all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
-                _attributes['hazard_category'],
-                _attributes['hazard_subcategory'],
-            )
-
-        for _record in self.site_session.query(RAMSTKLoadHistory).all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_LOAD_HISTORY[_record.history_id] = (
-                _attributes['description'], )
-
-        for _record in self.site_session.query(RAMSTKManufacturer).all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_MANUFACTURERS[_record.manufacturer_id] = (
-                _attributes['description'],
-                _attributes['location'],
-                _attributes['cage_code'],
-            )
-
-        for _record in self.site_session.query(RAMSTKMeasurement).\
-                filter(RAMSTKMeasurement.measurement_type == 'unit').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_MEASUREMENT_UNITS[_record.measurement_id] = (
-                _attributes['code'],
-                _attributes['description'],
-                _attributes['measurement_type'],
-            )
-
-        for _record in self.site_session.query(RAMSTKMeasurement).\
-                filter(RAMSTKMeasurement.measurement_type == 'damage').all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_MEASURABLE_PARAMETERS[
-                _record.measurement_id
-            ] = (
-                _attributes['code'],
-                _attributes['description'],
-                _attributes['measurement_type'],
-            )
-
-        for _record in self.site_session.query(RAMSTKStakeholders).all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_STAKEHOLDERS[_record.stakeholders_id] = (
-                _attributes['stakeholder'], )
-
-        for _record in self.site_session.query(RAMSTKUser).all():
-            _attributes = _record.get_attributes()
-            configuration.RAMSTK_USERS[_record.user_id] = (
-                _attributes['user_lname'],
-                _attributes['user_fname'],
-                _attributes['user_email'],
-                _attributes['user_phone'],
-                _attributes['user_group_id'],
-            )
-
-        return _return
-
     def do_validate_license(self, license_key):
         """
         Validate the license and the license expiration date.
@@ -619,14 +244,6 @@ class RAMSTK():
 
         self.RAMSTK_CONFIGURATION.get_user_configuration()
 
-        # Create loggers.
-        (
-            self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG,
-            self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG,
-            self.RAMSTK_CONFIGURATION.RAMSTK_IMPORT_LOG,
-        ) = \
-            _initialize_loggers(self.RAMSTK_CONFIGURATION)
-
         # Initialize private dictionary instance attributes.
 
         # Initialize private list instance attributes.
@@ -674,7 +291,6 @@ class RAMSTK():
 
         # Create an instance of the RAMSTK Data Model and load global constants.
         self.ramstk_model = Model(_dao, BaseDatabase())
-        self.request_do_load_globals()
 
         # Create an Options module instance and read the Site options.
         _attributes = {'site': True, 'program': False, 'user': True}
@@ -749,15 +365,6 @@ class RAMSTK():
             _return = True
 
         return _return
-
-    def request_do_load_globals(self):
-        """
-        Request to load all the global RAMSTKUserConfiguration variables.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self.ramstk_model.do_load_globals(self.RAMSTK_CONFIGURATION)
 
     def request_do_open_program(self):
         """
@@ -961,7 +568,3 @@ class RAMSTK():
     def __del__(self):
         """Delete the running instance of RAMSTK."""
         del self
-
-
-if __name__ == '__main__':
-    main()

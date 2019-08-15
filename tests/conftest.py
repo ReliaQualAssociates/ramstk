@@ -26,7 +26,9 @@ import toml
 import xlwt
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -419,20 +421,23 @@ def test_program_dao():
 @pytest.fixture(scope='session')
 def test_toml_site_configuration():
     """Create a toml site configuration file."""
-    RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
+    _site_config = RAMSTKSiteConfiguration()
+    _site_config.RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
     _dic_site_configuration = {
         "title": "RAMSTK Site Configuration",
         "backend": {
             "type": "sqlite",
             "host": "localhost",
             "socket": "3306",
-            "database": "ramstk_common.ramstk",
+            "database": VIRTUAL_ENV + "/share/RAMSTK/ramstk_common.ramstk",
             "user": "johnny.tester",
             "password": "clear.text.password"
         }
     }
 
-    toml.dump(_dic_site_configuration, open(RAMSTK_SITE_CONF, "w"))
+    toml.dump(_dic_site_configuration, open(_site_config.RAMSTK_SITE_CONF, "w"))
+
+    yield _site_config
 
 
 @pytest.fixture(scope='session')
