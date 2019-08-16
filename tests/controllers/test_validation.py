@@ -18,7 +18,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amValidation, dmValidation, mmValidation
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
 ATTRIBUTES = {
@@ -56,13 +55,13 @@ ATTRIBUTES = {
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self, test_program_dao):
+    def test_data_manager(self):
         """__init__() should return a Validation data manager."""
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
 
         assert isinstance(DUT, dmValidation)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert DUT._tag == 'validation'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -143,7 +142,8 @@ class TestSelectMethods():
         pub.subscribe(self.on_succeed_retrieve_validations,
                       'succeed_retrieve_validations')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert isinstance(
@@ -164,7 +164,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_validation(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKValidation on success."""
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _validation = DUT.do_select(1, table='validation')
@@ -176,7 +177,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         with pytest.raises(KeyError):
@@ -185,7 +187,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
         """do_select() should return None when a non-existent Validation ID is requested."""
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         assert DUT.do_select(100, table='validation') is None
@@ -193,7 +196,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the validation matrix manager."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='requirements',
@@ -239,7 +243,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_validation,
                       'succeed_delete_validation')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete(DUT.last_id)
 
@@ -253,14 +258,16 @@ class TestDeleteMethods():
         """_do_delete() should send the fail message."""
         pub.subscribe(self.on_fail_delete_validation, 'fail_delete_validation')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete(300)
 
     @pytest.mark.integration
     def test_do_delete_matrix_column_hardware(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested validation matrix."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='hardware',
@@ -289,7 +296,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete_matrix_column_requirement(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested validation matrix."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='requirements',
@@ -321,7 +329,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the validation matrices."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='requirements',
@@ -369,7 +378,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_validation,
                       'succeed_insert_validation')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert()
 
@@ -385,7 +395,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_matrix_column_hardware(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='hardware',
@@ -414,7 +425,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_matrix_column_requirement(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='requirements',
@@ -446,7 +458,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each validation matrix."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='requirements',
@@ -507,7 +520,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_validation_attrs,
                       'succeed_get_validation_attributes')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_get_attributes(1, 'validation')
 
@@ -517,7 +531,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_all_attrs,
                       'succeed_get_all_validation_attributes')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_get_all_attributes(1)
 
@@ -527,7 +542,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
         """do_set_attributes() should send the success message."""
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         pub.sendMessage('request_set_validation_attributes',
@@ -540,7 +556,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_attributes_unknown_attr(self, test_program_dao):
         """do_set_attributes() should return None and leave all attributes unchanged if passed an attribute key that does not exist."""
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         pub.sendMessage('request_set_validation_attributes',
@@ -556,7 +573,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_all_attributes(self, test_program_dao):
         """do_set_all_attributes() should send the success message."""
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         pub.sendMessage('request_set_all_validation_attributes',
@@ -580,7 +598,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_validation_tree,
                       'succeed_get_validation_tree')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_get_tree()
 
@@ -590,7 +609,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_on_get_validation_tree(self, test_program_dao):
         """_on_get_tree() should respond to the 'succeed_get_validation_tree' message and assign the tree to the _row_tree attribute."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
 
@@ -607,7 +627,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_on_get_requirement_tree(self, test_program_dao):
         """_on_get_tree() should respond to the 'succeed_get_requirement_tree' message and assign the tree to the _col_tree attribute."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
 
@@ -653,7 +674,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_succeed_update_validation,
                       'succeed_update_validation')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         DUT.tree.get_node(1).data['validation'].name = 'Test Validation'
@@ -673,7 +695,8 @@ class TestUpdateMethods():
         """ do_update() should return a non-zero error code when passed a Validation ID that doesn't exist. """
         pub.subscribe(self.on_fail_update_validation, 'fail_update_validation')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_update(100)
 
@@ -683,7 +706,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_succeed_update_status,
                       'succeed_update_program_status')
 
-        DUT = dmValidation(test_program_dao)
+        DUT = dmValidation()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_update_program_status(47832.00, 528.3)
 
@@ -699,7 +723,8 @@ class TestUpdateMethods():
     @pytest.mark.integration
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should broadcast the 'succeed_update_matrix' on success."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='requirements',
@@ -739,7 +764,8 @@ class TestAnalysisMethods():
     @pytest.mark.integration
     def test_do_calculate_tasks(self, test_program_dao, test_toml_user_configuration):
         """do_calculate_tasks() should calculate the validation task time and cost."""
-        DATAMGR = dmValidation(test_program_dao)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amValidation(test_toml_user_configuration)
 

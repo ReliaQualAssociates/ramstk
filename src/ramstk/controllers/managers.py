@@ -14,6 +14,7 @@ from sqlalchemy import and_
 from treelib import Tree, tree
 
 # RAMSTK Package Imports
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKMatrix
 
 
@@ -85,17 +86,10 @@ class RAMSTKDataManager():
     :ivar tree: the treelib Tree()that will contain the structure of the RAMSTK
         module being modeled.
     :type tree: :class:`treelib.Tree`
-    :ivar dao: the data access object used to communicate with the RAMSTK
-        Program database.
-    :type dao: :class:`ramstk.db.BaseDatabase`
     """
-    def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an RAMSTK data model instance.
-
-        :param dao: the data access object for communicating with the RAMSTK
-            Program database.
-        :type dao: :class:`ramstk.dao.DAO.DAO`
         """
         # Initialize private dictionary attributes.
 
@@ -109,9 +103,9 @@ class RAMSTKDataManager():
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
-        self.tree = Tree()
+        self.dao = None
         self.last_id = None
+        self.tree = Tree()
 
         # Add the root to the Tree().  This is neccessary to allow multiple
         # entries at the top level as there can only be one root in a treelib
@@ -164,6 +158,16 @@ class RAMSTKDataManager():
             _dic_records[_id] = _record
 
         return _dic_records
+
+    def do_connect(self, dao: BaseDatabase) -> None:
+        """
+        Connect data manager to a database.
+
+        :param dao: the BaseDatabase() instance (data access object)
+            representing the connected RAMSTK Program database.
+        :type dao: :class:`ramstk.db.base.BaseDatabase`
+        """
+        self.dao = dao
 
     def do_delete(self, node_id, table):
         """

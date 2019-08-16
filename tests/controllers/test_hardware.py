@@ -16,7 +16,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amHardware, dmHardware, mmHardware
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
@@ -365,13 +364,13 @@ ATTRIBUTES = {
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager_create(self, test_program_dao):
+    def test_data_manager_create(self):
         """__init__() should return a Hardware data manager."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
 
         assert isinstance(DUT, dmHardware)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert DUT._tag == 'hardware'
         assert DUT._root == 0
 
@@ -406,7 +405,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_all(self, test_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKHardware instances on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
 
         def on_message(tree):
             assert isinstance(tree, Tree)
@@ -433,7 +433,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_design_electric(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKDesignElectric on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='design_electric')
@@ -445,7 +446,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_design_mechanic(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKDesignMechanic on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='design_mechanic')
@@ -457,7 +459,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_hardware(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKHardware on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='hardware')
@@ -469,7 +472,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_mil_hdbk_f(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKMilHdbkF on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='mil_hdbk_217f')
@@ -481,7 +485,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_nswc(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKNSWC on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='nswc')
@@ -493,7 +498,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_reliability(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKReliability on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='reliability')
@@ -505,7 +511,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_allocation(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKAllocation on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='allocation')
@@ -517,7 +524,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_similar_item(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKSimilarItem on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(1, table='similar_item')
@@ -529,7 +537,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         with pytest.raises(KeyError):
@@ -538,7 +547,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
         """do_select() should return None when a non-existent Hardware ID is requested."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         assert DUT.do_select(100, table='hardware') is None
@@ -546,7 +556,8 @@ class TestSelectMethods():
     @pytest.mark.xfail
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
@@ -580,7 +591,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(node_id):
@@ -594,7 +606,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self, test_program_dao):
         """_do_delete() should send the fail message."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(error_msg):
@@ -607,7 +620,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the hardware matrices."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
@@ -639,7 +653,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
@@ -675,7 +690,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_get_attributes_hardware(self, test_program_dao):
         """do_get_attributes() should return a dict of hardware attributes on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(attributes):
@@ -694,7 +710,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_get_all_attributes_data_manager(self, test_program_dao):
         """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(attributes):
@@ -715,7 +732,8 @@ class TestGetterSetter():
     def test_get_all_attributes_analysis_manager(self, test_program_dao,
                                                  test_toml_user_configuration):
         """_get_all_attributes() should update the attributes dict on success."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -732,7 +750,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_on_get_tree(self, test_program_dao, test_toml_user_configuration):
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_hardware_tree message."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -749,7 +768,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
         """do_set_attributes() should send the success message."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         pub.sendMessage('request_set_hardware_attributes',
@@ -782,7 +802,8 @@ class TestGetterSetter():
     def test_do_get_allocation_goal(self, test_program_dao, test_toml_user_configuration,
                                     method_id):
         """do_calculate_goal() should return the proper allocation goal measure."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -807,7 +828,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a new sibling hardware assembly."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(node_id):
@@ -845,7 +867,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_child_assembly(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a new child hardware assembly."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(node_id):
@@ -883,7 +906,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_part(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a new hardware part."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(node_id):
@@ -921,7 +945,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_part_to_part(self, test_program_dao):
         """do_insert() should send the fail message when attempting to add a child to a hardware part."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(error_msg):
@@ -936,7 +961,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each hardware matrix."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
@@ -968,7 +994,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested hardware matrix."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
@@ -1000,7 +1027,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_make_comp_ref_des(self, test_program_dao):
         """do_make_comp_ref_des() should return a zero error code on success."""
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _hardware = DUT.do_select(9, table='hardware')
@@ -1024,7 +1052,8 @@ class TestUpdateMethods():
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao):
         """ do_update() should return a zero error code on success. """
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(node_id):
@@ -1049,7 +1078,8 @@ class TestUpdateMethods():
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_program_dao):
         """ do_update() should return a non-zero error code when passed a Hardware ID that doesn't exist. """
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(error_msg):
@@ -1064,7 +1094,8 @@ class TestUpdateMethods():
     @pytest.mark.integration
     def test_do_update_all(self, test_program_dao):
         """ do_update_all() should return a zero error code on success. """
-        DUT = dmHardware(test_program_dao)
+        DUT = dmHardware()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         def on_message(node_id):
@@ -1078,7 +1109,8 @@ class TestUpdateMethods():
     @pytest.mark.integration
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should ."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
@@ -1122,7 +1154,8 @@ class TestAnalysisMethods():
     def test_do_calculate_assembly_specified_hazard_rate(
             self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the h(t)."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1179,7 +1212,8 @@ class TestAnalysisMethods():
     def test_do_calculate_assembly_specified_mtbf(self, test_program_dao,
                                                   test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the MTBF."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1219,7 +1253,8 @@ class TestAnalysisMethods():
     def test_do_calculate_assembly_zero_hazard_rates(self, test_program_dao,
                                                      test_toml_user_configuration):
         """do_calculate() should send the fail message when all hazard rates=0.0."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
@@ -1244,7 +1279,8 @@ class TestAnalysisMethods():
     def test_do_calculate_assembly_zero_specified_mtbf(self, test_program_dao,
                                                        test_toml_user_configuration):
         """do_calculate() should send the fail message when the specified MTBF=0.0."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
@@ -1269,7 +1305,8 @@ class TestAnalysisMethods():
     def test_do_calculate_all_hardware(self, test_program_dao,
                                        test_toml_user_configuration):
         """do_calculate_all_hardware() should calculate the entire system and roll-up results from child to parent hardware items."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1330,7 +1367,8 @@ class TestMilHdbk217FPredictions():
     def test_do_calculate_part_mil_hdbk_217f_parts_count(
             self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F parts count prediction."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1393,7 +1431,8 @@ class TestMilHdbk217FPredictions():
     def test_do_calculate_part_mil_hdbk_217f_parts_stress(
             self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F part stress prediction."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1471,7 +1510,8 @@ class TestStressCalculations():
     def test_do_calculate_part_zero_rated_current(self, test_program_dao,
                                                   test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated current is zero."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
@@ -1492,7 +1532,8 @@ class TestStressCalculations():
     def test_do_calculate_part_zero_rated_power(self, test_program_dao,
                                                 test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated power is zero."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
@@ -1517,7 +1558,8 @@ class TestStressCalculations():
     def test_do_calculate_part_zero_rated_voltage(self, test_program_dao,
                                                   test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated voltage is zero."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
@@ -1541,7 +1583,8 @@ class TestStressCalculations():
     def test_do_derating_analysis_current_stress(self, test_program_dao,
                                                  test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is current overstressed."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1569,7 +1612,8 @@ class TestStressCalculations():
     def test_do_derating_analysis_power_stress(self, test_program_dao,
                                                test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is power overstressed."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1596,7 +1640,8 @@ class TestStressCalculations():
     def test_do_derating_analysis_voltage_stress(self, test_program_dao,
                                                  test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is voltage overstressed."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1624,7 +1669,8 @@ class TestStressCalculations():
     def test_do_derating_analysis_no_overstress(self, test_program_dao,
                                                 test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute False and the reason message should='' when a component is not overstressed."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1654,7 +1700,8 @@ class TestAllocation():
     def test_do_calculate_goals_reliability_specified(self, test_program_dao,
                                                       test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent h(t) and MTBF goals from a specified reliability goal."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1671,7 +1718,8 @@ class TestAllocation():
     def test_do_calculate_goals_hazard_rate_specified(self, test_program_dao,
                                                       test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent MTBF and R(t) goals from a specified hazard rate goal."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1688,7 +1736,8 @@ class TestAllocation():
     def test_do_calculate_goals_mtbf_specified(self, test_program_dao,
                                                test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent h(t) and R(t) goals from a specified MTBF goal."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1706,7 +1755,8 @@ class TestAllocation():
     def test_do_calculate_agree_allocation(self, test_program_dao,
                                            test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the AGREE method."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1752,7 +1802,8 @@ class TestAllocation():
     def test_do_calculate_arinc_allocation(self, test_program_dao,
                                            test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the ARINC method."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1796,7 +1847,8 @@ class TestAllocation():
     def test_do_calculate_arinc_allocation_zero_parent_hazard_rate(
             self, test_program_dao, test_toml_user_configuration):
         """do_calculate_allocation() should send an error message when attempting to allocate an assembly with a zero hazard rate using the ARINC method."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1819,7 +1871,8 @@ class TestAllocation():
     def test_do_calculate_equal_allocation(self, test_program_dao,
                                            test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the equal apportionment method."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1845,7 +1898,8 @@ class TestAllocation():
     def test_do_calculate_foo_allocation(self, test_program_dao,
                                          test_toml_user_configuration):
         """do_calculate_allocation() should apportion the node ID reliability goal using the feasibility of objectives method."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1897,7 +1951,8 @@ class TestSimilarItem():
     def test_do_calculate_topic_633(self, test_program_dao,
                                     test_toml_user_configuration):
         """do_calculate_goal() should calculate the Topic 6.3.3 similar item."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1928,7 +1983,8 @@ class TestSimilarItem():
     def test_do_calculate_user_defined(self, test_program_dao,
                                        test_toml_user_configuration):
         """do_calculate_goal() should calculate the Topic 644 similar item."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
@@ -1960,7 +2016,8 @@ class TestSimilarItem():
     def test_do_roll_up_change_descriptions(self, test_program_dao,
                                             test_toml_user_configuration):
         """do_roll_up_change_descriptions() should combine all child change descriptions into a single change description for the parent."""
-        DATAMGR = dmHardware(test_program_dao)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 

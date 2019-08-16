@@ -14,7 +14,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmRevision
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,
     RAMSTKMission, RAMSTKMissionPhase, RAMSTKRevision
@@ -55,13 +54,13 @@ ATTRIBUTES = {
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self, test_program_dao):
+    def test_data_manager(self):
         """__init__() should return a Revision data manager."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
 
         assert isinstance(DUT, dmRevision)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert DUT._tag == 'revision'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -103,7 +102,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_all(self, test_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKRevision instances on success."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         assert isinstance(DUT.tree, Tree)
@@ -119,7 +119,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_revision(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKRevision on success."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         _revision = DUT.do_select(1, table='revision')
@@ -131,7 +132,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_failure_definition(self, test_program_dao):
         """do_select() should return an instance of RAMSTKFailureDefinition on success."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         _failure_definition = DUT.do_select(1, table='failure_definitions')
@@ -143,7 +145,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_usage_profile(self, test_program_dao):
         """do_select() should return the usage profile treelib Tree() on success."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         _usage_profile = DUT.do_select(1, table='usage_profile')
@@ -158,7 +161,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         with pytest.raises(KeyError):
@@ -167,7 +171,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
         """do_select() should return None when a non-existent Revision ID is requested."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         assert DUT.do_select(100, table='revision') is None
@@ -228,7 +233,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_revision,
                       'succeed_delete_revision')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete(DUT.last_id)
 
@@ -239,7 +245,8 @@ class TestDeleteMethods():
         """_do_delete() should send the fail message when attempting to delete a non-existent revision."""
         pub.subscribe(self.on_fail_delete_revision, 'fail_delete_revision')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete(300)
 
@@ -249,7 +256,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_failure_definition,
                       'succeed_delete_failure_definition')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_failure_definition(1, 1)
 
@@ -262,7 +270,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_fail_delete_failure_definition,
                       'fail_delete_failure_definition')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_failure_definition(1, 10)
 
@@ -271,7 +280,8 @@ class TestDeleteMethods():
         """_do_delete_mission() should send the success message after successfully deleting a mission."""
         pub.subscribe(self.on_succeed_delete_mission, 'succeed_delete_mission')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission(1, '1')
 
@@ -284,7 +294,8 @@ class TestDeleteMethods():
         """_do_delete_mission() should send the sfail message when attempting to delete a non-existent mission ID."""
         pub.subscribe(self.on_fail_delete_mission, 'fail_delete_mission')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission(1, '10')
 
@@ -294,7 +305,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_mission_phase,
                       'succeed_delete_mission_phase')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission_phase(1, '2', '2.2')
 
@@ -307,7 +319,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_fail_delete_mission_phase,
                       'fail_delete_mission_phase')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission_phase(1, '2', '2.20')
 
@@ -317,7 +330,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_environment,
                       'succeed_delete_environment')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_environment(1, '3.3', '3.3.3')
 
@@ -329,7 +343,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_fail_delete_environment,
                       'fail_delete_environment')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_environment(1, '3.3', '3.3.30')
 
@@ -399,7 +414,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_revision_attrs,
                       'succeed_get_revision_attributes')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_get_attributes(1, 'revision')
 
@@ -409,7 +425,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_failure_definition_attrs,
                       'succeed_get_failure_definitions_attributes')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_get_attributes(1, 'failure_definitions')
 
@@ -419,7 +436,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_usage_profile_attrs,
                       'succeed_get_usage_profile_attributes')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT._do_get_attributes(1, 'usage_profile')
 
@@ -429,14 +447,16 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_all_attrs,
                       'succeed_get_all_revision_attributes')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_get_all_attributes(1)
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
         """do_set_attributes() should send the success message."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         pub.sendMessage('request_set_revision_attributes',
@@ -463,7 +483,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_all_attributes(self, test_program_dao):
         """do_set_all_attributes() should send the success message."""
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         pub.sendMessage('request_set_all_revision_attributes',
@@ -494,7 +515,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_revision_tree,
                       'succeed_get_revision_tree')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_get_tree()
 
@@ -529,7 +551,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_revision,
                       'succeed_insert_revision')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_insert()
 
@@ -547,7 +570,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_failure_definition,
                       'succeed_insert_failure_definition')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_insert_failure_definition(1)
 
@@ -562,7 +586,8 @@ class TestInsertMethods():
         """do_insert() should send the success message after successfully inserting a new mission."""
         pub.subscribe(self.on_succeed_insert_mission, 'succeed_insert_mission')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_insert_mission(1)
 
@@ -577,7 +602,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_mission_phase,
                       'succeed_insert_mission_phase')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_insert_mission_phase(1, 1)
 
@@ -592,7 +618,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_environment,
                       'succeed_insert_environment')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_insert_environment(1, 1, 1)
 
@@ -620,7 +647,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_succeed_update_revision,
                       'succeed_update_revision')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         _revision = DUT.do_select(1, table='revision')
@@ -648,6 +676,7 @@ class TestUpdateMethods():
         """ do_update() should return a non-zero error code when passed a Revision ID that doesn't exist. """
         pub.subscribe(self.on_fail_update_revision, 'fail_update_revision')
 
-        DUT = dmRevision(test_program_dao)
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_update(100)

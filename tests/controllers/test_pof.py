@@ -14,7 +14,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmPoF
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
     RAMSTKOpStress, RAMSTKTestMethod
@@ -25,13 +24,13 @@ from ramstk.models.programdb import (
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self, test_program_dao):
+    def test_data_manager(self):
         """__init__() should return a PoF data manager."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
 
         assert isinstance(DUT, dmPoF)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert DUT._tag == 'pof'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -72,7 +71,8 @@ class TestSelectMethods():
         """do_select_all() should return a Tree() object populated with RAMSTKMode, RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod instances on success."""
         pub.subscribe(self.on_succeed_retrieve_pof, 'succeed_retrieve_pof')
 
-        DUT = dmPoF(test_program_dao, functional=True)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert isinstance(DUT.tree.get_node('4').data['mode'], RAMSTKMode)
@@ -82,7 +82,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_mode(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKMode on success."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         _mode = DUT.do_select('4', table='mode')
@@ -94,7 +95,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_mechanism(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKMechanism on success."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         _mechanism = DUT.do_select('4.1', table='mechanism')
@@ -106,7 +108,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_opload(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKOpLoad on success."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         _opload = DUT.do_select('4.1.1', table='opload')
@@ -118,7 +121,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_opstress(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKOpStress on success."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         _opstress = DUT.do_select('4.1.1.1.s', table='opstress')
@@ -130,7 +134,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_test_method(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKTestMethod on success."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         _method = DUT.do_select('4.1.1.1.t', table='testmethod')
@@ -142,7 +147,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         with pytest.raises(KeyError):
@@ -151,7 +157,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
         """do_select() should return None when a non-existent PoF ID is requested."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         assert DUT.do_select(100, table='mode') is None
@@ -200,7 +207,8 @@ class TestDeleteMethods():
         """_do_delete() should send the success message with the treelib Tree when successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete_test_method, 'succeed_delete_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_delete('4.1.1.1.t')
 
@@ -214,7 +222,8 @@ class TestDeleteMethods():
         """_do_delete() should send the success message with the treelib Tree when successfully deleting an operating stress."""
         pub.subscribe(self.on_succeed_delete_opstress, 'succeed_delete_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_delete('4.1.1.1.s')
 
@@ -227,7 +236,8 @@ class TestDeleteMethods():
         """_do_delete() should send the success message with the treelib Tree when successfully deleting on operating load."""
         pub.subscribe(self.on_succeed_delete_opload, 'succeed_delete_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_delete('4.1.1')
 
@@ -240,7 +250,8 @@ class TestDeleteMethods():
         """_do_delete() should send the success message with the treelib Tree."""
         pub.subscribe(self.on_succeed_delete_mechanism, 'succeed_delete_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_delete('4.1')
 
@@ -253,7 +264,8 @@ class TestDeleteMethods():
         """_do_delete() should send the success message with the treelib Tree."""
         pub.subscribe(self.on_succeed_delete_mode, 'succeed_delete_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_delete('4')
 
@@ -266,7 +278,8 @@ class TestDeleteMethods():
         """_do_delete() should send the fail message when attempting to delete a node ID that doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_pof, 'fail_delete_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_delete('300')
 
@@ -308,7 +321,8 @@ class TestInsertMethods():
         """_do_insert_opload() should send the success message after successfully inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_opload, 'succeed_insert_opload')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_insert_opload(1, '4.1')
 
@@ -325,7 +339,8 @@ class TestInsertMethods():
         """_do_insert_opload() should send the fail message if attempting to add an operating load to a non-existent mechanism ID."""
         pub.subscribe(self.on_fail_insert_opload, 'fail_insert_opload')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_insert_opload(40, '4.40')
 
@@ -339,7 +354,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_opstress,
                       'succeed_insert_opstress')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_insert_opstress(4, '4.1.1')
 
@@ -357,7 +373,8 @@ class TestInsertMethods():
         """_do_insert_opstress() should send the fail message if attempting to add a control to a non-existent operating load ID."""
         pub.subscribe(self.on_fail_insert_opstress, 'fail_insert_opstress')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_insert_opstress(40, '4.1.40')
 
@@ -371,7 +388,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_test_method,
                       'succeed_insert_test_method')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_insert_testmethod(4, '4.1.1')
 
@@ -391,7 +409,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_fail_insert_test_method,
                       'fail_insert_test_method')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT._do_insert_testmethod(40, '4.1.40')
 
@@ -452,7 +471,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_mode_attrs,
                       'succeed_get_mode_attributes')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT.do_get_attributes('4', 'mode')
 
@@ -467,7 +487,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_mechanism_attrs,
                       'succeed_get_mechanism_attributes')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT.do_get_attributes('6.3', 'mechanism')
 
@@ -483,7 +504,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_opload_attrs,
                       'succeed_get_opload_attributes')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT.do_get_attributes('4.1.1', 'opload')
 
@@ -499,7 +521,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_opstress_attrs,
                       'succeed_get_opstress_attributes')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT.do_get_attributes('4.1.1.1.s', 'opstress')
 
@@ -515,7 +538,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_test_method_attrs,
                       'succeed_get_test_method_attributes')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT.do_get_attributes('4.1.1.1.t', 'testmethod')
 
@@ -529,7 +553,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_mode_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mode attributes."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         DUT.do_set_attributes(node_id='6',
@@ -550,7 +575,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_mechanism_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         DUT.do_set_attributes(node_id='4.1',
@@ -570,7 +596,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_opload_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting operating load attributes."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         DUT.do_set_attributes(node_id='4.1.1',
@@ -591,7 +618,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_opstress_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting control attributes."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         DUT.do_set_attributes(node_id='4.1.1.1.s',
@@ -613,7 +641,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_test_method_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting test method attributes."""
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         DUT.do_set_attributes(node_id='4.1.1.1.t',
@@ -636,7 +665,8 @@ class TestGetterSetter():
         """on_get_tree() should return the PoF treelib Tree."""
         pub.subscribe(self.on_succeed_get_pof_tree, 'succeed_get_pof_tree')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT.do_get_tree()
 
@@ -660,7 +690,8 @@ class TestUpdateMethods():
         """ do_update() should return a zero error code on success. """
         pub.subscribe(self.on_succeed_update_pof, 'succeed_update_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
         DUT.tree.get_node('5').data['mode'].description = 'Test failure mode'
@@ -685,7 +716,8 @@ class TestUpdateMethods():
         """ do_update() should return a non-zero error code when passed a PoF ID that doesn't exist. """
         pub.subscribe(self.on_fail_update_pof, 'fail_update_pof')
 
-        DUT = dmPoF(test_program_dao)
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
         DUT.do_update(100)
 

@@ -14,7 +14,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmRequirement, mmRequirement
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKRequirement
 
 ATTRIBUTES = {
@@ -51,13 +50,13 @@ ATTRIBUTES = {
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self, test_program_dao):
+    def test_data_manager(self):
         """__init__() should return a Requirement data manager."""
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
 
         assert isinstance(DUT, dmRequirement)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert DUT._tag == 'requirement'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -127,7 +126,8 @@ class TestSelectMethods():
         """do_select_all(1) should return a Tree() object populated with RAMSTKRequirement instances on success."""
         pub.subscribe(self.on_succeed_retrieve_requirements,
                       'succeed_retrieve_requirements')
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert isinstance(DUT.tree, Tree)
@@ -141,7 +141,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_requirement(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKRequirement on success."""
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         _requirement = DUT.do_select(1, table='requirement')
@@ -153,7 +154,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         with pytest.raises(KeyError):
@@ -162,7 +164,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
         """do_select() should return None when a non-existent Requirement ID is requested."""
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert DUT.do_select(100, table='requirement') is None
@@ -170,7 +173,8 @@ class TestSelectMethods():
     @pytest.mark.xfail
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
-        DATAMGR = dmRequirement(test_program_dao)
+        DATAMGR = dmRequirement()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmRequirement()
         DUT._col_tree.create_node(tag='hardware',
@@ -233,7 +237,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_requirement,
                       'succeed_delete_requirement')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT._do_delete_requirement(DUT.last_id)
 
@@ -248,14 +253,16 @@ class TestDeleteMethods():
         pub.subscribe(self.on_fail_delete_requirement,
                       'fail_delete_requirement')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT._do_delete_requirement(300)
 
     @pytest.mark.integration
     def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested requirement matrix."""
-        DATAMGR = dmRequirement(test_program_dao)
+        DATAMGR = dmRequirement()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmRequirement()
         DUT._col_tree.create_node(tag='hardware',
@@ -304,7 +311,8 @@ class TestDeleteMethods():
     @pytest.mark.integration
     def test_do_delete_matrix_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the requirement matrices."""
-        DATAMGR = dmRequirement(test_program_dao)
+        DATAMGR = dmRequirement()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmRequirement()
         DUT._col_tree.create_node(tag='hardware',
@@ -384,7 +392,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_requirement_attrs,
                       'succeed_get_requirement_attributes')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT._do_get_attributes(1, 'requirement')
 
@@ -394,14 +403,16 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_all_attrs,
                       'succeed_get_all_requirement_attributes')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_all_attributes(1)
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
         """do_set_attributes() should send the success message."""
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_requirement_attributes',
@@ -414,7 +425,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_all_attributes(self, test_program_dao):
         """do_set_all_attributes() should send the success message."""
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_all_requirement_attributes',
@@ -438,7 +450,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_requirement_tree,
                       'succeed_get_requirement_tree')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_tree()
 
@@ -464,7 +477,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_requirement,
                       'succeed_insert_requirement')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_insert_requirement(parent_id=0)
 
@@ -480,7 +494,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_child_requirement(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a new child requirement."""
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_insert_requirement(parent_id=3)
 
@@ -498,14 +513,16 @@ class TestInsertMethods():
         pub.subscribe(self.on_fail_insert_requirement,
                       'fail_insert_requirement')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_insert_requirement(parent_id=32)
 
     @pytest.mark.integration
     def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested requirement matrix."""
-        DATAMGR = dmRequirement(test_program_dao)
+        DATAMGR = dmRequirement()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmRequirement()
         DUT._col_tree.create_node(tag='hardware',
@@ -554,7 +571,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_matrix_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each requirement matrix."""
-        DATAMGR = dmRequirement(test_program_dao)
+        DATAMGR = dmRequirement()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmRequirement()
         DUT._col_tree.create_node(tag='hardware',
@@ -624,7 +642,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_succeed_update_requirement,
                       'succeed_update_requirement')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         _requirement = DUT.do_select(1, table='requirement')
@@ -645,7 +664,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_fail_update_requirement,
                       'fail_update_requirement')
 
-        DUT = dmRequirement(test_program_dao)
+        DUT = dmRequirement()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_update_requirement(100)
 
@@ -654,7 +674,8 @@ class TestUpdateMethods():
         """do_update() should send the success message when the matrix is updated successfully."""
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 
-        DATAMGR = dmRequirement(test_program_dao)
+        DATAMGR = dmRequirement()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = mmRequirement()
         DUT._col_tree.create_node(tag='hardware',
