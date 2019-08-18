@@ -15,7 +15,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amStakeholder, dmStakeholder
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKStakeholder
 
 ATTRIBUTES = {
@@ -40,13 +39,13 @@ ATTRIBUTES = {
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self, test_program_dao):
+    def test_data_manager(self):
         """__init__() should return a Stakeholder data manager."""
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
 
         assert isinstance(DUT, dmStakeholder)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert DUT._tag == 'stakeholder'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -101,7 +100,8 @@ class TestSelectMethods():
         """do_select_all(1) should return a Tree() object populated with RAMSTKStakeholder instances on success."""
         pub.subscribe(self.on_succeed_retrieve_stakeholders,
                       'succeed_retrieve_stakeholders')
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert isinstance(DUT.tree, Tree)
@@ -115,7 +115,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_stakeholder(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKStakeholder on success."""
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         _stakeholder = DUT.do_select(1, table='stakeholder')
@@ -127,7 +128,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         with pytest.raises(KeyError):
@@ -136,7 +138,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
         """do_select() should return None when a non-existent Stakeholder ID is requested."""
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert DUT.do_select(100, table='stakeholder') is None
@@ -160,7 +163,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_stakeholder,
                       'succeed_delete_stakeholder')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT._do_delete_stakeholder(DUT.last_id)
 
@@ -175,7 +179,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_fail_delete_stakeholder,
                       'fail_delete_stakeholder')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT._do_delete_stakeholder(300)
 
@@ -213,7 +218,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_stakeholder_attrs,
                       'succeed_get_stakeholder_attributes')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_attributes(1, 'stakeholder')
 
@@ -226,7 +232,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_all_attrs,
                       'succeed_get_all_stakeholder_attributes')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_all_attributes(1)
 
@@ -236,7 +243,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
         """do_set_attributes() should send the success message."""
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_stakeholder_attributes',
@@ -248,7 +256,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_all_attributes(self, test_program_dao):
         """do_set_all_attributes() should send the success message."""
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_all_stakeholder_attributes',
@@ -271,7 +280,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_stakeholder_tree,
                       'succeed_get_stakeholder_tree')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_tree()
 
@@ -297,7 +307,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_stakeholder,
                       'succeed_insert_stakeholder')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_insert_stakeholder(parent_id=0)
 
@@ -330,7 +341,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_succeed_update_stakeholder,
                       'succeed_update_stakeholder')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         _stakeholder = DUT.do_select(1, table='stakeholder')
@@ -351,7 +363,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_fail_update_stakeholder,
                       'fail_update_stakeholder')
 
-        DUT = dmStakeholder(test_program_dao)
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_update_stakeholder(100)
 
@@ -366,7 +379,8 @@ class TestAnalysisMethods():
     def test_do_calculate_improvement(self, test_program_dao,
                                       test_toml_user_configuration):
         """do_calculate_stakeholder() should calculate the improvement factor and overall weight of a stakeholder input."""
-        DATAMGR = dmStakeholder(test_program_dao)
+        DATAMGR = dmStakeholder()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amStakeholder(test_toml_user_configuration)
 

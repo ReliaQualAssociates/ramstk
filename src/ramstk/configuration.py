@@ -201,34 +201,42 @@ class RAMSTKSiteConfiguration:
 
         # Initialize public dictionary attributes.
         self.RAMSTK_COM_INFO: Dict[str, str] = {}
-        self.RAMSTK_ACTION_CATEGORY: Dict[str, str] = {}
-        self.RAMSTK_ACTION_STATUS: Dict[str, str] = {}
-        self.RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User.
+        self.RAMSTK_ACTION_CATEGORY: Dict[str, Tuple[str, str, str, str]] = {}
+        self.RAMSTK_ACTION_STATUS: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_AFFINITY_GROUPS: Dict[str, Tuple[str, str]] = {}  # User.
         self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
         self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User.
-        self.RAMSTK_DETECTION_METHODS: Dict[str, str] = {}
+        self.RAMSTK_DETECTION_METHODS: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
-        self.RAMSTK_HAZARDS: Dict[str, str] = {}  # User.
-        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, str] = {}
-        self.RAMSTK_INCIDENT_STATUS: Dict[str, str] = {}
-        self.RAMSTK_INCIDENT_TYPE: Dict[str, str] = {}
+        self.RAMSTK_HAZARDS: Dict[str, Tuple[str, str]] = {}  # User.
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[str,
+                                            Tuple[str, str, str, str]] = {}
+        self.RAMSTK_INCIDENT_STATUS: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_INCIDENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User.
-        self.RAMSTK_MANUFACTURERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}  # Admin.
+        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str, str]] = {
+        }  # User.
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, Tuple[str, str, str]] = {
+        }  # User.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str, str]] = {
+        }  # Admin.
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
         self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
-        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, str] = {}
+        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
-        self.RAMSTK_SEVERITY: Dict[str, str] = {}
+        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {}
         self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User.
-        self.RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_USERS: Dict[str, str] = {}  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}  # Admin.
-        self.RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin.
+        self.RAMSTK_STRESS_LIMITS: Dict[
+            str, Tuple[float, float, float, float, float, float, float, float,
+                       float, float]] = {}  # User.
+        self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}  # Static.
+        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str, str]] = {
+        }  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str, str]] = {
+        }  # Admin.
+        self.RAMSTK_WORKGROUPS: Dict[str, Tuple[str, str]] = {}  # Admin.
 
         # Initialize public list attributes.
 
@@ -260,9 +268,16 @@ class RAMSTKSiteConfiguration:
             }
         }
 
-        toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF, "w"))
-
-        pub.sendMessage('succeed_create_site_configuration')
+        try:
+            toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF,
+                                                    "w"))
+            pub.sendMessage('succeed_create_site_configuration')
+        except FileNotFoundError:
+            _error_msg = (
+                "Failed to write site configuration file {0:s}.".format(
+                    self.RAMSTK_SITE_CONF))
+            pub.sendMessage('fail_create_site_configuration',
+                            error_message=_error_msg)
 
     def get_site_configuration(self) -> None:
         """
@@ -776,9 +791,16 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             }
         }
 
-        toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
-
-        pub.sendMessage('succeed_create_user_configuration')
+        try:
+            toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF,
+                                                    "w"))
+            pub.sendMessage('succeed_create_user_configuration')
+        except FileNotFoundError:
+            _error_msg = (
+                "Failed to write user configuration file {0:s}.".format(
+                    self.RAMSTK_PROG_CONF))
+            pub.sendMessage('fail_create_user_configuration',
+                            error_message=_error_msg)
 
     def get_user_configuration(self) -> None:
         """
@@ -829,9 +851,14 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "moduletabpos"]
             self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
             self.RAMSTK_LOGLEVEL = _config["general"]["loglevel"]
-            self.RAMSTK_USER_LOG = (self.RAMSTK_LOG_DIR + "/ramstk_run.log")
-            self.RAMSTK_IMPORT_LOG = (self.RAMSTK_LOG_DIR
-                                      + "/ramstk_import.log")
+            if self.RAMSTK_LOG_DIR == '':
+                self.RAMSTK_USER_LOG = "./ramstk_run.log"
+                self.RAMSTK_IMPORT_LOG = "./ramstk_import.log"
+            else:
+                self.RAMSTK_USER_LOG = (self.RAMSTK_LOG_DIR
+                                        + "/ramstk_run.log")
+                self.RAMSTK_IMPORT_LOG = (self.RAMSTK_LOG_DIR
+                                          + "/ramstk_import.log")
 
         else:
             _error_msg = ("Failed to read User configuration file "

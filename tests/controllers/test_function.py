@@ -15,7 +15,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amFunction, dmFunction
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKFunction, RAMSTKHazardAnalysis
 
 ATTRIBUTES = {
@@ -46,13 +45,13 @@ ATTRIBUTES = {
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self, test_program_dao):
+    def test_data_manager(self):
         """__init__() should return a Function data manager."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
 
         assert isinstance(DUT, dmFunction)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert DUT._tag == 'function'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -107,7 +106,8 @@ class TestSelectMethods():
         pub.subscribe(self.on_succeed_retrieve_functions,
                       'succeed_retrieve_functions')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         pub.unsubscribe(self.on_succeed_retrieve_functions,
@@ -116,7 +116,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_function(self, test_program_dao):
         """do_select() should return an instance of the RAMSTKFunction on success."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _function = DUT.do_select(1, table='function')
@@ -128,7 +129,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_hazards(self, test_program_dao):
         """do_select() should return an instance of RAMSTKHazardAnalysis on success."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         _failure_definition = DUT.do_select(1, table='hazards')
@@ -140,7 +142,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         with pytest.raises(KeyError):
@@ -149,7 +152,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
         """do_select() should return None when a non-existent Function ID is requested."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         assert DUT.do_select(100, table='function') is None
@@ -182,7 +186,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_succeed_delete_function,
                       'succeed_delete_function')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete(DUT.last_id)
 
@@ -193,7 +198,8 @@ class TestDeleteMethods():
         """_do_delete() should send the fail message."""
         pub.subscribe(self.on_fail_delete_function, 'fail_delete_function')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete(300)
 
@@ -202,7 +208,8 @@ class TestDeleteMethods():
         """_do_delete_hazard() should send the success method when a hazard is successfully deleted."""
         pub.subscribe(self.on_succeed_delete_hazard, 'succeed_delete_hazard')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete_hazard(2, 2)
 
@@ -213,7 +220,8 @@ class TestDeleteMethods():
         """_do_delete_hazard() should send the success method when a hazard is successfully deleted."""
         pub.subscribe(self.on_fail_delete_hazard, 'fail_delete_hazard')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete_hazard(1, 10)
 
@@ -245,7 +253,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_succeed_insert_function,
                       'succeed_insert_function')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert()
 
@@ -261,7 +270,8 @@ class TestInsertMethods():
     @pytest.mark.integration
     def test_do_insert_child_function(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a child function."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert(parent_id=4)
 
@@ -276,7 +286,8 @@ class TestInsertMethods():
         """do_insert() should send the fail message if attempting to add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_function, 'fail_insert_function')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert(parent_id=40)
 
@@ -285,7 +296,8 @@ class TestInsertMethods():
         """do_insert_hazard() should send the success message after successfully inserting a new hazard."""
         pub.subscribe(self.on_succeed_insert_hazard, 'succeed_insert_hazard')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert_hazard(1)
 
@@ -297,7 +309,8 @@ class TestInsertMethods():
         """do_insert_hazard() should send the fail message when attempting to add a hazard to a non-existent function ID."""
         pub.subscribe(self.on_fail_insert_hazard, 'fail_insert_hazard')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert_hazard(function_id=10)
 
@@ -343,7 +356,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_function_attrs,
                       'succeed_get_function_attributes')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_get_attributes(1, 'function')
 
@@ -353,7 +367,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_hazard_attrs,
                       'succeed_get_hazards_attributes')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_get_attributes(1, 'hazards')
 
@@ -363,7 +378,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_all_attrs,
                       'succeed_get_all_function_attributes')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_get_all_attributes(1)
 
@@ -373,7 +389,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
         """do_set_attributes() should send the success message."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         pub.sendMessage('request_set_function_attributes',
@@ -392,7 +409,8 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_do_set_all_attributes(self, test_program_dao):
         """do_set_all_attributes() should send the success message."""
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         pub.sendMessage('request_set_all_function_attributes',
@@ -428,7 +446,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_function_tree,
                       'succeed_get_function_tree')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_get_tree()
 
@@ -439,7 +458,8 @@ class TestGetterSetter():
     def test_get_all_attributes_analysis_manager(self, test_program_dao,
                                                  test_toml_user_configuration):
         """_get_all_attributes() should update the attributes dict on success."""
-        DATAMGR = dmFunction(test_program_dao)
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amFunction(test_toml_user_configuration)
 
@@ -454,7 +474,8 @@ class TestGetterSetter():
     def test_on_get_tree_analysis_manager(self, test_program_dao,
                                           test_toml_user_configuration):
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_function_tree message."""
-        DATAMGR = dmFunction(test_program_dao)
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amFunction(test_toml_user_configuration)
         DATAMGR.do_get_tree()
@@ -482,7 +503,8 @@ class TestUpdateMethods():
         pub.subscribe(self.on_succeed_update_function,
                       'succeed_update_function')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
         DUT.tree.get_node(1).data['function'].name = 'Test Function'
@@ -502,7 +524,8 @@ class TestUpdateMethods():
         """ do_update() should return a non-zero error code when passed a Function ID that doesn't exist. """
         pub.subscribe(self.on_fail_update_function, 'fail_update_function')
 
-        DUT = dmFunction(test_program_dao)
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_update(100)
 
@@ -513,7 +536,8 @@ class TestAnalysisMethods():
     @pytest.mark.integration
     def test_do_calculate_hri(self, test_program_dao, test_toml_user_configuration):
         """do_calculate_hri() should calculate the hazard risk index hazard analysis."""
-        DATAMGR = dmFunction(test_program_dao)
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amFunction(test_toml_user_configuration)
 
@@ -541,7 +565,8 @@ class TestAnalysisMethods():
     def test_do_calculate_user_defined(self, test_program_dao,
                                        test_toml_user_configuration):
         """do_calculate_user_defined() should calculate the user-defined hazard analysis."""
-        DATAMGR = dmFunction(test_program_dao)
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amFunction(test_toml_user_configuration)
 

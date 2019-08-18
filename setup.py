@@ -11,13 +11,17 @@ from setuptools.command.install import install as _install
 from setuptools.command.sdist import sdist
 from setuptools.command.test import test
 
-# Read the contents of your README file
 HERE = os.path.abspath(os.path.dirname(__file__))
+# Read the contents of the VERSION file.
+with open(os.path.join(HERE, 'VERSION'), encoding='utf-8') as f:
+    RAMSTK_VERSION = f.read()
+
+# Read the contents of the README file.
 with open(os.path.join(HERE, 'README.md'), encoding='utf-8') as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'
-__version__ = '1.0.4'
+__version__ = RAMSTK_VERSION
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "doyle.rowland@reliaqual.com"
 __trove__ = [
@@ -85,7 +89,7 @@ class Install(_install):
         """Execute after install."""
         print(
             "{0:s}{1:s}Your shiny new RAMSTK-{2:s} is "
-            "installed!!{3:s}".format(FG_GREEN, BOLD, __version__, RESET), )
+            "installed!!{3:s}".format(FG_GREEN, BOLD, __version__, RESET))
 
     def run(self):
         """Run the install."""
@@ -147,18 +151,9 @@ if __name__ == '__main__':
         ],
         classifiers=__trove__,
         entry_points={
-            'console_scripts': ['ramstk = ramstk.RAMSTK:main'],
+            'console_scripts': ['ramstk = ramstk.__main__:the_one_ring'],
+            'gui_scripts': ['ramstk = ramstk.__main__:the_one_ring']
         },
-        data_files=[
-            ('share/applications', ['data/RAMSTK.desktop']),
-            ('share/pixmaps', ['data/icons/RAMSTK.png']),
-            ('share/RAMSTK', ['data/RAMSTK.toml']),
-            ('share/RAMSTK', ['data/Site.toml']),
-            ('share/RAMSTK', ['data/ramstk_common.ramstk']),
-            ('share/RAMSTK/layouts', LAYOUT_FILES[0]),
-            ('share/RAMSTK/icons/16x16', ICON16_FILES[0]),
-            ('share/RAMSTK/icons/32x32', ICON32_FILES[0]),
-        ],
         package_data={},
         dependency_links=[],
         zip_safe=True,
@@ -166,5 +161,5 @@ if __name__ == '__main__':
             'install': Install,
             'sdist': Sdist,
             'test': MyTest
-        },
+        }
     )

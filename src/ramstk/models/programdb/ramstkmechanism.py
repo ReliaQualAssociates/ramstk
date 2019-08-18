@@ -12,7 +12,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk import RAMSTK_BASE
+from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseTable
 
 

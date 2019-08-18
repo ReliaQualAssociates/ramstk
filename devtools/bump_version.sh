@@ -22,7 +22,7 @@
 # --------------------------------------------------------------------------- #
 
 # Get the current version from setup.py and remove the single quotes.
-cur_version=$(grep -m1 "__version__" $PWD/setup.py | cut -d '=' -f2)
+cur_version=$(cat $PWD/VERSION)
 cur_version=${cur_version//\'}
 
 # Get the lastest RAMSTK tag and the latest commit's SHA-1.
@@ -70,18 +70,17 @@ if [[ "$this_commit" =~ ^feat* ]];
 then
     let ver_minor++
     ver_patch=0
+    level="minor"
 fi
 if [[ "$this_commit" =~ ^refactor* ]];
 then
     let ver_patch++
+    level="patch"
 fi
 if [[ "$this_commit" =~ ^fix* ]];
 then
     let ver_patch++
-fi
-if [[ "$this_commit" =~ ^perf* ]];
-then
-    let ver_patch++
+    level="patch"
 fi
 
 # Create the new version and tag following our rules.
@@ -102,8 +101,7 @@ fi
 # current version.
 if [ $new_version != $cur_version ];
 then
-    sed -i "s/^\(__version__\s*=\s*\).*$/\1'$new_version'/" $PWD/setup.py
-    sed -i "s/^\(version\s*=\s*\).*$/\1'$new_version'/" $PWD/setup.cfg
+    $(bump2version ${new_version} ${level} $PWD/VERSION)
 fi
 
 # Now tag the branch with the new tag.  Only master, develop, and release

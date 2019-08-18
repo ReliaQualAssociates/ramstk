@@ -26,13 +26,13 @@ from ramstk.models.programdb import RAMSTKProgramInfo
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self, test_program_dao, test_common_dao):
+    def test_data_manager(self, test_common_dao):
         """__init__() should return a Options data manager."""
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
 
         assert isinstance(DUT, dmOptions)
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT.dao is None
         assert isinstance(DUT.common_dao, BaseDatabase)
         assert DUT._tag == 'options'
         assert DUT._root == 0
@@ -64,7 +64,8 @@ class TestSelectMethods():
         pub.subscribe(self.on_succeed_retrieve_options,
                       'succeed_retrieve_options')
 
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert isinstance(
@@ -79,7 +80,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_site_info(self, test_program_dao, test_common_dao):
         """do_select() should return an instance of the RAMSTKSiteInfo on success."""
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         _options = DUT.do_select('siteinfo', table='siteinfo')
@@ -94,7 +96,8 @@ class TestSelectMethods():
     @pytest.mark.integration
     def test_do_select_program_info(self, test_program_dao, test_common_dao):
         """do_select() should return an instance of the RAMSTKProgramInfo on success."""
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         _options = DUT.do_select('programinfo', table='programinfo')
@@ -122,7 +125,8 @@ class TestSelectMethods():
     def test_do_select_non_existent_id(self, test_program_dao,
                                        test_common_dao):
         """do_select() should return None when a non-existent Options ID is requested."""
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         assert DUT.do_select(100, table='siteinfo') is None
@@ -179,7 +183,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_site_info_attrs,
                       'succeed_get_siteinfo_attributes')
 
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_attributes('siteinfo', 'siteinfo')
 
@@ -196,7 +201,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_program_info_attrs,
                       'succeed_get_programinfo_attributes')
 
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_attributes('programinfo', 'programinfo')
 
@@ -211,7 +217,8 @@ class TestGetterSetter():
     def test_do_set_site_info_attributes(self, test_program_dao,
                                          test_common_dao):
         """do_set_attributes() should return None when successfully setting site information attributes."""
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_option_attributes',
@@ -235,7 +242,8 @@ class TestGetterSetter():
     def test_do_set_program_info_attributes(self, test_program_dao,
                                             test_common_dao):
         """do_set_attributes() should return None when successfully setting program information attributes."""
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_option_attributes',
@@ -261,7 +269,8 @@ class TestGetterSetter():
         pub.subscribe(self.on_succeed_get_options_tree,
                       'succeed_get_options_tree')
 
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_get_tree()
 
@@ -286,7 +295,8 @@ class TestUpdateMethods():
         """ do_update() should return a zero error code on success. """
         pub.subscribe(self.on_succeed_update_options, 'succeed_update_options')
 
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
 
         DUT.tree.get_node('siteinfo').data['siteinfo'].hardware_enabled = 1
@@ -316,7 +326,8 @@ class TestUpdateMethods():
         """ do_update() should return a non-zero error code when passed a Options ID that doesn't exist. """
         pub.subscribe(self.on_fail_update_options, 'fail_update_options')
 
-        DUT = dmOptions(test_program_dao, common_dao=test_common_dao)
+        DUT = dmOptions(common_dao=test_common_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(1)
         DUT.do_update('100')
 

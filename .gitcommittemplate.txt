@@ -9,13 +9,11 @@
 # <footer>
 #
 # Where <type> is one of:
-#    * feat or feature: a new feature was added.
 #    * fix: a bug fix.
-#    * docs: documentation only change.
-#    * style: change that doesn't affect the meaning of the code.
+#    * feat or feature: a new feature was added.
 #    * refactor: code change that doesn't add a feature or fix a bug.
-#    * perf: change that improves performance.
 #    * test: add or correct tests.
+#    * docs: documentation only change.
 #    * chore: changes to the build process or auxiliary tools.
 # <primary scope> is one of:
 #    * Revision or Rev
@@ -23,9 +21,13 @@
 #    * Function or Func
 #    * Hardware or HW
 #    * Validation or Val
+#    * Options or Opt
+#    * Preferences or Pref
+#    * Export/Import or Exim
 #    * Utilities or Util
 #    * Configuration or Conf
 #    * Logger or Log
+#    * Database or DB
 #    * GUI
 # You may use an asterick (*) if the changes affect multiple primary scopes or
 # the change is docs or chore type.

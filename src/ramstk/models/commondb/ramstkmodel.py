@@ -13,7 +13,7 @@ from typing import Dict
 from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
-from ramstk import RAMSTK_BASE
+from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseTable
 
 

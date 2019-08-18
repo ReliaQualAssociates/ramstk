@@ -31,15 +31,9 @@ class DataManager(RAMSTKDataManager):
     _tag = 'validation'
     _root = 0
 
-    def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
-        """
-        Initialize a Validation data manager instance.
-
-        :param dao: the data access object for communicating with the RAMSTK
-            Program database.
-        :type dao: :class:`ramstk.dao.DAO.DAO`
-        """
-        RAMSTKDataManager.__init__(self, dao, **kwargs)
+    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+        """Initialize a Validation data manager instance."""
+        RAMSTKDataManager.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
 

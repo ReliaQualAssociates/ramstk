@@ -26,7 +26,9 @@ import toml
 import xlwt
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -41,9 +43,8 @@ except KeyError:
     elif platform.system() == 'Windows':
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
-        print((
-            "The {0:s} system platform is not supported."
-        ).format(platform.system()))
+        print(("The {0:s} system platform is not supported.").format(
+            platform.system()))
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -261,15 +262,10 @@ def make_config_dir():
     if not os.path.exists(_config_dir):
         os.mkdir(_config_dir)
 
-    dir_util.copy_tree(
-                os.getcwd() + "/data/icons/",
-                _config_dir + '/icons/'
-    )
+    dir_util.copy_tree(os.getcwd() + "/data/icons/", _config_dir + '/icons/')
 
-    dir_util.copy_tree(
-                os.getcwd() + "/data/layouts/",
-                _config_dir + '/layouts/'
-    )
+    dir_util.copy_tree(os.getcwd() + "/data/layouts/",
+                       _config_dir + '/layouts/')
 
     yield _config_dir
 
@@ -291,6 +287,8 @@ def make_home_config_dir():
     os.mkdir(_config_dir + '/log')
     os.mkdir(VIRTUAL_ENV + '/tmp/analyses')
     os.mkdir(VIRTUAL_ENV + '/tmp/analyses/ramstk')
+    shutil.copyfile('./data/sqlite_program_db.sql',
+                    _config_dir + '/sqlite_program_db.sql')
 
     yield _config_dir
 
@@ -419,20 +417,24 @@ def test_program_dao():
 @pytest.fixture(scope='session')
 def test_toml_site_configuration():
     """Create a toml site configuration file."""
-    RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
+    _site_config = RAMSTKSiteConfiguration()
+    _site_config.RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
     _dic_site_configuration = {
         "title": "RAMSTK Site Configuration",
         "backend": {
             "type": "sqlite",
             "host": "localhost",
             "socket": "3306",
-            "database": "ramstk_common.ramstk",
+            "database": VIRTUAL_ENV + "/share/RAMSTK/ramstk_common.ramstk",
             "user": "johnny.tester",
             "password": "clear.text.password"
         }
     }
 
-    toml.dump(_dic_site_configuration, open(RAMSTK_SITE_CONF, "w"))
+    toml.dump(_dic_site_configuration, open(_site_config.RAMSTK_SITE_CONF,
+                                            "w"))
+
+    yield _site_config
 
 
 @pytest.fixture(scope='session')
@@ -504,20 +506,27 @@ def test_toml_user_configuration():
             "validationfg": "#000000"
         },
         "stress": {
-            'integratedcircuit': [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            'semiconductor': [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'integratedcircuit':
+            [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            'semiconductor':
+            [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
             'resistor': [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            'capacitor': [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
-            'inductor': [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
+            'capacitor':
+            [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
+            'inductor':
+            [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
             'relay': [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
             'switch': [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            'connection': [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
+            'connection':
+            [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
             'meter': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            'miscellaneous': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
+            'miscellaneous':
+            [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
         }
     }
 
-    toml.dump(_dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF, "w"))
+    toml.dump(_dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF,
+                                            "w"))
 
     yield _user_config
 

@@ -15,7 +15,7 @@ from sqlalchemy import Column, Date, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk import RAMSTK_BASE
+from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseTable
 
 

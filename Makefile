@@ -2,6 +2,8 @@
 .DEFAULT: help
 
 # These variables can be passed from the command line when invoking make.
+PREFIX		= /usr/local
+
 CHANGELOG	= CHANGELOG.md
 REPO		= ReliaQualAssociates/ramstk
 REQFILE		= requirements.txt
@@ -15,6 +17,16 @@ COVDIR		= .reports/coverage/html
 PY			= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 ROOT 		= $(shell git rev-parse --show-toplevel)
 
+# Shell commands:
+MKDIR 		= mkdir -pv
+SED			= sed
+COPY 		= cp -v
+RMDIR		= rm -fvr
+
+# Data files.
+LAYOUTS		= $(shell ls ./data/layouts)
+ICONS16		= $(shell ls ./data/icons/16x16)
+ICONS32		= $(shell ls ./data/icons/32x32)
 
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
@@ -124,7 +136,33 @@ clean-test:		## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 install: clean
-	pip install .
+	pip install . --prefix=$(PREFIX)
+	${MKDIR} "$(PREFIX)/share/RAMSTK"
+	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
+	${MKDIR} "$(PREFIX)/share/RAMSTK/icons/16x16"
+	${MKDIR} "$(PREFIX)/share/RAMSTK/icons/32x32"
+	${MKDIR} "$(PREFIX)/share/RAMSTK/logs"
+	${MKDIR} "$(PREFIX)/share/doc/ramstk"
+	${MKDIR} "$(PREFIX)/share/applications"
+	${MKDIR} "$(PREFIX)/share/pixmaps"
+	${SED} -e 's@<PREFIX>@$(PREFIX)@' "./data/Site.toml" > "$(PREFIX)/share/RAMSTK/Site.toml"
+	${COPY} "./data/RAMSTK.desktop" "$(PREFIX)/share/applications"
+	${COPY} "./data/icons/RAMSTK.png" "$(PREFIX)/share/pixmaps"
+	${COPY} "./README.md" "$(PREFIX)/share/doc/ramstk"
+	for file in ${LAYOUTS} ; do \
+		${COPY} "./data/layouts/$$file" "$(PREFIX)/share/RAMSTK/layouts/" ; \
+	done
+	for icon in ${ICONS16} ; do \
+		${COPY} "./data/icons/16x16/$$icon" "$(PREFIX)/share/RAMSTK/icons/16x16/" ; \
+	done
+	for icon in ${ICONS32} ; do \
+		${COPY} "./data/icons/32x32/$$icon" "$(PREFIX)/share/RAMSTK/icons/32x32/" ; \
+	done
+	${COPY} "./data/sqlite_program_db.sql" "$(PREFIX)/share/RAMSTK/"
+	${COPY} "./data/ramstk_common.ramstk" "$(PREFIX)/share/RAMSTK/"
+
+uninstall:
+	pip uninstall -y ramstk
 
 test.unit:
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
