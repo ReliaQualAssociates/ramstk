@@ -360,7 +360,7 @@ INSERT INTO "ramstk_hardware" VALUES(1,4,'','','',0,'S1:SS3',0.0,0.0,0.0,0,'Test
 INSERT INTO "ramstk_hardware" VALUES(1,5,'','','',0,'S1:SS4',438.19,0.0,0.0,0,'Test Sub-System 4',100.0,'','',0,0,100.0,'','','',1,0,'',1,'SS4',X'',0,'',0,0,0.0,89,45.89,2019);
 INSERT INTO "ramstk_hardware" VALUES(1,6,'','','',0,'S1:SS1:A1',832.98,0.0,0.0,0,'Test Assembly 1',100.0,'','',0,0,100.0,'Test Assembly 6','','',2,0,'',1,'A1',X'',0,'',0,0,0.0,132,12.3,2019);
 INSERT INTO "ramstk_hardware" VALUES(1,7,'','','',0,'S1:SS1:A2',1432.86,0.0,0.0,0,'Test Assembly 2',100.0,'','',0,0,100.0,'Test Assembly 7','','',2,0,'',1,'A2',X'',0,'',0,0,0.0,26,0.967,2019);
-INSERT INTO "ramstk_hardware" VALUES(1,8,'','','',4,'S1:SS1:A2:C1',0.0,0.0,0.0,0,'Test Capacitor 1',100.0,'','',0,0,100.0,'','','',7,1,'',1,'C1',X'',0,'',1,0,0.0,0,0.0,2019);
+INSERT INTO "ramstk_hardware" VALUES(1,8,'','','',4,'S1:SS1:A2:C1',0.0,0.0,0.0,0,'Test Capacitor 1',100.0,'','',0,0,100.0,'Test Capacitor','','',7,1,'',1,'C1',X'',0,'',1,0,0.0,0,0.0,2019);
 CREATE TABLE ramstk_hazard_analysis (
     fld_revision_id INTEGER,
     fld_function_id INTEGER,
