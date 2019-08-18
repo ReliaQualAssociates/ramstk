@@ -70,14 +70,17 @@ if [[ "$this_commit" =~ ^feat* ]];
 then
     let ver_minor++
     ver_patch=0
+    level="minor"
 fi
 if [[ "$this_commit" =~ ^refactor* ]];
 then
     let ver_patch++
+    level="patch"
 fi
 if [[ "$this_commit" =~ ^fix* ]];
 then
     let ver_patch++
+    level="patch"
 fi
 
 # Create the new version and tag following our rules.
@@ -98,7 +101,7 @@ fi
 # current version.
 if [ $new_version != $cur_version ];
 then
-    echo $new_version > $PWD/VERSION
+    $(bump2version ${new_version} ${level} $PWD/VERSION)
 fi
 
 # Now tag the branch with the new tag.  Only master, develop, and release
