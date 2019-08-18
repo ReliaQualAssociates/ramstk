@@ -158,6 +158,3 @@ def the_one_ring() -> None:
     #    WorkBook(_app.RAMSTK_CONFIGURATION)
 
     #Gtk.main()
-
-
-the_one_ring()
