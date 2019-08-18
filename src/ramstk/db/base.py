@@ -7,6 +7,7 @@
 """RAMSTK Base Database Module."""
 
 # Standard Library Imports
+import sqlite3
 from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
@@ -65,13 +66,29 @@ class BaseDatabase():
         :return: None
         :rtype: None
         :raise: AttributeError if passed a non-string database name.
-        :raise: sqlalchemy.exc.ArgumentError if passed an invalide database
+        :raise: sqlalchemy.exc.ArgumentError if passed an invalid database
             URL.
         :raise: sqlalchemy.exc.NoSuchModuleError if passed a database URL with
             an unknown/unsupported SQL dialect.
         """
         self.database = database
         self.engine, self.session = do_open_session(self.database)
+
+    @staticmethod
+    def do_create_program_db(database: str, sql_file: str) -> None:
+        """
+        Create a shiny new, unpopulated RAMSTK program database.
+
+        :param str database: the absolute path to the database to connect to.
+        :param str sql_file: the absolute path to the SQL file containing the
+            code to create a RAMSTK program database.
+        :return: None
+        :rtype: None
+        """
+        conn = sqlite3.connect(database)
+        conn.executescript(sql_file.read().strip())
+        conn.commit()
+        conn.close()
 
     def do_delete(self, item: object) -> None:
         """

@@ -14,8 +14,14 @@ from logging import Logger
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk import RAMSTKProgramManager
 from ramstk.configuration import (
     RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
+from ramstk.controllers import (
+    amFMEA, amFunction, amHardware, amStakeholder, amValidation, dmFMEA,
+    dmFunction, dmHardware, dmOptions, dmPoF, dmRequirement, dmRevision,
+    dmStakeholder, dmValidation, mmHardware, mmRequirement, mmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
@@ -100,14 +106,34 @@ def the_one_ring() -> None:
     do_load_variables(site_db, site_configuration)
     _logger.info("Loaded global RAMSTK configuration variables.")
 
-    _logger.info(
-        "Initializing RAMSTK analysis managers, data managers, and matrix "
-        "managers."
-    )
-    _logger.info(
-        "Initialized RAMSTK analysis managers, data managers, and matrix "
-        "managers."
-    )
+    _logger.info("Initializing the RAMSTK application.")
+    _program_mgr = RAMSTKProgramManager()
+    _program_mgr.dic_managers['revision']['data'] = dmRevision()
+    _program_mgr.dic_managers['function']['data'] = dmFunction()
+    _program_mgr.dic_managers['function']['analysis'] = amFunction(
+        user_configuration)
+    _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)
+    _program_mgr.dic_managers['ffmea']['data'] = dmFMEA(functional=True)
+    _program_mgr.dic_managers['requirement']['data'] = dmRequirement()
+    _program_mgr.dic_managers['requirement']['matrix'] = mmRequirement()
+    _program_mgr.dic_managers['stakeholder']['analysis'] = amStakeholder(
+        user_configuration)
+    _program_mgr.dic_managers['stakeholder']['data'] = dmStakeholder()
+    _program_mgr.dic_managers['hardware']['analysis'] = amHardware(
+        user_configuration)
+    _program_mgr.dic_managers['hardware']['data'] = dmHardware()
+    _program_mgr.dic_managers['hardware']['matrix'] = mmHardware()
+    _program_mgr.dic_managers['fmea']['analysis'] = amFMEA(user_configuration)
+    _program_mgr.dic_managers['fmea']['data'] = dmFMEA()
+    _program_mgr.dic_managers['pof']['data'] = dmPoF()
+    _program_mgr.dic_managers['validation']['analysis'] = amValidation(
+        user_configuration)
+    _program_mgr.dic_managers['validation']['data'] = dmValidation()
+    _program_mgr.dic_managers['validation']['matrix'] = mmValidation()
+    _program_mgr.dic_managers['options']['data'] = dmOptions(
+        common_dao=_site_db)
+    _program_mgr.user_configuration = user_configuration
+    _logger.info("Initialized the RAMSTK application.")
 
     _logger.info("Launching RAMSTK GUI.")
     _logger.info("Launched RAMSTK GUI.")

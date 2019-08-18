@@ -158,6 +158,7 @@ install: clean
 	for icon in ${ICONS32} ; do \
 		${COPY} "./data/icons/32x32/$$icon" "$(PREFIX)/share/RAMSTK/icons/32x32/" ; \
 	done
+	${COPY} "./data/sqlite_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/ramstk_common.ramstk" "$(PREFIX)/share/RAMSTK/"
 
 uninstall:
