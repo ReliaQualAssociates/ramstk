@@ -660,10 +660,14 @@ def test_format_file():
 
 
 @pytest.fixture
-def test_export_file():
-    """Create a test file base for export testing."""
+def test_export_dir():
+    """Create a directroy for export testing."""
     # This simply creates the base name of the file and directory to create it
     # in.  A test would need to add the appropriate file extension.
-    _test_file = TMP_DIR + '/test_export'
+    _test_export_dir = TMP_DIR + '/test_exports/'
+    if os.path.exists(_test_export_dir):
+        shutil.rmtree(_test_export_dir)
 
-    yield _test_file
+    os.makedirs(_test_export_dir)
+
+    yield _test_export_dir
