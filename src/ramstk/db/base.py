@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import sqlite3
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, TextIO, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -75,7 +75,7 @@ class BaseDatabase():
         self.engine, self.session = do_open_session(self.database)
 
     @staticmethod
-    def do_create_program_db(database: str, sql_file: str) -> None:
+    def do_create_program_db(database: str, sql_file: TextIO) -> None:
         """
         Create a shiny new, unpopulated RAMSTK program database.
 

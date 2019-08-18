@@ -8,11 +8,15 @@
 
 # Standard Library Imports
 import re
-from typing import Dict
+from typing import Dict, TextIO
 
 # Third Party Imports
 from pubsub import pub
 from sqlalchemy.exc import ArgumentError, NoSuchModuleError
+
+# RAMSTK Package Imports
+from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.db.base import BaseDatabase
 
 
 class RAMSTKProgramManager:
@@ -92,8 +96,8 @@ class RAMSTKProgramManager:
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.user_configuration = None
-        self.program_dao = None
+        self.user_configuration: RAMSTKUserConfiguration = None
+        self.program_dao: BaseDatabase = None
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_create_program, 'request_create_program')
@@ -102,7 +106,8 @@ class RAMSTKProgramManager:
         pub.subscribe(self.do_close_program, 'request_close_program')
         pub.subscribe(self.do_save_program, 'request_update_program')
 
-    def do_create_program(self, program_db: object, database: str) -> None:
+    def do_create_program(self, program_db: BaseDatabase,
+                          database: TextIO) -> None:
         """
         Create a new RAMSTK Program database.
 
@@ -123,7 +128,7 @@ class RAMSTKProgramManager:
                         program_db=self.program_dao,
                         database=database)
 
-    def do_open_program(self, program_db: object, database: str) -> None:
+    def do_open_program(self, program_db: BaseDatabase, database: str) -> None:
         """
         Open an RAMSTK Program database for analyses.
 
@@ -140,17 +145,17 @@ class RAMSTKProgramManager:
             self.program_dao.do_connect(database)
             pub.sendMessage('succeed_connect_program_database')
             pub.sendMessage('request_retrieve_revisions')
-        except ArgumentError:
-            _error_msg = (
-                "The database URL {0:s} did not conform to the "
-                "RFC 1738 standard and could not be opened.".format(database))
-            pub.sendMessage('fail_connect_program_database',
-                            error_message=_error_msg)
         except NoSuchModuleError:
             _d = re.search('://', database)
             _dialect = database[:_d.start(0)]
             _error_msg = ("RAMSTK does not currently support database dialect "
                           "{0:s}.".format(_dialect))
+            pub.sendMessage('fail_connect_program_database',
+                            error_message=_error_msg)
+        except ArgumentError:
+            _error_msg = (
+                "The database URL {0:s} did not conform to the "
+                "RFC 1738 standard and could not be opened.".format(database))
             pub.sendMessage('fail_connect_program_database',
                             error_message=_error_msg)
         except AttributeError:

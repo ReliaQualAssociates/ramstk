@@ -18,7 +18,8 @@ from ramstk.db.base import BaseDatabase
 from ramstk.ramstk import RAMSTKProgramManager
 
 
-@pytest.mark.usefixtures('make_home_config_dir', 'test_program_dao', 'test_toml_user_configuration')
+@pytest.mark.usefixtures('make_home_config_dir', 'test_program_dao',
+                         'test_toml_user_configuration')
 class TestProgramManager():
     """Test class for the RAMSTK Program Manager."""
     def on_succeed_open_program(self):
@@ -31,7 +32,8 @@ class TestProgramManager():
         print("\033[35m\nfail_connect_program_database topic was broadcast.")
 
     def on_fail_open_program_unknown_dialect(self, error_message):
-        assert error_message == ('')
+        assert error_message == ('RAMSTK does not currently support database '
+                                 'dialect http.')
         print("\033[35m\nfail_connect_program_database topic was broadcast.")
 
     def on_fail_open_program_non_string_url(self, error_message):
@@ -70,9 +72,7 @@ class TestProgramManager():
     def on_succeed_create_program(self, program_db, database):
         assert isinstance(program_db, BaseDatabase)
         assert database == '/tmp/_ramstk_program_db.ramstk'
-        print(
-            "\033[36m\nsucceed_create_program_database topic was broadcast"
-        )
+        print("\033[36m\nsucceed_create_program_database topic was broadcast")
 
     @pytest.mark.unit
     def test_create_program_manager(self):
@@ -140,7 +140,7 @@ class TestProgramManager():
         pub.unsubscribe(self.on_fail_open_program_bad_url,
                         'fail_connect_program_database')
 
-    @pytest.mark.skip
+    @pytest.mark.unit
     def test_do_open_program_unknown_dialect(self):
         """do_open_program() should broadcast the fail message when attempting to open a database of unsupported dialect."""
         pub.subscribe(self.on_fail_open_program_unknown_dialect,
@@ -200,12 +200,18 @@ class TestProgramManager():
     @pytest.mark.unit
     def test_save_program(self, test_program_dao):
         """do_save_program() should cause all workstream modules to execute their save_all() method."""
-        pub.subscribe(self.on_request_update_revision, 'request_update_all_revisions')
-        pub.subscribe(self.on_request_update_function, 'request_update_all_functions')
-        pub.subscribe(self.on_request_update_requirement, 'request_update_all_requirements')
-        pub.subscribe(self.on_request_update_stakeholder, 'request_update_all_stakeholders')
-        pub.subscribe(self.on_request_update_hardware, 'request_update_all_hardware')
-        pub.subscribe(self.on_request_update_validation, 'request_update_all_validation')
+        pub.subscribe(self.on_request_update_revision,
+                      'request_update_all_revisions')
+        pub.subscribe(self.on_request_update_function,
+                      'request_update_all_functions')
+        pub.subscribe(self.on_request_update_requirement,
+                      'request_update_all_requirements')
+        pub.subscribe(self.on_request_update_stakeholder,
+                      'request_update_all_stakeholders')
+        pub.subscribe(self.on_request_update_hardware,
+                      'request_update_all_hardware')
+        pub.subscribe(self.on_request_update_validation,
+                      'request_update_all_validation')
 
         _database = test_program_dao.database
 
@@ -215,17 +221,24 @@ class TestProgramManager():
 
         assert DUT.program_dao.database == _database
 
-        pub.unsubscribe(self.on_request_update_revision, 'request_update_all_revisions')
-        pub.unsubscribe(self.on_request_update_function, 'request_update_all_functions')
-        pub.unsubscribe(self.on_request_update_requirement, 'request_update_all_requirements')
-        pub.unsubscribe(self.on_request_update_stakeholder, 'request_update_all_stakeholders')
-        pub.unsubscribe(self.on_request_update_hardware, 'request_update_all_hardware')
-        pub.unsubscribe(self.on_request_update_validation, 'request_update_all_validation')
+        pub.unsubscribe(self.on_request_update_revision,
+                        'request_update_all_revisions')
+        pub.unsubscribe(self.on_request_update_function,
+                        'request_update_all_functions')
+        pub.unsubscribe(self.on_request_update_requirement,
+                        'request_update_all_requirements')
+        pub.unsubscribe(self.on_request_update_stakeholder,
+                        'request_update_all_stakeholders')
+        pub.unsubscribe(self.on_request_update_hardware,
+                        'request_update_all_hardware')
+        pub.unsubscribe(self.on_request_update_validation,
+                        'request_update_all_validation')
 
     @pytest.mark.unit
     def test_do_create_program(self, test_toml_user_configuration):
         """do_create_program() should broadcast the success message if it attempts to close a database when not connected."""
-        pub.subscribe(self.on_succeed_create_program, 'succeed_create_program_database')
+        pub.subscribe(self.on_succeed_create_program,
+                      'succeed_create_program_database')
 
         DUT = RAMSTKProgramManager()
         DUT.user_configuration = test_toml_user_configuration
@@ -233,4 +246,5 @@ class TestProgramManager():
 
         assert os.path.exists('/tmp/_ramstk_program_db.ramstk')
 
-        pub.unsubscribe(self.on_succeed_create_program, 'succeed_create_program_database')
+        pub.unsubscribe(self.on_succeed_create_program,
+                        'succeed_create_program_database')
