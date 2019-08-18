@@ -22,7 +22,7 @@
 # --------------------------------------------------------------------------- #
 
 # Get the current version from setup.py and remove the single quotes.
-cur_version=$(grep -m1 "RAMSTK_VERSION" $PWD/src/ramstk/__version__.py | cut -d '=' -f2)
+cur_version=$(cat $PWD/VERSION)
 cur_version=${cur_version//\'}
 
 # Get the lastest RAMSTK tag and the latest commit's SHA-1.
@@ -98,7 +98,7 @@ fi
 # current version.
 if [ $new_version != $cur_version ];
 then
-    sed -i "s/^\(RAMSTK_VERSION\s*=\s*\).*$/\1'$new_version'/" $PWD/src/ramstk/__version__.py
+    echo $new_version > $PWD/VERSION
 fi
 
 # Now tag the branch with the new tag.  Only master, develop, and release

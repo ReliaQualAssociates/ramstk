@@ -11,11 +11,12 @@ from setuptools.command.install import install as _install
 from setuptools.command.sdist import sdist
 from setuptools.command.test import test
 
-# RAMSTK Package Imports
-from ramstk.__version__ import RAMSTK_VERSION
+HERE = os.path.abspath(os.path.dirname(__file__))
+# Read the contents of the VERSION file.
+with open(os.path.join(HERE, 'VERSION'), encoding='utf-8') as f:
+    RAMSTK_VERSION = f.read()
 
 # Read the contents of the README file.
-HERE = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(HERE, 'README.md'), encoding='utf-8') as f:
     __long_description__ = f.read()
 
