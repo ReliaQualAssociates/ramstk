@@ -11,13 +11,16 @@ from setuptools.command.install import install as _install
 from setuptools.command.sdist import sdist
 from setuptools.command.test import test
 
-# Read the contents of your README file
+# RAMSTK Package Imports
+from ramstk.__version__ import RAMSTK_VERSION
+
+# Read the contents of the README file.
 HERE = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(HERE, 'README.md'), encoding='utf-8') as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'
-__version__ = '1.0.4'
+__version__ = RAMSTK_VERSION
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "doyle.rowland@reliaqual.com"
 __trove__ = [
@@ -147,7 +150,8 @@ if __name__ == '__main__':
         ],
         classifiers=__trove__,
         entry_points={
-            'console_scripts': ['ramstk = ramstk:__main__'],
+            'console_scripts': ['ramstk = ramstk.__main__:the_one_ring'],
+            'gui_scripts': ['ramstk = ramstk.__main__:the_one_ring']
         },
         package_data={},
         dependency_links=[],
@@ -156,5 +160,5 @@ if __name__ == '__main__':
             'install': Install,
             'sdist': Sdist,
             'test': MyTest
-        },
+        }
     )
