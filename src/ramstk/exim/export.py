@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.exim.exports.py is part of The RAMSTK Project
+#       ramstk.exim.export.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -8,6 +8,7 @@
 
 # Standard Library Imports
 import os
+from typing import Any, Dict, List
 
 # Third Party Imports
 import pandas as pd
@@ -92,12 +93,12 @@ class Export:
     def __init__(self) -> None:
         """Initialize an Export module instance."""
         # Initialize private dictionary attributes.
-        self._dic_output_data = {}
+        self._dic_output_data: Dict[str, List[Any]] = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._df_output_data = None
+        self._df_output_data: pd.DataFrame = None
 
         # Initialize public dictionary attributes.
 
@@ -124,7 +125,7 @@ class Export:
                 - CSV (using a semi-colon (;) delimiter)
                 - Excel
                 - Text (using a blank space delimiter)
-                - PDF [Future]]
+                - PDF [Future]
         :param str file_name: the name, with full path, of the file to export
             the RAMSTK Progam database data to.
         :return: None
@@ -175,7 +176,7 @@ class Export:
             pub.sendMessage('request_get_all_validation_attributes',
                             node_id=node_id)
 
-    def _do_load_data(self, attributes) -> None:
+    def _do_load_data(self, attributes: Dict[str, Any]) -> None:
         """
         Load the attribute data into a Pandas DataFrame.
 

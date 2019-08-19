@@ -63,181 +63,78 @@ IMPORT_LOG = LOG_DIR + '/RAMSTK_import.log'
 
 HEADERS = {
     'Function': [
-        'Revision ID',
-        'Function ID',
-        'Level',
-        'Function Code',
-        'Function Name',
-        'Parent',
-        'Remarks',
-        'Safety Critical',
-        'Type',
+        'Revision ID', 'Function ID', 'Level', 'Function Code',
+        'Function Name', 'Parent', 'Remarks', 'Safety Critical', 'Type'
     ],
     'Requirement': [
-        'Revision ID',
-        'Requirement ID',
-        'Derived?',
-        'Requirement',
-        'Figure Number',
-        'Owner',
-        'Page Number',
-        'Parent ID',
-        'Priority',
-        'Requirement Code',
-        'Specification',
-        'Requirement Type',
-        'Validated?',
-        'Validated Date',
+        'Revision ID', 'Requirement ID', 'Derived?', 'Requirement',
+        'Figure Number', 'Owner', 'Page Number', 'Parent ID', 'Priority',
+        'Requirement Code', 'Specification', 'Requirement Type', 'Validated?',
+        'Validated Date'
     ],
     'Hardware': [
-        'Revision ID',
-        'Hardware ID',
-        'Alt. Part Num.',
-        'CAGE Code',
-        'Category',
-        'Comp. Ref. Des.',
-        'Unit Cost',
-        'Cost Type',
-        'Description',
-        'Duty Cycle',
-        'Fig. Num.',
-        'LCN',
-        'Level',
-        'Supplier',
-        'Mission Time',
-        'Name',
-        'NSN',
-        'Page Num.',
-        'Parent ID',
-        'Part?',
-        'PN',
-        'Quantity',
-        'Ref. Des.',
-        'Remarks',
-        'Repairable?',
-        'Specification',
-        'SubCat',
-        'Tagged',
-        'Year of Manufacture',
-        'App. ID',
-        'Area',
-        'Capacitance',
-        'Configuration',
-        'Construction ID',
-        'Contact Form',
-        'Constact Gauge',
-        'Contact Rating ID',
-        'Operating Current',
-        'Rated Current',
-        'Current Ratio',
-        'Active Environment',
-        'Dormant Environment',
-        'Family',
-        'Feature Size',
-        'Operating Freq.',
-        'Insert ID',
-        'Insulation ID',
-        'Manufacturing ID',
-        'Matching',
-        'Num. Active Pins',
-        'Num. Ckt. Planes',
-        'Num. Cycles',
-        'Num. Elements',
-        'Hand Soldered',
-        'Wave Soldered',
-        'Operating Life',
-        'Overstressed?',
-        'Package ID',
-        'Operating Power',
-        'Rated Power',
-        'Power Ratio',
-        'Overstress Reason',
-        'Resistance',
-        'Specification ID',
-        'Tech. ID',
-        'Active Temp.',
-        'Case Temp.',
-        'Dormant Temp.',
-        'Hot Spot Temp.',
-        'Junction Temp.',
-        'Knee Temp.',
-        'Max. Rated Temp.',
-        'Min. Rated Temp.',
-        'Temperature Rise',
-        'Theta JC',
-        'Type',
-        'AC Operating Voltage',
-        'DC Operating Voltage',
-        'ESD Withstand Volts',
-        'Rated Voltage',
-        'Voltage Ratio',
-        'Weight',
-        'Years in Prod.',
-        'Add. Adj. Factor',
-        'Fail. Dist. ID',
-        'h(t) Method',
-        'h(t) Model',
-        'Specified h(t)',
-        'h(t) Type',
-        'Location',
-        'Specified MTBF',
-        'Mult. Adj. Factor',
-        'Quality',
-        'R(t) Goal',
-        'R(t) Goal Measure',
-        'Scale Parameter',
-        'Shape Parameter',
-        'Surv. Analysis',
+        'Revision ID', 'Hardware ID', 'Alt. Part Num.', 'CAGE Code',
+        'Category', 'Comp. Ref. Des.', 'Unit Cost', 'Cost Type', 'Description',
+        'Duty Cycle', 'Fig. Num.', 'LCN', 'Level', 'Supplier', 'Mission Time',
+        'Name', 'NSN', 'Page Num.', 'Parent ID', 'Part?', 'PN', 'Quantity',
+        'Ref. Des.', 'Remarks', 'Repairable?', 'Specification', 'SubCat',
+        'Tagged', 'Year of Manufacture', 'App. ID', 'Area', 'Capacitance',
+        'Configuration', 'Construction ID', 'Contact Form', 'Constact Gauge',
+        'Contact Rating ID', 'Operating Current', 'Rated Current',
+        'Current Ratio', 'Active Environment', 'Dormant Environment', 'Family',
+        'Feature Size', 'Operating Freq.', 'Insert ID', 'Insulation ID',
+        'Manufacturing ID', 'Matching', 'Num. Active Pins', 'Num. Ckt. Planes',
+        'Num. Cycles', 'Num. Elements', 'Hand Soldered', 'Wave Soldered',
+        'Operating Life', 'Overstressed?', 'Package ID', 'Operating Power',
+        'Rated Power', 'Power Ratio', 'Overstress Reason', 'Resistance',
+        'Specification ID', 'Tech. ID', 'Active Temp.', 'Case Temp.',
+        'Dormant Temp.', 'Hot Spot Temp.', 'Junction Temp.', 'Knee Temp.',
+        'Max. Rated Temp.', 'Min. Rated Temp.', 'Temperature Rise', 'Theta JC',
+        'Type', 'AC Operating Voltage', 'DC Operating Voltage',
+        'ESD Withstand Volts', 'Rated Voltage', 'Voltage Ratio', 'Weight',
+        'Years in Prod.', 'Add. Adj. Factor', 'Fail. Dist. ID', 'h(t) Method',
+        'h(t) Model', 'Specified h(t)', 'h(t) Type', 'Location',
+        'Specified MTBF', 'Mult. Adj. Factor', 'Quality', 'R(t) Goal',
+        'R(t) Goal Measure', 'Scale Parameter', 'Shape Parameter',
+        'Surv. Analysis'
     ],
     'Validation': [
-        'Revision ID',
-        'Validation ID',
-        'Maximum Acceptable',
-        'Mean Acceptable',
-        'Minimum Acceptable',
-        'Acceptable Variance',
-        's-Confidence',
-        'Avg. Task Cost',
-        'Max. Task Cost',
-        'Min. Task Cost',
-        'Start Date',
-        'Finish Date',
-        'Description',
-        'Unit of Measure',
-        'Task Name',
-        'Status',
-        'Type',
-        'Task Spec.',
-        'Average Task Time',
-        'Maximum Task Time',
-        'Minimum Task Time',
-    ],
+        'Revision ID', 'Validation ID', 'Maximum Acceptable',
+        'Mean Acceptable', 'Minimum Acceptable', 'Acceptable Variance',
+        's-Confidence', 'Avg. Task Cost', 'Max. Task Cost', 'Min. Task Cost',
+        'Start Date', 'Finish Date', 'Description', 'Unit of Measure',
+        'Task Name', 'Status', 'Type', 'Task Spec.', 'Average Task Time',
+        'Maximum Task Time', 'Minimum Task Time'
+    ]
 }
 
 # Row data for the Function import test file.
 ROW_DATA = [
     [
-        1,
-        4,
-        1,
-        'PRESS-001',
-        'Maintain system pressure.',
-        0,
+        1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
         'This is a function that is about system pressure.  This remarks box also needs to be larger.',
-        1,
-        0,
+        1, 0
     ],
     [
-        1,
-        5,
-        1,
-        'FLOW-001',
-        'Maintain system flow.',
-        0,
+        1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
         'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
-        0,
-        0,
+        0, 0
     ],
+    [
+        1, 10, 0, 'Gotta do something', "Fig. 1", "You", "3.2-1", 0, 4,
+        'GEN-001', "Spec. 12", "Hard One to Meet", 0, '2019-08-18'
+    ],
+    [
+        1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported', 87.0, '',
+        '', 1, '', 72.0, 'Imported System', '', '', 0, 0, '', 1, 'S1',
+        b'Remarks in a binary field.', 1, '', 0, 0, 2018, 0, 0.0, 0.0, 0, 0, 0,
+        0.0, 0, 0.0, 0.0, 0.0, 4, 1, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0, 0, 0.0, 0,
+        0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, b'Overstress Reason', 0.0, 0, 0, 30.0,
+        30.0, 25.0, 0.0, 0.0, 40.0, 125.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 1.0, 0.0, 0, 0, 0, 0.0, 0, 0.0, 0.0, 1.0, 2, 0.95, 0,
+        0.0, 0.0, 0
+    ],
+    [1, 12, 832.5, 799.0, 612.3, 226.4, 0.9, 350.00, 500.00, 275.00, '2019-08-18', '2019-09-01', 'Validation task that was imported by test suite.', 0, '', '', 0, '', 120.0, 140.0, 95.0]
 ]
 
 
@@ -563,6 +460,7 @@ def test_csv_file_requirement():
             quoting=csv.QUOTE_MINIMAL,
         )
         filewriter.writerow(HEADERS['Requirement'])
+        filewriter.writerow(ROW_DATA[2])
 
     yield _test_file
 
@@ -580,6 +478,7 @@ def test_csv_file_hardware():
             quoting=csv.QUOTE_MINIMAL,
         )
         filewriter.writerow(HEADERS['Hardware'])
+        filewriter.writerow(ROW_DATA[3])
 
     yield _test_file
 
@@ -597,6 +496,7 @@ def test_csv_file_validation():
             quoting=csv.QUOTE_MINIMAL,
         )
         filewriter.writerow(HEADERS['Validation'])
+        filewriter.writerow(ROW_DATA[4])
 
     yield _test_file
 
@@ -615,7 +515,7 @@ def test_excel_file():
         _col += 1
 
     _row_num = 1
-    for _row in ROW_DATA:
+    for _row in ROW_DATA[:2]:
         for _data in enumerate(_row):
             _sheet.write(_row_num, _data[0], _data[1])
         _row_num += 1

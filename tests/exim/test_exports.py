@@ -79,7 +79,7 @@ def test_header_lists():
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestExport():
-    """Test class for export functions."""
+    """Test class for export methods."""
     @pytest.mark.unit
     def test_do_load_output_function(self, test_program_dao):
         """do_load_output() should return a Pandas DataFrame when loading Functions for export."""
