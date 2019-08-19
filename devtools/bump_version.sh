@@ -101,7 +101,7 @@ fi
 # current version.
 if [ $new_version != $cur_version ];
 then
-    $(bump2version ${new_version} ${level} $PWD/VERSION)
+    $(bump2version --current-version ${cur_version} ${level} $PWD/VERSION)
 fi
 
 # Now tag the branch with the new tag.  Only master, develop, and release
