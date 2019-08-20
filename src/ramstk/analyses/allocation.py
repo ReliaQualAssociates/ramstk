@@ -13,8 +13,8 @@ from math import exp, log
 from pubsub import pub
 
 
-def _calculate_agree_apportionment(time_i, weight_factor,
-                                   n_sub_systems, n_sub_elements, parent_goal):
+def _calculate_agree_apportionment(time_i, weight_factor, n_sub_systems,
+                                   n_sub_elements, parent_goal):
     """
     Perform an AGREE apportionment of a reliability requirement.
 
@@ -44,20 +44,20 @@ def _calculate_agree_apportionment(time_i, weight_factor,
     except ValueError:
         pub.sendMessage(
             'fail_allocate_reliability',
-            error_msg=("Failed to apportion reliability using the "
-                       "AGREE method; zero or negative value "
-                       "passed for parent hardware item's goal.  "
-                       "Parent goal is {0:f}.").format(parent_goal))
+            error_message=("Failed to apportion reliability using the "
+                           "AGREE method; zero or negative value "
+                           "passed for parent hardware item's goal.  "
+                           "Parent goal is {0:f}.").format(parent_goal))
     except ZeroDivisionError:
         pub.sendMessage('fail_allocate_reliability',
-                        error_msg=("Failed to apportion reliability using the "
-                                   "AGREE method; one or more inputs had a "
-                                   "value of 0.0.  Subsystem mission "
-                                   "time={0:f}, weight factor={1:f}, # of "
-                                   "subsystems={2:d}, # of "
-                                   "subelements={3:d}.").format(
-                                       time_i, weight_factor, n_sub_systems,
-                                       n_sub_elements))
+                        error_message=("Failed to apportion reliability using "
+                                       "the AGREE method; one or more inputs "
+                                       "had a value of 0.0.  Subsystem "
+                                       "mission time={0:f}, weight "
+                                       "factor={1:f}, # of subsystems={2:d}, "
+                                       "# of subelements={3:d}.").format(
+                                           time_i, weight_factor,
+                                           n_sub_systems, n_sub_elements))
 
 
 def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
@@ -81,13 +81,15 @@ def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
     except ZeroDivisionError:
         _mtbf_alloc = _hazard_rate_alloc = _reliability_alloc = 0.0
         pub.sendMessage('fail_allocate_reliability',
-                        error_msg=("Failed to apportion reliability using the "
-                                   "ARINC method; one or more inputs had a "
-                                   "value of 0.0. Weight factor={0:f} and "
-                                   "parent goal={1:f}.").format(
-                                       weight_factor, parent_goal))
+                        error_message=("Failed to apportion reliability using "
+                                       "the ARINC method; one or more inputs "
+                                       "had a value of 0.0. Weight "
+                                       "factor={0:f} and parent "
+                                       "goal={1:f}.").format(
+                                           weight_factor, parent_goal))
 
     return _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc
+
 
 def _calculate_equal_apportionment(mission_time, weight_factor, parent_goal):
     """
@@ -112,26 +114,28 @@ def _calculate_equal_apportionment(mission_time, weight_factor, parent_goal):
         if parent_goal < 0.0:
             pub.sendMessage(
                 'fail_allocate_reliability',
-                error_msg=("Failed to apportion reliability using the "
-                           "equal method; a negative or zero value passed for "
-                           "parent hardware item's goal.  Parent goal is "
-                           "{0:f}.").format(parent_goal))
+                error_message=(
+                    "Failed to apportion reliability using the "
+                    "equal method; a negative or zero value passed for "
+                    "parent hardware item's goal.  Parent goal is "
+                    "{0:f}.").format(parent_goal))
         else:
             raise
     except ValueError:
         pub.sendMessage(
             'fail_allocate_reliability',
-            error_msg=("Failed to apportion reliability using the "
-                       "equal method; a negative or zero value passed for "
-                       "parent hardware item's goal.  Parent goal is "
-                       "{0:f}.").format(parent_goal))
+            error_message=("Failed to apportion reliability using the "
+                           "equal method; a negative or zero value passed for "
+                           "parent hardware item's goal.  Parent goal is "
+                           "{0:f}.").format(parent_goal))
     except ZeroDivisionError:
-        pub.sendMessage('fail_allocate_reliability',
-                        error_msg=("Failed to apportion reliability using the "
-                                   "equal method; one or more inputs had a "
-                                   "value of 0.0. Mission time={0:f} and "
-                                   "weight factor={1:f}.").format(
-                                       mission_time, weight_factor))
+        pub.sendMessage(
+            'fail_allocate_reliability',
+            error_message=("Failed to apportion reliability using the "
+                           "equal method; one or more inputs had a "
+                           "value of 0.0. Mission time={0:f} and "
+                           "weight factor={1:f}.").format(
+                               mission_time, weight_factor))
 
 
 def _calculate_foo_apportionment(factors, mission_time, cum_weight,
@@ -160,20 +164,20 @@ def _calculate_foo_apportionment(factors, mission_time, cum_weight,
         return (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc,
                 _weight_factor, _percent_weight_factor)
     except ZeroDivisionError:
-        pub.sendMessage('fail_allocate_reliability',
-                        error_msg=("Failed to apportion reliability using the "
-                                   "Feasibility of Objectives method; one or "
-                                   "more inputs had a value of 0.0. "
-                                   "Intricacy factor={0:d}, state of the art "
-                                   "factor={1:d}, operating time "
-                                   "factor={2:d}, environment factor={3:d}, "
-                                   "cumulative weight={4:d}, parent "
-                                   "goal={5:f}.").format(
-                                       factors['intricacy'],
-                                       factors['state_of_art'],
-                                       factors['operating_time'],
-                                       factors['environment'], cum_weight,
-                                       parent_goal))
+        pub.sendMessage(
+            'fail_allocate_reliability',
+            error_message=("Failed to apportion reliability using the "
+                           "Feasibility of Objectives method; one or "
+                           "more inputs had a value of 0.0. "
+                           "Intricacy factor={0:d}, state of the art "
+                           "factor={1:d}, operating time "
+                           "factor={2:d}, environment factor={3:d}, "
+                           "cumulative weight={4:d}, parent "
+                           "goal={5:f}.").format(factors['intricacy'],
+                                                 factors['state_of_art'],
+                                                 factors['operating_time'],
+                                                 factors['environment'],
+                                                 cum_weight, parent_goal))
 
 
 def _from_hazard_rate_goal(mission_time, hazard_rate_goal):
@@ -194,7 +198,7 @@ def _from_hazard_rate_goal(mission_time, hazard_rate_goal):
         _reliability_goal = 0.0
         pub.sendMessage(
             'fail_calculate_allocation_goal',
-            error_msg=(
+            error_message=(
                 "Failed to calculate the MTBF and "
                 "reliability goals given the hazard rate "
                 "goal.  Hazard rate goal={0:f}.").format(hazard_rate_goal))
@@ -218,10 +222,11 @@ def _from_mtbf_goal(mission_time, mtbf_goal):
     except ZeroDivisionError:
         _hazard_rate_goal = 0.0
         _reliability_goal = 0.0
-        pub.sendMessage('fail_calculate_allocation_goal',
-                        error_msg=("Failed to calculate the hazard rate and "
-                                   "reliability goals given the MTBF goal.  "
-                                   "MTBF goal={0:f}.").format(mtbf_goal))
+        pub.sendMessage(
+            'fail_calculate_allocation_goal',
+            error_message=("Failed to calculate the hazard rate and "
+                           "reliability goals given the MTBF goal.  "
+                           "MTBF goal={0:f}.").format(mtbf_goal))
 
     return _hazard_rate_goal, _reliability_goal
 
@@ -244,7 +249,7 @@ def _from_reliability_goal(mission_time, reliability_goal):
         _hazard_rate_goal = 0.0
         pub.sendMessage(
             'fail_calculate_allocation_goal',
-            error_msg=(
+            error_message=(
                 "Failed to calculate the MTBF and "
                 "hazard rate goals given the reliability "
                 "goal.  Reliability goal={0:f}.").format(reliability_goal))

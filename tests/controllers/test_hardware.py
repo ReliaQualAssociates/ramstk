@@ -610,8 +610,8 @@ class TestDeleteMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
-        def on_message(error_msg):
-            assert error_msg == 'Attempted to delete non-existent hardware ID 300.'
+        def on_message(error_message):
+            assert error_message == 'Attempted to delete non-existent hardware ID 300.'
 
         pub.subscribe(on_message, 'fail_delete_hardware')
 
@@ -799,8 +799,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     @pytest.mark.parametrize("method_id", [1, 2, 3, 4])
-    def test_do_get_allocation_goal(self, test_program_dao, test_toml_user_configuration,
-                                    method_id):
+    def test_do_get_allocation_goal(self, test_program_dao,
+                                    test_toml_user_configuration, method_id):
         """do_calculate_goal() should return the proper allocation goal measure."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
@@ -949,10 +949,11 @@ class TestInsertMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
-        def on_message(error_msg):
-            assert error_msg == ('Attempting to insert a hardware assembly or '
-                                 'component/piece part as a child of another '
-                                 'component/piece part.')
+        def on_message(error_message):
+            assert error_message == (
+                'Attempting to insert a hardware assembly or '
+                'component/piece part as a child of another '
+                'component/piece part.')
 
         pub.subscribe(on_message, 'fail_insert_hardware')
 
@@ -1082,8 +1083,8 @@ class TestUpdateMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
 
-        def on_message(error_msg):
-            assert error_msg == (
+        def on_message(error_message):
+            assert error_message == (
                 'Attempted to save non-existent hardware item '
                 'with hardware ID 100.')
 
@@ -1209,8 +1210,8 @@ class TestAnalysisMethods():
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
     @pytest.mark.integration
-    def test_do_calculate_assembly_specified_mtbf(self, test_program_dao,
-                                                  test_toml_user_configuration):
+    def test_do_calculate_assembly_specified_mtbf(
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the MTBF."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
@@ -1250,16 +1251,16 @@ class TestAnalysisMethods():
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
     @pytest.mark.integration
-    def test_do_calculate_assembly_zero_hazard_rates(self, test_program_dao,
-                                                     test_toml_user_configuration):
+    def test_do_calculate_assembly_zero_hazard_rates(
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should send the fail message when all hazard rates=0.0."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
-        def on_message(error_msg):
-            assert error_msg == (
+        def on_message(error_message):
+            assert error_message == (
                 "Failed to calculate hazard rate and/or MTBF "
                 "metrics for hardware ID 1; too many inputs "
                 "equal to zero.  Specified MTBF=285000.000000, "
@@ -1276,16 +1277,16 @@ class TestAnalysisMethods():
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
     @pytest.mark.integration
-    def test_do_calculate_assembly_zero_specified_mtbf(self, test_program_dao,
-                                                       test_toml_user_configuration):
+    def test_do_calculate_assembly_zero_specified_mtbf(
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should send the fail message when the specified MTBF=0.0."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
-        def on_message(error_msg):
-            assert error_msg == (
+        def on_message(error_message):
+            assert error_message == (
                 "Failed to calculate hazard rate and/or MTBF "
                 "metrics for hardware ID 1; too many inputs "
                 "equal to zero.  Specified MTBF=0.000000, active "
@@ -1507,16 +1508,16 @@ class TestMilHdbk217FPredictions():
 class TestStressCalculations():
     """Class for stress-related calculations test suite."""
     @pytest.mark.integration
-    def test_do_calculate_part_zero_rated_current(self, test_program_dao,
-                                                  test_toml_user_configuration):
+    def test_do_calculate_part_zero_rated_current(
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated current is zero."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
-        def on_message(error_msg):
-            assert error_msg == (
+        def on_message(error_message):
+            assert error_message == (
                 'Failed to calculate current ratio for hardware '
                 'ID 10; rated current is zero.')
 
@@ -1537,8 +1538,8 @@ class TestStressCalculations():
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
-        def on_message(error_msg):
-            assert error_msg == (
+        def on_message(error_message):
+            assert error_message == (
                 'Failed to calculate power ratio for hardware '
                 'ID 10; rated power is zero.')
 
@@ -1555,16 +1556,16 @@ class TestStressCalculations():
         pub.sendMessage('request_calculate_hardware', node_id=10)
 
     @pytest.mark.integration
-    def test_do_calculate_part_zero_rated_voltage(self, test_program_dao,
-                                                  test_toml_user_configuration):
+    def test_do_calculate_part_zero_rated_voltage(
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate() should send the stress ratio calculation fail message when rated voltage is zero."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         amHardware(test_toml_user_configuration)
 
-        def on_message(error_msg):
-            assert error_msg == (
+        def on_message(error_message):
+            assert error_message == (
                 'Failed to calculate voltage ratio for hardware '
                 'ID 10; rated voltage is zero.')
 
@@ -1697,8 +1698,8 @@ class TestStressCalculations():
 class TestAllocation():
     """Class for allocation methods test suite."""
     @pytest.mark.integration
-    def test_do_calculate_goals_reliability_specified(self, test_program_dao,
-                                                      test_toml_user_configuration):
+    def test_do_calculate_goals_reliability_specified(
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent h(t) and MTBF goals from a specified reliability goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
@@ -1715,8 +1716,8 @@ class TestAllocation():
         assert DUT._attributes['mtbf_goal'] == pytest.approx(37299.5151063)
 
     @pytest.mark.integration
-    def test_do_calculate_goals_hazard_rate_specified(self, test_program_dao,
-                                                      test_toml_user_configuration):
+    def test_do_calculate_goals_hazard_rate_specified(
+            self, test_program_dao, test_toml_user_configuration):
         """do_calculate_goal() should calculate the equivalent MTBF and R(t) goals from a specified hazard rate goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
@@ -1852,9 +1853,9 @@ class TestAllocation():
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_toml_user_configuration)
 
-        def on_message(error_msg):
-            assert error_msg == ('Failed to allocate the reliability for '
-                                 'hardware ID 2; zero hazard rate.')
+        def on_message(error_message):
+            assert error_message == ('Failed to allocate the reliability for '
+                                     'hardware ID 2; zero hazard rate.')
 
         pub.subscribe(on_message, 'fail_calculate_arinc_weight_factor')
 

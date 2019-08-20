@@ -136,6 +136,6 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_update_options', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_options',
-                            error_msg=('Attempted to save non-existent '
-                                       'Option with Options ID '
-                                       '{0:s}.').format(str(node_id)))
+                            error_message=('Attempted to save non-existent '
+                                           'Option with Options ID '
+                                           '{0:s}.').format(str(node_id)))

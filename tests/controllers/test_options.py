@@ -285,8 +285,8 @@ class TestUpdateMethods():
         assert node_id == 'siteinfo'
         print("\033[36m\nsucceed_update_options topic was broadcast")
 
-    def on_fail_update_options(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_options(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent Option with Options ID 100.')
         print("\033[35m\nfail_update_options topic was broadcast")
 

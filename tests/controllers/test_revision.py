@@ -185,9 +185,9 @@ class TestDeleteMethods():
         assert node_id == 2
         print("\033[36m\nsucceed_delete_revision topic was broadcast.")
 
-    def on_fail_delete_revision(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent revision ID '
-                             '300.')
+    def on_fail_delete_revision(self, error_message):
+        assert error_message == ('Attempted to delete non-existent revision ID '
+                                 '300.')
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
     def on_succeed_delete_failure_definition(self, node_id):
@@ -195,36 +195,36 @@ class TestDeleteMethods():
         print(
             "\033[36m\nsucceed_delete_failure_definition topic was broadcast.")
 
-    def on_fail_delete_failure_definition(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent failure '
-                             'definition ID 10 from revision ID 1.')
+    def on_fail_delete_failure_definition(self, error_message):
+        assert error_message == ('Attempted to delete non-existent failure '
+                                 'definition ID 10 from revision ID 1.')
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
     def on_succeed_delete_mission(self, node_id):
         assert node_id == '1'
         print("\033[36m\nsucceed_delete_mission topic was broadcast.")
 
-    def on_fail_delete_mission(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent mission ID 10 '
-                             'from revision ID 1.')
+    def on_fail_delete_mission(self, error_message):
+        assert error_message == ('Attempted to delete non-existent mission ID '
+                                 '10 from revision ID 1.')
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
     def on_succeed_delete_mission_phase(self, node_id):
         assert node_id == '2.2'
         print("\033[36m\nsucceed_delete_mission_phase topic was broadcast.")
 
-    def on_fail_delete_mission_phase(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent mission phase '
-                             'ID 2.20 from mission ID 2.')
+    def on_fail_delete_mission_phase(self, error_message):
+        assert error_message == ('Attempted to delete non-existent mission phase '
+                                 'ID 2.20 from mission ID 2.')
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
     def on_succeed_delete_environment(self, node_id):
         assert node_id == '3.3.3'
         print("\033[36m\nsucceed_delete_environment topic was broadcast.")
 
-    def on_fail_delete_environment(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent environment ID '
-                             '3.3.30 from mission phase ID 3.3.')
+    def on_fail_delete_environment(self, error_message):
+        assert error_message == ('Attempted to delete non-existent environment ID '
+                                 '3.3.30 from mission phase ID 3.3.')
         print("\033[35m\nfail_delete_environment topic was broadcast.")
 
     @pytest.mark.integration
@@ -636,8 +636,8 @@ class TestUpdateMethods():
         assert node_id == 1
         print("\033[36m\nsucceed_update_revision topic was broadcast")
 
-    def on_fail_update_revision(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_revision(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent revision with revision ID 100.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 

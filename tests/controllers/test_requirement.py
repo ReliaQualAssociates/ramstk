@@ -226,9 +226,10 @@ class TestDeleteMethods():
         assert node_id == 3
         print("\033[36m\nsucceed_delete_requirement topic was broadcast.")
 
-    def on_fail_delete_requirement(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent requirement ID '
-                             '300.')
+    def on_fail_delete_requirement(self, error_message):
+        assert error_message == (
+            'Attempted to delete non-existent requirement ID '
+            '300.')
         print("\033[35m\nfail_delete_requirement topic was broadcast.")
 
     @pytest.mark.integration
@@ -466,9 +467,9 @@ class TestInsertMethods():
         assert node_id == 4
         print("\033[36m\nsucceed_insert_requirement topic was broadcast")
 
-    def on_fail_insert_requirement(self, error_msg):
-        assert error_msg == ('Attempting to add child requirement to '
-                             'non-existent requirement 32.')
+    def on_fail_insert_requirement(self, error_message):
+        assert error_message == ('Attempting to add child requirement to '
+                                 'non-existent requirement 32.')
         print("\033[35m\nfail_insert_requirement topic was broadcast")
 
     @pytest.mark.integration
@@ -626,8 +627,8 @@ class TestUpdateMethods():
         assert node_id == 1
         print("\033[36m\nsucceed_update_requirement topic was broadcast")
 
-    def on_fail_update_requirement(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_requirement(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent requirement with requirement ID 100.'
         )
         print("\033[35m\nfail_update_requirement topic was broadcast")

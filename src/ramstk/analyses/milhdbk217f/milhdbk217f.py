@@ -303,38 +303,40 @@ def do_predict_active_hazard_rate(**attributes):
         pub.sendMessage('succeed_predict_reliability', attributes=attributes)
     except ValueError:
         pub.sendMessage('fail_predict_reliability',
-                        error_msg=("Failed to predict MIL-HDBK-217F hazard "
-                                   "rate for hardware ID {0:d}; one or more "
-                                   "inputs has a negative or missing value. "
-                                   "Hardware item category ID={1:d}, "
-                                   "subcategory ID={2:d}, rated power={3:f}, "
-                                   "number of elements={4:d}.").format(
-                                       attributes['hardware_id'],
-                                       attributes['category_id'],
-                                       attributes['subcategory_id'],
-                                       attributes['power_rated'],
-                                       attributes['n_elements']))
+                        error_message=("Failed to predict MIL-HDBK-217F "
+                                       "hazard rate for hardware ID {0:d}; "
+                                       "one or more inputs has a negative or "
+                                       "missing value. Hardware item category "
+                                       "ID={1:d}, subcategory ID={2:d}, rated "
+                                       "power={3:f}, number of "
+                                       "elements={4:d}.").format(
+                                           attributes['hardware_id'],
+                                           attributes['category_id'],
+                                           attributes['subcategory_id'],
+                                           attributes['power_rated'],
+                                           attributes['n_elements']))
     except ZeroDivisionError:
         pub.sendMessage('fail_predict_reliability',
-                        error_msg=("Failed to predict MIL-HDBK-217F hazard "
-                                   "rate for hardware ID {0:d}; one or more "
-                                   "inputs has a value of 0.0.  Hardware item "
-                                   "category ID={1:d}, subcategory ID={2:d}, "
-                                   "operating ac voltage={3:f}, operating DC "
-                                   "voltage={4:f}, operating "
-                                   "temperature={5:f}, temperature "
-                                   "rise={10:f}, rated maximum "
-                                   "temperature={6:f}, feature size={7:f}, "
-                                   "surface area={8:f}, and item "
-                                   "weight={9:f}.").format(
-                                       attributes['hardware_id'],
-                                       attributes['category_id'],
-                                       attributes['subcategory_id'],
-                                       attributes['voltage_ac_operating'],
-                                       attributes['voltage_dc_operating'],
-                                       attributes['temperature_active'],
-                                       attributes['temperature_rated_max'],
-                                       attributes['feature_size'],
-                                       attributes['area'],
-                                       attributes['weight'],
-                                       attributes['temperature_rise']))
+                        error_message=("Failed to predict MIL-HDBK-217F "
+                                       "hazard rate for hardware ID {0:d}; "
+                                       "one or more inputs has a value of "
+                                       "0.0.  Hardware item category "
+                                       "ID={1:d}, subcategory ID={2:d}, "
+                                       "operating ac voltage={3:f}, operating "
+                                       "DC voltage={4:f}, operating "
+                                       "temperature={5:f}, temperature "
+                                       "rise={10:f}, rated maximum "
+                                       "temperature={6:f}, feature size={7:f}, "
+                                       "surface area={8:f}, and item "
+                                       "weight={9:f}.").format(
+                                           attributes['hardware_id'],
+                                           attributes['category_id'],
+                                           attributes['subcategory_id'],
+                                           attributes['voltage_ac_operating'],
+                                           attributes['voltage_dc_operating'],
+                                           attributes['temperature_active'],
+                                           attributes['temperature_rated_max'],
+                                           attributes['feature_size'],
+                                           attributes['area'],
+                                           attributes['weight'],
+                                           attributes['temperature_rise']))

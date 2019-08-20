@@ -260,29 +260,30 @@ class TestDeleteMethods():
         assert node_id == '6.3.6.6.a'
         print("\033[36m\nsucceed_delete_action topic was broadcast.")
 
-    def on_fail_delete_action(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent action '
-                             'ID 300.')
+    def on_fail_delete_action(self, error_message):
+        assert error_message == ('Attempted to delete non-existent action '
+                                 'ID 300.')
         print("\033[35m\nfail_delete_action topic was broadcast.")
 
-    def on_fail_delete_control(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent control '
-                             'ID 300.')
+    def on_fail_delete_control(self, error_message):
+        assert error_message == ('Attempted to delete non-existent control '
+                                 'ID 300.')
         print("\033[35m\nfail_delete_control topic was broadcast.")
 
-    def on_fail_delete_cause(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent failure '
-                             'cause ID 300.')
+    def on_fail_delete_cause(self, error_message):
+        assert error_message == ('Attempted to delete non-existent failure '
+                                 'cause ID 300.')
         print("\033[35m\nfail_delete_cause topic was broadcast.")
 
-    def on_fail_delete_mechanism(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent failure '
-                             'mechanism ID 300.')
+    def on_fail_delete_mechanism(self, error_message):
+        assert error_message == ('Attempted to delete non-existent failure '
+                                 'mechanism ID 300.')
         print("\033[35m\nfail_delete_mechanism topic was broadcast.")
 
-    def on_fail_delete_mode(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent failure mode '
-                             'ID 300.')
+    def on_fail_delete_mode(self, error_message):
+        assert error_message == (
+            'Attempted to delete non-existent failure mode '
+            'ID 300.')
         print("\033[35m\nfail_delete_mode topic was broadcast.")
 
     @pytest.mark.integration
@@ -398,36 +399,39 @@ class TestInsertMethods():
         assert node_id == '7.4'
         print("\033[36m\nsucceed_insert_mechanism topic was broadcast.")
 
-    def on_fail_insert_mechanism(self, error_msg):
-        assert error_msg == ('Attempting to add a failure mechanism to '
-                             'unknown failure mode ID 40.')
+    def on_fail_insert_mechanism(self, error_message):
+        assert error_message == ('Attempting to add a failure mechanism to '
+                                 'unknown failure mode ID 40.')
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     def on_succeed_insert_cause(self, node_id):
         assert node_id == '7.4.7'
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
-    def on_fail_insert_cause(self, error_msg):
-        assert error_msg == ('Attempting to add a failure cause to unknown '
-                             'failure mode ID 7 or mechanism ID 40.')
+    def on_fail_insert_cause(self, error_message):
+        assert error_message == (
+            'Attempting to add a failure cause to unknown '
+            'failure mode ID 7 or mechanism ID 40.')
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     def on_succeed_insert_control(self, node_id):
         assert node_id == '7.4.7.7.c'
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
-    def on_fail_insert_control(self, error_msg):
-        assert error_msg == ('Attempting to add a control to unknown failure '
-                             'cause ID 40.')
+    def on_fail_insert_control(self, error_message):
+        assert error_message == (
+            'Attempting to add a control to unknown failure '
+            'cause ID 40.')
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
     def on_succeed_insert_action(self, node_id):
         assert node_id == '7.4.7.7.a'
         print("\033[36m\nsucceed_insert_action topic was broadcast.")
 
-    def on_fail_insert_action(self, error_msg):
-        assert error_msg == ('Attempting to add an action to unknown failure '
-                             'cause ID 40.')
+    def on_fail_insert_action(self, error_message):
+        assert error_message == (
+            'Attempting to add an action to unknown failure '
+            'cause ID 40.')
         print("\033[35m\nfail_insert_action topic was broadcast.")
 
     @pytest.mark.integration
@@ -832,8 +836,8 @@ class TestUpdateMethods():
         assert node_id == '5'
         print("\033[36m\nsucceed_update_fmea topic was broadcast")
 
-    def on_fail_update_fmea(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_fmea(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent FMEA element with FMEA ID 100.')
         print("\033[35m\nfail_update_fmea topic was broadcast")
 

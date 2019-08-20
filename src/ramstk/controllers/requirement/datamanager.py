@@ -79,7 +79,8 @@ class DataManager(RAMSTKDataManager):
         except DataAccessError:
             _error_msg = ("Attempted to delete non-existent requirement ID "
                           "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_requirement', error_msg=_error_msg)
+            pub.sendMessage('fail_delete_requirement',
+                            error_message=_error_msg)
 
     def _do_get_attributes(self, node_id, table):
         """
@@ -153,18 +154,18 @@ class DataManager(RAMSTKDataManager):
                                   identifier=self.last_id,
                                   parent=parent_id,
                                   data={'requirement': _requirement})
-            pub.sendMessage('succeed_insert_requirement',
-                            node_id=self.last_id)
+            pub.sendMessage('succeed_insert_requirement', node_id=self.last_id)
         except NodeIDAbsentError:
-            pub.sendMessage("fail_insert_requirement",
-                            error_msg=("Attempting to add child requirement "
-                                       "to non-existent requirement "
-                                       "{0:d}.").format(parent_id))
+            pub.sendMessage(
+                "fail_insert_requirement",
+                error_message=("Attempting to add child requirement "
+                               "to non-existent requirement "
+                               "{0:d}.").format(parent_id))
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_requirement",
-                            error_msg=("Failed to insert requirement into "
-                                       "program dabase."))
+                            error_message=("Failed to insert requirement into "
+                                           "program dabase."))
 
     def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
         """
@@ -251,12 +252,12 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_update_requirement', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_requirement',
-                            error_msg=('Attempted to save non-existent '
-                                       'requirement with requirement ID '
-                                       '{0:s}.').format(str(node_id)))
+                            error_message=('Attempted to save non-existent '
+                                           'requirement with requirement ID '
+                                           '{0:s}.').format(str(node_id)))
         except TypeError:
             if node_id != 0:
                 pub.sendMessage('fail_update_requirement',
-                                error_msg=('No data package found for '
-                                           'requirement ID {0:s}.').format(
-                                               str(node_id)))
+                                error_message=('No data package found for '
+                                               'requirement ID {0:s}.').format(
+                                                   str(node_id)))

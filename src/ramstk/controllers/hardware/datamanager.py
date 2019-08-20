@@ -80,10 +80,10 @@ class DataManager(RAMSTKDataManager):
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_hardware', node_id=node_id)
-        except(AttributeError, DataAccessError):
+        except (AttributeError, DataAccessError):
             _error_msg = ("Attempted to delete non-existent hardware ID "
                           "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_hardware', error_msg=_error_msg)
+            pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
     def do_get_all_attributes(self, node_id):
         """
@@ -130,11 +130,12 @@ class DataManager(RAMSTKDataManager):
         """
         _parent = self.do_select(parent_id, table='hardware')
         if parent_id != 0 and _parent.part == 1:
-            pub.sendMessage('fail_insert_hardware',
-                            error_msg=("Attempting to insert a hardware "
-                                       "assembly or component/piece part as a "
-                                       "child of another component/piece "
-                                       "part."))
+            pub.sendMessage(
+                'fail_insert_hardware',
+                error_message=("Attempting to insert a hardware "
+                               "assembly or component/piece part as a "
+                               "child of another component/piece "
+                               "part."))
         else:
             try:
                 _hardware = RAMSTKHardware(revision_id=self._revision_id,
@@ -157,9 +158,10 @@ class DataManager(RAMSTKDataManager):
                                                  hardware_id=self.last_id,
                                                  parent_id=parent_id)
 
-                self.dao.do_insert_many(
-                    [_design_e, _design_m, _milhdbkf, _nswc, _reliability,
-                     _allocation, _similaritem])
+                self.dao.do_insert_many([
+                    _design_e, _design_m, _milhdbkf, _nswc, _reliability,
+                    _allocation, _similaritem
+                ])
 
                 _data_package = {
                     'hardware': _hardware,
@@ -204,8 +206,7 @@ class DataManager(RAMSTKDataManager):
             _node.data[
                 'hardware'].comp_ref_des = _p_comp_ref_des + ':' + _node.data[
                     'hardware'].ref_des
-            _node.tag = _p_comp_ref_des + ':' + _node.data[
-                'hardware'].ref_des
+            _node.tag = _p_comp_ref_des + ':' + _node.data['hardware'].ref_des
         else:
             _node.data['hardware'].comp_ref_des = _node.data[
                 'hardware'].ref_des
@@ -250,8 +251,7 @@ class DataManager(RAMSTKDataManager):
                 _hardware.hardware_id).first()
 
             _allocation = self.dao.session.query(RAMSTKAllocation).filter(
-                RAMSTKAllocation.hardware_id ==
-                _hardware.hardware_id).first()
+                RAMSTKAllocation.hardware_id == _hardware.hardware_id).first()
 
             _similaritem = self.dao.session.query(RAMSTKSimilarItem).filter(
                 RAMSTKSimilarItem.hardware_id ==
@@ -347,14 +347,14 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update()
 
             pub.sendMessage('succeed_update_hardware', node_id=node_id)
-        except(AttributeError, DataAccessError):
+        except (AttributeError, DataAccessError):
             pub.sendMessage('fail_update_hardware',
-                            error_msg=('Attempted to save non-existent '
-                                       'hardware item with hardware ID '
-                                       '{0:s}.').format(str(node_id)))
+                            error_message=('Attempted to save non-existent '
+                                           'hardware item with hardware ID '
+                                           '{0:s}.').format(str(node_id)))
         except TypeError:
             if node_id != 0:
                 pub.sendMessage('fail_update_hardware',
-                                error_msg=('No data package found for '
-                                           'hardware ID {0:s}.').format(
-                                               str(node_id)))
+                                error_message=('No data package found for '
+                                               'hardware ID {0:s}.').format(
+                                                   str(node_id)))

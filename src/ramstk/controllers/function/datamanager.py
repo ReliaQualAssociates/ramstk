@@ -9,7 +9,6 @@
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -78,10 +77,11 @@ class DataManager(RAMSTKDataManager):
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_function', node_id=node_id)
-        except(AttributeError, DataAccessError):
-            _error_msg = ("Attempted to delete non-existent function ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_function', error_msg=_error_msg)
+        except (AttributeError, DataAccessError):
+            _error_message = ("Attempted to delete non-existent function ID "
+                              "{0:s}.").format(str(node_id))
+            pub.sendMessage('fail_delete_function',
+                            error_message=_error_message)
 
     def _do_delete_hazard(self, function_id, node_id):
         """
@@ -100,12 +100,12 @@ class DataManager(RAMSTKDataManager):
             self.tree.get_node(function_id).data['hazards'] = _hazards
 
             pub.sendMessage('succeed_delete_hazard', node_id=node_id)
-        except(DataAccessError, KeyError):
+        except (DataAccessError, KeyError):
             pub.sendMessage('fail_delete_hazard',
-                            error_msg=("Attempted to delete non-existent "
-                                       "hazard ID {0:s} from function ID "
-                                       "{1:s}.").format(
-                                           str(node_id), str(function_id)))
+                            error_message=("Attempted to delete non-existent "
+                                           "hazard ID {0:s} from function ID "
+                                           "{1:s}.").format(
+                                               str(node_id), str(function_id)))
 
     def _do_get_attributes(self, node_id, table):
         """
@@ -211,8 +211,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _tree = Tree()
-
         if self.tree.get_node(parent_id) is not None:
             try:
                 _function = RAMSTKFunction(revision_id=self._revision_id,
@@ -232,12 +230,12 @@ class DataManager(RAMSTKDataManager):
                                 node_id=self.last_id)
             except DataAccessError as _error:
                 print(_error)
-                pub.sendMessage("fail_insert_function", error_msg=_error)
+                pub.sendMessage("fail_insert_function", error_message=_error)
         else:
             pub.sendMessage("fail_insert_function",
-                            error_msg=("Attempting to add a function as a "
-                                       "child of non-existent parent node "
-                                       "{0:s}.".format(str(parent_id))))
+                            error_message=("Attempting to add a function as a "
+                                           "child of non-existent parent node "
+                                           "{0:s}.".format(str(parent_id))))
 
     def do_insert_hazard(self, function_id):
         """
@@ -262,12 +260,12 @@ class DataManager(RAMSTKDataManager):
                                 node_id=_hazard.hazard_id)
             except DataAccessError as _error:
                 print(_error)
-                pub.sendMessage("fail_insert_hazard", error_msg=_error)
+                pub.sendMessage("fail_insert_hazard", error_message=_error)
         else:
             pub.sendMessage("fail_insert_hazard",
-                            error_msg=("Attempting to add a hazard to a "
-                                       "non-existent function ID "
-                                       "{0:s}.".format(str(function_id))))
+                            error_message=("Attempting to add a hazard to a "
+                                           "non-existent function ID "
+                                           "{0:s}.".format(str(function_id))))
 
     def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
         """
@@ -373,12 +371,12 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_update_function', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_function',
-                            error_msg=('Attempted to save non-existent '
-                                       'function with function ID '
-                                       '{0:s}.').format(str(node_id)))
+                            error_message=('Attempted to save non-existent '
+                                           'function with function ID '
+                                           '{0:s}.').format(str(node_id)))
         except TypeError:
             if node_id != 0:
                 pub.sendMessage('fail_update_function',
-                                error_msg=('No data package found for '
-                                           'function ID {0:s}.').format(
-                                               str(node_id)))
+                                error_message=('No data package found for '
+                                               'function ID {0:s}.').format(
+                                                   str(node_id)))

@@ -166,18 +166,20 @@ class TestDeleteMethods():
         assert node_id == 3
         print("\033[36m\nsucceed_delete_function topic was broadcast.")
 
-    def on_fail_delete_function(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent function ID '
-                             '300.')
+    def on_fail_delete_function(self, error_message):
+        assert error_message == (
+            'Attempted to delete non-existent function ID '
+            '300.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     def on_succeed_delete_hazard(self, node_id):
         assert node_id == 2
         print("\033[36m\nsucceed_delete_hazard topic was broadcast.")
 
-    def on_fail_delete_hazard(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent hazard ID 10 '
-                             'from function ID 1.')
+    def on_fail_delete_hazard(self, error_message):
+        assert error_message == (
+            'Attempted to delete non-existent hazard ID 10 '
+            'from function ID 1.')
         print("\033[35m\nfail_delete_hazard topic was broadcast.")
 
     @pytest.mark.integration
@@ -233,18 +235,19 @@ class TestInsertMethods():
         assert node_id == 4
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
-    def on_fail_insert_function(self, error_msg):
-        assert error_msg == ('Attempting to add a function as a child of '
-                             'non-existent parent node 40.')
+    def on_fail_insert_function(self, error_message):
+        assert error_message == ('Attempting to add a function as a child of '
+                                 'non-existent parent node 40.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     def on_succeed_insert_hazard(self, node_id):
         assert node_id == 4
         print("\033[36m\nsucceed_insert_hazard topic was broadcast.")
 
-    def on_fail_insert_hazard(self, error_msg):
-        assert error_msg == ('Attempting to add a hazard to a non-existent '
-                             'function ID 10.')
+    def on_fail_insert_hazard(self, error_message):
+        assert error_message == (
+            'Attempting to add a hazard to a non-existent '
+            'function ID 10.')
         print("\033[35m\nfail_insert_hazard topic was broadcast.")
 
     @pytest.mark.integration
@@ -492,8 +495,8 @@ class TestUpdateMethods():
         assert node_id == 1
         print("\033[36m\nsucceed_update_function topic was broadcast")
 
-    def on_fail_update_function(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_function(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent function with function ID 100.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
@@ -534,7 +537,8 @@ class TestUpdateMethods():
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
     @pytest.mark.integration
-    def test_do_calculate_hri(self, test_program_dao, test_toml_user_configuration):
+    def test_do_calculate_hri(self, test_program_dao,
+                              test_toml_user_configuration):
         """do_calculate_hri() should calculate the hazard risk index hazard analysis."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(test_program_dao)
