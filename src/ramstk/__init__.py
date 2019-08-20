@@ -17,6 +17,7 @@ from .configuration import (
     RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES, RAMSTK_SW_LEVELS,
     RAMSTK_SW_TEST_METHODS, RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 )
+from .logger import RAMSTKLogManager
 from .ramstk import RAMSTKProgramManager
 from .utilities import (
     boolean_to_integer, date_to_ordinal, dir_exists, do_create_logger,

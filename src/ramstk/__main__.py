@@ -25,7 +25,7 @@ from ramstk.controllers import (
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
-from ramstk.utilities import do_create_logger
+from ramstk.logger import RAMSTKLogManager
 
 
 def do_read_site_configuration(logger: Logger) -> RAMSTKSiteConfiguration:
@@ -81,32 +81,37 @@ def the_one_ring() -> None:
     # configuration file contains information needed to create the logger so
     # it must come first.
     user_configuration = do_read_user_configuration()
-    _logger: Logger = do_create_logger(__name__,
-                                       user_configuration.RAMSTK_LOGLEVEL,
-                                       user_configuration.RAMSTK_USER_LOG,
-                                       True)
+    _logger: RAMSTKLogManager = RAMSTKLogManager(
+        user_configuration.RAMSTK_USER_LOG)
+    _logger.do_create_logger(__name__,
+                             user_configuration.RAMSTK_LOGLEVEL,
+                             to_tty=True)
 
-    _logger.info("Reading the site configuration file.")
+    _logger.do_log_info(__name__, "Reading the site configuration file.")
     site_configuration = do_read_site_configuration(_logger)
-    _logger.info("Read the site configuration file.")
+    _logger.do_log_info(__name__, "Read the site configuration file.")
 
-    _logger.info("Connecting to the RAMSTK common database {0:s}.".format(
-        site_configuration.RAMSTK_COM_INFO['database']))
+    _logger.do_log_info(
+        __name__, "Connecting to the RAMSTK common database {0:s}.".format(
+            site_configuration.RAMSTK_COM_INFO['database']))
     _site_db = (site_configuration.RAMSTK_COM_BACKEND + ':///'
                 + site_configuration.RAMSTK_COM_INFO['database'])
     site_db = BaseDatabase()
     site_db.do_connect(_site_db)
-    _logger.info("Connected to the RAMSTK common database {0:s}.".format(
-        site_configuration.RAMSTK_COM_INFO['database']))
+    _logger.do_log_info(
+        __name__, "Connected to the RAMSTK common database {0:s}.".format(
+            site_configuration.RAMSTK_COM_INFO['database']))
 
-    _logger.debug("Validating the RAMSTK license.")
-    _logger.debug("Validated the RAMSTK license.")
+    _logger.do_log_debug(__name__, "Validating the RAMSTK license.")
+    _logger.do_log_debug(__name__, "Validated the RAMSTK license.")
 
-    _logger.info("Loading global RAMSTK configuration variables.")
+    _logger.do_log_info(__name__,
+                        "Loading global RAMSTK configuration variables.")
     do_load_variables(site_db, site_configuration)
-    _logger.info("Loaded global RAMSTK configuration variables.")
+    _logger.do_log_info(__name__,
+                        "Loaded global RAMSTK configuration variables.")
 
-    _logger.info("Initializing the RAMSTK application.")
+    _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
     _program_mgr.dic_managers['function']['data'] = dmFunction()
@@ -133,10 +138,10 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['options']['data'] = dmOptions(
         common_dao=_site_db)
     _program_mgr.user_configuration = user_configuration
-    _logger.info("Initialized the RAMSTK application.")
+    _logger.do_log_info(__name__, "Initialized the RAMSTK application.")
 
-    _logger.info("Launching RAMSTK GUI.")
-    _logger.info("Launched RAMSTK GUI.")
+    _logger.do_log_info(__name__, "Launching RAMSTK GUI.")
+    _logger.do_log_info(__name__, "Launched RAMSTK GUI.")
 
     # If you don't do this, the splash screen will show, but won't render it's
     # contents
