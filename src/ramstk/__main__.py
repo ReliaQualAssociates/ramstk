@@ -136,7 +136,9 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['validation']['data'] = dmValidation()
     _program_mgr.dic_managers['validation']['matrix'] = mmValidation()
     _program_mgr.dic_managers['options']['data'] = dmOptions(
-        common_dao=_site_db, site_configuration=site_configuration, user_configuration=user_configuration)
+        common_dao=_site_db,
+        site_configuration=site_configuration,
+        user_configuration=user_configuration)
     _program_mgr.user_configuration = user_configuration
     _logger.do_log_info(__name__, "Initialized the RAMSTK application.")
 
