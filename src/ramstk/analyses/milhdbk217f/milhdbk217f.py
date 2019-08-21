@@ -326,7 +326,8 @@ def do_predict_active_hazard_rate(**attributes):
                                        "DC voltage={4:f}, operating "
                                        "temperature={5:f}, temperature "
                                        "rise={10:f}, rated maximum "
-                                       "temperature={6:f}, feature size={7:f}, "
+                                       "temperature={6:f}, "
+                                       "feature size={7:f}, "
                                        "surface area={8:f}, and item "
                                        "weight={9:f}.").format(
                                            attributes['hardware_id'],
