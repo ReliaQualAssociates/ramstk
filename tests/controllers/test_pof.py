@@ -197,9 +197,10 @@ class TestDeleteMethods():
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a test method."
         )
 
-    def on_fail_delete_pof(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent PoF element '
-                             'ID 300.')
+    def on_fail_delete_pof(self, error_message):
+        assert error_message == (
+            'Attempted to delete non-existent PoF element '
+            'ID 300.')
         print("\033[35m\nfail_delete_pof topic was broadcast.")
 
     @pytest.mark.integration
@@ -293,27 +294,28 @@ class TestInsertMethods():
         assert node_id == '4.1.4'
         print("\033[36m\nsucceed_insert_opload topic was broadcast.")
 
-    def on_fail_insert_opload(self, error_msg):
-        assert error_msg == ('Attempting to add an operating load to unknown '
-                             'failure mechanism ID 40.')
+    def on_fail_insert_opload(self, error_message):
+        assert error_message == (
+            'Attempting to add an operating load to unknown '
+            'failure mechanism ID 40.')
         print("\033[35m\nfail_insert_opload topic was broadcast.")
 
     def on_succeed_insert_opstress(self, node_id):
         assert node_id == '4.1.1.4.s'
         print("\033[36m\nsucceed_insert_opstress topic was broadcast.")
 
-    def on_fail_insert_opstress(self, error_msg):
-        assert error_msg == ('Attempting to add an operating stress to '
-                             'unknown operating load ID 40.')
+    def on_fail_insert_opstress(self, error_message):
+        assert error_message == ('Attempting to add an operating stress to '
+                                 'unknown operating load ID 40.')
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
 
     def on_succeed_insert_test_method(self, node_id):
         assert node_id == '4.1.1.4.t'
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
 
-    def on_fail_insert_test_method(self, error_msg):
-        assert error_msg == ('Attempting to add a test method to unknown '
-                             'operating load ID 40.')
+    def on_fail_insert_test_method(self, error_message):
+        assert error_message == ('Attempting to add a test method to unknown '
+                                 'operating load ID 40.')
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
 
     @pytest.mark.integration
@@ -680,8 +682,8 @@ class TestUpdateMethods():
         assert node_id == '5'
         print("\033[36m\nsucceed_update_pof topic was broadcast")
 
-    def on_fail_update_pof(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_pof(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent PoF element with PoF ID 100.')
         print("\033[35m\nfail_update_pof topic was broadcast")
 

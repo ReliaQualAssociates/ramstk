@@ -85,7 +85,7 @@ class DataManager(RAMSTKDataManager):
         except AttributeError:
             _error_msg = ("Attempted to delete non-existent PoF element ID "
                           "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_pof', error_msg=_error_msg)
+            pub.sendMessage('fail_delete_pof', error_message=_error_msg)
 
     def _do_insert_opload(self, mechanism_id, parent_id):
         """
@@ -115,7 +115,7 @@ class DataManager(RAMSTKDataManager):
             _error_msg = (
                 'Attempting to add an operating load to unknown failure '
                 'mechanism ID {0:d}.'.format(mechanism_id))
-            pub.sendMessage("fail_insert_opload", error_msg=_error_msg)
+            pub.sendMessage("fail_insert_opload", error_message=_error_msg)
 
     def _do_insert_opstress(self, load_id, parent_id):
         """
@@ -145,7 +145,7 @@ class DataManager(RAMSTKDataManager):
         except (DataAccessError, NodeIDAbsentError) as _error:
             _error_msg = ('Attempting to add an operating stress to unknown '
                           'operating load ID {0:d}.'.format(load_id))
-            pub.sendMessage("fail_insert_opstress", error_msg=_error_msg)
+            pub.sendMessage("fail_insert_opstress", error_message=_error_msg)
 
     def _do_insert_testmethod(self, load_id, parent_id):
         """
@@ -173,7 +173,8 @@ class DataManager(RAMSTKDataManager):
         except (DataAccessError, NodeIDAbsentError) as _error:
             _error_msg = ('Attempting to add a test method to unknown '
                           'operating load ID {0:d}.'.format(load_id))
-            pub.sendMessage("fail_insert_test_method", error_msg=_error_msg)
+            pub.sendMessage("fail_insert_test_method",
+                            error_message=_error_msg)
 
     def _do_select_all_mechanism(self, mode_id):
         """
@@ -344,12 +345,12 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_update_pof', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_pof',
-                            error_msg=('Attempted to save non-existent '
-                                       'PoF element with PoF ID '
-                                       '{0:s}.').format(str(node_id)))
+                            error_message=('Attempted to save non-existent '
+                                           'PoF element with PoF ID '
+                                           '{0:s}.').format(str(node_id)))
         except TypeError:
             if node_id != 0:
                 pub.sendMessage('fail_update_pof',
-                                error_msg=('No data package found for '
-                                           'PoF ID {0:s}.').format(
-                                               str(node_id)))
+                                error_message=('No data package found for '
+                                               'PoF ID {0:s}.').format(
+                                                   str(node_id)))

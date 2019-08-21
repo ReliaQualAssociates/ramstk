@@ -133,10 +133,10 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             pub.sendMessage('succeed_delete_fmea', node_id=node_id)
 
-        except(AttributeError, DataAccessError):
+        except (AttributeError, DataAccessError):
             _error_msg = ("Attempted to delete non-existent FMEA element ID "
                           "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_fmea', error_msg=_error_msg)
+            pub.sendMessage('fail_delete_fmea', error_message=_error_msg)
 
     def _do_insert_action(self, cause_id, parent_id):
         """
@@ -165,7 +165,7 @@ class DataManager(RAMSTKDataManager):
         except (DataAccessError, NodeIDAbsentError) as _error:
             _error_msg = ('Attempting to add an action to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
-            pub.sendMessage("fail_insert_action", error_msg=_error_msg)
+            pub.sendMessage("fail_insert_action", error_message=_error_msg)
 
     def _do_insert_cause(self, mode_id, mechanism_id, parent_id):
         """
@@ -198,7 +198,7 @@ class DataManager(RAMSTKDataManager):
                 'Attempting to add a failure cause to unknown '
                 'failure mode ID {0:d} or mechanism ID {1:d}.'.format(
                     mode_id, mechanism_id))
-            pub.sendMessage("fail_insert_cause", error_msg=_error_msg)
+            pub.sendMessage("fail_insert_cause", error_message=_error_msg)
 
     def _do_insert_control(self, cause_id, parent_id):
         """
@@ -229,7 +229,7 @@ class DataManager(RAMSTKDataManager):
         except (DataAccessError, NodeIDAbsentError) as _error:
             _error_msg = ('Attempting to add a control to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
-            pub.sendMessage("fail_insert_control", error_msg=_error_msg)
+            pub.sendMessage("fail_insert_control", error_message=_error_msg)
 
     def _do_insert_mechanism(self, mode_id):
         """
@@ -258,7 +258,7 @@ class DataManager(RAMSTKDataManager):
         except (DataAccessError, NodeIDAbsentError) as _error:
             _error_msg = ('Attempting to add a failure mechanism to unknown '
                           'failure mode ID {0:s}.'.format(mode_id))
-            pub.sendMessage("fail_insert_mechanism", error_msg=_error_msg)
+            pub.sendMessage("fail_insert_mechanism", error_message=_error_msg)
 
     def _do_insert_mode(self):
         """
@@ -281,7 +281,7 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_insert_mode', node_id=str(_mode.mode_id))
         except (DataAccessError, NodeIDAbsentError) as _error:
-            pub.sendMessage("fail_insert_mode", error_msg=_error)
+            pub.sendMessage("fail_insert_mode", error_message=_error)
 
     def _do_select_all_action(self, cause_id, parent_id):
         """
@@ -459,12 +459,12 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_update_fmea', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_fmea',
-                            error_msg=('Attempted to save non-existent '
-                                       'FMEA element with FMEA ID '
-                                       '{0:s}.').format(str(node_id)))
+                            error_message=('Attempted to save non-existent '
+                                           'FMEA element with FMEA ID '
+                                           '{0:s}.').format(str(node_id)))
         except TypeError:
             if node_id != 0:
                 pub.sendMessage('fail_update_fmea',
-                                error_msg=('No data package found for '
-                                           'FMEA ID {0:s}.').format(
-                                               str(node_id)))
+                                error_message=('No data package found for '
+                                               'FMEA ID {0:s}.').format(
+                                                   str(node_id)))

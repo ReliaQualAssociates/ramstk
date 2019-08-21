@@ -110,10 +110,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         except ZeroDivisionError:
             pub.sendMessage(
                 'fail_stress_analysis',
-                error_msg=("Failed to calculate current ratio for "
-                           "hardware ID {0:s}; rated current is "
-                           "zero.").format(str(
-                               self._attributes['hardware_id'])))
+                error_message=("Failed to calculate current ratio for "
+                               "hardware ID {0:s}; rated current is "
+                               "zero.").format(
+                                   str(self._attributes['hardware_id'])))
 
     def _do_calculate_hazard_rate_metrics(self):
         """
@@ -193,10 +193,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         except ZeroDivisionError:
             pub.sendMessage(
                 'fail_stress_analysis',
-                error_msg=("Failed to calculate power ratio for "
-                           "hardware ID {0:s}; rated power is "
-                           "zero.").format(str(
-                               self._attributes['hardware_id'])))
+                error_message=("Failed to calculate power ratio for "
+                               "hardware ID {0:s}; rated power is "
+                               "zero.").format(
+                                   str(self._attributes['hardware_id'])))
 
     def _do_calculate_reliability_metrics(self):
         """
@@ -211,16 +211,17 @@ class AnalysisManager(RAMSTKAnalysisManager):
         except ZeroDivisionError:
             pub.sendMessage(
                 'fail_calculate_hardware',
-                error_msg=("Failed to calculate hazard rate and/or MTBF "
-                           "metrics for hardware ID {0:s}; too many inputs "
-                           "equal to zero.  Specified MTBF={1:f}, active "
-                           "h(t)={2:f}, dormant h(t)={3:f}, and software "
-                           "h(t)={4:f}.").format(
-                               str(self._attributes['hardware_id']),
-                               self._attributes['mtbf_specified'],
-                               self._attributes['hazard_rate_active'],
-                               self._attributes['hazard_rate_dormant'],
-                               self._attributes['hazard_rate_software']))
+                error_message=(
+                    "Failed to calculate hazard rate and/or MTBF "
+                    "metrics for hardware ID {0:s}; too many inputs "
+                    "equal to zero.  Specified MTBF={1:f}, active "
+                    "h(t)={2:f}, dormant h(t)={3:f}, and software "
+                    "h(t)={4:f}.").format(
+                        str(self._attributes['hardware_id']),
+                        self._attributes['mtbf_specified'],
+                        self._attributes['hazard_rate_active'],
+                        self._attributes['hazard_rate_dormant'],
+                        self._attributes['hazard_rate_software']))
 
         self._attributes['reliability_logistics'] = exp(
             -1.0 * (self._attributes['hazard_rate_logistics']) * 1000000.0)
@@ -340,10 +341,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         except ZeroDivisionError:
             pub.sendMessage(
                 'fail_stress_analysis',
-                error_msg=("Failed to calculate voltage ratio for "
-                           "hardware ID {0:s}; rated voltage is "
-                           "zero.").format(str(
-                               self._attributes['hardware_id'])))
+                error_message=("Failed to calculate voltage ratio for "
+                               "hardware ID {0:s}; rated voltage is "
+                               "zero.").format(
+                                   str(self._attributes['hardware_id'])))
 
     def _on_allocate_reliability(self, attributes):
         """
@@ -523,8 +524,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _weight_factor = 0.0
             pub.sendMessage(
                 'fail_calculate_arinc_weight_factor',
-                error_msg=("Failed to allocate the reliability for hardware "
-                           "ID {0:s}; zero hazard rate.").format(str(node_id)))
+                error_message=(
+                    "Failed to allocate the reliability for hardware "
+                    "ID {0:s}; zero hazard rate.").format(str(node_id)))
 
         return _weight_factor
 

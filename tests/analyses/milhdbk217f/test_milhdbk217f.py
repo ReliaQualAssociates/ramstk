@@ -715,12 +715,13 @@ def test_do_calculate_active_hazard_rate_negative_input():
     ATTRIBUTES['power_rated'] = -0.05
     ATTRIBUTES['hazard_rate_method_id'] = 2
 
-    def on_message(error_msg):
-        assert error_msg == ('Failed to predict MIL-HDBK-217F hazard rate for '
-                             'hardware ID 12; one or more inputs has a '
-                             'negative or missing value. Hardware item '
-                             'category ID=2, subcategory ID=2, rated '
-                             'power=-0.050000, number of elements=1000.')
+    def on_message(error_message):
+        assert error_message == (
+            'Failed to predict MIL-HDBK-217F hazard rate for '
+            'hardware ID 12; one or more inputs has a '
+            'negative or missing value. Hardware item '
+            'category ID=2, subcategory ID=2, rated '
+            'power=-0.050000, number of elements=1000.')
 
     pub.subscribe(on_message, 'fail_predict_reliability')
 
@@ -737,18 +738,19 @@ def test_do_calculate_active_hazard_rate_zero_input():
     ATTRIBUTES['voltage_dc_operating'] = 0.0
     ATTRIBUTES['hazard_rate_method_id'] = 2
 
-    def on_message(error_msg):
-        assert error_msg == ('Failed to predict MIL-HDBK-217F hazard rate for '
-                             'hardware ID 12; one or more inputs has a value '
-                             'of 0.0.  Hardware item category ID=4, '
-                             'subcategory ID=4, operating ac '
-                             'voltage=0.000000, operating DC '
-                             'voltage=0.000000, operating '
-                             'temperature=45.000000, temperature '
-                             'rise=10.000000, rated maximum '
-                             'temperature=105.000000, feature '
-                             'size=1.500000, surface area=1.500000, and item '
-                             'weight=0.500000.')
+    def on_message(error_message):
+        assert error_message == (
+            'Failed to predict MIL-HDBK-217F hazard rate for '
+            'hardware ID 12; one or more inputs has a value '
+            'of 0.0.  Hardware item category ID=4, '
+            'subcategory ID=4, operating ac '
+            'voltage=0.000000, operating DC '
+            'voltage=0.000000, operating '
+            'temperature=45.000000, temperature '
+            'rise=10.000000, rated maximum '
+            'temperature=105.000000, feature '
+            'size=1.500000, surface area=1.500000, and item '
+            'weight=0.500000.')
 
     pub.subscribe(on_message, 'fail_predict_reliability')
 

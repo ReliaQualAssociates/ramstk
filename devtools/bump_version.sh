@@ -25,88 +25,86 @@
 cur_version=$(cat $PWD/VERSION)
 cur_version=${cur_version//\'}
 
-# Get the lastest RAMSTK tag and the latest commit's SHA-1.
-last_tag="$(git tag -l | tail -n1)"
-last_sha="$(git rev-parse --short HEAD)"
-
 # Breakdown the version information.
 strarr=(${cur_version//./ })
 ver_major=${strarr[0]}
 ver_minor=${strarr[1]}
 ver_patch=${strarr[2]}
 
-# Get the working branch.
-this_branch="$(git branch | grep \* | cut -d ' ' -f2)"
+# Get the lastest RAMSTK tag and the latest commit's SHA-1.
+last_tag="$(git tag -l | tail -n1)"
+last_sha="$(git rev-parse --short HEAD)"
 
 # Get the number of commits made to this branch and increment by one for this
 # commit's tag.
 this_build=$(git rev-list --no-merges --count HEAD ^develop)
 let this_build++
 
-# Now trim the branch name to give us one of the following:
+# Get the working branch and trim the branch name to give us one of the
+# following:
 #
 # master (gets tagged)
 # develop (gets tagged)
 # release (gets tagged)
+# fix (does NOT get tagged)
 # feature (does NOT get tagged)
-# fix, hotfix (does NOT get tagged)
-this_branch=${this_branch:0:7}
+# refactor (does NOT get tagged)
+# tests (does NOT get tagged)
+# docs (does NOT get tagged)
+# chore (does NOT get tagged)
+this_branch="$(git branch | grep \* | cut -d ' ' -f2)"
+this_action=${this_branch:0:7}
 
-# Get the type of the current commit.  It will be one of:
-#
-# feat - new feature (minor version bump)
-# fix - a bug fix (patch version bump)
-# docs - documentation only change (no version bump)
-# style - white-space, formatting, etc. (no version bump)
-# refactor - improves maintainability, complexity, etc. (patch version bump)
-# perf - improves performance (patch version bump)
-# test - add or correct test (no version bump)
-# chore - administrative task (no version bump)
-this_commit="$(git log -1 --no-merges --pretty=%s | cat)"
+if [[ "$this_action" =~ ^fix* ]];
+then
+    let ver_patch++
+    new_version=$ver_major"."$ver_minor"."$ver_patch
+    new_tag="v"$new_version
 
-# See if this commit warrants a patch or minor version bump.  Major version
-# bumps will be done manually.
-if [[ "$this_commit" =~ ^feat* ]];
+    $(bump2version --current-version ${cur_version} --new-version ${new_version} patch $PWD/VERSION)
+
+    echo "1. Create pull request to merge into master: ghpr -t 'Merge $this_branch into master' -h master -b $this_branch"
+    echo "2. Once merged to master, create tag on master: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
+    echo "3. Create pull request to merge into develop: ghpr -t 'Merge $this_branch into develop' -h develop -b $this_branch"
+    echo "4. Once merged to master, create tag on develop: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
+    echo "5. Push tags to remote: git push --tags"
+    echo "6. Deploy to GitHub releases, pypi, and conda."
+elif [[ "$this_action" =~ ^feat* ]];
 then
     let ver_minor++
     ver_patch=0
-    level="minor"
-fi
-if [[ "$this_commit" =~ ^refactor* ]];
+    new_version=$ver_major"."$ver_minor"."$ver_patch
+    new_tag="v"$new_version
+
+    $(bump2version --current-version ${cur_version} --new-version ${new_version} minor $PWD/VERSION)
+
+    echo "1. Create pull request to merge into develop: ghpr -t 'Merge $this_branch into develop' -h develop -b $this_branch"
+    echo "2. Once merged to develop, create tag on develop: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
+    echo "3. [Optional] Create release branch: git checkout -b release/${new_version}"
+    echo "4. [Optional] Push release branch to remote: git push --set-upstream origin release/${new_version}"
+elif [[ "$this_action" =~ ^relea* ]];
 then
-    let ver_patch++
-    level="patch"
-fi
-if [[ "$this_commit" =~ ^fix* ]];
+    new_version=$ver_major"."$ver_minor"."$ver_patch"-rc"$this_build
+    new_tag="v"$new_version
+
+    $(bump2version --current-version ${cur_version} --new-version ${new_version} ${level} $PWD/VERSION)
+
+    echo "1. Create pull request to merge into master: ghpr -t 'Merge $this_branch into master' -h master -b $this_branch"
+    echo "2. Once merged to master, create tag on master: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
+    echo "3. Push tags to remote: git push --tags"
+    echo "6. Deploy to GitHub releases, pypi, and conda."
+elif [[ "$this_action" =~ ^devel* ]];
 then
-    let ver_patch++
-    level="patch"
+    new_version=$ver_major"."$ver_minor"."$ver_patch"+"$last_sha
+    new_tag="v"$new_version
+
+    $(bump2version --current-version ${cur_version} --new-version ${new_version} ${level} $PWD/VERSION)
+
+    echo "1. Create tag on develop: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
+    echo "2. Deploy to GitHub releases."
+else
+    echo "1. Create pull request to merge into develop: ghpr -t 'Merge $this_branch into develop' -h develop -b $this_branch"
+    echo "2. Once merged, run this script again."
 fi
 
-# Create the new version and tag following our rules.
-new_version=$ver_major"."$ver_minor"."$ver_patch
-new_tag=${last_tag//v}
-if [[ "x$this_branch" == "xmaster" ]];
-then
-    new_tag=$new_version
-elif [[ "x$this_branch" == "xdevelop" ]];
-then
-    new_tag=$new_version"+"$last_sha
-elif [[ "x$this_branch" == "xrelease" ]];
-then
-    new_tag=$new_version"-rc"$this_build
-fi
-
-# Now update setup.py with the new version number if it differs from the
-# current version.
-if [ $new_version != $cur_version ];
-then
-    $(bump2version --current-version ${cur_version} ${level} $PWD/VERSION)
-fi
-
-# Now tag the branch with the new tag.  Only master, develop, and release
-# branches get tagged.
-if [ ${new_tag} != ${last_tag//v} ];
-then
-    echo "Run this command git tag -s v${new_tag} -m 'Set tag v${new_tag}'"
-fi
+exit 0

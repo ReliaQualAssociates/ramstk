@@ -49,8 +49,7 @@ class TestCreateControllers():
         assert DUT._tag == 'stakeholder'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all,
-                                'succeed_select_revision')
+        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_revision')
         assert pub.isSubscribed(DUT._do_delete_stakeholder,
                                 'request_delete_stakeholder')
         assert pub.isSubscribed(DUT.do_insert_stakeholder,
@@ -152,9 +151,10 @@ class TestDeleteMethods():
         assert node_id == 2
         print("\033[36m\nsucceed_delete_stakeholder topic was broadcast.")
 
-    def on_fail_delete_stakeholder(self, error_msg):
-        assert error_msg == ('Attempted to delete non-existent stakeholder ID '
-                             '300.')
+    def on_fail_delete_stakeholder(self, error_message):
+        assert error_message == (
+            'Attempted to delete non-existent stakeholder ID '
+            '300.')
         print("\033[35m\nfail_delete_stakeholder topic was broadcast.")
 
     @pytest.mark.integration
@@ -296,9 +296,9 @@ class TestInsertMethods():
         assert node_id == 3
         print("\033[36m\nsucceed_insert_stakeholder topic was broadcast")
 
-    def on_fail_insert_stakeholder(self, error_msg):
-        assert error_msg == ('Attempting to add child stakeholder to '
-                             'non-existent stakeholder 32.')
+    def on_fail_insert_stakeholder(self, error_message):
+        assert error_message == ('Attempting to add child stakeholder to '
+                                 'non-existent stakeholder 32.')
         print("\033[35m\nfail_insert_stakeholder topic was broadcast")
 
     @pytest.mark.integration
@@ -329,8 +329,8 @@ class TestUpdateMethods():
         assert node_id == 1
         print("\033[36m\nsucceed_update_stakeholder topic was broadcast")
 
-    def on_fail_update_stakeholder(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_stakeholder(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent stakeholder with stakeholder ID 100.'
         )
         print("\033[35m\nfail_update_stakeholder topic was broadcast")

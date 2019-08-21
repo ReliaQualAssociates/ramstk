@@ -8,7 +8,6 @@
 
 # Standard Library Imports
 import gettext
-import logging
 import os
 import os.path
 import sys
@@ -19,66 +18,6 @@ from typing import Any, List
 from dateutil.parser import parse
 
 _ = gettext.gettext
-
-LOGFORMAT = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-
-def do_create_logger(logger_name: str,
-                     log_level: str,
-                     log_file: str,
-                     to_tty: bool = False) -> logging.Logger:
-    """
-    Create a logger instance.
-
-    :param str logger_name: the name of the logger used in the application.
-    :param str log_level: the level of messages to log.
-    :param str log_file: the full path of the log file for this logger instance
-        to write to.
-    :keyword boolean to_tty: boolean indicating whether this logger will also
-        dump messages to the terminal.
-    :return: _logger
-    :rtype: object
-    """
-    _logger = logging.getLogger(logger_name)
-    _logger.setLevel(log_level)
-
-    if file_exists(log_file):
-        os.remove(log_file)
-
-    _logger.addHandler(get_file_handler(log_file))
-    if to_tty:
-        _logger.addHandler(get_console_handler())
-
-    return _logger
-
-
-def get_console_handler():
-    """
-    Create the log handler for console output.
-
-    :return: _c_handler
-    :rtype: :class:`logging.Handler`
-    """
-    _c_handler = logging.StreamHandler(sys.stdout)
-    _c_handler.setFormatter(LOGFORMAT)
-
-    return _c_handler
-
-
-def get_file_handler(log_file):
-    """
-    Create the log handler for file output.
-
-    :param str log_file: the full path of the log file for this logger instance
-        to write to.
-    :return: _f_handler
-    :rtype: :class:`logging.Handler`
-    """
-    _f_handler = logging.FileHandler(log_file)
-    _f_handler.setFormatter(LOGFORMAT)
-
-    return _f_handler
 
 
 def date_to_ordinal(date: str) -> int:
