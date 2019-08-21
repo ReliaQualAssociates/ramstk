@@ -6,6 +6,9 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Options Package Data Model."""
 
+# Standard Library Imports
+from typing import Any
+
 # Third Party Imports
 from pubsub import pub
 
@@ -26,7 +29,7 @@ class DataManager(RAMSTKDataManager):
     _tag = 'options'
     _root = 0
 
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, **kwargs) -> None:  # pylint: disable=unused-argument
         """Initialize a Options data manager instance."""
         RAMSTKDataManager.__init__(self, **kwargs)
 
@@ -43,6 +46,8 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize public scalar attributes.
         self.common_dao = kwargs['common_dao']
+        self.site_configuration = kwargs['site_configuration']
+        self.user_configuration = kwargs['user_configuration']
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_all, 'request_select_options')
@@ -51,7 +56,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_tree, 'request_get_options_tree')
         pub.subscribe(self.do_set_attributes, 'request_set_option_attributes')
 
-    def do_get_tree(self):
+    def do_get_tree(self) -> None:
         """
         Retrieve the Options treelib Tree.
 
@@ -60,7 +65,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_options_tree', dmtree=self.tree)
 
-    def do_select_all(self, parent_id):  # pylint: disable=arguments-differ
+    def do_select_all(self, parent_id: int) -> None:  # pylint: disable=arguments-differ
         """
         Retrieve all the Options data from the RAMSTK Program database.
 
@@ -91,7 +96,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_options', tree=self.tree)
 
-    def do_set_attributes(self, node_id, key, value, table):
+    def do_set_attributes(self, node_id: int, key: str, value: Any,
+                          table: str) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -115,7 +121,7 @@ class DataManager(RAMSTKDataManager):
 
             self.do_select(node_id, table=table).set_attributes(_attributes)
 
-    def do_update(self, node_id):
+    def do_update(self, node_id: int) -> None:
         """
         Update the record associated with node ID in RAMSTK databases.
 
