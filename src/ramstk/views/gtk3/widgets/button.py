@@ -189,7 +189,6 @@ class RAMSTKButton(Gtk.Button):
 
         self.set_property('width-request', _width)
         self.set_property('height-request', _height)
-
         self.set_property('tooltip-markup', _tooltip)
 
 
