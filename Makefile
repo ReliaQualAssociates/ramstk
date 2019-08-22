@@ -173,6 +173,9 @@ test.calc:
 test.integration:
 	py.test $(TESTOPTS) -m integration $(TESTFILE)
 
+test.gui:
+	py.test $(TESTOPTS) -m gui $(TESTFILE)
+
 test:
 	py.test $(TESTOPTS) $(TESTFILE)
 

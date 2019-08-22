@@ -9,6 +9,7 @@ omit =
     */_assistants_/*
     */_reports_/*
     */tests/*
+    */views/*
     __init__.py
     conf.py
     setup.py

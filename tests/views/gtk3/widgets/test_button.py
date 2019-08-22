@@ -18,7 +18,7 @@ from ramstk.views.gtk3.widgets import (
 
 class TestRAMSTKButton():
     """Test class for the RAMSTKButton."""
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_create_button(self):
         """__init__() should create a RAMSTKButton."""
         DUT = RAMSTKButton(label="Test Button")
@@ -29,7 +29,7 @@ class TestRAMSTKButton():
         assert DUT.get_property('height-request') == -1
         assert DUT.get_property('width-request') == -1
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties(self):
         """do_set_properties() should set the properties of a RAMSTKButton."""
         DUT = RAMSTKButton(label="Test Button")
@@ -39,7 +39,7 @@ class TestRAMSTKButton():
         assert DUT.get_property('tooltip-markup') == "Test tooltip"
         assert DUT.get_property('width-request') == 150
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties_default_values(self):
         """do_set_properties() should set the default properties of a RAMSTKButton when no keywords are passed to the method."""
         DUT = RAMSTKButton(label="Test Button")
@@ -52,7 +52,7 @@ class TestRAMSTKButton():
             "added.")
         assert DUT.get_property('width-request') == 200
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties_zero_height(self):
         """do_set_properties() should set the height to the default value if it is passed as zero.."""
         DUT = RAMSTKButton(label="Test Button")
@@ -60,7 +60,7 @@ class TestRAMSTKButton():
 
         assert DUT.get_property('height-request') == 40
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties_zero_width(self):
         """do_set_properties() should set the width to the default value if it is passed as zero.."""
         DUT = RAMSTKButton(label="Test Button")
@@ -71,7 +71,7 @@ class TestRAMSTKButton():
 
 class TestRAMSTKCheckButton():
     """Test class for the RAMSTKCheckButton."""
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_create_button(self):
         """__init__() should create a RAMSTKCheckButton."""
         DUT = RAMSTKCheckButton(label="Test Check Button")
@@ -83,7 +83,7 @@ class TestRAMSTKCheckButton():
         assert DUT.get_property('height-request') == -1
         assert DUT.get_property('width-request') == -1
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties(self):
         """do_set_properties() should set the properties of a RAMSTKCheckButton."""
         DUT = RAMSTKCheckButton(label="Test Check Button")
@@ -93,7 +93,7 @@ class TestRAMSTKCheckButton():
         assert DUT.get_property('tooltip-markup') == "Test tooltip"
         assert DUT.get_child().get_property('width-request') == 150
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties_default_values(self):
         """do_set_properties() should set the default properties of a RAMSTKCheckButton when no keywords are passed to the method."""
         DUT = RAMSTKCheckButton(label="Test Check Button")
@@ -105,7 +105,7 @@ class TestRAMSTKCheckButton():
             "added.")
         assert DUT.get_child().get_property('width-request') == 200
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties_zero_height(self):
         """do_set_properties() should set the height to the default value if it is passed as zero.."""
         DUT = RAMSTKCheckButton(label="Test Check Button")
@@ -113,7 +113,7 @@ class TestRAMSTKCheckButton():
 
         assert DUT.get_child().get_property('height-request') == 40
 
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_set_properties_zero_width(self):
         """do_set_properties() should set the width to the default value if it is passed as zero.."""
         DUT = RAMSTKCheckButton(label="Test Check Button")
@@ -124,7 +124,7 @@ class TestRAMSTKCheckButton():
 
 class TestRAMSTKOptionButton():
     """Test class for the RAMSTKOptionButton."""
-    @pytest.mark.unit
+    @pytest.mark.gui
     def test_create_button(self):
         """__init__() should create a RAMSTKOptionButton."""
         DUT = RAMSTKOptionButton(label="Test Option Button")
