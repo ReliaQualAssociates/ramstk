@@ -29,7 +29,10 @@ class TestRAMSTKEntry():
     def test_set_properties(self):
         """do_set_properties() should set the properties of a RAMSTKEntry."""
         DUT = RAMSTKEntry()
-        DUT.do_set_properties(height=70, width=150, editable=False, tooltip="Test Entry Tooltip.")
+        DUT.do_set_properties(height=70,
+                              width=150,
+                              editable=False,
+                              tooltip="Test Entry Tooltip.")
 
         assert not DUT.get_property('editable')
         assert DUT.get_property('height-request') == 70

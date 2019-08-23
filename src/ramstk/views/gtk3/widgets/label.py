@@ -7,9 +7,11 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Label Module."""
 
-# RAMSTK Local Imports
-# Import the ramstk.Widget base class.
-from .Widget import GObject, Gtk, Pango
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import GObject, Gtk, Pango
+
+#from typing import Any, Dict, List
+
 
 
 def do_make_label_group(text, container, x_pos, y_pos, **kwargs):

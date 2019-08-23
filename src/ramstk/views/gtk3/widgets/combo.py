@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Combo Module."""
+"""RAMSTK GTK3 Combo Module."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
