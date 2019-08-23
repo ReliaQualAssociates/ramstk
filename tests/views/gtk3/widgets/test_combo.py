@@ -4,7 +4,7 @@
 #       tests.views.gtk3.widgets.test_combo.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for the GTK3 button module algorithms and models."""
+"""Test class for the GTK3 combo module algorithms and models."""
 
 # Third Party Imports
 import pytest
@@ -15,10 +15,10 @@ from ramstk.views.gtk3.widgets import RAMSTKComboBox
 
 
 class TestRAMSTKComboBox():
-    """Test class for the RAMSTKButton."""
+    """Test class for the RAMSTKComboBox."""
     @pytest.mark.gui
-    def test_create_combobox_simple(self):
-        """__init__() should create a RAMSTKComboBox with a single column when passed no values."""
+    def test_create_entry(self):
+        """__init__() should create a RAMSTKEntry."""
         DUT = RAMSTKComboBox()
 
         assert isinstance(DUT, RAMSTKComboBox)
@@ -44,7 +44,7 @@ class TestRAMSTKComboBox():
 
     @pytest.mark.gui
     def test_set_properties(self):
-        """do_set_properties() should set the properties of a RAMSTKButton."""
+        """do_set_properties() should set the properties of a RAMSTKComboBox."""
         DUT = RAMSTKComboBox()
         DUT.do_set_properties(height=70, width=150, tooltip="Test tooltip")
 
@@ -54,7 +54,7 @@ class TestRAMSTKComboBox():
 
     @pytest.mark.gui
     def test_set_properties_default_values(self):
-        """do_set_properties() should set the default properties of a RAMSTKButton when no keywords are passed to the method."""
+        """do_set_properties() should set the default properties of a RAMSTKComboBox when no keywords are passed to the method."""
         DUT = RAMSTKComboBox()
         DUT.do_set_properties()
 

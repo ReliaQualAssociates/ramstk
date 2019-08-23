@@ -15,3 +15,4 @@ from .combo import RAMSTKComboBox
 from .dialog import (
     RAMSTKDateSelect, RAMSTKDialog, RAMSTKFileChooser, RAMSTKMessageDialog
 )
+from .entry import RAMSTKEntry, RAMSTKTextView
