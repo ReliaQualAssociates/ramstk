@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.ramstk.Book.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.widgets.basebook.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The Base RAMSTK Book."""
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK GTK3 basebook."""
 
 # Standard Library Imports
-# Modules for localization support.
 import locale
-from typing import Dict
+from typing import Dict, List
 
 # Third Party Imports
 from pubsub import pub
 
-# RAMSTK Local Imports
-# Import the ramstk.Widget base class.
-from .Widget import Gdk, GObject, Gtk, _
+# RAMSTK Package Imports
+from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 
 
-def destroy(__widget, __event=None):
+def destroy(__widget: Gtk.Widget, __event: Gdk.Event = None) -> None:
     """
     Quit the RAMSTK application.
 
@@ -30,15 +29,13 @@ def destroy(__widget, __event=None):
     :type __widget: :class:`Gtk.Widget`
     :keyword __event: the Gdk.Event() that called this method.
     :type __event: :class:`Gdk.Event`
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
+    :return: None
+    :rtype: None
     """
     Gtk.main_quit()
 
-    return False
 
-
-class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
+class RAMSTKBook(Gtk.Window):
     """
     The base view for the multiple window interface Books.
 
@@ -46,20 +43,19 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
     Attributes of the RAMSTKBook are:
 
     :cvar RAMSTK_CONFIGURATION: the instance of the RAMSTK Configuration class.
-    :type RAMSTK_CONFIGURATION: :class:`ramstk.Configuration.Configuration`
+    :type RAMSTK_CONFIGURATION: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     :cvar dict dic_books: dictionary holding a reference to each RAMSTK book.
     :cvar dict dic_tab_pos: dictionary holding the Gtk.PositionType()s for each
-                            of left, right, top, and botton.
-
+        of left, right, top, and botton.
     :ivar list _lst_handler_id: the list of widget callback handler IDs.
     :ivar int _n_screens: the number of monitors attached to the machine
-                          running RAMSTK.
+        running RAMSTK.
     :ivar float _height: the height of the monitors attached to the machine
-                         running RAMSTK.
+        running RAMSTK.
     :ivar float _width: the average width of each monitor attached to the
-                        machine running RAMSTK.
+        machine running RAMSTK.
     :ivar notebook: the Gtk.Notebook() widget used to hold each of the RAMSTK
-                    module WorkViews.
+        module WorkViews.
     :type notebook: :class:`Gtk.Notebook`
     :ivar menubar: the Gtk.MenuBar() for the RAMSTK ModuleBook menu.
     :type menubar: :class:`Gtk.MenuBar`
@@ -71,7 +67,7 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
     :type toolbar: :class:`Gtk.Toolbar`
     """
 
-    RAMSTK_CONFIGURATION = None
+    RAMSTK_USR_CONFIGURATION = None
 
     dic_books: Dict[str, object] = {}
     dic_tab_position = {
@@ -81,20 +77,20 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
         'bottom': Gtk.PositionType.BOTTOM
     }
 
-    def __init__(self, configuration):
+    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
         """
         Initialize an instance of the RAMSTK Book.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :py:class:`ramstk.Configuration.Configuration`
+        :param configuration: the RAMSTK user configuration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
         GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
-        self.RAMSTK_CONFIGURATION = configuration
+        self.RAMSTK_USR_CONFIGURATION = configuration
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
+        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
         self._n_screens = Gdk.Screen.get_default().get_n_monitors()
@@ -114,7 +110,7 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
 
         try:
             locale.setlocale(locale.LC_ALL,
-                             self.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
+                             self.RAMSTK_USR_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -126,9 +122,9 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_request_open, 'requestOpen')
+        pub.subscribe(self._on_request_open, 'request_open_program ')
 
-    def __set_callbacks(self):
+    def __set_callbacks(self) -> None:
         """
         Set the callback functions/methods for the RAMSTKListBook and widgets.
 
@@ -138,9 +134,9 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
         self.connect('delete_event', destroy)
         self.connect('window_state_event', self._on_window_state_event)
 
-    def on_module_change(self, module=''):  # pylint: disable=unused-argument
+    def on_module_change(self) -> None:
         """
-        Load the correct Views for the RAMSTK module selected in the Module Book.
+        Load correct Views for the RAMSTK module selected in the Module Book.
 
         :return: None
         :rtype: None
@@ -153,7 +149,7 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
             for _page in list(range(_n_pages)):
                 self.notebook.remove_page(-1)
 
-    def _on_request_open(self):
+    def _on_request_open(self) -> None:
         """
         Set the status bar and update the progress bar.
 
@@ -167,7 +163,8 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
             _("RAMSTK - Analyzing {0:s}").format(
                 self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']))
 
-    def _on_window_state_event(self, window, event):
+    def _on_window_state_event(self, window: Gtk.Window,
+                               event: Gdk.EventWindowState) -> None:
         """
         Iconify or deiconify all three books together.
 
