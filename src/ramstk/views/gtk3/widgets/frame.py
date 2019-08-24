@@ -40,7 +40,7 @@ class RAMSTKFrame(Gtk.Frame):
         except KeyError:
             _shadow = Gtk.ShadowType.ETCHED_OUT
 
-        _label = RAMSTKLabel(_title, width=-1)
+        _label = RAMSTKLabel(_title)
         _label.show_all()
         self.set_label_widget(_label)
 
