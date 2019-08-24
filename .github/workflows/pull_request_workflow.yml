@@ -1,0 +1,9 @@
+name: Pull Request Confirmations
+on: push
+
+jobs:
+  build:
+    name: Coveralls GitHub Action
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: coverallsapp/github-action@v1.0.1
