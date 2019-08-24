@@ -25,7 +25,7 @@ echo ""
 
 # Runtime modules.
 echo "Runtime requirements:"
-for file in $(cat requirements_run.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1);
+for file in $(cat requirements.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1);
 do
     version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
     if [[ "x$version" == "x" ]];
@@ -38,7 +38,7 @@ echo ""
 
 # Development modules.
 echo "Development requirements:"
-for file in $(cat requirements_dev.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1);
+for file in $(cat requirements-dev.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1 | sed '/^#/ d' | sed '/^-r/ d');
 do
     version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
     if [[ "x$version" == "x" ]];
@@ -49,9 +49,9 @@ do
 done
 echo ""
 
-# Documentation modules.
-echo "Documentation requirements:"
-for file in $(cat requirements_doc.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1);
+# Testing modules.
+echo "Testing requirements:"
+for file in $(cat requirements-test.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1);
 do
     version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
     if [[ "x$version" == "x" ]];
