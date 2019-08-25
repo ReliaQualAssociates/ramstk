@@ -187,20 +187,25 @@ test-all:
 
 reports: coverage
 	coverage html -d $(COVDIR)
+	python-codacy-coverage -r coverage.xml
 
+# This target is for use with IDE integration.
 format:
 	$(info Autoformatting $(SRCFILE)...)
 	isort --atomic --apply --use-parentheses -m5 $(SRCFILE)
 	yapf -i $(SRCFILE)
 
+# This target is for use with IDE integration.
 stylecheck:
 	$(info Style checking $(SRCFILE)...)
 	pycodestyle --statistics --count $(SRCFILE)
 	pydocstyle --count $(SRCFILE)
 
+# This target is for use with IDE integration.
 typecheck:
 	mypy $(SRCFILE)
 
+# This target is for use with IDE integration.
 maintain:
 	$(info Checking maintainability of $(SRCFILE)...)
 	python -m mccabe -m 10 $(SRCFILE)*
@@ -208,10 +213,12 @@ maintain:
 	radon mi -s $(SRCFILE)*
 	radon hal $(SRCFILE)*
 
+# This target is for use with IDE integration.
 security:
 	$(info Security linting $(SRCFILE)...)
 	bandit --ini .bandit -c .bandit.conf -b .bandit.baseline $(SRCFILE)
 
+# This target is for use with IDE integration.
 lint:
 	$(info Linting $(SRCFILE)...)
 	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
