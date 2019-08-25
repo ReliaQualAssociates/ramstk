@@ -289,7 +289,6 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_MEASURABLE_PARAMETERS == {}
         assert DUT.RAMSTK_MEASUREMENT_UNITS == {}
         assert DUT.RAMSTK_MODULES == {}
-        assert DUT.RAMSTK_PAGE_NUMBER == {}
         assert DUT.RAMSTK_REQUIREMENT_TYPE == {}
         assert DUT.RAMSTK_RPN_DETECTION == {}
         assert DUT.RAMSTK_RPN_OCCURRENCE == {}
@@ -321,15 +320,16 @@ class TestCreateConfiguration():
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
 
-        assert DUT.RAMSTK_FORMAT_FILE == {}
         assert DUT.RAMSTK_COLORS == {}
+        assert DUT.RAMSTK_FORMAT_FILE == {}
+        assert DUT.RAMSTK_PAGE_NUMBER == {}
         assert DUT.RAMSTK_PROG_INFO == {}
+        assert DUT.RAMSTK_STRESS_LIMITS == {}
         assert DUT.RAMSTK_TABPOS == {
             "listbook": "top",
             "modulebook": "bottom",
             "workbook": "bottom"
         }
-        assert DUT.RAMSTK_STRESS_LIMITS == {}
         assert DUT.RAMSTK_RISK_POINTS == [4, 10]
         assert DUT.RAMSTK_MODE == ""
         assert DUT.RAMSTK_MODE_SOURCE == 1  # 1=FMD-97

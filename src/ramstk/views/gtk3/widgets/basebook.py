@@ -67,7 +67,7 @@ class RAMSTKBook(Gtk.Window):
     :type toolbar: :class:`Gtk.Toolbar`
     """
 
-    RAMSTK_USR_CONFIGURATION = None
+    RAMSTK_USER_CONFIGURATION = None
 
     dic_books: Dict[str, object] = {}
     dic_tab_position = {
@@ -85,7 +85,7 @@ class RAMSTKBook(Gtk.Window):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
         GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
-        self.RAMSTK_USR_CONFIGURATION = configuration
+        self.RAMSTK_USER_CONFIGURATION = configuration
 
         # Initialize private dictionary attributes.
 
@@ -93,9 +93,12 @@ class RAMSTKBook(Gtk.Window):
         self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
-        self._n_screens = Gdk.Screen.get_default().get_n_monitors()
-        self._height = Gdk.Screen.height()
-        self._width = Gdk.Screen.width() / self._n_screens
+        _screen = Gdk.Screen.get_default()
+        _display = _screen.get_display()
+        _monitor = _display.get_monitor(0)
+        self._n_screens = _display.get_n_monitors()
+        self._height = _monitor.get_geometry().height
+        self._width = _monitor.get_geometry().width
 
         # Initialize public dictionary attributes.
 
@@ -110,7 +113,7 @@ class RAMSTKBook(Gtk.Window):
 
         try:
             locale.setlocale(locale.LC_ALL,
-                             self.RAMSTK_USR_CONFIGURATION.RAMSTK_LOCALE)
+                             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 

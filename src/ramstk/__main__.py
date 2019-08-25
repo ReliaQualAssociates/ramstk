@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from logging import Logger
+from time import sleep
 
 # Third Party Imports
 from pubsub import pub
@@ -26,6 +27,8 @@ from ramstk.controllers import (
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3 import Gtk
+from ramstk.views.gtk3.books import RAMSTKModuleBook
 
 
 def do_read_site_configuration(logger: Logger) -> RAMSTKSiteConfiguration:
@@ -75,7 +78,7 @@ def do_read_user_configuration() -> RAMSTKUserConfiguration:
 
 def the_one_ring() -> None:
     """Execute the main function for RAMSTK."""
-    # splScreen = SplashScreen()
+    #splScreen = SplashScreen()
 
     # Read the user configuration file and create a logger.  The user
     # configuration file contains information needed to create the logger so
@@ -143,17 +146,13 @@ def the_one_ring() -> None:
     _logger.do_log_info(__name__, "Initialized the RAMSTK application.")
 
     _logger.do_log_info(__name__, "Launching RAMSTK GUI.")
-    _logger.do_log_info(__name__, "Launched RAMSTK GUI.")
-
     # If you don't do this, the splash screen will show, but won't render it's
     # contents
-    # while Gtk.events_pending():
-    #     Gtk.main_iteration()
+    #while Gtk.events_pending():
+    #    Gtk.main_iteration()
 
-    # sleep(3)
-    #_app = RAMSTK(test=False)
-
-    # splScreen.window.destroy()
+    sleep(3)
+    #splScreen.window.destroy()
 
     # Create RAMSTK Books.  These need to be initialized after reading the
     # configuration.
@@ -161,7 +160,9 @@ def the_one_ring() -> None:
     #    pass
     #else:  # Multiple windows.
     #   ListBook(_app.RAMSTK_CONFIGURATION)
-    #    ModuleBook(_app.RAMSTK_CONFIGURATION)
+    RAMSTKModuleBook(user_configuration)
     #    WorkBook(_app.RAMSTK_CONFIGURATION)
 
-    #Gtk.main()
+    _logger.do_log_info(__name__, "Launched RAMSTK GUI.")
+
+    Gtk.main()
