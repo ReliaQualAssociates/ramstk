@@ -4,75 +4,74 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK List Book Module."""
+"""RAMSTK GTK3 List Book Module."""
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.gui.gtk.listviews import (
-    lvwFailureDefinition, lvwStakeholder, lvwUsageProfile,
-)
-from ramstk.gui.gtk.matrixviews import (
-    mtxFunction, mtxHardware, mtxRequirement, mtxValidation,
-)
-from ramstk.gui.gtk.ramstk import RAMSTKBook
-from ramstk.gui.gtk.ramstk.Widget import _
+#from ramstk.gui.gtk.listviews import (
+#    lvwFailureDefinition, lvwStakeholder, lvwUsageProfile,
+#)
+#from ramstk.gui.gtk.matrixviews import (
+#    mtxFunction, mtxHardware, mtxRequirement, mtxValidation,
+#)
+from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.views.gtk3 import _
+from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
 
 
-class ListBook(RAMSTKBook):
+class RAMSTKListBook(RAMSTKBook):
     """
-    This is the List Book class for the pyGTK multiple window interface.
+    This is the List Book class for the GTK3 multiple window interface.
 
     The List Book provides the container for any List Views and Matrix Views
     associated with the RAMSTK module selected in the RAMSTK Module View.
     Attributes of the List Book are:
 
     :ivar dict dic_list_view: dictionary containing the List Views and/or
-                              Matrix Views to load into the RAMSTK List Book
-                              for each RAMSTK module.  Key is the RAMSTK module
-                              name; value is a list of Views associated with
-                              that RAMSTK module.
+        Matrix Views to load into the RAMSTK List Book for each RAMSTK module.
+        Key is the RAMSTK module name; value is a list of Views associated with
+        that RAMSTK module.
     """
-
-    def __init__(self, configuration):
+    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
         """
         Initialize an instance of the RAMSTK List View class.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :param configuration: the RAMSTKUserConfiguration() class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
         RAMSTKBook.__init__(self, configuration)
         self.dic_books['listbook'] = self
 
         # Initialize private dictionary attributes.
+        self._dic_list_views = {
+            #    'revision': [
+            #        lvwUsageProfile(configuration),
+            #        lvwFailureDefinition(configuration),
+            #    ],
+            #    'function':
+            #    [mtxFunction(configuration, matrix_type='fnctn_hrdwr')],
+            #    'requirement': [
+            #        lvwStakeholder(configuration),
+            #        mtxRequirement(configuration, matrix_type='rqrmnt_hrdwr'),
+            #        mtxRequirement(configuration, matrix_type='rqrmnt_vldtn'),
+            #    ],
+            #    'hardware': [
+            #        mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
+            #        mtxHardware(configuration, matrix_type='hrdwr_vldtn'),
+            #    ],
+            #    'validation': [
+            #        mtxValidation(configuration, matrix_type='vldtn_rqrmnt'),
+            #        mtxValidation(configuration, matrix_type='vldtn_hrdwr'),
+            #    ],
+        }
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_list_view = {
-            'revision': [
-                lvwUsageProfile(configuration),
-                lvwFailureDefinition(configuration),
-            ],
-            'function':
-            [mtxFunction(configuration, matrix_type='fnctn_hrdwr')],
-            'requirement': [
-                lvwStakeholder(configuration),
-                mtxRequirement(configuration, matrix_type='rqrmnt_hrdwr'),
-                mtxRequirement(configuration, matrix_type='rqrmnt_vldtn'),
-            ],
-            'hardware': [
-                mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
-                mtxHardware(configuration, matrix_type='hrdwr_vldtn'),
-            ],
-            'validation': [
-                mtxValidation(configuration, matrix_type='vldtn_rqrmnt'),
-                mtxValidation(configuration, matrix_type='vldtn_hrdwr'),
-            ],
-        }
 
         # Initialize public list attributes.
 
@@ -83,9 +82,9 @@ class ListBook(RAMSTKBook):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
-        pub.subscribe(self._on_close, 'closed_program')
+        pub.subscribe(self._on_close, 'succeed_closed_program')
 
-    def __make_ui(self):
+    def __make_ui(self) -> None:
         """
         Build the user interface.
 
@@ -95,7 +94,7 @@ class ListBook(RAMSTKBook):
         self.add(self.notebook)
         self.show_all()
 
-    def __set_properties(self):
+    def __set_properties(self) -> None:
         """
         Set properties of the RAMSTKListBook and widgets.
 
@@ -104,8 +103,8 @@ class ListBook(RAMSTKBook):
         """
         try:
             _tab_position = self.dic_tab_position[
-                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['listbook'].lower()
-            ]
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS['listbook'].lower(
+                )]
         except KeyError:
             _tab_position = self._bottom_tab
         self.notebook.set_tab_pos(_tab_position)
@@ -118,15 +117,15 @@ class ListBook(RAMSTKBook):
         self.resize((self._width / 3) - 10, (2 * self._height / 7))
         self.move((2 * self._width / 3), 0)
 
-    def _on_close(self):
+    def _on_close(self) -> None:
         """
         Clear the List Views when a RAMSTK Program database is closed.
 
         :return: None
         :rtype: None
         """
-        for _key in self.dic_list_view:
-            for _listview in self.dic_list_view[_key]:
+        for _key in self._dic_list_views:
+            for _listview in self._dic_list_views[_key]:
                 try:
                     _view = _listview.treeview
                 except AttributeError:
@@ -139,7 +138,7 @@ class ListBook(RAMSTKBook):
 
                 _model.clear()
 
-    def _on_module_change(self, module=''):
+    def _on_module_change(self, module: str = '') -> None:
         """
         Load the List Views for the RAMSTK module selected in the Module Book.
 
@@ -148,5 +147,5 @@ class ListBook(RAMSTKBook):
         """
         RAMSTKBook.on_module_change(self)
 
-        for _list in self.dic_list_view[module]:
+        for _list in self._dic_list_views[module]:
             self.notebook.insert_page(_list, _list.hbx_tab_label, -1)

@@ -7,9 +7,8 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK GTK3 Books Package."""
 
-
 # RAMSTK Local Imports
-#from .ListBook import ListBook
+from .listbook import RAMSTKListBook
 from .modulebook import RAMSTKModuleBook
 
 #from .WorkBook import WorkBook
