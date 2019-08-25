@@ -10,5 +10,4 @@
 # RAMSTK Local Imports
 from .listbook import RAMSTKListBook
 from .modulebook import RAMSTKModuleBook
-
-#from .WorkBook import WorkBook
+from .workbook import RAMSTKWorkBook

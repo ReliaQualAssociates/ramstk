@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.mwi.ListBook.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.books.listbook.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com

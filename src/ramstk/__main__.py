@@ -28,7 +28,9 @@ from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
-from ramstk.views.gtk3.books import RAMSTKListBook, RAMSTKModuleBook
+from ramstk.views.gtk3.books import (
+    RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
+)
 
 
 def do_read_site_configuration(logger: Logger) -> RAMSTKSiteConfiguration:
@@ -161,7 +163,7 @@ def the_one_ring() -> None:
     #else:  # Multiple windows.
     RAMSTKListBook(user_configuration)
     RAMSTKModuleBook(user_configuration)
-    #    WorkBook(_app.RAMSTK_CONFIGURATION)
+    RAMSTKWorkBook(user_configuration)
 
     _logger.do_log_info(__name__, "Launched RAMSTK GUI.")
 

@@ -45,6 +45,7 @@ class TestRAMSTKModuleBook():
 
         # RAMSTKModuleBook specific.
         assert isinstance(DUT, RAMSTKModuleBook)
+        assert DUT.dic_books['modulebook'] == DUT
         assert DUT._dic_module_views == {}
         assert len(DUT._lst_handler_id) == 2
         assert pub.isSubscribed(DUT._on_open, 'succeed_retrieve_revisions')
