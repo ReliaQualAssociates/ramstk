@@ -144,21 +144,6 @@ class RAMSTKBook(Gtk.Window):
         self.connect('delete_event', destroy)
         self.connect('window_state_event', self._on_window_state_event)
 
-    def on_module_change(self) -> None:
-        """
-        Load correct Views for the RAMSTK module selected in the Module Book.
-
-        :return: None
-        :rtype: None
-        """
-        # We remove any existing pages from the Book.  New pages will be added
-        # by the List Book and the Work Book for the module that was just
-        # selected.
-        _n_pages = self.notebook.get_n_pages()
-        if _n_pages > 0:
-            for _page in list(range(_n_pages)):
-                self.notebook.remove_page(-1)
-
     def _on_request_open(self) -> None:
         """
         Set the status bar and update the progress bar.
@@ -189,3 +174,18 @@ class RAMSTKBook(Gtk.Window):
                 _window[1].deiconify()
         elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
             window.maximize()
+
+    def on_module_change(self) -> None:
+        """
+        Load correct Views for the RAMSTK module selected in the Module Book.
+
+        :return: None
+        :rtype: None
+        """
+        # We remove any existing pages from the Book.  New pages will be added
+        # by the List Book and the Work Book for the module that was just
+        # selected.
+        _n_pages = self.notebook.get_n_pages()
+        if _n_pages > 0:
+            for _page in list(range(_n_pages)):
+                self.notebook.remove_page(-1)

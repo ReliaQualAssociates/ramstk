@@ -87,8 +87,6 @@ class RAMSTKWorkBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        #?self._on_module_change(module='revision')
-
         self.add(self.notebook)
         self.show_all()
 
