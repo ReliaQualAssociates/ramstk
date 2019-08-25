@@ -28,10 +28,10 @@ echo "Runtime requirements:"
 while read -r file;
 do
     file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1`
-    if [[ "x$file" != "x" ]];
+    if [ "x$file" != "x" ];
     then
         version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-        if [[ "x$version" == "x" ]];
+        if [ "x$version" == "x" ];
         then
             version="NOT INSTALLED!"
         fi
@@ -45,10 +45,10 @@ echo "Development requirements:"
 while read -r file;
 do
     file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1 | sed '/^#/ d' | sed '/^-r/ d'`
-    if [[ "x$file" != "x" ]];
+    if [ "x$file" != "x" ];
     then
         version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-        if [[ "x$version" == "x" ]];
+        if [ "x$version" == "x" ];
         then
             version="NOT INSTALLED!"
         fi
@@ -62,10 +62,10 @@ echo "Testing requirements:"
 while read -r file;
 do
     file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1`
-    if [[ "x$file" != "x" ]];
+    if [ "x$file" != "x" ];
     then
         version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-        if [[ "x$version" == "x" ]];
+        if [ "x$version" == "x" ];
         then
             version="NOT INSTALLED!"
         fi

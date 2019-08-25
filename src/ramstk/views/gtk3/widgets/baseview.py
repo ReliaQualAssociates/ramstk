@@ -151,7 +151,10 @@ class RAMSTKBaseView():
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.treeview = self.__make_treeview(kwargs['module'])
+        try:
+            self.treeview = self.__make_treeview(kwargs['module'])
+        except KeyError:
+            self.treeview = Gtk.TreeView()
 
         self.fmt = '{0:0.' + \
                    str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + \
@@ -177,22 +180,19 @@ class RAMSTKBaseView():
         :return: _treeview; the RAMSTKTreeView() created.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
         """
-        try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                     + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                     + 'fg']
-            _fmt_file = (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-                + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
-            _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
+        _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                 + 'bg']
+        _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                 + 'fg']
+        _fmt_file = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
+        _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
 
-            _treeview = RAMSTKTreeView()
-            _treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color,
-                                      _fg_color)
-            self._lst_col_order = _treeview.order
-        except KeyError:
-            _treeview = Gtk.TreeView()
+        _treeview = RAMSTKTreeView()
+        _treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color,
+                                  _fg_color)
+        self._lst_col_order = _treeview.order
 
         return _treeview
 
