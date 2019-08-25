@@ -5,8 +5,21 @@
 #
 #    sh docs/GetEnv.sh
 #
+function print_file_version {
+    file=$1
 
-if [[ "x$VIRTUAL_ENV" != "x" ]];
+    if [ "x$file" != "x" ];
+    then
+        version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
+        if [ "x$version" == "x" ];
+        then
+            version="NOT INSTALLED!"
+        fi
+        echo "  * "$file==$version
+    fi
+}
+
+if [ "x$VIRTUAL_ENV" != "x" ];
 then
     echo "Using a virtualenv at: "$VIRTUAL_ENV
 else
@@ -27,16 +40,8 @@ echo ""
 echo "Runtime requirements:"
 while read -r file;
 do
-    file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1`
-    if [ "x$file" != "x" ];
-    then
-        version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-        if [ "x$version" == "x" ];
-        then
-            version="NOT INSTALLED!"
-        fi
-        echo "  * "$file==$version
-    fi
+    file=$(echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1)
+    print_file_version $file
 done < requirements.in
 echo ""
 
@@ -44,16 +49,8 @@ echo ""
 echo "Development requirements:"
 while read -r file;
 do
-    file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1 | sed '/^#/ d' | sed '/^-r/ d'`
-    if [ "x$file" != "x" ];
-    then
-        version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-        if [ "x$version" == "x" ];
-        then
-            version="NOT INSTALLED!"
-        fi
-        echo "  * "$file==$version
-    fi
+    file=$(echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1 | sed '/^#/ d' | sed '/^-r/ d')
+    print_file_version $file
 done < requirements-dev.in
 echo ""
 
@@ -61,14 +58,8 @@ echo ""
 echo "Testing requirements:"
 while read -r file;
 do
-    file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1`
-    if [ "x$file" != "x" ];
-    then
-        version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-        if [ "x$version" == "x" ];
-        then
-            version="NOT INSTALLED!"
-        fi
-        echo "  * "$file==$version
-    fi
+    file=$(echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1)
+    print_file_version $file
 done < requirements-test.in
+
+exit 0

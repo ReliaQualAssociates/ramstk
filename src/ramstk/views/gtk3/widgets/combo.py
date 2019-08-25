@@ -30,11 +30,8 @@ class RAMSTKComboBox(Gtk.ComboBox):
         self._index = index
 
         if not simple:
-            _list = Gtk.ListStore(
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING
-            )
+            _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
+                                  GObject.TYPE_STRING)
         else:
             _list = Gtk.ListStore(GObject.TYPE_STRING)
         self.set_model(_list)
@@ -65,7 +62,8 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
         return _options
 
-    def do_load_combo(self, entries: List[List[str]], simple: bool = True) -> None:
+    def do_load_combo(self, entries: List[List[str]],
+                      simple: bool = True) -> None:
         """
         Load RAMSTK ComboBox widgets.
 
