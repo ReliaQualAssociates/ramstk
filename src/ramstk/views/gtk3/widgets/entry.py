@@ -8,10 +8,39 @@
 """RAMSTK Entry Module."""
 
 # Standard Library Imports
-from typing import Any
+from typing import Any, Tuple
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango
+
+
+def do_set_common_properties(**kwargs) -> Tuple[int, str, int]:
+    """
+    Set common button properties.
+
+    :return: _height, _tooltip, _width
+    :rtype: tuple
+    """
+    try:
+        _height = kwargs['height']
+    except KeyError:
+        _height = 25
+    try:
+        _tooltip = kwargs['tooltip']
+    except KeyError:
+        _tooltip = ("Missing tooltip, please file a quality type issue to "
+                    "have one added.")
+    try:
+        _width = kwargs['width']
+    except KeyError:
+        _width = 200
+
+    if _height == 0:
+        _height = 25
+    if _width == 0:
+        _width = 200
+
+    return _height, _tooltip, _width
 
 
 class RAMSTKEntry(Gtk.Entry):
@@ -58,28 +87,12 @@ class RAMSTKEntry(Gtk.Entry):
             _editable = kwargs['editable']
         except KeyError:
             _editable = True
-        try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = 25
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = 200
 
-        if _height == 0:
-            _height = 25
-        if _width == 0:
-            _width = 200
+        _height, _tooltip, _width = do_set_common_properties(**kwargs)
 
-        self.set_property('width-request', _width)
-        self.set_property('height-request', _height)
         self.set_property('editable', _editable)
+        self.set_property('height-request', _height)
+        self.set_property('width-request', _width)
 
         if _bold:
             self.modify_font(Pango.FontDescription('bold'))
@@ -187,24 +200,7 @@ class RAMSTKTextView(Gtk.TextView):
         :return: None
         :rtype: None
         """
-        try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = 25
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = 200
-
-        if _height == 0:
-            _height = 25
-        if _width == 0:
-            _width = 200
+        _height, _tooltip, _width = do_set_common_properties(**kwargs)
 
         self.scrollwindow.set_property('height-request', _height)
         self.set_property('tooltip-markup', _tooltip)

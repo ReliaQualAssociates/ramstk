@@ -8,10 +8,39 @@
 """RAMSTK Button Module."""
 
 # Standard Library Imports
-from typing import Any
+from typing import Any, Tuple
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, _
+
+
+def do_set_common_properties(**kwargs: Any) -> Tuple[int, str, int]:
+    """
+    Set common button properties.
+
+    :return: _height, _tooltip, _width
+    :rtype: tuple
+    """
+    try:
+        _height = kwargs['height']
+    except KeyError:
+        _height = 40
+    try:
+        _tooltip = kwargs['tooltip']
+    except KeyError:
+        _tooltip = ("Missing tooltip, please file a quality type issue to "
+                    "have one added.")
+    try:
+        _width = kwargs['width']
+    except KeyError:
+        _width = 200
+
+    if _height == 0:
+        _height = 40
+    if _width == 0:
+        _width = 200
+
+    return _height, _tooltip, _width
 
 
 def do_make_buttonbox(view: Any, **kwargs: Any) -> Gtk.ButtonBox:
@@ -155,27 +184,11 @@ class RAMSTKButton(Gtk.Button):
         :rtype: None
         """
         try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = 40
-        try:
             _icon = kwargs['icon']
         except KeyError:
             _icon = None
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = 200
 
-        if _height == 0:
-            _height = 40
-        if _width == 0:
-            _width = 200
+        _height, _tooltip, _width = do_set_common_properties(**kwargs)
 
         if _icon is not None:
             _image = Gtk.Image()
@@ -187,9 +200,9 @@ class RAMSTKButton(Gtk.Button):
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
 
-        self.set_property('width-request', _width)
         self.set_property('height-request', _height)
         self.set_property('tooltip-markup', _tooltip)
+        self.set_property('width-request', _width)
 
 
 class RAMSTKCheckButton(Gtk.CheckButton):
@@ -221,31 +234,13 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         :return: None
         :rtype: None
         """
-        try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = 40
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = 200
-
-        if _height == 0:
-            _height = 40
-        if _width == 0:
-            _width = 200
+        _height, _tooltip, _width = do_set_common_properties(**kwargs)
 
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)
         self.get_child().set_property('height-request', _height)
-        self.get_child().set_property('width-request', _width)
-
         self.set_property('tooltip-markup', _tooltip)
+        self.get_child().set_property('width-request', _width)
 
     def do_update(self, value: str, handler_id: int) -> None:
         """

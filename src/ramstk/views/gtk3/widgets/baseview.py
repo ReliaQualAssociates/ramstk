@@ -151,23 +151,7 @@ class RAMSTKBaseView():
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        try:
-            _module = kwargs['module']
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[_module
-                                                                     + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[_module
-                                                                     + 'fg']
-            _fmt_file = (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-                + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
-            _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
-
-            self.treeview = RAMSTKTreeView()
-            self.treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color,
-                                          _fg_color)
-            self._lst_col_order = self.treeview.order
-        except KeyError:
-            self.treeview = Gtk.TreeView()
+        self.treeview = self.__make_treeview(kwargs['module'])
 
         self.fmt = '{0:0.' + \
                    str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + \
@@ -184,6 +168,33 @@ class RAMSTKBaseView():
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
+
+    def __make_treeview(self, module):
+        """
+        Make the RAMSTKTreeView instance for this view.
+
+        :param str module: the name of the module this view is associated with.
+        :return: _treeview; the RAMSTKTreeView() created.
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
+        """
+        try:
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                     + 'bg']
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                     + 'fg']
+            _fmt_file = (
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+                + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
+            _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
+
+            _treeview = RAMSTKTreeView()
+            _treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color,
+                                      _fg_color)
+            self._lst_col_order = _treeview.order
+        except KeyError:
+            _treeview = Gtk.TreeView()
+
+        return _treeview
 
     def do_load_tree(self, tree: treelib.Tree) -> None:
         """
