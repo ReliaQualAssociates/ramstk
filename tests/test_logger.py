@@ -11,6 +11,7 @@
 import logging
 
 # Third Party Imports
+import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -69,6 +70,7 @@ class TestLogManager:
         assert pub.isSubscribed(DUT._do_log_fail_message,
                                 'fail_insert_test_method')
 
+    @pytest.mark.unit
     def test_log_fail_messages(self):
         """_do_log_fail_message() should be called when fail_* messages are broadcast and log the associated error message."""
         _testlog = './test_info.log'
@@ -92,6 +94,7 @@ class TestLogManager:
         assert _lines[1].split('-', 5)[-1].strip() == (
             'Attempted to save non-existent FMEA element with FMEA ID ax.')
 
+    @pytest.mark.unit
     def test_info_not_log_debug_messages(self):
         """do_log_info() should not log DEBUG level information when it is an INFO log manager."""
         _testlog = './test_info.log'
@@ -108,6 +111,7 @@ class TestLogManager:
 
         assert _lines == []
 
+    @pytest.mark.unit
     def test_info_log_info_messages(self):
         """do_log_info() should log INFO level information when it is an INFO log manager."""
         _testlog = './test_info.log'
@@ -125,6 +129,7 @@ class TestLogManager:
         assert _lines[0].split('-', 5)[-1].strip() == (
             'This is a test INFO level message that should be logged.')
 
+    @pytest.mark.unit
     def test_info_log_higher_level_messages(self):
         """do_log_info() should log WARN, ERROR, and CRITICAL level information when it is an INFO log manager."""
         _testlog = './test_info.log'

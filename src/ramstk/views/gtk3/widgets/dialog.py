@@ -1,24 +1,24 @@
 # pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.ramstk.Dialog.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.widgets.dialog.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Dialog Module."""
 
 # Standard Library Imports
 import os
 from datetime import datetime
+from typing import Any, Optional, Tuple
 
-# RAMSTK Local Imports
-from .Widget import GObject, Gtk, _
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import GObject, Gtk, _
 
 
 class RAMSTKDialog(Gtk.Dialog):
     """This is the RAMSTK Dialog class."""
-
-    def __init__(self, dlgtitle, **kwargs):
+    def __init__(self, dlgtitle: str, **kwargs: Any) -> None:
         r"""
         Initialize a RAMSTK Dialog widget.
 
@@ -40,7 +40,9 @@ class RAMSTKDialog(Gtk.Dialog):
             self.add_buttons(kwargs['dlgbuttons'])
         except KeyError:
             self.add_buttons(
-                Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL,
+                Gtk.STOCK_OK,
+                Gtk.ResponseType.OK,
+                Gtk.STOCK_CANCEL,
                 Gtk.ResponseType.CANCEL,
             )
         try:
@@ -50,16 +52,16 @@ class RAMSTKDialog(Gtk.Dialog):
 
         self.set_destroy_with_parent(True)
         self.set_modal(True)
-        self.set_parent(_dlgparent)
+        self.set_property('parent', _dlgparent)
         self.set_title(dlgtitle)
 
-    def do_run(self):
-        """Run the RAMSTK Dialog."""
-        return self.run()
-
-    def do_destroy(self):
+    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
         """Destroy the RAMSTK Dialog."""
         self.destroy()
+
+    def do_run(self) -> Any:
+        """Run the RAMSTK Dialog."""
+        return self.run()
 
 
 class RAMSTKMessageDialog(Gtk.MessageDialog):
@@ -68,23 +70,25 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
 
     It used for RAMSTK error, warning, and information messages.
     """
-
-    def __init__(self, prompt, icon, criticality, parent=None):
+    def __init__(self,
+                 prompt: str,
+                 icon: str,
+                 criticality: str,
+                 parent: Gtk.Window = None) -> None:
         """
         Initialize runtime error, warning, and information dialogs.
 
         :param str prompt: the prompt to display in the dialog.
         :param str icon: the absolute path to the icon to display on the
-                         dialog.
+            dialog.
         :param str criticality: the criticality level of the dialog.
-                                Criticality is one of:
-
-                                * 'error'
-                                * 'warning'
-                                * 'information'
+            Criticality is one of:
+                * 'error'
+                * 'warning'
+                * 'information'
 
         :keyword Gtk.Window _parent: the parent Gtk.Window(), if any, for the
-                                     dialog.
+            dialog.
         """
         _image = Gtk.Image()
         _image.set_from_file(icon)
@@ -125,47 +129,59 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
             self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif criticality == 'question':
             _criticality = Gtk.MessageType.QUESTION
-            self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No", Gtk.ResponseType.NO)
-
-        self.props.message_type = _criticality
-        self.set_destroy_with_parent(True)
-        self.set_image(_image)
-        self.set_markup(prompt)
+            self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No",
+                             Gtk.ResponseType.NO)
 
         if parent is not None:
             self.set_parent(parent)
 
+        self.set_destroy_with_parent(True)
+        self.set_modal(True)
+        self.set_image(_image)
+        self.set_markup(prompt)
+        self.set_property('message-type', _criticality)
+
         self.show_all()
 
-    def do_run(self):
+    def do_run(self) -> Any:
         """Run the RAMSTK Message Dialog."""
         return self.run()
 
-    def do_destroy(self):
+    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
         """Destroy the RAMSTK Message Dialog."""
         self.destroy()
 
 
 class RAMSTKDateSelect(Gtk.Dialog):
     """The RAMSTK Date Selection Dialog."""
-
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize an instance of the RAMSTKDateSelect class."""
-        GObject.GObject.__init__()
+        GObject.GObject.__init__(self)
 
         self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
         self.set_title(_("Select Date"))
 
         self._calendar = Gtk.Calendar()
-        self.vbox.pack_start(self._calendar, True, True, 0)  # pylint: disable=E1101
-        self.vbox.show_all()  # pylint: disable=E1101
+        self.vbox.pack_start(self._calendar, True, True, 0)
+        self.vbox.show_all()
 
-    def do_run(self):
-        """Run the RAMSTKDateSelect dialog."""
+    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
+        """Destroy the RAMSTKDateSelect dialog."""
+        self.destroy()
+
+    def do_run(self) -> Any:
+        """
+        Run the RAMSTKDateSelect dialog.
+
+        :return: the selected date or the default date if the dialog is
+            cancelled.
+        :rtype: str
+        """
         if self.run() == Gtk.ResponseType.ACCEPT:
             _date = self._calendar.get_date()
             _date = datetime(
-                _date[0], _date[1] + 1,
+                _date[0],
+                _date[1] + 1,
                 _date[2],
             ).date().strftime("%Y-%m-%d")
         else:
@@ -173,34 +189,33 @@ class RAMSTKDateSelect(Gtk.Dialog):
 
         return _date
 
-    def do_destroy(self):
-        """Destroy the RAMSTKDateSelect dialog."""
-        self.destroy()
-
 
 class RAMSTKFileChooser(Gtk.FileChooserDialog):
     """This is the RAMSTK File Chooser Dialog class."""
-
-    def __init__(self, title, cwd):
+    def __init__(self, title: str, **kwargs: Any) -> None:
         """
         Initialize an instance of the RAMSTKFileChooser dialog.
 
         :param str title: the title of the dialog.
-        :param str cwd: the absolute path to the file to open.
         """
-        GObject.GObject.__init__()
+        GObject.GObject.__init__(self)
+        try:
+            _dlgparent = kwargs['dlgparent']
+        except KeyError:
+            _dlgparent = None
 
         self.add_buttons(
-            Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+            Gtk.STOCK_OK,
+            Gtk.ResponseType.ACCEPT,
+            Gtk.STOCK_CANCEL,
+            Gtk.ResponseType.REJECT,
         )
         self.set_destroy_with_parent(True)
         self.set_modal(True)
-        self.set_parent(None)
+        self.set_property('parent', _dlgparent)
         self.set_title(title)
 
         self.set_action(Gtk.FileChooserAction.SAVE)
-        self.set_current_folder(cwd)
 
         _filter = Gtk.FileFilter()
         _filter.set_name(_("Excel Files"))
@@ -218,7 +233,7 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         _filter.add_pattern("*")
         self.add_filter(_filter)
 
-    def do_run(self):
+    def do_run(self) -> Tuple[Optional[Any], Optional[Any]]:
         """
         Run the RAMSTKFileChooser dialog.
 
@@ -237,6 +252,6 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
 
         return (_filename, _extension)
 
-    def do_destroy(self):
+    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
         """Destroy the RAMSTKFileChooser dialog."""
         self.destroy()

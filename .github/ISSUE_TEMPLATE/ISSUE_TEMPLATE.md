@@ -1,6 +1,6 @@
 ### Expected Behavior ###
 
-As a <type of RAMSTK user>, I want <state a goal> so that <some reason>.
+As a \<type of RAMSTK stakeholder\>, I want \<state a goal\> so that \<some (good) reason\>.
 
 ### Actual Behavior (NOT required for Enhancement type issues.) ###
 
@@ -13,20 +13,26 @@ As a <type of RAMSTK user>, I want <state a goal> so that <some reason>.
 * OS Distribution (if Linux):
 * OS Version:
 * Hardware:
-* Required Software Versions:
+
+* Software Versions (You can execute devtools/getenv.sh from the RAMSTK
+repository and copy/paste the output below):
   * Python ==
   * defusedxml ==
   * lifelines ==
   * lxml ==
   * matplotlib ==
-  * numpy ==
+  * openpyxl ==
   * pandas ==
+  * pycairo ==
+  * pygobject ==
   * pypubsub ==
-  * scipy ==
   * sortedcontainers ==
+  * sqlalchemy-utils ==
   * sqlalchemy ==
-  * sqlalchemy_utils ==
   * statsmodels ==
+  * sympy ==
+  * toml ==
   * treelib ==
   * xlrd ==
+  * XlsxWriter ==
   * xlwt ==

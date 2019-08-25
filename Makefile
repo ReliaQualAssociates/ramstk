@@ -82,6 +82,33 @@ help:
 	@echo "	VIRTENV					set the name of the virtual environment to create/use.  Defaults to $(VIRTENV)."
 	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)"
 
+clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
+
+clean-build:	## remove build artifacts
+	rm -fr build/
+	rm -fr dist/
+	rm -fr .eggs/
+	$(shell find . -name '*.egg-info' -exec rm -fr '{}' +)
+	$(shell find . -name '*.egg' -exec rm -f '{}' +)
+
+clean-pyc:		## remove Python file artifacts
+	$(shell find . -name '*.pyc' -exec rm -f {} +)
+	$(shell find . -name '*.pyo' -exec rm -f {} +)
+	$(shell find . -name '*~' -exec rm -f {} +)
+	$(shell find . -name '__pycache__' -exec rm -fr {} +)
+
+clean-test:		## remove test and coverage artifacts
+	rm -fr .tox/
+	rm -f .coverage
+	rm -fr .reports/coverage
+	rm -fr .pytest_cache
+
+coverage: clean-test
+	py.test $(TESTOPTS) --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term $(TESTFILE)
+
+depends:
+	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
+
 mkvenv:
 	pyenv virtualenv $(PY) $(VIRTENV)
 
@@ -110,30 +137,6 @@ upgrade:
 	pip-compile --upgrade --generate-hashes --output-file $(REQFILE) requirements.in
 	pip-compile --upgrade --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
 	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
-
-depends:
-	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
-
-clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
-
-clean-build:	## remove build artifacts
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr '{}' +
-	find . -name '*.egg' -exec rm -f '{}' +
-
-clean-pyc:		## remove Python file artifacts
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
-
-clean-test:		## remove test and coverage artifacts
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr .reports/coverage
-	rm -fr .pytest_cache
 
 install: clean
 	pip install . --prefix=$(PREFIX)
@@ -173,14 +176,14 @@ test.calc:
 test.integration:
 	py.test $(TESTOPTS) -m integration $(TESTFILE)
 
+test.gui:
+	py.test $(TESTOPTS) -m gui $(TESTFILE)
+
 test:
 	py.test $(TESTOPTS) $(TESTFILE)
 
 test-all:
 	$(info "TODO: Need to add tox support for this target to work.")
-
-coverage: clean-test
-	py.test $(TESTOPTS) --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term $(TESTFILE)
 
 reports: coverage
 	coverage html -d $(COVDIR)
@@ -200,7 +203,7 @@ typecheck:
 
 maintain:
 	$(info Checking maintainability of $(SRCFILE)...)
-	python -m mccabe -m 9 $(SRCFILE)*
+	python -m mccabe -m 10 $(SRCFILE)*
 	radon cc -s $(SRCFILE)*
 	radon mi -s $(SRCFILE)*
 	radon hal $(SRCFILE)*

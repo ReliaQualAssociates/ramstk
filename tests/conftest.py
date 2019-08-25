@@ -335,7 +335,7 @@ def test_toml_site_configuration():
 
 
 @pytest.fixture(scope='session')
-def test_toml_user_configuration():
+def test_toml_user_configuration(make_home_config_dir):
     """Create a toml user configuration file."""
     _user_config = RAMSTKUserConfiguration()
     _user_config._INSTALL_PREFIX = VIRTUAL_ENV

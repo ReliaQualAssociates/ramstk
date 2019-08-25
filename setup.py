@@ -146,7 +146,9 @@ if __name__ == '__main__':
         package_dir={'': 'src'},
         py_modules=[
             'ramstk.configuration',
-            'ramstk.RAMSTK',
+            'ramstk.exceptions',
+            'ramstk.logger',
+            'ramstk.ramstk',
             'ramstk.utilities',
         ],
         classifiers=__trove__,

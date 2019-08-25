@@ -1,37 +1,37 @@
 # pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.ramstk.Combo.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.widgets.combo.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Combo Module."""
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTK GTK3 Combo Module."""
 
-# RAMSTK Local Imports
-from .Widget import GObject, Gtk
+# Standard Library Imports
+from typing import Any, Dict, List
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import GObject, Gtk
 
 
 class RAMSTKComboBox(Gtk.ComboBox):
     """This is the RAMSTK ComboBox class."""
-
-    def __init__(self, index=0, simple=True, **kwargs):
+    def __init__(self, index: int = 0, simple: bool = True) -> None:
         r"""
         Create RAMSTK ComboBox widgets.
 
         :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to
-        display.  Default is 0.
+            display.  Default is 0.
         :keyword bool simple: indicates whether to make a simple (one item) or
-        complex (three item) RAMSTKComboBox.  Default is True.
+            complex (three item) RAMSTKComboBox.  Default is True.
         """
         GObject.GObject.__init__(self)
 
         self._index = index
 
         if not simple:
-            _list = Gtk.ListStore(
-                GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_STRING,
-            )
+            _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
+                                  GObject.TYPE_STRING)
         else:
             _list = Gtk.ListStore(GObject.TYPE_STRING)
         self.set_model(_list)
@@ -42,10 +42,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
         self.show()
 
-        # TODO: Remove the call to do_set_properties() in the RAMSTKComboBox.__init__() method when all instances of RAMSTKComboBox() have been refactored.
-        self.do_set_properties(**kwargs)
-
-    def do_get_options(self):
+    def do_get_options(self) -> Dict[int, Any]:
         """
         Retrieve all the options in the RAMSTK Combo.
 
@@ -65,32 +62,27 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
         return _options
 
-    # TODO: Remove index in calls to the RAMSTKComboBox.do_load_combo() method and then remove index from the argument list.
-    def do_load_combo(self, entries, index=0, simple=True): # pylint: disable=unused-argument
+    def do_load_combo(self, entries: List[List[str]],
+                      simple: bool = True) -> None:
         """
         Load RAMSTK ComboBox widgets.
 
         :param list entries: the information to load into the Gtk.ComboBox().
-                             This is always a list of lists where each internal
-                             list contains the information to be displayed and
-                             there is one internal list for each RAMSTKComboBox
-                             line.
-        :keyword int index: the index in the internal list to display.  Only
-                            used when doing a simple load.  Default is 0.
+            This is always a list of lists where each internal list contains
+            the information to be displayed and there is one internal list for
+            each RAMSTKComboBox line.
         :keyword bool simple: indicates whether this is a simple (one item) or
-                              complex (three item) RAMSTKComboBox.  A
-                              simple (default) RAMSTKComboBox contains and
-                              displays one field only.  A 'complex' RAMSTKComboBox
-                              contains three str fields, but only displays the
-                              first field.  The other two fields are hidden and
-                              used to store information associated with the
-                              items displayed in the RAMSTKComboBox.  For example,
-                              if the name of an item is displayed, the other
-                              two fields might contain a code and an index.
-                              These could be extracted for use in the RAMSTK
-                              Views.
+            complex (three item) RAMSTKComboBox.  A simple (default)
+            RAMSTKComboBox contains and displays one field only.  A 'complex'
+            RAMSTKComboBox contains three str fields, but only displays the
+            first field.  The other two fields are hidden and used to store
+            information associated with the items displayed in the
+            RAMSTKComboBox.  For example, if the name of an item is displayed,
+            the other two fields might contain a code and an index.  These
+            could be extracted for use in the RAMSTK Views.
         :return: None
         :rtype: None
+        :raise: TypeError if attempting to load other than string values.
         """
         _model = self.get_model()
         _model.clear()
@@ -104,7 +96,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
             for __, _entry in enumerate(entries):
                 _model.append([_entry[self._index]])
 
-    def do_set_properties(self, **kwargs):
+    def do_set_properties(self, **kwargs: Any) -> None:
         r"""
         Set the properties of the RAMSTK combobox.
 
@@ -112,11 +104,11 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
         :Keyword Arguments:
             * *height* (int) -- height of the Gtk.ComboBox() widget.
-                                Default is 30.
+                Default is 30.
             * *tooltip* (str) -- the tooltip, if any, for the combobox.
-                                 Default is an empty string.
-            * *width* (int) -- width of the Gtk.ComboBox() widget.
-                               Default is 200.
+                Default is an empty string.
+            * *width* (int) -- width of the Gtk.ComboBox() widget.  Default is
+                200.
         :return: None
         :rtype: None
         """
@@ -127,24 +119,30 @@ class RAMSTKComboBox(Gtk.ComboBox):
         try:
             _tooltip = kwargs['tooltip']
         except KeyError:
-            _tooltip = ''
+            _tooltip = ("Missing tooltip, please file a quality type issue to "
+                        "have one added.")
         try:
             _width = kwargs['width']
         except KeyError:
             _width = 200
 
-        self.props.width_request = _width
-        self.props.height_request = _height
-        self.set_tooltip_markup(_tooltip)
+        if _height == 0:
+            _height = 30
+        if _width == 0:
+            _width = 200
 
-    def do_update(self, value, handler_id):
+        self.set_property('height-request', _height)
+        self.set_property('tooltip-markup', _tooltip)
+        self.set_property('width-request', _width)
+
+    def do_update(self, value: str, handler_id: int) -> None:
         """
         Update the RAMSTK Combo with a new value.
 
         :param str value: the information to update the RAMSTKCombo() to
-        display.
+            display.
         :param int handler_id: the handler ID associated with the
-        RAMSTKCombo().
+            RAMSTKComboBox().
         :return: None
         :rtype: None
         """
