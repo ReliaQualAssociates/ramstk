@@ -10,8 +10,10 @@
 import gettext
 import glob
 import sys
-from distutils import dir_util, file_util
-from distutils.errors import DistutilsFileError
+from distutils import dir_util, file_util  # pylint: disable=no-name-in-module
+from distutils.errors import (  # pylint: disable=no-name-in-module
+    DistutilsFileError
+)
 from os import environ, makedirs
 from typing import Dict, Tuple
 
@@ -221,7 +223,6 @@ class RAMSTKSiteConfiguration:
         self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str, str]] = {
         }  # Admin.
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
         self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
@@ -539,15 +540,16 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self._INSTALL_PREFIX = get_install_prefix()
 
         # Initialize public dictionary attributes.
-        self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
         self.RAMSTK_COLORS: Dict[str, str] = {}
-        self.RAMSTK_PROG_INFO: Dict[str, str] = {}
+        self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
+        self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
+        self.RAMSTK_PROG_INFO: Dict[int, str] = {}
+        self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}
         self.RAMSTK_TABPOS = {
             "listbook": "top",
             "modulebook": "bottom",
             "workbook": "bottom",
         }
-        self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}
 
         # Initialize public list attributes.
         self.RAMSTK_RISK_POINTS = [4, 10]
