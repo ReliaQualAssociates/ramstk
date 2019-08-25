@@ -203,7 +203,7 @@ typecheck:
 
 maintain:
 	$(info Checking maintainability of $(SRCFILE)...)
-	python -m mccabe -m 9 $(SRCFILE)*
+	python -m mccabe -m 10 $(SRCFILE)*
 	radon cc -s $(SRCFILE)*
 	radon mi -s $(SRCFILE)*
 	radon hal $(SRCFILE)*

@@ -25,38 +25,50 @@ echo ""
 
 # Runtime modules.
 echo "Runtime requirements:"
-for file in $(cat requirements.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1);
+while read -r file;
 do
-    version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-    if [[ "x$version" == "x" ]];
+    file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1`
+    if [[ "x$file" != "x" ]];
     then
-        version="NOT INSTALLED!"
+        version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
+        if [[ "x$version" == "x" ]];
+        then
+            version="NOT INSTALLED!"
+        fi
+        echo "  * "$file==$version
     fi
-    echo "  * "$file==$version
-done
+done < requirements.in
 echo ""
 
 # Development modules.
 echo "Development requirements:"
-for file in $(cat requirements-dev.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1 | sed '/^#/ d' | sed '/^-r/ d');
+while read -r file;
 do
-    version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-    if [[ "x$version" == "x" ]];
+    file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1 | sed '/^#/ d' | sed '/^-r/ d'`
+    if [[ "x$file" != "x" ]];
     then
-        version="NOT INSTALLED!"
+        version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
+        if [[ "x$version" == "x" ]];
+        then
+            version="NOT INSTALLED!"
+        fi
+        echo "  * "$file==$version
     fi
-    echo "  * "$file==$version
-done
+done < requirements-dev.in
 echo ""
 
 # Testing modules.
 echo "Testing requirements:"
-for file in $(cat requirements-test.in | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1);
+while read -r file;
 do
-    version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-    if [[ "x$version" == "x" ]];
+    file=`echo $file | cut -d '=' -f1 | cut -d '>' -f1 | cut -d '<' -f1`
+    if [[ "x$file" != "x" ]];
     then
-        version="NOT INSTALLED!"
+        version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
+        if [[ "x$version" == "x" ]];
+        then
+            version="NOT INSTALLED!"
+        fi
+        echo "  * "$file==$version
     fi
-    echo "  * "$file==$version
-done
+done < requirements-test.in
