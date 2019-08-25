@@ -5,13 +5,13 @@
 #
 #    sh docs/GetEnv.sh
 #
-function print_file_version {
+print_file_version() {
     file=$1
 
     if [ "x$file" != "x" ];
     then
         version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]')
-        if [ "x$version" == "x" ];
+        if [ "x$version" = "x" ];
         then
             version="NOT INSTALLED!"
         fi
