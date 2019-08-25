@@ -133,9 +133,9 @@ class RAMSTKComboBox(Gtk.ComboBox):
         if _width == 0:
             _width = 200
 
-        self.set_property('width-request', _width)
         self.set_property('height-request', _height)
         self.set_property('tooltip-markup', _tooltip)
+        self.set_property('width-request', _width)
 
     def do_update(self, value: str, handler_id: int) -> None:
         """

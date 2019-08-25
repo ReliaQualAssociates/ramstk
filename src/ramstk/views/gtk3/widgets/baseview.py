@@ -162,8 +162,9 @@ class RAMSTKBaseView():
                 + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
             _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
 
-            self.treeview = RAMSTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
-                                           _fg_color)
+            self.treeview = RAMSTKTreeView()
+            self.treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color,
+                                          _fg_color)
             self._lst_col_order = self.treeview.order
         except KeyError:
             self.treeview = Gtk.TreeView()
