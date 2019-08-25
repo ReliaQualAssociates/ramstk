@@ -93,12 +93,19 @@ class RAMSTKBook(Gtk.Window):
         self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
-        _screen = Gdk.Screen.get_default()
-        _display = _screen.get_display()
-        _monitor = _display.get_monitor(0)
-        self._n_screens = _display.get_n_monitors()
-        self._height = _monitor.get_geometry().height
-        self._width = _monitor.get_geometry().width
+        try:
+            _screen = Gdk.Screen.get_default()
+            _display = _screen.get_display()
+            _monitor = _display.get_monitor(0)
+            self._n_screens = _display.get_n_monitors()
+            self._height = _monitor.get_geometry().height
+            self._width = _monitor.get_geometry().width
+        except AttributeError:
+            # When running on CI servers, there will be no monitor.  We also
+            # don't need one.
+            self._n_screens = 0
+            self._height = -1
+            self._width = -1
 
         # Initialize public dictionary attributes.
 
