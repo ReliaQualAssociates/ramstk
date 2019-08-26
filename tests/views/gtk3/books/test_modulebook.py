@@ -12,6 +12,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.books import RAMSTKModuleBook
 from ramstk.views.gtk3.widgets import RAMSTKBook
@@ -23,7 +24,9 @@ class TestRAMSTKModuleBook():
     @pytest.mark.gui
     def test_create_modulebook(self, test_toml_user_configuration):
         """__init__() should create a RAMSTKModuleBook."""
-        DUT = RAMSTKModuleBook(test_toml_user_configuration)
+        DUT = RAMSTKModuleBook(
+            test_toml_user_configuration,
+            RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))
 
         # Did it inherit from the RAMSTKBook?
         assert isinstance(DUT, RAMSTKBook)
@@ -46,7 +49,7 @@ class TestRAMSTKModuleBook():
         # RAMSTKModuleBook specific.
         assert isinstance(DUT, RAMSTKModuleBook)
         assert DUT.dic_books['modulebook'] == DUT
-        assert DUT._dic_module_views == {}
+        assert isinstance(DUT._dic_module_views, dict)
         assert len(DUT._lst_handler_id) == 2
         assert pub.isSubscribed(DUT._on_open, 'succeed_retrieve_revisions')
         assert pub.isSubscribed(DUT._on_close, 'succeed_closed_program')

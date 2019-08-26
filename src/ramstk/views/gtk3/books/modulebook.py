@@ -15,10 +15,12 @@ from treelib import Tree
 #    CreateProject, ImportProject, OpenProject, Options, Preferences,
 #)
 #from ramstk.gui.gtk.moduleviews import (
-#    mvwFunction, mvwHardware, mvwRequirement, mvwRevision, mvwValidation,
+#    mvwFunction, mvwHardware, mvwRequirement, mvwValidation,
 #)
 from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
+from ramstk.views.gtk3.revision import mvwRevision
 from ramstk.views.gtk3.widgets.basebook import RAMSTKBook, destroy
 
 
@@ -33,19 +35,22 @@ class RAMSTKModuleBook(RAMSTKBook):
         RAMSTK module name; value is the View associated with that RAMSTK
         module.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Module Book class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKBook.__init__(self, configuration)
         self.dic_books['modulebook'] = self
 
         # Initialize private dictionary attributes.
         self._dic_module_views = {
-            #    'revision': mvwRevision(configuration),
+            'revision': mvwRevision(configuration, logger),
             #    'requirement': mvwRequirement(configuration),
             #    'function': mvwFunction(configuration),
             #    'hardware': mvwHardware(configuration),
@@ -262,12 +267,11 @@ class RAMSTKModuleBook(RAMSTKBook):
         self.__make_menu()
         self.__make_toolbar()
 
-        # TODO: Uncomment when workstream revision module view is updated.
-        #self.notebook.insert_page(
-        #    self._dic_module_views['revision'],
-        #    tab_label=self._dic_module_views['revision'].hbx_tab_label,
-        #    position=0,
-        #)
+        self.notebook.insert_page(
+            self._dic_module_views['revision'],
+            tab_label=self._dic_module_views['revision'].hbx_tab_label,
+            position=0,
+        )
 
         self.statusbar.add(self.progressbar)
         _vbox = Gtk.VBox()

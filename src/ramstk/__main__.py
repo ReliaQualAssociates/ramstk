@@ -162,7 +162,7 @@ def the_one_ring() -> None:
     #    pass
     #else:  # Multiple windows.
     RAMSTKListBook(user_configuration)
-    RAMSTKModuleBook(user_configuration)
+    RAMSTKModuleBook(user_configuration, _logger)
     RAMSTKWorkBook(user_configuration)
 
     _logger.do_log_info(__name__, "Launched RAMSTK GUI.")

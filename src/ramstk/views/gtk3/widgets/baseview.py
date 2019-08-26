@@ -19,7 +19,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
+from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 
 # RAMSTK Local Imports
 from .dialog import RAMSTKMessageDialog
@@ -172,7 +172,7 @@ class RAMSTKBaseView():
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
 
-    def __make_treeview(self, module):
+    def __make_treeview(self, module: str) -> RAMSTKTreeView:
         """
         Make the RAMSTKTreeView instance for this view.
 
@@ -562,3 +562,138 @@ class RAMSTKBaseView():
         :rtype: None
         """
         self._revision_id = attributes['revision_id']
+
+
+class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
+    """
+    Display data in the RAMSTK Module Book.
+
+    This is the meta class for all RAMSTK Module View classes.  Attributes of
+    the RAMSTKModuleView are:
+
+    :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
+    """
+
+    def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager, **kwargs: Any) -> None:
+        """
+        Initialize the RAMSTKModuleView meta-class.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        """
+        GObject.GObject.__init__(self)
+        RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
+
+        # Initialize private dictionary attributes.
+        self._dic_icons['insert_part'] = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
+            '/32x32/insert_part.png'
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._img_tab = Gtk.Image()
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__set_properties()
+        self.__set_callbacks()
+
+    def __set_callbacks(self) -> None:
+        """
+        Set common callback methods for the ModuleView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change),
+            )
+        except AttributeError:
+            pass
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event', self._on_button_press),
+            )
+        except AttributeError:
+            pass
+
+    def __set_properties(self) -> None:
+        """
+        Set common properties of the ModuleView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.treeview.set_rubber_banding(True)
+
+    def do_request_export(self, module: str) -> None:
+        """
+        Launch the Export assistant.
+
+        :return: None
+        :rtype: None
+        """
+        #_tree = self._dtc_data_controller.request_do_select_all(
+        #    revision_id=self._revision_id)
+        #ExportModule(self._mdcRAMSTK, module, _tree)
+
+    def make_ui(self) -> None:
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self._img_tab.set_from_file(self._dic_icons['tab'])
+
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.add(self.treeview)
+        self.pack_end(_scrolledwindow, True, True, 0)
+
+        self.hbx_tab_label.pack_start(self._img_tab, True, True, 0)
+        self.hbx_tab_label.show_all()
+
+        self.show_all()
+
+    def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
+        """
+        Handle mouse clicks on the Module View RAMSTKTreeView().
+
+        :param event: the Gdk.Event() that called this method (the
+            important attribute is which mouse button was clicked).
+                * 1 = left
+                * 2 = scrollwheel
+                * 3 = right
+                * 4 = forward
+                * 5 = backward
+                * 8 =
+                * 9 =
+        :type event: :class:`Gdk.Event`
+        :return: None
+        :rtype: None
+        """
+        _icons = kwargs['icons']
+        _labels = kwargs['labels']
+        _callbacks = kwargs['callbacks']
+
+        # Append the default save and save-all buttons found on all Module View
+        # pop-up menus.
+        try:
+            _icons.extend(['remove', 'save', 'save-all'])
+            _callbacks.extend([
+                self._do_request_delete, self._do_request_update,
+                self._do_request_update_all,
+            ])
+        except AttributeError:
+            pass
+
+        RAMSTKBaseView.on_button_press(
+            self, event, icons=_icons, labels=_labels, callbacks=_callbacks,
+        )

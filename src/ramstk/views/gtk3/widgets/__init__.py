@@ -9,7 +9,7 @@
 
 # RAMSTK Local Imports
 from .basebook import RAMSTKBook
-from .baseview import RAMSTKBaseView
+from .baseview import RAMSTKBaseView, RAMSTKModuleView
 from .button import (
     RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton, do_make_buttonbox
 )
