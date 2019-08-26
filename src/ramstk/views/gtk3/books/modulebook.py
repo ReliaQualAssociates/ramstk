@@ -18,7 +18,7 @@ from treelib import Tree
 #    mvwFunction, mvwHardware, mvwRequirement, mvwRevision, mvwValidation,
 #)
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.widgets.basebook import RAMSTKBook, destroy
 
 
@@ -61,6 +61,7 @@ class RAMSTKModuleBook(RAMSTKBook):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.icoStatus = Gtk.StatusIcon()
 
         self.__set_properties()
         self.__make_ui()
@@ -281,6 +282,7 @@ class RAMSTKModuleBook(RAMSTKBook):
         self.notebook.set_current_page(0)
 
         self.statusbar.push(1, _("Ready"))
+        self._do_set_status_icon()
 
     def __set_properties(self) -> None:
         """
@@ -339,6 +341,8 @@ class RAMSTKModuleBook(RAMSTKBook):
         _model = self._dic_module_views['revision'].treeview.get_model()
         _model.clear()
 
+        self._do_set_status_icon()
+
     def _on_open(self, tree: Tree) -> None:  # pylint: disable=unused-argument
         """
         Update the status bar and clear the progress bar.
@@ -350,13 +354,13 @@ class RAMSTKModuleBook(RAMSTKBook):
         for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER:
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
-            self.notebook.insert_page(
-                _module,
-                tab_label=_module.hbx_tab_label,
-                position=_key,
-            )
+            self.notebook.insert_page(_module,
+                                      tab_label=_module.hbx_tab_label,
+                                      position=_key)
 
         self.statusbar.pop(1)
+
+        self._do_set_status_icon(connected=True)
 
     def _on_switch_page(self, __notebook: Gtk.Notebook, __page: Gtk.Widget,
                         page_num: int) -> None:
@@ -413,6 +417,33 @@ class RAMSTKModuleBook(RAMSTKBook):
 
         if end:
             destroy(widget)
+
+    def _do_set_status_icon(self, connected: bool = False) -> None:
+        """
+        Set the status icon in the system tay to indicate connection status.
+
+        :param bool connected: whether or not RAMSTK is connected to a program
+            database.
+        :return: None
+        :rtype: None
+        """
+        if connected:
+            _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+                '/32x32/db-connected.png'
+            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
+            self.icoStatus.set_from_pixbuf(_icon)
+            self.icoStatus.set_tooltip_markup(
+                _(u"RAMSTK is connected to program database "
+                  u"{0:s}.".format(
+                      self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
+        else:
+            _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
+                '/32x32/db-disconnected.png'
+            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
+            self.icoStatus.set_from_pixbuf(_icon)
+            self.icoStatus.set_tooltip_markup(
+                _(u"RAMSTK is not currently connected to a "
+                  u"project database."))
 
     @staticmethod
     def _do_request_close_project(__widget: Gtk.Widget) -> None:
