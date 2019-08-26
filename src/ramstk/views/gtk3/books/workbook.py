@@ -11,7 +11,9 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import _
+from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
 
 #from ramstk.gui.gtk.workviews import (
@@ -24,21 +26,24 @@ from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
 
 class RAMSTKWorkBook(RAMSTKBook):
     """This is the Work Book for the pyGTK multiple window interface."""
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Work View class.
 
-        :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKBook.__init__(self, configuration)
         self.dic_books['workbook'] = self
 
         # Initialize private dictionary attributes.
         self._dic_work_views = {
-            #    'revision': [
-            #        wvwRevisionGD(configuration),
-            #    ],
+            'revision': [
+                wvwRevisionGD(configuration, logger),
+            ],
             #    'function': [
             #        wvwFunctionGD(configuration),
             #        wvwFFMEA(configuration),

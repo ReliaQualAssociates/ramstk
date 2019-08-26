@@ -9,3 +9,4 @@
 
 # RAMSTK Local Imports
 from .moduleview import ModuleView as mvwRevision
+from .workview import GeneralData as wvwRevisionGD

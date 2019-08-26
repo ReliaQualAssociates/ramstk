@@ -12,6 +12,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.books import RAMSTKWorkBook
 from ramstk.views.gtk3.widgets import RAMSTKBook
@@ -23,7 +24,9 @@ class TestRAMSTKWorkBook():
     @pytest.mark.gui
     def test_create_workbook(self, test_toml_user_configuration):
         """__init__() should create a RAMSTKWorkBook."""
-        DUT = RAMSTKWorkBook(test_toml_user_configuration)
+        DUT = RAMSTKWorkBook(
+            test_toml_user_configuration,
+            RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))
 
         # Did it inherit from the RAMSTKBook?
         assert isinstance(DUT, RAMSTKBook)
@@ -46,6 +49,6 @@ class TestRAMSTKWorkBook():
         # RAMSTKWorkBook specific.
         assert isinstance(DUT, RAMSTKWorkBook)
         assert DUT.dic_books['workbook'] == DUT
-        assert DUT._dic_work_views == {}
+        assert isinstance(DUT._dic_work_views, dict)
         assert len(DUT._lst_handler_id) == 0
         assert pub.isSubscribed(DUT._on_module_change, 'mvwSwitchedPage')
