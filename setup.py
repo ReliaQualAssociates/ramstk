@@ -87,9 +87,8 @@ class Install(_install):
     @staticmethod
     def post_install_script():
         """Execute after install."""
-        print(
-            "{0:s}{1:s}Your shiny new RAMSTK-{2:s} is "
-            "installed!!{3:s}".format(FG_GREEN, BOLD, __version__, RESET))
+        print("{0:s}{1:s}Your shiny new RAMSTK-{2:s} is "
+              "installed!!{3:s}".format(FG_GREEN, BOLD, __version__, RESET))
 
     def run(self):
         """Run the install."""
@@ -123,45 +122,40 @@ class MyTest(test):
 
 
 if __name__ == '__main__':
-    setup(
-        name=__appname__,
-        version=__version__,
-        description='''The RAMS ToolKit (RAMSTK) is a suite of tools
+    setup(name=__appname__,
+          version=__version__,
+          description='''The RAMS ToolKit (RAMSTK) is a suite of tools
         for performing and documenting reliability, availability,
         maintainability, and safety (RAMS) analyses''',
-        long_description=__long_description__,
-        long_description_content_type='text/markdown',
-        author=__author__,
-        author_email=__email__,
-        license='BSD-3',
-        url='https://github.com/ReliaQualAssociates/ramstk',
-        python_requires='>=2.7, <4',
-        install_requires=INSTALL_REQUIRES,
-        setup_requires=['pytest_runner', 'Babel'],
-        tests_require=TEST_REQUIRES,
-        keywords='''reliability availability maintainability safety RAMS
+          long_description=__long_description__,
+          long_description_content_type='text/markdown',
+          author=__author__,
+          author_email=__email__,
+          license='BSD-3',
+          url='https://github.com/ReliaQualAssociates/ramstk',
+          python_requires='>=2.7, <4',
+          install_requires=INSTALL_REQUIRES,
+          setup_requires=['pytest_runner', 'Babel'],
+          tests_require=TEST_REQUIRES,
+          keywords='''reliability availability maintainability safety RAMS
         engineering quality''',
-        scripts=[],
-        packages=find_packages('src', exclude=['tests']),
-        package_dir={'': 'src'},
-        py_modules=[
-            'ramstk.configuration',
-            'ramstk.exceptions',
-            'ramstk.logger',
-            'ramstk.ramstk',
-            'ramstk.utilities',
-        ],
-        classifiers=__trove__,
-        entry_points={
-            'console_scripts': ['ramstk = ramstk.__main__:the_one_ring'],
-            'gui_scripts': ['ramstk = ramstk.__main__:the_one_ring']
-        },
-        package_data={},
-        dependency_links=[],
-        zip_safe=True,
-        cmdclass={
-            'install': Install,
-            'sdist': Sdist,
-            'test': MyTest
-        }
-    )
+          scripts=[],
+          packages=find_packages('src', exclude=['tests']),
+          package_dir={'': 'src'},
+          py_modules=[
+              'ramstk.configuration', 'ramstk.exceptions', 'ramstk.logger',
+              'ramstk.ramstk', 'ramstk.utilities'
+          ],
+          classifiers=__trove__,
+          entry_points={
+              'console_scripts': ['ramstk = ramstk.__main__:the_one_ring'],
+              'gui_scripts': ['ramstk = ramstk.__main__:the_one_ring']
+          },
+          package_data={},
+          dependency_links=[],
+          zip_safe=True,
+          cmdclass={
+              'install': Install,
+              'sdist': Sdist,
+              'test': MyTest
+          })

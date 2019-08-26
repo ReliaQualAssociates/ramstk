@@ -67,7 +67,7 @@ class RAMSTKBook(Gtk.Window):
     :type toolbar: :class:`Gtk.Toolbar`
     """
 
-    RAMSTK_USR_CONFIGURATION = None
+    RAMSTK_USER_CONFIGURATION = None
 
     dic_books: Dict[str, object] = {}
     dic_tab_position = {
@@ -85,7 +85,7 @@ class RAMSTKBook(Gtk.Window):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
         GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
-        self.RAMSTK_USR_CONFIGURATION = configuration
+        self.RAMSTK_USER_CONFIGURATION = configuration
 
         # Initialize private dictionary attributes.
 
@@ -93,9 +93,19 @@ class RAMSTKBook(Gtk.Window):
         self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
-        self._n_screens = Gdk.Screen.get_default().get_n_monitors()
-        self._height = Gdk.Screen.height()
-        self._width = Gdk.Screen.width() / self._n_screens
+        try:
+            _screen = Gdk.Screen.get_default()
+            _display = _screen.get_display()
+            _monitor = _display.get_monitor(0)
+            self._n_screens = _display.get_n_monitors()
+            self._height = _monitor.get_geometry().height
+            self._width = _monitor.get_geometry().width
+        except AttributeError:
+            # When running on CI servers, there will be no monitor.  We also
+            # don't need one.
+            self._n_screens = 0
+            self._height = -1
+            self._width = -1
 
         # Initialize public dictionary attributes.
 
@@ -110,7 +120,7 @@ class RAMSTKBook(Gtk.Window):
 
         try:
             locale.setlocale(locale.LC_ALL,
-                             self.RAMSTK_USR_CONFIGURATION.RAMSTK_LOCALE)
+                             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -133,21 +143,6 @@ class RAMSTKBook(Gtk.Window):
         """
         self.connect('delete_event', destroy)
         self.connect('window_state_event', self._on_window_state_event)
-
-    def on_module_change(self) -> None:
-        """
-        Load correct Views for the RAMSTK module selected in the Module Book.
-
-        :return: None
-        :rtype: None
-        """
-        # We remove any existing pages from the Book.  New pages will be added
-        # by the List Book and the Work Book for the module that was just
-        # selected.
-        _n_pages = self.notebook.get_n_pages()
-        if _n_pages > 0:
-            for _page in list(range(_n_pages)):
-                self.notebook.remove_page(-1)
 
     def _on_request_open(self) -> None:
         """
@@ -179,3 +174,18 @@ class RAMSTKBook(Gtk.Window):
                 _window[1].deiconify()
         elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
             window.maximize()
+
+    def on_module_change(self) -> None:
+        """
+        Load correct Views for the RAMSTK module selected in the Module Book.
+
+        :return: None
+        :rtype: None
+        """
+        # We remove any existing pages from the Book.  New pages will be added
+        # by the List Book and the Work Book for the module that was just
+        # selected.
+        _n_pages = self.notebook.get_n_pages()
+        if _n_pages > 0:
+            for _page in list(range(_n_pages)):
+                self.notebook.remove_page(-1)

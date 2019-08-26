@@ -1,24 +1,28 @@
 #!/usr/bin/env sh
 # --------------------------------------------------------------------------- #
-# Script to bump the version of RAMSTK after every commit.  The intent is to  #
-# create a version number compliant with the SemVer 2.0 specification.        #
-#                                                                             #
-# Versioning scheme is:                                                       #
-#                                                                             #
-# If branch is master, version is M.m.p                                       #
-# If branch is develop, version is M.m.p+SHA                                  #
-# If branch is release, version is M.m.p-rc<BUILD>                            #
-#                                                                             #
-# where M = Major version                                                     #
-#       m = minor version                                                     #
-#       p = patch version                                                     #
-#     SHA = short SHA-1 of commit                                             #
-# <BUILD> = build number of release branch                                    #
-#                                                                             #
-# Major version number is manually bumped.                                    #
-# minor version number is bumped whenever commit message begins with feat.    #
-# patch version number is bumped whenever commit message begins with refactor #
-# or fix.                                                                     #
+# Script to bump the version of RAMSTK after every commit.  The intent is to
+# create a version number compliant with the SemVer 2.0 specification.
+#
+# Name branches as follows:
+#     * fix/issue_###
+#     * feature/issue_###
+#     * working/issue_###
+#     * release/vM.m.p
+#
+# If branch name begins with fix, bump patch version by one in VERSION.
+# If branch name begins with feature, bump minor version by one in VERSION.
+#
+# - After merging a fix, tag master branch with tag vM.m.p where M.m.p is the
+#   value in VERSION.
+# - After merging a feature, tag master branch with tag vM.m.p+SHA where M.m.p
+#   is the value in VERSION and SHA is the short SHA-1 value for the commit.
+# - After creating a release branch, tag release branch with tag vM.m.p-rc1,
+#   where M.m.p is the value in VERSION.
+# - After merging a release, tag master branch with tag vM.m.p where M.m.p is
+#   the value in VERSION.
+# - After merging a working (any other) branch, tag master branch with tag
+#   vM.m.p+SHA where M.m.p is the value in VERSION and SHA is the short SHA-1
+#   value for the commit.
 # --------------------------------------------------------------------------- #
 
 # Get the current version from setup.py and remove the single quotes.
@@ -40,71 +44,53 @@ last_sha="$(git rev-parse --short HEAD)"
 this_build=$(git rev-list --no-merges --count HEAD ^develop)
 let this_build++
 
-# Get the working branch and trim the branch name to give us one of the
-# following:
-#
-# master (gets tagged)
-# develop (gets tagged)
-# release (gets tagged)
-# fix (does NOT get tagged)
-# feature (does NOT get tagged)
-# refactor (does NOT get tagged)
-# tests (does NOT get tagged)
-# docs (does NOT get tagged)
-# chore (does NOT get tagged)
+# Get the working branch and what the branch entails.
 this_branch="$(git branch | grep \* | cut -d ' ' -f2)"
 this_action=${this_branch:0:7}
 
-if [[ "$this_action" =~ ^fix* ]];
+DO_BUMP=0
+DO_TAG=0
+while [ $# -gt 0 ];
+do
+    case "$1" in
+        -b | --bump)
+            DO_BUMP=1
+            ;;
+        -t | --tag)
+            DO_TAG=1
+            ;;
+    esac
+    shift
+done
+
+if [ "x$this_action" = "xfix" ];
 then
     let ver_patch++
     new_version=$ver_major"."$ver_minor"."$ver_patch
     new_tag="v"$new_version
-
-    $(bump2version --current-version ${cur_version} --new-version ${new_version} patch $PWD/VERSION)
-
-    echo "1. Create pull request to merge into master: ghpr -t 'Merge $this_branch into master' -h master -b $this_branch"
-    echo "2. Once merged to master, create tag on master: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
-    echo "3. Create pull request to merge into develop: ghpr -t 'Merge $this_branch into develop' -h develop -b $this_branch"
-    echo "4. Once merged to master, create tag on develop: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
-    echo "5. Push tags to remote: git push --tags"
-    echo "6. Deploy to GitHub releases, pypi, and conda."
-elif [[ "$this_action" =~ ^feat* ]];
+elif [ "x$this_action" = "xfeature" ];
 then
     let ver_minor++
     ver_patch=0
     new_version=$ver_major"."$ver_minor"."$ver_patch
     new_tag="v"$new_version
-
-    $(bump2version --current-version ${cur_version} --new-version ${new_version} minor $PWD/VERSION)
-
-    echo "1. Create pull request to merge into develop: ghpr -t 'Merge $this_branch into develop' -h develop -b $this_branch"
-    echo "2. Once merged to develop, create tag on develop: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
-    echo "3. [Optional] Create release branch: git checkout -b release/${new_version}"
-    echo "4. [Optional] Push release branch to remote: git push --set-upstream origin release/${new_version}"
-elif [[ "$this_action" =~ ^relea* ]];
+elif [ "x$this_action" = "xrelease" ];
 then
     new_version=$ver_major"."$ver_minor"."$ver_patch"-rc"$this_build
     new_tag="v"$new_version
-
-    $(bump2version --current-version ${cur_version} --new-version ${new_version} ${level} $PWD/VERSION)
-
-    echo "1. Create pull request to merge into master: ghpr -t 'Merge $this_branch into master' -h master -b $this_branch"
-    echo "2. Once merged to master, create tag on master: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
-    echo "3. Push tags to remote: git push --tags"
-    echo "6. Deploy to GitHub releases, pypi, and conda."
-elif [[ "$this_action" =~ ^devel* ]];
-then
+else
     new_version=$ver_major"."$ver_minor"."$ver_patch"+"$last_sha
     new_tag="v"$new_version
+fi
 
-    $(bump2version --current-version ${cur_version} --new-version ${new_version} ${level} $PWD/VERSION)
+if [ "x$DO_BUMP" = "x1" ];
+then
+    $(bump2version --current-version ${cur_version} --new-version ${new_version} patch $PWD/VERSION)
+fi
 
-    echo "1. Create tag on develop: git tag -s ${new_tag} -m 'Set tag ${new_tag}'"
-    echo "2. Deploy to GitHub releases."
-else
-    echo "1. Create pull request to merge into develop: ghpr -t 'Merge $this_branch into develop' -h develop -b $this_branch"
-    echo "2. Once merged, run this script again."
+if [ "x$DO_TAG" = "x1" ];
+then
+    git tag -s ${new_tag} -m 'Set tag ${new_tag}'
 fi
 
 exit 0

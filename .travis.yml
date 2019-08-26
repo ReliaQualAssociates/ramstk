@@ -4,6 +4,7 @@ language: python
 services: xvfb
 
 python:
+    - "3.6"
     - "3.7"
 
 env:
@@ -28,7 +29,6 @@ script:
 # After the build was successful what to do?
 after_success:
     - coveralls
-    - python-codacy-coverage -r coverage.xml
 
 # What's the environment look like if the build fails silently.
 after_failure:
