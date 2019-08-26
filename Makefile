@@ -14,10 +14,10 @@ TESTOPTS	= -x
 TESTFILE	= tests/
 VIRTENV		= ramstk-venv
 COVDIR		= .reports/coverage/html
-PY			= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 ROOT 		= $(shell git rev-parse --show-toplevel)
 
 # Shell commands:
+PY			= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 MKDIR 		= mkdir -pv
 SED			= sed
 COPY 		= cp -v
@@ -50,7 +50,7 @@ help:
 	@echo "	test-all				run the complete RAMSTK test suite on every Python version using tox. <FUTURE>"
 	@echo "	coverage				run the complete RAMSTK test suite with coverage."
 	@echo "	reports					generate an html coverage report in $(COVDIR)."
-	@echo "Targets related to static code checking tools:"
+	@echo "Targets related to static code checking tools (good for IDE integration):"
 	@echo "	format SRCFILE=<file>			format using isort and yapf.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
 	@echo "	typecheck SRCFILE=<file>		check using mypy.  Helpful to keymap in IDE or editor."
@@ -65,6 +65,7 @@ help:
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
 	@echo "	bumpver					bump the minor or patch version of RAMSTK."
+	@echo "	tag					tag the current branch."
 	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install"
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi. <FUTURE>"
@@ -138,6 +139,7 @@ upgrade:
 	pip-compile --upgrade --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
 	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
+# Targets to install and uninstall.
 install: clean
 	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
@@ -193,7 +195,10 @@ changelog:
 	github_changelog_generator $(REPO)
 
 bumpver:
-	$(shell sh ./devtools/bump_version.sh)
+	$(shell sh ./devtools/bump_version.sh -b)
+
+tag:
+	$(shell sh ./devtools/bump_version.sh -t)
 
 docs:
 	$(info TODO: update documentation layout so we can use sphinx-apidoc here)
