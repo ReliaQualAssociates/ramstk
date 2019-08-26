@@ -354,12 +354,12 @@ class RAMSTKModuleBook(RAMSTKBook):
         for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER:
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
+
             self.notebook.insert_page(_module,
                                       tab_label=_module.hbx_tab_label,
                                       position=_key)
 
         self.statusbar.pop(1)
-
         self._do_set_status_icon(connected=True)
 
     def _on_switch_page(self, __notebook: Gtk.Notebook, __page: Gtk.Widget,
