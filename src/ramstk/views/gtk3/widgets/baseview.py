@@ -26,7 +26,7 @@ from .dialog import RAMSTKMessageDialog
 from .treeview import RAMSTKTreeView
 
 
-class RAMSTKBaseView():
+class RAMSTKBaseView(Gtk.HBox):
     """
     Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
 
@@ -79,6 +79,8 @@ class RAMSTKBaseView():
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
+        GObject.GObject.__init__(self)
+
         self.RAMSTK_USER_CONFIGURATION = configuration
         self.RAMSTK_LOGGER = logger
         self.RAMSTK_LOGGER.do_create_logger(
@@ -180,18 +182,15 @@ class RAMSTKBaseView():
         :return: _treeview; the RAMSTKTreeView() created.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
         """
-        _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                 + 'bg']
-        _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                 + 'fg']
+        _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'bg']
+        _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'fg']
         _fmt_file = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
             + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
         _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
 
         _treeview = RAMSTKTreeView()
-        _treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color,
-                                  _fg_color)
+        _treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color, _fg_color)
         self._lst_col_order = _treeview.order
 
         return _treeview
@@ -564,7 +563,7 @@ class RAMSTKBaseView():
         self._revision_id = attributes['revision_id']
 
 
-class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
+class RAMSTKModuleView(RAMSTKBaseView):
     """
     Display data in the RAMSTK Module Book.
 
@@ -573,15 +572,14 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
 
     :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
     """
-
-    def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager, **kwargs: Any) -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
         """
         Initialize the RAMSTKModuleView meta-class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
-        GObject.GObject.__init__(self)
         RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
 
         # Initialize private dictionary attributes.
@@ -612,15 +610,14 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
         """
         try:
             self._lst_handler_id.append(
-                self.treeview.connect('cursor_changed', self._on_row_change),
-            )
+                self.treeview.connect('cursor_changed', self._on_row_change), )
         except AttributeError:
             pass
 
         try:
             self._lst_handler_id.append(
-                self.treeview.connect('button_press_event', self._on_button_press),
-            )
+                self.treeview.connect('button_press_event',
+                                      self._on_button_press), )
         except AttributeError:
             pass
 
@@ -640,9 +637,9 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
         :return: None
         :rtype: None
         """
-        #_tree = self._dtc_data_controller.request_do_select_all(
-        #    revision_id=self._revision_id)
-        #ExportModule(self._mdcRAMSTK, module, _tree)
+        # _tree = self._dtc_data_controller.request_do_select_all(
+        #     revision_id=self._revision_id)
+        # ExportModule(self._mdcRAMSTK, module, _tree)
 
     def make_ui(self) -> None:
         """
@@ -688,12 +685,17 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
         try:
             _icons.extend(['remove', 'save', 'save-all'])
             _callbacks.extend([
-                self._do_request_delete, self._do_request_update,
+                self._do_request_delete,
+                self._do_request_update,
                 self._do_request_update_all,
             ])
         except AttributeError:
             pass
 
         RAMSTKBaseView.on_button_press(
-            self, event, icons=_icons, labels=_labels, callbacks=_callbacks,
+            self,
+            event,
+            icons=_icons,
+            labels=_labels,
+            callbacks=_callbacks,
         )

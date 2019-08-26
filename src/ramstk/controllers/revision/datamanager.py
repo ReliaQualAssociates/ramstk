@@ -393,6 +393,7 @@ class DataManager(RAMSTKDataManager):
 
         :return: None
         :rtype: None
+        :raise: AttributeError if not connected to a RAMSTK program database.
         """
         _tree = Tree()
 

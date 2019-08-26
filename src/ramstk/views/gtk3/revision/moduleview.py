@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.moduleviews.Revision.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.revision.moduleview.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -130,7 +130,8 @@ class ModuleView(RAMSTKModuleView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, **kwargs: Any) -> None:
+    @staticmethod
+    def _do_request_insert(**kwargs: Any) -> None:
         """
         Request insert a new Revision into the RAMSTK Program database.
 
@@ -140,8 +141,7 @@ class ModuleView(RAMSTKModuleView):
         _sibling = kwargs['sibling']
 
         if _sibling:
-            pub.sendMessage('request_insert_revision',
-                            revision_id=self._revision_id)
+            pub.sendMessage('request_insert_revision')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
