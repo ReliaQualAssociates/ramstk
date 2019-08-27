@@ -161,7 +161,7 @@ def the_one_ring() -> None:
     #if _app.RAMSTK_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
     #    pass
     #else:  # Multiple windows.
-    RAMSTKListBook(user_configuration)
+    RAMSTKListBook(user_configuration, _logger)
     RAMSTKModuleBook(user_configuration, _logger)
     RAMSTKWorkBook(user_configuration, _logger)
 

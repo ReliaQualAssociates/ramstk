@@ -10,14 +10,10 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-#from ramstk.gui.gtk.listviews import (
-#    lvwFailureDefinition, lvwStakeholder, lvwUsageProfile,
-#)
-#from ramstk.gui.gtk.matrixviews import (
-#    mtxFunction, mtxHardware, mtxRequirement, mtxValidation,
-#)
 from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import _
+from ramstk.views.gtk3.revision import lvwFailureDefinition
 from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
 
 
@@ -34,22 +30,25 @@ class RAMSTKListBook(RAMSTKBook):
         Key is the RAMSTK module name; value is a list of Views associated with
         that RAMSTK module.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the RAMSTK List View class.
 
         :param configuration: the RAMSTKUserConfiguration() class instance.
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKBook.__init__(self, configuration)
         self.dic_books['listbook'] = self
 
         # Initialize private dictionary attributes.
         self._dic_list_views = {
-            #    'revision': [
-            #        lvwUsageProfile(configuration),
-            #        lvwFailureDefinition(configuration),
-            #    ],
+            'revision': [
+                # lvwUsageProfile(configuration),
+                lvwFailureDefinition(configuration, logger),
+            ],
             #    'function':
             #    [mtxFunction(configuration, matrix_type='fnctn_hrdwr')],
             #    'requirement': [

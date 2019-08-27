@@ -11,12 +11,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-#from ramstk.gui.gtk.assistants import (
-#    CreateProject, ImportProject, OpenProject, Options, Preferences,
-#)
-#from ramstk.gui.gtk.moduleviews import (
-#    mvwFunction, mvwHardware, mvwRequirement, mvwValidation,
-#)
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _

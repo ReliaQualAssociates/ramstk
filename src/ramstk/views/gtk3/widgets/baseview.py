@@ -139,7 +139,7 @@ class RAMSTKBaseView(Gtk.HBox):
             + '/32x32/warning.png',
             'rollup':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/rollup.png',
+            + '/32x32/rollup.png'
         }
 
         # Initialize private list attributes.
@@ -168,10 +168,8 @@ class RAMSTKBaseView(Gtk.HBox):
         self.hbx_tab_label = Gtk.HBox()
 
         try:
-            locale.setlocale(
-                locale.LC_ALL,
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOCALE,
-            )
+            locale.setlocale(locale.LC_ALL,
+                             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -289,10 +287,8 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Update the attributes dict in the last column.
         _attributes = ast.literal_eval(
-            _model.get_value(
-                _row,
-                _model.get_n_columns() - 1,
-            ), )
+            _model.get_value(_row,
+                             _model.get_n_columns() - 1))
         _attributes[key] = value
         _model.set_value(_row, _model.get_n_columns() - 1, str(_attributes))
 
@@ -361,7 +357,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor), )
+        self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor))
         Gdk.flush()
 
     def _make_toolbar(self,
@@ -396,10 +392,8 @@ class RAMSTKBaseView(Gtk.HBox):
             else:
                 _image = Gtk.Image()
                 _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons[_icon],
-                    int(_scale * height),
-                    int(_scale * width),
-                )
+                    self._dic_icons[_icon], int(_scale * height),
+                    int(_scale * width))
                 _image.set_from_pixbuf(_icon)
 
                 _button = Gtk.ToolButton()
@@ -500,13 +494,13 @@ class RAMSTKBaseView(Gtk.HBox):
             * RAMSTKTextView() 'changed' signal
 
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-        method.
+            method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
         :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
         :param int index: the position in the Hardware class Gtk.TreeModel()
-        associated with the data from the calling Gtk.Widget().
+            associated with the data from the calling Gtk.Widget().
         :param int module_id: the ID of the RAMSTK<MODULE> whose entry is being
-        changed.
+            changed.
         :param str message: the PyPubSub message to publish.
         :return: None
         :rtype: None
@@ -567,6 +561,123 @@ class RAMSTKBaseView(Gtk.HBox):
         self._revision_id = attributes['revision_id']
 
 
+class RAMSTKListView(RAMSTKBaseView):
+    """
+    Class to display data in the RAMSTK List Book.
+
+    This is the meta class for all RAMSTK List View classes.  Attributes of the
+    RAMSTKListView are:
+
+    :ivar str _module: the capitalized name of the RAMSTK module the List View
+        is associated with.
+    :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
+    :type tab_label: :class:`Gtk.Label`
+    """
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+        """
+        Initialize the List View.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        """
+        _module = kwargs['module']
+        RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
+
+        self._module = None
+        for __, char in enumerate(_module):
+            if char.isalpha():
+                self._module = _module.capitalize()
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.tab_label = Gtk.Label()
+
+        self.__set_callbacks()
+
+    def __set_callbacks(self) -> None:
+        """
+        Set common callback methods for the ModuleView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change))
+        except AttributeError:
+            pass
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event',
+                                      self._on_button_press))
+        except AttributeError:
+            pass
+
+    @staticmethod
+    def _do_edit_cell(__cell: Gtk.CellRenderer, path: str, new_text: str,
+                      position: int, model: Gtk.TreeModel) -> None:
+        """
+        Handle edits of the List View RAMSTKTreeView().
+
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param int position: the column position of the edited
+            Gtk.CellRenderer().
+        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
+            belongs to.
+        :return: None
+        :rtype: None
+        """
+        _type = GObject.type_name(model.get_column_type(position))
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+    def _make_ui(self) -> None:
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.hbx_tab_label.pack_end(self.tab_label, True, True, 0)
+        self.hbx_tab_label.show_all()
+
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.add(self.treeview)
+
+        self.pack_end(_scrolledwindow, True, True, 0)
+
+        self.show_all()
+
+    def _set_properties(self) -> None:
+        """
+        Set common properties of the ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.treeview.set_rubber_banding(True)
+
+
 class RAMSTKModuleView(RAMSTKBaseView):
     """
     Display data in the RAMSTK Module Book.
@@ -583,13 +694,15 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
         :param configuration: the RAMSTKUserConfiguration class instance.
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['insert_part'] = \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
-            '/32x32/insert_part.png'
+        self._dic_icons['insert_part'] = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_part.png')
 
         # Initialize private list attributes.
 
@@ -614,14 +727,14 @@ class RAMSTKModuleView(RAMSTKBaseView):
         """
         try:
             self._lst_handler_id.append(
-                self.treeview.connect('cursor_changed', self._on_row_change), )
+                self.treeview.connect('cursor_changed', self._on_row_change))
         except AttributeError:
             pass
 
         try:
             self._lst_handler_id.append(
                 self.treeview.connect('button_press_event',
-                                      self._on_button_press), )
+                                      self._on_button_press))
         except AttributeError:
             pass
 
@@ -689,20 +802,17 @@ class RAMSTKModuleView(RAMSTKBaseView):
         try:
             _icons.extend(['remove', 'save', 'save-all'])
             _callbacks.extend([
-                self._do_request_delete,
-                self._do_request_update,
-                self._do_request_update_all,
+                self._do_request_delete, self._do_request_update,
+                self._do_request_update_all
             ])
         except AttributeError:
             pass
 
-        RAMSTKBaseView.on_button_press(
-            self,
-            event,
-            icons=_icons,
-            labels=_labels,
-            callbacks=_callbacks,
-        )
+        RAMSTKBaseView.on_button_press(self,
+                                       event,
+                                       icons=_icons,
+                                       labels=_labels,
+                                       callbacks=_callbacks)
 
 
 class RAMSTKWorkView(RAMSTKBaseView):
@@ -722,6 +832,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         :param configuration: the RAMSTKUserConfiguration class instance.
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         _module = kwargs['module']
         GObject.GObject.__init__(self)

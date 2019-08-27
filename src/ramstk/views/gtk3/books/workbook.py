@@ -16,13 +16,6 @@ from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
 
-#from ramstk.gui.gtk.workviews import (
-#    wvwAllocation, wvwBurndownCurve, wvwFunctionGD, wvwHardwareAI,
-#    wvwHardwareAR, wvwHardwareGD, wvwHazOps, wvwPoF, wvwRequirementAnalysis,
-#    wvwRequirementGD, wvwRevisionGD, wvwSimilarItem, wvwValidationGD,
-#)
-#from ramstk.gui.gtk.workviews.fmea import wvwDFMECA, wvwFFMEA
-
 
 class RAMSTKWorkBook(RAMSTKBook):
     """This is the Work Book for the pyGTK multiple window interface."""
