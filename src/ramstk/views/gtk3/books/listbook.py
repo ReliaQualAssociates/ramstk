@@ -77,21 +77,10 @@ class RAMSTKListBook(RAMSTKBook):
         # Initialize public scalar attributes.
 
         self.__set_properties()
-        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
         pub.subscribe(self._on_close, 'succeed_closed_program')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.add(self.notebook)
-        self.show_all()
 
     def __set_properties(self) -> None:
         """

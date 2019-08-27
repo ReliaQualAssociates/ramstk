@@ -204,7 +204,7 @@ class ModuleView(RAMSTKModuleView):
                 _("Save Selected Revision"),
                 _("Save All Revisions")
             ]
-            _callbacks = [self._do_request_insert_sibling]
+            _callbacks = [self.do_request_insert_sibling]
 
             RAMSTKModuleView.on_button_press(self,
                                              event,

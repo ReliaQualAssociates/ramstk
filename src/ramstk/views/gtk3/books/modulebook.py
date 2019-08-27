@@ -258,14 +258,15 @@ class RAMSTKModuleBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
+        self.remove(self.notebook)
+
         self.__make_menu()
         self.__make_toolbar()
 
         self.notebook.insert_page(
             self._dic_module_views['revision'],
             tab_label=self._dic_module_views['revision'].hbx_tab_label,
-            position=0,
-        )
+            position=0)
 
         self.statusbar.add(self.progressbar)
         _vbox = Gtk.VBox()

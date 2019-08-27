@@ -173,6 +173,8 @@ class RAMSTKBaseView(Gtk.HBox):
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
+        self.__set_callbacks()
+
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
 
@@ -196,6 +198,26 @@ class RAMSTKBaseView(Gtk.HBox):
         self._lst_col_order = _treeview.order
 
         return _treeview
+
+    def __set_callbacks(self) -> None:
+        """
+        Set common callback methods for the RAMSTKView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change))
+        except AttributeError:
+            pass
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event',
+                                      self._on_button_press))
+        except AttributeError:
+            pass
 
     def do_load_tree(self, tree: treelib.Tree) -> None:
         """
@@ -470,7 +492,7 @@ class RAMSTKBaseView(Gtk.HBox):
         _callbacks = kwargs['callbacks']
 
         _menu = Gtk.Menu()
-        _menu.popup(None, None, None, event.button, event.time)
+        _menu.popup_at_pointer(event)
 
         for _idx, __ in enumerate(_icons):
             _menu_item = Gtk.ImageMenuItem()
@@ -604,28 +626,6 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize public scalar attributes.
         self.tab_label = Gtk.Label()
 
-        self.__set_callbacks()
-
-    def __set_callbacks(self) -> None:
-        """
-        Set common callback methods for the ModuleView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('cursor_changed', self._on_row_change))
-        except AttributeError:
-            pass
-
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('button_press_event',
-                                      self._on_button_press))
-        except AttributeError:
-            pass
-
     @staticmethod
     def _do_edit_cell(__cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int, model: Gtk.TreeModel) -> None:
@@ -716,27 +716,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         self.__set_properties()
-        self.__set_callbacks()
-
-    def __set_callbacks(self) -> None:
-        """
-        Set common callback methods for the ModuleView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('cursor_changed', self._on_row_change))
-        except AttributeError:
-            pass
-
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('button_press_event',
-                                      self._on_button_press))
-        except AttributeError:
-            pass
 
     def __set_properties(self) -> None:
         """
@@ -856,29 +835,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         # Initialize public scalar attributes.
 
-        self.__set_callbacks()
-
         # Subscribe to PyPubSub messages.
-
-    def __set_callbacks(self) -> None:
-        """
-        Set common callback methods for the ModuleView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('cursor_changed', self._on_row_change))
-        except AttributeError:
-            pass
-
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('button_press_event',
-                                      self._on_button_press))
-        except AttributeError:
-            pass
 
     def _make_buttonbox(self, **kwargs: Any) -> None:
         """

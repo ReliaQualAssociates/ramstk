@@ -129,10 +129,21 @@ class RAMSTKBook(Gtk.Window):
         self.set_border_width(5)
         self.set_position(Gtk.WindowPosition.NONE)
 
+        self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_request_open, 'request_open_program ')
+
+    def __make_ui(self) -> None:
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.add(self.notebook)
+        self.show_all()
 
     def __set_callbacks(self) -> None:
         """
