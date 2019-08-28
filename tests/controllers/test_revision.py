@@ -181,17 +181,19 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_revision(self, node_id):
-        assert node_id == 2
+    def on_succeed_delete_revision(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_revision topic was broadcast.")
 
     def on_fail_delete_revision(self, error_message):
-        assert error_message == ('Attempted to delete non-existent revision ID '
-                                 '300.')
+        assert error_message == (
+            'Attempted to delete non-existent revision ID '
+            '300.')
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
-    def on_succeed_delete_failure_definition(self, node_id):
-        assert node_id == 1
+    def on_succeed_delete_failure_definition(self, tree):
+        assert isinstance(tree, dict)
+        assert isinstance(tree[1], RAMSTKFailureDefinition)
         print(
             "\033[36m\nsucceed_delete_failure_definition topic was broadcast.")
 
@@ -200,8 +202,8 @@ class TestDeleteMethods():
                                  'definition ID 10 from revision ID 1.')
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
-    def on_succeed_delete_mission(self, node_id):
-        assert node_id == '1'
+    def on_succeed_delete_mission(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_mission topic was broadcast.")
 
     def on_fail_delete_mission(self, error_message):
@@ -209,22 +211,24 @@ class TestDeleteMethods():
                                  '10 from revision ID 1.')
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
-    def on_succeed_delete_mission_phase(self, node_id):
-        assert node_id == '2.2'
+    def on_succeed_delete_mission_phase(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_mission_phase topic was broadcast.")
 
     def on_fail_delete_mission_phase(self, error_message):
-        assert error_message == ('Attempted to delete non-existent mission phase '
-                                 'ID 2.20 from mission ID 2.')
+        assert error_message == (
+            'Attempted to delete non-existent mission phase '
+            'ID 2.20 from mission ID 2.')
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
-    def on_succeed_delete_environment(self, node_id):
-        assert node_id == '3.3.3'
+    def on_succeed_delete_environment(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_environment topic was broadcast.")
 
     def on_fail_delete_environment(self, error_message):
-        assert error_message == ('Attempted to delete non-existent environment ID '
-                                 '3.3.30 from mission phase ID 3.3.')
+        assert error_message == (
+            'Attempted to delete non-existent environment ID '
+            '3.3.30 from mission phase ID 3.3.')
         print("\033[35m\nfail_delete_environment topic was broadcast.")
 
     @pytest.mark.integration
@@ -524,25 +528,26 @@ class TestGetterSetter():
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_revision(self, node_id):
-        assert node_id == 3
+    def on_succeed_insert_revision(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_revision topic was broadcast")
 
-    def on_succeed_insert_failure_definition(self, node_id):
-        assert node_id == 3
+    def on_succeed_insert_failure_definition(self, tree):
+        assert isinstance(tree, dict)
+        assert isinstance(tree[3], RAMSTKFailureDefinition)
         print(
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
-    def on_succeed_insert_mission(self, node_id):
-        assert node_id == 5
+    def on_succeed_insert_mission(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
 
-    def on_succeed_insert_mission_phase(self, node_id):
-        assert node_id == '1.4'
+    def on_succeed_insert_mission_phase(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mission_phase topic was broadcast")
 
-    def on_succeed_insert_environment(self, node_id):
-        assert node_id == '1.1.4'
+    def on_succeed_insert_environment(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
 
     @pytest.mark.integration
