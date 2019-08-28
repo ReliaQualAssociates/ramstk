@@ -7,7 +7,7 @@
 """The RAMSTK Failure Definition GTK3List View Module."""
 
 # Standard Library Imports
-from typing import Any, Tuple
+from typing import Any, Dict, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -18,7 +18,8 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models.programdb import (
-    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
+    RAMSTKEnvironment, RAMSTKFailureDefinition,
+    RAMSTKMission, RAMSTKMissionPhase
 )
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
@@ -68,9 +69,25 @@ class FailureDefinition(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_tree, 'deleted_definition')
-        pub.subscribe(self._do_load_tree, 'inserted_definition')
-        pub.subscribe(self._do_load_tree, 'retrieved_definitions')
+        pub.subscribe(self._do_load_tree, 'succeed_delete_failure_definition')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_failure_definition')
+        pub.subscribe(self.__do_load_tree,
+                      'succeed_get_failure_definitions_attributes')
+
+    def __do_load_tree(self, attributes: Dict[int, Any]) -> None:
+        """
+        Wrapper method for _do_load_tree().
+
+        The pubsub message the ListView listens for sends a data package named
+        attributes.  _do_load_tree() needs a data package named tree.  This
+        method simply makes that conversion to happen.
+
+        :param dict attributes: the failure definition dict for the selected
+            revision ID.
+        :return: None
+        :rtype: None
+        """
+        self._do_load_tree(tree=attributes)
 
     def __make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:  # pylint: disable=unused-argument
         """
@@ -200,11 +217,11 @@ class FailureDefinition(RAMSTKListView):
             _("Displays the list of failure definitions for the selected "
               "revision."))
 
-    def _do_load_tree(self, tree: Tree) -> None:
+    def _do_load_tree(self, tree: Dict[int, RAMSTKFailureDefinition]) -> None:
         """
         Load the Failure Defintion List View's Gtk.TreeModel.
 
-        :param tree: the Failure Definition treelib Tree().
+        :param tree: the Failure Definition attributes dict.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
@@ -212,8 +229,8 @@ class FailureDefinition(RAMSTKListView):
         _model = self.treeview.get_model()
         _model.clear()
 
-        for _node in list(tree.nodes.values())[1:]:
-            _entity = _node.data
+        for _key in tree:
+            _entity = tree[_key]
 
             _attributes: Tuple[int, int, str] = (0, 0, '')
             if _entity is not None:
@@ -249,7 +266,7 @@ class FailureDefinition(RAMSTKListView):
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
-            pub.sendMessage('request_delete_definition',
+            pub.sendMessage('request_delete_failure_definition',
                             node_id=self._definition_id)
 
         _dialog.do_destroy()
@@ -261,7 +278,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('request_insert_definition',
+        pub.sendMessage('request_insert_failure_definition',
                         revision_id=self._revision_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -269,12 +286,12 @@ class FailureDefinition(RAMSTKListView):
         Request to update the currently selected Failure Definition record.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_definition',
+        pub.sendMessage('request_update_failure_definition',
                         node_id=self._definition_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
@@ -283,12 +300,12 @@ class FailureDefinition(RAMSTKListView):
         Request to update all Failure Definitions records.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_definitions')
+        pub.sendMessage('request_update_all_failure_definitions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
@@ -358,7 +375,7 @@ class FailureDefinition(RAMSTKListView):
         if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
                                             model):
 
-            pub.sendMessage('lvw_editing_definition',
+            pub.sendMessage('lvw_editing_failuure_definition',
                             module_id=self._definition_id,
                             key='definition',
                             value=new_text)
@@ -388,7 +405,8 @@ class FailureDefinition(RAMSTKListView):
 
             self._definition_id = _attributes['definition_id']
 
-            pub.sendMessage('selected_definition', attributes=_attributes)
+            pub.sendMessage('selected_failure_definition',
+                            attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -438,9 +456,29 @@ class UsageProfile(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_tree, 'deleted_usage_profile')
-        pub.subscribe(self._do_load_tree, 'inserted_usage_profile')
-        pub.subscribe(self._do_load_tree, 'retrieved_usage_profile')
+        pub.subscribe(self._do_load_tree, 'succeed_delete_environment')
+        pub.subscribe(self._do_load_tree, 'succeed_delete_mission')
+        pub.subscribe(self._do_load_tree, 'succeed_delete_mission_phase')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_environment')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_mission')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_mission_phase')
+        pub.subscribe(self.__do_load_tree,
+                      'succeed_get_usage_profile_attributes')
+
+    def __do_load_tree(self, attributes: Dict[str, Any]) -> None:
+        """
+        Wrapper method for _do_load_tree().
+
+        The pubsub message the ListView listens for sends a data package named
+        attributes.  _do_load_tree() needs a data package named tree.  This
+        method simply makes that conversion happen.
+
+        :param dict attributes: the failure definition dict for the selected
+            revision ID.
+        :return: None
+        :rtype: None
+        """
+        self._do_load_tree(tree=attributes)
 
     def __make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:  # pylint: disable=unused-argument
         """
@@ -475,7 +513,7 @@ class UsageProfile(RAMSTKListView):
         return _buttonbox
 
     def __make_cell(self, cell: Gtk.CellRenderer, editable: bool,
-                    position: int, model) -> Gtk.CellRenderer:
+                    position: int, model: Gtk.TreeModel) -> Gtk.CellRenderer:
         """
         Make a Gtk.CellRenderer() and set it's properties.
 
@@ -624,21 +662,27 @@ class UsageProfile(RAMSTKListView):
         try:
             _new_row = _model.append(row, _attributes)
         except TypeError:
-            _user_msg = _("One or more Environments had the wrong data type "
-                          "in it's data package and is not displayed in the "
-                          "Usage Profile.")
+            _user_msg = _("One or more Environments for revision ID {0:d} had "
+                          "the wrong data type in it's data package and was "
+                          "not displayed in the Usage "
+                          "Profile.".format(self._revision_id))
             _debug_msg = (
                 "RAMSTK ERROR: Data for Environment ID {0:s} for Revision ID "
                 "{1:s} is the wrong type for one or more columns.".format(
                     str(entity.environment_id), str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Missions was missing some of it's data "
-                          "and is not displayed in the Usage Profile.")
+            _user_msg = _("One or more Environments for revision ID {0:d} was "
+                          "missing some of it's data and was not displayed in "
+                          "the Usage Profile.".format(self._revision_id))
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Environment ID {0:s} for "
                 "Revision ID {1:s}.".format(str(entity.environment_id),
                                             str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         return _new_row
@@ -674,6 +718,8 @@ class UsageProfile(RAMSTKListView):
                 "RAMSTK ERROR: Data for Mission ID {0:s} for Revision ID "
                 "{1:s} is the wrong type for one or more columns.".format(
                     str(entity.mission_id), str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
             _user_msg = _("One or more Missions was missing some of it's data "
@@ -682,6 +728,8 @@ class UsageProfile(RAMSTKListView):
                 "RAMSTK ERROR: Too few fields for Mission ID {0:s} for "
                 "Revision ID {1:s}.".format(str(entity.mission_id),
                                             str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         return _new_row
@@ -718,6 +766,8 @@ class UsageProfile(RAMSTKListView):
                 "RAMSTK ERROR: Data for Mission Phase ID {0:s} for Revision "
                 "ID {1:s} is the wrong type for one or more columns.".format(
                     str(entity.phase_id), str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
             _user_msg = _("One or more Mission Phases was missing some of "
@@ -727,6 +777,8 @@ class UsageProfile(RAMSTKListView):
                 "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s} for "
                 "Revision ID {1:s}.".format(str(entity.phase_id),
                                             str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         return _new_row
@@ -773,6 +825,8 @@ class UsageProfile(RAMSTKListView):
                     "RAMSTK ERROR: There is no data package for Usage "
                     "Profile ID {0:s} for Revision ID {1:s}.".format(
                         str(_node.identifier), str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         for _n in tree.children(_node.identifier):
@@ -797,17 +851,32 @@ class UsageProfile(RAMSTKListView):
         :rtype: None
         """
         _model, _row = self.treeview.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 9)
+        _node_id = _model.get_value(_row, 1)
+        _parent_id = _model.get_value(_row, 9)
+        _level = _model.get_value(_row, 11)
 
-        _prompt = _("You are about to delete Mission, Mission Phase, or "
-                    "Environment {0:d} and all data associated with it.  Is "
-                    "this really what you want to do?").format(_node_id)
+        _prompt = _("You are about to delete {1:s} {0:d} and all data "
+                    "associated with it.  Is this really what you want to "
+                    "do?").format(_node_id, _level)
         _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                       'question')
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
-            pub.sendMessage('request_delete_profile', node_id=_node_id)
+            if _level == 'mission':
+                pub.sendMessage('request_delete_mission',
+                                revision_id=self._revision_id,
+                                node_id=_node_id)
+            elif _level == 'phase':
+                pub.sendMessage('request_delete_mission_phase',
+                                revision_id=self._revision_id,
+                                mission_id=_parent_id,
+                                node_id=_node_id)
+            elif _level == 'environment':
+                pub.sendMessage('request_delete_environment',
+                                revision_id=self._revision_id,
+                                phase_id=_parent_id,
+                                node_id=_node_id)
 
         _dialog.do_destroy()
 
@@ -831,27 +900,38 @@ class UsageProfile(RAMSTKListView):
             _prow = None
 
         if _sibling and _level == 'mission':
-            _entity_id = self._revision_id
-            _parent_id = 0
-        else:
-            _entity_id = _model.get_value(_prow, 1)
-            _parent_id = _model.get_value(_prow, 9)
-
-        _dic_level = {'mission': 'phase', 'phase': 'environment'}
-        if not _sibling:
-            try:
-                _level = _dic_level[_level]
-            except KeyError:
-                _prompt = _("An environmental condition cannot have a child.")
-                _dialog = RAMSTKMessageDialog(_prompt,
-                                              self._dic_icons['error'],
-                                              'error')
-                _dialog.do_destroy()
-
-        pub.sendMessage('request_insert_profile',
-                        entity_id=_entity_id,
-                        parent_id=_parent_id,
-                        level=_level)
+            pub.sendMessage('request_insert_mission',
+                            revision_id=self._revision_id)
+        elif not _sibling and _level == 'mission':
+            _mission_id = _model.get_value(_prow, 9)
+            pub.sendMessage('request_insert_mission_phase',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id)
+        elif _sibling and _level == 'phase':
+            _mission_id = _model.get_value(_prow, 9)
+            pub.sendMessage('request_insert_mission_phase',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id)
+        elif not _sibling and _level == 'phase':
+            _phase_id = _model.get_value(_prow, 1)
+            _mission_id = _model.get_value(_prow, 9)
+            pub.sendMessage('request_insert_environment',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id,
+                            phase_id=_phase_id)
+        elif _sibling and _level == 'environment':
+            _gprow = _model.iter_parent(_prow)
+            _mission_id = _model.get_value(_gprow, 9)
+            _phase_id = _model.get_value(_prow, 9)
+            pub.sendMessage('request_insert_environment',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id,
+                            phase_id=_phase_id)
+        elif not _sibling and _level == 'environment':
+            _prompt = _("An environmental condition cannot have a child.")
+            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
+                                          'error')
+            _dialog.do_destroy()
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -866,7 +946,7 @@ class UsageProfile(RAMSTKListView):
         _node_id = _model.get_value(_row, 9)
 
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_profile', node_id=_node_id)
+        pub.sendMessage('request_update_usage_profile', node_id=_node_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -879,7 +959,7 @@ class UsageProfile(RAMSTKListView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_profiles')
+        pub.sendMessage('request_update_all_usage_profiles')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
@@ -932,7 +1012,7 @@ class UsageProfile(RAMSTKListView):
 
     @staticmethod
     def _on_cell_edit(__cell: Gtk.CellRenderer, path: str, new_text: Any,
-                      position: int, model) -> None:
+                      position: int, model: Gtk.TreeModel) -> None:
         """
         Handle edits of the Usage Profile List View RAMSTKTreeView().
 
@@ -978,7 +1058,7 @@ class UsageProfile(RAMSTKListView):
 
             _key = _dic_keys[_level][position]
 
-            pub.sendMessage('lvw_editing_profile',
+            pub.sendMessage('lvw_editing_usage_profile',
                             module_id=_node_id,
                             key=_key,
                             value=new_text)

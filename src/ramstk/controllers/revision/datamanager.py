@@ -180,7 +180,7 @@ class DataManager(RAMSTKDataManager):
         Remove a environment.
 
         :param int revision_id: the revision ID to remove the environment from.
-        :param int mission_id: the mission phase ID to remove the environment
+        :param int phase_id: the mission phase ID to remove the environment
             from.
         :param int node_id: the environment ID to remove.
         :return: None
