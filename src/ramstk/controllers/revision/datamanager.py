@@ -82,6 +82,10 @@ class DataManager(RAMSTKDataManager):
                       'request_set_revision_attributes')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_revision_attributes')
+        pub.subscribe(self._do_get_failure_definitions,
+                      'request_retrieve_failure_definitions')
+        pub.subscribe(self._do_get_usage_profile_tree,
+                      'request_retrieve_usage_profile')
 
     def _do_delete(self, node_id: int) -> None:
         """
@@ -180,7 +184,7 @@ class DataManager(RAMSTKDataManager):
         Remove a environment.
 
         :param int revision_id: the revision ID to remove the environment from.
-        :param int mission_id: the mission phase ID to remove the environment
+        :param int phase_id: the mission phase ID to remove the environment
             from.
         :param int node_id: the environment ID to remove.
         :return: None
