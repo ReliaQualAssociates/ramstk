@@ -646,6 +646,26 @@ class TestUpdateMethods():
             'Attempted to save non-existent revision with revision ID 100.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
+    def on_succeed_update_failure_definition(self, node_id):
+        assert node_id == 1
+        print(
+            "\033[36m\nsucceed_update_failure_definition topic was broadcast")
+
+    def on_fail_update_failure_definition(self, error_message):
+        assert error_message == (
+            'No data package found for failure definition ID 100.')
+        print("\033[35m\nfail_update_failure_definition topic was broadcast")
+
+    def on_succeed_update_usage_profile(self, node_id):
+        assert node_id == '1'
+        print("\033[36m\nsucceed_update_usage_profile topic was broadcast")
+
+    def on_fail_update_usage_profile(self, error_message):
+        assert error_message == (
+            'Attempted to save non-existent usage profile element with ID 1.10.'
+        )
+        print("\033[35m\nfail_update_usage_profile topic was broadcast")
+
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao):
         """ do_update() should return a zero error code on success. """
@@ -685,3 +705,76 @@ class TestUpdateMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.do_update(100)
+
+        pub.unsubscribe(self.on_fail_update_revision, 'fail_update_revision')
+
+    @pytest.mark.integration
+    def test_do_update_failure_definition(self, test_program_dao):
+        """do_update_failure_definition() should broadcast the succeed message on success."""
+        pub.subscribe(self.on_succeed_update_failure_definition,
+                      'succeed_update_failure_definition')
+
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+
+        _failure_definition = DUT.do_select(1, table='failure_definitions')
+        _failure_definition[1].definition = b'Big test definition'
+
+        DUT._do_update_failure_definition(1)
+        _failure_definition = DUT.do_select(1, table='failure_definitions')
+
+        assert _failure_definition[1].definition == b'Big test definition'
+
+        pub.unsubscribe(self.on_succeed_update_failure_definition,
+                        'succeed_update_failure_definition')
+
+    @pytest.mark.integration
+    def test_do_update_failure_definition_non_existent_id(
+            self, test_program_dao):
+        """do_update_failure_definition() should broadcast the fail message when attempting to save a non-existent ID."""
+        pub.subscribe(self.on_fail_update_failure_definition,
+                      'fail_update_failure_definition')
+
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_update_failure_definition(100)
+
+        pub.unsubscribe(self.on_fail_update_failure_definition,
+                        'fail_update_failure_definition')
+
+    @pytest.mark.integration
+    def test_do_update_usage_profile(self, test_program_dao):
+        """do_update_usage_profile() should broadcast the succeed message on success."""
+        pub.subscribe(self.on_succeed_update_usage_profile,
+                      'succeed_update_usage_profile')
+
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+
+        _mission = DUT.do_select(1, table='usage_profile').get_node('1').data
+        _mission.description = b'Big ole failure mode'
+
+        DUT._do_update_usage_profile(1, '1')
+        _mission = DUT.do_select(1, table='usage_profile').get_node('1').data
+
+        assert _mission.description == b'Big ole failure mode'
+
+        pub.unsubscribe(self.on_succeed_update_usage_profile,
+                        'succeed_update_usage_profile')
+
+    @pytest.mark.integration
+    def test_do_update_usage_profile_non_existent_id(self, test_program_dao):
+        """do_update_usage_profile() should broadcast the fail message when attempting to save a non-existent ID."""
+        pub.subscribe(self.on_fail_update_usage_profile,
+                      'fail_update_usage_profile')
+
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_update_usage_profile(1, '1.10')
+
+        pub.unsubscribe(self.on_fail_update_usage_profile,
+                        'fail_update_usage_profile')
