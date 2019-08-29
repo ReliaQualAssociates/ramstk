@@ -140,7 +140,7 @@ upgrade:
 	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 # Targets to install and uninstall.
-install: clean
+install: clean-build clean-pyc
 	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"

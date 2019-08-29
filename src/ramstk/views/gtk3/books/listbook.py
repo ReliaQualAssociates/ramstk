@@ -13,7 +13,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.revision import lvwFailureDefinition
+from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
 from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
 
 
@@ -46,8 +46,8 @@ class RAMSTKListBook(RAMSTKBook):
         # Initialize private dictionary attributes.
         self._dic_list_views = {
             'revision': [
-                # lvwUsageProfile(configuration),
-                lvwFailureDefinition(configuration, logger),
+                lvwUsageProfile(configuration, logger),
+                lvwFailureDefinition(configuration, logger)
             ],
             #    'function':
             #    [mtxFunction(configuration, matrix_type='fnctn_hrdwr')],

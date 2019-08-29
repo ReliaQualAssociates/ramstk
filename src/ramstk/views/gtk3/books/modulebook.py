@@ -359,6 +359,8 @@ class RAMSTKModuleBook(RAMSTKBook):
                                       tab_label=_module.hbx_tab_label,
                                       position=_key)
 
+        pub.sendMessage('mvwSwitchedPage', module='revision')
+
         self.statusbar.pop(1)
         self._do_set_status_icon(connected=True)
 
@@ -372,16 +374,15 @@ class RAMSTKModuleBook(RAMSTKBook):
         :param __page: the newly selected page's child widget.
         :type __page: :class:`Gtk.Widget`
         :param int page_num: the newly selected page number.
-
-                             0 = Revision Tree
-                             1 = Requirements Tree
-                             2 = Function Tree
-                             3 = Hardware Tree
-                             4 = Software Tree
-                             5 = Testing Tree
-                             6 = Validation Tree
-                             7 = Incident Tree
-                             8 = Survival Analyses Tree
+            0 = Revision Tree
+            1 = Requirements Tree
+            2 = Function Tree
+            3 = Hardware Tree
+            4 = Software Tree (future)
+            5 = Testing Tree (future)
+            6 = Validation Tree
+            7 = Incident Tree (future)
+            8 = Survival Analyses Tree (future)
 
         :return: None
         :rtype: None
@@ -428,14 +429,14 @@ class RAMSTKModuleBook(RAMSTKBook):
         :rtype: None
         """
         if connected:
-            _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+            _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
                 '/32x32/db-connected.png'
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip_markup(
                 _(u"RAMSTK is connected to program database "
                   u"{0:s}.".format(
-                      self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
+                      self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
         else:
             _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
                 '/32x32/db-disconnected.png'

@@ -45,6 +45,8 @@ class RAMSTKLogManager:
         self.log_file = log_file
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_log_fail_message,
+                      'fail_connect_program_database')
         pub.subscribe(self._do_log_fail_message, 'fail_delete_environment')
         pub.subscribe(self._do_log_fail_message,
                       'fail_delete_failure_definition')

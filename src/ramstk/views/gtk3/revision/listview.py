@@ -27,6 +27,39 @@ from ramstk.views.gtk3.widgets import (
 )
 
 
+def _do_make_column(header: str, index: int,
+                    visible: bool) -> Gtk.TreeViewColumn:
+    """
+    Make a column with a CellRendererText() and the passed header text.
+
+    :param str header: the text to display in the header of the column.
+    :param int index: the index number in the Gtk.TreeModel() to display in
+        this column.
+    :param bool visible: indicates whether or not the column will be visible.
+    :return: _column
+    :rtype: :class:`Gtk.TreeViewColumn`
+    """
+    _cell = Gtk.CellRendererText()
+    _cell.set_property('wrap-width', 250)
+    _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
+    _cell.set_property('yalign', 0.1)
+    _label = Gtk.Label()
+    _label.set_line_wrap(True)
+    _label.set_alignment(xalign=0.5, yalign=0.5)
+    _label.set_justify(Gtk.Justification.CENTER)
+    _label.set_markup("<span weight='bold'>" + header + "</span>")
+    _label.set_use_markup(True)
+    _label.show_all()
+    _column = Gtk.TreeViewColumn()
+    _column.set_widget(_label)
+    _column.set_visible(visible)
+    _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+    _column.pack_start(_cell, True)
+    _column.set_attributes(_cell, text=index)
+
+    return _column
+
+
 class FailureDefinition(RAMSTKListView):
     """
     Display all the Failure Definitions associated with the selected Revision.
@@ -50,6 +83,10 @@ class FailureDefinition(RAMSTKListView):
                                 configuration,
                                 logger,
                                 module='failure_definition')
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
 
         # Initialize private dictionary attributes.
 
@@ -125,66 +162,13 @@ class FailureDefinition(RAMSTKListView):
                                GObject.TYPE_STRING)
         self.treeview.set_model(_model)
 
-        _cell = Gtk.CellRendererText()
-        _cell.set_property('editable', 0)
-        _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-        _cell.set_property('yalign', 0.1)
-        _label = Gtk.Label()
-        _label.set_line_wrap(True)
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.set_markup("<span weight='bold'>Revision ID</span>")
-        _label.set_use_markup(True)
-        _label.show_all()
-        _column = Gtk.TreeViewColumn()
-        _column.set_widget(_label)
-        _column.set_visible(False)
-        _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        _column.pack_start(_cell, True)
-        _column.set_attributes(_cell, text=0)
-        self.treeview.append_column(_column)
+        for _header in enumerate(
+                ["Revision ID", "Definition\nNumber", "Failure Definition"]):
+            _column = _do_make_column(_header[1], _header[0], _header[0])
+            self.treeview.append_column(_column)
 
-        _cell = Gtk.CellRendererText()
-        _cell.set_property('editable', 0)
-        _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-        _cell.set_property('yalign', 0.1)
-        _label = Gtk.Label()
-        _label.set_line_wrap(True)
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.set_markup("<span weight='bold'>Definition\nNumber</span>")
-        _label.set_use_markup(True)
-        _label.show_all()
-        _column = Gtk.TreeViewColumn()
-        _column.set_widget(_label)
-        _column.set_visible(True)
-        _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        _column.pack_start(_cell, True)
-        _column.set_attributes(_cell, text=1)
-        self.treeview.append_column(_column)
-
-        _cell = Gtk.CellRendererText()
-        _cell.set_property('editable', 1)
-        _cell.set_property('wrap-width', 450)
-        _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-        _cell.set_property('yalign', 0.1)
-        _cell.connect('edited', self._on_cell_edit, 2, _model)
-        _label = Gtk.Label()
-        _label.set_line_wrap(True)
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.set_markup("<span weight='bold'>Failure Definition</span>")
-        _label.set_use_markup(True)
-        _label.show_all()
-        _column = Gtk.TreeViewColumn()
-        _column.set_widget(_label)
-        _column.set_visible(True)
-        _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        _column.pack_start(_cell, True)
-        _column.set_attributes(_cell, text=2)
-        self.treeview.append_column(_column)
+        _cell = self.treeview.get_columns()[2].get_cells()[0]
+        _cell.set_property('editable', True)
 
     def __make_ui(self) -> None:
         """
@@ -235,8 +219,7 @@ class FailureDefinition(RAMSTKListView):
             _attributes: Tuple[int, int, str] = (0, 0, '')
             if _entity is not None:
                 _attributes = (_entity.revision_id, _entity.definition_id,
-                               _entity.definition)
-
+                               _entity.definition.decode('utf-8'))
             try:
                 _row = _model.append(_attributes)
             except ValueError:
@@ -431,14 +414,20 @@ class UsageProfile(RAMSTKListView):
                                 configuration,
                                 logger,
                                 module='usage_profile')
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['mission'] = (self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR
-                                      + '/32x32/mission.png')
-        self._dic_icons['phase'] = (self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR
-                                    + '/32x32/phase.png')
+        self._dic_icons['mission'] = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/mission.png')
+        self._dic_icons['phase'] = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/phase.png')
         self._dic_icons['environment'] = (
-            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/environment.png')
 
         # Initialize private list attributes.
@@ -804,30 +793,29 @@ class UsageProfile(RAMSTKListView):
         _entity = _node.data
         if _entity is None:
             _model.clear()
-
-        try:
-            if _entity.is_mission:
-                _new_row = self._do_load_mission(_entity, _node.identifier,
-                                                 row)
-
-            elif _entity.is_phase:
-                _new_row = self._do_load_phase(_entity, _node.identifier, row)
-
-            elif _entity.is_env:
-                _new_row = self._do_load_environment(_entity, _node.identifier,
+        else:
+            try:
+                if _entity.is_mission:
+                    _new_row = self._do_load_mission(_entity, _node.identifier,
                                                      row)
-        except AttributeError:
-            if _node.identifier != 0:
-                _user_msg = _("One or more Usage Profile line items was "
-                              "missing it's data package and is not "
-                              "displayed in the Usage Profile.")
-                _debug_msg = (
-                    "RAMSTK ERROR: There is no data package for Usage "
-                    "Profile ID {0:s} for Revision ID {1:s}.".format(
-                        str(_node.identifier), str(self._revision_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+                elif _entity.is_phase:
+                    _new_row = self._do_load_phase(_entity, _node.identifier,
+                                                   row)
+                elif _entity.is_env:
+                    _new_row = self._do_load_environment(
+                        _entity, _node.identifier, row)
+            except AttributeError:
+                if _node.identifier != 0:
+                    _user_msg = _("One or more Usage Profile line items was "
+                                  "missing it's data package and is not "
+                                  "displayed in the Usage Profile.")
+                    _debug_msg = (
+                        "RAMSTK ERROR: There is no data package for Usage "
+                        "Profile ID {0:s} for Revision ID {1:s}.".format(
+                            str(_node.identifier), str(self._revision_id)))
+                self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+                _new_row = None
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)

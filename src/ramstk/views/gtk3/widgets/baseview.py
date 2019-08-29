@@ -194,7 +194,8 @@ class RAMSTKBaseView(Gtk.HBox):
         _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
 
         _treeview = RAMSTKTreeView()
-        _treeview.do_parse_format(_fmt_path, _fmt_file, _bg_color, _fg_color)
+        _treeview.do_parse_format(_fmt_path, _fmt_file)
+        _treeview.make_model(_bg_color, _fg_color)
         self._lst_col_order = _treeview.order
 
         return _treeview
@@ -238,13 +239,8 @@ class RAMSTKBaseView(Gtk.HBox):
         except AttributeError:
             _tag = "UNK"
 
-        if self.treeview.do_load_tree(tree):
-            _error_msg = _(
-                "An error occured while loading the {1:s} records for "
-                "Revision ID {0:d} into the view.").format(
-                    self._revision_id, _tag)
-            pub.sendMessage('fail_load_tree', error_message=_error_msg)
-        else:
+        try:
+            self.treeview.do_load_tree(tree, _tag)
             _row = _model.get_iter_first()
             self.treeview.expand_all()
             if _row is not None:
@@ -252,6 +248,20 @@ class RAMSTKBaseView(Gtk.HBox):
                 _column = self.treeview.get_column(0)
                 self.treeview.set_cursor(_path, None, False)
                 self.treeview.row_activated(_path, _column)
+                self.show_all()
+        except TypeError:
+            _error_msg = _(
+                "An error occured while loading {1:s} records for Revision ID "
+                "{0:d} into the view.  One or more values from the database "
+                "was the wrong type for the column it was trying to "
+                "load.").format(self._revision_id, _tag)
+            self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
+        except ValueError:
+            _error_msg = _(
+                "An error occured while loading {1:s} records for Revision ID "
+                "{0:d} into the view.  One or more values from the database "
+                "was missing.").format(self._revision_id, _tag)
+            self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
 
     def do_raise_dialog(self, **kwargs: Any) -> None:
         """
@@ -433,40 +443,6 @@ class RAMSTKBaseView(Gtk.HBox):
         # item.  The _position variable can be used by derived classes to
         # add additional items to the Gtk.ToolBar().
         return _toolbar, _position
-
-    def make_treeview(self, **kwargs: Any) -> None:
-        """
-        Set up the Module View RAMSTKTreeView().
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _editable = kwargs['editable']
-        except KeyError:
-            _editable = []
-        _index = 0
-
-        for _column in self.treeview.get_columns():
-            _cell = _column.get_cells()[0]
-            if _index in _editable:
-                _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
-                try:
-                    _cell.set_property('editable', True)
-                    _cell.connect('edited', self._on_cell_edit, _index,
-                                  self.treeview.get_model())
-                except TypeError:
-                    _cell.set_property('activatable', True)
-                    _cell.connect('toggled', self._on_cell_edit, _index,
-                                  self.treeview.get_model())
-            else:
-                _color = Gdk.RGBA(238.0, 238.0, 238.0, 1.0)
-                try:
-                    _cell.set_property('editable', False)
-                except TypeError:
-                    _cell.set_property('activatable', False)
-            _cell.set_property('cell-background-rgba', _color)
-            _index += 1
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """

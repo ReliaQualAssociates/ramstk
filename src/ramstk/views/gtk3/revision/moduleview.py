@@ -95,7 +95,6 @@ class ModuleView(RAMSTKModuleView):
                               ]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-        self.make_treeview()
         self.treeview.set_tooltip_text(_("Displays the list of revisions."))
 
         RAMSTKModuleView.make_ui(self)
@@ -318,7 +317,9 @@ class ModuleView(RAMSTKModuleView):
         treeview.handler_unblock(self._lst_handler_id[0])
 
         pub.sendMessage('selected_revision', attributes=_attributes)
-        pub.sendMessage('request_get_revision_attributes', self._revision_id,
-                        'failure_definitions')
-        pub.sendMessage('request_get_revision_attributes', self._revision_id,
-                        'usage_profile')
+        pub.sendMessage('request_get_revision_attributes',
+                        node_id=self._revision_id,
+                        table='failure_definitions')
+        pub.sendMessage('request_get_revision_attributes',
+                        node_id=self._revision_id,
+                        table='usage_profile')

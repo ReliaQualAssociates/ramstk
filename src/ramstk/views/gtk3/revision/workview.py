@@ -57,6 +57,10 @@ class GeneralData(RAMSTKWorkView):
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKWorkView.__init__(self, configuration, logger, module='revision')
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
 
         # Initialize private dictionary attributes.
 
@@ -233,7 +237,8 @@ class GeneralData(RAMSTKWorkView):
         (_function, _id) = _dic_switch.get(key)
         _function(value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry: Gtk.Entry, index: int) -> None:
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
