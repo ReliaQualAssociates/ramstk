@@ -14,6 +14,7 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
+from ramstk.views.gtk3.assistants import CreateProject, OpenProject
 from ramstk.views.gtk3.revision import mvwRevision
 from ramstk.views.gtk3.widgets.basebook import RAMSTKBook, destroy
 
@@ -87,7 +88,7 @@ class RAMSTKModuleBook(RAMSTKBook):
         _menu_item.set_label(_("New _Program"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', CreateProject, self.RAMSTK_USER_CONFIGURATION)
+        _menu_item.connect('activate', CreateProject, self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -96,7 +97,7 @@ class RAMSTKModuleBook(RAMSTKBook):
         _menu_item.set_label(_("_Open"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', OpenProject, self.RAMSTK_USER_CONFIGURATION)
+        _menu_item.connect('activate', OpenProject, self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -185,7 +186,7 @@ class RAMSTKModuleBook(RAMSTKBook):
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/new.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', CreateProject, self.RAMSTK_USER_CONFIGURATION)
+        _button.connect('clicked', CreateProject, self.RAMSTK_USER_CONFIGURATION)
         self.toolbar.insert(_button, _position)
         _position += 1
 
@@ -196,7 +197,7 @@ class RAMSTKModuleBook(RAMSTKBook):
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', OpenProject, self.RAMSTK_USER_CONFIGURATION)
+        _button.connect('clicked', OpenProject, self.RAMSTK_USER_CONFIGURATION)
         self.toolbar.insert(_button, _position)
         _position += 1
 

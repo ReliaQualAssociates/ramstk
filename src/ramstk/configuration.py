@@ -584,6 +584,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_USER_LOG = self.RAMSTK_LOG_DIR + "/ramstk_run.log"
         self.RAMSTK_IMPORT_LOG = self.RAMSTK_LOG_DIR + "/ramstk_import.log"
 
+        self.loaded = False
+
     def _do_make_configuration_dir(self) -> None:
         """
         Creates the user configuration directory.

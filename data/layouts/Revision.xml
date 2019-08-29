@@ -62,7 +62,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-            <key>cost_per_failure</key>
+            <key>cost_failure</key>
         </column>
         <column>
             <defaulttitle>Cost/Hour</defaulttitle>
@@ -72,7 +72,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-            <key>cost_per_hour</key>
+            <key>cost_hour</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Active</defaulttitle>
@@ -232,7 +232,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
-            <key>n_parts</key>
+            <key>total_part_count</key>
         </column>
         <column>
             <defaulttitle>Revision</defaulttitle>

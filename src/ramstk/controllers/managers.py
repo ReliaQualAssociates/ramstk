@@ -127,6 +127,7 @@ class RAMSTKDataManager():
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_matrix, 'request_select_matrix')
         pub.subscribe(self.do_update_matrix, 'request_update_matrix')
+        pub.subscribe(self.do_connect, 'succeed_connect_program_database')
 
     @staticmethod
     def do_build_dict(records, id_field):

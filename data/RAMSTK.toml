@@ -12,7 +12,7 @@ worktabpos = "bottom"
 loglevel = "INFO"
 
 [backend]
-type = "sqllite"
+type = "sqlite"
 host = "localhost"
 socket = "3306"
 database = ""
