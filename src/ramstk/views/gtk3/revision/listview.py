@@ -7,7 +7,7 @@
 """The RAMSTK Failure Definition GTK3List View Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -786,7 +786,6 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _row = None
         _model = self.treeview.get_model()
 
         _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
@@ -813,8 +812,8 @@ class UsageProfile(RAMSTKListView):
                         "RAMSTK ERROR: There is no data package for Usage "
                         "Profile ID {0:s} for Revision ID {1:s}.".format(
                             str(_node.identifier), str(self._revision_id)))
-                self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-                self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+                    self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                    self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
                 _new_row = None
 
         for _n in tree.children(_node.identifier):
@@ -880,46 +879,45 @@ class UsageProfile(RAMSTKListView):
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
         _model, _row = self.treeview.get_selection().get_selected()
-        try:
-            _level = _model.get_value(_row, 11)
-            _prow = _model.iter_parent(_row)
-        except TypeError:
-            _level = ''
-            _prow = None
+        _level = _model.get_value(_row, 11)
+        _prow = _model.iter_parent(_row)
 
-        if _sibling and _level == 'mission':
-            pub.sendMessage('request_insert_mission',
-                            revision_id=self._revision_id)
-        elif not _sibling and _level == 'mission':
-            _mission_id = _model.get_value(_prow, 9)
-            pub.sendMessage('request_insert_mission_phase',
-                            revision_id=self._revision_id,
-                            mission_id=_mission_id)
-        elif _sibling and _level == 'phase':
-            _mission_id = _model.get_value(_prow, 9)
-            pub.sendMessage('request_insert_mission_phase',
-                            revision_id=self._revision_id,
-                            mission_id=_mission_id)
-        elif not _sibling and _level == 'phase':
-            _phase_id = _model.get_value(_prow, 1)
-            _mission_id = _model.get_value(_prow, 9)
-            pub.sendMessage('request_insert_environment',
-                            revision_id=self._revision_id,
-                            mission_id=_mission_id,
-                            phase_id=_phase_id)
-        elif _sibling and _level == 'environment':
-            _gprow = _model.iter_parent(_prow)
-            _mission_id = _model.get_value(_gprow, 9)
-            _phase_id = _model.get_value(_prow, 9)
-            pub.sendMessage('request_insert_environment',
-                            revision_id=self._revision_id,
-                            mission_id=_mission_id,
-                            phase_id=_phase_id)
-        elif not _sibling and _level == 'environment':
-            _prompt = _("An environmental condition cannot have a child.")
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                          'error')
-            _dialog.do_destroy()
+        if _sibling:
+            if _level == 'mission':
+                pub.sendMessage('request_insert_mission',
+                                revision_id=self._revision_id)
+            elif _level == 'phase':
+                _mission_id = _model.get_value(_prow, 9)
+                pub.sendMessage('request_insert_mission_phase',
+                                revision_id=self._revision_id,
+                                mission_id=_mission_id)
+            elif _level == 'environment':
+                _gprow = _model.iter_parent(_prow)
+                _mission_id = _model.get_value(_gprow, 9)
+                _phase_id = _model.get_value(_prow, 9)
+                pub.sendMessage('request_insert_environment',
+                                revision_id=self._revision_id,
+                                mission_id=_mission_id,
+                                phase_id=_phase_id)
+        elif not _sibling:
+            if _level == 'mission':
+                _mission_id = _model.get_value(_prow, 9)
+                pub.sendMessage('request_insert_mission_phase',
+                                revision_id=self._revision_id,
+                                mission_id=_mission_id)
+            elif _level == 'phase':
+                _phase_id = _model.get_value(_prow, 1)
+                _mission_id = _model.get_value(_prow, 9)
+                pub.sendMessage('request_insert_environment',
+                                revision_id=self._revision_id,
+                                mission_id=_mission_id,
+                                phase_id=_phase_id)
+            elif _level == 'environment':
+                _prompt = _("An environmental condition cannot have a child.")
+                _dialog = RAMSTKMessageDialog(_prompt,
+                                              self._dic_icons['error'],
+                                              'error')
+                _dialog.do_destroy()
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1063,7 +1061,40 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _attributes = {}
+        _dic_headings = {
+            'mission': [
+                _("Mission ID"),
+                _("Description"),
+                _("Units"),
+                _("Start Time"),
+                _("End Time"),
+                _(""),
+                _(""),
+                _("")
+            ],
+            'phase': [
+                _("Phase ID"),
+                _("  Code\t\tDescription"),
+                _("Units"),
+                _("Start Time"),
+                _("End Time"),
+                _(""),
+                _(""),
+                _("")
+            ],
+            'environment': [
+                _("Environment ID"),
+                _("Condition"),
+                _("Units"),
+                _("Minimum Value"),
+                _("Maximum Value"),
+                _("Mean Value"),
+                _("Variance"),
+                _("")
+            ]
+        }
+        _attributes: Dict[str, Any] = {}
+        _headings: List[str] = []
 
         treeview.handler_block(self._lst_handler_id[0])
 
@@ -1074,52 +1105,21 @@ class UsageProfile(RAMSTKListView):
                 _level = _model.get_value(_row, 11)
             except TypeError:
                 _level = None
+            _headings = _dic_headings[_level]
 
             # Change the column headings depending on what is being selected.
             if _level == 'mission':
-                _headings = [
-                    _("Mission ID"),
-                    _("Description"),
-                    _("Units"),
-                    _("Start Time"),
-                    _("End Time"),
-                    _(""),
-                    _(""),
-                    _("")
-                ]
                 _attributes['mission_id'] = _model.get_value(_row, 0)
                 _attributes['description'] = _model.get_value(_row, 2)
                 _attributes['time_units'] = _model.get_value(_row, 4)
                 _attributes['mission_time'] = _model.get_value(_row, 6)
-
             elif _level == 'phase':
-                _headings = [
-                    _("Phase ID"),
-                    _("  Code\t\tDescription"),
-                    _("Units"),
-                    _("Start Time"),
-                    _("End Time"),
-                    _(""),
-                    _(""),
-                    _("")
-                ]
                 _attributes['phase_id'] = _model.get_value(_row, 0)
                 _attributes['name'] = _model.get_value(_row, 2)
                 _attributes['description'] = _model.get_value(_row, 3)
                 _attributes['phase_start'] = _model.get_value(_row, 5)
                 _attributes['phase_end'] = _model.get_value(_row, 6)
-
             elif _level == 'environment':
-                _headings = [
-                    _("Environment ID"),
-                    _("Condition"),
-                    _("Units"),
-                    _("Minimum Value"),
-                    _("Maximum Value"),
-                    _("Mean Value"),
-                    _("Variance"),
-                    _("")
-                ]
                 _attributes['environment_id'] = _model.get_value(_row, 0)
                 _attributes['name'] = _model.get_value(_row, 2)
                 _attributes['units'] = _model.get_value(_row, 4)
@@ -1127,9 +1127,6 @@ class UsageProfile(RAMSTKListView):
                 _attributes['maximum'] = _model.get_value(_row, 6)
                 _attributes['mean'] = _model.get_value(_row, 7)
                 _attributes['variance'] = _model.get_value(_row, 8)
-
-            else:
-                _headings = []
 
             i = 0
             _columns = treeview.get_columns()
