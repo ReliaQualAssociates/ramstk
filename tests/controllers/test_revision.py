@@ -474,15 +474,30 @@ class TestGetterSetter():
                         definition_id=1)
         pub.sendMessage('request_set_revision_attributes',
                         node_id=1,
+                        key='description',
+                        value=b'This is the mission description.',
+                        usage_id='1')
+        pub.sendMessage('request_set_revision_attributes',
+                        node_id=1,
                         key='phase_end',
                         value=5.12,
                         usage_id='1.1')
+        pub.sendMessage('request_set_revision_attributes',
+                        node_id=1,
+                        key='minimum',
+                        value=5.12,
+                        usage_id='1.1.1')
         assert DUT.do_select(1, table='revision').revision_code == '-'
         assert DUT.do_select(
             1,
             table='failure_definitions')[1].definition == b'Test Description'
         assert DUT.do_select(
+            1, table='usage_profile').get_node('1').data.description == (
+                b'This is the mission description.')
+        assert DUT.do_select(
             1, table='usage_profile').get_node('1.1').data.phase_end == 5.12
+        assert DUT.do_select(
+            1, table='usage_profile').get_node('1.1.1').data.minimum == 5.12
 
     @pytest.mark.integration
     def test_do_set_all_attributes(self, test_program_dao):

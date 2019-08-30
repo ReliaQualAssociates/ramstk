@@ -200,6 +200,7 @@ CREATE TABLE ramstk_environment (
     PRIMARY KEY (fld_environment_id),
     FOREIGN KEY(fld_phase_id) REFERENCES ramstk_mission_phase (fld_phase_id) ON DELETE CASCADE
 );
+INSERT INTO 'ramstk_environment' VALUES (1,1,'Environment','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_failure_definition (
     fld_revision_id INTEGER,
     fld_definition_id INTEGER NOT NULL,
@@ -207,6 +208,7 @@ CREATE TABLE ramstk_failure_definition (
     PRIMARY KEY (fld_definition_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
+INSERT INTO "ramstk_failure_definition" VALUES(1,1,X'');
 CREATE TABLE ramstk_function (
     fld_revision_id INTEGER,
     fld_function_id INTEGER NOT NULL,
@@ -537,6 +539,7 @@ CREATE TABLE ramstk_mission (
     PRIMARY KEY (fld_mission_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
+INSERT INTO 'ramstk_mission' VALUES(1,1,'Default Mission',0.0,'hours');
 CREATE TABLE ramstk_mission_phase (
     fld_mission_id INTEGER,
     fld_phase_id INTEGER NOT NULL,
@@ -547,6 +550,7 @@ CREATE TABLE ramstk_mission_phase (
     PRIMARY KEY (fld_phase_id),
     FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE
 );
+INSERT INTO 'ramstk_mission_phase' VALUES (1,1,'Default Mission Phase 1','',0,0.0);
 CREATE TABLE ramstk_mode (
     fld_function_id INTEGER,
     fld_hardware_id INTEGER,
