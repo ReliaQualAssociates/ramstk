@@ -214,7 +214,7 @@ class ModuleView(RAMSTKModuleView):
         treeview.handler_unblock(self._lst_handler_id[1])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int, model: Gtk.TreeModel) -> None:
+                      position: int) -> None:
         """
         Handle edits of Revision package Module View RAMSTKTreeview().
 
@@ -226,8 +226,6 @@ class ModuleView(RAMSTKModuleView):
             Gtk.CellRenderer().
         :param int position: the column position of the edited
             Gtk.CellRenderer().
-        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
-        :type model: :class:`Gtk.TreeStore`
         :return: None
         :rtype: None
         """
@@ -237,7 +235,7 @@ class ModuleView(RAMSTKModuleView):
         except KeyError:
             _key = ''
 
-        self.treeview.do_edit_cell(__cell, path, new_text, position, model)
+        self.treeview.do_edit_cell(self, __cell, path, new_text, position)
 
         pub.sendMessage('mvw_editing_revision',
                         module_id=self._revision_id,

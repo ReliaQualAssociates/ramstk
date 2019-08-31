@@ -613,32 +613,7 @@ class RAMSTKListView(RAMSTKBaseView):
         """
         self.treeview.set_rubber_banding(True)
 
-    @staticmethod
-    def _do_edit_cell(__cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int, model: Gtk.TreeModel) -> None:
-        """
-        Handle edits of the List View RAMSTKTreeView().
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
-            that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
-            Gtk.CellRenderer().
-        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
-            belongs to.
-        :return: None
-        :rtype: None
-        """
-        _type = GObject.type_name(model.get_column_type(position))
-        if _type == 'gchararray':
-            model[path][position] = str(new_text)
-        elif _type == 'gint':
-            model[path][position] = int(new_text)
-        elif _type == 'gfloat':
-            model[path][position] = float(new_text)
-
-    def _make_ui(self) -> None:
+    def make_ui(self) -> None:
         """
         Build the user interface.
 
@@ -654,6 +629,29 @@ class RAMSTKListView(RAMSTKBaseView):
         self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
+
+    def on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+                     position: int) -> None:
+        """
+        Handle edits of the List View RAMSTKTreeView().
+
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param int position: the column position of the edited
+            Gtk.CellRenderer().
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _type = GObject.type_name(_model.get_column_type(position))
+        if _type == 'gchararray':
+            _model[path][position] = str(new_text)
+        elif _type == 'gint':
+            _model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            _model[path][position] = float(new_text)
 
 
 class RAMSTKModuleView(RAMSTKBaseView):

@@ -170,7 +170,7 @@ class FailureDefinition(RAMSTKListView):
         _cell = self.treeview.get_columns()[2].get_cells()[0]
         _cell.set_property('editable', True)
         self._lst_handler_id.append(
-            _cell.connect('edited', self._on_cell_edit, 2, _model))
+            _cell.connect('edited', self._on_cell_edit, 2))
 
     def __make_ui(self) -> None:
         """
@@ -189,7 +189,7 @@ class FailureDefinition(RAMSTKListView):
               "selected revision."))
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
-        RAMSTKListView._make_ui(self)
+        RAMSTKListView.make_ui(self)
 
     def __set_properties(self) -> None:
         """
@@ -343,7 +343,7 @@ class FailureDefinition(RAMSTKListView):
         treeview.handler_unblock(self._lst_handler_id[1])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int, model: Gtk.TreeModel) -> None:
+                      position: int) -> None:
         """
         Handle edits of the Failure Definition List View RAMSTKTreeview().
 
@@ -359,7 +359,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        RAMSTKListView._do_edit_cell(__cell, path, new_text, position, model)
+        RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
 
         pub.sendMessage('lvw_editing_failure_definition',
                         node_id=self._revision_id,
@@ -616,7 +616,7 @@ class UsageProfile(RAMSTKListView):
             _("Displays usage profiles for the selected revision."))
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
-        RAMSTKListView._make_ui(self)
+        RAMSTKListView.make_ui(self)
 
     def __set_properties(self) -> None:
         """
@@ -999,9 +999,8 @@ class UsageProfile(RAMSTKListView):
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
-    @staticmethod
-    def _on_cell_edit(__cell: Gtk.CellRenderer, path: str, new_text: Any,
-                      position: int, model: Gtk.TreeModel) -> None:
+    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
+                      position: int) -> None:
         """
         Handle edits of the Usage Profile List View RAMSTKTreeView().
 
@@ -1038,12 +1037,13 @@ class UsageProfile(RAMSTKListView):
             }
         }
 
-        if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
-                                            model):
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
+        if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position):
 
             # Retrieve the Usage Profile data package.
-            _node_id = model[path][9]
-            _level = model[path][11]
+            _node_id = _model.get_value(_row, 9)
+            _level = _model.get_value(_row, 11)
 
             _key = _dic_keys[_level][position]
 
