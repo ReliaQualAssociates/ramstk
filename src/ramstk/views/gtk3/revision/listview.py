@@ -169,6 +169,8 @@ class FailureDefinition(RAMSTKListView):
 
         _cell = self.treeview.get_columns()[2].get_cells()[0]
         _cell.set_property('editable', True)
+        self._lst_handler_id.append(
+            _cell.connect('edited', self._on_cell_edit, 2, _model))
 
     def __make_ui(self) -> None:
         """
@@ -196,7 +198,6 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        RAMSTKListView._set_properties(self)
         self.treeview.set_tooltip_text(
             _("Displays the list of failure definitions for the selected "
               "revision."))
@@ -250,6 +251,7 @@ class FailureDefinition(RAMSTKListView):
 
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_failure_definition',
+                            revision_id=self._revision_id,
                             node_id=self._definition_id)
 
         _dialog.do_destroy()
@@ -275,6 +277,7 @@ class FailureDefinition(RAMSTKListView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_failure_definition',
+                        revision_id=self._revision_id,
                         node_id=self._definition_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
@@ -288,7 +291,8 @@ class FailureDefinition(RAMSTKListView):
         :rtype: bool
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_failure_definitions')
+        pub.sendMessage('request_update_all_failure_definitions',
+                        revision_id=self._revision_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
@@ -355,13 +359,13 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
-                                            model):
+        RAMSTKListView._do_edit_cell(__cell, path, new_text, position, model)
 
-            pub.sendMessage('lvw_editing_failuure_definition',
-                            module_id=self._definition_id,
-                            key='definition',
-                            value=new_text)
+        pub.sendMessage('lvw_editing_failure_definition',
+                        node_id=self._revision_id,
+                        key='definition',
+                        value=bytes(new_text, 'utf-8'),
+                        definition_id=self._definition_id)
 
     def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
         """
@@ -621,7 +625,6 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        RAMSTKListView._set_properties(self)
         self.treeview.set_tooltip_text(
             _("Displays the list of usage profiles for the selected "
               "revision."))

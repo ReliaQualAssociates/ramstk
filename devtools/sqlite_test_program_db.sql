@@ -251,6 +251,7 @@ CREATE TABLE ramstk_failure_definition (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_failure_definition" VALUES(1,1,X'4661696C75726520446566696E6974696F6E');
+INSERT INTO "ramstk_failure_definition" VALUES(1,2,X'4661696C75726520446566696E6974696F6E');
 CREATE TABLE ramstk_function (
     fld_revision_id INTEGER,
     fld_function_id INTEGER NOT NULL,

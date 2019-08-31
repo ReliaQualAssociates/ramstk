@@ -73,6 +73,8 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_update_usage_profile,
                       'request_update_usage_profile')
         pub.subscribe(self.do_update_all, 'request_update_all_revisions')
+        pub.subscribe(self._do_update_all_failure_definition,
+                      'request_update_all_failure_definitions')
         pub.subscribe(self._do_get_attributes,
                       'request_get_revision_attributes')
         pub.subscribe(self.do_get_all_attributes,
@@ -82,6 +84,8 @@ class DataManager(RAMSTKDataManager):
                       'request_set_revision_attributes')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_revision_attributes')
+        pub.subscribe(self._do_set_failure_definition,
+                      'lvw_editing_failure_definition')
 
     def _do_delete(self, node_id: int) -> None:
         """
@@ -362,10 +366,24 @@ class DataManager(RAMSTKDataManager):
             self.do_select(node_id, table='usage_profile').get_node(
                 usage_id).data.set_attributes(_attributes)
 
-    def _do_update_failure_definition(self, node_id: int) -> None:
+    def _do_update_all_failure_definition(self, revision_id: int) -> None:
+        """
+        Update all the failure defintions.
+
+        :param int revision_id: the revision ID whose failure definitions are
+            to be updated.
+        :return: None
+        :rtype: None
+        """
+        for _definition_id in self.tree.get_node(revision_id).data['failure_definitions']:
+            self._do_update_failure_definition(revision_id, _definition_id)
+
+    def _do_update_failure_definition(self, revision_id: int, node_id: int) -> None:
         """
         Update the failure definition associated with node ID in database.
 
+        :param int revision_id: the revision ID whose failure definition is
+            to be updated.
         :param int node_id: the node (failure definition) ID of the failure
             definition to save.
         :return: None
@@ -374,12 +392,12 @@ class DataManager(RAMSTKDataManager):
         try:
             self.dao.session.add(
                 self.tree.get_node(
-                    self._revision_id).data['failure_definitions'][node_id])
+                    revision_id).data['failure_definitions'][node_id])
             self.dao.do_update()
 
             pub.sendMessage('succeed_update_failure_definition',
                             node_id=node_id)
-        except (AttributeError, DataAccessError):
+        except (DataAccessError, KeyError):
             pub.sendMessage('fail_update_failure_definition',
                             error_message=('Attempted to save non-existent '
                                            'failure definition with ID '

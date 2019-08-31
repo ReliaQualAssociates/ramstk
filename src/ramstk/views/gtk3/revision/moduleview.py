@@ -237,13 +237,12 @@ class ModuleView(RAMSTKModuleView):
         except KeyError:
             _key = ''
 
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
+        self.treeview.do_edit_cell(__cell, path, new_text, position, model)
 
-            pub.sendMessage('mvw_editing_revision',
-                            module_id=self._revision_id,
-                            key=_key,
-                            value=new_text)
+        pub.sendMessage('mvw_editing_revision',
+                        module_id=self._revision_id,
+                        key=_key,
+                        value=new_text)
 
     def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
         """

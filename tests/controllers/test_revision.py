@@ -265,7 +265,11 @@ class TestDeleteMethods():
         DUT.do_select_all()
         DUT._do_delete_failure_definition(1, 1)
 
-        assert DUT.tree.get_node(1).data['failure_definitions'] == {}
+        with pytest.raises(KeyError):
+            DUT.tree.get_node(1).data['failure_definitions'][1]
+
+        pub.unsubscribe(self.on_succeed_delete_failure_definition,
+                        'succeed_delete_failure_definition')
 
     @pytest.mark.integration
     def test_do_delete_failure_definition_non_existent_id(
@@ -549,7 +553,7 @@ class TestInsertMethods():
 
     def on_succeed_insert_failure_definition(self, tree):
         assert isinstance(tree, dict)
-        assert isinstance(tree[3], RAMSTKFailureDefinition)
+        assert isinstance(tree[4], RAMSTKFailureDefinition)
         print(
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
@@ -598,7 +602,7 @@ class TestInsertMethods():
         assert isinstance(
             DUT.tree.get_node(1).data['failure_definitions'], dict)
         assert isinstance(
-            DUT.tree.get_node(1).data['failure_definitions'][3],
+            DUT.tree.get_node(1).data['failure_definitions'][4],
             RAMSTKFailureDefinition)
 
     @pytest.mark.integration
@@ -668,7 +672,7 @@ class TestUpdateMethods():
 
     def on_fail_update_failure_definition(self, error_message):
         assert error_message == (
-            'No data package found for failure definition ID 100.')
+            'Attempted to save non-existent failure definition with ID 100.')
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     def on_succeed_update_usage_profile(self, node_id):
@@ -736,7 +740,7 @@ class TestUpdateMethods():
         _failure_definition = DUT.do_select(1, table='failure_definitions')
         _failure_definition[1].definition = b'Big test definition'
 
-        DUT._do_update_failure_definition(1)
+        DUT._do_update_failure_definition(1, 1)
         _failure_definition = DUT.do_select(1, table='failure_definitions')
 
         assert _failure_definition[1].definition == b'Big test definition'
@@ -754,10 +758,29 @@ class TestUpdateMethods():
         DUT = dmRevision()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all()
-        DUT._do_update_failure_definition(100)
+        DUT._do_update_failure_definition(1, 100)
 
         pub.unsubscribe(self.on_fail_update_failure_definition,
                         'fail_update_failure_definition')
+
+    @pytest.mark.integration
+    def test_do_update_all_failure_definition(self, test_program_dao):
+        """do_update_all failure_definition() should return None on success."""
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+
+        _failure_definition = DUT.do_select(1, table='failure_definitions')
+        _failure_definition[1].definition = b'Big test definition #1'
+        _failure_definition[2].definition = b'Big test definition #2'
+
+        assert DUT._do_update_all_failure_definition(1) is None
+
+        _failure_definition = DUT.do_select(1, table='failure_definitions')
+        assert _failure_definition[1].definition == b'Big test definition #1'
+
+        _failure_definition = DUT.do_select(1, table='failure_definitions')
+        assert _failure_definition[2].definition == b'Big test definition #2'
 
     @pytest.mark.integration
     def test_do_update_usage_profile(self, test_program_dao):

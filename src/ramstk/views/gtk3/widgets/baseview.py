@@ -602,6 +602,17 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize public scalar attributes.
         self.tab_label = Gtk.Label()
 
+        self.__set_properties()
+
+    def __set_properties(self) -> None:
+        """
+        Set common properties of the ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.treeview.set_rubber_banding(True)
+
     @staticmethod
     def _do_edit_cell(__cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int, model: Gtk.TreeModel) -> None:
@@ -643,15 +654,6 @@ class RAMSTKListView(RAMSTKBaseView):
         self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
-
-    def _set_properties(self) -> None:
-        """
-        Set common properties of the ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.treeview.set_rubber_banding(True)
 
 
 class RAMSTKModuleView(RAMSTKBaseView):

@@ -235,7 +235,7 @@ release: dist
 # This target is for use with IDE integration.
 format:
 	$(info Autoformatting $(SRCFILE)...)
-	isort --atomic --apply --use-parentheses -m5 $(SRCFILE)
+	isort --atomic --apply --use-parentheses --balanced --multi-line 5 $(SRCFILE)
 	yapf -i $(SRCFILE)
 
 # This target is for use with IDE integration.

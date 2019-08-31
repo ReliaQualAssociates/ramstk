@@ -7,6 +7,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package analysis manager."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 import pandas as pd
 from pubsub import pub
@@ -112,22 +115,24 @@ class RAMSTKDataManager():
         # Tree().  Manipulation and viewing of a RAMSTK module tree needs to
         # ignore the root of the tree.
         try:
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=self._root,
-                parent=None,
-            )
-        except (
-                tree.MultipleRootError,
-                tree.NodeIDAbsentError,
-                tree.DuplicatedNodeIdError,
-        ):
+            self.tree.create_node(tag=self._tag,
+                                  identifier=self._root,
+                                  parent=None)
+        except (tree.MultipleRootError, tree.NodeIDAbsentError,
+                tree.DuplicatedNodeIdError):
             pass
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._on_select_revision, 'selected_revision')
         pub.subscribe(self.do_select_matrix, 'request_select_matrix')
         pub.subscribe(self.do_update_matrix, 'request_update_matrix')
         pub.subscribe(self.do_connect, 'succeed_connect_program_database')
+
+    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
+        """
+        Set the revision ID for the data manager.
+        """
+        self._revision_id = attributes['revision_id']
 
     @staticmethod
     def do_build_dict(records, id_field):
@@ -308,7 +313,6 @@ class RAMSTKDataManager():
         self.dao.do_update()
 
         pub.sendMessage('succeed_update_matrix')
-
 
 
 class RAMSTKMatrixManager():
