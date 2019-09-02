@@ -466,12 +466,14 @@ class UsageProfile(RAMSTKListView):
         attributes.  _do_load_tree() needs a data package named tree.  This
         method simply makes that conversion happen.
 
-        :param dict attributes: the failure definition dict for the selected
+        :param dict attributes: the usage profile Tree() for the selected
             revision ID.
         :return: None
         :rtype: None
         """
-        self._do_load_tree(tree=attributes)
+        for _n in attributes.children(self._revision_id):
+            _mission = attributes.subtree(_n.identifier)
+            self._do_load_tree(tree=_mission)
 
     def __make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:  # pylint: disable=unused-argument
         """
@@ -548,7 +550,7 @@ class UsageProfile(RAMSTKListView):
                                GObject.TYPE_STRING, GObject.TYPE_STRING,
                                GObject.TYPE_STRING, GObject.TYPE_FLOAT,
                                GObject.TYPE_FLOAT, GObject.TYPE_FLOAT,
-                               GObject.TYPE_FLOAT, GObject.TYPE_INT,
+                               GObject.TYPE_FLOAT, GObject.TYPE_STRING,
                                GObject.TYPE_INT, GObject.TYPE_STRING)
         self.treeview.set_model(_model)
 
@@ -707,8 +709,8 @@ class UsageProfile(RAMSTKListView):
                           "it's data package and is not displayed in the "
                           "Usage Profile.")
             _debug_msg = (
-                "RAMSTK ERROR: Data for Mission ID {0:s} for Revision ID "
-                "{1:s} is the wrong type for one or more columns.".format(
+                "Data for Mission ID {0:s} for Revision ID {1:s} is the wrong "
+                "type for one or more columns.".format(
                     str(entity.mission_id), str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -789,6 +791,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        _new_row = None
         _model = self.treeview.get_model()
 
         _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
@@ -807,16 +810,15 @@ class UsageProfile(RAMSTKListView):
                     _new_row = self._do_load_environment(
                         _entity, _node.identifier, row)
             except AttributeError:
-                if _node.identifier != 0:
-                    _user_msg = _("One or more Usage Profile line items was "
-                                  "missing it's data package and is not "
-                                  "displayed in the Usage Profile.")
-                    _debug_msg = (
-                        "RAMSTK ERROR: There is no data package for Usage "
-                        "Profile ID {0:s} for Revision ID {1:s}.".format(
-                            str(_node.identifier), str(self._revision_id)))
-                    self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-                    self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+                _user_msg = _("One or more Usage Profile line items was "
+                              "missing it's data package and is not "
+                              "displayed in the Usage Profile.")
+                _debug_msg = (
+                    "There is no data package for Usage Profile ID {0:s} for "
+                    "Revision ID {1:s}.".format(
+                        str(_node.identifier), str(self._revision_id)))
+                self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
                 _new_row = None
 
         for _n in tree.children(_node.identifier):

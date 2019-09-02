@@ -1,7 +1,7 @@
 # pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.ramstk.TreeView.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.widgets.treeview.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
