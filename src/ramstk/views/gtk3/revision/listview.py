@@ -323,22 +323,20 @@ class FailureDefinition(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'save', 'save-all']
-            _labels = [
-                _("Add New Definition"),
-                _("Remove Selected Definition"),
-                _("Save Selected Definition"),
-                _("Save All Definitions")
-            ]
-            _callbacks = [
-                self._do_request_insert, self._do_request_delete,
-                self._do_request_update, self._do_request_update_all
-            ]
-
             self.on_button_press(event,
-                                 icons=_icons,
-                                 labels=_labels,
-                                 callbacks=_callbacks)
+                                 icons=['add', 'remove', 'save', 'save-all'],
+                                 labels=[
+                                     _("Add New Definition"),
+                                     _("Remove Selected Definition"),
+                                     _("Save Selected Definition"),
+                                     _("Save All Definitions")
+                                 ],
+                                 callbacks=[
+                                     self._do_request_insert,
+                                     self._do_request_delete,
+                                     self._do_request_update,
+                                     self._do_request_update_all
+                                 ])
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -710,8 +708,8 @@ class UsageProfile(RAMSTKListView):
                           "Usage Profile.")
             _debug_msg = (
                 "Data for Mission ID {0:s} for Revision ID {1:s} is the wrong "
-                "type for one or more columns.".format(
-                    str(entity.mission_id), str(self._revision_id)))
+                "type for one or more columns.".format(str(entity.mission_id),
+                                                       str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -815,8 +813,8 @@ class UsageProfile(RAMSTKListView):
                               "displayed in the Usage Profile.")
                 _debug_msg = (
                     "There is no data package for Usage Profile ID {0:s} for "
-                    "Revision ID {1:s}.".format(
-                        str(_node.identifier), str(self._revision_id)))
+                    "Revision ID {1:s}.".format(str(_node.identifier),
+                                                str(self._revision_id)))
                 self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
                 self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
                 _new_row = None
@@ -982,22 +980,20 @@ class UsageProfile(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['insert_sibling', 'insert_child', 'remove', 'save-all']
-            _labels = [
-                _("Add Sibling Entity"),
-                _("Add Child Entity"),
-                _("Remove Selected Entity"),
-                _("Save Usage Profile")
-            ]
-            _callbacks = [
-                self.do_request_insert_sibling, self.do_request_insert_child,
-                self._do_request_delete, self._do_request_update_all
-            ]
-
-            self.on_button_press(event,
-                                 icons=_icons,
-                                 labels=_labels,
-                                 callbacks=_callbacks)
+            self.on_button_press(
+                event,
+                icons=['insert_sibling', 'insert_child', 'remove', 'save-all'],
+                labels=[
+                    _("Add Sibling Entity"),
+                    _("Add Child Entity"),
+                    _("Remove Selected Entity"),
+                    _("Save Usage Profile")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling,
+                    self.do_request_insert_child, self._do_request_delete,
+                    self._do_request_update_all
+                ])
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
