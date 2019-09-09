@@ -1,1 +1,9 @@
-<code_scheme name="Default" version="173" />
+<code_scheme name="Default" version="173">
+  <Python>
+    <option name="OPTIMIZE_IMPORTS_SORT_NAMES_IN_FROM_IMPORTS" value="true" />
+  </Python>
+  <codeStyleSettings language="Python">
+    <option name="RIGHT_MARGIN" value="80" />
+    <option name="WRAP_ON_TYPING" value="1" />
+  </codeStyleSettings>
+</code_scheme>
