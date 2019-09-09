@@ -12,8 +12,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.views.gtk3 import Gtk
-from ramstk.views.gtk3.widgets import RAMSTKBook
+from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
+from ramstk.views.gtk3.books import (
+    RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
+)
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -22,19 +25,16 @@ class TestRAMSTKBook():
     @pytest.mark.gui
     def test_create_basebook(self, test_toml_user_configuration):
         """__init__() should create a RAMSTKBook."""
-        DUT = RAMSTKBook(test_toml_user_configuration)
+        DUT = RAMSTKDesktop(test_toml_user_configuration,
+                            RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))
 
-        assert isinstance(DUT, RAMSTKBook)
+        assert isinstance(DUT, RAMSTKDesktop)
         assert isinstance(DUT.RAMSTK_USER_CONFIGURATION,
                           RAMSTKUserConfiguration)
-        assert isinstance(DUT.dic_books, dict)
-        assert DUT.dic_tab_position['left'] == Gtk.PositionType.LEFT
-        assert DUT.dic_tab_position['right'] == Gtk.PositionType.RIGHT
-        assert DUT.dic_tab_position['top'] == Gtk.PositionType.TOP
-        assert DUT.dic_tab_position['bottom'] == Gtk.PositionType.BOTTOM
-        assert DUT._lst_handler_id == []
         assert isinstance(DUT.menubar, Gtk.MenuBar)
-        assert isinstance(DUT.notebook, Gtk.Notebook)
+        assert isinstance(DUT.nbkListBook, RAMSTKListBook)
+        assert isinstance(DUT.nbkModuleBook, RAMSTKModuleBook)
+        assert isinstance(DUT.nbkWorkBook, RAMSTKWorkBook)
         assert isinstance(DUT.progressbar, Gtk.ProgressBar)
         assert isinstance(DUT.statusbar, Gtk.Statusbar)
         assert isinstance(DUT.toolbar, Gtk.Toolbar)

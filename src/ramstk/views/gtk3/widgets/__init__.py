@@ -8,7 +8,6 @@
 """The RAMSTK GTK3 widgets package."""
 
 # RAMSTK Local Imports
-from .basebook import RAMSTKBook
 from .baseview import (
     RAMSTKBaseView, RAMSTKListView, RAMSTKModuleView, RAMSTKWorkView
 )
