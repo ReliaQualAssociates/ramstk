@@ -158,7 +158,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Initialize public scalar attributes.
         try:
-            self.treeview = self.__make_treeview(kwargs['module'])
+            self.treeview = self._make_treeview(kwargs['module'])
         except KeyError:
             self.treeview = Gtk.TreeView()
 
@@ -178,7 +178,7 @@ class RAMSTKBaseView(Gtk.HBox):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
 
-    def __make_treeview(self, module: str) -> RAMSTKTreeView:
+    def _make_treeview(self, module: str) -> RAMSTKTreeView:
         """
         Make the RAMSTKTreeView instance for this view.
 
@@ -448,8 +448,8 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         Handle mouse clicks on the View's RTKTreeView().
 
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
+        :param event: the Gdk.Event() that called this method (the important
+        attribute is which mouse button was clicked).
 
                       * 1 = left
                       * 2 = scrollwheel
@@ -837,7 +837,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         return _buttonbox
 
-    def make_ui(self, **kwargs: Any) -> None:
+    def make_ui(self, **kwargs: Any) -> Tuple[int, List[int], Gtk.Fixed]:
         """
         Make the Function class Gtk.Notebook() general data page.
 
@@ -874,7 +874,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         self.pack_start(_frame, True, True, 0)
 
-        return (_x_pos, _y_pos, _fixed)
+        return _x_pos, _y_pos, _fixed
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """

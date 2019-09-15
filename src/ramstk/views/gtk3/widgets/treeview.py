@@ -147,7 +147,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         # Add a column at the end to hold a string representation of the
         # attributes dict.
         self.datatypes.append('gchararray')
-        self.editable.append(0)
+        self.editable.append(False)
         self.headings.append('Attributes')
         self.korder.append('dict')
         self.order.append(len(self.order))
@@ -168,11 +168,11 @@ class RAMSTKTreeView(Gtk.TreeView):
                 _cells = []
 
             for __, _cell in enumerate(_cells):
-                try:
+                if self.editable[_idx]:
                     _cell.set_property('background', 'white')
                     _cell.set_property('editable', 1)
                     _cell.connect('edited', self.do_edit_cell, _idx)
-                except TypeError:
+                else:
                     _cell.set_property('cell-background', '#ADD8E6')
 
     def do_set_visible_columns(self, **kwargs: Any) -> None:

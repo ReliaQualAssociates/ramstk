@@ -31,7 +31,7 @@ class ModuleView(RAMSTKModuleView):
     Module View are inherited.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Revision Module View.
 

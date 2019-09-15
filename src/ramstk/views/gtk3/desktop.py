@@ -172,7 +172,8 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_label(_("_Import Project"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', ImportProject, self.RAMSTK_USER_CONFIGURATION)
+        # _menu_item.connect('activate', ImportProject,
+        # self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -209,7 +210,8 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_label(_("_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Preferences, self.RAMSTK_USER_CONFIGURATION)
+        # _menu_item.connect('activate', Preferences,
+        # self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
         _mnuEdit = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
@@ -223,7 +225,8 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_label(_("_Options"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Options, self.RAMSTK_USER_CONFIGURATION)
+        # _menu_item.connect('activate', Options,
+        # self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
         _mnuTools = Gtk.MenuItem(label=_("_Tools"), use_underline=True)
@@ -422,8 +425,8 @@ class RAMSTKDesktop(Gtk.Window):
         :rtype: None
         """
         if connected:
-            _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
-                    '/32x32/db-connected.png'
+            _icon = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                     + '/32x32/db-connected.png')
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip_markup(
@@ -431,8 +434,8 @@ class RAMSTKDesktop(Gtk.Window):
                   u"{0:s}.".format(self.RAMSTK_USER_CONFIGURATION.
                                    RAMSTK_PROG_INFO['database'])))
         else:
-            _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
-                    '/32x32/db-disconnected.png'
+            _icon = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                     + '/32x32/db-disconnected.png')
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip_markup(
@@ -509,19 +512,18 @@ class RAMSTKDesktop(Gtk.Window):
 
         pub.sendMessage('mvwSwitchedPage', module=_module)
 
-    def _on_window_state_event(self, window: Gtk.Window,
+    @staticmethod
+    def _on_window_state_event(window: Gtk.Window,
                                event: Gdk.EventWindowState) -> None:
         """
-        Iconify or deiconify all three books together.
+        Iconify or deiconify the desktop.
 
         :return: None
         :rtype: None
         """
         if event.new_window_state == Gdk.WindowState.ICONIFIED:
-            for _window in self.dic_books.items():
-                _window[1].iconify()
+            window.iconify()
         elif event.new_window_state == 0:
-            for _window in self.dic_books.items():
-                _window[1].deiconify()
+            window.deiconify()
         elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
             window.maximize()

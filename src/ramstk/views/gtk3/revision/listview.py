@@ -11,7 +11,6 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
-from sortedcontainers import SortedDict
 from treelib import Tree
 
 # RAMSTK Package Imports
@@ -28,14 +27,14 @@ from ramstk.views.gtk3.widgets import (
 
 
 def _do_make_column(header: str, index: int,
-                    visible: bool) -> Gtk.TreeViewColumn:
+                    visible: int) -> Gtk.TreeViewColumn:
     """
     Make a column with a CellRendererText() and the passed header text.
 
     :param str header: the text to display in the header of the column.
     :param int index: the index number in the Gtk.TreeModel() to display in
         this column.
-    :param bool visible: indicates whether or not the column will be visible.
+    :param int visible: indicates whether or not the column will be visible.
     :return: _column
     :rtype: :class:`Gtk.TreeViewColumn`
     """
@@ -70,7 +69,7 @@ class FailureDefinition(RAMSTKListView):
         selected in the List View.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the List View for the Failure Definition package.
 
@@ -126,7 +125,7 @@ class FailureDefinition(RAMSTKListView):
         """
         self._do_load_tree(tree=attributes)
 
-    def __make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:  # pylint: disable=unused-argument
+    def __make_buttonbox(self) -> Gtk.ButtonBox:
         """
         Make the buttonbox for the Failure Definition List View.
 
@@ -256,7 +255,7 @@ class FailureDefinition(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, **kwargs: Any) -> None:  # pylint: disable=unused-argument
+    def _do_request_insert(self) -> None:
         """
         Request to add a Failure Definition record.
 
@@ -348,12 +347,10 @@ class FailureDefinition(RAMSTKListView):
         :param __cell: the Gtk.CellRenderer() that was edited.
         :type __cell: :class:`Gtk.CellRenderer`
         :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
-                         that was edited.
+            that was edited.
         :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             Gtk.CellRenderer().
-        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
-        :type model: :class:`Gtk.TreeModel`
+            Gtk.CellRenderer().
         :return: None
         :rtype: None
         """
@@ -403,7 +400,7 @@ class UsageProfile(RAMSTKListView):
     All attributes of a Usage Profile List View are inherited.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the List View for the Usage Profile.
 
@@ -456,7 +453,7 @@ class UsageProfile(RAMSTKListView):
         pub.subscribe(self.__do_load_tree,
                       'succeed_get_usage_profile_attributes')
 
-    def __do_load_tree(self, attributes: Dict[str, Any]) -> None:
+    def __do_load_tree(self, attributes: Tree) -> None:
         """
         Wrapper method for _do_load_tree().
 
@@ -464,16 +461,17 @@ class UsageProfile(RAMSTKListView):
         attributes.  _do_load_tree() needs a data package named tree.  This
         method simply makes that conversion happen.
 
-        :param dict attributes: the usage profile Tree() for the selected
-            revision ID.
+        :param attributes: the usage profile Tree() for the selected revision
+            ID.
+        :type attributes: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
         for _n in attributes.children(self._revision_id):
-            _mission = attributes.subtree(_n.identifier)
-            self._do_load_tree(tree=_mission)
+            _mission: Tree = attributes.subtree(_n.identifier)
+            self._do_load_tree(_mission, row=None)
 
-    def __make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:  # pylint: disable=unused-argument
+    def __make_buttonbox(self) -> Gtk.ButtonBox:
         """
         Make the buttonbox for the Usage Profile List View.
 
@@ -505,8 +503,8 @@ class UsageProfile(RAMSTKListView):
 
         return _buttonbox
 
-    def __make_cell(self, cell: Gtk.CellRenderer, editable: bool,
-                    position: int, model: Gtk.TreeModel) -> Gtk.CellRenderer:
+    def __make_cell(self, cell: str, editable: bool,
+                    position: int) -> Gtk.CellRenderer:
         """
         Make a Gtk.CellRenderer() and set it's properties.
 
@@ -527,7 +525,7 @@ class UsageProfile(RAMSTKListView):
         if not editable:
             _cell.set_property('cell-background', 'light gray')
         else:
-            _cell.connect('edited', self._on_cell_edit, position, model)
+            _cell.connect('edited', self._on_cell_edit, position)
 
         if cell == 'text':
             _cell.set_property('editable', editable)
@@ -555,44 +553,44 @@ class UsageProfile(RAMSTKListView):
         for i in range(10):
             _column = Gtk.TreeViewColumn()
             if i == 0:
-                _cell = self.__make_cell('pixbuf', False, 0, _model)
+                _cell = self.__make_cell('pixbuf', False, 0)
                 _cell.set_property('xalign', 0.5)
                 _column.pack_start(_cell, False)
                 _column.set_attributes(_cell, pixbuf=0)
 
-                _cell = self.__make_cell('text', False, 1, _model)
+                _cell = self.__make_cell('text', False, 1)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=1)
                 _column.set_visible(True)
             elif i == 1:
-                _cell = self.__make_cell('text', True, 2, _model)
+                _cell = self.__make_cell('text', True, 2)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=2)
 
-                _cell = self.__make_cell('text', True, 3, _model)
+                _cell = self.__make_cell('text', True, 3)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=3, visible=10)
                 _column.set_visible(True)
             elif i in [2, 3, 4]:
-                _cell = self.__make_cell('text', True, i + 2, _model)
+                _cell = self.__make_cell('text', True, i + 2)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2)
                 _column.set_visible(True)
             elif i in [5, 6]:
-                _cell = self.__make_cell('text', True, i + 2, _model)
+                _cell = self.__make_cell('text', True, i + 2)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2, visible=10)
                 _column.set_visible(True)
             else:
-                _cell = self.__make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2)
                 _column.pack_start(_cell, True)
-                _cell = self.__make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2)
                 _column.pack_start(_cell, True)
-                _cell = self.__make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2)
                 _column.pack_start(_cell, True)
-                _cell = self.__make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2)
                 _column.pack_start(_cell, True)
-                _cell = self.__make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2)
                 _column.pack_start(_cell, True)
 
                 _column.set_visible(False)
@@ -776,7 +774,7 @@ class UsageProfile(RAMSTKListView):
         return _new_row
 
     def _do_load_tree(self, tree: Tree,
-                      row: Gtk.TreeIter = None) -> Gtk.TreeIter:
+                      row: Gtk.TreeIter = None) -> None:
         """
         Recursively load the Usage Profile List View's Gtk.TreeModel.
 
@@ -785,43 +783,44 @@ class UsageProfile(RAMSTKListView):
         :param row: the parent row in the Usage Profile Gtk.TreeView() to add
             the new item.
         :type row: :class:`Gtk.TreeIter`
-
         :return: None
         :rtype: None
         """
-        _new_row = None
+        _new_row: Gtk.TreeIter = None
         _model = self.treeview.get_model()
 
-        _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
+        _node = tree.nodes[list(tree.nodes.keys())[0]]
         _entity = _node.data
+        # The root node will have no data package, so this indicates the need to
+        # clear the tree in preparation for the load.
         if _entity is None:
             _model.clear()
-        else:
-            try:
-                if _entity.is_mission:
-                    _new_row = self._do_load_mission(_entity, _node.identifier,
-                                                     row)
-                elif _entity.is_phase:
-                    _new_row = self._do_load_phase(_entity, _node.identifier,
-                                                   row)
-                elif _entity.is_env:
-                    _new_row = self._do_load_environment(
-                        _entity, _node.identifier, row)
-            except AttributeError:
-                _user_msg = _("One or more Usage Profile line items was "
-                              "missing it's data package and is not "
-                              "displayed in the Usage Profile.")
-                _debug_msg = (
-                    "There is no data package for Usage Profile ID {0:s} for "
-                    "Revision ID {1:s}.".format(str(_node.identifier),
-                                                str(self._revision_id)))
-                self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-                self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-                _new_row = None
+
+        try:
+            if _entity.is_mission:
+                _new_row = self._do_load_mission(_entity, _node.identifier,
+                                                 row)
+            elif _entity.is_phase:
+                _new_row = self._do_load_phase(_entity, _node.identifier,
+                                               row)
+            elif _entity.is_env:
+                _new_row = self._do_load_environment(
+                    _entity, _node.identifier, row)
+        except AttributeError:
+            _user_msg = _("One or more Usage Profile line items was "
+                          "missing it's data package and is not "
+                          "displayed in the Usage Profile.")
+            _debug_msg = (
+                "There is no data package for Usage Profile ID {0:s} for "
+                "Revision ID {1:s}.".format(str(_node.identifier),
+                                            str(self._revision_id)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(tree=_child_tree, row=_new_row)
+            self._do_load_tree(_child_tree, row=_new_row)
 
         _row = _model.get_iter_first()
         self.treeview.expand_all()
@@ -841,11 +840,13 @@ class UsageProfile(RAMSTKListView):
         :rtype: None
         """
         _model, _row = self.treeview.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 1)
-        _parent_id = _model.get_value(_row, 9)
+        _node_id = _model.get_value(_row, 9)
         _level = _model.get_value(_row, 11)
 
-        _prompt = _("You are about to delete {1:s} {0:d} and all data "
+        _prow = _model.iter_parent(_row)
+        _parent_id = _model.get_value(_prow, 9)
+
+        _prompt = _("You are about to delete {1:s} {0:s} and all data "
                     "associated with it.  Is this really what you want to "
                     "do?").format(_node_id, _level)
         _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
@@ -909,7 +910,7 @@ class UsageProfile(RAMSTKListView):
                                 revision_id=self._revision_id,
                                 mission_id=_mission_id)
             elif _level == 'phase':
-                _phase_id = _model.get_value(_prow, 1)
+                _phase_id = _model.get_value(_row, 1)
                 _mission_id = _model.get_value(_prow, 9)
                 pub.sendMessage('request_insert_environment',
                                 revision_id=self._revision_id,
@@ -920,6 +921,7 @@ class UsageProfile(RAMSTKListView):
                 _dialog = RAMSTKMessageDialog(_prompt,
                                               self._dic_icons['error'],
                                               'error')
+                _dialog.do_run()
                 _dialog.do_destroy()
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -935,7 +937,8 @@ class UsageProfile(RAMSTKListView):
         _node_id = _model.get_value(_row, 9)
 
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_usage_profile', node_id=_node_id)
+        pub.sendMessage('request_update_usage_profile',
+                        revision_id=self._revision_id, node_id=_node_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -952,7 +955,7 @@ class UsageProfile(RAMSTKListView):
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> Gtk.ToolButton:
+                         event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the Usage Profile List View RAMSTKTreeView().
 
@@ -1008,8 +1011,6 @@ class UsageProfile(RAMSTKListView):
         :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
             Gtk.CellRenderer().
-        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
-        :type model: :class:`Gtk.TreeModel`
         :return: None
         :rtype: None
         """
@@ -1037,18 +1038,18 @@ class UsageProfile(RAMSTKListView):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position):
-
-            # Retrieve the Usage Profile data package.
+        if not RAMSTKListView.on_cell_edit(self, __cell, path, new_text,
+                                           position):
             _node_id = _model.get_value(_row, 9)
             _level = _model.get_value(_row, 11)
 
             _key = _dic_keys[_level][position]
 
             pub.sendMessage('lvw_editing_usage_profile',
-                            module_id=_node_id,
+                            node_id=self._revision_id,
                             key=_key,
-                            value=new_text)
+                            value=new_text,
+                            usage_id=_node_id)
 
     def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
         """
