@@ -16,6 +16,11 @@
     <option name="ignoredIdentifiers">
       <list>
         <option value="gi.repository.GObject.*" />
+        <option value="ramstk.views.gtk3.Gdk" />
+        <option value="ramstk.views.gtk3.GdkPixbuf" />
+        <option value="ramstk.views.gtk3.GObject" />
+        <option value="ramstk.views.gtk3.Gtk" />
+        <option value="ramstk.views.gtk3.Pango" />
       </list>
     </option>
   </inspection_tool>
