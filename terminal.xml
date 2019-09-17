@@ -1,5 +1,0 @@
-<application>
-  <component name="TerminalOptionsProvider">
-    <option name="myShellPath" value="/bin/sh --rcfile ~/.bashrc" />
-  </component>
-</application>
