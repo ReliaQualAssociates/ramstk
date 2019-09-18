@@ -92,7 +92,7 @@ class FailureDefinition(RAMSTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._definition_id = None
+        self._definition_id = -1
 
         # Initialize public dictionary attributes.
 
@@ -467,6 +467,9 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        _model = self.treeview.get_model()
+        _model.clear()
+
         for _n in attributes.children(self._revision_id):
             _mission: Tree = attributes.subtree(_n.identifier)
             self._do_load_tree(_mission, row=None)

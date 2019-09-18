@@ -7,7 +7,10 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.widgets import RAMSTKListView
 
 class FailureDefinition(RAMSTKListView):
+    _definition_id: int
+
     def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager) -> None:
+        self._definition_id = None
         self._do_request_delete = None
         self.__do_load_tree = None
         self._do_load_tree = None
@@ -22,9 +25,17 @@ class FailureDefinition(RAMSTKListView):
     def __make_buttonbox(self):
         pass
 
+    def __make_treeview(self):
+        pass
+
+    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+                      position: int):
+        pass
 
 class UsageProfile(RAMSTKListView):
     def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager) -> None:
+        self._on_cell_edit = None
+        self._do_request_delete = None
 
     def _do_load_tree(self, param: object, row: object) -> object:
         pass
@@ -48,4 +59,10 @@ class UsageProfile(RAMSTKListView):
         pass
 
     def _do_load_environment(self, _entity, identifier, row):
+        pass
+
+    def __make_treeview(self):
+        pass
+
+    def __make_cell(self, param, param1, param2):
         pass
