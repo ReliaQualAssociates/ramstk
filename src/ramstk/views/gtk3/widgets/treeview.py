@@ -55,6 +55,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         # Initialize public scalar instance attributes.
         self.pixbuf_col: int = -1
         self.index_col: int = 0
+        self.selection = self.get_selection()
 
     def do_parse_format(self,
                         fmt_path: str,

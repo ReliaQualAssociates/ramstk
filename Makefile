@@ -81,7 +81,7 @@ help:
 	@echo "	TESTOPTS				set additional options to pass to py.test/pytest.  Defaults to $(TESTOPTS)"
 	@echo "	TESTFILE				set the file or directory to test.  Defaults to $(TESTFILE)"
 	@echo "	VIRTENV					set the name of the virtual environment to create/use.  Defaults to $(VIRTENV)."
-	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)"
+	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)."
 
 clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
 

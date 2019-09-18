@@ -41,12 +41,17 @@ This procedure provides guidance for testing the GUI components of the RAMSTK ap
 
 \subsubsection{Save Actions:}
 \CheckBox[name=revisionsave,charsize=12pt]{The selected revision can be saved with the 'Save' button in the module view buttonbox.} \\
+\CheckBox[name=revisionsave,charsize=12pt]{All revisions can be saved with the 'Save All' button in the module view buttonbox.} \\
 
 \subsection{Work View:}
 \subsubsection{Edit Actions:}
-\CheckBox[name=revisioncode,charsize=12pt]{Revision code can be edited and edits persist.} \\
-\CheckBox[name=revisionname,charsize=12pt]{Revision name can be edited and edits persist.} \\
-\CheckBox[name=revisionremarks,charsize=12pt]{Revision remarks can be edited and edits persist.}
+\CheckBox[name=revisioncode,charsize=12pt]{Revision code can be edited, edits are reflected in corresponding module view fields, and edits persist.} \\
+\CheckBox[name=revisionname,charsize=12pt]{Revision name can be edited, edits are reflected in corresponding module view fields, and edits persist.} \\
+\CheckBox[name=revisionremarks,charsize=12pt]{Revision remarks can be edited, edits are reflected in corresponding module view fields, and edits persist.}
+
+\subsubsection{Save Actions:}
+\CheckBox[name=revisionsave,charsize=12pt]{The selected revision can be saved with the 'Save' button in the work view buttonbox.} \\
+\CheckBox[name=revisionsave,charsize=12pt]{All revisions can be saved with the 'Save All' button in the work view buttonbox.} \\
 
 \subsection{List View - Usage Profile:}
 \CheckBox[name=usageload,charsize=12pt]{Usage profile in test database loads into list view.}

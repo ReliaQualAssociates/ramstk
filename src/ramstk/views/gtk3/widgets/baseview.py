@@ -209,7 +209,7 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         try:
             self._lst_handler_id.append(
-                self.treeview.connect('cursor_changed', self._on_row_change))
+                self.treeview.selection.connect('changed', self._on_row_change))
         except AttributeError:
             pass
 
@@ -780,6 +780,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
     :ivar str _module: the all capitalized name of the RAMSKT module the View
     is for.
     """
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager, **kwargs: Any) -> None:
         """
@@ -794,7 +795,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         GObject.GObject.__init__(self)
         RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
 
-        self._module = None
+        self._module: str = ''
         for __, char in enumerate(_module):
             if char.isalpha():
                 self._module = _module.capitalize()
@@ -813,7 +814,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         # Subscribe to PyPubSub messages.
 
-    def _make_buttonbox(self, **kwargs: Any) -> None:
+    def _make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:
         """
         Create the Gtk.ButtonBox() for the Work Views.
 
