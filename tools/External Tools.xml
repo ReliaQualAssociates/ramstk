@@ -3,7 +3,7 @@
     <exec>
       <option name="COMMAND" value="make" />
       <option name="PARAMETERS" value="format SRCFILE=&quot;$FilePath$&quot;" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/projects/ramstk.working" />
+      <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
     </exec>
   </tool>
   <tool name="stylecheck" description="Check code and docstring styling of current file" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
