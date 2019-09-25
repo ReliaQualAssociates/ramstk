@@ -266,7 +266,7 @@ class TestDeleteMethods():
         DUT._do_delete_failure_definition(1, 1)
 
         with pytest.raises(KeyError):
-            DUT.tree.get_node(1).data['failure_definitions'][1]
+            __ = DUT.tree.get_node(1).data['failure_definitions'][1]
 
         pub.unsubscribe(self.on_succeed_delete_failure_definition,
                         'succeed_delete_failure_definition')
@@ -416,6 +416,10 @@ class TestGetterSetter():
             RAMSTKEnvironment)
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
 
+    def on_succeed_get_last_id(self, last_id):
+        assert last_id == 2
+        print("\033[36m\nsucceed_get_last_id topic was broadcast")
+
     @pytest.mark.integration
     def test_do_get_attributes_revision(self, test_program_dao):
         """_do_get_attributes() should return a dict of revision attributes on success."""
@@ -543,11 +547,25 @@ class TestGetterSetter():
         DUT.do_select_all()
         DUT.do_get_tree()
 
+    @pytest.mark.integration
+    def test_do_get_last_id(self, test_program_dao):
+        """do_get_last_id() should broadcast the success message with the last ID aste payload."""
+        pub.subscribe(self.on_succeed_get_last_id,
+                      'succeed_get_last_revision_id')
+
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+        DUT.do_get_last_id('revision')
+
+        pub.unsubscribe(self.on_succeed_get_last_id,
+                        'succeed_get_last_revision_id')
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_revision(self, tree):
+    def on_succeed_insert_revision(self, node_id, tree):
+        assert node_id == 3
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_revision topic was broadcast")
 

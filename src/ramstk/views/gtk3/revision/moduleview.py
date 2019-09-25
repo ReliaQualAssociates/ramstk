@@ -72,6 +72,7 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.on_delete, 'succeed_delete_revision')
         pub.subscribe(self._on_insert, 'succeed_insert_revision')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
+        pub.subscribe(self._do_refresh_tree, 'wvw_editing_revision')
 
     def __make_ui(self) -> None:
         """
@@ -107,6 +108,30 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
+
+    # pylint: disable=unused-argument
+    def _do_refresh_tree(self, node_id: int, key: str, value: Any,
+                         definition_id: int = -1,
+                         usage_id: str = '') -> None:
+        """
+        Update the module view RAMSTKTreeView() with attribute changes.
+
+        This method is called by other views when the Revision data model
+        attributes are edited via their gtk.Widgets().
+
+        :param int node_id: unused in this method.
+        :param str key: the name of the key for the data being updated.
+        :param value: the new value of the attribute to be updated.
+        :keyword int definition_id: unused in this method.
+        :keyword int usage_id: unused in this method.
+        :return: None
+        :rtype: None
+        """
+        _dic_keys = {'name': 17, 'remarks': 20, 'revision_code': 22}
+        _position = self._lst_col_order[_dic_keys[key]]
+
+        _model, _row = self.treeview.get_selection().get_selected()
+        _model.set(_row, _position, value)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """

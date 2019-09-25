@@ -121,7 +121,7 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtName.connect('focus-out-event', self._on_focus_out, 0))
         self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, 1))
+            'changed', self._on_focus_out, None, 1))
         self._lst_handler_id.append(
             self.txtCode.connect('focus-out-event', self._on_focus_out, 2))
 
@@ -258,7 +258,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {0: 'name', 1: 'remarks', 2: 'code'}
+        _dic_keys = {0: 'name', 1: 'remarks', 2: 'revision_code'}
         try:
             _key = _dic_keys[index]
         except KeyError:
@@ -268,7 +268,7 @@ class GeneralData(RAMSTKWorkView):
 
         if index in [0, 2]:
             try:
-                _new_text = str(entry.get_text())
+                _new_text: str = str(entry.get_text())
             except ValueError:
                 _new_text = ''
         else:
@@ -278,7 +278,7 @@ class GeneralData(RAMSTKWorkView):
                 _new_text = ''
 
         pub.sendMessage('wvw_editing_revision',
-                        module_id=self._revision_id,
+                        node_id=self._revision_id,
                         key=_key,
                         value=_new_text)
 
