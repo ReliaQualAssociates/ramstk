@@ -88,6 +88,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_set_failure_definition,
                       'lvw_editing_failure_definition')
         pub.subscribe(self._do_set_usage_profile, 'lvw_editing_usage_profile')
+        pub.subscribe(self.do_set_attributes, 'wvw_editing_revision')
 
     def _do_delete(self, node_id: int) -> None:
         """
@@ -514,7 +515,8 @@ class DataManager(RAMSTKDataManager):
                                   })
             self.do_insert_failure_definition(self.last_id)
             self.do_insert_mission(self.last_id)
-            pub.sendMessage('succeed_insert_revision', tree=self.tree)
+            pub.sendMessage('succeed_insert_revision', node_id=self.last_id,
+                            tree=self.tree)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_revision",

@@ -108,6 +108,7 @@ coverage: clean-test
 	py.test $(TESTOPTS) --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term $(TESTFILE)
 
 depends:
+	pip install -U pip-tools
 	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
 
 mkvenv:

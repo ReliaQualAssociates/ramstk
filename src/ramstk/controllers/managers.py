@@ -204,6 +204,18 @@ class RAMSTKDataManager():
                         attributes=self.do_select(
                             node_id, table=table).get_attributes())
 
+    def do_get_last_id(self, module: str) -> None:
+        """
+        Broadcast the last used ID as the payload of a message.
+
+        :param str module: the name of the workflow module to retrieve the
+            last ID.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_last_{0:s}_id'.format(module),
+                        last_id=self.last_id)
+
     def do_select(self, node_id, table):
         """
         Retrieve the RAMSTK data table record for the Node ID passed.

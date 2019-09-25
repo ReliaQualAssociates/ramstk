@@ -162,9 +162,9 @@ class RAMSTKBaseView(Gtk.HBox):
         except KeyError:
             self.treeview = Gtk.TreeView()
 
-        self.fmt = '{0:0.' + \
-                   str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + \
-                   'G}'
+        self.fmt = ('{0:0.'
+                    + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+                    + 'G}')
         self.hbx_tab_label = Gtk.HBox()
 
         try:
@@ -209,7 +209,8 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         try:
             self._lst_handler_id.append(
-                self.treeview.selection.connect('changed', self._on_row_change))
+                self.treeview.selection.connect('changed',
+                                                self._on_row_change))
         except AttributeError:
             pass
 
@@ -241,13 +242,10 @@ class RAMSTKBaseView(Gtk.HBox):
 
         try:
             self.treeview.do_load_tree(tree, _tag)
-            _row = _model.get_iter_first()
             self.treeview.expand_all()
+            _row = _model.get_iter_first()
             if _row is not None:
-                _path = _model.get_path(_row)
-                _column = self.treeview.get_column(0)
-                self.treeview.set_cursor(_path, None, False)
-                self.treeview.row_activated(_path, _column)
+                self.treeview.selection.select_iter(_row)
                 self.show_all()
         except TypeError:
             _error_msg = _(
@@ -480,6 +478,23 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.connect('activate', _callbacks[_idx])
             _menu_item.show()
             _menu.append(_menu_item)
+
+    def on_delete(self, tree: treelib.Tree) -> None:   # pylint: disable=unused-argument
+        """
+        Update the RAMSTKTreeView after deleting a line item.
+
+        :param tree: the treelib Tree() containing the
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        _model, _row = self.treeview.selection.get_selected()
+        _model.remove(_row)
+
+        _row = _model.get_iter_first()
+        if _row is not None:
+            self.treeview.selection.select_iter(_row)
+            self.show_all()
 
     def on_focus_out(self, entry: Any, index: int, module_id: int,
                      message: str) -> None:
@@ -780,7 +795,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
     :ivar str _module: the all capitalized name of the RAMSKT module the View
     is for.
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager, **kwargs: Any) -> None:
         """

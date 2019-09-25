@@ -7,9 +7,11 @@
 """RAMSTK Revision GTK3 module view."""
 
 # Standard Library Imports
+import datetime
 from typing import Any
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -67,10 +69,9 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'succeed_delete_revision')
-        pub.subscribe(self.do_load_tree, 'succeed_insert_revision')
+        pub.subscribe(self.on_delete, 'succeed_delete_revision')
+        pub.subscribe(self._on_insert, 'succeed_insert_revision')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
-        pub.subscribe(self.do_refresh_tree, 'wvw_editing_revision')
 
     def __make_ui(self) -> None:
         """
@@ -242,23 +243,51 @@ class ModuleView(RAMSTKModuleView):
                         key=_key,
                         value=new_text)
 
-    def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
+    def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
+        """
+        Add row to module view for newly added revision.
+
+        :param int node_id: the ID of the newly added revision.
+        :return: None
+        :rtype: None
+        """
+        _attributes = []
+        _model = self.treeview.get_model()
+        _data = tree.get_node(node_id).data['revision'].get_attributes()
+
+        for _key in self.treeview.korder:
+            if _key == 'dict':
+                _attributes.append(str(_data))
+            else:
+                try:
+                    if isinstance(_data[_key], datetime.date):
+                        _data[_key] = _data[_key].strftime("%Y-%m-%d")
+                    _data[_key] = _data[_key].decode('utf-8')
+                except (AttributeError, KeyError):
+                    pass
+                _attributes.append(_data[_key])
+
+        _row = _model.append(None, _attributes)
+
+        self.treeview.selection.select_iter(_row)
+
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
         Handle events for the Revision package Module View RAMSTKTreeView().
 
         This method is called whenever a Revision Module View RAMSTKTreeView()
         row is activated/changed.
 
-        :param treeview: the Revision class Gtk.TreeView().
-        :type treeview: :class:`Gtk.TreeView`
+        :param selection: the Revision class Gtk.TreeSelection().
+        :type selection: :class:`Gtk.TreeSelection`
         :return: None
         :rtype: None
         """
         _attributes = {}
 
-        treeview.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self._lst_handler_id[0])
 
-        _model, _row = treeview.get_selection().get_selected()
+        _model, _row = selection.get_selected()
 
         _attributes['revision_id'] = _model.get_value(_row,
                                                       self._lst_col_order[0])
@@ -311,8 +340,6 @@ class ModuleView(RAMSTKModuleView):
 
         self._revision_id = _attributes['revision_id']
 
-        treeview.handler_unblock(self._lst_handler_id[0])
-
         pub.sendMessage('selected_revision', attributes=_attributes)
         pub.sendMessage('request_get_revision_attributes',
                         node_id=self._revision_id,
@@ -320,3 +347,5 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_get_revision_attributes',
                         node_id=self._revision_id,
                         table='usage_profile')
+
+        selection.handler_unblock(self._lst_handler_id[0])
