@@ -123,7 +123,8 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self._do_load_tree(tree=attributes)
+        if attributes is not None:
+            self._do_load_tree(tree=attributes)
 
     def __make_buttonbox(self) -> Gtk.ButtonBox:
         """
@@ -470,9 +471,10 @@ class UsageProfile(RAMSTKListView):
         _model = self.treeview.get_model()
         _model.clear()
 
-        for _n in attributes.children(self._revision_id):
-            _mission: Tree = attributes.subtree(_n.identifier)
-            self._do_load_tree(_mission, row=None)
+        if attributes is not None:
+            for _n in attributes.children(self._revision_id):
+                _mission: Tree = attributes.subtree(_n.identifier)
+                self._do_load_tree(_mission, row=None)
 
     def __make_buttonbox(self) -> Gtk.ButtonBox:
         """
@@ -718,9 +720,8 @@ class UsageProfile(RAMSTKListView):
             _user_msg = _("One or more Missions was missing some of it's data "
                           "and is not displayed in the Usage Profile.")
             _debug_msg = (
-                "RAMSTK ERROR: Too few fields for Mission ID {0:s} for "
-                "Revision ID {1:s}.".format(str(entity.mission_id),
-                                            str(self._revision_id)))
+                "Too few fields for Mission ID {0:s} for Revision ID "
+                "{1:s}.".format(str(entity.mission_id), str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -908,7 +909,7 @@ class UsageProfile(RAMSTKListView):
                                 phase_id=_phase_id)
         elif not _sibling:
             if _level == 'mission':
-                _mission_id = _model.get_value(_prow, 9)
+                _mission_id = _model.get_value(_row, 9)
                 pub.sendMessage('request_insert_mission_phase',
                                 revision_id=self._revision_id,
                                 mission_id=_mission_id)
@@ -954,7 +955,8 @@ class UsageProfile(RAMSTKListView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_usage_profiles')
+        pub.sendMessage('request_update_all_usage_profiles',
+                        revision_id=self._revision_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
@@ -979,7 +981,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
+        treeview.handler_block(self._lst_handler_id[0])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -1001,7 +1003,7 @@ class UsageProfile(RAMSTKListView):
                     self._do_request_update_all
                 ])
 
-        treeview.handler_unblock(self._lst_handler_id[1])
+        treeview.handler_unblock(self._lst_handler_id[0])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:
@@ -1025,7 +1027,7 @@ class UsageProfile(RAMSTKListView):
             },
             'phase': {
                 2: 'name',
-                3: 'descriptino',
+                3: 'description',
                 5: 'phase_start',
                 6: 'phase_end'
             },
@@ -1041,18 +1043,21 @@ class UsageProfile(RAMSTKListView):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        if not RAMSTKListView.on_cell_edit(self, __cell, path, new_text,
-                                           position):
-            _node_id = _model.get_value(_row, 9)
-            _level = _model.get_value(_row, 11)
+        _node_id = _model.get_value(_row, 9)
+        _level = _model.get_value(_row, 11)
 
+        try:
             _key = _dic_keys[_level][position]
-
+            RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
             pub.sendMessage('lvw_editing_usage_profile',
                             node_id=self._revision_id,
                             key=_key,
                             value=new_text,
                             usage_id=_node_id)
+        except KeyError:
+            _status = _("Mission start time is always set to 0.0.  Your "
+                        "edits will not be saved.")
+            pub.sendMessage('request_set_status', status=_status)
 
     def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
         """

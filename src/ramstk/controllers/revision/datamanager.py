@@ -76,6 +76,8 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_update_all, 'request_update_all_revisions')
         pub.subscribe(self._do_update_all_failure_definition,
                       'request_update_all_failure_definitions')
+        pub.subscribe(self._do_update_all_usage_profiles,
+                      'request_update_all_usage_profiles')
         pub.subscribe(self._do_get_attributes,
                       'request_get_revision_attributes')
         pub.subscribe(self.do_get_all_attributes,
@@ -416,13 +418,26 @@ class DataManager(RAMSTKDataManager):
                                                'failure definition ID '
                                                '{0:s}.').format(str(node_id)))
 
-    def _do_update_usage_profile(self, revision_id: int, node_id: int) -> None:
+    def _do_update_all_usage_profiles(self, revision_id: int) -> None:
+        """
+        Update all the failure definitions.
+
+        :param int revision_id: the revision ID whose failure definitions are
+            to be updated.
+        :return: None
+        :rtype: None
+        """
+        for _profile in self.tree.get_node(
+                revision_id).data['usage_profile'].all_nodes():
+            self._do_update_usage_profile(revision_id, str(_profile.identifier))
+
+    def _do_update_usage_profile(self, revision_id: int, node_id: str) -> None:
         """
         Update the usage profile item associated with node ID in database.
 
         :param int revision_id: the revision ID for the usage profile to
             update.
-        :param int node_id: the node (mission, mission phase, or environment)
+        :param str node_id: the node (mission, mission phase, or environment)
             ID of the usage profile element to save.
         :return: None
         :rtype: None

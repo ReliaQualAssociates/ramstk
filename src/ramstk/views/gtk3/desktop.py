@@ -134,6 +134,7 @@ class RAMSTKDesktop(Gtk.Window):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_request_open, 'request_open_program ')
+        pub.subscribe(self._do_set_status, 'request_set_status')
 
     def __make_menu(self) -> None:
         """
@@ -414,6 +415,18 @@ class RAMSTKDesktop(Gtk.Window):
 
         if end:
             destroy(widget)
+
+    def _do_set_status(self, status: str) -> None:
+        """
+        Set the status message.
+
+        :param str status: the status message to display.
+        :param int delay: the length of time (in milliseconds) to display the
+            message.
+        :return: None
+        :rtype: None
+        """
+        self.statusbar.push(1, status)
 
     def _do_set_status_icon(self, connected: bool = False) -> None:
         """
