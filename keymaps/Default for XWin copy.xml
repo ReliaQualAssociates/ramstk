@@ -8,6 +8,9 @@
   <action id="Tool_External Tools_format">
     <keyboard-shortcut first-keystroke="f5" />
   </action>
+  <action id="Tool_External Tools_isort">
+    <keyboard-shortcut first-keystroke="f5" />
+  </action>
   <action id="Tool_External Tools_lint">
     <keyboard-shortcut first-keystroke="f9" />
   </action>
@@ -22,5 +25,8 @@
   </action>
   <action id="Tool_External Tools_typecheck">
     <keyboard-shortcut first-keystroke="f7" />
+  </action>
+  <action id="Tool_External Tools_yapf">
+    <keyboard-shortcut first-keystroke="alt f5" />
   </action>
 </keymap>
