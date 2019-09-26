@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.widgets.basebook.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.desktop.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -60,9 +60,6 @@ class RAMSTKDesktop(Gtk.Window):
         running RAMSTK.
     :ivar float _width: the average width of each monitor attached to the
         machine running RAMSTK.
-    :ivar notebook: the Gtk.Notebook() widget used to hold each of the RAMSTK
-        module WorkViews.
-    :type notebook: :class:`Gtk.Notebook`
     :ivar menubar: the Gtk.MenuBar() for the RAMSTK ModuleBook menu.
     :type menubar: :class:`Gtk.MenuBar`
     :ivar progressbar: the Gtk.Progressbar() for displaying progress counters.

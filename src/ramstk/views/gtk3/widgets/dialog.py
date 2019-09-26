@@ -36,6 +36,7 @@ class RAMSTKDialog(Gtk.Dialog):
                 Gtk.STOCK_CANCEL <==> Gtk.ResponseType.CANCEL
         """
         GObject.GObject.__init__(self)
+
         try:
             self.add_buttons(kwargs['dlgbuttons'])
         except KeyError:

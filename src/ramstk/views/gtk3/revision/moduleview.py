@@ -110,7 +110,10 @@ class ModuleView(RAMSTKModuleView):
         self.show_all()
 
     # pylint: disable=unused-argument
-    def _do_refresh_tree(self, node_id: int, key: str, value: Any,
+    def _do_refresh_tree(self,
+                         node_id: int,
+                         key: str,
+                         value: Any,
                          definition_id: int = -1,
                          usage_id: str = '') -> None:
         """
