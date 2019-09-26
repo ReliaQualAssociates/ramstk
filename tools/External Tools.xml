@@ -22,9 +22,9 @@
   </tool>
   <tool name="maintainability" description="Check maintainability metrics of current file" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
     <exec>
-      <option name="COMMAND" value="make" />
-      <option name="PARAMETERS" value="maintain SRCFILE=&quot;$FilePath$&quot;" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/projects/ramstk.working" />
+      <option name="COMMAND" value="$PyInterpreterDirectory$/radon" />
+      <option name="PARAMETERS" value="cc -s &quot;$FilePath$&quot;" />
+      <option name="WORKING_DIRECTORY" value="$ContentRoot$" />
     </exec>
   </tool>
   <tool name="security" description="Check current file for potential security issues" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
