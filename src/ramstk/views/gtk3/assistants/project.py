@@ -116,7 +116,8 @@ class OpenProject():
     RAMSTK_USER_CONFIGURATION = None
 
     def __init__(self, __button: Gtk.ToolButton,
-                 configuration: RAMSTKUserConfiguration) -> None:
+                 configuration: RAMSTKUserConfiguration,
+                 parent: object) -> None:
         """
         Initialize an instance of the Create Project Assistant.
 
@@ -131,6 +132,7 @@ class OpenProject():
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._parent = parent
 
         # Initialize public dictionary attributes.
 
@@ -155,14 +157,15 @@ class OpenProject():
                         "database can be opened.")
             _icon = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                      + '/32x32/information.png')
-            _dialog = RAMSTKMessageDialog(_prompt, _icon, 'information')
+            _dialog = RAMSTKMessageDialog(_prompt, _icon, 'information',
+                                          parent=self._parent)
             if _dialog.run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 
         else:
             _dialog = Gtk.FileChooserDialog(
                 title=_("RAMSTK - Open Program"),
-                parent=None,
+                parent=self._parent,
                 buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
                          Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
             _dialog.set_current_folder(

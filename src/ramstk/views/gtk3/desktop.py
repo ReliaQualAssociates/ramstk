@@ -268,7 +268,8 @@ class RAMSTKDesktop(Gtk.Window):
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', OpenProject, self.RAMSTK_USER_CONFIGURATION)
+        _button.connect('clicked', OpenProject,
+                        self.RAMSTK_USER_CONFIGURATION, self)
         self.toolbar.insert(_button, _position)
         _position += 1
 
