@@ -848,7 +848,10 @@ class UsageProfile(RAMSTKListView):
         _level = _model.get_value(_row, 11)
 
         _prow = _model.iter_parent(_row)
-        _parent_id = _model.get_value(_prow, 9)
+        try:
+            _parent_id = _model.get_value(_prow, 9)
+        except TypeError:
+            _parent_id = -1
 
         _prompt = _("You are about to delete {1:s} {0:s} and all data "
                     "associated with it.  Is this really what you want to "
@@ -902,7 +905,7 @@ class UsageProfile(RAMSTKListView):
             elif _level == 'environment':
                 _gprow = _model.iter_parent(_prow)
                 _mission_id = _model.get_value(_gprow, 9)
-                _phase_id = _model.get_value(_prow, 9)
+                _phase_id = _model.get_value(_prow, 9).split('.')[1]
                 pub.sendMessage('request_insert_environment',
                                 revision_id=self._revision_id,
                                 mission_id=_mission_id,
