@@ -174,7 +174,7 @@ class RAMSTKBaseView(Gtk.HBox):
             locale.setlocale(locale.LC_ALL, '')
 
         self.__set_callbacks()
-        print(kwargs['module'], self._lst_handler_id)
+
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
 
