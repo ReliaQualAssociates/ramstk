@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Failure Definition GTK3List View Module."""
+"""The RAMSTK Failure Definition List View Module."""
 
 # Standard Library Imports
 from typing import Any, Dict, List, Tuple
@@ -204,7 +204,7 @@ class FailureDefinition(RAMSTKListView):
 
     def _do_load_tree(self, tree: Dict[int, RAMSTKFailureDefinition]) -> None:
         """
-        Load the Failure Defintion List View's Gtk.TreeModel.
+        Load the Failure Definition List View's Gtk.TreeModel.
 
         :param tree: the Failure Definition attributes dict.
         :type tree: :class:`treelib.Tree`
@@ -256,7 +256,7 @@ class FailureDefinition(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self) -> None:
+    def _do_request_insert(self, sibling=True) -> None:     # pylint: disable=unused-argument
         """
         Request to add a Failure Definition record.
 
@@ -363,23 +363,23 @@ class FailureDefinition(RAMSTKListView):
                         value=bytes(new_text, 'utf-8'),
                         definition_id=self._definition_id)
 
-    def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
         Handle row changes for the Failure Definition package List View.
 
         This method is called whenever a Failure Definition List View
         RAMSTKTreeView() row is activated or changed.
 
-        :param treeview: the Failure Definition List View RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
+        :param selection: the Failure Definition class Gtk.TreeSelection().
+        :type selection: :class:`Gtk.TreeSelection`
         :return: None
         :rtype: None
         """
         _attributes = {}
 
-        treeview.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self._lst_handler_id[0])
 
-        (_model, _row) = treeview.get_selection().get_selected()
+        _model, _row = selection.get_selected()
 
         if _row is not None:
             _attributes['revision_id'] = _model.get_value(_row, 0)
@@ -391,7 +391,7 @@ class FailureDefinition(RAMSTKListView):
             pub.sendMessage('selected_failure_definition',
                             attributes=_attributes)
 
-        treeview.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self._lst_handler_id[0])
 
 
 class UsageProfile(RAMSTKListView):
@@ -843,7 +843,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
+        _model, _row = self.treeview.selection.get_selected()
         _node_id = _model.get_value(_row, 9)
         _level = _model.get_value(_row, 11)
 
@@ -889,7 +889,7 @@ class UsageProfile(RAMSTKListView):
 
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
-        _model, _row = self.treeview.get_selection().get_selected()
+        _model, _row = self.treeview.selection.get_selected()
         _level = _model.get_value(_row, 11)
         _prow = _model.iter_parent(_row)
 
@@ -940,7 +940,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
+        _model, _row = self.treeview.selection.get_selected()
         _node_id = _model.get_value(_row, 9)
 
         self.do_set_cursor(Gdk.CursorType.WATCH)
@@ -984,7 +984,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[0])
+        treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -1006,7 +1006,7 @@ class UsageProfile(RAMSTKListView):
                     self._do_request_update_all
                 ])
 
-        treeview.handler_unblock(self._lst_handler_id[0])
+        treeview.handler_unblock(self._lst_handler_id[1])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:
@@ -1044,7 +1044,7 @@ class UsageProfile(RAMSTKListView):
             }
         }
 
-        (_model, _row) = self.treeview.get_selection().get_selected()
+        _model, _row = self.treeview.selection.get_selected()
 
         _node_id = _model.get_value(_row, 9)
         _level = _model.get_value(_row, 11)
@@ -1062,15 +1062,15 @@ class UsageProfile(RAMSTKListView):
                         "edits will not be saved.")
             pub.sendMessage('request_set_status', status=_status)
 
-    def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
         Handle row changes for the Usage Profile package List View.
 
         This method is called whenever a Usage Profile List View
         RAMSTKTreeView() row is activated or changed.
 
-        :param treeview: the Usage Profile List View class RAMSTK.TreeView().
-        :type treeview: :class:`ramstk.gui.gtk.TreeView.RAMSTKTreeView`
+        :param selection: the Usage Profile class Gtk.TreeSelection().
+        :type selection: :class:`Gtk.TreeSelection`
         :return: None
         :rtype: None
         """
@@ -1109,9 +1109,9 @@ class UsageProfile(RAMSTKListView):
         _attributes: Dict[str, Any] = {}
         _headings: List[str] = []
 
-        treeview.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self._lst_handler_id[0])
 
-        (_model, _row) = treeview.get_selection().get_selected()
+        _model, _row = selection.get_selected()
 
         if _row is not None:
             try:
@@ -1142,7 +1142,7 @@ class UsageProfile(RAMSTKListView):
                 _attributes['variance'] = _model.get_value(_row, 8)
 
             i = 0
-            _columns = treeview.get_columns()
+            _columns = self.treeview.get_columns()
             for _heading in _headings:
                 _label = Gtk.Label()
                 _label.set_line_wrap(True)
@@ -1156,6 +1156,6 @@ class UsageProfile(RAMSTKListView):
 
                 i += 1
 
-        treeview.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self._lst_handler_id[0])
 
         pub.sendMessage('selected_usage_profile', attributes=_attributes)

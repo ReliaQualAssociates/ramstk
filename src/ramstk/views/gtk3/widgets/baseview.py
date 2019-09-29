@@ -63,7 +63,6 @@ class RAMSTKBaseView(Gtk.HBox):
         tab Gtk.Label().
     :type hbox_tab_label: :class:`Gtk.HBox`
     """
-
     RAMSTK_USER_CONFIGURATION = None
 
     dic_tab_position = {
@@ -161,6 +160,7 @@ class RAMSTKBaseView(Gtk.HBox):
             self.treeview = self._make_treeview(kwargs['module'])
         except KeyError:
             self.treeview = Gtk.TreeView()
+            self.treeview.selection = self.treeview.get_selection()
 
         self.fmt = ('{0:0.'
                     + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
@@ -174,9 +174,84 @@ class RAMSTKBaseView(Gtk.HBox):
             locale.setlocale(locale.LC_ALL, '')
 
         self.__set_callbacks()
-
+        print(kwargs['module'], self._lst_handler_id)
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
+
+    def __set_callbacks(self) -> None:
+        """
+        Set common callback methods.
+
+        Sets callback for the RAMSTKView, Gtk.TreeView, and Gtk.TreeSelection.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._lst_handler_id.append(
+                self.treeview.selection.connect('changed',
+                                                self._on_row_change))
+        except AttributeError as _error:
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _error)
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event',
+                                      self._on_button_press))
+        except AttributeError as _error:
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _error)
+
+    def _make_toolbar(self,
+                      icons: List[str],
+                      orientation: str = 'horizontal',
+                      height: int = 60,
+                      width: int = 60) -> Tuple[Gtk.Toolbar, int]:
+        """
+        Create the toolbar for RAMSTK Views.
+
+        This method creates the base toolbar used by all RAMSTK Views.  Use a
+        toolbar for an RAMSTK View if there are other than buttons to be added.
+
+        :param list icons: list of icon names to place on the toolbuttons.
+            The items in the list are keys in _dic_icons.
+        :return: _toolbar, _position
+        :rtype: (:class:`Gtk.Toolbar`, int)
+        """
+        _toolbar = Gtk.Toolbar()
+
+        if orientation == 'horizontal':
+            _toolbar.set_orientation(Gtk.Orientation.HORIZONTAL)
+            _scale = 0.58
+        else:
+            _toolbar.set_orientation(Gtk.Orientation.VERTICAL)
+            _scale = 0.4
+
+        _position = 0
+        for _icon in icons:
+            if _icon is None:
+                _toolbar.insert(Gtk.SeparatorToolItem(), _position)
+            else:
+                _image = Gtk.Image()
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                    self._dic_icons[_icon], int(_scale * height),
+                    int(_scale * width))
+                _image.set_from_pixbuf(_icon)
+
+                _button = Gtk.ToolButton()
+                _button.set_property("height_request", height)
+                _button.set_property("width_request", width)
+                _button.set_icon_widget(_image)
+                _button.show()
+                _toolbar.insert(_button, _position)
+
+            _position += 1
+
+        _toolbar.show()
+
+        # Return the toolbar and the next position to place an Gtk.ToolBar()
+        # item.  The _position variable can be used by derived classes to
+        # add additional items to the Gtk.ToolBar().
+        return _toolbar, _position
 
     def _make_treeview(self, module: str) -> RAMSTKTreeView:
         """
@@ -199,27 +274,6 @@ class RAMSTKBaseView(Gtk.HBox):
         self._lst_col_order = _treeview.order
 
         return _treeview
-
-    def __set_callbacks(self) -> None:
-        """
-        Set common callback methods for the RAMSTKView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            self._lst_handler_id.append(
-                self.treeview.selection.connect('changed',
-                                                self._on_row_change))
-        except AttributeError:
-            pass
-
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('button_press_event',
-                                      self._on_button_press))
-        except AttributeError:
-            pass
 
     def do_load_tree(self, tree: treelib.Tree) -> None:
         """
@@ -277,7 +331,8 @@ class RAMSTKBaseView(Gtk.HBox):
             if kwargs['error_code'] != 0:
                 _dialog = RAMSTKMessageDialog(
                     kwargs['user_msg'], self._dic_icons[kwargs['severity']],
-                    kwargs['severity'])
+                    kwargs['severity'],
+                    parent=self)
                 if _dialog.do_run() == Gtk.ResponseType.OK:
                     _dialog.destroy()
         except KeyError:
@@ -296,7 +351,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
+        _model, _row = self.treeview.selection.get_selected()
 
         try:
             _column = [
@@ -389,58 +444,6 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor))
         Gdk.flush()
-
-    def _make_toolbar(self,
-                      icons: List[str],
-                      orientation: str = 'horizontal',
-                      height: int = 60,
-                      width: int = 60) -> Tuple[Gtk.Toolbar, int]:
-        """
-        Create the toolbar for RAMSTK Views.
-
-        This method creates the base toolbar used by all RAMSTK Views.  Use a
-        toolbar for an RAMSTK View if there are other than buttons to be added.
-
-        :param list icons: list of icon names to place on the toolbuttons.
-            The items in the list are keys in _dic_icons.
-        :return: _toolbar, _position
-        :rtype: (:class:`Gtk.Toolbar`, int)
-        """
-        _toolbar = Gtk.Toolbar()
-
-        if orientation == 'horizontal':
-            _toolbar.set_orientation(Gtk.Orientation.HORIZONTAL)
-            _scale = 0.58
-        else:
-            _toolbar.set_orientation(Gtk.Orientation.VERTICAL)
-            _scale = 0.4
-
-        _position = 0
-        for _icon in icons:
-            if _icon is None:
-                _toolbar.insert(Gtk.SeparatorToolItem(), _position)
-            else:
-                _image = Gtk.Image()
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons[_icon], int(_scale * height),
-                    int(_scale * width))
-                _image.set_from_pixbuf(_icon)
-
-                _button = Gtk.ToolButton()
-                _button.set_property("height_request", height)
-                _button.set_property("width_request", width)
-                _button.set_icon_widget(_image)
-                _button.show()
-                _toolbar.insert(_button, _position)
-
-            _position += 1
-
-        _toolbar.show()
-
-        # Return the toolbar and the next position to place an Gtk.ToolBar()
-        # item.  The _position variable can be used by derived classes to
-        # add additional items to the Gtk.ToolBar().
-        return _toolbar, _position
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """

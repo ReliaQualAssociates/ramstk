@@ -18,7 +18,7 @@ from pubsub import pub
 from ramstk.utilities import file_exists
 
 LOGFORMAT = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    '%(asctime)s - %(name)s - %(levelname)s - %(lineno)s : %(message)s')
 
 
 class RAMSTKLogManager:
