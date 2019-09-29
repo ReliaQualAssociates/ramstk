@@ -493,7 +493,7 @@ class UsageProfile(RAMSTKListView):
               "Profile.")
         ]
         _callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
+            self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete
         ]
         _icons = ['insert_sibling', 'insert_child', 'remove']
@@ -878,58 +878,68 @@ class UsageProfile(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, **kwargs: Any) -> None:
+    def _do_request_insert_child(self, __button: Gtk.ToolButton) -> None:
         """
         Request to add an entity to the Usage Profile.
 
         :return: None
         :rtype: None
         """
-        _sibling = kwargs['sibling']
-
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
         _model, _row = self.treeview.selection.get_selected()
         _level = _model.get_value(_row, 11)
         _prow = _model.iter_parent(_row)
 
-        if _sibling:
-            if _level == 'mission':
-                pub.sendMessage('request_insert_mission',
-                                revision_id=self._revision_id)
-            elif _level == 'phase':
-                _mission_id = _model.get_value(_prow, 9)
-                pub.sendMessage('request_insert_mission_phase',
-                                revision_id=self._revision_id,
-                                mission_id=_mission_id)
-            elif _level == 'environment':
-                _gprow = _model.iter_parent(_prow)
-                _mission_id = _model.get_value(_gprow, 9)
-                _phase_id = _model.get_value(_prow, 9).split('.')[1]
-                pub.sendMessage('request_insert_environment',
-                                revision_id=self._revision_id,
-                                mission_id=_mission_id,
-                                phase_id=_phase_id)
-        elif not _sibling:
-            if _level == 'mission':
-                _mission_id = _model.get_value(_row, 9)
-                pub.sendMessage('request_insert_mission_phase',
-                                revision_id=self._revision_id,
-                                mission_id=_mission_id)
-            elif _level == 'phase':
-                _phase_id = _model.get_value(_row, 1)
-                _mission_id = _model.get_value(_prow, 9)
-                pub.sendMessage('request_insert_environment',
-                                revision_id=self._revision_id,
-                                mission_id=_mission_id,
-                                phase_id=_phase_id)
-            elif _level == 'environment':
-                _prompt = _("An environmental condition cannot have a child.")
-                _dialog = RAMSTKMessageDialog(_prompt,
-                                              self._dic_icons['error'],
-                                              'error')
-                _dialog.do_run()
-                _dialog.do_destroy()
+        if _level == 'mission':
+            _mission_id = _model.get_value(_row, 9)
+            pub.sendMessage('request_insert_mission_phase',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id)
+        elif _level == 'phase':
+            _phase_id = _model.get_value(_row, 1)
+            _mission_id = _model.get_value(_prow, 9)
+            pub.sendMessage('request_insert_environment',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id,
+                            phase_id=_phase_id)
+        elif _level == 'environment':
+            _prompt = _("An environmental condition cannot have a child.")
+            _dialog = RAMSTKMessageDialog(_prompt,
+                                          self._dic_icons['error'],
+                                          'error')
+            _dialog.do_run()
+            _dialog.do_destroy()
+
+    def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to add a sibling entity to the Usage Profile.
+
+        :return: None
+        :rtype: None
+        """
+        # Get the currently selected row, the level of the currently selected
+        # item, and it's parent row in the Usage Profile.
+        _model, _row = self.treeview.selection.get_selected()
+        _level = _model.get_value(_row, 11)
+        _prow = _model.iter_parent(_row)
+
+        if _level == 'mission':
+            pub.sendMessage('request_insert_mission',
+                            revision_id=self._revision_id)
+        elif _level == 'phase':
+            _mission_id = _model.get_value(_prow, 9)
+            pub.sendMessage('request_insert_mission_phase',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id)
+        elif _level == 'environment':
+            _gprow = _model.iter_parent(_prow)
+            _mission_id = _model.get_value(_gprow, 9)
+            _phase_id = _model.get_value(_prow, 9).split('.')[1]
+            pub.sendMessage('request_insert_environment',
+                            revision_id=self._revision_id,
+                            mission_id=_mission_id,
+                            phase_id=_phase_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
