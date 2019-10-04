@@ -73,7 +73,7 @@ class RAMSTKBaseView(Gtk.HBox):
     }
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager, module: str) -> None:
         """
         Initialize the RAMSTK Base View.
 
@@ -81,6 +81,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         GObject.GObject.__init__(self)
 
@@ -157,7 +158,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Initialize public scalar attributes.
         try:
-            self.treeview = self._make_treeview(kwargs['module'])
+            self.treeview = self._make_treeview(module)
         except KeyError:
             self.treeview = Gtk.TreeView()
             self.treeview.selection = self.treeview.get_selection()
@@ -590,7 +591,7 @@ class RAMSTKListView(RAMSTKBaseView):
     :type tab_label: :class:`Gtk.Label`
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager, module: str) -> None:
         """
         Initialize the List View.
 
@@ -598,14 +599,14 @@ class RAMSTKListView(RAMSTKBaseView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
-        _module = kwargs['module']
-        RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
+        RAMSTKBaseView.__init__(self, configuration, logger, module)
 
         self._module = None
-        for __, char in enumerate(_module):
+        for __, char in enumerate(module):
             if char.isalpha():
-                self._module = _module.capitalize()
+                self._module = module.capitalize()
 
         # Initialize private dictionary attributes.
 
@@ -682,7 +683,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
     :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager, module: str) -> None:
         """
         Initialize the RAMSTKModuleView meta-class.
 
@@ -690,8 +691,9 @@ class RAMSTKModuleView(RAMSTKBaseView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
-        RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
+        RAMSTKBaseView.__init__(self, configuration, logger, module)
 
         # Initialize private dictionary attributes.
         self._dic_icons['insert_part'] = (
@@ -799,7 +801,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
     is for.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager, module: str) -> None:
         """
         Initialize the RAMSTKWorkView meta-class.
 
@@ -807,15 +809,15 @@ class RAMSTKWorkView(RAMSTKBaseView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
-        _module = kwargs['module']
         GObject.GObject.__init__(self)
-        RAMSTKBaseView.__init__(self, configuration, logger, **kwargs)
+        RAMSTKBaseView.__init__(self, configuration, logger, module)
 
         self._module: str = ''
-        for __, char in enumerate(_module):
+        for __, char in enumerate(module):
             if char.isalpha():
-                self._module = _module.capitalize()
+                self._module = module.capitalize()
 
         # Initialize private dictionary attributes.
 
