@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Revision Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -47,7 +47,7 @@ class GeneralData(RAMSTKWorkView):
     _lst_labels = [_("Revision Code:"), _("Revision Name:"), _("Remarks:")]
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, **kwargs: Any) -> None:
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Revision Work View general data page.
 
@@ -210,7 +210,7 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_update_all_revisions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _on_edit(self, module_id: int, key: str, value: str) -> None:  # pylint: disable=unused-argument
+    def _on_edit(self, node_id: List, package: Dict) -> None:
         """
         Update the Revision Work View Gtk.Widgets().
 
@@ -218,24 +218,27 @@ class GeneralData(RAMSTKWorkView):
         to the Revision data model attributes.  This method is called whenever
         an attribute is edited in a different RAMSTK View.
 
-        :param int module_id: the ID of the Revision being edited.  This
-            parameter is required to allow the PyPubSub signals to call this
-            method and the request_set_attributes() method in the
-            RAMSTKDataController.
-        :param str key: the key in the Revision attributes list of the
-            attribute that was edited.
-        :param str value: the new text to update the Gtk.Widget() with.
+        :param list node_id: a list of the ID's of the record in the RAMSTK
+            Program database table whose attributes are to be set.  The list is:
+
+                0 - Revision ID
+                1 - Failure Definition ID
+                2 - Usage ID
+
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
+        _module_id = node_id[0]
+        [[_key, _value]] = package.items()
         _dic_switch = {
             'name': [self.txtName.do_update, 0],
             'remarks': [self.txtRemarks.do_update, 1],
             'revision_code': [self.txtCode.do_update, 2]
         }
 
-        (_function, _id) = _dic_switch.get(key)
-        _function(value, self._lst_handler_id[_id])
+        _function, _id = _dic_switch.get(_key)
+        _function(_value, self._lst_handler_id[_id])
 
     def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,  # pylint: disable=unused-argument
                       index: int) -> None:
@@ -278,8 +281,7 @@ class GeneralData(RAMSTKWorkView):
                 _new_text = ''
 
         pub.sendMessage('wvw_editing_revision',
-                        node_id=self._revision_id,
-                        key=_key,
-                        value=_new_text)
+                        node_id=[self._revision_id, -1, ''],
+                        package={_key: _new_text})
 
         entry.handler_unblock(self._lst_handler_id[index])

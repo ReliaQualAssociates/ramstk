@@ -358,10 +358,8 @@ class FailureDefinition(RAMSTKListView):
         RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
 
         pub.sendMessage('lvw_editing_failure_definition',
-                        node_id=self._revision_id,
-                        key='definition',
-                        value=bytes(new_text, 'utf-8'),
-                        definition_id=self._definition_id)
+                        node_id=[self._revision_id, self._definition_id, ''],
+                        package={'definition': new_text})
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -1062,11 +1060,9 @@ class UsageProfile(RAMSTKListView):
         try:
             _key = _dic_keys[_level][position]
             RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
-            pub.sendMessage('lvw_editing_usage_profile',
-                            node_id=self._revision_id,
-                            key=_key,
-                            value=new_text,
-                            usage_id=_node_id)
+            pub.sendMessage('lvw_editing_failure_definition',
+                            node_id=[self._revision_id, -1, _node_id],
+                            package={_key: new_text})
         except KeyError:
             _status = _("Mission start time is always set to 0.0.  Your "
                         "edits will not be saved.")

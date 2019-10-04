@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import datetime
-from typing import Any
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -111,30 +111,26 @@ class ModuleView(RAMSTKModuleView):
 
     # pylint: disable=unused-argument
     def _do_refresh_tree(self,
-                         node_id: int,
-                         key: str,
-                         value: Any,
-                         definition_id: int = -1,
-                         usage_id: str = '') -> None:
+                         node_id: List,
+                         package: Dict) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
         This method is called by other views when the Revision data model
         attributes are edited via their gtk.Widgets().
 
-        :param int node_id: unused in this method.
-        :param str key: the name of the key for the data being updated.
-        :param value: the new value of the attribute to be updated.
-        :keyword int definition_id: unused in this method.
-        :keyword int usage_id: unused in this method.
+        :param list node_id: unused in this method.
+        :param dict package: the key:value for the data being updated.
         :return: None
         :rtype: None
         """
         _dic_keys = {'name': 17, 'remarks': 20, 'revision_code': 22}
-        _position = self._lst_col_order[_dic_keys[key]]
+        [[_key, _value]] = package.items()
+
+        _position = self._lst_col_order[_dic_keys[_key]]
 
         _model, _row = self.treeview.get_selection().get_selected()
-        _model.set(_row, _position, value)
+        _model.set(_row, _position, _value)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -267,9 +263,8 @@ class ModuleView(RAMSTKModuleView):
         self.treeview.do_edit_cell(self, __cell, path, new_text, position)
 
         pub.sendMessage('mvw_editing_revision',
-                        module_id=self._revision_id,
-                        key=_key,
-                        value=new_text)
+                        node_id=[self._revision_id, -1, ''],
+                        package={_key, new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """

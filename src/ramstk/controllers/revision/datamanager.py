@@ -7,7 +7,7 @@
 """Revision Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -707,49 +707,49 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(attributes['revision_id'], _key,
-                                   attributes[_key], definition_id, usage_id)
+            self.do_set_attributes([attributes['revision_id'], definition_id,
+                                    usage_id], {_key, attributes[_key]})
 
     def do_set_attributes(self,
-                          node_id: int,
-                          key: str,
-                          value: Any,
-                          definition_id: int = -1,
-                          usage_id: str = '') -> None:
+                          node_id: List,
+                          package: Dict) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :keyword definition_id: the failure definition ID if the attribute
-            being set is a failure definition attribute.
-        :type definition_id: int
-        :keyword usage_id: the usage profile ID if the attribute being set is a
-            usage profile (mission, mission phase, or environment) attribute.
-        :type usage_id: str
+        :param list node_id: a list of the ID's of the record in the RAMSTK
+            Program database table whose attributes are to be set.  The list is:
+
+                0 - Revision ID
+                1 - Failure Definition ID
+                2 - Usage ID
+
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
+        _node_id = node_id[0]
+        _definition_id = node_id[1]
+        _usage_id = node_id[2]
+        [[_key, _value]] = package.items()
+
         for _table in ['revision', 'failure_definitions', 'usage_profile']:
             if _table == 'failure_definitions':
-                self._do_set_failure_definition(node_id, key, value,
-                                                definition_id)
+                self._do_set_failure_definition(_node_id, _key, _value,
+                                                _definition_id)
             elif _table == 'usage_profile':
-                self._do_set_usage_profile(node_id, key, value, usage_id)
+                self._do_set_usage_profile(_node_id, _key, _value, _usage_id)
             else:
-                _attributes = self.do_select(node_id,
+                _attributes = self.do_select(_node_id,
                                              table=_table).get_attributes()
-                if key in _attributes:
-                    _attributes[key] = value
+                if _key in _attributes:
+                    _attributes[_key] = _value
 
                     try:
                         _attributes.pop('revision_id')
                     except KeyError:
                         pass
 
-                    self.do_select(node_id,
+                    self.do_select(_node_id,
                                    table=_table).set_attributes(_attributes)
 
     def do_update(self, node_id: int) -> None:
