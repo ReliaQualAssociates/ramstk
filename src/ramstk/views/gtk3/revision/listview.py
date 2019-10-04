@@ -256,7 +256,7 @@ class FailureDefinition(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, sibling=True) -> None:     # pylint: disable=unused-argument
+    def _do_request_insert(self, sibling=True) -> None:  # pylint: disable=unused-argument
         """
         Request to add a Failure Definition record.
 
@@ -473,6 +473,87 @@ class UsageProfile(RAMSTKListView):
             for _n in attributes.children(self._revision_id):
                 _mission: Tree = attributes.subtree(_n.identifier)
                 self._do_load_tree(_mission, row=None)
+
+    @staticmethod
+    def __get_attributes(selection: Gtk.TreeSelection, level: str) -> Dict:
+        """
+        Retrieve the attributes for the line being edited.
+
+        :param selection: the Gtk.TreeSelection that is currently selected.
+        :type selection: :class:`Gtk.TreeSelection`
+        :param str level: the indenture level in the Usage Profile that is
+            selected.
+        :return: a dict of attributes and values.
+        :rtype: dict
+        """
+        _attributes = {}
+
+        _model, _row = selection.get_selected()
+
+        if level == 'mission':
+            _attributes['mission_id'] = _model.get_value(_row, 0)
+            _attributes['description'] = _model.get_value(_row, 2)
+            _attributes['time_units'] = _model.get_value(_row, 4)
+            _attributes['mission_time'] = _model.get_value(_row, 6)
+        elif level == 'phase':
+            _attributes['phase_id'] = _model.get_value(_row, 0)
+            _attributes['name'] = _model.get_value(_row, 2)
+            _attributes['description'] = _model.get_value(_row, 3)
+            _attributes['phase_start'] = _model.get_value(_row, 5)
+            _attributes['phase_end'] = _model.get_value(_row, 6)
+        elif level == 'environment':
+            _attributes['environment_id'] = _model.get_value(_row, 0)
+            _attributes['name'] = _model.get_value(_row, 2)
+            _attributes['units'] = _model.get_value(_row, 4)
+            _attributes['minimum'] = _model.get_value(_row, 5)
+            _attributes['maximum'] = _model.get_value(_row, 6)
+            _attributes['mean'] = _model.get_value(_row, 7)
+            _attributes['variance'] = _model.get_value(_row, 8)
+
+        return _attributes
+
+    @staticmethod
+    def __get_headings(level):
+        """
+        Get the list of headings for the Usage Profile treeview.
+
+        :param level: the level (mission, phase, environment) to retrieve
+            headers for.
+        :return: list of headings
+        :rtype: list
+        """
+        return {
+            'mission': [
+                _("Mission ID"),
+                _("Description"),
+                _("Units"),
+                _("Start Time"),
+                _("End Time"),
+                _(""),
+                _(""),
+                _("")
+            ],
+            'phase': [
+                _("Phase ID"),
+                _("  Code\t\tDescription"),
+                _("Units"),
+                _("Start Time"),
+                _("End Time"),
+                _(""),
+                _(""),
+                _("")
+            ],
+            'environment': [
+                _("Environment ID"),
+                _("Condition"),
+                _("Units"),
+                _("Minimum Value"),
+                _("Maximum Value"),
+                _("Mean Value"),
+                _("Variance"),
+                _("")
+            ]
+        }[level]
 
     def __make_buttonbox(self) -> Gtk.ButtonBox:
         """
@@ -719,7 +800,8 @@ class UsageProfile(RAMSTKListView):
                           "and is not displayed in the Usage Profile.")
             _debug_msg = (
                 "Too few fields for Mission ID {0:s} for Revision ID "
-                "{1:s}.".format(str(entity.mission_id), str(self._revision_id)))
+                "{1:s}.".format(str(entity.mission_id),
+                                str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -775,8 +857,7 @@ class UsageProfile(RAMSTKListView):
 
         return _new_row
 
-    def _do_load_tree(self, tree: Tree,
-                      row: Gtk.TreeIter = None) -> None:
+    def _do_load_tree(self, tree: Tree, row: Gtk.TreeIter = None) -> None:
         """
         Recursively load the Usage Profile List View's Gtk.TreeModel.
 
@@ -803,11 +884,10 @@ class UsageProfile(RAMSTKListView):
                 _new_row = self._do_load_mission(_entity, _node.identifier,
                                                  row)
             elif _entity.is_phase:
-                _new_row = self._do_load_phase(_entity, _node.identifier,
-                                               row)
+                _new_row = self._do_load_phase(_entity, _node.identifier, row)
             elif _entity.is_env:
-                _new_row = self._do_load_environment(
-                    _entity, _node.identifier, row)
+                _new_row = self._do_load_environment(_entity, _node.identifier,
+                                                     row)
         except AttributeError:
             _user_msg = _("One or more Usage Profile line items was "
                           "missing it's data package and is not "
@@ -903,8 +983,7 @@ class UsageProfile(RAMSTKListView):
                             phase_id=_phase_id)
         elif _level == 'environment':
             _prompt = _("An environmental condition cannot have a child.")
-            _dialog = RAMSTKMessageDialog(_prompt,
-                                          self._dic_icons['error'],
+            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                           'error')
             _dialog.do_run()
             _dialog.do_destroy()
@@ -953,7 +1032,8 @@ class UsageProfile(RAMSTKListView):
 
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_usage_profile',
-                        revision_id=self._revision_id, node_id=_node_id)
+                        revision_id=self._revision_id,
+                        node_id=_node_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -1080,40 +1160,9 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _dic_headings = {
-            'mission': [
-                _("Mission ID"),
-                _("Description"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ],
-            'phase': [
-                _("Phase ID"),
-                _("  Code\t\tDescription"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ],
-            'environment': [
-                _("Environment ID"),
-                _("Condition"),
-                _("Units"),
-                _("Minimum Value"),
-                _("Maximum Value"),
-                _("Mean Value"),
-                _("Variance"),
-                _("")
-            ]
-        }
         _attributes: Dict[str, Any] = {}
         _headings: List[str] = []
+        _level: str = ''
 
         selection.handler_block(self._lst_handler_id[0])
 
@@ -1123,30 +1172,10 @@ class UsageProfile(RAMSTKListView):
             try:
                 _level = _model.get_value(_row, 11)
             except TypeError:
-                _level = None
-            _headings = _dic_headings[_level]
+                _level = ''
+            _headings = self.__get_headings(_level)
 
             # Change the column headings depending on what is being selected.
-            if _level == 'mission':
-                _attributes['mission_id'] = _model.get_value(_row, 0)
-                _attributes['description'] = _model.get_value(_row, 2)
-                _attributes['time_units'] = _model.get_value(_row, 4)
-                _attributes['mission_time'] = _model.get_value(_row, 6)
-            elif _level == 'phase':
-                _attributes['phase_id'] = _model.get_value(_row, 0)
-                _attributes['name'] = _model.get_value(_row, 2)
-                _attributes['description'] = _model.get_value(_row, 3)
-                _attributes['phase_start'] = _model.get_value(_row, 5)
-                _attributes['phase_end'] = _model.get_value(_row, 6)
-            elif _level == 'environment':
-                _attributes['environment_id'] = _model.get_value(_row, 0)
-                _attributes['name'] = _model.get_value(_row, 2)
-                _attributes['units'] = _model.get_value(_row, 4)
-                _attributes['minimum'] = _model.get_value(_row, 5)
-                _attributes['maximum'] = _model.get_value(_row, 6)
-                _attributes['mean'] = _model.get_value(_row, 7)
-                _attributes['variance'] = _model.get_value(_row, 8)
-
             i = 0
             _columns = self.treeview.get_columns()
             for _heading in _headings:
@@ -1164,4 +1193,5 @@ class UsageProfile(RAMSTKListView):
 
         selection.handler_unblock(self._lst_handler_id[0])
 
-        pub.sendMessage('selected_usage_profile', attributes=_attributes)
+        pub.sendMessage('selected_usage_profile',
+                        attributes=self.__get_attributes(selection, _level))

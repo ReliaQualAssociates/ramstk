@@ -47,3 +47,9 @@ class RAMSTKDesktop(Gtk.Window):
 
     def connect(self, param, destroy):
         pass
+
+    def __make_menu_edit(self):
+        pass
+
+    def __make_menu_tools(self):
+        pass

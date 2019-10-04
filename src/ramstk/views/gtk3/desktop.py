@@ -138,15 +138,52 @@ class RAMSTKDesktop(Gtk.Window):
         Make the menu for the Module Book.
 
         :return: None
-        :rtyp:e None
+        :rtype: None
         """
-        _icon_dir = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+        self.menubar.append(self.__make_menu_file())
+        self.menubar.append(self.__make_menu_edit())
+        self.menubar.append(self.__make_menu_tools())
 
+        self.menubar.show_all()
+
+    def __make_menu_edit(self) -> Gtk.MenuItem:
+        """
+        Make the Edit menu.
+
+        :return: the Edit menu.
+        :rtype: :class:`Gtk.MenuItem`
+        """
         _menu = Gtk.Menu()
 
         _menu_item = Gtk.ImageMenuItem()
         _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/new.png')
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/preferences.png')
+        _menu_item.set_label(_("_Preferences"))
+        _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
+        # _menu_item.connect('activate', Preferences,
+        # self.RAMSTK_USER_CONFIGURATION)
+        _menu.append(_menu_item)
+
+        _menu_item = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
+        _menu_item.set_submenu(_menu)
+
+        return _menu_item
+
+    def __make_menu_file(self) -> Gtk.MenuItem:
+        """
+        Make the File menu.
+
+        :return: the Tools menu.
+        :rtype: :class:`Gtk.MenuItem`
+        """
+        _menu = Gtk.Menu()
+
+        _menu_item = Gtk.ImageMenuItem()
+        _image = Gtk.Image()
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/new.png')
         _menu_item.set_label(_("New _Program"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
@@ -156,7 +193,8 @@ class RAMSTKDesktop(Gtk.Window):
 
         _menu_item = Gtk.ImageMenuItem()
         _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/open.png')
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/open.png')
         _menu_item.set_label(_("_Open"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
@@ -166,7 +204,8 @@ class RAMSTKDesktop(Gtk.Window):
 
         _menu_item = Gtk.ImageMenuItem()
         _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/import.png')
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/import.png')
         _menu_item.set_label(_("_Import Project"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
@@ -176,50 +215,50 @@ class RAMSTKDesktop(Gtk.Window):
 
         _menu_item = Gtk.ImageMenuItem()
         _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/save.png')
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/save.png')
         _menu_item.set_label(_("_Save"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', self._do_request_save_project)
         _menu.append(_menu_item)
 
-        _menu_item = Gtk.MenuItem(label=_("_Close"), use_underline=True)
+        _menu_item = Gtk.MenuItem()
+        _menu_item.set_label(_("_Close"))
+        _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', self._do_request_close_project)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
         _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/exit.png')
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/exit.png')
         _menu_item.set_label(_("E_xit"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', destroy)
         _menu.append(_menu_item)
 
-        _mnuFile = Gtk.MenuItem(label=_("_File"), use_underline=True)
-        _mnuFile.set_submenu(_menu)
-
-        # Create the Edit menu.
-        _menu = Gtk.Menu()
-
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/preferences.png')
-        _menu_item.set_label(_("_Preferences"))
-        _menu_item.set_image(_image)
+        _menu_item = Gtk.MenuItem()
+        _menu_item.set_label(_("_File"))
         _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Preferences,
-        # self.RAMSTK_USER_CONFIGURATION)
-        _menu.append(_menu_item)
+        _menu_item.set_submenu(_menu)
 
-        _mnuEdit = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
-        _mnuEdit.set_submenu(_menu)
+        return _menu_item
 
-        # Create the Tools menu.
+    def __make_menu_tools(self) -> Gtk.MenuItem:
+        """
+        Make the Tools menu.
+
+        :return: the Tools menu.
+        :rtype: :class:`Gtk.MenuItem`
+        """
         _menu = Gtk.Menu()
+
         _menu_item = Gtk.ImageMenuItem()
         _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/options.png')
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/options.png')
         _menu_item.set_label(_("_Options"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
@@ -227,14 +266,10 @@ class RAMSTKDesktop(Gtk.Window):
         # self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
-        _mnuTools = Gtk.MenuItem(label=_("_Tools"), use_underline=True)
-        _mnuTools.set_submenu(_menu)
+        _menu_item = Gtk.MenuItem(label=_("_Tools"), use_underline=True)
+        _menu_item.set_submenu(_menu)
 
-        self.menubar.append(_mnuFile)
-        self.menubar.append(_mnuEdit)
-        self.menubar.append(_mnuTools)
-
-        self.menubar.show_all()
+        return _menu_item
 
     def __make_toolbar(self) -> None:
         """

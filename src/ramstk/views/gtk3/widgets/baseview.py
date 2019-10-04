@@ -93,54 +93,7 @@ class RAMSTKBaseView(Gtk.HBox):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {
-            'calculate':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/calculate.png',
-            'calculate_all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/calculate-all.png',
-            'add':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
-            'remove':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/remove.png',
-            'reports':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/reports.png',
-            'save':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
-            'save-all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/save-all.png',
-            'important':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/important.png',
-            'error':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/error.png',
-            'question':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/question.png',
-            'insert_sibling':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/insert_sibling.png',
-            'insert_child':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/insert_child.png',
-            'cancel':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/cancel.png',
-            'export':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/export.png',
-            'warning':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/warning.png',
-            'rollup':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/rollup.png'
-        }
+        self._dic_icons = self.__set_icons()
 
         # Initialize private list attributes.
         self._lst_col_order: List[int] = []
@@ -157,12 +110,7 @@ class RAMSTKBaseView(Gtk.HBox):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        try:
-            self.treeview = self._make_treeview(module)
-        except KeyError:
-            self.treeview = Gtk.TreeView()
-            self.treeview.selection = self.treeview.get_selection()
-
+        self.treeview = self._make_treeview(module)
         self.fmt = ('{0:0.'
                     + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
                     + 'G}')
@@ -201,6 +149,64 @@ class RAMSTKBaseView(Gtk.HBox):
                                       self._on_button_press))
         except AttributeError as _error:
             self.RAMSTK_LOGGER.do_log_debug(__name__, _error)
+
+    def __set_icons(self) -> Dict:
+        """
+        Set the dict of icons.
+
+        :return: the dict of icons to use in RAMSTK.
+        :rtype: dict
+        """
+        return {
+            'calculate':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/calculate.png',
+            'calculate_all':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/calculate-all.png',
+            'add':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/add.png',
+            'remove':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/remove.png',
+            'reports':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/reports.png',
+            'save':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/save.png',
+            'save-all':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/save-all.png',
+            'important':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/important.png',
+            'error':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/error.png',
+            'question':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/question.png',
+            'insert_sibling':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/insert_sibling.png',
+            'insert_child':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/insert_child.png',
+            'cancel':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/cancel.png',
+            'export':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/export.png',
+            'warning':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/warning.png',
+            'rollup':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/rollup.png'
+        }
 
     def _make_toolbar(self,
                       icons: List[str],
@@ -262,17 +268,21 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: _treeview; the RAMSTKTreeView() created.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
         """
-        _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'bg']
-        _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'fg']
-        _fmt_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
-        _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
+        try:
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'bg']
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'fg']
+            _fmt_file = (
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+                + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
+            _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
 
-        _treeview = RAMSTKTreeView()
-        _treeview.do_parse_format(_fmt_path, _fmt_file)
-        _treeview.make_model(_bg_color, _fg_color)
-        self._lst_col_order = _treeview.order
+            _treeview = RAMSTKTreeView()
+            _treeview.do_parse_format(_fmt_path, _fmt_file)
+            _treeview.make_model(_bg_color, _fg_color)
+            self._lst_col_order = _treeview.order
+        except KeyError:
+            _treeview = Gtk.TreeView()
+            _treeview.selection = _treeview.get_selection()
 
         return _treeview
 

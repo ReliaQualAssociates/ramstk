@@ -25,7 +25,8 @@ class TestRAMSTKBaseView():
         """__init__() should create a RAMSTKBaseView."""
         _logger = RAMSTKLogManager(
             test_toml_user_configuration.RAMSTK_USER_LOG)
-        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger)
+        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger,
+                             module='revision')
 
         assert isinstance(DUT, RAMSTKBaseView)
         assert isinstance(DUT.RAMSTK_USER_CONFIGURATION,
@@ -34,8 +35,8 @@ class TestRAMSTKBaseView():
         assert DUT.dic_tab_position['right'] == Gtk.PositionType.RIGHT
         assert DUT.dic_tab_position['top'] == Gtk.PositionType.TOP
         assert DUT.dic_tab_position['bottom'] == Gtk.PositionType.BOTTOM
-        assert DUT._lst_col_order == []
-        assert DUT._lst_handler_id == []
+        assert isinstance(DUT._lst_col_order, list)
+        assert isinstance(DUT._lst_handler_id, list)
         assert DUT._mission_time == 100.0
         assert isinstance(DUT._notebook, Gtk.Notebook)
         assert DUT._revision_id == 0
@@ -52,7 +53,8 @@ class TestRAMSTKBaseView():
         _logger = RAMSTKLogManager(
             test_toml_user_configuration.RAMSTK_USER_LOG)
         test_toml_user_configuration.RAMSTK_LOGLEVEL = "DEBUG"
-        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger)
+        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger,
+                             module='revision')
 
         assert DUT.do_raise_dialog(
             error_code=1,
@@ -66,7 +68,8 @@ class TestRAMSTKBaseView():
         _logger = RAMSTKLogManager(
             test_toml_user_configuration.RAMSTK_USER_LOG)
         test_toml_user_configuration.RAMSTK_LOGLEVEL = "DEBUG"
-        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger)
+        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger,
+                             module='revision')
 
         assert DUT.do_raise_dialog(
             error_code=1,

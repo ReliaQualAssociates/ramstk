@@ -472,29 +472,21 @@ class TestGetterSetter():
         DUT.do_select_all()
 
         pub.sendMessage('request_set_revision_attributes',
-                        node_id=1,
-                        key='revision_code',
-                        value='-')
+                        node_id=[1, -1, ''],
+                        package={'revision_code': '-'})
         pub.sendMessage('request_set_revision_attributes',
-                        node_id=1,
-                        key='definition',
-                        value=b'Test Description',
-                        definition_id=1)
+                        node_id=[1, 1, ''],
+                        package={'definition': b'Test Description'})
         pub.sendMessage('request_set_revision_attributes',
-                        node_id=1,
-                        key='description',
-                        value=b'This is the mission description.',
-                        usage_id='1')
+                        node_id=[1, -1, '1'],
+                        package={'description': b'This is the mission '
+                                                b'description.'})
         pub.sendMessage('request_set_revision_attributes',
-                        node_id=1,
-                        key='phase_end',
-                        value=5.12,
-                        usage_id='1.1')
+                        node_id=[1, -1, '1.1'],
+                        package={'phase_end': 5.12})
         pub.sendMessage('request_set_revision_attributes',
-                        node_id=1,
-                        key='minimum',
-                        value=5.12,
-                        usage_id='1.1.1')
+                        node_id=[1, -1, '1.1.1'],
+                        package={'minimum': 5.12})
         assert DUT.do_select(1, table='revision').revision_code == '-'
         assert DUT.do_select(
             1,

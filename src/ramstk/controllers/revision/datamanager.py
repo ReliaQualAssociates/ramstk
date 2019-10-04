@@ -707,8 +707,9 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes([attributes['revision_id'], definition_id,
-                                    usage_id], {_key, attributes[_key]})
+            self.do_set_attributes(node_id=[attributes['revision_id'],
+                                            definition_id, usage_id],
+                                   package={_key: attributes[_key]})
 
     def do_set_attributes(self,
                           node_id: List,
