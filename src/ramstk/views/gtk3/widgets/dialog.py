@@ -91,6 +91,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         :keyword Gtk.Window _parent: the parent Gtk.Window(), if any, for the
             dialog.
         """
+        _criticality = ''
         _image = Gtk.Image()
         _image.set_from_file(icon)
 
@@ -201,9 +202,9 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         """
         GObject.GObject.__init__(self)
         try:
-            _dlgparent = kwargs['dlgparent']
+            _parent: object = kwargs['parent']
         except KeyError:
-            _dlgparent = None
+            _parent = None
 
         self.add_buttons(
             Gtk.STOCK_OK,
@@ -213,11 +214,16 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         )
         self.set_destroy_with_parent(True)
         self.set_modal(True)
-        self.set_property('parent', _dlgparent)
+        self.set_property('parent', _parent)
         self.set_title(title)
 
         self.set_action(Gtk.FileChooserAction.SAVE)
 
+        _filter = Gtk.FileFilter()
+        _filter.set_name(_("RAMSTK Databases"))
+        _filter.add_pattern('*.ramstk')
+        _filter.add_pattern('*.rtk')
+        self.add_filter(_filter)
         _filter = Gtk.FileFilter()
         _filter.set_name(_("Excel Files"))
         _filter.add_pattern('*.xls')

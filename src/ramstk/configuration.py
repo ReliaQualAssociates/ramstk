@@ -497,6 +497,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         value is *en_US*.
     :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
+    RAMSTK_PROG_DIR: str
+    RAMSTK_PROG_INFO: Dict[int, str]
+
     def __init__(self) -> None:
         """Class for user-specific RAMSTK configuration settings."""
         # Initialize private dictionary attributes.

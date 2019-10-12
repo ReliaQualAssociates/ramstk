@@ -226,12 +226,7 @@ class FailureDefinition(RAMSTKListView):
             except ValueError:
                 _row = None
 
-        _row = _model.get_iter_first()
-        self.treeview.expand_all()
-        if _row is not None:
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_model.get_path(_row), None, False)
-            self.treeview.row_activated(_model.get_path(_row), _column)
+        self.do_expand_tree()
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -904,13 +899,7 @@ class UsageProfile(RAMSTKListView):
             _child_tree = tree.subtree(_n.identifier)
             self._do_load_tree(_child_tree, row=_new_row)
 
-        _row = _model.get_iter_first()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
+        self.do_expand_tree()
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """

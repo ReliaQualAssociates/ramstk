@@ -286,6 +286,23 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return _treeview
 
+    def do_expand_tree(self) -> None:
+        """
+        Expands the RAMSTKTreeView.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _row = _model.get_iter_first()
+
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
+
     def do_load_tree(self, tree: treelib.Tree) -> None:
         """
         Load the RAMSTK View RAMSTKTreeView().
