@@ -79,26 +79,11 @@ class RAMSTKListBook(RAMSTKBaseBook):
 
         # Initialize public scalar attributes.
 
-        self.__set_properties()
+        self._set_properties('listbook')
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
         pub.subscribe(self._on_close, 'succeed_closed_program')
-
-    def __set_properties(self) -> None:
-        """
-        Set properties of the RAMSTKListBook and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _tab_position = self.dic_tab_position[
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS['listbook'].lower(
-                )]
-        except KeyError:
-            _tab_position = self._bottom_tab
-        self.set_tab_pos(_tab_position)
 
     def _on_close(self) -> None:
         """

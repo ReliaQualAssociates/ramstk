@@ -41,3 +41,19 @@ class RAMSTKBaseBook(Gtk.Notebook):
         """
         GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
         self.RAMSTK_USER_CONFIGURATION = configuration
+
+    def _set_properties(self, book: str) -> None:
+        """
+        Set properties of the RAMSTK Books and widgets.
+
+        :param str book: which book to set properties for.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _tab_position = self.dic_tab_position[
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS[book].lower(
+                )]
+        except KeyError:
+            _tab_position = self.dic_tab_position['bottom']
+        self.set_tab_pos(_tab_position)

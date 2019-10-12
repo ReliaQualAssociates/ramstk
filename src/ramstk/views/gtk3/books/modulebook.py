@@ -66,7 +66,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # Initialize public scalar attributes.
         self.icoStatus = Gtk.StatusIcon()
 
-        self.__set_properties()
+        self._set_properties('modulebook')
         self.__make_ui()
         self.__set_callbacks()
 
@@ -88,21 +88,6 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
 
         self.show_all()
         self.set_current_page(0)
-
-    def __set_properties(self) -> None:
-        """
-        Set properties of the RAMSTKListBook and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _tab_position = self.dic_tab_position[
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS['modulebook'].
-                lower()]
-        except KeyError:
-            _tab_position = self._bottom_tab
-        self.set_tab_pos(_tab_position)
 
     def __set_callbacks(self) -> None:
         """
