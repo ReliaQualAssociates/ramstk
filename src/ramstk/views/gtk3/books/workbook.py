@@ -15,19 +15,12 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import GObject, Gtk
 from ramstk.views.gtk3.revision import wvwRevisionGD
+from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
-class RAMSTKWorkBook(Gtk.Notebook):
+class RAMSTKWorkBook(RAMSTKBaseBook):
     """This is the Work Book for the pyGTK multiple window interface."""
-
-    dic_tab_position = {
-        'left': Gtk.PositionType.LEFT,
-        'right': Gtk.PositionType.RIGHT,
-        'top': Gtk.PositionType.TOP,
-        'bottom': Gtk.PositionType.BOTTOM
-    }
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -39,8 +32,7 @@ class RAMSTKWorkBook(Gtk.Notebook):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
-        self.RAMSTK_USER_CONFIGURATION = configuration
+        RAMSTKBaseBook.__init__(self, configuration)
 
         # Initialize private dictionary attributes.
         self._dic_work_views = {
