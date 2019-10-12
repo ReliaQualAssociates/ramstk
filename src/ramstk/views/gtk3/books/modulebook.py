@@ -119,9 +119,9 @@ class RAMSTKModuleBook(Gtk.Notebook):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.connect('select-page', self._on_switch_page), )
+            self.connect('select-page', self._on_switch_page))
         self._lst_handler_id.append(
-            self.connect('switch-page', self._on_switch_page), )
+            self.connect('switch-page', self._on_switch_page))
 
     def _on_close(self) -> None:
         """

@@ -25,6 +25,10 @@ class RAMSTKDesktop(Gtk.Window):
     nbkWorkBook: Any = ...
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
+        self.dic_books = None
+        self._on_window_state_event = None
+        self._on_button_press = None
+        self.RAMSTK_CONFIGURATION = None
         ...
     def __make_menu(self) -> None: ...
     def __make_toolbar(self) -> None: ...
@@ -52,4 +56,28 @@ class RAMSTKDesktop(Gtk.Window):
         pass
 
     def __make_menu_tools(self):
+        pass
+
+    def set_title(self, param):
+        pass
+
+    def __make_menu_file(self):
+        pass
+
+    def move(self, param, param1):
+        pass
+
+    def resize(self, _width, _height):
+        pass
+
+    def set_resizable(self, param):
+        pass
+
+    def set_position(self, NONE):
+        pass
+
+    def set_border_width(self, param):
+        pass
+
+    def present(self):
         pass

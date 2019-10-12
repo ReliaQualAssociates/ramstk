@@ -454,8 +454,6 @@ class RAMSTKDesktop(Gtk.Window):
         Set the status message.
 
         :param str status: the status message to display.
-        :param int delay: the length of time (in milliseconds) to display the
-            message.
         :return: None
         :rtype: None
         """
@@ -524,39 +522,6 @@ class RAMSTKDesktop(Gtk.Window):
         self.set_title(
             _("RAMSTK - Analyzing {0:s}").format(
                 self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']))
-
-    def _on_switch_page(self, __notebook: Gtk.Notebook, __page: Gtk.Widget,
-                        page_num: int) -> None:
-        """
-        Handle page changes in the Module Book Gtk.Notebook().
-
-        :param __notebook: the Tree Book notebook widget.
-        :type __notebook: :class:`Gtk.Notebook`
-        :param __page: the newly selected page's child widget.
-        :type __page: :class:`Gtk.Widget`
-        :param int page_num: the newly selected page number.
-            0 = Revision Tree
-            1 = Requirements Tree
-            2 = Function Tree
-            3 = Hardware Tree
-            4 = Software Tree (future)
-            5 = Testing Tree (future)
-            6 = Validation Tree
-            7 = Incident Tree (future)
-            8 = Survival Analyses Tree (future)
-
-        :return: None
-        :rtype: None
-        """
-        # Key errors occur when no RAMSTK Program database has been loaded.  In
-        # that case, select the Revision page to load.
-        try:
-            _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[
-                page_num]
-        except KeyError:
-            _module = 'revision'
-
-        pub.sendMessage('mvwSwitchedPage', module=_module)
 
     @staticmethod
     def _on_window_state_event(window: Gtk.Window,
