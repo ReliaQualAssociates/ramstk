@@ -194,17 +194,14 @@ class RAMSTKDateSelect(Gtk.Dialog):
 
 class RAMSTKFileChooser(Gtk.FileChooserDialog):
     """This is the RAMSTK File Chooser Dialog class."""
-    def __init__(self, title: str, **kwargs: Any) -> None:
+    def __init__(self, title: str, parent: object) -> None:
         """
         Initialize an instance of the RAMSTKFileChooser dialog.
 
         :param str title: the title of the dialog.
+        :param object parent: the parent window for the dialog.
         """
-        GObject.GObject.__init__(self)
-        try:
-            _parent: object = kwargs['parent']
-        except KeyError:
-            _parent = None
+        Gtk.FileChooserDialog.__init__(self, title, parent)
 
         self.add_buttons(
             Gtk.STOCK_OK,
@@ -214,8 +211,6 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         )
         self.set_destroy_with_parent(True)
         self.set_modal(True)
-        self.set_property('parent', _parent)
-        self.set_title(title)
 
         self.set_action(Gtk.FileChooserAction.SAVE)
 
