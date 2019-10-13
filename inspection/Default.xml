@@ -21,6 +21,8 @@
         <option value="ramstk.views.gtk3.GObject" />
         <option value="ramstk.views.gtk3.Gtk" />
         <option value="ramstk.views.gtk3.Pango" />
+        <option value="str.text" />
+        <option value="int.text" />
       </list>
     </option>
   </inspection_tool>
