@@ -132,9 +132,9 @@ class RAMSTKProgramManager:
         """
         Open an RAMSTK Program database for analyses.
 
-        :param program_db: the BaseDatabase() that is to be used to create and
+        :param program_dao: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
-        :type program_db: :class:`ramstk.db.base.BaseDatabase`
+        :type program_dao: :class:`ramstk.db.base.BaseDatabase`
         :param str database: the RFC1738 URL path to the database to create and
             connect to.
         :return: None
@@ -143,7 +143,8 @@ class RAMSTKProgramManager:
         try:
             self.program_dao = program_db
             self.program_dao.do_connect(database)
-            pub.sendMessage('succeed_connect_program_database')
+            pub.sendMessage('succeed_connect_program_database',
+                            dao=self.program_dao)
             pub.sendMessage('request_retrieve_revisions')
         except NoSuchModuleError:
             _d = re.search('://', database)
@@ -156,11 +157,6 @@ class RAMSTKProgramManager:
             _error_msg = (
                 "The database URL {0:s} did not conform to the "
                 "RFC 1738 standard and could not be opened.".format(database))
-            pub.sendMessage('fail_connect_program_database',
-                            error_message=_error_msg)
-        except AttributeError:
-            _error_msg = ("The URL {0:s} for the database was not a "
-                          "string.".format(str(database)))
             pub.sendMessage('fail_connect_program_database',
                             error_message=_error_msg)
 

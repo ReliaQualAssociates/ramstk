@@ -7,6 +7,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package analysis manager."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 import pandas as pd
 from pubsub import pub
@@ -112,21 +115,49 @@ class RAMSTKDataManager():
         # Tree().  Manipulation and viewing of a RAMSTK module tree needs to
         # ignore the root of the tree.
         try:
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=self._root,
-                parent=None,
-            )
-        except (
-                tree.MultipleRootError,
-                tree.NodeIDAbsentError,
-                tree.DuplicatedNodeIdError,
-        ):
+            self.tree.create_node(tag=self._tag,
+                                  identifier=self._root,
+                                  parent=None)
+        except (tree.MultipleRootError, tree.NodeIDAbsentError,
+                tree.DuplicatedNodeIdError):
             pass
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._on_select_revision, 'selected_revision')
         pub.subscribe(self.do_select_matrix, 'request_select_matrix')
         pub.subscribe(self.do_update_matrix, 'request_update_matrix')
+        pub.subscribe(self.do_connect, 'succeed_connect_program_database')
+
+    def _do_set_attributes(self, node_id: int, key: str, value: Any,
+                           table: str, poppers: Dict) -> None:
+        """
+        Set the attributes of the record associated with the Module ID.
+
+        :param int node_id: the ID of the record in the RAMSTK Program
+            database table whose attributes are to be set.
+        :param str key: the key in the attributes dict.
+        :param value: the new value of the attribute to set.
+        :param str table: the name of the table whose attributes are being set.
+        :param dict poppers: the key:value pair containing the attribute and
+            its value to set.
+        :return: None
+        :rtype: None
+        """
+        _attributes = self.do_select(node_id, table=table).get_attributes()
+
+        for _field in poppers[table]:
+            _attributes.pop(_field)
+
+        if key in _attributes:
+            _attributes[key] = value
+
+            self.do_select(node_id, table=table).set_attributes(_attributes)
+
+    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
+        """
+        Set the revision ID for the data manager.
+        """
+        self._revision_id = attributes['revision_id']
 
     @staticmethod
     def do_build_dict(records, id_field):
@@ -197,6 +228,18 @@ class RAMSTKDataManager():
         pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
                         attributes=self.do_select(
                             node_id, table=table).get_attributes())
+
+    def do_get_last_id(self, module: str) -> None:
+        """
+        Broadcast the last used ID as the payload of a message.
+
+        :param str module: the name of the workflow module to retrieve the
+            last ID.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_last_{0:s}_id'.format(module),
+                        last_id=self.last_id)
 
     def do_select(self, node_id, table):
         """
@@ -307,7 +350,6 @@ class RAMSTKDataManager():
         self.dao.do_update()
 
         pub.sendMessage('succeed_update_matrix')
-
 
 
 class RAMSTKMatrixManager():

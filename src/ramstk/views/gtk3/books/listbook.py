@@ -6,22 +6,20 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK GTK3 List Book Module."""
 
+# Standard Library Imports
+from typing import List
+
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
-#from ramstk.gui.gtk.listviews import (
-#    lvwFailureDefinition, lvwStakeholder, lvwUsageProfile,
-#)
-#from ramstk.gui.gtk.matrixviews import (
-#    mtxFunction, mtxHardware, mtxRequirement, mtxValidation,
-#)
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
+from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
+from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
-class RAMSTKListBook(RAMSTKBook):
+class RAMSTKListBook(RAMSTKBaseBook):
     """
     This is the List Book class for the GTK3 multiple window interface.
 
@@ -34,22 +32,25 @@ class RAMSTKListBook(RAMSTKBook):
         Key is the RAMSTK module name; value is a list of Views associated with
         that RAMSTK module.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the RAMSTK List View class.
 
         :param configuration: the RAMSTKUserConfiguration() class instance.
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKBook.__init__(self, configuration)
-        self.dic_books['listbook'] = self
+        RAMSTKBaseBook.__init__(self, configuration)
 
         # Initialize private dictionary attributes.
         self._dic_list_views = {
-            #    'revision': [
-            #        lvwUsageProfile(configuration),
-            #        lvwFailureDefinition(configuration),
-            #    ],
+            'revision': [
+                lvwUsageProfile(configuration, logger),
+                lvwFailureDefinition(configuration, logger)
+            ],
             #    'function':
             #    [mtxFunction(configuration, matrix_type='fnctn_hrdwr')],
             #    'requirement': [
@@ -68,6 +69,7 @@ class RAMSTKListBook(RAMSTKBook):
         }
 
         # Initialize private list attributes.
+        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
 
@@ -77,45 +79,11 @@ class RAMSTKListBook(RAMSTKBook):
 
         # Initialize public scalar attributes.
 
-        self.__set_properties()
-        self.__make_ui()
+        self._set_properties('listbook')
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
         pub.subscribe(self._on_close, 'succeed_closed_program')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.add(self.notebook)
-        self.show_all()
-
-    def __set_properties(self) -> None:
-        """
-        Set properties of the RAMSTKListBook and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _tab_position = self.dic_tab_position[
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS['listbook'].lower(
-                )]
-        except KeyError:
-            _tab_position = self._bottom_tab
-        self.notebook.set_tab_pos(_tab_position)
-
-        self.set_title(_("RAMSTK Lists and Matrices"))
-        self.set_deletable(False)
-        self.set_skip_pager_hint(True)
-        self.set_skip_taskbar_hint(True)
-
-        self.resize((self._width / 3) - 10, (2 * self._height / 7))
-        self.move((2 * self._width / 3), 0)
 
     def _on_close(self) -> None:
         """
@@ -145,7 +113,5 @@ class RAMSTKListBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        RAMSTKBook.on_module_change(self)
-
         for _list in self._dic_list_views[module]:
-            self.notebook.insert_page(_list, _list.hbx_tab_label, -1)
+            self.insert_page(_list, _list.hbx_tab_label, -1)

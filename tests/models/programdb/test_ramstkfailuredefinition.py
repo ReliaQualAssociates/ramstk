@@ -14,7 +14,7 @@ import pytest
 from ramstk.models.programdb import RAMSTKFailureDefinition
 
 ATTRIBUTES = {
-    'definition': b'Failure Definition'
+    'definition': 'Failure Definition'
 }
 
 
@@ -32,7 +32,7 @@ class TestRAMSTKFailureDefinition():
         assert DUT.__tablename__ == 'ramstk_failure_definition'
         assert DUT.revision_id == 1
         assert DUT.definition_id == 1
-        assert DUT.definition == b'Failure Definition'
+        assert DUT.definition == 'Failure Definition'
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -41,7 +41,7 @@ class TestRAMSTKFailureDefinition():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['definition'] == b'Failure Definition'
+        assert _attributes['definition'] == 'Failure Definition'
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -58,7 +58,7 @@ class TestRAMSTKFailureDefinition():
         ATTRIBUTES['definition'] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['definition'] == b'Failure Definition'
+        assert DUT.get_attributes()['definition'] == 'Failure Definition'
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

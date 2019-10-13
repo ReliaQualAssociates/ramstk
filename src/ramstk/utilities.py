@@ -64,7 +64,7 @@ def none_to_default(field: Any, default: Any) -> Any:
     :param field: the original value that may be None.
     :param default: the new, default, value.
     :return: field; the new value if field is None, the old value
-             otherwise.
+        otherwise.
     :rtype: any
     """
     _return = field

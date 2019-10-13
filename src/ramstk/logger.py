@@ -18,7 +18,7 @@ from pubsub import pub
 from ramstk.utilities import file_exists
 
 LOGFORMAT = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    '%(asctime)s - %(name)s - %(levelname)s - %(lineno)s : %(message)s')
 
 
 class RAMSTKLogManager:
@@ -45,31 +45,40 @@ class RAMSTKLogManager:
         self.log_file = log_file
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_log_fail_message,
+                      'fail_connect_program_database')
+        pub.subscribe(self._do_log_fail_message, 'fail_delete_environment')
+        pub.subscribe(self._do_log_fail_message,
+                      'fail_delete_failure_definition')
         pub.subscribe(self._do_log_fail_message, 'fail_delete_fmea')
+        pub.subscribe(self._do_log_fail_message, 'fail_delete_function')
+        pub.subscribe(self._do_log_fail_message, 'fail_delete_hazard')
+        pub.subscribe(self._do_log_fail_message, 'fail_delete_mission')
+        pub.subscribe(self._do_log_fail_message, 'fail_delete_mission_phase')
+        pub.subscribe(self._do_log_fail_message, 'fail_delete_revision')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_action')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_cause')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_control')
+        pub.subscribe(self._do_log_fail_message, 'fail_insert_environment')
+        pub.subscribe(self._do_log_fail_message,
+                      'fail_insert_failure_definition')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_mechanism')
+        pub.subscribe(self._do_log_fail_message, 'fail_insert_mission')
+        pub.subscribe(self._do_log_fail_message, 'fail_insert_mission_phase')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_mode')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_fmea')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_function')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_hazard')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_function')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_hazard')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_function')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_hardware')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_validation')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_stakeholder')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_revision')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_environment')
-        pub.subscribe(self._do_log_fail_message,
-                      'fail_insert_failure_definition')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_mission')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_mission_phase')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_requirement')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_opload')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_opstress')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_test_method')
+        pub.subscribe(self._do_log_fail_message, 'fail_update_fmea')
+        pub.subscribe(self._do_log_fail_message, 'fail_update_function')
+        pub.subscribe(self._do_log_fail_message, 'fail_update_revision')
 
         if file_exists(self.log_file):
             os.remove(self.log_file)
@@ -89,7 +98,7 @@ class RAMSTKLogManager:
         self.loggers[__name__].warning(error_message)
 
     @staticmethod
-    def _get_console_handler():
+    def _get_console_handler() -> logging.Handler:
         """
         Create the log handler for console output.
 
@@ -101,7 +110,7 @@ class RAMSTKLogManager:
 
         return _c_handler
 
-    def _get_file_handler(self):
+    def _get_file_handler(self) -> logging.Handler:
         """
         Create the log handler for file output.
 
@@ -116,7 +125,7 @@ class RAMSTKLogManager:
     def do_create_logger(self,
                          logger_name: str,
                          log_level: str,
-                         to_tty: bool = False) -> logging.Logger:
+                         to_tty: bool = False) -> None:
         """
         Create a logger instance.
 

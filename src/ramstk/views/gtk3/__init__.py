@@ -1,4 +1,4 @@
-# pylint: disable=unused-import
+# pylint: disable=unused-import, wrong-import-position
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.__init__.py is part of the RAMSTK Project
@@ -12,7 +12,7 @@ import gettext
 import sys
 
 try:
-    import gi   # isort:skip
+    import gi  # isort:skip
     gi.require_version('Gdk', '3.0')
     gi.require_version('Gtk', '3.0')
 except ImportError:
@@ -20,4 +20,6 @@ except ImportError:
     sys.exit(1)
 from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango  # isort:skip
 
-_ = gettext.gettext
+_ = gettext.gettext  # isort:skip
+
+from .desktop import RAMSTKDesktop  # isort:skip

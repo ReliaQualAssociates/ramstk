@@ -7,7 +7,7 @@
 """RAMSTKRevision Table Module."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, Integer, String
+from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -54,7 +54,7 @@ class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseTable):
         'name': '',
         'reliability_logistics': 1.0,
         'reliability_mission': 1.0,
-        'remarks': b'',
+        'remarks': '',
         'total_part_count': 1,
         'revision_code': '',
         'program_time': 0.0,
@@ -149,7 +149,7 @@ class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseTable):
                                  nullable=False,
                                  default=__defaults__['reliability_mission'])
     remarks = Column('fld_remarks',
-                     BLOB,
+                     String,
                      nullable=False,
                      default=__defaults__['remarks'])
     total_part_count = Column('fld_total_part_count',

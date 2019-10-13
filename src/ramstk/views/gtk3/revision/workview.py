@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.Revision.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.revision.workviews.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Revision Work View."""
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK GTK3 Revision Work View."""
+
+# Standard Library Imports
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.gui.gtk.ramstk import RAMSTKEntry, RAMSTKLabel, RAMSTKTextView
-from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
-
-# RAMSTK Local Imports
-from .WorkView import RAMSTKWorkView
-
-# from Assistants import AddRevision
+from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3 import Gdk, Gtk, _
+from ramstk.views.gtk3.widgets import (
+    RAMSTKEntry, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView
+)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -44,14 +46,21 @@ class GeneralData(RAMSTKWorkView):
     # Define private list attributes.
     _lst_labels = [_("Revision Code:"), _("Revision Name:"), _("Remarks:")]
 
-    def __init__(self, configuration, **kwargs):
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Revision Work View general data page.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKWorkView.__init__(self, configuration, module='revision')
+        RAMSTKWorkView.__init__(self, configuration, logger, module='revision')
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
 
         # Initialize private dictionary attributes.
 
@@ -77,31 +86,32 @@ class GeneralData(RAMSTKWorkView):
         pub.subscribe(self._do_load_page, 'selected_revision')
         pub.subscribe(self._on_edit, 'mvw_editing_revision')
 
-    def __make_ui(self):
+    def __make_ui(self) -> None:
         """
         Create the Revision Work View general data page.
 
-        :return: _frame; the Gtk.Frame() to embed in the notebook page.
-        :rtype: :class:`Gtk.Frame`
+        :return: None
+        :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = RAMSTKWorkView.make_ui(self, icons=[], tooltips=[], callbacks=[])
+        (_x_pos, _y_pos, _fixed) = RAMSTKWorkView.make_ui(self,
+                                                          icons=[],
+                                                          tooltips=[],
+                                                          callbacks=[])
 
         _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
 
-        _label = RAMSTKLabel(
-            _("General\nData"),
+        _label = RAMSTKLabel(_("General\nData"))
+        _label.do_set_properties(
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
             tooltip=_(
-                "Displays general information for the selected Revision",
-            ),
-        )
+                "Displays general information for the selected Revision"))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
-    def __set_callbacks(self):
+    def __set_callbacks(self) -> None:
         """
         Set the callback methods and functions.
 
@@ -109,18 +119,13 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.txtName.connect('focus-out-event', self._on_focus_out, 0),
-        )
+            self.txtName.connect('focus-out-event', self._on_focus_out, 0))
+        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
+            'changed', self._on_focus_out, None, 1))
         self._lst_handler_id.append(
-            self.txtRemarks.do_get_buffer().connect(
-                'changed', self._on_focus_out, 1,
-            ),
-        )
-        self._lst_handler_id.append(
-            self.txtCode.connect('focus-out-event', self._on_focus_out, 2),
-        )
+            self.txtCode.connect('focus-out-event', self._on_focus_out, 2))
 
-    def __set_properties(self):
+    def __set_properties(self) -> None:
         """
         Set the properties of the General Data Work View and widgets.
 
@@ -129,21 +134,16 @@ class GeneralData(RAMSTKWorkView):
         """
         # ----- ENTRIES
         self.txtCode.do_set_properties(
-            width=125, tooltip=_("A unique code for the selected revision."),
-        )
+            width=125, tooltip=_("A unique code for the selected revision."))
         self.txtName.do_set_properties(
-            width=800, tooltip=_("The name of the selected revision."),
-        )
+            width=800, tooltip=_("The name of the selected revision."))
         self.txtRemarks.do_set_properties(
             height=100,
             width=800,
-            tooltip=_(
-                "Enter any remarks associated with the "
-                "selected revision.",
-            ),
-        )
+            tooltip=_("Enter any remarks associated with the "
+                      "selected revision."))
 
-    def _do_clear_page(self):
+    def _do_clear_page(self) -> None:
         """
         Clear the contents of the page.
 
@@ -161,10 +161,12 @@ class GeneralData(RAMSTKWorkView):
         self.txtCode.set_text('')
         self.txtCode.handler_unblock(self._lst_handler_id[2])
 
-    def _do_load_page(self, attributes):
+    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the Revision General Data page.
 
+        :param dict attributes: the Revision attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -173,15 +175,16 @@ class GeneralData(RAMSTKWorkView):
         RAMSTKWorkView.on_select(
             self,
             title=_("Analyzing Revision {0:s} - {1:s}").format(
-                str(attributes['revision_code']), str(attributes['name']),
-            ),
-        )
+                str(attributes['revision_code']), str(attributes['name'])))
 
-        self.txtName.do_update(str(attributes['name']), self._lst_handler_id[0])
-        self.txtRemarks.do_update(str(attributes['remarks']), self._lst_handler_id[1])
-        self.txtCode.do_update(str(attributes['revision_code']), self._lst_handler_id[2])
+        self.txtName.do_update(str(attributes['name']),
+                               self._lst_handler_id[0])
+        self.txtRemarks.do_update(str(attributes['remarks']),
+                                  self._lst_handler_id[1])
+        self.txtCode.do_update(str(attributes['revision_code']),
+                               self._lst_handler_id[2])
 
-    def _do_request_update(self, __button):
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
         Request to save the currently selected Revision.
 
@@ -194,7 +197,7 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_update_revision', node_id=self._revision_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _do_request_update_all(self, __button):
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
         Request to save all the Revisions.
 
@@ -207,7 +210,7 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_update_all_revisions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
+    def _on_edit(self, node_id: List, package: Dict) -> None:
         """
         Update the Revision Work View Gtk.Widgets().
 
@@ -215,27 +218,30 @@ class GeneralData(RAMSTKWorkView):
         to the Revision data model attributes.  This method is called whenever
         an attribute is edited in a different RAMSTK View.
 
-        :param int module_id: the ID of the Revision being edited.  This
-                              parameter is required to allow the PyPubSub
-                              signals to call this method and the
-                              request_set_attributes() method in the
-                              RAMSTKDataController.
-        :param str key: the key in the Revision attributes list of the
-                        attribute that was edited.
-        :param str value: the new text to update the Gtk.Widget() with.
+        :param list node_id: a list of the ID's of the record in the RAMSTK
+            Program database table whose attributes are to be set.  The list is:
+
+                0 - Revision ID
+                1 - Failure Definition ID
+                2 - Usage ID
+
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
+        _module_id = node_id[0]
+        [[_key, _value]] = package.items()
         _dic_switch = {
             'name': [self.txtName.do_update, 0],
             'remarks': [self.txtRemarks.do_update, 1],
-            'revision_code': [self.txtCode.do_update, 2],
+            'revision_code': [self.txtCode.do_update, 2]
         }
 
-        (_function, _id) = _dic_switch.get(key)
-        _function(value, self._lst_handler_id[_id])
+        _function, _id = _dic_switch.get(_key)
+        _function(_value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry, index):
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -251,12 +257,11 @@ class GeneralData(RAMSTKWorkView):
         :param __event: the Gdk.EventFocus that triggerd the signal.
         :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Revision class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Entry().
+            associated with the data from the calling Gtk.Entry().
         :return: None
         :rtype: None
         """
-        _dic_keys = {0: 'name', 1: 'remarks', 2: 'code'}
+        _dic_keys = {0: 'name', 1: 'remarks', 2: 'revision_code'}
         try:
             _key = _dic_keys[index]
         except KeyError:
@@ -266,7 +271,7 @@ class GeneralData(RAMSTKWorkView):
 
         if index in [0, 2]:
             try:
-                _new_text = str(entry.get_text())
+                _new_text: str = str(entry.get_text())
             except ValueError:
                 _new_text = ''
         else:
@@ -275,11 +280,8 @@ class GeneralData(RAMSTKWorkView):
             except ValueError:
                 _new_text = ''
 
-        pub.sendMessage(
-            'wvw_editing_revision',
-            module_id=self._revision_id,
-            key=_key,
-            value=_new_text,
-        )
+        pub.sendMessage('wvw_editing_revision',
+                        node_id=[self._revision_id, -1, ''],
+                        package={_key: _new_text})
 
         entry.handler_unblock(self._lst_handler_id[index])

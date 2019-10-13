@@ -246,11 +246,12 @@ INSERT INTO "ramstk_environment" VALUES(3,3,'Condition Name 3','Units',0.0,0.0,0
 CREATE TABLE ramstk_failure_definition (
     fld_revision_id INTEGER,
     fld_definition_id INTEGER NOT NULL,
-    fld_definition BLOB,
+    fld_definition VARCHAR(1024),
     PRIMARY KEY (fld_definition_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_failure_definition" VALUES(1,1,X'4661696C75726520446566696E6974696F6E');
+INSERT INTO "ramstk_failure_definition" VALUES(1,1,'Failure Definition');
+INSERT INTO "ramstk_failure_definition" VALUES(1,2,'Failure Definition');
 CREATE TABLE ramstk_function (
     fld_revision_id INTEGER,
     fld_function_id INTEGER NOT NULL,

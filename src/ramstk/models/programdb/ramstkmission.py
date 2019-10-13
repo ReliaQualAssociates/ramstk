@@ -7,7 +7,7 @@
 """RAMSTKMission Table Module."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -24,7 +24,7 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'description': b'',
+        'description': '',
         'mission_time': 0.0,
         'time_units': 'hours'
     }
@@ -45,7 +45,7 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseTable):
         nullable=False,
     )
     description = Column('fld_description',
-                         BLOB,
+                         String,
                          default=__defaults__['description'])
     mission_time = Column('fld_mission_time',
                           Float,

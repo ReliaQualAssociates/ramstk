@@ -39,7 +39,7 @@ def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int,
             * *wrap* (bool) -- boolean indicating whether the label text should
                 wrap or not.
 
-    :return: (_int_max_x, _lst_y_pos)
+    :return: (_max_x, _lst_y_pos)
         the width of the label with the longest text and a list of the y
         position for each label in the container.  Use this list to place
         Gtk.Entry(), Gtk.ComboBox(), etc. so they line up with their
