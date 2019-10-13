@@ -39,6 +39,7 @@ _templates/
 # RAMSTK specific directories and files to ignore
 .gtm/
 .reports/
+out/
 *.csv
 *.glade
 *.html
