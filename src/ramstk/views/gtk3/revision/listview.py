@@ -220,7 +220,7 @@ class FailureDefinition(RAMSTKListView):
             _attributes: Tuple[int, int, str] = (0, 0, '')
             if _entity is not None:
                 _attributes = (_entity.revision_id, _entity.definition_id,
-                               _entity.definition.decode('utf-8'))
+                               _entity.definition)
             try:
                 _row = _model.append(_attributes)
             except ValueError:
@@ -1129,7 +1129,7 @@ class UsageProfile(RAMSTKListView):
         try:
             _key = _dic_keys[_level][position]
             RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
-            pub.sendMessage('lvw_editing_failure_definition',
+            pub.sendMessage('lvw_editing_usage_profile',
                             node_id=[self._revision_id, -1, _node_id],
                             package={_key: new_text})
         except KeyError:

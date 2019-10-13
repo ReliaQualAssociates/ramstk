@@ -140,7 +140,7 @@ class TestSelectMethods():
 
         assert isinstance(_failure_definition, dict)
         assert isinstance(_failure_definition[1], RAMSTKFailureDefinition)
-        assert _failure_definition[1].definition == b'Failure Definition'
+        assert _failure_definition[1].definition == 'Failure Definition'
 
     @pytest.mark.integration
     def test_do_select_usage_profile(self, test_program_dao):
@@ -370,7 +370,7 @@ class TestGetterSetter():
     def on_succeed_get_failure_definition_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes[1].revision_id == 1
-        assert attributes[1].definition == b'Failure Definition'
+        assert attributes[1].definition == 'Failure Definition'
         print(
             "\033[36m\nsucceed_get_failure_definitions_attributes topic was broadcast"
         )
@@ -512,7 +512,7 @@ class TestGetterSetter():
                             'revision_code': '1',
                             'remarks': b'These are remarks added by a test.',
                             'total_part_count': 28,
-                            'definition': b'Failure Definition',
+                            'definition': 'Failure Definition',
                             'phase_end': 0.0
                         },
                         definition_id=1,
@@ -524,7 +524,7 @@ class TestGetterSetter():
         assert DUT.do_select(1, table='revision').total_part_count == 28
         assert DUT.do_select(
             1,
-            table='failure_definitions')[1].definition == b'Failure Definition'
+            table='failure_definitions')[1].definition == 'Failure Definition'
         assert DUT.do_select(
             1, table='usage_profile').get_node('1.1').data.phase_end == 0.0
 
@@ -708,7 +708,7 @@ class TestUpdateMethods():
         _revision = DUT.do_select(1, table='revision')
         _revision.name = 'Test Revision'
         _failure_definition = DUT.do_select(1, table='failure_definitions')
-        _failure_definition[1].definition = b'Failure Definition'
+        _failure_definition[1].definition = 'Failure Definition'
         _usage_profile = DUT.do_select(1, table='usage_profile')
         _usage_profile.get_node('1.1').data.phase_end = 0.0
         DUT.do_update(1)
@@ -718,7 +718,7 @@ class TestUpdateMethods():
 
         assert _revision.name == 'Test Revision'
         _failure_definition = DUT.do_select(1, table='failure_definitions')
-        assert _failure_definition[1].definition == b'Failure Definition'
+        assert _failure_definition[1].definition == 'Failure Definition'
         _usage_profile = DUT.do_select(1, table='usage_profile')
         assert _usage_profile.get_node('1.1').data.phase_end == 0.0
 

@@ -8,7 +8,7 @@
 """RAMSTKFailureDefinition Table Module."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -23,7 +23,7 @@ class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseTable):
     This table shares a Many-to-One relationship with ramstk_revision.
     """
 
-    __defaults__ = {'definition': b'Failure Definition'}
+    __defaults__ = {'definition': 'Failure Definition'}
     __tablename__ = 'ramstk_failure_definition'
     __table_args__ = {'extend_existing': True}
 
@@ -42,7 +42,7 @@ class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseTable):
     )
 
     definition = Column('fld_definition',
-                        BLOB,
+                        String,
                         default=__defaults__['definition'])
 
     # Define the relationships to other tables in the RAMSTK Program database.

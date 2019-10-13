@@ -298,8 +298,7 @@ class DataManager(RAMSTKDataManager):
 
         return _tree
 
-    def _do_set_failure_definition(self, node_id: int, key: str, value: Any,
-                                   definition_id: int) -> None:
+    def _do_set_failure_definition(self, node_id: List, package: Dict) -> None:
         """
         Set the attributes of the record associated with definition ID.
 
@@ -307,33 +306,31 @@ class DataManager(RAMSTKDataManager):
         since the failure definitions are carried in a dict and we need to
         select the correct record to update.
 
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :param int definition_id: the failure definition ID if the attribute
-            being set is a failure definition attribute.
+        :param list node_id: the ID of the revision and the failure
+            definition in the RAMSTK Program database table whose attributes are
+            to be set.
+        :param dict package: the key:value pair of the attribute to set.
         :return: None
         :rtype: None
         """
         try:
             _attributes = self.do_select(
-                node_id,
-                table='failure_definitions')[definition_id].get_attributes()
+                node_id[0],
+                table='failure_definitions')[node_id[1]].get_attributes()
             _attributes.pop('revision_id')
             _attributes.pop('definition_id')
         except KeyError:
             _attributes = {}
 
-        if key in _attributes:
-            _attributes[key] = value
-            self.do_select(
-                node_id,
-                table='failure_definitions')[definition_id].set_attributes(
-                    _attributes)
+        for _key in list(package.keys()):
+            if _key in _attributes:
+                _attributes[_key] = package[_key]
+                self.do_select(
+                    node_id[0],
+                    table='failure_definitions')[node_id[1]].set_attributes(
+                        _attributes)
 
-    def _do_set_usage_profile(self, node_id: int, key: str, value: Any,
-                              usage_id: str) -> None:
+    def _do_set_usage_profile(self, node_id: List, package: Dict) -> None:
         """
         Set the attributes of the record associated with usage ID.
 
@@ -341,37 +338,35 @@ class DataManager(RAMSTKDataManager):
         since the usage profile is carried as a treelib Tree() and we need to
         select the correct node (record) to update.
 
-        :param int node_id: the ID of the revision in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :param str usage_id: the usage profile ID of the element (mission,
-            mission phase, or environment) whose attribute is being set.
+        :param list node_id: the ID of the revision and the usage profile in
+            the RAMSTK Program database table whose attributes are to be set.
+        :param dict package: the key:value pair of the attribute to set.
         :return: None
         :rtype: None
         """
         try:
-            _attributes = self.do_select(node_id,
+            _attributes = self.do_select(node_id[0],
                                          table='usage_profile').get_node(
-                                             usage_id).data.get_attributes()
+                                             node_id[2]).data.get_attributes()
 
-            if len(usage_id.split('.')) == 1:
+            if len(node_id[2].split('.')) == 1:
                 _attributes.pop('revision_id')
                 _attributes.pop('mission_id')
-            elif len(usage_id.split('.')) == 2:
+            elif len(node_id[2].split('.')) == 2:
                 _attributes.pop('mission_id')
                 _attributes.pop('phase_id')
-            elif len(usage_id.split('.')) == 3:
+            elif len(node_id[2].split('.')) == 3:
                 _attributes.pop('phase_id')
                 _attributes.pop('environment_id')
 
         except (AttributeError, KeyError):
             _attributes = {}
 
-        if key in _attributes:
-            _attributes[key] = value
-            self.do_select(node_id, table='usage_profile').get_node(
-                usage_id).data.set_attributes(_attributes)
+        for _key in list(package.keys()):
+            if _key in _attributes:
+                _attributes[_key] = package[_key]
+                self.do_select(node_id[0], table='usage_profile').get_node(
+                    node_id[2]).data.set_attributes(_attributes)
 
     def _do_update_all_failure_definition(self, revision_id: int) -> None:
         """
@@ -728,19 +723,15 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _node_id = node_id[0]
-        _definition_id = node_id[1]
-        _usage_id = node_id[2]
         [[_key, _value]] = package.items()
 
         for _table in ['revision', 'failure_definitions', 'usage_profile']:
             if _table == 'failure_definitions':
-                self._do_set_failure_definition(_node_id, _key, _value,
-                                                _definition_id)
+                self._do_set_failure_definition(node_id, package)
             elif _table == 'usage_profile':
-                self._do_set_usage_profile(_node_id, _key, _value, _usage_id)
+                self._do_set_usage_profile(node_id, package)
             else:
-                _attributes = self.do_select(_node_id,
+                _attributes = self.do_select(node_id[0],
                                              table=_table).get_attributes()
                 if _key in _attributes:
                     _attributes[_key] = _value
@@ -750,7 +741,7 @@ class DataManager(RAMSTKDataManager):
                     except KeyError:
                         pass
 
-                    self.do_select(_node_id,
+                    self.do_select(node_id[0],
                                    table=_table).set_attributes(_attributes)
 
     def do_update(self, node_id: int) -> None:

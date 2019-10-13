@@ -204,7 +204,7 @@ INSERT INTO 'ramstk_environment' VALUES (1,1,'Environment','',0.0,0.0,0.0,0.0,0.
 CREATE TABLE ramstk_failure_definition (
     fld_revision_id INTEGER,
     fld_definition_id INTEGER NOT NULL,
-    fld_definition BLOB,
+    fld_definition VARCHAR(1024),
     PRIMARY KEY (fld_definition_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
