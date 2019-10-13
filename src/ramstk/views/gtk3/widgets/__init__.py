@@ -8,8 +8,10 @@
 """The RAMSTK GTK3 widgets package."""
 
 # RAMSTK Local Imports
-from .basebook import RAMSTKBook
-from .baseview import RAMSTKBaseView
+from .basebook import RAMSTKBaseBook
+from .baseview import (
+    RAMSTKBaseView, RAMSTKListView, RAMSTKModuleView, RAMSTKWorkView
+)
 from .button import (
     RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton, do_make_buttonbox
 )

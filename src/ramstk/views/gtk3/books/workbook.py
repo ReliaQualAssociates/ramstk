@@ -6,39 +6,39 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK GTK3 Work Book Module."""
 
+# Standard Library Imports
+from typing import List
+
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets.basebook import RAMSTKBook
-
-#from ramstk.gui.gtk.workviews import (
-#    wvwAllocation, wvwBurndownCurve, wvwFunctionGD, wvwHardwareAI,
-#    wvwHardwareAR, wvwHardwareGD, wvwHazOps, wvwPoF, wvwRequirementAnalysis,
-#    wvwRequirementGD, wvwRevisionGD, wvwSimilarItem, wvwValidationGD,
-#)
-#from ramstk.gui.gtk.workviews.fmea import wvwDFMECA, wvwFFMEA
+from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.revision import wvwRevisionGD
+from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
-class RAMSTKWorkBook(RAMSTKBook):
+class RAMSTKWorkBook(RAMSTKBaseBook):
     """This is the Work Book for the pyGTK multiple window interface."""
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Work View class.
 
-        :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKBook.__init__(self, configuration)
-        self.dic_books['workbook'] = self
+        RAMSTKBaseBook.__init__(self, configuration)
 
         # Initialize private dictionary attributes.
         self._dic_work_views = {
-            #    'revision': [
-            #        wvwRevisionGD(configuration),
-            #    ],
+            'revision': [
+                wvwRevisionGD(configuration, logger),
+            ],
             #    'function': [
             #        wvwFunctionGD(configuration),
             #        wvwFFMEA(configuration),
@@ -65,6 +65,7 @@ class RAMSTKWorkBook(RAMSTKBook):
         }
 
         # Initialize private list attributes.
+        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
 
@@ -74,47 +75,10 @@ class RAMSTKWorkBook(RAMSTKBook):
 
         # Initialize public scalar attributes.
 
-        self.__set_properties()
-        self.__make_ui()
+        self._set_properties('workbook')
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.add(self.notebook)
-        self.show_all()
-
-    def __set_properties(self) -> None:
-        """
-        Set properties of the RAMSTKListBook and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _tab_position = self.dic_tab_position[
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS['workbook'].lower(
-                )]
-        except KeyError:
-            _tab_position = self._bottom_tab
-        self.notebook.set_tab_pos(_tab_position)
-
-        self.set_title(_("RAMSTK Work Book"))
-        self.set_deletable(False)
-        self.set_skip_pager_hint(True)
-        self.set_skip_taskbar_hint(True)
-
-        _width = self._width - 20
-        _height = (5 * self._height / 8) - 40
-
-        self.resize(_width, _height)
-        self.move(1, (_height / 2) + 100)
 
     def _on_module_change(self, module: str = '') -> None:
         """
@@ -123,7 +87,5 @@ class RAMSTKWorkBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        RAMSTKBook.on_module_change(self)
-
         for _workspace in self._dic_work_views[module]:
-            self.notebook.insert_page(_workspace, _workspace.hbx_tab_label, -1)
+            self.insert_page(_workspace, _workspace.hbx_tab_label, -1)

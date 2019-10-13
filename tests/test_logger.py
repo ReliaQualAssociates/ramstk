@@ -79,7 +79,8 @@ class TestLogManager:
         DUT.do_create_logger(__name__, "INFO", True)
 
         pub.sendMessage('fail_delete_fmea',
-                        error_message=("Attempted to delete non-existent FMEA "
+                        error_message=("Attempted to delete non-existent "
+                                       "FMEA "
                                        "element ID ax."))
         pub.sendMessage('fail_update_fmea',
                         error_message=("Attempted to save non-existent FMEA "
@@ -89,9 +90,9 @@ class TestLogManager:
         _lines = _test_log.readlines()
 
         assert isinstance(DUT.loggers['test_logger'], logging.Logger)
-        assert _lines[0].split('-', 5)[-1].strip() == (
+        assert _lines[0].split('-', 5)[-1].split(':', 1)[-1].strip() == (
             'Attempted to delete non-existent FMEA element ID ax.')
-        assert _lines[1].split('-', 5)[-1].strip() == (
+        assert _lines[1].split('-', 5)[-1].split(':', 1)[-1].strip() == (
             'Attempted to save non-existent FMEA element with FMEA ID ax.')
 
     @pytest.mark.unit
@@ -126,7 +127,7 @@ class TestLogManager:
         _test_log = open(_testlog, 'r')
         _lines = _test_log.readlines()
 
-        assert _lines[0].split('-', 5)[-1].strip() == (
+        assert _lines[0].split('-', 5)[-1].split(':', 1)[-1].strip() == (
             'This is a test INFO level message that should be logged.')
 
     @pytest.mark.unit
@@ -150,9 +151,9 @@ class TestLogManager:
         _test_log = open(_testlog, 'r')
         _lines = _test_log.readlines()
 
-        assert _lines[0].split('-', 5)[-1].strip() == (
+        assert _lines[0].split('-', 5)[-1].split(':', 1)[-1].strip() == (
             'This is a test WARN level message that should be logged.')
-        assert _lines[1].split('-', 5)[-1].strip() == (
+        assert _lines[1].split('-', 5)[-1].split(':', 1)[-1].strip() == (
             'This is a test ERROR level message that should be logged.')
-        assert _lines[2].split('-', 5)[-1].strip() == (
+        assert _lines[2].split('-', 5)[-1].split(':', 1)[-1].strip() == (
             'This is a test CRITICAL level message that should be logged.')

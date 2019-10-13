@@ -233,11 +233,17 @@ class TestUpdateMethods():
         _record = RAMSTKSiteInfo()
         DUT.do_insert(_record)
 
-        _record.function_enabled = 1
-        _record.requirements_enabled = 1
-        _record.hardware_enabled = 1
+        _record.function_enabled = 2
+        _record.requirements_enabled = 3
+        _record.hardware_enabled = 4
 
         assert DUT.do_update() is None
+
+        _record = DUT.session.query(RAMSTKSiteInfo).all()[0]
+
+        assert _record.function_enabled == 2
+        assert _record.requirements_enabled == 3
+        assert _record.hardware_enabled == 4
 
 
 @pytest.mark.usefixtures('test_simple_database')

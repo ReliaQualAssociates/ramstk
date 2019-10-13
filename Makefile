@@ -81,7 +81,7 @@ help:
 	@echo "	TESTOPTS				set additional options to pass to py.test/pytest.  Defaults to $(TESTOPTS)"
 	@echo "	TESTFILE				set the file or directory to test.  Defaults to $(TESTFILE)"
 	@echo "	VIRTENV					set the name of the virtual environment to create/use.  Defaults to $(VIRTENV)."
-	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)"
+	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)."
 
 clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
 
@@ -108,6 +108,7 @@ coverage: clean-test
 	py.test $(TESTOPTS) --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term $(TESTFILE)
 
 depends:
+	pip install -U pip-tools
 	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
 
 mkvenv:
@@ -140,7 +141,7 @@ upgrade:
 	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 # Targets to install and uninstall.
-install: clean
+install: clean-build clean-pyc
 	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
@@ -299,7 +300,7 @@ release: dist
 # This target is for use with IDE integration.
 format:
 	$(info Autoformatting $(SRCFILE)...)
-	isort --atomic --apply --use-parentheses -m5 $(SRCFILE)
+	isort --atomic --apply --use-parentheses --balanced --multi-line 5 $(SRCFILE)
 	yapf -i $(SRCFILE)
 
 # This target is for use with IDE integration.

@@ -27,10 +27,7 @@ from ramstk.controllers import (
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gtk
-from ramstk.views.gtk3.books import (
-    RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
-)
+from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
 
 
 def do_read_site_configuration(logger: Logger) -> RAMSTKSiteConfiguration:
@@ -153,17 +150,12 @@ def the_one_ring() -> None:
     #while Gtk.events_pending():
     #    Gtk.main_iteration()
 
-    sleep(3)
+    sleep(1)
     #splScreen.window.destroy()
 
-    # Create RAMSTK Books.  These need to be initialized after reading the
-    # configuration.
-    #if _app.RAMSTK_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
-    #    pass
-    #else:  # Multiple windows.
-    RAMSTKListBook(user_configuration)
-    RAMSTKModuleBook(user_configuration)
-    RAMSTKWorkBook(user_configuration)
+    # Create the RAMSTK Book.  This needs to be initialized after reading the
+    # configuration and creating the logger.
+    RAMSTKDesktop(user_configuration, _logger)
 
     _logger.do_log_info(__name__, "Launched RAMSTK GUI.")
 

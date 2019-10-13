@@ -36,4 +36,4 @@ def test_do_create_program_db():
         RAMSTKRevision.revision_id == 1).first()
     assert _record.availability_logistics == 1.0
     assert _record.name == ''
-    assert _record.remarks == b''
+    assert _record.remarks == ''

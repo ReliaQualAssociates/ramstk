@@ -6,23 +6,22 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Module Book Module."""
 
+# Standard Library Imports
+from typing import List
+
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-#from ramstk.gui.gtk.assistants import (
-#    CreateProject, ImportProject, OpenProject, Options, Preferences,
-#)
-#from ramstk.gui.gtk.moduleviews import (
-#    mvwFunction, mvwHardware, mvwRequirement, mvwRevision, mvwValidation,
-#)
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
-from ramstk.views.gtk3.widgets.basebook import RAMSTKBook, destroy
+from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3 import Gtk
+from ramstk.views.gtk3.revision import mvwRevision
+from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
-class RAMSTKModuleBook(RAMSTKBook):
+class RAMSTKModuleBook(RAMSTKBaseBook):
     """
     Display Module Views for the RAMSTK modules.
 
@@ -33,19 +32,22 @@ class RAMSTKModuleBook(RAMSTKBook):
         RAMSTK module name; value is the View associated with that RAMSTK
         module.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Module Book class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKBook.__init__(self, configuration)
-        self.dic_books['modulebook'] = self
+        RAMSTKBaseBook.__init__(self, configuration)
 
         # Initialize private dictionary attributes.
         self._dic_module_views = {
-            #    'revision': mvwRevision(configuration),
+            'revision': mvwRevision(configuration, logger),
             #    'requirement': mvwRequirement(configuration),
             #    'function': mvwFunction(configuration),
             #    'hardware': mvwHardware(configuration),
@@ -53,6 +55,7 @@ class RAMSTKModuleBook(RAMSTKBook):
         }
 
         # Initialize private list attributes.
+        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
 
@@ -63,194 +66,13 @@ class RAMSTKModuleBook(RAMSTKBook):
         # Initialize public scalar attributes.
         self.icoStatus = Gtk.StatusIcon()
 
-        self.__set_properties()
+        self._set_properties('modulebook')
         self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_open, 'succeed_retrieve_revisions')
         pub.subscribe(self._on_close, 'succeed_closed_program')
-
-    def __make_menu(self) -> None:
-        """
-        Make the menu for the Module Book.
-
-        :return: None
-        :rtyp:e None
-        """
-        _icon_dir = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-
-        _menu = Gtk.Menu()
-
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/new.png')
-        _menu_item.set_label(_("New _Program"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', CreateProject, self.RAMSTK_USER_CONFIGURATION)
-        _menu.append(_menu_item)
-
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/open.png')
-        _menu_item.set_label(_("_Open"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', OpenProject, self.RAMSTK_USER_CONFIGURATION)
-        _menu.append(_menu_item)
-
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/import.png')
-        _menu_item.set_label(_("_Import Project"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', ImportProject, self.RAMSTK_USER_CONFIGURATION)
-        _menu.append(_menu_item)
-
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/save.png')
-        _menu_item.set_label(_("_Save"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        _menu_item.connect('activate', self._do_request_save_project)
-        _menu.append(_menu_item)
-
-        _menu_item = Gtk.MenuItem(label=_("_Close"), use_underline=True)
-        _menu_item.connect('activate', self._do_request_close_project)
-        _menu.append(_menu_item)
-
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/exit.png')
-        _menu_item.set_label(_("E_xit"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        _menu_item.connect('activate', destroy)
-        _menu.append(_menu_item)
-
-        _mnuFile = Gtk.MenuItem(label=_("_File"), use_underline=True)
-        _mnuFile.set_submenu(_menu)
-
-        # Create the Edit menu.
-        _menu = Gtk.Menu()
-
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/preferences.png')
-        _menu_item.set_label(_("_Preferences"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Preferences, self.RAMSTK_USER_CONFIGURATION)
-        _menu.append(_menu_item)
-
-        _mnuEdit = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
-        _mnuEdit.set_submenu(_menu)
-
-        # Create the Tools menu.
-        _menu = Gtk.Menu()
-        _menu_item = Gtk.ImageMenuItem()
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/options.png')
-        _menu_item.set_label(_("_Options"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Options, self.RAMSTK_USER_CONFIGURATION)
-        _menu.append(_menu_item)
-
-        _mnuTools = Gtk.MenuItem(label=_("_Tools"), use_underline=True)
-        _mnuTools.set_submenu(_menu)
-
-        self.menubar.append(_mnuFile)
-        self.menubar.append(_mnuEdit)
-        self.menubar.append(_mnuTools)
-
-        self.menubar.show_all()
-
-    def __make_toolbar(self) -> None:
-        """
-        Make the toolbar for the Module Book.
-
-        :return: None
-        :rtype: None
-        """
-        _icon_dir = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-
-        _position = 0
-
-        # New file button.
-        _button = Gtk.ToolButton()
-        _button.set_tooltip_text(_("Create a new RAMSTK Program Database."))
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/new.png')
-        _button.set_icon_widget(_image)
-        #_button.connect('clicked', CreateProject, self.RAMSTK_USER_CONFIGURATION)
-        self.toolbar.insert(_button, _position)
-        _position += 1
-
-        # Connect button
-        _button = Gtk.ToolButton()
-        _button.set_tooltip_text(
-            _("Connect to an existing RAMSTK Program Database."), )
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/open.png')
-        _button.set_icon_widget(_image)
-        #_button.connect('clicked', OpenProject, self.RAMSTK_USER_CONFIGURATION)
-        self.toolbar.insert(_button, _position)
-        _position += 1
-
-        # Close button
-        _button = Gtk.ToolButton()
-        _button.set_tooltip_text(_("Closes the open RAMSTK Program Database."))
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/close.png')
-        _button.set_icon_widget(_image)
-        _button.connect('clicked', self._do_request_close_project)
-        self.toolbar.insert(_button, _position)
-        _position += 1
-
-        self.toolbar.insert(Gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Save button
-        _button = Gtk.ToolButton()
-        _button.set_tooltip_text(
-            _("Save the currently open RAMSTK Project Database."))
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/save.png')
-        _button.set_icon_widget(_image)
-        _button.connect('clicked', self._do_request_save_project)
-        self.toolbar.insert(_button, _position)
-        _position += 1
-
-        self.toolbar.insert(Gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Save and quit button
-        _button = Gtk.ToolButton()
-        _button.set_tooltip_text(
-            _("Save the currently open RAMSTK Program Database then quits."))
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/save-exit.png')
-        _button.set_icon_widget(_image)
-        _button.connect('clicked', self._do_request_save_project, True)
-        self.toolbar.insert(_button, _position)
-        _position += 1
-
-        # Quit without saving button
-        _button = Gtk.ToolButton()
-        _button.set_tooltip_text(
-            _("Quits without saving the currently open RAMSTK Program "
-              "Database."))
-        _image = Gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/exit.png')
-        _button.set_icon_widget(_image)
-        _button.connect('clicked', destroy)
-        self.toolbar.insert(_button, _position)
-
-        self.toolbar.show_all()
 
     def __make_ui(self) -> None:
         """
@@ -259,59 +81,13 @@ class RAMSTKModuleBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        self.__make_menu()
-        self.__make_toolbar()
-
-        # TODO: Uncomment when workstream revision module view is updated.
-        #self.notebook.insert_page(
-        #    self._dic_module_views['revision'],
-        #    tab_label=self._dic_module_views['revision'].hbx_tab_label,
-        #    position=0,
-        #)
-
-        self.statusbar.add(self.progressbar)
-        _vbox = Gtk.VBox()
-        _vbox.pack_start(self.menubar, False, False, 0)
-        _vbox.pack_start(self.toolbar, False, False, 0)
-        _vbox.pack_start(self.notebook, True, True, 0)
-        _vbox.pack_start(self.statusbar, False, False, 0)
-
-        self.add(_vbox)
+        self.insert_page(
+            self._dic_module_views['revision'],
+            tab_label=self._dic_module_views['revision'].hbx_tab_label,
+            position=0)
 
         self.show_all()
-        self.notebook.set_current_page(0)
-
-        self.statusbar.push(1, _("Ready"))
-        self._do_set_status_icon()
-
-    def __set_properties(self) -> None:
-        """
-        Set properties of the RAMSTKListBook and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _tab_position = self.dic_tab_position[
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS['modulebook'].
-                lower()]
-        except KeyError:
-            _tab_position = self._bottom_tab
-        self.notebook.set_tab_pos(_tab_position)
-
-        self.set_title(_("RAMSTK Module Book"))
-
-        self.progressbar.set_pulse_step(0.25)
-
-        if self.RAMSTK_USER_CONFIGURATION.RAMSTK_OS == 'Linux':
-            _width = (2 * self._width / 3) - 10
-            _height = 2 * self._height / 7
-        elif self.RAMSTK_USER_CONFIGURATION.RAMSTK_OS == 'Windows':
-            _width = (2 * self._width / 3) - 30
-            _height = 2 * self._height / 7
-
-        self.resize(_width, _height)
-        self.move(0, 0)
+        self.set_current_page(0)
 
     def __set_callbacks(self) -> None:
         """
@@ -321,9 +97,9 @@ class RAMSTKModuleBook(RAMSTKBook):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.notebook.connect('select-page', self._on_switch_page), )
+            self.connect('select-page', self._on_switch_page))
         self._lst_handler_id.append(
-            self.notebook.connect('switch-page', self._on_switch_page), )
+            self.connect('switch-page', self._on_switch_page))
 
     def _on_close(self) -> None:
         """
@@ -333,15 +109,13 @@ class RAMSTKModuleBook(RAMSTKBook):
         :rtype: None
         """
         # Remove all the non-Revision pages.
-        _n_pages = self.notebook.get_n_pages()
+        _n_pages = self.get_n_pages()
         for _page in range(_n_pages - 1):
-            self.notebook.remove_page(-1)
+            self.remove_page(-1)
 
         # Clear the Revision page treeview.
         _model = self._dic_module_views['revision'].treeview.get_model()
         _model.clear()
-
-        self._do_set_status_icon()
 
     def _on_open(self, tree: Tree) -> None:  # pylint: disable=unused-argument
         """
@@ -355,12 +129,11 @@ class RAMSTKModuleBook(RAMSTKBook):
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
 
-            self.notebook.insert_page(_module,
-                                      tab_label=_module.hbx_tab_label,
-                                      position=_key)
+            self.insert_page(_module,
+                             tab_label=_module.hbx_tab_label,
+                             position=_key)
 
-        self.statusbar.pop(1)
-        self._do_set_status_icon(connected=True)
+        pub.sendMessage('mvwSwitchedPage', module='revision')
 
     def _on_switch_page(self, __notebook: Gtk.Notebook, __page: Gtk.Widget,
                         page_num: int) -> None:
@@ -372,16 +145,15 @@ class RAMSTKModuleBook(RAMSTKBook):
         :param __page: the newly selected page's child widget.
         :type __page: :class:`Gtk.Widget`
         :param int page_num: the newly selected page number.
-
-                             0 = Revision Tree
-                             1 = Requirements Tree
-                             2 = Function Tree
-                             3 = Hardware Tree
-                             4 = Software Tree
-                             5 = Testing Tree
-                             6 = Validation Tree
-                             7 = Incident Tree
-                             8 = Survival Analyses Tree
+            0 = Revision Tree
+            1 = Requirements Tree
+            2 = Function Tree
+            3 = Hardware Tree
+            4 = Software Tree (future)
+            5 = Testing Tree (future)
+            6 = Validation Tree
+            7 = Incident Tree (future)
+            8 = Survival Analyses Tree (future)
 
         :return: None
         :rtype: None
@@ -395,63 +167,3 @@ class RAMSTKModuleBook(RAMSTKBook):
             _module = 'revision'
 
         pub.sendMessage('mvwSwitchedPage', module=_module)
-
-    def _do_request_save_project(self, widget: Gtk.Widget,
-                                 end: bool = False) -> None:
-        """
-        Request to save the open RAMSTK Program.
-
-        :param Gtk.Widget widget: the Gtk.Widget() that called this method.
-        :keyword bool end: indicates whether or not to quit RAMSTK after saving
-            the project.
-        :return: None
-        :rtype: None
-        """
-        _message = _("Saving Program Database {0:s}"). \
-            format(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'])
-        self.statusbar.push(2, _message)
-
-        pub.sendMessage('request_save_project')
-
-        self.dic_books['modulebook'].statusbar.pop(2)
-
-        if end:
-            destroy(widget)
-
-    def _do_set_status_icon(self, connected: bool = False) -> None:
-        """
-        Set the status icon in the system tay to indicate connection status.
-
-        :param bool connected: whether or not RAMSTK is connected to a program
-            database.
-        :return: None
-        :rtype: None
-        """
-        if connected:
-            _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
-                '/32x32/db-connected.png'
-            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
-            self.icoStatus.set_from_pixbuf(_icon)
-            self.icoStatus.set_tooltip_markup(
-                _(u"RAMSTK is connected to program database "
-                  u"{0:s}.".format(
-                      self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
-        else:
-            _icon = self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
-                '/32x32/db-disconnected.png'
-            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
-            self.icoStatus.set_from_pixbuf(_icon)
-            self.icoStatus.set_tooltip_markup(
-                _(u"RAMSTK is not currently connected to a "
-                  u"project database."))
-
-    @staticmethod
-    def _do_request_close_project(__widget: Gtk.Widget) -> None:
-        """
-        Request to close the open RAMSTK Program.
-
-        :param Gtk.Widget __widget: the Gtk.Widget() that called this method.
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('request_close_project')

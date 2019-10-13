@@ -8,7 +8,7 @@
 """RAMSTKMissionPhase Table Module."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -25,7 +25,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'description': b'',
+        'description': '',
         'name': '',
         'phase_start': 0.0,
         'phase_end': 0.0
@@ -48,7 +48,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
     )
 
     description = Column('fld_description',
-                         BLOB,
+                         String,
                          default=__defaults__['description'])
     name = Column('fld_name', String(256), default=__defaults__['name'])
     phase_start = Column('fld_phase_start',

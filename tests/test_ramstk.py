@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name, too-many-public-methods
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.test_ramstk.py is part of The RAMSTK Project
@@ -22,7 +22,8 @@ from ramstk.ramstk import RAMSTKProgramManager
                          'test_toml_user_configuration')
 class TestProgramManager():
     """Test class for the RAMSTK Program Manager."""
-    def on_succeed_open_program(self):
+    def on_succeed_open_program(self, dao):
+        assert isinstance(dao, BaseDatabase)
         print("\033[36m\nsucceed_connect_program_database topic was broadcast")
 
     def on_fail_open_program_bad_url(self, error_message):
@@ -160,14 +161,16 @@ class TestProgramManager():
                       'fail_connect_program_database')
 
         DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), 8742.11)
+
+        with pytest.raises(AttributeError):
+            DUT.do_open_program(BaseDatabase(), 8742.11)
 
         pub.unsubscribe(self.on_fail_open_program_non_string_url,
                         'fail_connect_program_database')
 
     @pytest.mark.unit
     def test_do_close_program(self, test_program_dao):
-        """do_close_program() should connect to the test program database and broadcast the success message."""
+        """do_close_program() should disconnect from the test program database and broadcast the success message."""
         pub.subscribe(self.on_succeed_close_program,
                       'succeed_disconnect_program_database')
 
@@ -240,11 +243,15 @@ class TestProgramManager():
         pub.subscribe(self.on_succeed_create_program,
                       'succeed_create_program_database')
 
+        _program_db = BaseDatabase()
+
         DUT = RAMSTKProgramManager()
         DUT.user_configuration = test_toml_user_configuration
-        DUT.do_create_program(BaseDatabase(), '/tmp/_ramstk_program_db.ramstk')
+        DUT.do_create_program(_program_db, '/tmp/_ramstk_program_db.ramstk')
 
         assert os.path.exists('/tmp/_ramstk_program_db.ramstk')
 
         pub.unsubscribe(self.on_succeed_create_program,
                         'succeed_create_program_database')
+
+        os.remove('/tmp/_ramstk_program_db.ramstk')

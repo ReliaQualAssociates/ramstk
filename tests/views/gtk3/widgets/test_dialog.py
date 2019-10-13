@@ -53,7 +53,7 @@ class TestRAMSTKFileChooser():
     @pytest.mark.gui
     def test_create_file_chooser(self):
         """__init__() should create a RAMSTKFileChooser."""
-        DUT = RAMSTKFileChooser("Test File Chooser Dialog")
+        DUT = RAMSTKFileChooser("Test File Chooser Dialog", None)
 
         assert isinstance(DUT, RAMSTKFileChooser)
         assert DUT.get_destroy_with_parent()
