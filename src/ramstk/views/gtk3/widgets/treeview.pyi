@@ -16,7 +16,10 @@ class RAMSTKTreeView(Gtk.TreeView):
     widgets: List[str] = ...
     pixbuf_col: int = ...
     index_col: int = ...
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        self._resize_wrap = None
+        self._format_cell = None
+        ...
     def do_parse_format(self, fmt_path: str, fmt_file: str, pixbuf: bool=..., indexed: bool=...) -> None: ...
     def do_set_editable_columns(self) -> None: ...
     def do_set_visible_columns(self, **kwargs: Any) -> None: ...
@@ -31,6 +34,27 @@ class RAMSTKTreeView(Gtk.TreeView):
     def handler_unblock(self, param: int) -> object:
         pass
 
+    def _do_set_properties(self, _cell, bg_color, fg_color, param):
+        pass
+
+    def _do_make_cell(self, _widget):
+        pass
+
+    def _do_make_column(self, param, param1, param2):
+        pass
+
+    def _do_make_combo_cell(self):
+        pass
+
+    def _do_make_spin_cell(self):
+        pass
+
+    def _do_make_toggle_cell(self):
+        pass
+
+    def _do_make_text_cell(self, param):
+        pass
+
 
 class CellRendererML(Gtk.CellRendererText):
     textedit_window: Any = ...
@@ -39,6 +63,14 @@ class CellRendererML(Gtk.CellRendererText):
     treeiter: Any = ...
     textedit: Any = ...
     textbuffer: Any = ...
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        self._keyhandler = None
+        ...
     def do_get_size(self, widget: Any, cell_area: Any): ...
     def do_start_editing(self, __event: Any, treeview: Any, path: Any, __background_area: Any, cell_area: Any, __flags: Any) -> None: ...
+
+    def get_property(self, param):
+        pass
+
+    def emit(self, param, path, text):
+        pass

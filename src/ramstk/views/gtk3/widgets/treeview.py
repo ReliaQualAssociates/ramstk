@@ -4,12 +4,12 @@
 #       ramstk.views.gtk3.widgets.treeview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKTreeView Module."""
 
 # Standard Library Imports
 import datetime
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Union
 
 # Third Party Imports
 import defusedxml.lxml as lxml
@@ -57,218 +57,9 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.index_col: int = 0
         self.selection = self.get_selection()
 
-    def do_parse_format(self,
-                        fmt_path: str,
-                        fmt_file: str,
-                        pixbuf: bool = False,
-                        indexed: bool = False) -> None:
-        """
-        Parse the format file for the RAMSTKTreeView().
-
-        :param str fmt_path: the base XML path in the format file to read.
-        :param str fmt_file: the absolute path to the format file to read.
-        :keyword bool pixbuf: indicates whether or not to prepend a PixBuf
-            column to the Gtk.TreeModel().
-        :keyword bool indexed: indicates whether or not to append a column to
-            the Gtk.TreeModel() to hold indexing information.
-        :return: None
-        :rtype: None
-        """
-        # Retrieve the column heading text from the format file.
-        self.headings = lxml.parse(fmt_file).xpath(fmt_path + "/usertitle")
-
-        # Retrieve the column datatype from the format file.
-        self.datatypes = lxml.parse(fmt_file).xpath(fmt_path + "/datatype")
-
-        # Retrieve the column position from the format file.
-        _position = lxml.parse(fmt_file).xpath(fmt_path + "/position")
-
-        # Retrieve the cell renderer type from the format file.
-        self.widgets = lxml.parse(fmt_file).xpath(fmt_path + "/widget")
-
-        # Retrieve whether or not the column is editable from the format file.
-        self.editable = lxml.parse(fmt_file).xpath(fmt_path + "/editable")
-
-        # Retrieve whether or not the column is visible from the format file.
-        self.visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
-
-        # Initialize public scalar instance attributes.
-        _keys = lxml.parse(fmt_file).xpath(fmt_path + "/key")
-
-        # Create a list of GObject datatypes to pass to the model.
-        for i in range(len(self.datatypes)):  # pylint: disable=C0200
-            self.datatypes[i] = self.datatypes[i].text
-            self.editable[i] = integer_to_boolean(int(self.editable[i].text))
-            self.headings[i] = self.headings[i].text.replace("  ", "\n")
-            self.order.append(int(_position[i].text))
-            self.visible[i] = integer_to_boolean(int(self.visible[i].text))
-            self.widgets[i] = self.widgets[i].text
-            _position[i] = int(_position[i].text)
-            # Not all format files will have keys.
-            try:
-                _keys[i] = _keys[i].text
-            except IndexError:
-                pass
-
-        # Append entries to each list if this RAMSTKTreeView is to display an
-        # icon at the beginning of the row (Usage Profile, Hardware, etc.)
-        if pixbuf:
-            self.datatypes.append('pixbuf')
-            self.editable.append(0)
-            self.headings.append('')
-            self.order.append(len(self.order))
-            self.pixbuf_col = int(len(self.datatypes)) - 1
-            self.visible.append(True)
-            self.widgets.append('pixbuf')
-
-        # We may want to add a column to hold indexing information for program
-        # control.  This is used, for example, by aggregate data views to hold
-        # the Node ID from the PyPubSub Tree().
-        if indexed:
-            self.datatypes.append('gchararray')
-            self.editable.append(0)
-            self.headings.append('')
-            self.order.append(len(self.order))
-            self.visible.append(False)
-            self.widgets.append('text')
-            self.index_col = int(len(self.datatypes)) - 1
-
-        # Sort each of the lists according to the desired sequence provided in
-        # the _position list.  This is necessary to allow for user-specific
-        # ordering of columns in the RAMSTKTreeView.
-        self.datatypes = [
-            x for _, x in sorted(zip(self.order, self.datatypes))
-        ]
-        self.editable = [x for _, x in sorted(zip(self.order, self.editable))]
-        self.headings = [x for _, x in sorted(zip(self.order, self.headings))]
-        self.korder = [x for _, x in sorted(zip(_position, _keys))]
-        self.visible = [x for _, x in sorted(zip(self.order, self.visible))]
-        self.widgets = [x for _, x in sorted(zip(self.order, self.widgets))]
-
-        # Add a column at the end to hold a string representation of the
-        # attributes dict.
-        self.datatypes.append('gchararray')
-        self.editable.append(False)
-        self.headings.append('Attributes')
-        self.korder.append('dict')
-        self.order.append(len(self.order))
-        self.visible.append(False)
-        self.widgets.append('text')
-
-    def do_set_editable_columns(self) -> None:
-        """
-        Set the treeview columns editable or read-only.
-
-        :return: None
-        :rtype: None
-        """
-        for _idx, _column in enumerate(self.get_columns()):
-            try:
-                _cells = _column.get_cells()
-            except AttributeError:
-                _cells = []
-
-            for __, _cell in enumerate(_cells):
-                if self.editable[_idx]:
-                    _cell.set_property('background', 'white')
-                    _cell.set_property('editable', 1)
-                    _cell.connect('edited', self.do_edit_cell, _idx)
-                else:
-                    _cell.set_property('cell-background', '#ADD8E6')
-
-    def do_set_visible_columns(self, **kwargs: Any) -> None:
-        """
-        Set the treeview columns visible or hidden.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _visible = kwargs['visible']
-        except KeyError:
-            _visible = []
-
-        for _col in _visible:
-            try:
-                self.get_column(_col).set_visible(1)
-                _column = self.get_column(_col)
-                _cells = _column.get_cells()
-            except AttributeError:
-                _cells = []
-
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'light gray')
-                    _cell.set_property('editable', 0)
-                except TypeError:
-                    _cell.set_property('cell-background', 'light gray')
-
-    def do_load_tree(self,
-                     tree: treelib.Tree,
-                     tag: str,
-                     row: Gtk.TreeIter = None) -> bool:
-        """
-        Load the Module View's Gtk.TreeModel() with the Module's tree.
-
-        :param tree: the Module's treelib Tree().
-        :type tree: :class:`treelib.Tree`
-        :param row: the parent row in the Gtk.TreeView() to add the new item.
-        :type row: :class:`Gtk.TreeIter`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-        _row = None
-        _model = self.get_model()
-
-        _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
-        _entity = _node.data
-
-        _attributes = []
-        if _entity is not None:  # pylint: disable=too-many-nested-blocks
-            _entity = _entity[tag]
-            # For simple data models that return a RAMSTK database
-            # table instance for the data object, the first try
-            # statement will create the list of attribute values.
-            try:
-                _temp = _entity.get_attributes()
-                for _key in self.korder:
-                    if _key == 'dict':
-                        _attributes.append(str(_temp))
-                    else:
-                        try:
-                            if isinstance(_temp[_key], datetime.date):
-                                _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
-                            _temp[_key] = _temp[_key].decode('utf-8')
-                        except (AttributeError, KeyError):
-                            pass
-                        _attributes.append(_temp[_key])
-            except AttributeError:
-                # For aggregate data models (Hardware, Software) that
-                # return a dictionary of attributes from ALL associated
-                # RAMSTK database tables, this try statement will create
-                # the list of attribute values.
-                try:
-                    for _key in self.korder:
-                        if _key == 'dict':
-                            _attributes.append(str(_entity))
-                        else:
-                            try:
-                                _entity[_key] = _entity[_key].decode('utf-8')
-                            except AttributeError:
-                                pass
-                            _attributes.append(_entity[_key])
-                except TypeError:
-                    _return = True
-
-            _row = _model.append(row, _attributes)
-
-        for _n in tree.children(_node.identifier):
-            self.do_load_tree(tree.subtree(_n.identifier), tag, _row)
-
-        return _return
-
-    def _do_make_cell(self, widget: str) -> Gtk.CellRenderer:
+    def _do_make_cell(self, widget: str
+                      ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle,
+                                 Gtk.CellRendererSpin, Gtk.CellRendererCombo]:
         """
         Create the appropriate type of Gtk.CellRenderer().
 
@@ -285,7 +76,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         elif widget == 'blob':
             _cell = self._do_make_text_cell(True)
         else:
-            _cell = self._do_make_text_cell()
+            _cell = self._do_make_text_cell(False)
 
         return _cell
 
@@ -442,6 +233,216 @@ class RAMSTKTreeView(Gtk.TreeView):
                 _model[path][position] = int(float(new_text))
         elif _convert == 'gfloat':
             _model[path][position] = float(new_text)
+
+    def do_load_tree(self,
+                     tree: treelib.Tree,
+                     tag: str,
+                     row: Gtk.TreeIter = None) -> bool:
+        """
+        Load the Module View's Gtk.TreeModel() with the Module's tree.
+
+        :param tree: the Module's treelib Tree().
+        :type tree: :class:`treelib.Tree`
+        :param row: the parent row in the Gtk.TreeView() to add the new item.
+        :type row: :class:`Gtk.TreeIter`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+        _row = None
+        _model = self.get_model()
+
+        _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
+        _entity = _node.data
+
+        _attributes = []
+        if _entity is not None:  # pylint: disable=too-many-nested-blocks
+            _entity = _entity[tag]
+            # For simple data models that return a RAMSTK database
+            # table instance for the data object, the first try
+            # statement will create the list of attribute values.
+            try:
+                _temp = _entity.get_attributes()
+                for _key in self.korder:
+                    if _key == 'dict':
+                        _attributes.append(str(_temp))
+                    else:
+                        try:
+                            if isinstance(_temp[_key], datetime.date):
+                                _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
+                            _temp[_key] = _temp[_key].decode('utf-8')
+                        except (AttributeError, KeyError):
+                            pass
+                        _attributes.append(_temp[_key])
+            except AttributeError:
+                # For aggregate data models (Hardware, Software) that
+                # return a dictionary of attributes from ALL associated
+                # RAMSTK database tables, this try statement will create
+                # the list of attribute values.
+                try:
+                    for _key in self.korder:
+                        if _key == 'dict':
+                            _attributes.append(str(_entity))
+                        else:
+                            try:
+                                _entity[_key] = _entity[_key].decode('utf-8')
+                            except AttributeError:
+                                pass
+                            _attributes.append(_entity[_key])
+                except TypeError:
+                    _return = True
+
+            _row = _model.append(row, _attributes)
+
+        for _n in tree.children(_node.identifier):
+            self.do_load_tree(tree.subtree(_n.identifier), tag, _row)
+
+        return _return
+
+    def do_parse_format(self,
+                        fmt_path: str,
+                        fmt_file: str,
+                        pixbuf: bool = False,
+                        indexed: bool = False) -> None:
+        """
+        Parse the format file for the RAMSTKTreeView().
+
+        :param str fmt_path: the base XML path in the format file to read.
+        :param str fmt_file: the absolute path to the format file to read.
+        :keyword bool pixbuf: indicates whether or not to prepend a PixBuf
+            column to the Gtk.TreeModel().
+        :keyword bool indexed: indicates whether or not to append a column to
+            the Gtk.TreeModel() to hold indexing information.
+        :return: None
+        :rtype: None
+        """
+        # Retrieve the column heading text from the format file.
+        self.headings = lxml.parse(fmt_file).xpath(fmt_path + "/usertitle")
+
+        # Retrieve the column datatype from the format file.
+        self.datatypes = lxml.parse(fmt_file).xpath(fmt_path + "/datatype")
+
+        # Retrieve the column position from the format file.
+        _position = lxml.parse(fmt_file).xpath(fmt_path + "/position")
+
+        # Retrieve the cell renderer type from the format file.
+        self.widgets = lxml.parse(fmt_file).xpath(fmt_path + "/widget")
+
+        # Retrieve whether or not the column is editable from the format file.
+        self.editable = lxml.parse(fmt_file).xpath(fmt_path + "/editable")
+
+        # Retrieve whether or not the column is visible from the format file.
+        self.visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
+
+        # Initialize public scalar instance attributes.
+        _keys = lxml.parse(fmt_file).xpath(fmt_path + "/key")
+
+        # Create a list of GObject datatypes to pass to the model.
+        for i in range(len(self.datatypes)):  # pylint: disable=C0200
+            self.datatypes[i] = self.datatypes[i].text
+            self.editable[i] = integer_to_boolean(int(self.editable[i].text))
+            self.headings[i] = self.headings[i].text.replace("  ", "\n")
+            self.order.append(int(_position[i].text))
+            self.visible[i] = integer_to_boolean(int(self.visible[i].text))
+            self.widgets[i] = self.widgets[i].text
+            _position[i] = int(_position[i].text)
+            # Not all format files will have keys.
+            try:
+                _keys[i] = _keys[i].text
+            except IndexError:
+                pass
+
+        # Append entries to each list if this RAMSTKTreeView is to display an
+        # icon at the beginning of the row (Usage Profile, Hardware, etc.)
+        if pixbuf:
+            self.datatypes.append('pixbuf')
+            self.editable.append(0)
+            self.headings.append('')
+            self.order.append(len(self.order))
+            self.pixbuf_col = int(len(self.datatypes)) - 1
+            self.visible.append(True)
+            self.widgets.append('pixbuf')
+
+        # We may want to add a column to hold indexing information for program
+        # control.  This is used, for example, by aggregate data views to hold
+        # the Node ID from the PyPubSub Tree().
+        if indexed:
+            self.datatypes.append('gchararray')
+            self.editable.append(0)
+            self.headings.append('')
+            self.order.append(len(self.order))
+            self.visible.append(False)
+            self.widgets.append('text')
+            self.index_col = int(len(self.datatypes)) - 1
+
+        # Sort each of the lists according to the desired sequence provided in
+        # the _position list.  This is necessary to allow for user-specific
+        # ordering of columns in the RAMSTKTreeView.
+        self.datatypes = [
+            x for _, x in sorted(zip(self.order, self.datatypes))
+        ]
+        self.editable = [x for _, x in sorted(zip(self.order, self.editable))]
+        self.headings = [x for _, x in sorted(zip(self.order, self.headings))]
+        self.korder = [x for _, x in sorted(zip(_position, _keys))]
+        self.visible = [x for _, x in sorted(zip(self.order, self.visible))]
+        self.widgets = [x for _, x in sorted(zip(self.order, self.widgets))]
+
+        # Add a column at the end to hold a string representation of the
+        # attributes dict.
+        self.datatypes.append('gchararray')
+        self.editable.append(False)
+        self.headings.append('Attributes')
+        self.korder.append('dict')
+        self.order.append(len(self.order))
+        self.visible.append(False)
+        self.widgets.append('text')
+
+    def do_set_editable_columns(self) -> None:
+        """
+        Set the treeview columns editable or read-only.
+
+        :return: None
+        :rtype: None
+        """
+        for _idx, _column in enumerate(self.get_columns()):
+            try:
+                _cells = _column.get_cells()
+            except AttributeError:
+                _cells = []
+
+            for __, _cell in enumerate(_cells):
+                if self.editable[_idx]:
+                    try:
+                        _cell.connect('edited', self.do_edit_cell, _idx)
+                    except TypeError:
+                        _cell.connect('toggled', self.do_edit_cell, None, _idx)
+
+    def do_set_visible_columns(self, **kwargs: Any) -> None:
+        """
+        Set the treeview columns visible or hidden.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _visible = kwargs['visible']
+        except KeyError:
+            _visible = []
+
+        for _col in _visible:
+            try:
+                self.get_column(_col).set_visible(1)
+                _column = self.get_column(_col)
+                _cells = _column.get_cells()
+            except AttributeError:
+                _cells = []
+
+            for __, _cell in enumerate(_cells):
+                try:
+                    _cell.set_property('background', 'light gray')
+                    _cell.set_property('editable', 0)
+                except TypeError:
+                    _cell.set_property('cell-background', 'light gray')
 
     def get_cell_model(self, column: int, clear: bool = True) -> Gtk.TreeModel:
         """
