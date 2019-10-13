@@ -416,7 +416,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             * Revision
             * Validation
 
-    :ivar list RAMSTK_PAGE_NUMBER: List indicating which page each RAMSTK
+    :ivar list RAMSTK_PAGE_NUMBER: Dictionary indicating which page each RAMSTK
         module occupies in the ModuleBook.
     :ivar list RAMSTK_RISK_POINTS: List for risk level cutoffs.  Cutoffs are:
 
@@ -545,7 +545,10 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         # Initialize public dictionary attributes.
         self.RAMSTK_COLORS: Dict[str, str] = {}
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
-        self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
+        self.RAMSTK_PAGE_NUMBER: Dict[int, str] = {
+            0: 'revision',
+            1: 'function',
+        }
         self.RAMSTK_PROG_INFO: Dict[int, str] = {}
         self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}
         self.RAMSTK_TABPOS = {

@@ -44,7 +44,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'succeed_select_revision')
+        pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self._do_delete, 'request_delete_function')
         pub.subscribe(self._do_delete_hazard, 'request_delete_hazard')
         pub.subscribe(self.do_insert, 'request_insert_function')
@@ -76,7 +76,7 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_function', node_id=node_id)
+            pub.sendMessage('succeed_delete_function', tree=self.tree)
         except (AttributeError, DataAccessError):
             _error_message = ("Attempted to delete non-existent function ID "
                               "{0:s}.").format(str(node_id))
@@ -227,7 +227,7 @@ class DataManager(RAMSTKDataManager):
                                       data=_data_package)
 
                 pub.sendMessage('succeed_insert_function',
-                                node_id=self.last_id)
+                                node_id=self.last_id, tree=self.tree)
             except DataAccessError as _error:
                 print(_error)
                 pub.sendMessage("fail_insert_function", error_message=_error)
@@ -267,15 +267,15 @@ class DataManager(RAMSTKDataManager):
                                            "non-existent function ID "
                                            "{0:s}.".format(str(function_id))))
 
-    def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
+    def do_select_all(self, attributes):  # pylint: disable=arguments-differ
         """
         Retrieve all the Function data from the RAMSTK Program database.
 
-        :param int revision_id: the Revision ID to select the Functions for.
+        :param dict attributes: the attributes for the selected Revision.
         :return: None
         :rtype: None
         """
-        self._revision_id = revision_id
+        self._revision_id = attributes['revision_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)

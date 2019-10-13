@@ -85,7 +85,7 @@ class TestExport():
         """do_load_output() should return a Pandas DataFrame when loading Functions for export."""
         _function = dmFunction()
         _function.do_connect(test_program_dao)
-        _function.do_select_all(1)
+        _function.do_select_all({'revision_id': 1})
 
         DUT = Export()
 
@@ -133,7 +133,7 @@ class TestExport():
         """do_export() should return None when exporting to a CSV file."""
         _function = dmFunction()
         _function.do_connect(test_program_dao)
-        _function.do_select_all(1)
+        _function.do_select_all({'revision_id': 1})
 
         DUT = Export()
         DUT.do_load_output('Function', 1)
@@ -203,7 +203,7 @@ class TestExport():
         """do_export() should return None when exporting to a text file."""
         _function = dmFunction()
         _function.do_connect(test_program_dao)
-        _function.do_select_all(1)
+        _function.do_select_all({'revision_id': 1})
 
         DUT = Export()
         DUT.do_load_output('Function', 1)

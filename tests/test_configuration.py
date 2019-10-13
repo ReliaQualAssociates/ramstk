@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name, unused-argument
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.test_configuration.py is part of The RAMSTK Project
@@ -322,7 +322,10 @@ class TestCreateConfiguration():
 
         assert DUT.RAMSTK_COLORS == {}
         assert DUT.RAMSTK_FORMAT_FILE == {}
-        assert DUT.RAMSTK_PAGE_NUMBER == {}
+        assert DUT.RAMSTK_PAGE_NUMBER == {
+            0: 'revision',
+            1: 'function'
+        }
         assert DUT.RAMSTK_PROG_INFO == {}
         assert DUT.RAMSTK_STRESS_LIMITS == {}
         assert DUT.RAMSTK_TABPOS == {
