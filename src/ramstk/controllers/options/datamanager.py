@@ -111,15 +111,8 @@ class DataManager(RAMSTKDataManager):
         """
         _poppers = {'siteinfo': ['site_id'], 'programinfo': ['revision_id']}
 
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        for _field in _poppers[table]:
-            _attributes.pop(_field)
-
-        if key in _attributes:
-            _attributes[key] = value
-
-            self.do_select(node_id, table=table).set_attributes(_attributes)
+        RAMSTKDataManager._do_set_attributes(self, node_id, key, value, table,
+                                             _poppers)
 
     def do_update(self, node_id: int) -> None:
         """
