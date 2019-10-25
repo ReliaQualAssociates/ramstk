@@ -113,12 +113,13 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_refresh_tree(package, {
-            'function_code': 5,
-            'function_name': 15,
-            'remarks': 17,
-            'safety_critical': 18
-        })
+        self.do_refresh_tree(
+            package, {
+                'function_code': 5,
+                'function_name': 15,
+                'remarks': 17,
+                'safety_critical': 18
+            })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -196,23 +197,21 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['insert_sibling', 'insert_child']
-            _labels = [
-                _("Add Sibling Function"),
-                _("Add Child Function"),
-                _("Remove Selected Function"),
-                _("Save Selected Function"),
-                _("Save All Functions")
-            ]
-            _callbacks = [
-                self.do_request_insert_sibling, self.do_request_insert_child
-            ]
-
-            RAMSTKModuleView.on_button_press(self,
-                                             event,
-                                             icons=_icons,
-                                             labels=_labels,
-                                             callbacks=_callbacks)
+            RAMSTKModuleView.on_button_press(
+                self,
+                event,
+                icons=['insert_sibling', 'insert_child'],
+                labels=[
+                    _("Add Sibling Function"),
+                    _("Add Child Function"),
+                    _("Remove Selected Function"),
+                    _("Save Selected Function"),
+                    _("Save All Functions")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling,
+                    self.do_request_insert_child
+                ])
 
         treeview.handler_unblock(self._lst_handler_id[1])
 

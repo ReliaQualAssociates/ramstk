@@ -192,20 +192,17 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add']
-            _labels = [
-                _("Add Revision"),
-                _("Remove Selected Revision"),
-                _("Save Selected Revision"),
-                _("Save All Revisions")
-            ]
-            _callbacks = [self.do_request_insert_sibling]
-
-            RAMSTKModuleView.on_button_press(self,
-                                             event,
-                                             icons=_icons,
-                                             labels=_labels,
-                                             callbacks=_callbacks)
+            RAMSTKModuleView.on_button_press(
+                self,
+                event,
+                icons=['add'],
+                labels=[
+                    _("Add Revision"),
+                    _("Remove Selected Revision"),
+                    _("Save Selected Revision"),
+                    _("Save All Revisions")
+                ],
+                callbacks=[self.do_request_insert_sibling])
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
