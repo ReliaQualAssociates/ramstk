@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 import ast
+import datetime
 import locale
 from typing import Any, Dict, List, Tuple
 
@@ -25,7 +26,7 @@ from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from .button import do_make_buttonbox
 from .dialog import RAMSTKMessageDialog
 from .frame import RAMSTKFrame
-from .label import do_make_label_group
+from .label import RAMSTKLabel, do_make_label_group
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
 
@@ -101,6 +102,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Initialize private scalar attributes.
         self._mission_time = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
+        self._module: str = module
         self._notebook = Gtk.Notebook()
         self._revision_id = 0
         self._parent_id = 0
@@ -404,6 +406,21 @@ class RAMSTKBaseView(Gtk.HBox):
                              _model.get_n_columns() - 1))
         _attributes[key] = value
         _model.set_value(_row, _model.get_n_columns() - 1, str(_attributes))
+
+    def do_request_insert(self, **kwargs: Any) -> None:
+        """
+        Request insert a new work stream element into the program database.
+
+        :return: None
+        :rtype: None
+        """
+        _sibling = kwargs['sibling']
+
+        if _sibling:
+            pub.sendMessage('request_insert_{0:s}'.format(self._module))
+        else:
+            pub.sendMessage('request_insert_{0:s}'.format(self._module),
+                            parent_id=self._parent_id)
 
     def do_request_insert_child(self, __button: Gtk.ToolButton,
                                 **kwargs: Any) -> Any:
@@ -767,6 +784,9 @@ class RAMSTKModuleView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
+        self.treeview.set_tooltip_text(_("Displays the list of "
+                                         "{0:s}s.").format(self._module))
+
         self._img_tab.set_from_file(self._dic_icons['tab'])
 
         _scrolledwindow = Gtk.ScrolledWindow()
@@ -775,6 +795,13 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
         self.hbx_tab_label.pack_start(self._img_tab, True, True, 0)
         self.hbx_tab_label.show_all()
+
+        _label = RAMSTKLabel(_("{0:s}s").format(self._module.capitalize()))
+        _label.do_set_properties(width=-1,
+                                 height=-1,
+                                 tooltip=_("Displays the program "
+                                           "{0:s}s.").format(self._module))
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
 
@@ -816,6 +843,32 @@ class RAMSTKModuleView(RAMSTKBaseView):
                                        labels=_labels,
                                        callbacks=_callbacks)
 
+    def on_insert(self, data: Any) -> None:
+        """
+        Add row to module view for newly added work stream element.
+
+        :param data: the data package for the work stream element to add.
+        :return: None
+        :rtype: None
+        """
+        _attributes = []
+        _model = self.treeview.get_model()
+
+        for _key in self.treeview.korder:
+            if _key == 'dict':
+                _attributes.append(str(data))
+            else:
+                try:
+                    if isinstance(data[_key], datetime.date):
+                        data[_key] = data[_key].strftime("%Y-%m-%d")
+                    data[_key] = data[_key].decode('utf-8')
+                except (AttributeError, KeyError):
+                    pass
+                _attributes.append(data[_key])
+
+        _row = _model.append(None, _attributes)
+
+        self.treeview.selection.select_iter(_row)
 
 class RAMSTKWorkView(RAMSTKBaseView):
     """

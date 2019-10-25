@@ -7,8 +7,7 @@
 """RAMSTK Function GTK3 module view."""
 
 # Standard Library Imports
-import datetime
-from typing import Any, Dict, List
+from typing import Dict, List
 
 # Third Party Imports
 import treelib
@@ -19,8 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKLabel, RAMSTKMessageDialog, RAMSTKModuleView,
-    RAMSTKTreeView, do_make_buttonbox
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView, do_make_buttonbox
 )
 
 
@@ -77,7 +75,7 @@ class ModuleView(RAMSTKModuleView):
 
     def __make_ui(self) -> None:
         """
-        Build the user interface.
+        Build the user interface for the Function work stream module.
 
         :return: None
         :rtype: None
@@ -86,29 +84,21 @@ class ModuleView(RAMSTKModuleView):
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
         _scrolledwindow.add_with_viewport(
-            do_make_buttonbox(self,
-                              icons=['add', 'remove'],
-                              tooltips=[
-                                  _("Add a new Function."),
-                                  _("Remove the currently selected Function.")
-                              ],
-                              callbacks=[
-                                  self.do_request_insert_sibling,
-                                  self._do_request_delete
-                              ]))
+            do_make_buttonbox(
+                self,
+                icons=['insert_sibling', 'insert_child', 'remove'],
+                tooltips=[
+                    _("Add a new sibling function."),
+                    _("Add a new child function."),
+                    _("Remove the currently selected function.")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling,
+                    self.do_request_insert_child, self._do_request_delete
+                ]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-        self.treeview.set_tooltip_text(_("Displays the list of functions."))
-
         RAMSTKModuleView.make_ui(self)
-
-        _label = RAMSTKLabel(_("Functions"))
-        _label.do_set_properties(width=-1,
-                                 height=-1,
-                                 tooltip=_("Displays the program functions."))
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
-
-        self.show_all()
 
     # pylint: disable=unused-argument
     def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
@@ -152,19 +142,6 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._function_id)
 
         _dialog.do_destroy()
-
-    @staticmethod
-    def _do_request_insert(**kwargs: Any) -> None:
-        """
-        Request insert a new Function into the RAMSTK Program database.
-
-        :return: None
-        :rtype: None
-        """
-        _sibling = kwargs['sibling']
-
-        if _sibling:
-            pub.sendMessage('request_insert_function')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -270,28 +247,16 @@ class ModuleView(RAMSTKModuleView):
         Add row to module view for newly added function.
 
         :param int node_id: the ID of the newly added function.
+        :param tree: the treelib Tree() containing the work stream module's
+            data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        _attributes = []
-        _model = self.treeview.get_model()
-        _data = tree.get_node(node_id).data['function'].get_attributes()
-
-        for _key in self.treeview.korder:
-            if _key == 'dict':
-                _attributes.append(str(_data))
-            else:
-                try:
-                    if isinstance(_data[_key], datetime.date):
-                        _data[_key] = _data[_key].strftime("%Y-%m-%d")
-                    _data[_key] = _data[_key].decode('utf-8')
-                except (AttributeError, KeyError):
-                    pass
-                _attributes.append(_data[_key])
-
-        _row = _model.append(None, _attributes)
-
-        self.treeview.selection.select_iter(_row)
+        RAMSTKModuleView.on_insert(
+            self,
+            tree.get_node(node_id).data['function'].get_attributes()
+        )
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -349,6 +314,7 @@ class ModuleView(RAMSTKModuleView):
         _attributes['type'] = _model.get_value(_row, self._lst_col_order[21])
 
         self._function_id = _attributes['function_id']
+        self._parent_id = _attributes['parent']
 
         pub.sendMessage('selected_function', attributes=_attributes)
         #pub.sendMessage('request_get_function_attributes',

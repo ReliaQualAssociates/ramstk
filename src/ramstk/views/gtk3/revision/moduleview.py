@@ -7,8 +7,7 @@
 """RAMSTK Revision GTK3 module view."""
 
 # Standard Library Imports
-import datetime
-from typing import Any, Dict, List
+from typing import Dict, List
 
 # Third Party Imports
 import treelib
@@ -19,8 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKLabel, RAMSTKMessageDialog, RAMSTKModuleView,
-    RAMSTKTreeView, do_make_buttonbox
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView, do_make_buttonbox
 )
 
 
@@ -76,7 +74,7 @@ class ModuleView(RAMSTKModuleView):
 
     def __make_ui(self) -> None:
         """
-        Build the user interface.
+        Build the user interface for the Revision work stream module.
 
         :return: None
         :rtype: None
@@ -88,8 +86,8 @@ class ModuleView(RAMSTKModuleView):
             do_make_buttonbox(self,
                               icons=['add', 'remove'],
                               tooltips=[
-                                  _("Add a new Revision."),
-                                  _("Remove the currently selected Revision.")
+                                  _("Add a new revision."),
+                                  _("Remove the currently selected revision.")
                               ],
                               callbacks=[
                                   self.do_request_insert_sibling,
@@ -97,22 +95,10 @@ class ModuleView(RAMSTKModuleView):
                               ]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-        self.treeview.set_tooltip_text(_("Displays the list of revisions."))
-
         RAMSTKModuleView.make_ui(self)
 
-        _label = RAMSTKLabel(_("Revisions"))
-        _label.do_set_properties(width=-1,
-                                 height=-1,
-                                 tooltip=_("Displays the program revisions."))
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
-
-        self.show_all()
-
     # pylint: disable=unused-argument
-    def _do_refresh_tree(self,
-                         node_id: List,
-                         package: Dict) -> None:
+    def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
@@ -153,19 +139,6 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._revision_id)
 
         _dialog.do_destroy()
-
-    @staticmethod
-    def _do_request_insert(**kwargs: Any) -> None:
-        """
-        Request insert a new Revision into the RAMSTK Program database.
-
-        :return: None
-        :rtype: None
-        """
-        _sibling = kwargs['sibling']
-
-        if _sibling:
-            pub.sendMessage('request_insert_revision')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -271,28 +244,16 @@ class ModuleView(RAMSTKModuleView):
         Add row to module view for newly added revision.
 
         :param int node_id: the ID of the newly added revision.
+        :param tree: the treelib Tree() containing the work stream module's
+            data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        _attributes = []
-        _model = self.treeview.get_model()
-        _data = tree.get_node(node_id).data['revision'].get_attributes()
-
-        for _key in self.treeview.korder:
-            if _key == 'dict':
-                _attributes.append(str(_data))
-            else:
-                try:
-                    if isinstance(_data[_key], datetime.date):
-                        _data[_key] = _data[_key].strftime("%Y-%m-%d")
-                    _data[_key] = _data[_key].decode('utf-8')
-                except (AttributeError, KeyError):
-                    pass
-                _attributes.append(_data[_key])
-
-        _row = _model.append(None, _attributes)
-
-        self.treeview.selection.select_iter(_row)
+        RAMSTKModuleView.on_insert(
+            self,
+            tree.get_node(node_id).data['revision'].get_attributes()
+        )
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
