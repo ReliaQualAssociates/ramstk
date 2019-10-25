@@ -8,7 +8,6 @@
 """The RAMSTKBaseView Module."""
 
 # Standard Library Imports
-import ast
 import datetime
 import locale
 from typing import Any, Dict, List, Tuple
@@ -374,38 +373,25 @@ class RAMSTKBaseView(Gtk.HBox):
         except KeyError:
             _debug_msg = ''
 
-    def do_refresh_tree(self, module_id: int, key: Any, value: Any) -> None:
+    def do_refresh_tree(self, package: Dict, keys: Dict) -> None:
         """
-        Refresh the data in the RAMSTKTreeView().
+        Update the module view RAMSTKTreeView() with attribute changes.
 
+        This method is called by other views when the work stream module's data
+        model attributes are edited via their gtk.Widgets().
+
+        :param dict package: the key:value for the data being updated.
+        :param dict keys: the name:index relationship for the work stream
+            module's data keys.
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.selection.get_selected()
+        [[_key, _value]] = package.items()
 
-        try:
-            _column = [
-                _index for _index, _key in enumerate(self.treeview.korder)
-                if _key == key
-            ][0]
+        _position = self._lst_col_order[keys[_key]]
 
-            try:
-                _model.set_value(_row, _column, value)
-            except AttributeError:
-                _error_msg = _(
-                    "An error occurred while refreshing column {0:d} "
-                    "for record {1:d}.", ).format(_column, module_id)
-                pub.sendMessage('fail_refresh_baseview_tree',
-                                error_message=_error_msg)
-        except IndexError:
-            pass
-
-        # Update the attributes dict in the last column.
-        _attributes = ast.literal_eval(
-            _model.get_value(_row,
-                             _model.get_n_columns() - 1))
-        _attributes[key] = value
-        _model.set_value(_row, _model.get_n_columns() - 1, str(_attributes))
+        _model, _row = self.treeview.get_selection().get_selected()
+        _model.set(_row, _position, _value)
 
     def do_request_insert(self, **kwargs: Any) -> None:
         """

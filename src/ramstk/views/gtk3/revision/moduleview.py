@@ -110,13 +110,11 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {'name': 17, 'remarks': 20, 'revision_code': 22}
-        [[_key, _value]] = package.items()
-
-        _position = self._lst_col_order[_dic_keys[_key]]
-
-        _model, _row = self.treeview.get_selection().get_selected()
-        _model.set(_row, _position, _value)
+        self.do_refresh_tree(package, {
+            'name': 17,
+            'remarks': 20,
+            'function_code': 22
+        })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -197,7 +195,7 @@ class ModuleView(RAMSTKModuleView):
             _icons = ['add']
             _labels = [
                 _("Add Revision"),
-                _("Remove the Selected Revision"),
+                _("Remove Selected Revision"),
                 _("Save Selected Revision"),
                 _("Save All Revisions")
             ]
@@ -252,8 +250,7 @@ class ModuleView(RAMSTKModuleView):
         """
         RAMSTKModuleView.on_insert(
             self,
-            tree.get_node(node_id).data['revision'].get_attributes()
-        )
+            tree.get_node(node_id).data['revision'].get_attributes())
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
