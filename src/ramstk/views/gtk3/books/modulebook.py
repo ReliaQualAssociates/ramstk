@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.mwi.ModuleBook.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.books.modulebook.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -17,6 +17,7 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
+from ramstk.views.gtk3.function import mvwFunction
 from ramstk.views.gtk3.revision import mvwRevision
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -49,7 +50,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self._dic_module_views = {
             'revision': mvwRevision(configuration, logger),
             #    'requirement': mvwRequirement(configuration),
-            #    'function': mvwFunction(configuration),
+            'function': mvwFunction(configuration, logger),
             #    'hardware': mvwHardware(configuration),
             #    'validation': mvwValidation(configuration),
         }
@@ -125,7 +126,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :rtype: None
         """
         # Insert a page for each of the active RAMSTK Modules.
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER:
+        for _key in list(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[1:]:
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
 
