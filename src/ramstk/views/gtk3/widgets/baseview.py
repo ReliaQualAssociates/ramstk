@@ -856,6 +856,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
         self.treeview.selection.select_iter(_row)
 
+
 class RAMSTKWorkView(RAMSTKBaseView):
     """
     Class to display data in the RAMSTK Work Book.
@@ -961,40 +962,3 @@ class RAMSTKWorkView(RAMSTKBaseView):
         self.pack_start(_frame, True, True, 0)
 
         return _x_pos, _y_pos, _fixed
-
-    def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
-        """
-        Handle mouse clicks on the Module View RAMSTKTreeView().
-
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-                                    * 1 = left
-                                    * 2 = scrollwheel
-                                    * 3 = right
-                                    * 4 = forward
-                                    * 5 = backward
-                                    * 8 =
-                                    * 9 =
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        _icons = kwargs['icons']
-        _labels = kwargs['labels']
-        _callbacks = kwargs['callbacks']
-
-        # Append the default save and save-all buttons found on all Module View
-        # pop-up menus.
-        try:
-            _icons.extend(['save', 'save-all'])
-            _labels.extend([_("Save Selected"), _("Save All")])
-            _callbacks.extend(
-                [self._do_request_update, self._do_request_update_all])
-        except AttributeError:
-            pass
-
-        RAMSTKBaseView.on_button_press(self,
-                                       event,
-                                       icons=_icons,
-                                       labels=_labels,
-                                       callbacks=_callbacks)
