@@ -55,6 +55,12 @@ class RAMSTKTreeView(Gtk.TreeView):
     def _do_make_text_cell(self, param):
         pass
 
+    def connect(self, param, _on_button_press):
+        pass
+
+    def do_load_tree(self, tree, _tag):
+        pass
+
 
 class CellRendererML(Gtk.CellRendererText):
     textedit_window: Any = ...

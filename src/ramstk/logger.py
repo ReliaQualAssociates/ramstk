@@ -158,6 +158,17 @@ class RAMSTKLogManager:
         """
         self.loggers[logger_name].debug(message)
 
+    def do_log_exception(self, logger_name: str, exception: object) -> None:
+        """
+        Log EXCEPTIONS.
+
+        :param str logger_name: the name of the logger used in the application.
+        :param str exception: the exception to log.
+        :return: None
+        :rtype: None
+        """
+        self.loggers[logger_name].exception(exception)
+
     def do_log_info(self, logger_name: str, message: str) -> None:
         """
         Log INFO level messages.

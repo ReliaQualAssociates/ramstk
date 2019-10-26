@@ -570,7 +570,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_MTIME = 100.0
         self.RAMSTK_GUI_LAYOUT = "advanced"
         self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
-        self.RAMSTK_LOCALE = "en_US"
+        self.RAMSTK_LOCALE = "en_US.UTF8"
         self.RAMSTK_LOGLEVEL = "INFO"
         if sys.platform == "linux" or sys.platform == "linux2":
             self.RAMSTK_OS = "Linux"

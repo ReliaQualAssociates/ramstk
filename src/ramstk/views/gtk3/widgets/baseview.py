@@ -59,9 +59,9 @@ class RAMSTKBaseView(Gtk.HBox):
     :ivar treeview: the Gtk.TreeView() to display the information for the View.
     :type treeview: :class:`Gtk.TreeView`
     :ivar str fmt: the formatting code for numerical displays.
-    :ivar hbox_tab_label: the Gtk.HBox() containing the View's Gtk.Notebook()
+    :ivar hbx_tab_label: the Gtk.HBox() containing the View's Gtk.Notebook()
         tab Gtk.Label().
-    :type hbox_tab_label: :class:`Gtk.HBox`
+    :type hbx_tab_label: :class:`Gtk.HBox`
     """
     RAMSTK_USER_CONFIGURATION = None
 
@@ -69,7 +69,7 @@ class RAMSTKBaseView(Gtk.HBox):
         'left': Gtk.PositionType.LEFT,
         'right': Gtk.PositionType.RIGHT,
         'top': Gtk.PositionType.TOP,
-        'bottom': Gtk.PositionType.BOTTOM,
+        'bottom': Gtk.PositionType.BOTTOM
     }
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
@@ -120,8 +120,9 @@ class RAMSTKBaseView(Gtk.HBox):
         try:
             locale.setlocale(locale.LC_ALL,
                              self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOCALE)
-        except locale.Error:
+        except locale.Error as _error:
             locale.setlocale(locale.LC_ALL, '')
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         self.__set_callbacks()
 
@@ -142,14 +143,14 @@ class RAMSTKBaseView(Gtk.HBox):
                 self.treeview.selection.connect('changed',
                                                 self._on_row_change))
         except AttributeError as _error:
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _error)
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         try:
             self._lst_handler_id.append(
                 self.treeview.connect('button_press_event',
                                       self._on_button_press))
         except AttributeError as _error:
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _error)
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def __set_icons(self) -> Dict:
         """
@@ -160,53 +161,51 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         return {
             'calculate':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/calculate.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate.png',
             'calculate_all':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/calculate-all.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate-all.png',
             'add':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/add.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
             'remove':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/remove.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/remove.png',
             'reports':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/reports.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/reports.png',
             'save':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/save.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
             'save-all':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/save-all.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/save-all.png',
             'important':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/important.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/important.png',
             'error':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/error.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/error.png',
             'question':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/question.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/question.png',
             'insert_sibling':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/insert_sibling.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_sibling.png',
             'insert_child':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/insert_child.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_child.png',
             'cancel':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/cancel.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/cancel.png',
             'export':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/export.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/export.png',
             'warning':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/warning.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/warning.png',
             'rollup':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/rollup.png'
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/rollup.png'
         }
 
     def _make_toolbar(self,
@@ -270,8 +269,10 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
         """
         try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module + 'fg']
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                     + 'bg']
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                     + 'fg']
             _fmt_file = (
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
                 + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
@@ -281,9 +282,10 @@ class RAMSTKBaseView(Gtk.HBox):
             _treeview.do_parse_format(_fmt_path, _fmt_file)
             _treeview.make_model(_bg_color, _fg_color)
             self._lst_col_order = _treeview.order
-        except KeyError:
+        except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         return _treeview
 
@@ -320,8 +322,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
         try:
             _tag = tree.get_node(0).tag
-        except AttributeError:
+        except AttributeError as _error:
             _tag = "UNK"
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         try:
             self.treeview.do_load_tree(tree, _tag)
@@ -330,19 +333,21 @@ class RAMSTKBaseView(Gtk.HBox):
             if _row is not None:
                 self.treeview.selection.select_iter(_row)
                 self.show_all()
-        except TypeError:
+        except TypeError as _error:
             _error_msg = _(
                 "An error occured while loading {1:s} records for Revision ID "
                 "{0:d} into the view.  One or more values from the database "
                 "was the wrong type for the column it was trying to "
                 "load.").format(self._revision_id, _tag)
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
-        except ValueError:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        except ValueError as _error:
             _error_msg = _(
                 "An error occured while loading {1:s} records for Revision ID "
                 "{0:d} into the view.  One or more values from the database "
                 "was missing.").format(self._revision_id, _tag)
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def do_raise_dialog(self, **kwargs: Any) -> None:
         """
@@ -359,19 +364,22 @@ class RAMSTKBaseView(Gtk.HBox):
         try:
             if kwargs['error_code'] != 0:
                 _dialog = RAMSTKMessageDialog(
-                    kwargs['user_msg'], self._dic_icons[kwargs['severity']],
+                    kwargs['user_msg'],
+                    self._dic_icons[kwargs['severity']],
                     kwargs['severity'],
                     parent=self)
                 if _dialog.do_run() == Gtk.ResponseType.OK:
                     _dialog.destroy()
-        except KeyError:
+        except KeyError as _error:
             _debug_msg = ("Failed attempting to raise a RAMSTKMessageDialog "
                           "with either the severity or message missing.")
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
         try:
             self.RAMSTK_LOGGER.do_log_debug(__name__, kwargs['debug_msg'])
-        except KeyError:
+        except KeyError as _error:
             _debug_msg = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def do_refresh_tree(self, package: Dict, keys: Dict) -> None:
         """
@@ -440,8 +448,9 @@ class RAMSTKBaseView(Gtk.HBox):
         # ID is zero.
         try:
             self._parent_id = _model.get_value(_prow, self._lst_col_order[1])
-        except TypeError:
+        except TypeError as _error:
             self._parent_id = 0
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         return self.do_request_insert(sibling=True, **kwargs)
 
@@ -526,7 +535,7 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.show()
             _menu.append(_menu_item)
 
-    def on_delete(self, tree: treelib.Tree) -> None:   # pylint: disable=unused-argument
+    def on_delete(self, tree: treelib.Tree) -> None:  # pylint: disable=unused-argument
         """
         Update the RAMSTKTreeView after deleting a line item.
 
@@ -567,21 +576,25 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         try:
             _key = self._dic_keys[index]
-        except KeyError:
+        except KeyError as _error:
             _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         entry.handler_block(self._lst_handler_id[index])
 
         try:
             _new_text: Any = int(entry.get_text())
-        except ValueError:
+        except ValueError as _error:
             try:
                 _new_text = float(entry.get_text())
-            except ValueError:
+            except ValueError as _error:
                 try:
                     _new_text = str(entry.get_text())
-                except ValueError:
+                except ValueError as _error:
                     _new_text = None
+                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -606,8 +619,8 @@ class RAMSTKBaseView(Gtk.HBox):
         try:
             _workbook = self.get_parent().get_parent()
             _workbook.set_title(_title)
-        except AttributeError:
-            pass
+        except AttributeError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         return self.do_raise_dialog(severity='warning', **kwargs)
 
@@ -783,8 +796,9 @@ class RAMSTKModuleView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
-        self.treeview.set_tooltip_text(_("Displays the list of "
-                                         "{0:s}s.").format(self._module))
+        self.treeview.set_tooltip_text(
+            _("Displays the list of "
+              "{0:s}s.").format(self._module))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
 
@@ -833,8 +847,8 @@ class RAMSTKModuleView(RAMSTKBaseView):
                 self._do_request_delete, self._do_request_update,
                 self._do_request_update_all
             ])
-        except AttributeError:
-            pass
+        except AttributeError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         RAMSTKBaseView.on_button_press(self,
                                        event,
@@ -863,8 +877,9 @@ class RAMSTKModuleView(RAMSTKBaseView):
                     if isinstance(data[_key], datetime.date):
                         data[_key] = data[_key].strftime("%Y-%m-%d")
                     data[_key] = data[_key].decode('utf-8')
-                except (AttributeError, KeyError):
-                    pass
+                except (AttributeError, KeyError) as _error:
+                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
                 _attributes.append(data[_key])
 
         _row = _model.append(prow, _attributes)

@@ -4,6 +4,10 @@
 
 
 class RAMSTKBaseView(Gtk.HBox):
+    def __init__(self) -> None:
+        self._on_button_press = None
+        self._on_row_change = None
+        ...
 
     def _do_request_insert(self, sibling, param):
         pass
@@ -14,6 +18,8 @@ class RAMSTKBaseView(Gtk.HBox):
     def on_button_press(self, event: Gdk.Event, **kwargs: Any):
         pass
 
+    def get_parent_window(self):
+        pass
 
 class RAMSTKListView(RAMSTKBaseView):
 
