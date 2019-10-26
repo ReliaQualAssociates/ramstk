@@ -35,7 +35,12 @@ class RAMSTKDialog(Gtk.Dialog):
                 values.  Default is Gtk.STOCK_OK <==> Gtk.ResponseType.ACCEPT
                 Gtk.STOCK_CANCEL <==> Gtk.ResponseType.CANCEL
         """
-        GObject.GObject.__init__(self)
+        try:
+            _dlgparent = kwargs['dlgparent']
+        except KeyError:
+            _dlgparent = None
+
+        Gtk.Dialog.__init__(self, title=dlgtitle, parent=_dlgparent)
 
         try:
             self.add_buttons(kwargs['dlgbuttons'])
@@ -46,15 +51,9 @@ class RAMSTKDialog(Gtk.Dialog):
                 Gtk.STOCK_CANCEL,
                 Gtk.ResponseType.CANCEL,
             )
-        try:
-            _dlgparent = kwargs['dlgparent']
-        except KeyError:
-            _dlgparent = None
 
         self.set_destroy_with_parent(True)
         self.set_modal(True)
-        self.set_property('parent', _dlgparent)
-        self.set_title(dlgtitle)
 
     def do_destroy(self) -> None:   # pylint: disable=arguments-differ
         """Destroy the RAMSTK Dialog."""
@@ -95,7 +94,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         _image = Gtk.Image()
         _image.set_from_file(icon)
 
-        GObject.GObject.__init__(self)
+        Gtk.MessageDialog.__init__(self, parent)
 
         if criticality == 'error':
             # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
@@ -133,9 +132,6 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
             _criticality = Gtk.MessageType.QUESTION
             self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No",
                              Gtk.ResponseType.NO)
-
-        if parent is not None:
-            self.set_parent(parent)
 
         self.set_destroy_with_parent(True)
         self.set_modal(True)

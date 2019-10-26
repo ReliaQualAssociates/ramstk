@@ -130,11 +130,14 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+
+        ).get_parent()
         _prompt = _("You are about to delete Function {0:d} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._function_id)
         _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question')
+                                      'question', parent=_parent)
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
