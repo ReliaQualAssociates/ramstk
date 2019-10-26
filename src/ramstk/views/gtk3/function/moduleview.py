@@ -254,9 +254,18 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _data = tree.get_node(node_id).data['function'].get_attributes()
+        _model, _row = self.treeview.selection.get_selected()
+
+        if self._function_id == self._parent_id:
+            _prow = _row
+        else:
+            _prow = _model.iter_parent(_row)
+
         RAMSTKModuleView.on_insert(
             self,
-            tree.get_node(node_id).data['function'].get_attributes())
+            _data,
+            prow=_prow)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -315,6 +324,12 @@ class ModuleView(RAMSTKModuleView):
 
         self._function_id = _attributes['function_id']
         self._parent_id = _attributes['parent']
+
+        _prow = _model.iter_parent(_row)
+        if _prow is not None:
+            self._parent_id = self._function_id
+        else:
+            self._parent_id = 0
 
         pub.sendMessage('selected_function', attributes=_attributes)
         #pub.sendMessage('request_get_function_attributes',

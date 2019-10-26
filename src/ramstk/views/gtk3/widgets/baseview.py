@@ -418,7 +418,10 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        return self._do_request_insert(sibling=False, **kwargs)
+        _model, _row = self.treeview.selection.get_selected()
+        self._parent_id = _model.get_value(_row, self._lst_col_order[1])
+
+        return self.do_request_insert(sibling=False, **kwargs)
 
     def do_request_insert_sibling(self, __button: Gtk.ToolButton,
                                   **kwargs: Any) -> Any:
@@ -430,7 +433,17 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        return self._do_request_insert(sibling=True, **kwargs)
+        _model, _row = self.treeview.selection.get_selected()
+        _prow = _model.iter_parent(_row)
+        # If the sibling is nested below the top level, get the parent ID from
+        # the previous row.  Otherwise, this is a top level item and the parent
+        # ID is zero.
+        try:
+            self._parent_id = _model.get_value(_prow, self._lst_col_order[1])
+        except TypeError:
+            self._parent_id = 0
+
+        return self.do_request_insert(sibling=True, **kwargs)
 
     def do_set_cursor(self, cursor: Gdk.CursorType) -> Any:
         """
@@ -829,11 +842,13 @@ class RAMSTKModuleView(RAMSTKBaseView):
                                        labels=_labels,
                                        callbacks=_callbacks)
 
-    def on_insert(self, data: Any) -> None:
+    def on_insert(self, data: Any, prow: Gtk.TreeIter = None) -> None:
         """
         Add row to module view for newly added work stream element.
 
         :param data: the data package for the work stream element to add.
+        :param prow: the parent row in the treeview.
+        :type prow: :class:`Gtk.TreeIter`
         :return: None
         :rtype: None
         """
@@ -852,7 +867,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
                     pass
                 _attributes.append(data[_key])
 
-        _row = _model.append(None, _attributes)
+        _row = _model.append(prow, _attributes)
 
         self.treeview.selection.select_iter(_row)
 
