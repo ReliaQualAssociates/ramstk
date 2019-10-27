@@ -116,7 +116,7 @@ class ModuleView(RAMSTKModuleView):
         self.do_refresh_tree(
             package, {
                 'function_code': 5,
-                'function_name': 15,
+                'name': 15,
                 'remarks': 17,
                 'safety_critical': 18
             })
@@ -312,7 +312,7 @@ class ModuleView(RAMSTKModuleView):
         _attributes['mtbf_mission'] = _model.get_value(_row,
                                                        self._lst_col_order[13])
         _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
-        _attributes['function_name'] = _model.get_value(
+        _attributes['name'] = _model.get_value(
             _row, self._lst_col_order[15])
         _attributes['parent'] = _model.get_value(_row, self._lst_col_order[16])
         _attributes['remarks'] = _model.get_value(_row,

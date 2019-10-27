@@ -343,7 +343,7 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_MTIME == 100.0
         assert DUT.RAMSTK_GUI_LAYOUT == "advanced"
         assert DUT.RAMSTK_METHOD == "STANDARD"  # STANDARD or LRM
-        assert DUT.RAMSTK_LOCALE == "en_US"
+        assert DUT.RAMSTK_LOCALE == "en_US.UTF8"
         assert DUT.RAMSTK_LOGLEVEL == "INFO"
 
         # If testing RAMSTK that was installed by `pip install -e .`, then you

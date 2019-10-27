@@ -7,7 +7,7 @@
 """RAMSTK GTK3 Work Book Module."""
 
 # Standard Library Imports
-from typing import List
+from typing import Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.function import wvwFunctionGD
 from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -28,19 +29,19 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         Initialize an instance of the Work View class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration:
+            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKBaseBook.__init__(self, configuration)
 
         # Initialize private dictionary attributes.
-        self._dic_work_views = {
+        self._dic_work_views: Dict[str, List[object]] = {
             'revision': [
                 wvwRevisionGD(configuration, logger),
             ],
-            #    'function': [
-            #        wvwFunctionGD(configuration),
+            'function': [wvwFunctionGD(configuration, logger)],
             #        wvwFFMEA(configuration),
             #    ],
             #    'requirement':
@@ -87,5 +88,8 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
+        for _page in range(self.get_n_pages()):
+            self.remove_page(_page)
+
         for _workspace in self._dic_work_views[module]:
             self.insert_page(_workspace, _workspace.hbx_tab_label, -1)
