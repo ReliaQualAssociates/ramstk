@@ -7,7 +7,7 @@
 """RAMSTKFunction Table Module."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -39,7 +39,7 @@ class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseTable):
         'mttr': 0.0,
         'name': 'Function Name',
         'parent_id': 0,
-        'remarks': b'',
+        'remarks': '',
         'safety_critical': 0,
         'total_mode_count': 0,
         'total_part_count': 0,
@@ -101,7 +101,7 @@ class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseTable):
     parent_id = Column('fld_parent_id',
                        Integer,
                        default=__defaults__['parent_id'])
-    remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
+    remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
     safety_critical = Column('fld_safety_critical',
                              Integer,
                              default=__defaults__['safety_critical'])

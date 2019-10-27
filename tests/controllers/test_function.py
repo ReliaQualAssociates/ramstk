@@ -398,14 +398,11 @@ class TestGetterSetter():
         DUT.do_select_all(ATTRIBUTES)
 
         pub.sendMessage('request_set_function_attributes',
-                        node_id=1,
-                        key='function_code',
-                        value='-')
+                        node_id=[1, -1],
+                        package={'function_code': '-'})
         pub.sendMessage('request_set_function_attributes',
-                        node_id=1,
-                        key='potential_hazard',
-                        value='Donald Trump',
-                        hazard_id=1)
+                        node_id=[1, 1],
+                        package={'potential_hazard': 'Donald Trump'})
         assert DUT.do_select(1, table='function').function_code == '-'
         assert DUT.do_select(
             1, table='hazards')[1].potential_hazard == 'Donald Trump'

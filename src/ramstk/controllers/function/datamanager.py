@@ -7,6 +7,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Package Data Model."""
 
+# Standard Library Imports
+from typing import Dict, List
+
 # Third Party Imports
 from pubsub import pub
 
@@ -60,6 +63,7 @@ class DataManager(RAMSTKDataManager):
                       'request_set_function_attributes')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_function_attributes')
+        pub.subscribe(self.do_set_attributes, 'wvw_editing_function')
 
     def _do_delete(self, node_id):
         """
@@ -136,7 +140,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
                         attributes=_attributes)
 
-    def _do_set_hazard(self, node_id, key, value, hazard_id):
+    def _do_set_hazard(self, node_id: List, package: Dict) -> None:
         """
         Set the attributes of the record associated with hazard ID.
 
@@ -144,29 +148,32 @@ class DataManager(RAMSTKDataManager):
         since the hazard analyses are carried in a dict and we need to
         select the correct record to update.
 
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :param int hazard_id: the hazard ID if the attribute being set is a
-            hazard analysis attribute.
+        :param list node_id: a list of the ID's of the record in the RAMSTK
+            Program database table whose attributes are to be set.  The list is:
+
+                0 - Function ID
+                1 - Hazard ID
+                2 - FMEA ID
+
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
         try:
             _attributes = self.do_select(
-                node_id, table='hazards')[hazard_id].get_attributes()
+                node_id[0], table='hazards')[node_id[1]].get_attributes()
             _attributes.pop('revision_id')
             _attributes.pop('function_id')
             _attributes.pop('hazard_id')
         except KeyError:
             _attributes = {}
 
-        if key in _attributes:
-            _attributes[key] = value
-            self.do_select(
-                node_id,
-                table='hazards')[hazard_id].set_attributes(_attributes)
+        for _key in list(package.keys()):
+            if _key in _attributes:
+                _attributes[_key] = package[_key]
+                self.do_select(
+                    node_id[0],
+                    table='hazards')[node_id[1]].set_attributes(_attributes)
 
     def do_get_all_attributes(self, node_id):
         """
@@ -316,30 +323,35 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(attributes['function_id'], _key,
-                                   attributes[_key], hazard_id)
+            self.do_set_attributes(node_id=[attributes['function_id'],
+                                            hazard_id, ''],
+                                   package={_key: attributes[_key]})
 
-    def do_set_attributes(self, node_id, key, value, hazard_id=None):
+    def do_set_attributes(self, node_id: List, package: Dict) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :keyword int hazard_id: the hazard ID if the attribute being set is a
-            hazard analysis attribute.
+        :param list node_id: a list of the ID's of the record in the RAMSTK
+            Program database table whose attributes are to be set.  The list is:
+
+                0 - Function ID
+                1 - Hazard ID
+                2 - FMEA ID
+
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
+        [[_key, _value]] = package.items()
+
         for _table in ['function', 'hazards']:
             if _table == 'hazards':
-                self._do_set_hazard(node_id, key, value, hazard_id)
+                self._do_set_hazard(node_id, package)
             else:
-                _attributes = self.do_select(node_id,
+                _attributes = self.do_select(node_id[0],
                                              table=_table).get_attributes()
-                if key in _attributes:
-                    _attributes[key] = value
+                if _key in _attributes:
+                    _attributes[_key] = _value
 
                     try:
                         _attributes.pop('revision_id')
@@ -347,7 +359,7 @@ class DataManager(RAMSTKDataManager):
                     except KeyError:
                         pass
 
-                    self.do_select(node_id,
+                    self.do_select(node_id[0],
                                    table=_table).set_attributes(_attributes)
 
     def do_update(self, node_id):
