@@ -86,7 +86,6 @@ class GeneralData(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_function')
         pub.subscribe(self._on_edit, 'mvw_editing_function')
 
@@ -290,16 +289,13 @@ class GeneralData(RAMSTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index == 2:
-            try:
+        try:
+            if index == 2:
                 _new_text = self.txtRemarks.do_get_text()
-            except ValueError:
-                _new_text = ''
-        else:
-            try:
+            else:
                 _new_text: str = str(entry.get_text())
-            except ValueError:
-                _new_text = ''
+        except ValueError:
+            _new_text = ''
 
         pub.sendMessage('wvw_editing_function',
                         node_id=[self._function_id, -1, ''],

@@ -929,6 +929,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
 
     def _make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:
         """
