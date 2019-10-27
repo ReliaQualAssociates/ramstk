@@ -253,9 +253,9 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         :return: None
         :rtype: None
         """
-        with self.handler_block(handler_id):
-            self.set_active(int(value))
-            self.handler_unblock(handler_id)
+        self.handler_block(handler_id)
+        self.set_active(int(value))
+        self.handler_unblock(handler_id)
 
 
 class RAMSTKOptionButton(Gtk.RadioButton):

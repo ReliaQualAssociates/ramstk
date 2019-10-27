@@ -124,11 +124,11 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.txtName.connect('focus-out-event', self._on_focus_out, 0))
-        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 1))
+            self.txtCode.connect('focus-out-event', self._on_focus_out, 0))
         self._lst_handler_id.append(
-            self.txtCode.connect('focus-out-event', self._on_focus_out, 2))
+            self.txtName.connect('focus-out-event', self._on_focus_out, 1))
+        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
+            'changed', self._on_focus_out, None, 2))
         self._lst_handler_id.append(
             self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
@@ -192,12 +192,12 @@ class GeneralData(RAMSTKWorkView):
             title=_("Analyzing Function {0:s} - {1:s}").format(
                 str(attributes['function_code']), str(attributes['name'])))
 
-        self.txtName.do_update(str(attributes['name']),
-                               self._lst_handler_id[0])
-        self.txtRemarks.do_update(str(attributes['remarks']),
-                                  self._lst_handler_id[1])
         self.txtCode.do_update(str(attributes['function_code']),
-                               self._lst_handler_id[2])
+                               self._lst_handler_id[0])
+        self.txtName.do_update(str(attributes['name']),
+                               self._lst_handler_id[1])
+        self.txtRemarks.do_update(str(attributes['remarks']),
+                                  self._lst_handler_id[2])
         self.chkSafetyCritical.do_update(int(attributes['safety_critical']),
                                          self._lst_handler_id[3])
 
@@ -249,9 +249,9 @@ class GeneralData(RAMSTKWorkView):
         _module_id = node_id[0]
         [[_key, _value]] = package.items()
         _dic_switch = {
-            'name': [self.txtName.do_update, 0],
-            'remarks': [self.txtRemarks.do_update, 1],
-            'function_code': [self.txtCode.do_update, 2],
+            'function_code': [self.txtCode.do_update, 0],
+            'name': [self.txtName.do_update, 1],
+            'remarks': [self.txtRemarks.do_update, 2],
             'safety_critical': [self.chkSafetyCritical.do_update, 3]
         }
 
@@ -290,14 +290,14 @@ class GeneralData(RAMSTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index in [0, 2]:
+        if index == 2:
             try:
-                _new_text: str = str(entry.get_text())
+                _new_text = self.txtRemarks.do_get_text()
             except ValueError:
                 _new_text = ''
         else:
             try:
-                _new_text = self.txtRemarks.do_get_text()
+                _new_text: str = str(entry.get_text())
             except ValueError:
                 _new_text = ''
 
