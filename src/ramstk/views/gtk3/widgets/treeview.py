@@ -58,8 +58,8 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.selection = self.get_selection()
 
     def _do_make_cell(self, widget: str
-                      ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle,
-                                 Gtk.CellRendererSpin, Gtk.CellRendererCombo]:
+                     ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle,
+                                Gtk.CellRendererSpin, Gtk.CellRendererCombo]:
         """
         Create the appropriate type of Gtk.CellRenderer().
 
