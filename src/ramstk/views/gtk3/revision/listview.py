@@ -78,10 +78,8 @@ class FailureDefinition(RAMSTKListView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKListView.__init__(self,
-                                configuration,
-                                logger,
-                                module='failure_definition')
+        super().__init__(configuration, logger, 'failure_definition')
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -189,7 +187,8 @@ class FailureDefinition(RAMSTKListView):
               "selected revision."))
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
-        RAMSTKListView.make_ui(self)
+
+        super().make_ui()
 
     def __set_properties(self) -> None:
         """
@@ -350,7 +349,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
+        super().on_cell_edit(__cell, path, new_text, position)
 
         pub.sendMessage('lvw_editing_failure_definition',
                         node_id=[self._revision_id, self._definition_id, ''],
@@ -403,10 +402,8 @@ class UsageProfile(RAMSTKListView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKListView.__init__(self,
-                                configuration,
-                                logger,
-                                module='usage_profile')
+        super().__init__(configuration, logger, 'usage_profile')
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -693,7 +690,8 @@ class UsageProfile(RAMSTKListView):
             _("Displays usage profiles for the selected revision."))
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
-        RAMSTKListView.make_ui(self)
+
+        super().make_ui()
 
     def __set_properties(self) -> None:
         """
@@ -1128,7 +1126,7 @@ class UsageProfile(RAMSTKListView):
 
         try:
             _key = _dic_keys[_level][position]
-            RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
+            super().on_cell_edit(__cell, path, new_text, position)
             pub.sendMessage('lvw_editing_usage_profile',
                             node_id=[self._revision_id, -1, _node_id],
                             package={_key: new_text})

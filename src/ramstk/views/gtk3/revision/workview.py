@@ -56,7 +56,8 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKWorkView.__init__(self, configuration, logger, module='revision')
+        super().__init__(configuration, logger, 'revision')
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -92,10 +93,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = RAMSTKWorkView.make_ui(self,
-                                                          icons=[],
-                                                          tooltips=[],
-                                                          callbacks=[])
+        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[],
+                                                   tooltips=[],
+                                                   callbacks=[])
 
         _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
 
@@ -171,10 +171,8 @@ class GeneralData(RAMSTKWorkView):
         """
         self._revision_id = attributes['revision_id']
 
-        RAMSTKWorkView.on_select(
-            self,
-            title=_("Analyzing Revision {0:s} - {1:s}").format(
-                str(attributes['revision_code']), str(attributes['name'])))
+        super().on_select(title=_("Analyzing Revision {0:s} - {1:s}").format(
+            str(attributes['revision_code']), str(attributes['name'])))
 
         self.txtName.do_update(str(attributes['name']),
                                self._lst_handler_id[0])
@@ -239,8 +237,11 @@ class GeneralData(RAMSTKWorkView):
         _function, _id = _dic_switch.get(_key)
         _function(_value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-                      index: int) -> None:
+    def _on_focus_out(
+            self,
+            entry: Gtk.Entry,
+            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 

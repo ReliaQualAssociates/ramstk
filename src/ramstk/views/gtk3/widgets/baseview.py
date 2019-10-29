@@ -908,8 +908,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param str module: the name of the RAMSTK workflow module.
         """
-        GObject.GObject.__init__(self)
-        RAMSTKBaseView.__init__(self, configuration, logger, module)
+        super().__init__(configuration, logger, module)
 
         self._module: str = ''
         for __, char in enumerate(module):

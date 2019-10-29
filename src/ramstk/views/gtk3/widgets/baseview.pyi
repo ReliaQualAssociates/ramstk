@@ -22,9 +22,13 @@ class RAMSTKBaseView(Gtk.HBox):
         pass
 
 class RAMSTKListView(RAMSTKBaseView):
-
+    def __init__(self) -> None:
+        ...
 
 class RAMSTKModuleView(RAMSTKBaseView):
-
+    def __init__(self) -> None:
+        ...
 
 class RAMSTKWorkView(RAMSTKBaseView):
+    def __init__(self) -> None:
+        ...

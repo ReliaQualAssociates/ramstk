@@ -40,10 +40,8 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKModuleView.__init__(self,
-                                  configuration,
-                                  logger,
-                                  module='function')
+        super().__init__(configuration, logger, 'function')
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -98,7 +96,7 @@ class ModuleView(RAMSTKModuleView):
                 ]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-        RAMSTKModuleView.make_ui(self)
+        super().make_ui()
 
     # pylint: disable=unused-argument
     def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
@@ -113,13 +111,12 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_refresh_tree(
-            package, {
-                'function_code': 5,
-                'name': 15,
-                'remarks': 17,
-                'safety_critical': 18
-            })
+        self.do_refresh_tree(package, {
+            'function_code': 5,
+            'name': 15,
+            'remarks': 17,
+            'safety_critical': 18
+        })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -131,13 +128,14 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent(
-
         ).get_parent()
         _prompt = _("You are about to delete Function {0:d} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._function_id)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question', parent=_parent)
+        _dialog = RAMSTKMessageDialog(_prompt,
+                                      self._dic_icons['question'],
+                                      'question',
+                                      parent=_parent)
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
@@ -200,21 +198,19 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            RAMSTKModuleView.on_button_press(
-                self,
-                event,
-                icons=['insert_sibling', 'insert_child'],
-                labels=[
-                    _("Add Sibling Function"),
-                    _("Add Child Function"),
-                    _("Remove Selected Function"),
-                    _("Save Selected Function"),
-                    _("Save All Functions")
-                ],
-                callbacks=[
-                    self.do_request_insert_sibling,
-                    self.do_request_insert_child
-                ])
+            super().on_button_press(event,
+                                    icons=['insert_sibling', 'insert_child'],
+                                    labels=[
+                                        _("Add Sibling Function"),
+                                        _("Add Child Function"),
+                                        _("Remove Selected Function"),
+                                        _("Save Selected Function"),
+                                        _("Save All Functions")
+                                    ],
+                                    callbacks=[
+                                        self.do_request_insert_sibling,
+                                        self.do_request_insert_child
+                                    ])
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -265,10 +261,7 @@ class ModuleView(RAMSTKModuleView):
         else:
             _prow = _model.iter_parent(_row)
 
-        RAMSTKModuleView.on_insert(
-            self,
-            _data,
-            prow=_prow)
+        super().on_insert(_data, prow=_prow)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -312,8 +305,7 @@ class ModuleView(RAMSTKModuleView):
         _attributes['mtbf_mission'] = _model.get_value(_row,
                                                        self._lst_col_order[13])
         _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
-        _attributes['name'] = _model.get_value(
-            _row, self._lst_col_order[15])
+        _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
         _attributes['parent'] = _model.get_value(_row, self._lst_col_order[16])
         _attributes['remarks'] = _model.get_value(_row,
                                                   self._lst_col_order[17])

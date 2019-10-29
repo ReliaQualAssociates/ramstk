@@ -40,10 +40,8 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKModuleView.__init__(self,
-                                  configuration,
-                                  logger,
-                                  module='revision')
+        super().__init__(configuration, logger, 'revision')
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -95,7 +93,7 @@ class ModuleView(RAMSTKModuleView):
                               ]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-        RAMSTKModuleView.make_ui(self)
+        super().make_ui()
 
     # pylint: disable=unused-argument
     def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
@@ -126,13 +124,14 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent(
-
         ).get_parent()
         _prompt = _("You are about to delete Revision {0:d} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._revision_id)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question', parent=_parent)
+        _dialog = RAMSTKMessageDialog(_prompt,
+                                      self._dic_icons['question'],
+                                      'question',
+                                      parent=_parent)
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
@@ -195,17 +194,15 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            RAMSTKModuleView.on_button_press(
-                self,
-                event,
-                icons=['add'],
-                labels=[
-                    _("Add Revision"),
-                    _("Remove Selected Revision"),
-                    _("Save Selected Revision"),
-                    _("Save All Revisions")
-                ],
-                callbacks=[self.do_request_insert_sibling])
+            super().on_button_press(event,
+                                    icons=['add'],
+                                    labels=[
+                                        _("Add Revision"),
+                                        _("Remove Selected Revision"),
+                                        _("Save Selected Revision"),
+                                        _("Save All Revisions")
+                                    ],
+                                    callbacks=[self.do_request_insert_sibling])
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -248,8 +245,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        RAMSTKModuleView.on_insert(
-            self,
+        super().on_insert(
             tree.get_node(node_id).data['revision'].get_attributes())
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:

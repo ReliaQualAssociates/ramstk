@@ -57,7 +57,8 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKWorkView.__init__(self, configuration, logger, module='function')
+        super().__init__(configuration, logger, 'function')
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -96,10 +97,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = RAMSTKWorkView.make_ui(self,
-                                                          icons=[],
-                                                          tooltips=[],
-                                                          callbacks=[])
+        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[], tooltips=[], callbacks=[])
 
         _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
@@ -186,10 +184,8 @@ class GeneralData(RAMSTKWorkView):
         """
         self._function_id = attributes['function_id']
 
-        RAMSTKWorkView.on_select(
-            self,
-            title=_("Analyzing Function {0:s} - {1:s}").format(
-                str(attributes['function_code']), str(attributes['name'])))
+        super().on_select(title=_("Analyzing Function {0:s} - {1:s}").format(
+            str(attributes['function_code']), str(attributes['name'])))
 
         self.txtCode.do_update(str(attributes['function_code']),
                                self._lst_handler_id[0])
