@@ -23,6 +23,7 @@
         <option value="ramstk.views.gtk3.Pango" />
         <option value="str.text" />
         <option value="int.text" />
+        <option value="object.do_load_comboboxes" />
       </list>
     </option>
   </inspection_tool>
