@@ -297,7 +297,7 @@ class DataManager(RAMSTKDataManager):
 
             _data_package = {
                 'function': _function,
-                'hazards': _hazards,
+                'hazards': _hazards
             }
 
             self.tree.create_node(tag=_function.name,

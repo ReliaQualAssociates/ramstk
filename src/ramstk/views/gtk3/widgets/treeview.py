@@ -26,6 +26,7 @@ from .label import RAMSTKLabel
 
 class RAMSTKTreeView(Gtk.TreeView):
     """The RAMSTKTreeView class."""
+
     def __init__(self) -> None:
         """
         Initialize a RAMSTKTreeView() instance.
@@ -58,8 +59,8 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.selection = self.get_selection()
 
     def _do_make_cell(self, widget: str
-                     ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle,
-                                Gtk.CellRendererSpin, Gtk.CellRendererCombo]:
+                      ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle,
+                                 Gtk.CellRendererSpin, Gtk.CellRendererCombo]:
         """
         Create the appropriate type of Gtk.CellRenderer().
 
@@ -587,6 +588,7 @@ class RAMSTKTreeView(Gtk.TreeView):
 
 class CellRendererML(Gtk.CellRendererText):
     """Create a multi-line cell renderer."""
+
     def __init__(self) -> None:
         """Initialize a CellRendererML instance."""
         GObject.GObject.__init__(self)
@@ -599,7 +601,8 @@ class CellRendererML(Gtk.CellRendererText):
         self.textedit = Gtk.TextView()
         self.textbuffer = self.textedit.get_buffer()
 
-    def do_get_size(self, widget, cell_area):  # pylint: disable=arguments-differ
+    def do_get_size(self, widget,
+                    cell_area):  # pylint: disable=arguments-differ
         """
         Get the size of the CellRendererML.
 
@@ -700,7 +703,8 @@ class CellRendererML(Gtk.CellRendererText):
         """
         _keyname = Gdk.keyval_name(event.keyval)
 
-        if event.get_state() & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK) and \
+        if event.get_state() & (
+                Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK) and \
                 _keyname == 'Return':
             self.textedit_window.response(Gtk.ResponseType.OK)
 

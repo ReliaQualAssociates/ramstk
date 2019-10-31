@@ -114,7 +114,7 @@ class FailureDefinition(RAMSTKListView):
 
         The pubsub message the ListView listens for sends a data package named
         attributes.  _do_load_tree() needs a data package named tree.  This
-        method simply makes that conversion to happen.
+        method simply makes that conversion happen.
 
         :param dict attributes: the failure definition dict for the selected
             revision ID.
@@ -250,7 +250,7 @@ class FailureDefinition(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, sibling=True) -> None:  # pylint: disable=unused-argument
+    def _do_request_insert(self, sibling: bool = True) -> None:  # pylint: disable=unused-argument
         """
         Request to add a Failure Definition record.
 

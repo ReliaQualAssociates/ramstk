@@ -33,7 +33,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             current instance of the RAMSTK application.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super(AnalysisManager, self).__init__(configuration, **kwargs)
+        super().__init__(configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
