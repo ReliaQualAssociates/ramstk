@@ -118,7 +118,7 @@ class DataManager(RAMSTKDataManager):
         .. important:: the failure definition will return a dict of all the
             failure definitions associated with the node (function) ID.  This
             dict uses the definition ID as the key and the instance of the
-            RAMSTKFailureDefinition as the value.  The subscibing methods and
+            RAMSTKFailureDefinition as the value.  The subscribing methods and
             functions will need to unpack this dict.
 
         .. important:: the usage profile will return a treelib Tree() of all

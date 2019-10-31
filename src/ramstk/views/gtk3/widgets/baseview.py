@@ -269,19 +269,27 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
         """
         try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                     + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                     + 'fg']
+            _treeview = RAMSTKTreeView()
+            self._lst_col_order = _treeview.order
+
             _fmt_file = (
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
                 + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
             _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
-
-            _treeview = RAMSTKTreeView()
             _treeview.do_parse_format(_fmt_path, _fmt_file)
+
+            try:
+                _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                         + 'bg']
+                _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
+                                                                         + 'fg']
+            except KeyError as _error:
+                _bg_color = '#000000'
+                _fg_color = '#FFFFFF'
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
             _treeview.make_model(_bg_color, _fg_color)
-            self._lst_col_order = _treeview.order
+
         except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()

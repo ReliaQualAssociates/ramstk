@@ -327,11 +327,8 @@ class ModuleView(RAMSTKModuleView):
             self._parent_id = 0
 
         pub.sendMessage('selected_function', attributes=_attributes)
-        #pub.sendMessage('request_get_function_attributes',
-        #                node_id=self._function_id,
-        #                table='failure_definitions')
-        #pub.sendMessage('request_get_function_attributes',
-        #                node_id=self._function_id,
-        #                table='usage_profile')
+        pub.sendMessage('request_get_function_attributes',
+                        node_id=self._function_id,
+                        table='hazards')
 
         selection.handler_unblock(self._lst_handler_id[0])

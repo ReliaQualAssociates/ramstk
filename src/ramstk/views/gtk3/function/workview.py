@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Function Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -15,10 +15,11 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.models.programdb import RAMSTKHazardAnalysis
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKLabel,
-    RAMSTKTextView, RAMSTKWorkView
+    RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
+    RAMSTKTextView, RAMSTKTreeView, RAMSTKWorkView, do_make_buttonbox
 )
 
 
@@ -97,7 +98,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[], tooltips=[], callbacks=[])
+        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[],
+                                                   tooltips=[],
+                                                   callbacks=[])
 
         _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
@@ -324,3 +327,429 @@ class GeneralData(RAMSTKWorkView):
                         package={_key: _new_text})
 
         togglebutton.handler_unblock(self._lst_handler_id[index])
+
+
+class HazOps(RAMSTKWorkView):
+    """
+    Display HazOps attribute data in the Work Book.
+
+    The WorkView displays all the attributes for the Hazards Analysis (HazOps).
+    The attributes of a HazOps Work View are:
+
+    :ivar _lst_handler_id: list containing the ID's of the callback signals for
+                           each Gtk.Widget() associated with an editable
+                           Functional HazOps attribute.
+
+    +-------+-------------------------------------------+
+    | Index | Widget - Signal                           |
+    +=======+===========================================+
+    |   0   | treeview `cursor_changed`                 |
+    +-------+-------------------------------------------+
+    |   1   | treeview `button_press_event`             |
+    +-------+-------------------------------------------+
+    """
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
+        """
+        Initialize the Work View for the HazOps.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        """
+        super().__init__(configuration, logger, 'hazops')
+
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._hazard_id: int = -1
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self.__do_load_tree, 'succeed_get_hazards_attributes')
+
+    def __do_load_tree(self, attributes: Dict[int, Any]) -> None:
+        """
+        Wrapper method for _do_load_tree().
+
+        The pubsub message the WorkView listens for sends a data package named
+        attributes.  _do_load_tree() needs a data package named tree.  This
+        method simply makes that conversion happen.
+
+        :param dict attributes: the hazards dict for the selected function ID.
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._revision_id = attributes["revision_id"]
+            self._parent_id = attributes["function_id"]
+            self._do_load_tree(tree=attributes)
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+    def __make_ui(self) -> None:
+        """
+        Make the HazOps RAMSTKTreeview().
+
+        :return: None
+        :rtype: None
+        """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            do_make_buttonbox(
+                self,
+                icons=['calculate', 'add', 'remove'],
+                tooltips=[
+                    _("Calculate the HazOps analysis."),
+                    _("Add a hazard to the HazOps analysis."),
+                    _("Remove the selected hazard and all associated data "
+                      "from the HazOps analysis.")
+                ],
+                callbacks=[
+                    self._do_request_calculate, self.do_request_insert,
+                    self._do_request_delete
+                ]))
+        self.pack_start(_scrolledwindow, False, False, 0)
+
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("HazOps Analysis"))
+        _frame.add(_scrollwindow)
+
+        self.pack_end(_frame, True, True, 0)
+
+        _label = RAMSTKLabel(_("HazOps"))
+        _label.do_set_properties(
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_(
+                "Displays the HazOps analysis for the selected function."))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+        self.show_all()
+
+    def __set_callbacks(self) -> None:
+        """
+        Set the callback functions and methods for the HazOps widgets.
+
+        :return: None
+        :rtype: None
+        """
+        for i in self._lst_col_order[3:]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cells()
+            try:
+                _cell[0].connect('edited', self._on_cell_edit, i,
+                                 self.treeview.get_model())
+            except TypeError:
+                _cell[0].connect('toggled', self._on_cell_edit, 'new text', i,
+                                 self.treeview.get_model())
+
+    def __set_properties(self) -> None:
+        """
+        Set the properties of the HazOps widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
+        self.treeview.set_tooltip_text(
+            _("Displays the HazOps Analysis for the currently "
+              "selected Hardware item."))
+
+    def _do_clear_page(self) -> None:
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
+
+    def _do_load_tree(self, tree: Dict[int, RAMSTKHazardAnalysis]) -> None:
+        """
+        Load the Failure Definition List View's Gtk.TreeModel.
+
+        :param tree: the Failure Definition attributes dict.
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _model.clear()
+
+        for _key in tree:
+            _entity = tree[_key]
+
+            _attributes: Tuple[int, int, str] = (0, 0, '')
+            if _entity is not None:
+                _attributes = (_entity.revision_id, _entity.definition_id,
+                               _entity.definition)
+            try:
+                _row = _model.append(_attributes)
+            except ValueError:
+                _row = None
+
+        self.do_expand_tree()
+
+    def _get_cell_model(self, column: int) -> Gtk.TreeModel:
+        """
+        Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
+
+        :param int column: the column number to retrieve the cell from.
+        :return: _model
+        :rtype: :class:`Gtk.TreeModel`
+        """
+        _model: Gtk.TreeModel = None
+        _column = self.treeview.get_column(column)
+
+        if _column is not None:
+            _cell = _column.get_cells()[0]
+            _model = _cell.get_property('model')
+            _model.clear()
+
+        return _model
+
+    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to calculate the HazOps HRI.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
+
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_calculate_hazop', node_id=_node_id)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to delete the selected hazard from the HazOps.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
+        :return: None
+        :rtype: None
+        """
+        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
+
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_delete_hazop', node_id=_node_id)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_request_insert(self) -> None:
+        """
+        Request to insert a new hazard for the selected function.
+
+        :return: None
+        :rtype: None
+        """
+        print(self._function_id)
+        pub.sendMessage('request_insert_hazard', function_id=self._parent_id)
+
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to save the selected Hazard.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
+        :return: None
+        :rtype: None
+        """
+        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
+
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_hazop', node_id=_node_id)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to save all the entities in the HazOps.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
+        :return: None
+        :rtype: None
+        """
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_all_hazops')
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _on_button_press(self, treeview: RAMSTKTreeView,
+                         event: Gdk.Event) -> None:
+        """
+        Handle mouse clicks on the HazOps Work View RAMSTKTreeView().
+
+        :param treeview: the HazOps TreeView RAMSTKTreeView().
+        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :param event: the Gdk.Event() that called this method (the
+                      important attribute is which mouse button was clicked).
+
+                      * 1 = left
+                      * 2 = scrollwheel
+                      * 3 = right
+                      * 4 = forward
+                      * 5 = backwards
+                      * 8 =
+                      * 9 =
+
+        :type event: :class:`Gdk.Event`.
+        :return: None
+        :rtype: None
+        """
+        treeview.handler_block(self._lst_handler_id[1])
+
+        # The cursor-changed signal will call the _on_change_row.  If
+        # _on_change_row is called from here, it gets called twice.  Once on
+        # the currently selected row and once on the newly selected row.  Thus,
+        # we don't need (or want) to respond to left button clicks.
+        if event.button == 3:
+            RAMSTKWorkView.on_button_press(
+                self,
+                event,
+                icons=['add', 'remove', 'calculate'],
+                labels=[
+                    _("Add Hazard"),
+                    _("Remove Selected Hazard"),
+                    _("Calculate HazOp"),
+                ],
+                callbacks=[
+                    self._do_request_insert_sibling,
+                    self._do_request_delete,
+                    self._do_request_calculate,
+                ],
+            )
+
+        treeview.handler_unblock(self._lst_handler_id[1])
+
+    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+                      position: int, model: Gtk.TreeModel) -> None:
+        """
+        Handle edits of the HazOps Work View RAMSTKTreeview().
+
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :type __cell: :class:`Gtk.CellRenderer`
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
+        :type model: :class:`Gtk.TreeModel`
+        :return: None
+        :rtype: None
+        """
+        _dic_keys = {
+            3: 'potential_hazard',
+            4: 'potential_cause',
+            5: 'assembly_effect',
+            6: 'assembly_severity',
+            7: 'assembly_probability',
+            9: 'assembly_mitigation',
+            10: 'assembly_severity_f',
+            11: 'assembly_probability_f',
+            13: 'system_effect',
+            14: 'system_severity',
+            15: 'system_probability',
+            17: 'system_mitigation',
+            18: 'system_severity_f',
+            19: 'system_probability_f',
+            21: 'remarks'
+        }
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
+
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
+
+            pub.sendMessage("wvw_editing_hazops",
+                            module_id=self._hazard_id,
+                            key=_key,
+                            value=new_text)
+
+    def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
+        """
+        Handle events for the HazOps Tree View RAMSTKTreeView().
+
+        This method is called whenever a Tree View row is activated.
+
+        :param treeview: the HazOps RAMSTKTreeView().
+        :type treeview: :class:`ramstk.gui.gtk.ramstk.RAMSTKTreeView`
+        :return: None
+        :rtype: None
+        """
+        treeview.handler_block(self._lst_handler_id[0])
+
+        _model, _row = treeview.selection.get_selected()
+        try:
+            self._hazard_id = _model.get_value(_row, 2)
+        except TypeError:
+            self._hazard_id = None
+
+        treeview.handler_unblock(self._lst_handler_id[0])
+
+    def do_load_combobox(self, hazards: Dict[Any, Any],
+                         severity: Dict[Any, Any], probability: List) -> None:
+        """
+        Load the RAMSTKComboBox() widgets.
+
+        :param dict hazards: the dict containing the hazards and hazard types
+            to be considered.
+        :param dict severity: the dict containing the hazard severity
+            categories and values.
+        :param list probability: the list of hazard probabilities.
+        :return: None
+        :rtype: None
+        """
+        # Load the potential hazards into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(3)
+        for _key in hazards:
+            _hazard = '{0:s}, {1:s}'.format(hazards[_key][0], hazards[_key][1])
+            _model.append((_hazard, ))
+
+        # Load the severity classes into the Gtk.CellRendererCombo().
+        for i in [6, 10, 14, 18]:
+            _model = self._get_cell_model(i)
+            for _key in severity:
+                _severity = severity[_key][1]
+                _model.append((_severity, ))
+
+        # Load the failure probabilities into the Gtk.CellRendererCombo().
+        for i in [7, 11, 15, 19]:
+            _model = self._get_cell_model(i)
+            for _item in probability:
+                _model.append((_item[0], ))

@@ -21,7 +21,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
     Class to represent ramstk_hazard_analysis table in the Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
-    This table shares a Many-to-One relationship with ramstk_hardware.
+    This table shares a Many-to-One relationship with ramstk_function.
     """
 
     __defaults__ = {
@@ -31,7 +31,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
         'assembly_severity': 'Major',
         'assembly_probability': 'Level A - Frequent',
         'assembly_hri': 20,
-        'assembly_mitigation': b'',
+        'assembly_mitigation': '',
         'assembly_severity_f': 'Major',
         'assembly_probability_f': 'Level A - Frequent',
         'assembly_hri_f': 20,

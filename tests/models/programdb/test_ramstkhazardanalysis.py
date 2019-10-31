@@ -14,9 +14,9 @@ import pytest
 from ramstk.models.programdb import RAMSTKHazardAnalysis
 
 ATTRIBUTES = {
-    'user_blob_3': b'',
-    'user_blob_2': b'',
-    'user_blob_1': b'',
+    'user_blob_3': '',
+    'user_blob_2': '',
+    'user_blob_1': '',
     'system_severity': 'Medium',
     'result_2': 0.0,
     'result_3': 0.0,
@@ -31,7 +31,7 @@ ATTRIBUTES = {
     'result_4': 0.0,
     'user_float_1': 0.0,
     'potential_hazard': '',
-    'remarks': b'',
+    'remarks': '',
     'system_hri_f': 20,
     'result_5': 0.0,
     'assembly_severity': 'Medium',
@@ -40,7 +40,7 @@ ATTRIBUTES = {
     'assembly_effect': '',
     'function_4': '',
     'potential_cause': '',
-    'system_mitigation': b'',
+    'system_mitigation': '',
     'function_3': '',
     'function_2': '',
     'function_1': '',
@@ -48,7 +48,7 @@ ATTRIBUTES = {
     'user_int_2': 0,
     'assembly_severity_f': 'Medium',
     'system_severity_f': 'Medium',
-    'assembly_mitigation': b'',
+    'assembly_mitigation': '',
     'function_5': '',
     'result_1': 0.0,
     'user_float_2': 0.0
@@ -76,7 +76,7 @@ class TestRAMSTKHazardAnalysis():
         # assert DUT.assembly_severity == 'Major'
         # assert DUT.assembly_probability == 'Level A - Frequent'
         # assert DUT.assembly_hri == 20
-        assert DUT.assembly_mitigation == b''
+        assert DUT.assembly_mitigation == ''
         # assert DUT.assembly_severity_f == 'Major'
         # assert DUT.assembly_probability_f == 'Level A - Frequent'
         # assert DUT.assembly_hri_f == 20
@@ -85,7 +85,7 @@ class TestRAMSTKHazardAnalysis():
         # assert DUT.function_3 == ''
         # assert DUT.function_4 == ''
         # assert DUT.function_5 == ''
-        assert DUT.remarks == b''
+        assert DUT.remarks == ''
         # assert DUT.result_1 == 0.0
         # assert DUT.result_2 == 0.0
         # assert DUT.result_3 == 0.0
@@ -95,13 +95,13 @@ class TestRAMSTKHazardAnalysis():
         # assert DUT.system_severity == 'Major'
         # assert DUT.system_probability == 'Level A - Frequent'
         # assert DUT.system_hri == 20
-        assert DUT.system_mitigation == b''
+        assert DUT.system_mitigation == ''
         # assert DUT.system_severity_f == 'Major'
         # assert DUT.system_probability_f == 'Level A - Frequent'
         # assert DUT.system_hri_f == 20
-        assert DUT.user_blob_1 == b''
-        assert DUT.user_blob_2 == b''
-        assert DUT.user_blob_3 == b''
+        assert DUT.user_blob_1 == ''
+        assert DUT.user_blob_2 == ''
+        assert DUT.user_blob_3 == ''
         # assert DUT.user_float_1 == 0.0
         # assert DUT.user_float_2 == 0.0
         # assert DUT.user_float_3 == 0.0
@@ -127,7 +127,7 @@ class TestRAMSTKHazardAnalysis():
         # assert _attributes['assembly_severity'] == 'Major'
         # assert _attributes['assembly_probability'] == 'Level A - Frequent'
         # assert _attributes['assembly_hri'] == 20
-        assert _attributes['assembly_mitigation'] == b''
+        assert _attributes['assembly_mitigation'] == ''
         # assert _attributes['assembly_severity_f'] == 'Major'
         # assert _attributes['assembly_probability_f'] == 'Level A - Frequent'
         # assert _attributes['assembly_hri_f'] == 20
@@ -136,7 +136,7 @@ class TestRAMSTKHazardAnalysis():
         # assert _attributes['function_3'] == ''
         # assert _attributes['function_4'] == ''
         # assert _attributes['function_5'] == ''
-        assert _attributes['remarks'] == b''
+        assert _attributes['remarks'] == ''
         # assert _attributes['result_1'] == 0.0
         # assert _attributes['result_2'] == 0.0
         # assert _attributes['result_3'] == 0.0
@@ -146,13 +146,13 @@ class TestRAMSTKHazardAnalysis():
         # assert _attributes['system_severity'] == 'Major'
         # assert _attributes['system_probability'] == 'Level A - Frequent'
         # assert _attributes['system_hri'] == 20
-        assert _attributes['system_mitigation'] == b''
+        assert _attributes['system_mitigation'] == ''
         # assert _attributes['system_severity_f'] == 'Major'
         # assert _attributes['system_probability_f'] == 'Level A - Frequent'
         # assert _attributes['system_hri_f'] == 20
-        assert _attributes['user_blob_1'] == b''
-        assert _attributes['user_blob_2'] == b''
-        assert _attributes['user_blob_3'] == b''
+        assert _attributes['user_blob_1'] == ''
+        assert _attributes['user_blob_2'] == ''
+        assert _attributes['user_blob_3'] == ''
         # assert _attributes['user_float_1'] == 0.0
         # assert _attributes['user_float_2'] == 0.0
         # assert _attributes['user_float_3'] == 0.0
@@ -175,7 +175,7 @@ class TestRAMSTKHazardAnalysis():
         ATTRIBUTES['remarks'] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['remarks'] == b''
+        assert DUT.get_attributes()['remarks'] == ''
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

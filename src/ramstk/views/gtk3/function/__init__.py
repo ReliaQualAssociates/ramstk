@@ -12,3 +12,4 @@
 #from .listview import UsageProfile as lvwUsageProfile
 from .moduleview import ModuleView as mvwFunction
 from .workview import GeneralData as wvwFunctionGD
+from .workview import HazOps as wvwHazOps
