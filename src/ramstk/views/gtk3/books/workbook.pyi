@@ -8,6 +8,7 @@ from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 class RAMSTKWorkBook(RAMSTKBaseBook):
     def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager) -> None:
+        self.RAMSTK_SITE_CONFIGURATION = None
         self._dic_work_views = None
         ...
 

@@ -155,7 +155,7 @@ def the_one_ring() -> None:
 
     # Create the RAMSTK Book.  This needs to be initialized after reading the
     # configuration and creating the logger.
-    RAMSTKDesktop(user_configuration, _logger)
+    RAMSTKDesktop([user_configuration, site_configuration], _logger)
 
     _logger.do_log_info(__name__, "Launched RAMSTK GUI.")
 

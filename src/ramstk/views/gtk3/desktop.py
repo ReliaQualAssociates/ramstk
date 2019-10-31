@@ -14,7 +14,7 @@ from typing import List
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.configuration import RAMSTK_FAILURE_PROBABILITY
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import CreateProject, OpenProject
@@ -47,8 +47,8 @@ class RAMSTKDesktop(Gtk.Window):
     This is the container class for the List Book, Module Book, and Work Book.
     Attributes of the RAMSTKDesktop are:
 
-    :cvar RAMSTK_USER_CONFIGURATION: the instance of the RAMSTK Configuration
-    class.
+    :cvar RAMSTK_USER_CONFIGURATION: the instance of the RAMSTK
+        user configuration class.
     :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     :cvar dict dic_books: dictionary holding a reference to each RAMSTK book.
     :cvar dict dic_tab_pos: dictionary holding the Gtk.PositionType()s for each
@@ -72,16 +72,17 @@ class RAMSTKDesktop(Gtk.Window):
 
     RAMSTK_USER_CONFIGURATION = None
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration: List, logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the RAMSTK Book.
 
-        :param configuration: the RAMSTK user configuration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param list configuration: a list containing the RAMSTK user
+            configuration and RAMSTK site configuration class instances.
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
-        self.RAMSTK_USER_CONFIGURATION = configuration
+        self.RAMSTK_USER_CONFIGURATION = configuration[0]
 
         # Initialize private dictionary attributes.
 
@@ -115,9 +116,15 @@ class RAMSTKDesktop(Gtk.Window):
 
         self.icoStatus = Gtk.StatusIcon()
 
-        self.nbkListBook = RAMSTKListBook(configuration, logger)
-        self.nbkModuleBook = RAMSTKModuleBook(configuration, logger)
-        self.nbkWorkBook = RAMSTKWorkBook(configuration, logger)
+        self.nbkListBook = RAMSTKListBook(configuration[0], logger)
+        self.nbkModuleBook = RAMSTKModuleBook(configuration[0], logger)
+        self.nbkWorkBook = RAMSTKWorkBook(configuration[0], logger)
+        self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION = configuration[1]
+
+        self.nbkWorkBook.dic_work_views['function'][1].do_load_combobox(
+            self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION.RAMSTK_HAZARDS,
+            self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION.RAMSTK_SEVERITY,
+            RAMSTK_FAILURE_PROBABILITY)
 
         try:
             locale.setlocale(locale.LC_ALL,
