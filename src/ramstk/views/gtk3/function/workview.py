@@ -496,11 +496,53 @@ class HazOps(RAMSTKWorkView):
 
         _model.clear()
 
+    def _do_load_hazards(self, hazards: Dict[Any, Any]) -> None:
+        """
+        Load the Gtk.CellRendererCombos() containing hazards.
+
+        :param dict hazards: the dict containing the hazards and hazard types
+            to be considered.
+        :return: None
+        :rtype: None
+        """
+        _model = self._get_cell_model(3)
+        for _key in hazards:
+            _hazard = '{0:s}, {1:s}'.format(hazards[_key][0], hazards[_key][1])
+            _model.append((_hazard, ))
+
+    def _do_load_probability(self, probability: List) -> None:
+        """
+        Load the Gtk.CellRendererCombos() containing probabilities.
+
+        :param list probability: the list of hazard probabilities.
+        :return: None
+        :rtype: None
+        """
+        for i in [7, 11, 15, 19]:
+            _model = self._get_cell_model(i)
+            for _item in probability:
+                _model.append((_item[0], ))
+
+    def _do_load_severity(self, severity: Dict[Any, Any]) -> None:
+        """
+        Load the Gtk.CellRendererCombo() containing severities.
+
+        :param dict severity: the dict containing the hazard severity
+            categories and values.
+        :return: None
+        :rtype: None
+        """
+        for i in [6, 10, 14, 18]:
+            _model = self._get_cell_model(i)
+            for _key in severity:
+                _severity = severity[_key][1]
+                _model.append((_severity, ))
+
     def _do_load_tree(self, tree: Dict[int, RAMSTKHazardAnalysis]) -> None:
         """
-        Load the Failure Definition List View's Gtk.TreeModel.
+        Load the Hazard Analysis Work View's Gtk.TreeModel.
 
-        :param tree: the Failure Definition attributes dict.
+        :param tree: the Hazards attributes dict.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
@@ -736,20 +778,10 @@ class HazOps(RAMSTKWorkView):
         :rtype: None
         """
         # Load the potential hazards into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(3)
-        for _key in hazards:
-            _hazard = '{0:s}, {1:s}'.format(hazards[_key][0], hazards[_key][1])
-            _model.append((_hazard, ))
+        self._do_load_hazards(hazards)
 
         # Load the severity classes into the Gtk.CellRendererCombo().
-        for i in [6, 10, 14, 18]:
-            _model = self._get_cell_model(i)
-            for _key in severity:
-                _severity = severity[_key][1]
-                _model.append((_severity, ))
+        self._do_load_severity(severity)
 
         # Load the failure probabilities into the Gtk.CellRendererCombo().
-        for i in [7, 11, 15, 19]:
-            _model = self._get_cell_model(i)
-            for _item in probability:
-                _model.append((_item[0], ))
+        self._do_load_probability(probability)
