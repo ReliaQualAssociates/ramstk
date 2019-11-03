@@ -9,7 +9,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self._on_row_change = None
         ...
 
-    def _do_request_insert(self, sibling, param):
+    def do_request_insert(self, **kwargs: Any):
         pass
 
     def get_parent(self):

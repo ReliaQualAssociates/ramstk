@@ -358,7 +358,7 @@ class HazOps(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, 'hazops')
+        super().__init__(configuration, logger, 'hazard')
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -384,6 +384,7 @@ class HazOps(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self.__do_set_parent, 'selected_function')
         pub.subscribe(self.__do_load_tree, 'succeed_get_hazards_attributes')
 
     def __do_load_tree(self, attributes: Dict[int, Any]) -> None:
@@ -402,6 +403,20 @@ class HazOps(RAMSTKWorkView):
             self._revision_id = attributes["revision_id"]
             self._parent_id = attributes["function_id"]
             self._do_load_tree(tree=attributes)
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+    def __do_set_parent(self, attributes: Dict[int, Any]) -> None:
+        """
+        Set the hazard's parent ID when a function is selected.
+
+        :param dict attributes: the function dict for the selected function ID.
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._revision_id = attributes["revision_id"]
+            self._parent_id = attributes["function_id"]
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
@@ -426,7 +441,7 @@ class HazOps(RAMSTKWorkView):
                       "from the HazOps analysis.")
                 ],
                 callbacks=[
-                    self._do_request_calculate, self.do_request_insert,
+                    self._do_request_calculate, self._do_request_insert,
                     self._do_request_delete
                 ]))
         self.pack_start(_scrolledwindow, False, False, 0)
@@ -611,14 +626,15 @@ class HazOps(RAMSTKWorkView):
         pub.sendMessage('request_delete_hazop', node_id=_node_id)
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _do_request_insert(self) -> None:
+    def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """
         Request to insert a new hazard for the selected function.
 
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        print(self._function_id)
         pub.sendMessage('request_insert_hazard', function_id=self._parent_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:

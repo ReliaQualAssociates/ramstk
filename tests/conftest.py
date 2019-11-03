@@ -380,7 +380,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "fmea": "FMEA.xml",
             "function": "Function.xml",
             "hardware": "Hardware.xml",
-            "hazops": "HazOps.xml",
+            "hazard": "HazOps.xml",
             "pof": "PoF.xml",
             "requirement": "Requirement.xml",
             "revision": "Revision.xml",

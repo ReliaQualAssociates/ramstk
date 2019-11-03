@@ -449,12 +449,12 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.selection.get_selected()
-        _prow = _model.iter_parent(_row)
         # If the sibling is nested below the top level, get the parent ID from
         # the previous row.  Otherwise, this is a top level item and the parent
         # ID is zero.
         try:
+            _model, _row = self.treeview.selection.get_selected()
+            _prow = _model.iter_parent(_row)
             self._parent_id = _model.get_value(_prow, self._lst_col_order[1])
         except TypeError as _error:
             self._parent_id = 0
@@ -667,7 +667,7 @@ class RAMSTKListView(RAMSTKBaseView):
         """
         RAMSTKBaseView.__init__(self, configuration, logger, module)
 
-        self._module = None
+        self._module: str = ''
         for __, char in enumerate(module):
             if char.isalpha():
                 self._module = module.capitalize()
@@ -917,11 +917,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
         :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module)
-
-        self._module: str = ''
-        for __, char in enumerate(module):
-            if char.isalpha():
-                self._module = module.capitalize()
 
         # Initialize private dictionary attributes.
 
