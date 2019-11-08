@@ -384,7 +384,8 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
         try:
-            self.RAMSTK_LOGGER.do_log_debug(__name__, kwargs['debug_msg'])
+            _debug_msg = kwargs['debug_msg']
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
         except KeyError as _error:
             _debug_msg = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -462,7 +463,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return self.do_request_insert(sibling=True, **kwargs)
 
-    def do_set_cursor(self, cursor: Gdk.CursorType) -> Any:
+    def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """
         Set the cursor for the Module, List, and Work Book Gdk.Window().
 
@@ -505,6 +506,24 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor))
         Gdk.flush()
+
+    def do_set_cursor_active(self, node_id: Any) -> None:   # pylint: disable=unused-argument
+        """
+        Set the active cursor for the Module, List, and Work Book Gdk.Window().
+
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def do_set_cursor_busy(self) -> None:
+        """
+        Set the busy cursor for the Module, List, and Work Book Gdk.Window().
+
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """

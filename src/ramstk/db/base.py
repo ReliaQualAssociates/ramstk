@@ -164,6 +164,7 @@ class BaseDatabase():
             #   1. Primary key violations.
             #   2. Non-date data supplied to date type fields.
             #   3. Foreign key violations.
+            #   4. Database is locked by another session.
             self.session.rollback()
             _error_message = (
                 "There was an database error when attempting to add a "

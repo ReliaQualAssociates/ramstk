@@ -273,7 +273,7 @@ class GeneralData(RAMSTKWorkView):
 
         :param entry: the Gtk.Entry() that called the method.
         :type entry: :class:`Gtk.Entry`
-        :param __event: the Gdk.EventFocus that triggerd the signal.
+        :param __event: the Gdk.EventFocus that triggered the signal.
         :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Function class Gtk.TreeModel()
             associated with the data from the calling Gtk.Entry().
@@ -283,8 +283,9 @@ class GeneralData(RAMSTKWorkView):
         _dic_keys = {0: 'function_code', 1: 'name', 2: 'remarks'}
         try:
             _key = _dic_keys[index]
-        except KeyError:
+        except KeyError as _error:
             _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         entry.handler_block(self._lst_handler_id[index])
 
@@ -293,8 +294,9 @@ class GeneralData(RAMSTKWorkView):
                 _new_text = self.txtRemarks.do_get_text()
             else:
                 _new_text: str = str(entry.get_text())
-        except ValueError:
+        except ValueError as _error:
             _new_text = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage('wvw_editing_function',
                         node_id=[self._function_id, -1, ''],
@@ -315,8 +317,9 @@ class GeneralData(RAMSTKWorkView):
         _dic_keys = {3: 'safety_critical'}
         try:
             _key = _dic_keys[index]
-        except KeyError:
+        except KeyError as _error:
             _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         togglebutton.handler_block(self._lst_handler_id[index])
 
@@ -386,6 +389,15 @@ class HazOps(RAMSTKWorkView):
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self.__do_set_parent, 'selected_function')
         pub.subscribe(self.__do_load_tree, 'succeed_get_hazards_attributes')
+
+        # These subscriptions cause the cursor to change to/from busy when
+        # certain actions are performed.
+        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_hazard')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_hazard')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
+        pub.subscribe(self._do_set_cursor_active, 'fail_insert_hazard')
+        pub.subscribe(self._do_set_cursor_active, 'fail_delete_hazard')
+        pub.subscribe(self._do_set_cursor_active, 'fail_update_function')
 
     def __do_load_tree(self, attributes: Dict[int, Any]) -> None:
         """
@@ -574,10 +586,27 @@ class HazOps(RAMSTKWorkView):
                                _entity.definition)
             try:
                 _row = _model.append(_attributes)
-            except ValueError:
+            except ValueError as _error:
                 _row = None
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         self.do_expand_tree()
+
+    def _do_set_cursor_active(self, error_message: str) -> None:   # pylint: disable=unused-argument
+        """
+        Returns the cursor to the active cursor on a fail message.
+
+        The meta-class do_set_active() method expects node_id as the data
+        package, but the fail messages carry an error message as the package.
+        This method simply calls the meta-class method in response to fail
+        messages.
+
+        :param str error_message: the error message associated with the fail
+            message.
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor_active(node_id=self._hazard_id)
 
     def _get_cell_model(self, column: int) -> Gtk.TreeModel:
         """
@@ -607,9 +636,8 @@ class HazOps(RAMSTKWorkView):
         """
         _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
 
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_calculate_hazop', node_id=_node_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -622,9 +650,8 @@ class HazOps(RAMSTKWorkView):
         """
         _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
 
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_delete_hazop', node_id=_node_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """
@@ -635,6 +662,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self.do_set_cursor_busy()
         pub.sendMessage('request_insert_hazard', function_id=self._parent_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -646,11 +674,10 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
+        _node_id = '{0:d}.{1:d}'.format(self._function_id, self._hazard_id)
 
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.set_cursor_busy()
         pub.sendMessage('request_update_hazop', node_id=_node_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -661,9 +688,8 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.set_cursor_busy()
         pub.sendMessage('request_update_all_hazops')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
@@ -748,8 +774,9 @@ class HazOps(RAMSTKWorkView):
         }
         try:
             _key = _dic_keys[self._lst_col_order[position]]
-        except KeyError:
+        except KeyError as _error:
             _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
@@ -775,15 +802,16 @@ class HazOps(RAMSTKWorkView):
         _model, _row = treeview.selection.get_selected()
         try:
             self._hazard_id = _model.get_value(_row, 2)
-        except TypeError:
-            self._hazard_id = None
+        except TypeError as _error:
+            self._hazard_id = -1
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
     def do_load_combobox(self, hazards: Dict[Any, Any],
                          severity: Dict[Any, Any], probability: List) -> None:
         """
-        Load the RAMSTKComboBox() widgets.
+        Load the Gtk.CellRendererCombo() widgets.
 
         :param dict hazards: the dict containing the hazards and hazard types
             to be considered.
