@@ -11,11 +11,11 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
+from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models.programdb import RAMSTKHazardAnalysis
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
@@ -386,6 +386,7 @@ class HazOps(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_tree, 'succeed_retrieve_functions')
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self.__do_set_parent, 'selected_function')
         pub.subscribe(self.__do_load_tree, 'succeed_get_hazards_attributes')
@@ -427,8 +428,8 @@ class HazOps(RAMSTKWorkView):
         :rtype: None
         """
         try:
-            self._revision_id = attributes["revision_id"]
-            self._parent_id = attributes["function_id"]
+            self._revision_id = attributes['revision_id']
+            self._parent_id = attributes['function_id']
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
@@ -565,11 +566,12 @@ class HazOps(RAMSTKWorkView):
                 _severity = severity[_key][1]
                 _model.append((_severity, ))
 
-    def _do_load_tree(self, tree: Dict[int, RAMSTKHazardAnalysis]) -> None:
+    def _do_load_tree(self, tree: Tree) -> None:
         """
         Load the Hazard Analysis Work View's Gtk.TreeModel.
 
-        :param tree: the Hazards attributes dict.
+        :param tree: the function Tree() with the hazard attributes in the
+            data package.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
@@ -577,22 +579,61 @@ class HazOps(RAMSTKWorkView):
         _model = self.treeview.get_model()
         _model.clear()
 
-        for _key in tree:
-            _entity = tree[_key]
+        for _node in tree.all_nodes()[1:]:
+            _hazards = _node.data['hazards']
 
-            _attributes: Tuple[int, int, str] = (0, 0, '')
-            if _entity is not None:
-                _attributes = (_entity.revision_id, _entity.definition_id,
-                               _entity.definition)
-            try:
-                _row = _model.append(_attributes)
-            except ValueError as _error:
-                _row = None
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            for _key in _hazards:
+                _hazard = _hazards[_key]
+                _attributes: Tuple[int, int, int, str, str, str, str, str, int,
+                                   str, str, str, int, str, str, str, int, str,
+                                   str, str, int, str, str, str, str, str, str,
+                                   float, float, float, float, float, str, str,
+                                   str, float, float, float, int, int,
+                                   int, str] = (_hazard.revision_id,
+                                                _hazard.function_id,
+                                                _hazard.hazard_id,
+                                                _hazard.potential_hazard,
+                                                _hazard.potential_cause,
+                                                _hazard.assembly_effect,
+                                                _hazard.assembly_severity,
+                                                _hazard.assembly_probability,
+                                                _hazard.assembly_hri,
+                                                _hazard.assembly_mitigation,
+                                                _hazard.assembly_severity_f,
+                                                _hazard.assembly_probability_f, _hazard.assembly_hri_f, _hazard.system_effect,
+                                                _hazard.system_severity,
+                                                _hazard.system_probability,
+                                                _hazard.system_hri,
+                                                _hazard.system_mitigation,
+                                                _hazard.system_severity_f,
+                                                _hazard.system_probability_f,
+                                                _hazard.system_hri_f,
+                                                _hazard.remarks,
+                                                _hazard.function_1,
+                                                _hazard.function_2,
+                                                _hazard.function_3,
+                                                _hazard.function_4,
+                                                _hazard.function_5,
+                                                _hazard.result_1, _hazard.result_2,
+                                                _hazard.result_3, _hazard.result_4,
+                                                _hazard.result_5,
+                                                _hazard.user_blob_1,
+                                                _hazard.user_blob_2,
+                                                _hazard.user_blob_3,
+                                                _hazard.user_float_1,
+                                                _hazard.user_float_2,
+                                                _hazard.user_float_3,
+                                                _hazard.user_int_1,
+                                                _hazard.user_int_2,
+                                                _hazard.user_int_3, '')
+                try:
+                    _model.append(None, _attributes)
+                except ValueError as _error:
+                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         self.do_expand_tree()
 
-    def _do_set_cursor_active(self, error_message: str) -> None:   # pylint: disable=unused-argument
+    def _do_set_cursor_active(self, error_message: str) -> None:  # pylint: disable=unused-argument
         """
         Returns the cursor to the active cursor on a fail message.
 
