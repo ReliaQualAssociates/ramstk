@@ -53,6 +53,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_insert, 'request_insert_function')
         pub.subscribe(self.do_insert_hazard, 'request_insert_hazard')
         pub.subscribe(self.do_update, 'request_update_function')
+        pub.subscribe(self.do_update, 'request_update_hazard')
         pub.subscribe(self.do_update_all, 'request_update_all_functions')
         pub.subscribe(self._do_get_attributes,
                       'request_get_function_attributes')
@@ -64,6 +65,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_function_attributes')
         pub.subscribe(self.do_set_attributes, 'wvw_editing_function')
+        pub.subscribe(self.do_set_attributes, 'wvw_editing_hazard')
 
     def _do_delete(self, node_id):
         """
@@ -220,9 +222,13 @@ class DataManager(RAMSTKDataManager):
         """
         if self.tree.get_node(parent_id) is not None:
             try:
-                _function = RAMSTKFunction(revision_id=self._revision_id,
-                                           name='New Function',
-                                           parent_id=parent_id)
+                _function = RAMSTKFunction()
+                # noinspection PyTypeHints
+                _function.revision_id: int = self._revision_id
+                # noinspection PyTypeHints
+                _function.name: str = 'New Function'
+                # noinspection PyTypeHints
+                _function.parent_id: int = parent_id
                 self.dao.do_insert(_function)
 
                 self.last_id = _function.function_id
@@ -257,8 +263,11 @@ class DataManager(RAMSTKDataManager):
 
         if _node is not None:
             try:
-                _hazard = RAMSTKHazardAnalysis(revision_id=self._revision_id,
-                                               function_id=function_id)
+                _hazard = RAMSTKHazardAnalysis()
+                # noinspection PyTypeHints
+                _hazard.revision_id: int = self._revision_id
+                # noinspection PyTypeHints
+                _hazard.function_id: int = function_id
                 self.dao.do_insert(_hazard)
 
                 _node.data['hazards'][_hazard.hazard_id] = _hazard
@@ -317,7 +326,7 @@ class DataManager(RAMSTKDataManager):
         call.  Used mainly by the AnalysisManager.
 
         :param dict attributes: the aggregate attributes dict for the function.
-        :keyword int hazard_id: the hazard ID if the attribute being set is a
+        :param int hazard_id: the hazard ID if the attribute being set is a
             hazard analysis attribute.
         :return: None
         :rtype: None
@@ -356,6 +365,7 @@ class DataManager(RAMSTKDataManager):
                     try:
                         _attributes.pop('revision_id')
                         _attributes.pop('function_id')
+                        _attributes.pop('hazard_id')
                     except KeyError:
                         pass
 

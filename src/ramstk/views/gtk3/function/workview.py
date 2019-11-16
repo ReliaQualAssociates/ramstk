@@ -286,6 +286,7 @@ class GeneralData(RAMSTKWorkView):
         except KeyError as _error:
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        _new_text = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
@@ -295,11 +296,10 @@ class GeneralData(RAMSTKWorkView):
             else:
                 _new_text: str = str(entry.get_text())
         except ValueError as _error:
-            _new_text = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage('wvw_editing_function',
-                        node_id=[self._function_id, -1, ''],
+                        node_id=[self._function_id, -1],
                         package={_key: _new_text})
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -584,48 +584,33 @@ class HazOps(RAMSTKWorkView):
 
             for _key in _hazards:
                 _hazard = _hazards[_key]
-                _attributes: Tuple[int, int, int, str, str, str, str, str, int,
-                                   str, str, str, int, str, str, str, int, str,
-                                   str, str, int, str, str, str, str, str, str,
-                                   float, float, float, float, float, str, str,
-                                   str, float, float, float, int, int,
-                                   int, str] = (_hazard.revision_id,
-                                                _hazard.function_id,
-                                                _hazard.hazard_id,
-                                                _hazard.potential_hazard,
-                                                _hazard.potential_cause,
-                                                _hazard.assembly_effect,
-                                                _hazard.assembly_severity,
-                                                _hazard.assembly_probability,
-                                                _hazard.assembly_hri,
-                                                _hazard.assembly_mitigation,
-                                                _hazard.assembly_severity_f,
-                                                _hazard.assembly_probability_f, _hazard.assembly_hri_f, _hazard.system_effect,
-                                                _hazard.system_severity,
-                                                _hazard.system_probability,
-                                                _hazard.system_hri,
-                                                _hazard.system_mitigation,
-                                                _hazard.system_severity_f,
-                                                _hazard.system_probability_f,
-                                                _hazard.system_hri_f,
-                                                _hazard.remarks,
-                                                _hazard.function_1,
-                                                _hazard.function_2,
-                                                _hazard.function_3,
-                                                _hazard.function_4,
-                                                _hazard.function_5,
-                                                _hazard.result_1, _hazard.result_2,
-                                                _hazard.result_3, _hazard.result_4,
-                                                _hazard.result_5,
-                                                _hazard.user_blob_1,
-                                                _hazard.user_blob_2,
-                                                _hazard.user_blob_3,
-                                                _hazard.user_float_1,
-                                                _hazard.user_float_2,
-                                                _hazard.user_float_3,
-                                                _hazard.user_int_1,
-                                                _hazard.user_int_2,
-                                                _hazard.user_int_3, '')
+                _attributes: Tuple[
+                    int, int, int, str, str, str, str, str, int, str, str, str,
+                    int, str, str, str, int, str, str, str, int, str, str, str,
+                    str, str, str, float, float, float, float, float, str, str,
+                    str, float, float, float, int, int, int, str] = (
+                        _hazard.revision_id, _hazard.function_id,
+                        _hazard.hazard_id, _hazard.potential_hazard,
+                        _hazard.potential_cause, _hazard.assembly_effect,
+                        _hazard.assembly_severity,
+                        _hazard.assembly_probability, _hazard.assembly_hri,
+                        _hazard.assembly_mitigation,
+                        _hazard.assembly_severity_f,
+                        _hazard.assembly_probability_f, _hazard.assembly_hri_f,
+                        _hazard.system_effect, _hazard.system_severity,
+                        _hazard.system_probability, _hazard.system_hri,
+                        _hazard.system_mitigation, _hazard.system_severity_f,
+                        _hazard.system_probability_f, _hazard.system_hri_f,
+                        _hazard.remarks, _hazard.function_1,
+                        _hazard.function_2, _hazard.function_3,
+                        _hazard.function_4, _hazard.function_5,
+                        _hazard.result_1, _hazard.result_2, _hazard.result_3,
+                        _hazard.result_4, _hazard.result_5,
+                        _hazard.user_blob_1, _hazard.user_blob_2,
+                        _hazard.user_blob_3, _hazard.user_float_1,
+                        _hazard.user_float_2, _hazard.user_float_3,
+                        _hazard.user_int_1, _hazard.user_int_2,
+                        _hazard.user_int_3, '')
                 try:
                     _model.append(None, _attributes)
                 except ValueError as _error:
@@ -675,7 +660,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
+        _node_id = '{0:d}.{1:d}'.format(self._parent_id, self._hazard_id)
 
         self.do_set_cursor_busy()
         pub.sendMessage('request_calculate_hazop', node_id=_node_id)
@@ -689,7 +674,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
+        _node_id = '{0:d}.{1:d}'.format(self._parent_id, self._hazard_id)
 
         self.do_set_cursor_busy()
         pub.sendMessage('request_delete_hazop', node_id=_node_id)
@@ -715,10 +700,10 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = '{0:d}.{1:d}'.format(self._function_id, self._hazard_id)
+        _node_id = '{0:d}.{1:d}'.format(self._parent_id, self._hazard_id)
 
-        self.set_cursor_busy()
-        pub.sendMessage('request_update_hazop', node_id=_node_id)
+        self.do_set_cursor_busy()
+        pub.sendMessage('request_update_hazard', node_id=_node_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -779,6 +764,7 @@ class HazOps(RAMSTKWorkView):
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
+    # pylint: disable=unused-argument
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int, model: Gtk.TreeModel) -> None:
         """
@@ -819,35 +805,32 @@ class HazOps(RAMSTKWorkView):
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position):
+            pub.sendMessage('wvw_editing_hazard',
+                            node_id=[self._parent_id, self._hazard_id, ''],
+                            package={_key: new_text})
 
-            pub.sendMessage("wvw_editing_hazops",
-                            module_id=self._hazard_id,
-                            key=_key,
-                            value=new_text)
-
-    def _on_row_change(self, treeview: RAMSTKTreeView) -> None:
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
         Handle events for the HazOps Tree View RAMSTKTreeView().
 
         This method is called whenever a Tree View row is activated.
 
-        :param treeview: the HazOps RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.RAMSTKTreeView`
+        :param selection: the HazOps RAMSTKTreeview Gtk.TreeSelection().
+        :type selection: :class:`Gtk.TreeSelection`
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[0])
+        self.treeview.handler_block(self._lst_handler_id[0])
 
-        _model, _row = treeview.selection.get_selected()
+        _model, _row = selection.get_selected()
         try:
             self._hazard_id = _model.get_value(_row, 2)
         except TypeError as _error:
             self._hazard_id = -1
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        treeview.handler_unblock(self._lst_handler_id[0])
+        self.treeview.handler_unblock(self._lst_handler_id[0])
 
     def do_load_combobox(self, hazards: Dict[Any, Any],
                          severity: Dict[Any, Any], probability: List) -> None:
