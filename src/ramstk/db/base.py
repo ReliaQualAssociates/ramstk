@@ -58,20 +58,27 @@ class BaseDatabase():
 
         # Initialize public scalar instance attributes.
 
-    def do_connect(self, database: str) -> None:
+    def do_connect(self, database: Dict) -> None:
         """
         Connect to the database.
 
-        :param str database: the absolute path to the database to connect to.
+        :param dict database: the connection information for the database to
+            connect to.
         :return: None
         :rtype: None
         :raise: AttributeError if passed a non-string database name.
-        :raise: sqlalchemy.exc.ArgumentError if passed an invalid database
+        :raise: sqlalchemy.exc.OperationalError if passed an invalid database
             URL.
-        :raise: sqlalchemy.exc.NoSuchModuleError if passed a database URL with
+        :raise: sqlalchemy.exc.ArgumentError if passed a database URL with
             an unknown/unsupported SQL dialect.
         """
-        self.database = database
+        if database['dialect'] == 'sqlite':
+            self.database = 'sqlite:///' + database['database']
+        elif database['dialect'] == 'postgres':
+            self.database = ('postgresql+psycopg2://' + database['user'] + ':' +
+                             database['password'] + '@' + database['host'] +
+                             '/' + database['database'])
+
         self.engine, self.session = do_open_session(self.database)
 
     @staticmethod

@@ -189,7 +189,8 @@ def make_home_config_dir():
 
     yield _config_dir
 
-    shutil.rmtree(VIRTUAL_ENV + '/tmp')
+    shutil.rmtree(VIRTUAL_ENV + '/tmp/.config')
+    shutil.rmtree(VIRTUAL_ENV + '/tmp/analyses')
 
 
 @pytest.fixture(scope='class')
@@ -200,7 +201,7 @@ def test_simple_database():
     # insert_many, delete, and update methods of the database drivers.
     tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
     tempdb = str(tempdir.name) + '/SimpleTestDB.ramstk'
-    test_program_db_uri = 'sqlite:///' + tempdb
+    test_program_db_uri = tempdb
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_simple_db.sql', 'r')
@@ -271,6 +272,7 @@ def test_program_dao():
     # engine to use) for each group of tests collected in a class.  Group tests
     # in the class in such a way as to produce predictable behavior (e.g., all
     # the tests for select() and select_all()).
+    test_program_db = {}
 
     # Create the tmp directory if it doesn't exist.
     if not os.path.exists(TMP_DIR):
@@ -292,7 +294,6 @@ def test_program_dao():
     # temporary directory to be deleted when it is finished with it.
     tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
     tempdb = str(tempdir.name) + '/TestProgramDB.ramstk'
-    test_program_db_uri = 'sqlite:///' + tempdb
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
@@ -302,9 +303,15 @@ def test_program_dao():
     conn.commit()
     conn.close()
 
+    test_program_db['dialect'] = 'postgres'
+    test_program_db['user'] = 'postgres'
+    test_program_db['password'] = ''
+    test_program_db['host'] = 'localhost'
+    test_program_db['database'] = tempdb
+
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = BaseDatabase()
-    dao.do_connect(test_program_db_uri)
+    dao.do_connect(test_program_db)
 
     yield dao
 

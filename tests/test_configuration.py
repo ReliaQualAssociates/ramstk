@@ -369,7 +369,7 @@ class TestCreateConfiguration():
                                          + "/ramstk_import.log")
 
     @pytest.mark.unit
-    def test_create_site_configuration(self, make_config_dir):
+    def test_create_site_configuration(self):
         """do_create_site_configuration() should broadcast the succcess message on success."""
         pub.subscribe(self.on_create_site_configuration,
                       'succeed_create_site_configuration')
@@ -422,8 +422,7 @@ class TestCreateConfiguration():
                         'succeed_create_user_configuration')
 
     @pytest.mark.unit
-    def test_do_create_user_configuration_no_user_config_dir(
-            self, make_home_config_dir):
+    def test_do_create_user_configuration_no_user_config_dir(self):
         """do_create_user_configuration() should return None on success."""
         pub.subscribe(self.on_fail_create_user_configuration,
                       'fail_create_user_configuration')
@@ -438,8 +437,7 @@ class TestCreateConfiguration():
                         'fail_create_user_configuration')
 
     @pytest.mark.unit
-    def test_do_create_user_configuration_no_user_data_dir(
-            self, make_home_config_dir):
+    def test_do_create_user_configuration_no_user_data_dir(self):
         """_do_make_data_dir() should return None on success."""
         pub.subscribe(self.on_fail_create_data_dir,
                       'fail_create_user_configuration')
@@ -454,8 +452,7 @@ class TestCreateConfiguration():
                         'fail_create_user_configuration')
 
     @pytest.mark.unit
-    def test_do_create_user_configuration_no_user_icon_dir(
-            self, make_home_config_dir):
+    def test_do_create_user_configuration_no_user_icon_dir(self):
         """_do_make_icon_dir() should return None on success."""
         pub.subscribe(self.on_fail_create_icon_dir,
                       'fail_create_user_configuration')
@@ -470,8 +467,7 @@ class TestCreateConfiguration():
                         'fail_create_user_configuration')
 
     @pytest.mark.unit
-    def test_do_create_user_configuration_no_user_log_dir(
-            self, make_home_config_dir):
+    def test_do_create_user_configuration_no_user_log_dir(self):
         """_do_make_log_dir() should return None on success."""
         pub.subscribe(self.on_fail_create_log_dir,
                       'fail_create_user_configuration')
@@ -486,8 +482,7 @@ class TestCreateConfiguration():
                         'fail_create_user_configuration')
 
     @pytest.mark.unit
-    def test_do_create_user_configuration_no_user_program_dir(
-            self, make_home_config_dir):
+    def test_do_create_user_configuration_no_user_program_dir(self):
         """_do_make_prog_dir() should return None on success."""
         pub.subscribe(self.on_fail_create_program_dir,
                       'fail_create_user_configuration')
@@ -524,13 +519,14 @@ class TestGetterSetter():
         print("\033[35m\nfail_get_user_configuration topic was broadcast.")
 
     @pytest.mark.unit
-    def test_get_site_configuration(self, test_toml_site_configuration):
+    def test_get_site_configuration(self):
         """get_site_configuration() should broadcast the succcess message on success."""
         DUT = RAMSTKSiteConfiguration()
         DUT.RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
 
         assert DUT.get_site_configuration() is None
         assert DUT.RAMSTK_COM_BACKEND == 'sqlite'
+        assert DUT.RAMSTK_COM_INFO["dialect"] == 'sqlite'
         assert DUT.RAMSTK_COM_INFO["host"] == 'localhost'
         assert DUT.RAMSTK_COM_INFO["socket"] == '3306'
         assert DUT.RAMSTK_COM_INFO["database"] == (
@@ -624,6 +620,7 @@ class TestGetterSetter():
             10: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
         }
         assert DUT.RAMSTK_BACKEND == 'sqlite'
+        assert DUT.RAMSTK_PROG_INFO["dialect"] == 'sqlite'
         assert DUT.RAMSTK_PROG_INFO["host"] == 'localhost'
         assert DUT.RAMSTK_PROG_INFO["socket"] == '3306'
         assert DUT.RAMSTK_PROG_INFO["database"] == ''
@@ -675,7 +672,8 @@ class TestGetterSetter():
         DUT.RAMSTK_DEC_PLACES = 4
         DUT.RAMSTK_BACKEND = 'mysql'
         DUT.RAMSTK_PROG_INFO = {
-            "host": 'treebeard',
+            'dialect': 'mysql',
+            'host': 'treebeard',
             'socket': '3306',
             'database': 'test',
             'user': 'me',
@@ -693,7 +691,8 @@ class TestGetterSetter():
         assert DUT.RAMSTK_DEC_PLACES == 4
         assert DUT.RAMSTK_BACKEND == 'mysql'
         assert DUT.RAMSTK_PROG_INFO == {
-            "host": 'treebeard',
+            'dialect': 'mysql',
+            'host': 'treebeard',
             'socket': '3306',
             'database': 'test',
             'user': 'me',

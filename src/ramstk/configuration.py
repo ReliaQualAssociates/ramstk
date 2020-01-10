@@ -290,6 +290,7 @@ class RAMSTKSiteConfiguration:
             _config = toml.load(self.RAMSTK_SITE_CONF)
 
             self.RAMSTK_COM_BACKEND = _config['backend']['type']
+            self.RAMSTK_COM_INFO["dialect"] = _config['backend']['type']
             self.RAMSTK_COM_INFO["host"] = _config['backend']['host']
             self.RAMSTK_COM_INFO["socket"] = _config['backend']['socket']
             self.RAMSTK_COM_INFO["database"] = _config['backend']['database']
@@ -836,6 +837,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                     _category[0] + 1] = _config["stress"][_category[1]]
 
             self.RAMSTK_BACKEND = _config["backend"]["type"]
+            self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["type"]
             self.RAMSTK_PROG_INFO["host"] = _config["backend"]["host"]
             self.RAMSTK_PROG_INFO["socket"] = _config["backend"]["socket"]
             self.RAMSTK_PROG_INFO["database"] = _config["backend"]["database"]
