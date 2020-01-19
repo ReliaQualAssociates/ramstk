@@ -77,7 +77,8 @@ class BaseDatabase():
         elif database['dialect'] == 'postgres':
             self.database = ('postgresql+psycopg2://' + database['user'] + ':' +
                              database['password'] + '@' + database['host'] +
-                             '/' + database['database'])
+                             ':' + database['port'] + '/' +
+                             database['database'])
 
         self.engine, self.session = do_open_session(self.database)
 
