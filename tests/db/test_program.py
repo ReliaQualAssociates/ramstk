@@ -13,7 +13,13 @@ from ramstk.db.program import do_create_program_db, do_make_programdb_tables
 from ramstk.models.programdb import RAMSTKRevision
 
 TEST_PROGRAM_DB = BaseDatabase()
-TEST_PROGRAM_DB.do_connect('sqlite:///:memory:')
+TEST_PROGRAM_DB.do_connect({
+    "dialect": "sqlite",
+    "host": "localhost",
+    "socket": "3306",
+    "database": ":memory:",
+    "user": "johnny.tester",
+    "password": "clear.text.password"})
 
 
 def test_create_program_db_tables():
@@ -27,7 +33,13 @@ def test_create_program_db_tables():
 def test_do_create_program_db():
     """do_create_program_db() should return None when successfully creating a RAMSTK common database."""
     TEST_PROGRAM_DB.do_disconnect()
-    TEST_PROGRAM_DB.do_connect('sqlite:///:memory:')
+    TEST_PROGRAM_DB.do_connect({
+        "dialect": "sqlite",
+        "host": "localhost",
+        "socket": "3306",
+        "database": ":memory:",
+        "user": "johnny.tester",
+        "password": "clear.text.password"})
 
     assert do_create_program_db(TEST_PROGRAM_DB.engine,
                                 TEST_PROGRAM_DB.session) is None
