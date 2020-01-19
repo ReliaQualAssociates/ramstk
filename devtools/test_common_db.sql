@@ -1,5 +1,3 @@
-PRAGMA foreign_keys=OFF;
-BEGIN TRANSACTION;
 CREATE TABLE ramstk_site_info (
     fld_site_id INTEGER NOT NULL,
     fld_product_key VARCHAR(512),
@@ -11,7 +9,7 @@ CREATE TABLE ramstk_site_info (
     fld_fmea_enabled INTEGER,
     PRIMARY KEY (fld_site_id)
 );
-INSERT INTO "ramstk_site_info" VALUES(1,'0000','2019-08-20',0,0,0,0,0);
+INSERT INTO ramstk_site_info VALUES(1,'0000','2019-08-20',0,0,0,0,0);
 CREATE TABLE ramstk_category (
     fld_category_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
@@ -73,6 +71,90 @@ INSERT INTO "ramstk_category" VALUES(40,'ENGS','Engineering, Systems','action',1
 INSERT INTO "ramstk_category" VALUES(41,'MAN','Manufacturing','action',1,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_category" VALUES(42,'TEST','Test','action',1,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_category" VALUES(43,'VANDV','Verification & Validation','action',1,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0);
+CREATE TABLE ramstk_subcategory (
+    fld_category_id INTEGER NOT NULL,
+    fld_subcategory_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    PRIMARY KEY (fld_subcategory_id),
+    FOREIGN KEY(fld_category_id) REFERENCES ramstk_category (fld_category_id)
+);
+INSERT INTO "ramstk_subcategory" VALUES(1,1,'Linear');
+INSERT INTO "ramstk_subcategory" VALUES(1,2,'Logic');
+INSERT INTO "ramstk_subcategory" VALUES(1,3,'PAL, PLA');
+INSERT INTO "ramstk_subcategory" VALUES(1,4,'Microprocessor, Microcontroller');
+INSERT INTO "ramstk_subcategory" VALUES(1,5,'Memory, ROM');
+INSERT INTO "ramstk_subcategory" VALUES(1,6,'Memory, EEPROM');
+INSERT INTO "ramstk_subcategory" VALUES(1,7,'Memory, DRAM');
+INSERT INTO "ramstk_subcategory" VALUES(1,8,'Memory, SRAM');
+INSERT INTO "ramstk_subcategory" VALUES(1,9,'GaAs');
+INSERT INTO "ramstk_subcategory" VALUES(1,10,'VHSIC, VLSI');
+INSERT INTO "ramstk_subcategory" VALUES(2,11,'Diode, Low Frequency');
+INSERT INTO "ramstk_subcategory" VALUES(2,12,'Diode, High Frequency');
+INSERT INTO "ramstk_subcategory" VALUES(2,13,'Transistor, Low Frequency, Bipolar');
+INSERT INTO "ramstk_subcategory" VALUES(2,14,'Transistor, Low Frequency, Si FET');
+INSERT INTO "ramstk_subcategory" VALUES(2,15,'Transistor, Unijunction');
+INSERT INTO "ramstk_subcategory" VALUES(2,16,'Transistor, High Frequency, Low Noise, Bipolar');
+INSERT INTO "ramstk_subcategory" VALUES(2,17,'Transistor, High Frequency, High Power, Bipolar');
+INSERT INTO "ramstk_subcategory" VALUES(2,18,'Transistor, High Frequency, GaAs FET');
+INSERT INTO "ramstk_subcategory" VALUES(2,19,'Transistor, High Frequency, Si FET');
+INSERT INTO "ramstk_subcategory" VALUES(2,20,'Thyristor, SCR');
+INSERT INTO "ramstk_subcategory" VALUES(2,21,'Optoelectronic, Detector, Isolator, Emitter');
+INSERT INTO "ramstk_subcategory" VALUES(2,22,'Optoelectronic, Alphanumeric Display');
+INSERT INTO "ramstk_subcategory" VALUES(2,23,'Optoelectronic, Laser Diode');
+INSERT INTO "ramstk_subcategory" VALUES(3,24,'Fixed, Composition (RC, RCR)');
+INSERT INTO "ramstk_subcategory" VALUES(3,25,'Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)');
+INSERT INTO "ramstk_subcategory" VALUES(3,26,'Fixed, Film, Power (RD)');
+INSERT INTO "ramstk_subcategory" VALUES(3,27,'Fixed, Film, Network (RZ)');
+INSERT INTO "ramstk_subcategory" VALUES(3,28,'Fixed, Wirewound (RB, RBR)');
+INSERT INTO "ramstk_subcategory" VALUES(3,29,'Fixed, Wirewound, Power (RW, RWR)');
+INSERT INTO "ramstk_subcategory" VALUES(3,30,'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)');
+INSERT INTO "ramstk_subcategory" VALUES(3,31,'Thermistor (RTH)');
+INSERT INTO "ramstk_subcategory" VALUES(3,32,'Variable, Wirewound (RT, RTR)');
+INSERT INTO "ramstk_subcategory" VALUES(3,33,'Variable, Wirewound, Precision (RR)');
+INSERT INTO "ramstk_subcategory" VALUES(3,34,'Variable, Wirewound, Semiprecision (RA, RK)');
+INSERT INTO "ramstk_subcategory" VALUES(3,35,'Variable, Wirewound, Power (RP)');
+INSERT INTO "ramstk_subcategory" VALUES(3,36,'Variable, Non-Wirewound (RJ, RJR)');
+INSERT INTO "ramstk_subcategory" VALUES(3,37,'Variable, Composition (RV)');
+INSERT INTO "ramstk_subcategory" VALUES(3,38,'Variable, Non-Wirewound, Film and Precision (RQ, RVC)');
+INSERT INTO "ramstk_subcategory" VALUES(4,39,'Fixed, Paper, Bypass (CA, CP)');
+INSERT INTO "ramstk_subcategory" VALUES(4,40,'Fixed, Feed-Through (CZ, CZR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,41,'Fixed, Paper and Plastic Film (CPV, CQ, CQR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,42,'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,43,'Fixed, Plastic and Metallized Plastic');
+INSERT INTO "ramstk_subcategory" VALUES(4,44,'Fixed, Super-Metallized Plastic (CRH)');
+INSERT INTO "ramstk_subcategory" VALUES(4,45,'Fixed, Mica (CM, CMR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,46,'Fixed, Mica, Button (CB)');
+INSERT INTO "ramstk_subcategory" VALUES(4,47,'Fixed, Glass (CY, CYR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,48,'Fixed, Ceramic, General Purpose (CK, CKR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,49,'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,50,'Fixed, Electrolytic, Tantalum, Solid (CSR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,51,'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,52,'Fixed, Electrolytic, Aluminum (CU, CUR)');
+INSERT INTO "ramstk_subcategory" VALUES(4,53,'Fixed, Electrolytic (Dry), Aluminum (CE)');
+INSERT INTO "ramstk_subcategory" VALUES(4,54,'Variable, Ceramic (CV)');
+INSERT INTO "ramstk_subcategory" VALUES(4,55,'Variable, Piston Type (PC)');
+INSERT INTO "ramstk_subcategory" VALUES(4,56,'Variable, Air Trimmer (CT)');
+INSERT INTO "ramstk_subcategory" VALUES(4,57,'Variable and Fixed, Gas or Vacuum (CG)');
+INSERT INTO "ramstk_subcategory" VALUES(5,58,'Transformer');
+INSERT INTO "ramstk_subcategory" VALUES(5,59,'Coil');
+INSERT INTO "ramstk_subcategory" VALUES(6,60,'Mechanical');
+INSERT INTO "ramstk_subcategory" VALUES(6,61,'Solid State');
+INSERT INTO "ramstk_subcategory" VALUES(7,62,'Toggle or Pushbutton');
+INSERT INTO "ramstk_subcategory" VALUES(7,63,'Sensitive');
+INSERT INTO "ramstk_subcategory" VALUES(7,64,'Rotary');
+INSERT INTO "ramstk_subcategory" VALUES(7,65,'Thumbwheel');
+INSERT INTO "ramstk_subcategory" VALUES(7,66,'Circuit Breaker');
+INSERT INTO "ramstk_subcategory" VALUES(8,67,'Multi-Pin');
+INSERT INTO "ramstk_subcategory" VALUES(8,68,'PCB Edge');
+INSERT INTO "ramstk_subcategory" VALUES(8,69,'IC Socket');
+INSERT INTO "ramstk_subcategory" VALUES(8,70,'Plated Through Hole (PTH)');
+INSERT INTO "ramstk_subcategory" VALUES(8,71,'Connection, Non-PTH');
+INSERT INTO "ramstk_subcategory" VALUES(9,72,'Elapsed Time');
+INSERT INTO "ramstk_subcategory" VALUES(9,73,'Panel');
+INSERT INTO "ramstk_subcategory" VALUES(10,74,'Crystal');
+INSERT INTO "ramstk_subcategory" VALUES(10,75,'Filter, Non-Tunable Electronic');
+INSERT INTO "ramstk_subcategory" VALUES(10,76,'Fuse');
+INSERT INTO "ramstk_subcategory" VALUES(10,77,'Lamp');
 CREATE TABLE ramstk_condition (
     fld_condition_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
@@ -135,6 +217,7 @@ INSERT INTO "ramstk_condition" VALUES(53,'Weather, Rain','environmental');
 INSERT INTO "ramstk_condition" VALUES(54,'Weather, Sleet','environmental');
 INSERT INTO "ramstk_condition" VALUES(55,'Weather, Snow','environmental');
 INSERT INTO "ramstk_condition" VALUES(56,'Weather, Wind','environmental');
+
 CREATE TABLE ramstk_failure_mode (
     fld_category_id INTEGER NOT NULL,
     fld_subcategory_id INTEGER NOT NULL,
@@ -434,14 +517,14 @@ CREATE TABLE ramstk_model (
     fld_model_type INTEGER,
     PRIMARY KEY (fld_model_id)
 );
-INSERT INTO "ramstk_model" VALUES(1,'Adhesion Wear Model for Bearings','damage');
-INSERT INTO "ramstk_model" VALUES(2,'Arrhenius','damage');
-INSERT INTO "ramstk_model" VALUES(3,'Coffin-Manson','damage');
-INSERT INTO "ramstk_model" VALUES(4,'Empirical/DOE','damage');
-INSERT INTO "ramstk_model" VALUES(5,'Eyring','damage');
-INSERT INTO "ramstk_model" VALUES(6,'Inverse Power Law (IPL)','damage');
-INSERT INTO "ramstk_model" VALUES(7,'IPL - Arrhenius','damage');
-INSERT INTO "ramstk_model" VALUES(8,'Time Fraction of Damaging Operating Conditions','damage');
+INSERT INTO "ramstk_model" VALUES(1,'Adhesion Wear Model for Bearings',1);
+INSERT INTO "ramstk_model" VALUES(2,'Arrhenius',1);
+INSERT INTO "ramstk_model" VALUES(3,'Coffin-Manson',1);
+INSERT INTO "ramstk_model" VALUES(4,'Empirical/DOE',1);
+INSERT INTO "ramstk_model" VALUES(5,'Eyring',1);
+INSERT INTO "ramstk_model" VALUES(6,'Inverse Power Law (IPL)',1);
+INSERT INTO "ramstk_model" VALUES(7,'IPL - Arrhenius',1);
+INSERT INTO "ramstk_model" VALUES(8,'Time Fraction of Damaging Operating Conditions',1);
 CREATE TABLE ramstk_rpn (
     fld_rpn_id INTEGER NOT NULL,
     fld_name VARCHAR(512),
@@ -511,90 +594,7 @@ INSERT INTO "ramstk_status" VALUES(12,'Reviewed','Action has been reviewed.','ac
 INSERT INTO "ramstk_status" VALUES(13,'Approved','Action has been approved.','action');
 INSERT INTO "ramstk_status" VALUES(14,'Ready for Closure','Action is ready to be closed.','action');
 INSERT INTO "ramstk_status" VALUES(15,'Closed','Action has been closed.','action');
-CREATE TABLE ramstk_subcategory (
-    fld_category_id INTEGER NOT NULL,
-    fld_subcategory_id INTEGER NOT NULL,
-    fld_description VARCHAR(512),
-    PRIMARY KEY (fld_subcategory_id),
-    FOREIGN KEY(fld_category_id) REFERENCES ramstk_category (fld_category_id)
-);
-INSERT INTO "ramstk_subcategory" VALUES(1,1,'Linear');
-INSERT INTO "ramstk_subcategory" VALUES(1,2,'Logic');
-INSERT INTO "ramstk_subcategory" VALUES(1,3,'PAL, PLA');
-INSERT INTO "ramstk_subcategory" VALUES(1,4,'Microprocessor, Microcontroller');
-INSERT INTO "ramstk_subcategory" VALUES(1,5,'Memory, ROM');
-INSERT INTO "ramstk_subcategory" VALUES(1,6,'Memory, EEPROM');
-INSERT INTO "ramstk_subcategory" VALUES(1,7,'Memory, DRAM');
-INSERT INTO "ramstk_subcategory" VALUES(1,8,'Memory, SRAM');
-INSERT INTO "ramstk_subcategory" VALUES(1,9,'GaAs');
-INSERT INTO "ramstk_subcategory" VALUES(1,10,'VHSIC, VLSI');
-INSERT INTO "ramstk_subcategory" VALUES(2,11,'Diode, Low Frequency');
-INSERT INTO "ramstk_subcategory" VALUES(2,12,'Diode, High Frequency');
-INSERT INTO "ramstk_subcategory" VALUES(2,13,'Transistor, Low Frequency, Bipolar');
-INSERT INTO "ramstk_subcategory" VALUES(2,14,'Transistor, Low Frequency, Si FET');
-INSERT INTO "ramstk_subcategory" VALUES(2,15,'Transistor, Unijunction');
-INSERT INTO "ramstk_subcategory" VALUES(2,16,'Transistor, High Frequency, Low Noise, Bipolar');
-INSERT INTO "ramstk_subcategory" VALUES(2,17,'Transistor, High Frequency, High Power, Bipolar');
-INSERT INTO "ramstk_subcategory" VALUES(2,18,'Transistor, High Frequency, GaAs FET');
-INSERT INTO "ramstk_subcategory" VALUES(2,19,'Transistor, High Frequency, Si FET');
-INSERT INTO "ramstk_subcategory" VALUES(2,20,'Thyristor, SCR');
-INSERT INTO "ramstk_subcategory" VALUES(2,21,'Optoelectronic, Detector, Isolator, Emitter');
-INSERT INTO "ramstk_subcategory" VALUES(2,22,'Optoelectronic, Alphanumeric Display');
-INSERT INTO "ramstk_subcategory" VALUES(2,23,'Optoelectronic, Laser Diode');
-INSERT INTO "ramstk_subcategory" VALUES(3,24,'Fixed, Composition (RC, RCR)');
-INSERT INTO "ramstk_subcategory" VALUES(3,25,'Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)');
-INSERT INTO "ramstk_subcategory" VALUES(3,26,'Fixed, Film, Power (RD)');
-INSERT INTO "ramstk_subcategory" VALUES(3,27,'Fixed, Film, Network (RZ)');
-INSERT INTO "ramstk_subcategory" VALUES(3,28,'Fixed, Wirewound (RB, RBR)');
-INSERT INTO "ramstk_subcategory" VALUES(3,29,'Fixed, Wirewound, Power (RW, RWR)');
-INSERT INTO "ramstk_subcategory" VALUES(3,30,'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)');
-INSERT INTO "ramstk_subcategory" VALUES(3,31,'Thermistor (RTH)');
-INSERT INTO "ramstk_subcategory" VALUES(3,32,'Variable, Wirewound (RT, RTR)');
-INSERT INTO "ramstk_subcategory" VALUES(3,33,'Variable, Wirewound, Precision (RR)');
-INSERT INTO "ramstk_subcategory" VALUES(3,34,'Variable, Wirewound, Semiprecision (RA, RK)');
-INSERT INTO "ramstk_subcategory" VALUES(3,35,'Variable, Wirewound, Power (RP)');
-INSERT INTO "ramstk_subcategory" VALUES(3,36,'Variable, Non-Wirewound (RJ, RJR)');
-INSERT INTO "ramstk_subcategory" VALUES(3,37,'Variable, Composition (RV)');
-INSERT INTO "ramstk_subcategory" VALUES(3,38,'Variable, Non-Wirewound, Film and Precision (RQ, RVC)');
-INSERT INTO "ramstk_subcategory" VALUES(4,39,'Fixed, Paper, Bypass (CA, CP)');
-INSERT INTO "ramstk_subcategory" VALUES(4,40,'Fixed, Feed-Through (CZ, CZR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,41,'Fixed, Paper and Plastic Film (CPV, CQ, CQR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,42,'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,43,'Fixed, Plastic and Metallized Plastic');
-INSERT INTO "ramstk_subcategory" VALUES(4,44,'Fixed, Super-Metallized Plastic (CRH)');
-INSERT INTO "ramstk_subcategory" VALUES(4,45,'Fixed, Mica (CM, CMR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,46,'Fixed, Mica, Button (CB)');
-INSERT INTO "ramstk_subcategory" VALUES(4,47,'Fixed, Glass (CY, CYR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,48,'Fixed, Ceramic, General Purpose (CK, CKR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,49,'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,50,'Fixed, Electrolytic, Tantalum, Solid (CSR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,51,'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,52,'Fixed, Electrolytic, Aluminum (CU, CUR)');
-INSERT INTO "ramstk_subcategory" VALUES(4,53,'Fixed, Electrolytic (Dry), Aluminum (CE)');
-INSERT INTO "ramstk_subcategory" VALUES(4,54,'Variable, Ceramic (CV)');
-INSERT INTO "ramstk_subcategory" VALUES(4,55,'Variable, Piston Type (PC)');
-INSERT INTO "ramstk_subcategory" VALUES(4,56,'Variable, Air Trimmer (CT)');
-INSERT INTO "ramstk_subcategory" VALUES(4,57,'Variable and Fixed, Gas or Vacuum (CG)');
-INSERT INTO "ramstk_subcategory" VALUES(5,58,'Transformer');
-INSERT INTO "ramstk_subcategory" VALUES(5,59,'Coil');
-INSERT INTO "ramstk_subcategory" VALUES(6,60,'Mechanical');
-INSERT INTO "ramstk_subcategory" VALUES(6,61,'Solid State');
-INSERT INTO "ramstk_subcategory" VALUES(7,62,'Toggle or Pushbutton');
-INSERT INTO "ramstk_subcategory" VALUES(7,63,'Sensitive');
-INSERT INTO "ramstk_subcategory" VALUES(7,64,'Rotary');
-INSERT INTO "ramstk_subcategory" VALUES(7,65,'Thumbwheel');
-INSERT INTO "ramstk_subcategory" VALUES(7,66,'Circuit Breaker');
-INSERT INTO "ramstk_subcategory" VALUES(8,67,'Multi-Pin');
-INSERT INTO "ramstk_subcategory" VALUES(8,68,'PCB Edge');
-INSERT INTO "ramstk_subcategory" VALUES(8,69,'IC Socket');
-INSERT INTO "ramstk_subcategory" VALUES(8,70,'Plated Through Hole (PTH)');
-INSERT INTO "ramstk_subcategory" VALUES(8,71,'Connection, Non-PTH');
-INSERT INTO "ramstk_subcategory" VALUES(9,72,'Elapsed Time');
-INSERT INTO "ramstk_subcategory" VALUES(9,73,'Panel');
-INSERT INTO "ramstk_subcategory" VALUES(10,74,'Crystal');
-INSERT INTO "ramstk_subcategory" VALUES(10,75,'Filter, Non-Tunable Electronic');
-INSERT INTO "ramstk_subcategory" VALUES(10,76,'Fuse');
-INSERT INTO "ramstk_subcategory" VALUES(10,77,'Lamp');
+
 CREATE TABLE ramstk_type (
     fld_type_id INTEGER NOT NULL,
     fld_code VARCHAR(256),
