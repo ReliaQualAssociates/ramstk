@@ -137,7 +137,12 @@ ROW_DATA = [
         0.0, 0.0, 0.0, 1.0, 0.0, 0, 0, 0, 0.0, 0, 0.0, 0.0, 1.0, 2, 0.95, 0,
         0.0, 0.0, 0
     ],
-    [1, 12, 832.5, 799.0, 612.3, 226.4, 0.9, 350.00, 500.00, 275.00, '2019-08-18', '2019-09-01', 'Validation task that was imported by test suite.', 0, '', '', 0, '', 120.0, 140.0, 95.0]
+    [
+        1, 12, 832.5, 799.0, 612.3, 226.4, 0.9, 350.00, 500.00, 275.00,
+        '2019-08-18', '2019-09-01',
+        'Validation task that was imported by test suite.', 0, '', '', 0, '',
+        120.0, 140.0, 95.0
+    ]
 ]
 
 
@@ -231,24 +236,17 @@ def test_license_file():
     os.remove(_cwd + '/license.key')
 
 
-@pytest.fixture(scope="session", autouse=True)
-def divider_session(request):
-    print('\n----------- session start ---------------')
-    def fin():
-        print('\n----------- session done ---------------')
-    request.addfinalizer(fin)
-
-
 @pytest.fixture(scope='session', autouse=True)
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
-    test_common_db = {}
-    test_common_db['dialect'] = 'postgres'
-    test_common_db['user'] = 'postgres'
-    test_common_db['password'] = 'postgres'
-    test_common_db['host'] = 'localhost'
-    test_common_db['port'] = '5432'
-    test_common_db['database'] = 'TestCommonDB'
+    test_common_db = {
+        'dialect': 'postgres',
+        'user': 'postgres',
+        'password': 'postgres',
+        'host': 'localhost',
+        'port': '5432',
+        'database': 'TestCommonDB'
+    }
 
     # Create the test database.
     conn = psycopg2.connect(host=test_common_db['host'],
@@ -258,10 +256,12 @@ def test_common_dao():
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
     cursor = conn.cursor()
-    cursor.execute(sql.SQL('DROP DATABASE IF EXISTS {}').format(sql.Identifier(
-        test_common_db['database'])))
-    cursor.execute(sql.SQL('CREATE DATABASE {}').format(sql.Identifier(
-        test_common_db['database'])))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_common_db['database'])))
+    cursor.execute(
+        sql.SQL('CREATE DATABASE {}').format(
+            sql.Identifier(test_common_db['database'])))
     cursor.close()
     conn.close()
 
@@ -305,13 +305,14 @@ def test_program_dao():
     # engine to use) for each group of tests collected in a class.  Group tests
     # in the class in such a way as to produce predictable behavior (e.g., all
     # the tests for select() and select_all()).
-    test_program_db = {}
-    test_program_db['dialect'] = 'postgres'
-    test_program_db['user'] = 'postgres'
-    test_program_db['password'] = 'postgres'
-    test_program_db['host'] = 'localhost'
-    test_program_db['port'] = '5432'
-    test_program_db['database'] = 'TestProgramDB'
+    test_program_db = {
+        'dialect': 'postgres',
+        'user': 'postgres',
+        'password': 'postgres',
+        'host': 'localhost',
+        'port': '5432',
+        'database': 'TestProgramDB'
+    }
 
     # Create the test database.
     conn = psycopg2.connect(host=test_program_db['host'],
@@ -321,10 +322,12 @@ def test_program_dao():
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
     cursor = conn.cursor()
-    cursor.execute(sql.SQL('DROP DATABASE IF EXISTS {}').format(sql.Identifier(
-        test_program_db['database'])))
-    cursor.execute(sql.SQL('CREATE DATABASE {}').format(sql.Identifier(
-        test_program_db['database'])))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_program_db['database'])))
+    cursor.execute(
+        sql.SQL('CREATE DATABASE {}').format(
+            sql.Identifier(test_program_db['database'])))
     cursor.close()
     conn.close()
 
@@ -360,7 +363,7 @@ def test_toml_site_configuration():
         "backend": {
             "dialect": "sqlite",
             "host": "localhost",
-            "socket": "3306",
+            "port": "3306",
             "database": VIRTUAL_ENV + "/share/RAMSTK/ramstk_common.ramstk",
             "user": "johnny.tester",
             "password": "clear.text.password"
@@ -402,7 +405,7 @@ def test_toml_user_configuration(make_home_config_dir):
         "backend": {
             "type": "sqlite",
             "host": "localhost",
-            "socket": "3306",
+            "port": "3306",
             "database": "",
             "user": "",
             "password": ""

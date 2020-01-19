@@ -32,7 +32,7 @@ TEST_COMMON_DB = BaseDatabase()
 TEST_COMMON_DB.do_connect({
     "dialect": "sqlite",
     "host": "localhost",
-    "socket": "3306",
+    "port": "3306",
     "database": ":memory:",
     "user": "johnny.tester",
     "password": "clear.text.password"})
@@ -136,7 +136,7 @@ def test_do_create_common_db(monkeypatch):
     TEST_COMMON_DB.do_connect({
         "dialect": "sqlite",
         "host": "localhost",
-        "socket": "3306",
+        "port": "3306",
         "database": ":memory:",
         "user": "johnny.tester",
         "password": "clear.text.password"})

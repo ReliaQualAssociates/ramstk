@@ -62,6 +62,10 @@ class TestConnectionMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['password'] = 'postgres'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
+
         DUT = BaseDatabase()
 
         assert DUT.do_connect(
@@ -69,16 +73,16 @@ class TestConnectionMethods():
         assert isinstance(DUT.engine, Engine)
         assert isinstance(DUT.session, scoped_session)
         assert DUT.database == \
-               'postgresql+psycopg2://postgres:postgres@localhost/'
+               'postgresql+psycopg2://postgres:postgres@localhost:5432/'
 
     @pytest.mark.unit
     def test_do_connect_bad_database_name_type(self,
                                                test_toml_user_configuration):
-        """do_connect() should raise an AttributeError when passed a non-string database name."""
+        """do_connect() should raise a DataAccessError when passed a non-string database name."""
         test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = 8675309
         DUT = BaseDatabase()
 
-        with pytest.raises(TypeError):
+        with pytest.raises(DataAccessError):
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
     @pytest.mark.unit
@@ -96,14 +100,11 @@ class TestConnectionMethods():
 
     @pytest.mark.unit
     def test_do_connect_unknown_dialect(self, test_toml_user_configuration):
-        """do_connect() should raise an exc.ArgumentError when passed an
-        unknown/unsupported database dialect."""
+        """do_connect() should raise an DataAccessError when passed an unknown/unsupported database dialect."""
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqldoyle'
-        test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = '/home/test/testdb.db'
         DUT = BaseDatabase()
 
-        with pytest.raises(exc.ArgumentError):
+        with pytest.raises(DataAccessError):
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
     @pytest.mark.unit

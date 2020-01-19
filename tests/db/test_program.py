@@ -16,7 +16,7 @@ TEST_PROGRAM_DB = BaseDatabase()
 TEST_PROGRAM_DB.do_connect({
     "dialect": "sqlite",
     "host": "localhost",
-    "socket": "3306",
+    "port": "3306",
     "database": ":memory:",
     "user": "johnny.tester",
     "password": "clear.text.password"})
@@ -36,7 +36,7 @@ def test_do_create_program_db():
     TEST_PROGRAM_DB.do_connect({
         "dialect": "sqlite",
         "host": "localhost",
-        "socket": "3306",
+        "port": "3306",
         "database": ":memory:",
         "user": "johnny.tester",
         "password": "clear.text.password"})
