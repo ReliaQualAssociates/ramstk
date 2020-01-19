@@ -21,9 +21,12 @@ import xml.etree.ElementTree as ET
 from distutils import dir_util
 
 # Third Party Imports
+import psycopg2
 import pytest
 import toml
 import xlwt
+from psycopg2 import sql
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
@@ -54,7 +57,7 @@ ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestProgramDB.ramstk'
-TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
+TEST_COMMON_DB_PATH = TEMPDIR + '/TestCommonDB.ramstk'
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 
 DEBUG_LOG = LOG_DIR + '/RAMSTK_debug.log'
@@ -228,56 +231,65 @@ def test_license_file():
     os.remove(_cwd + '/license.key')
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope="session", autouse=True)
+def divider_session(request):
+    print('\n----------- session start ---------------')
+    def fin():
+        print('\n----------- session done ---------------')
+    request.addfinalizer(fin)
+
+
+@pytest.fixture(scope='session', autouse=True)
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
-    # Create the tmp directory if it doesn't exist.
-    if not os.path.exists(TMP_DIR):
-        os.makedirs(TMP_DIR)
-
-    # If there is an existing test database, delete it.
-    if os.path.exists(TEST_COMMON_DB_PATH):
-        os.remove(TEST_COMMON_DB_PATH)
-
-    # We create a new database for each class-level grouping of tests.  This
-    # should prevent errors (e.g., database locked) caused by attempting to
-    # access the database to0 rapidly from test-to-test.  PyTest causes each
-    # temporary directory to be deleted when it is finished with it.
-    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
-    tempdb = str(tempdir.name) + '/TestCommonDB.ramstk'
-    tempuri = 'sqlite:///' + tempdb
+    test_common_db = {}
+    test_common_db['dialect'] = 'postgres'
+    test_common_db['user'] = 'postgres'
+    test_common_db['password'] = 'postgres'
+    test_common_db['host'] = 'localhost'
+    test_common_db['port'] = '5432'
+    test_common_db['database'] = 'TestCommonDB'
 
     # Create the test database.
-    sql_file = open('./devtools/sqlite_test_common_db.sql', 'r')
-    script_str = sql_file.read().strip()
-    conn = sqlite3.connect(tempdb)
-    conn.executescript(script_str)
-    conn.commit()
+    conn = psycopg2.connect(host=test_common_db['host'],
+                            dbname='postgres',
+                            user=test_common_db['user'],
+                            password=test_common_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(sql.SQL('DROP DATABASE IF EXISTS {}').format(sql.Identifier(
+        test_common_db['database'])))
+    cursor.execute(sql.SQL('CREATE DATABASE {}').format(sql.Identifier(
+        test_common_db['database'])))
+    cursor.close()
+    conn.close()
+
+    # Populate the test database.
+    conn = psycopg2.connect(host=test_common_db['host'],
+                            dbname=test_common_db['database'],
+                            user=test_common_db['user'],
+                            password=test_common_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    conn.set_session(autocommit=True)
+
+    cursor = conn.cursor()
+    cursor.execute(open('./devtools/test_common_db.sql', 'r').read())
+    cursor.close()
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = BaseDatabase()
-    dao.do_connect(tempuri)
+    dao.do_connect(test_common_db)
 
     yield dao
 
     dao.do_disconnect()
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session', autouse=True)
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
-    # This will create a RAMSTK Program database using the
-    # <DB>_test_program_db.sql file in devtools/ (where <DB> = the database
-    # engine to use) for each group of tests collected in a class.  Group tests
-    # in the class in such a way as to produce predictable behavior (e.g., all
-    # the tests for select() and select_all()).
-    test_program_db = {}
-
-    # Create the tmp directory if it doesn't exist.
-    if not os.path.exists(TMP_DIR):
-        os.makedirs(TMP_DIR)
-
     # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
@@ -288,26 +300,46 @@ def test_program_dao():
     if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
         os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
 
-    # We create a new database for each class-level grouping of tests.  This
-    # should prevent errors (e.g., database locked) caused by attempting to
-    # access the database to0 rapidly from test-to-test.  PyTest causes each
-    # temporary directory to be deleted when it is finished with it.
-    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
-    tempdb = str(tempdir.name) + '/TestProgramDB.ramstk'
-
-    # Create the test database.
-    sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
-    script_str = sql_file.read().strip()
-    conn = sqlite3.connect(tempdb)
-    conn.executescript(script_str)
-    conn.commit()
-    conn.close()
-
+    # This will create a RAMSTK Program database using the
+    # <DB>_test_program_db.sql file in devtools/ (where <DB> = the database
+    # engine to use) for each group of tests collected in a class.  Group tests
+    # in the class in such a way as to produce predictable behavior (e.g., all
+    # the tests for select() and select_all()).
+    test_program_db = {}
     test_program_db['dialect'] = 'postgres'
     test_program_db['user'] = 'postgres'
-    test_program_db['password'] = ''
+    test_program_db['password'] = 'postgres'
     test_program_db['host'] = 'localhost'
-    test_program_db['database'] = tempdb
+    test_program_db['port'] = '5432'
+    test_program_db['database'] = 'TestProgramDB'
+
+    # Create the test database.
+    conn = psycopg2.connect(host=test_program_db['host'],
+                            dbname='postgres',
+                            user=test_program_db['user'],
+                            password=test_program_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(sql.SQL('DROP DATABASE IF EXISTS {}').format(sql.Identifier(
+        test_program_db['database'])))
+    cursor.execute(sql.SQL('CREATE DATABASE {}').format(sql.Identifier(
+        test_program_db['database'])))
+    cursor.close()
+    conn.close()
+
+    # Populate the test database.
+    conn = psycopg2.connect(host=test_program_db['host'],
+                            dbname=test_program_db['database'],
+                            user=test_program_db['user'],
+                            password=test_program_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    conn.set_session(autocommit=True)
+
+    cursor = conn.cursor()
+    cursor.execute(open('./devtools/test_program_db.sql', 'r').read())
+    cursor.close()
+    conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = BaseDatabase()
@@ -326,7 +358,7 @@ def test_toml_site_configuration():
     _dic_site_configuration = {
         "title": "RAMSTK Site Configuration",
         "backend": {
-            "type": "sqlite",
+            "dialect": "sqlite",
             "host": "localhost",
             "socket": "3306",
             "database": VIRTUAL_ENV + "/share/RAMSTK/ramstk_common.ramstk",
