@@ -528,7 +528,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_COM_BACKEND == 'sqlite'
         assert DUT.RAMSTK_COM_INFO["dialect"] == 'sqlite'
         assert DUT.RAMSTK_COM_INFO["host"] == 'localhost'
-        assert DUT.RAMSTK_COM_INFO["socket"] == '3306'
+        assert DUT.RAMSTK_COM_INFO["port"] == '3306'
         assert DUT.RAMSTK_COM_INFO["database"] == (
             VIRTUAL_ENV + '/share/RAMSTK/ramstk_common.ramstk')
         assert DUT.RAMSTK_COM_INFO["user"] == 'johnny.tester'
@@ -622,7 +622,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_BACKEND == 'sqlite'
         assert DUT.RAMSTK_PROG_INFO["dialect"] == 'sqlite'
         assert DUT.RAMSTK_PROG_INFO["host"] == 'localhost'
-        assert DUT.RAMSTK_PROG_INFO["socket"] == '3306'
+        assert DUT.RAMSTK_PROG_INFO["port"] == '3306'
         assert DUT.RAMSTK_PROG_INFO["database"] == ''
         assert DUT.RAMSTK_PROG_INFO["user"] == ''
         assert DUT.RAMSTK_PROG_INFO["password"] == ''
@@ -674,7 +674,7 @@ class TestGetterSetter():
         DUT.RAMSTK_PROG_INFO = {
             'dialect': 'mysql',
             'host': 'treebeard',
-            'socket': '3306',
+            'port': '3306',
             'database': 'test',
             'user': 'me',
             'password': 'big.password'
@@ -693,7 +693,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_PROG_INFO == {
             'dialect': 'mysql',
             'host': 'treebeard',
-            'socket': '3306',
+            'port': '3306',
             'database': 'test',
             'user': 'me',
             'password': 'big.password'

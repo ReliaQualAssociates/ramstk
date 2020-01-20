@@ -194,6 +194,8 @@ def make_home_config_dir():
     os.mkdir(VIRTUAL_ENV + '/tmp/analyses/ramstk')
     shutil.copyfile('./data/sqlite_program_db.sql',
                     _config_dir + '/sqlite_program_db.sql')
+    shutil.copyfile('./data/postgres_program_db.sql',
+                    _config_dir + '/postgres_program_db.sql')
 
     yield _config_dir
 
@@ -325,6 +327,12 @@ def test_program_dao():
     cursor.execute(
         sql.SQL('DROP DATABASE IF EXISTS {}').format(
             sql.Identifier(test_program_db['database'])))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier('ramstk_program_db')))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier('ramstk_program_db2')))
     cursor.execute(
         sql.SQL('CREATE DATABASE {}').format(
             sql.Identifier(test_program_db['database'])))

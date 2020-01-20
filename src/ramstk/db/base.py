@@ -11,6 +11,9 @@ import sqlite3
 from typing import Any, Dict, List, TextIO, Tuple
 
 # Third Party Imports
+import psycopg2
+from psycopg2 import sql
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
 from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine
@@ -32,6 +35,16 @@ def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
 
 class BaseDatabase():
     """This is the BaseDatabase class."""
+
+    # Define public class dict attributes.
+    cxnargs: Dict[str, str] = {
+        'dialect': '',
+        'user': '',
+        'password': '',
+        'host': '',
+        'port': '',
+        'dbname': ''
+    }
 
     # Define public class scalar attributes.
     engine: Engine = None
@@ -66,36 +79,82 @@ class BaseDatabase():
             connect to.
         :return: None
         :rtype: None
-        :raise: AttributeError if passed a non-string database name.
         :raise: sqlalchemy.exc.OperationalError if passed an invalid database
             URL.
         :raise: sqlalchemy.exc.ArgumentError if passed a database URL with
             an unknown/unsupported SQL dialect.
         """
-        if database['dialect'] == 'sqlite':
-            self.database = 'sqlite:///' + database['database']
-        elif database['dialect'] == 'postgres':
-            self.database = ('postgresql+psycopg2://' + database['user'] + ':' +
-                             database['password'] + '@' + database['host'] +
-                             ':' + database['port'] + '/' +
-                             database['database'])
+        self.cxnargs['dialect'] = database['dialect']
+        self.cxnargs['user'] = database['user']
+        self.cxnargs['password'] = database['password']
+        self.cxnargs['host'] = database['host']
+        self.cxnargs['port'] = database['port']
+        self.cxnargs['dbname'] = database['database']
 
-        self.engine, self.session = do_open_session(self.database)
+        try:
+            if self.cxnargs['dialect'] == 'sqlite':
+                self.database = 'sqlite:///' + self.cxnargs['dbname']
+            elif self.cxnargs['dialect'] == 'postgres':
+                self.database = ('postgresql+psycopg2://'
+                                 + self.cxnargs['user'] + ':'
+                                 + self.cxnargs['password'] + '@'
+                                 + self.cxnargs['host'] + ':'
+                                 + self.cxnargs['port'] + '/'
+                                 + self.cxnargs['dbname'])
+            else:
+                raise DataAccessError('Unknown database dialect in database '
+                                      'connection dict.')
+        except TypeError:
+            raise DataAccessError('Unknown dialect or non-string value in '
+                                  'database connection dict.')
+
+        if self.database != '':
+            self.engine, self.session = do_open_session(self.database)
 
     @staticmethod
-    def do_create_program_db(database: str, sql_file: TextIO) -> None:
+    def do_create_program_db(database: Dict, sql_file: TextIO) -> None:
         """
         Create a shiny new, unpopulated RAMSTK program database.
 
         :param str database: the absolute path to the database to connect to.
-        :param str sql_file: the absolute path to the SQL file containing the
-            code to create a RAMSTK program database.
+        :param dict sql_file: a dict containing the database connection
+            arguments.
         :return: None
         :rtype: None
         """
-        conn = sqlite3.connect(database)
-        conn.executescript(sql_file.read().strip())
-        conn.commit()
+        if database['dialect'] == 'sqlite':
+            conn = sqlite3.connect(database['database'])
+            conn.executescript(sql_file.read().strip())
+        elif database['dialect'] == 'postgres':
+            # Create the database.
+            conn = psycopg2.connect(host=database['host'],
+                                    dbname='postgres',
+                                    user=database['user'],
+                                    password=database['password'])
+            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+            cursor = conn.cursor()
+            cursor.execute(
+                sql.SQL('DROP DATABASE IF EXISTS {}').format(
+                    sql.Identifier(database['database'])))
+            cursor.execute(
+                sql.SQL('CREATE DATABASE {}').format(
+                    sql.Identifier(database['database'])))
+            cursor.close()
+            conn.close()
+
+            # Populate the database.
+            conn = psycopg2.connect(host=database['host'],
+                                    dbname=database['database'],
+                                    user=database['user'],
+                                    password=database['password'])
+            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+            conn.set_session(autocommit=True)
+
+            cursor = conn.cursor()
+            cursor.execute(sql_file.read())
+            cursor.close()
+
         conn.close()
 
     def do_delete(self, item: object) -> None:
