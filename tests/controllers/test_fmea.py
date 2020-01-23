@@ -184,11 +184,11 @@ class TestSelectMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        _cause = DUT.do_select('4.1.4', table='cause')
+        _cause = DUT.do_select('4.1.1', table='cause')
 
         assert isinstance(_cause, RAMSTKCause)
         assert _cause.description == 'Test Failure Cause #1 for Mechanism ID 1'
-        assert _cause.rpn_detection_new == 0
+        assert _cause.rpn_detection_new == 1
 
     @pytest.mark.integration
     def test_do_select_control(self, test_program_dao):
@@ -197,7 +197,7 @@ class TestSelectMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        _control = DUT.do_select('4.1.4.4.c', table='control')
+        _control = DUT.do_select('4.1.1.4.c', table='control')
 
         assert isinstance(_control, RAMSTKControl)
         assert _control.description == 'Test FMEA Control #1 for Cause ID 4'
@@ -210,11 +210,11 @@ class TestSelectMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        _action = DUT.do_select('4.1.4.4.a', table='action')
+        _action = DUT.do_select('4.1.1.4.a', table='action')
 
         assert isinstance(_action, RAMSTKAction)
-        assert _action.action_recommended == (b'Test FMEA Recommended Action '
-                                              b'#1 for Cause ID 4')
+        assert _action.action_recommended == ('Test FMEA Recommended Action #1 '
+                                              'for Cause ID 1.')
         assert _action.action_due_date == date(2019, 8, 20)
 
     @pytest.mark.integration
@@ -444,10 +444,10 @@ class TestInsertMethods():
         DUT.do_select_all(parent_id=1)
         DUT._do_insert_mode()
 
-        assert isinstance(DUT.tree.get_node('7').data['mode'], RAMSTKMode)
-        assert DUT.tree.get_node('7').data['mode'].mode_id == 7
+        assert isinstance(DUT.tree.get_node('5').data['mode'], RAMSTKMode)
+        assert DUT.tree.get_node('5').data['mode'].mode_id == 5
         assert DUT.tree.get_node(
-            '7').data['mode'].description == 'New Failure Mode'
+            '5').data['mode'].description == 'System Test Failure Mode #2'
 
         pub.unsubscribe(self.on_succeed_insert_mode, 'succeed_insert_mode')
 
@@ -460,13 +460,13 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_mechanism('7')
+        DUT._do_insert_mechanism('5')
 
         assert isinstance(
-            DUT.tree.get_node('7.4').data['mechanism'], RAMSTKMechanism)
-        assert DUT.tree.get_node('7.4').data['mechanism'].mechanism_id == 4
+            DUT.tree.get_node('5.2').data['mechanism'], RAMSTKMechanism)
+        assert DUT.tree.get_node('5.2').data['mechanism'].mechanism_id == 2
         assert DUT.tree.get_node(
-            '7.4').data['mechanism'].description == 'New Failure Mechanism'
+            '5.2').data['mechanism'].description == 'Test Failure Mechanism #1 for Mode ID 5'
 
         pub.unsubscribe(self.on_succeed_insert_mechanism,
                         'succeed_insert_mechanism')
@@ -491,13 +491,13 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_cause(7, 4, '7.4')
+        DUT._do_insert_cause(5, 2, '5.2')
 
         assert isinstance(
-            DUT.tree.get_node('7.4.7').data['cause'], RAMSTKCause)
-        assert DUT.tree.get_node('7.4.7').data['cause'].cause_id == 7
+            DUT.tree.get_node('5.2.2').data['cause'], RAMSTKCause)
+        assert DUT.tree.get_node('5.2.2').data['cause'].cause_id == 2
         assert DUT.tree.get_node(
-            '7.4.7').data['cause'].description == 'New Failure Cause'
+            '5.2.2').data['cause'].description == 'Test Failure Cause #2 for Mechanism ID 2'
 
         pub.unsubscribe(self.on_succeed_insert_cause, 'succeed_insert_cause')
 
@@ -521,13 +521,14 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_control(7, '7.4.7')
+        DUT._do_insert_control(5, '5.2.2')
 
         assert isinstance(
-            DUT.tree.get_node('7.4.7.7.c').data['control'], RAMSTKControl)
-        assert DUT.tree.get_node('7.4.7.7.c').data['control'].control_id == 7
+            DUT.tree.get_node('5.2.2.5.c').data['control'], RAMSTKControl)
+        assert DUT.tree.get_node('5.2.2.5.c').data['control'].control_id == 5
         assert DUT.tree.get_node(
-            '7.4.7.7.c').data['control'].description == 'New Control'
+            '5.2.2.5.c').data['control'].description == ('Test FMEA Control '
+                                                         '#1 for Cause ID 5')
 
         pub.unsubscribe(self.on_succeed_insert_control,
                         'succeed_insert_control')
@@ -554,13 +555,14 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_action(7, '7.4.7')
+        DUT._do_insert_action(5, '5.2.2')
 
         assert isinstance(
-            DUT.tree.get_node('7.4.7.7.a').data['action'], RAMSTKAction)
-        assert DUT.tree.get_node('7.4.7.7.a').data['action'].action_id == 7
-        assert DUT.tree.get_node('7.4.7.7.a').data[
-            'action'].action_recommended == b'Recommended Action'
+            DUT.tree.get_node('5.2.2.5.a').data['action'], RAMSTKAction)
+        assert DUT.tree.get_node('5.2.2.5.a').data['action'].action_id == 5
+        assert DUT.tree.get_node('5.2.2.5.a').data[
+            'action'].action_recommended == ('Test FMEA Recommended Action #1 '
+                                             'for Cause ID 2.')
 
         pub.unsubscribe(self.on_succeed_insert_action, 'succeed_insert_action')
 
@@ -583,22 +585,22 @@ class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_mode_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['mode_id'] == 6
-        assert attributes['description'] == 'System Test Failure Mode #3'
+        assert attributes['mode_id'] == 5
+        assert attributes['description'] == 'System Test Failure Mode #2'
         assert attributes['critical_item'] == 0
         print("\033[36m\nsucceed_get_mode_attributes topic was broadcast.")
 
     def on_succeed_get_mechanism_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['mechanism_id'] == 3
+        assert attributes['mechanism_id'] == 2
         assert attributes['description'] == ('Test Failure Mechanism #1 for '
-                                             'Mode ID 6')
+                                             'Mode ID 5')
         print(
             "\033[36m\nsucceed_get_mechanism_attributes topic was broadcast.")
 
     def on_succeed_get_cause_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['cause_id'] == 4
+        assert attributes['cause_id'] == 1
         assert attributes['description'] == ('Test Failure Cause #1 for '
                                              'Mechanism ID 1')
         print("\033[36m\nsucceed_get_cause_attributes topic was broadcast.")
@@ -613,9 +615,8 @@ class TestGetterSetter():
     def on_succeed_get_action_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['action_id'] == 4
-        assert attributes['action_recommended'] == (b'Test FMEA Recommended '
-                                                    b'Action #1 for Cause '
-                                                    b'ID 4')
+        assert attributes['action_recommended'] == ('Test FMEA Recommended '
+                                                    'Action #1 for Cause ID 1.')
         print("\033[36m\nsucceed_get_action_attributes topic was broadcast.")
 
     def on_succeed_get_fmea_tree(self, dmtree):
@@ -634,7 +635,7 @@ class TestGetterSetter():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('6', 'mode')
+        DUT.do_get_attributes('5', 'mode')
 
         pub.unsubscribe(self.on_succeed_get_mode_attrs,
                         'succeed_get_mode_attributes')
@@ -648,7 +649,7 @@ class TestGetterSetter():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('6.3', 'mechanism')
+        DUT.do_get_attributes('5.2', 'mechanism')
 
         pub.unsubscribe(self.on_succeed_get_mechanism_attrs,
                         'succeed_get_mechanism_attributes')
@@ -662,7 +663,7 @@ class TestGetterSetter():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('4.1.4', 'cause')
+        DUT.do_get_attributes('4.1.1', 'cause')
 
         pub.unsubscribe(self.on_succeed_get_cause_attrs,
                         'succeed_get_cause_attributes')
@@ -676,7 +677,7 @@ class TestGetterSetter():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('4.1.4.4.c', 'control')
+        DUT.do_get_attributes('4.1.1.4.c', 'control')
 
         pub.unsubscribe(self.on_succeed_get_control_attrs,
                         'succeed_get_control_attributes')
@@ -690,7 +691,7 @@ class TestGetterSetter():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('4.1.4.4.a', 'action')
+        DUT.do_get_attributes('4.1.1.4.a', 'action')
 
         pub.unsubscribe(self.on_succeed_get_action_attrs,
                         'succeed_get_action_attributes')
@@ -745,17 +746,17 @@ class TestGetterSetter():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        DUT.do_set_attributes(node_id='4.1.4',
+        DUT.do_set_attributes(node_id='4.1.1',
                               key='rpn_detection',
                               value=8,
                               table='cause')
-        DUT.do_set_attributes(node_id='4.1.4',
+        DUT.do_set_attributes(node_id='4.1.1',
                               key='description',
                               value='Jared Kushner',
                               table='cause')
-        assert DUT.do_select('4.1.4',
+        assert DUT.do_select('4.1.1',
                              table='cause').description == 'Jared Kushner'
-        assert DUT.do_select('4.1.4', table='cause').rpn_detection == 8
+        assert DUT.do_select('4.1.1', table='cause').rpn_detection == 8
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
@@ -766,17 +767,17 @@ class TestGetterSetter():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        DUT.do_set_attributes(node_id='4.1.4.4.c',
+        DUT.do_set_attributes(node_id='4.1.1.4.c',
                               key='type_id',
                               value='Prevention',
                               table='control')
-        DUT.do_set_attributes(node_id='4.1.4.4.c',
+        DUT.do_set_attributes(node_id='4.1.1.4.c',
                               key='description',
                               value='Lock and chain',
                               table='control')
-        assert DUT.do_select('4.1.4.4.c',
+        assert DUT.do_select('4.1.1.4.c',
                              table='control').description == 'Lock and chain'
-        assert DUT.do_select('4.1.4.4.c',
+        assert DUT.do_select('4.1.1.4.c',
                              table='control').type_id == 'Prevention'
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
@@ -788,17 +789,17 @@ class TestGetterSetter():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        DUT.do_set_attributes(node_id='4.1.4.4.a',
+        DUT.do_set_attributes(node_id='4.1.1.4.a',
                               key='action_recommended',
-                              value=b'Kick his ass',
+                              value='Kick his ass',
                               table='action')
-        DUT.do_set_attributes(node_id='4.1.4.4.a',
+        DUT.do_set_attributes(node_id='4.1.1.4.a',
                               key='action_owner',
                               value='Doyle Rowland',
                               table='action')
         assert DUT.do_select(
-            '4.1.4.4.a', table='action').action_recommended == b'Kick his ass'
-        assert DUT.do_select('4.1.4.4.a',
+            '4.1.1.4.a', table='action').action_recommended == 'Kick his ass'
+        assert DUT.do_select('4.1.1.4.a',
                              table='action').action_owner == 'Doyle Rowland'
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
@@ -852,7 +853,7 @@ class TestUpdateMethods():
 
         DUT.tree.get_node('5').data['mode'].description = 'Test failure mode'
         DUT.tree.get_node('5').data['mode'].operator_actions = (
-            b'Take evasive actions.')
+            'Take evasive actions.')
         DUT.do_update('5')
         DUT.tree.get_node('5.2').data[
             'mechanism'].description = 'Test failure mechanism, updated'
@@ -861,7 +862,7 @@ class TestUpdateMethods():
         assert DUT.tree.get_node('5').data['mode'].description == (
             'Test failure mode')
         assert DUT.tree.get_node('5').data['mode'].operator_actions == (
-            b'Take evasive actions.')
+            'Take evasive actions.')
         assert DUT.tree.get_node('5.2').data['mechanism'].description == (
             'Test failure mechanism, updated')
 
@@ -885,7 +886,7 @@ class TestAnalysisMethods():
     """Class for testing analytical methods."""
     def on_succeed_calculate_criticality(self, item_criticality):
         assert isinstance(item_criticality, dict)
-        assert item_criticality['I'] == 0.00212865
+        assert item_criticality['I'] == 0.0004627500000000001
         assert item_criticality['IV'] == 0.003085
         print(
             "\033[36m\nsucceed_calculate_fmea_criticality topic was broadcast")
@@ -929,10 +930,8 @@ class TestAnalysisMethods():
 
         assert DUT._tree.get_node('4.1').data['mechanism'].rpn == 16
         assert DUT._tree.get_node('5.2').data['mechanism'].rpn == 8
-        assert DUT._tree.get_node('6.3').data['mechanism'].rpn == 35
         assert DUT._tree.get_node('4.1').data['mechanism'].rpn_new == 14
         assert DUT._tree.get_node('5.2').data['mechanism'].rpn_new == 20
-        assert DUT._tree.get_node('6.3').data['mechanism'].rpn_new == 10
 
     @pytest.mark.integration
     def test_do_calculate_rpn_using_cause(self, test_program_dao,
@@ -946,11 +945,11 @@ class TestAnalysisMethods():
         pub.sendMessage('request_get_fmea_tree')
         pub.sendMessage('request_calculate_rpn', method='cause')
 
-        assert DUT._tree.get_node('1.1').data['cause'].rpn == 16
-        assert DUT._tree.get_node('1.2').data['cause'].rpn == 16
-        assert DUT._tree.get_node('1.3').data['cause'].rpn == 18
-        assert DUT._tree.get_node('1.1').data['cause'].rpn_new == 5
-        assert DUT._tree.get_node('1.2').data['cause'].rpn_new == 9
-        assert DUT._tree.get_node('1.3').data['cause'].rpn_new == 12
+        assert DUT._tree.get_node('1.4').data['cause'].rpn == 16
+        assert DUT._tree.get_node('1.5').data['cause'].rpn == 14
+        assert DUT._tree.get_node('1.6').data['cause'].rpn == 16
+        assert DUT._tree.get_node('1.4').data['cause'].rpn_new == 5
+        assert DUT._tree.get_node('1.5').data['cause'].rpn_new == 8
+        assert DUT._tree.get_node('1.6').data['cause'].rpn_new == 9
 
         pub.unsubscribe(self.on_succeed_calculate_rpn, 'succeed_calculate_rpn')

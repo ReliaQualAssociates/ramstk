@@ -166,8 +166,9 @@ class BaseDatabase():
         :return: None
         :rtype: None
         """
-        self.session.execute(
-            "PRAGMA foreign_keys=ON")  # This is only needed for SQLite dbs.
+        if self.cxnargs['dialect'] == 'sqlite':
+            self.session.execute(
+                "PRAGMA foreign_keys=ON")
 
         try:
             self.session.delete(item)

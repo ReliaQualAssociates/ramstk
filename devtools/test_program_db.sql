@@ -152,12 +152,12 @@ CREATE TABLE ramstk_mode (
     fld_single_point INTEGER,
     fld_type_id INTEGER
 );
-INSERT INTO "ramstk_mode" VALUES(1,-1,1,0,'Test Functional Failure Mode #1',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(1,-1,2,0,'Test Functional Failure Mode #2',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(1,-1,3,0,'Test Functional Failure Mode #3',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
-INSERT INTO "ramstk_mode" VALUES(-1,1,4,0,'System Test Failure Mode #1',X'','','','','',1.0,'','','Default Mission','',0.0,0.0,10.0,'',0.5,X'','',X'',1,1,'IV',0,0);
-INSERT INTO "ramstk_mode" VALUES(-1,1,5,0,'System Test Failure Mode #2',X'','','','','',0.75,'','','Default Mission','',0.0,0.0,5.0,'',0.2,X'','',X'',1,1,'I',0,0);
-INSERT INTO "ramstk_mode" VALUES(-1,1,6,0,'System Test Failure Mode #3',X'','','','','',0.9,'','','Default Mission','',0.0,0.0,10.0,'',0.3,X'','',X'',1,1,'I',0,0);
+INSERT INTO "ramstk_mode" VALUES(1,-1,1,0,'Test Functional Failure Mode #1','','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,'','','',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(1,-1,2,0,'Test Functional Failure Mode #2','','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,'','','',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(1,-1,3,0,'Test Functional Failure Mode #3','','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,'','','',1,1,'',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,4,0,'System Test Failure Mode #1','','','','','',1.0,'','','Default Mission','',0.0,0.0,10.0,'',0.5,'','','',1,1,'IV',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,5,0,'System Test Failure Mode #2','','','','','',0.75,'','','Default Mission','',0.0,0.0,5.0,'',0.2,'','','',1,1,'I',0,0);
+INSERT INTO "ramstk_mode" VALUES(-1,1,6,0,'System Test Failure Mode #3','','','','','',0.9,'','','Default Mission','',0.0,0.0,10.0,'',0.3,'','','',1,1,'I',0,0);
 CREATE TABLE ramstk_mechanism (
     fld_mode_id INTEGER,
     fld_mechanism_id INTEGER NOT NULL,
@@ -190,6 +190,9 @@ CREATE TABLE ramstk_cause (
     FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
+INSERT INTO "ramstk_cause" VALUES(1,1,4,'Test Failure Cause #1 for Mode ID 1',0,2,1,0,8,5);
+INSERT INTO "ramstk_cause" VALUES(1,1,5,'Test Failure Cause #2 for Mode ID 1',0,2,4,0,7,2);
+INSERT INTO "ramstk_cause" VALUES(1,1,6,'Test Failure Cause #3 for Mode ID 1',0,2,3,0,8,3);
 INSERT INTO "ramstk_cause" VALUES(4,1,1,'Test Failure Cause #1 for Mechanism ID 1',0,2,1,0,8,5);
 INSERT INTO "ramstk_cause" VALUES(5,2,2,'Test Failure Cause #2 for Mechanism ID 2',0,4,3,0,4,3);
 INSERT INTO "ramstk_cause" VALUES(6,3,3,'Test Failure Cause #1 for Mechanism ID 3',0,3,3,0,6,4);
@@ -209,9 +212,9 @@ CREATE TABLE ramstk_action (
     PRIMARY KEY (fld_action_id),
     FOREIGN KEY(fld_cause_id) REFERENCES ramstk_cause (fld_cause_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_action" VALUES(1,4,X'5465737420464D4541205265636F6D6D656E64656420416374696F6E20233120666F722043617573652049442034','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
-INSERT INTO "ramstk_action" VALUES(2,5,X'5465737420464D4541205265636F6D6D656E64656420416374696F6E20233120666F722043617573652049442034','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
-INSERT INTO "ramstk_action" VALUES(3,6,X'5465737420464D4541205265636F6D6D656E64656420416374696F6E20233120666F722043617573652049442034','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
+INSERT INTO "ramstk_action" VALUES(1,4,'Test FMEA Recommended Action #1 for Cause ID 1.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
+INSERT INTO "ramstk_action" VALUES(2,5,'Test FMEA Recommended Action #1 for Cause ID 2.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
+INSERT INTO "ramstk_action" VALUES(3,6,'Test FMEA Recommended Action #1 for Cause ID 6','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 CREATE TABLE ramstk_control (
     fld_cause_id INTEGER,
     fld_control_id INTEGER NOT NULL,
