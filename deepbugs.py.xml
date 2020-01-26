@@ -1,0 +1,7 @@
+<application>
+  <component name="DeepBugsPy">
+    <option name="binOperatorThreshold" value="0.85" />
+    <option name="binOperandThreshold" value="0.86" />
+    <option name="swappedArgsThreshold" value="0.8" />
+  </component>
+</application>
