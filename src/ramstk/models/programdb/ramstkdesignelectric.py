@@ -57,7 +57,7 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
         'power_operating': 0.0,
         'power_rated': 0.0,
         'power_ratio': 0.0,
-        'reason': b'',
+        'reason': '',
         'resistance': 0.0,
         'specification_id': 0,
         'technology_id': 0,
@@ -189,7 +189,7 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
     power_ratio = Column('fld_power_ratio',
                          Float,
                          default=__defaults__['power_ratio'])
-    reason = Column('fld_reason', String(1024), default=__defaults__['reason'])
+    reason = Column('fld_reason', String, default=__defaults__['reason'])
     resistance = Column('fld_resistance',
                         Float,
                         default=__defaults__['resistance'])
