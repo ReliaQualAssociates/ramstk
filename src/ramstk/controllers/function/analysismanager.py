@@ -130,11 +130,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         _fha = fha.calculate_user_defined(_fha)
 
-        _attributes['result_1'] = _fha['res1']
-        _attributes['result_2'] = _fha['res2']
-        _attributes['result_3'] = _fha['res3']
-        _attributes['result_4'] = _fha['res4']
-        _attributes['result_5'] = _fha['res5']
+        _attributes['result_1'] = float(_fha['res1'])
+        _attributes['result_2'] = float(_fha['res2'])
+        _attributes['result_3'] = float(_fha['res3'])
+        _attributes['result_4'] = float(_fha['res4'])
+        _attributes['result_5'] = float(_fha['res5'])
 
         # Update the hazard analysis record attributes.
         _attributes.pop('revision_id')

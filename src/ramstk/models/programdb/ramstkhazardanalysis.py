@@ -83,7 +83,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
         'fld_hazard_id',
         Integer,
         primary_key=True,
-        autoincrement=False,
+        autoincrement=True,
         nullable=False,
         info={"identity": (0, 1)},
     )

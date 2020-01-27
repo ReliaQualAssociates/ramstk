@@ -8,6 +8,7 @@
 
 # Third Party Imports
 from pubsub import pub
+from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -139,6 +140,7 @@ class DataManager(RAMSTKDataManager):
         else:
             try:
                 _hardware = RAMSTKHardware(revision_id=self._revision_id,
+                                           hardware_id=self.last_id + 1,
                                            parent_id=parent_id,
                                            part=part)
 
@@ -230,7 +232,8 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(_node.identifier)
 
         for _hardware in self.dao.session.query(RAMSTKHardware).filter(
-                RAMSTKHardware.revision_id == self._revision_id).all():
+                RAMSTKHardware.revision_id == self._revision_id).order_by(
+                    RAMSTKHardware.parent_id).all():
 
             _design_e = self.dao.session.query(RAMSTKDesignElectric).filter(
                 RAMSTKDesignElectric.hardware_id ==
@@ -254,8 +257,7 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKAllocation.hardware_id == _hardware.hardware_id).first()
 
             _similaritem = self.dao.session.query(RAMSTKSimilarItem).filter(
-                RAMSTKSimilarItem.hardware_id ==
-                _hardware.hardware_id).first()
+                RAMSTKSimilarItem.hardware_id == _hardware.hardware_id).first()
 
             _data_package = {
                 'hardware': _hardware,
@@ -268,10 +270,16 @@ class DataManager(RAMSTKDataManager):
                 'similar_item': _similaritem
             }
 
-            self.tree.create_node(tag=_hardware.comp_ref_des,
-                                  identifier=_hardware.hardware_id,
-                                  parent=_hardware.parent_id,
-                                  data=_data_package)
+            try:
+                self.tree.create_node(tag=_hardware.comp_ref_des,
+                                      identifier=_hardware.hardware_id,
+                                      parent=_hardware.parent_id,
+                                      data=_data_package)
+            except NodeIDAbsentError as _error:
+                print(_error)
+                _error_msg = ('Failed to build Hardware tree for Revision ID '
+                              '{0:s}.').format(str(self._revision_id))
+                pub.sendMessage('fail_retrieve_hardware', error_message=_error_msg)
 
         self.last_id = max(self.tree.nodes.keys())
 
