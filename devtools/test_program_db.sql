@@ -269,6 +269,48 @@ CREATE TABLE ramstk_control (
 INSERT INTO "ramstk_control" VALUES(1,4,'Test FMEA Control #1 for Cause ID 4','');
 INSERT INTO "ramstk_control" VALUES(2,5,'Test FMEA Control #1 for Cause ID 5','');
 INSERT INTO "ramstk_control" VALUES(3,6,'Test FMEA Control #1 for Cause ID 6','');
+CREATE TABLE ramstk_op_load (
+    fld_mechanism_id INTEGER,
+    fld_load_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_damage_model VARCHAR(512),
+    fld_priority_id INTEGER,
+    PRIMARY KEY (fld_load_id),
+    FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
+);
+INSERT INTO "ramstk_op_load" VALUES(1,1,'Test Operating Load','',0);
+INSERT INTO "ramstk_op_load" VALUES(1,2,'','',0);
+INSERT INTO "ramstk_op_load" VALUES(2,3,'','',0);
+CREATE TABLE ramstk_op_stress (
+    fld_load_id INTEGER,
+    fld_stress_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_load_history VARCHAR(512),
+    fld_measurable_parameter VARCHAR(512),
+    fld_remarks VARCHAR,
+    PRIMARY KEY (fld_stress_id),
+    FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
+);
+INSERT INTO "ramstk_op_stress" VALUES(2,1,'Test Operating Stress','','','');
+INSERT INTO "ramstk_op_stress" VALUES(1,2,'','','','');
+INSERT INTO "ramstk_op_stress" VALUES(3,3,'','','','');
+CREATE TABLE ramstk_test_method (
+    fld_load_id INTEGER,
+    fld_test_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    fld_boundary_conditions VARCHAR(512),
+    fld_remarks VARCHAR,
+    PRIMARY KEY (fld_test_id),
+    FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
+);
+INSERT INTO "ramstk_test_method" VALUES(1,1,'Test Test Method','','');
+INSERT INTO "ramstk_test_method" VALUES(2,2,'','','');
+INSERT INTO "ramstk_test_method" VALUES(3,3,'','','');
+CREATE TABLE ramstk_load_history (
+    fld_load_history_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    PRIMARY KEY (fld_load_history_id)
+);
 CREATE TABLE ramstk_allocation (
     fld_revision_id INTEGER,
     fld_hardware_id INTEGER,
@@ -555,15 +597,6 @@ INSERT INTO "ramstk_nswc" VALUES(5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0
 INSERT INTO "ramstk_nswc" VALUES(6,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_nswc" VALUES(7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_nswc" VALUES(8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-CREATE TABLE ramstk_op_load (
-    fld_mechanism_id INTEGER,
-    fld_load_id INTEGER NOT NULL,
-    fld_description VARCHAR(512),
-    fld_damage_model VARCHAR(512),
-    fld_priority_id INTEGER,
-    PRIMARY KEY (fld_load_id),
-    FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
-);
 CREATE TABLE ramstk_reliability (
     fld_hardware_id INTEGER,
     fld_add_adj_factor FLOAT,
@@ -867,11 +900,6 @@ CREATE TABLE ramstk_incident_detail (
     PRIMARY KEY (fld_incident_id),
     FOREIGN KEY(fld_incident_id) REFERENCES ramstk_incident (fld_incident_id)
 );
-CREATE TABLE ramstk_load_history (
-    fld_load_history_id INTEGER NOT NULL,
-    fld_description VARCHAR(512),
-    PRIMARY KEY (fld_load_history_id)
-);
 CREATE TABLE ramstk_matrix (
     fld_revision_id INTEGER,
     fld_matrix_id INTEGER NOT NULL,
@@ -949,23 +977,6 @@ INSERT INTO "ramstk_matrix" VALUES(1,3,5,5,'rqrmnt_hrdwr',0,3,3,0);
 INSERT INTO "ramstk_matrix" VALUES(1,3,6,6,'rqrmnt_hrdwr',0,3,3,1);
 INSERT INTO "ramstk_matrix" VALUES(1,3,7,7,'rqrmnt_hrdwr',0,3,3,0);
 INSERT INTO "ramstk_matrix" VALUES(1,3,8,8,'rqrmnt_hrdwr',0,3,3,0);
-
-INSERT INTO "ramstk_op_load" VALUES(1,1,'Test Operating Load','',0);
-INSERT INTO "ramstk_op_load" VALUES(1,2,'','',0);
-INSERT INTO "ramstk_op_load" VALUES(1,3,'','',0);
-CREATE TABLE ramstk_op_stress (
-    fld_load_id INTEGER,
-    fld_stress_id INTEGER NOT NULL,
-    fld_description VARCHAR(512),
-    fld_load_history VARCHAR(512),
-    fld_measurable_parameter VARCHAR(512),
-    fld_remarks VARCHAR,
-    PRIMARY KEY (fld_stress_id),
-    FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
-);
-INSERT INTO "ramstk_op_stress" VALUES(1,1,'Test Operating Stress','','',X'');
-INSERT INTO "ramstk_op_stress" VALUES(1,2,'','','',X'');
-INSERT INTO "ramstk_op_stress" VALUES(1,3,'','','',X'');
 
 CREATE TABLE ramstk_requirement (
     fld_revision_id INTEGER,
@@ -1221,18 +1232,6 @@ CREATE TABLE ramstk_survival_data (
     PRIMARY KEY (fld_record_id),
     FOREIGN KEY(fld_survival_id) REFERENCES ramstk_survival (fld_survival_id)
 );
-CREATE TABLE ramstk_test_method (
-    fld_load_id INTEGER,
-    fld_test_id INTEGER NOT NULL,
-    fld_description VARCHAR(512),
-    fld_boundary_conditions VARCHAR(512),
-    fld_remarks VARCHAR,
-    PRIMARY KEY (fld_test_id),
-    FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
-);
-INSERT INTO "ramstk_test_method" VALUES(1,1,'Test Test Method','',X'');
-INSERT INTO "ramstk_test_method" VALUES(1,2,'','',X'');
-INSERT INTO "ramstk_test_method" VALUES(1,3,'','',X'');
 CREATE TABLE ramstk_unit (
     fld_unit_id INTEGER NOT NULL,
     fld_code VARCHAR(256),
