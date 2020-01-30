@@ -15,7 +15,7 @@ from ramstk.models.programdb import RAMSTKStakeholder
 
 ATTRIBUTES = {
     'customer_rank': 1,
-    'description': b'Test Stakeholder Input',
+    'description': 'Test Stakeholder Input',
     'group': '',
     'improvement': 0.0,
     'overall_weight': 0.0,
@@ -46,7 +46,7 @@ class TestRAMSTKStakeholder():
         assert DUT.revision_id == 1
         assert DUT.stakeholder_id == 1
         assert DUT.customer_rank == 1
-        assert DUT.description == b'Test Stakeholder Input'
+        assert DUT.description == 'Test Stakeholder Input'
         assert DUT.group == ''
         assert DUT.improvement == 0.0
         assert DUT.overall_weight == 0.0
@@ -69,7 +69,7 @@ class TestRAMSTKStakeholder():
         assert _attributes['revision_id'] == 1
         assert _attributes['stakeholder_id'] == 1
         assert _attributes['customer_rank'] == 1
-        assert _attributes['description'] == b'Test Stakeholder Input'
+        assert _attributes['description'] == 'Test Stakeholder Input'
         assert _attributes['group'] == ''
         assert _attributes['improvement'] == 0.0
         assert _attributes['overall_weight'] == 0.0
@@ -98,7 +98,7 @@ class TestRAMSTKStakeholder():
         ATTRIBUTES['description'] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == b'Stakeholder Input'
+        assert DUT.get_attributes()['description'] == 'Stakeholder Input'
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

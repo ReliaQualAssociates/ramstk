@@ -508,14 +508,14 @@ RAMSTK_METHODS = {
 }
 
 RAMSTK_MODELS = {
-    0: ('Adhesion Wear Model for Bearings', 'damage'),
-    1: ('Arrhenius', 'damage'),
-    2: ('Coffin-Manson', 'damage'),
-    3: ('Empirical/DOE', 'damage'),
-    4: ('Eyring', 'damage'),
-    5: ('Inverse Power Law (IPL)', 'damage'),
-    6: ('IPL - Arrhenius', 'damage'),
-    7: ('Time Fraction of Damaging Operating Conditions', 'damage')
+    0: ('Adhesion Wear Model for Bearings', 1),
+    1: ('Arrhenius', 1),
+    2: ('Coffin-Manson', 1),
+    3: ('Empirical/DOE', 1),
+    4: ('Eyring', 1),
+    5: ('Inverse Power Law (IPL)', 1),
+    6: ('IPL - Arrhenius', 1),
+    7: ('Time Fraction of Damaging Operating Conditions', 1)
 }
 
 RAMSTK_RPNS = {

@@ -51,16 +51,16 @@ class TestRAMSTKProgramInfo():
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_program_info'
         assert DUT.revision_id == 1
-        assert DUT.function_active == 1
+        assert DUT.function_active == 0
         assert DUT.requirement_active == 1
-        assert DUT.hardware_active == 1
-        assert DUT.vandv_active == 1
+        assert DUT.hardware_active == 0
+        assert DUT.vandv_active == 0
         assert DUT.fmea_active == 1
         assert DUT.software_active == 1
         assert DUT.testing_active == 1
         assert DUT.fraca_active == 1
         assert DUT.survival_active == 1
-        assert DUT.rcm_active == 0
+        assert DUT.rcm_active == 1
         assert DUT.rbd_active == 0
         assert DUT.fta_active == 0
         assert DUT.created_on == date(2019, 7, 21)
@@ -76,16 +76,16 @@ class TestRAMSTKProgramInfo():
 
         _attributes = DUT.get_attributes()
         assert _attributes['revision_id'] == 1
-        assert _attributes['function_active'] == 1
+        assert _attributes['function_active'] == 0
         assert _attributes['requirement_active'] == 1
-        assert _attributes['hardware_active'] == 1
-        assert _attributes['vandv_active'] == 1
+        assert _attributes['hardware_active'] == 0
+        assert _attributes['vandv_active'] == 0
         assert _attributes['fmea_active'] == 1
         assert _attributes['software_active'] == 1
         assert _attributes['testing_active'] == 1
         assert _attributes['fraca_active'] == 1
         assert _attributes['survival_active'] == 1
-        assert _attributes['rcm_active'] == 0
+        assert _attributes['rcm_active'] == 1
         assert _attributes['rbd_active'] == 0
         assert _attributes['fta_active'] == 0
         assert _attributes['created_on'] == date(2019, 7, 21)

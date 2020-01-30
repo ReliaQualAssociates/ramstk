@@ -38,16 +38,16 @@ class TestRAMSTKMechanism():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_mechanism'
-        assert DUT.mode_id == 4
-        assert DUT.mechanism_id == 1
-        assert DUT.description == 'Test Failure Mechanism #1 for Mode ID 4'
+        assert DUT.mode_id == 5
+        assert DUT.mechanism_id == 2
+        assert DUT.description == 'Test failure mechanism, updated'
         assert DUT.pof_include == 1
-        assert DUT.rpn == 0
+        assert DUT.rpn == 8
         assert DUT.rpn_detection == 8
-        assert DUT.rpn_detection_new == 7
-        assert DUT.rpn_new == 0
-        assert DUT.rpn_occurrence == 2
-        assert DUT.rpn_occurrence_new == 2
+        assert DUT.rpn_detection_new == 5
+        assert DUT.rpn_new == 20
+        assert DUT.rpn_occurrence == 4
+        assert DUT.rpn_occurrence_new == 4
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -58,18 +58,16 @@ class TestRAMSTKMechanism():
 
         assert isinstance(_attributes, dict)
 
-        assert _attributes['mode_id'] == 4
-        assert _attributes['mechanism_id'] == 1
-        assert _attributes['description'] == (
-            'Test Failure Mechanism #1 for Mode '
-            'ID 4')
+        assert _attributes['mode_id'] == 5
+        assert _attributes['mechanism_id'] == 2
+        assert _attributes['description'] == ('Test failure mechanism, updated')
         assert _attributes['pof_include'] == 1
-        assert _attributes['rpn'] == 0
+        assert _attributes['rpn'] == 8
         assert _attributes['rpn_detection'] == 8
-        assert _attributes['rpn_detection_new'] == 7
-        assert _attributes['rpn_new'] == 0
-        assert _attributes['rpn_occurrence'] == 2
-        assert _attributes['rpn_occurrence_new'] == 2
+        assert _attributes['rpn_detection_new'] == 5
+        assert _attributes['rpn_new'] == 20
+        assert _attributes['rpn_occurrence'] == 4
+        assert _attributes['rpn_occurrence_new'] == 4
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):

@@ -259,7 +259,7 @@ CREATE TABLE ramstk_hardware (
     PRIMARY KEY (fld_hardware_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_hardware" VALUES(1,1,'','','',0,'',0.0,0.0,0.0,0,'System',100.0,'','',0,0,0.0,'','','',0,0,'',1,'',X'',0,'',0,0,0.0,0,0.0,2019);
+INSERT INTO "ramstk_hardware" VALUES(1,1,'','','',0,'',0.0,0.0,0.0,0,'System',100.0,'','',0,0,0.0,'','','',0,0,'',1,'','',0,'',0,0,0.0,0,0.0,2019);
 CREATE TABLE ramstk_allocation (
     fld_revision_id INTEGER,
     fld_hardware_id INTEGER,

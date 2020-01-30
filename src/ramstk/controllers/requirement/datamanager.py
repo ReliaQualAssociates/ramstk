@@ -145,8 +145,10 @@ class DataManager(RAMSTKDataManager):
             parent_id = self._root
 
         try:
-            _requirement = RAMSTKRequirement(description=b'New Requirement',
-                                             parent_id=parent_id)
+            _requirement = RAMSTKRequirement(revision_id=self._revision_id,
+                                             requirement_id=self.last_id + 1,
+                                             parent_id=parent_id,
+                                             description='New Requirement')
             self.dao.do_insert(_requirement)
 
             self.last_id = _requirement.requirement_id
@@ -180,8 +182,8 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _requirement in self.dao.session.query(RAMSTKRequirement).filter(
-                RAMSTKRequirement.revision_id == self._revision_id).all():
+        for _requirement in self.dao.do_select_all(RAMSTKRequirement,
+                                                   RAMSTKRequirement.revision_id, self._revision_id):
             _data_package = {'requirement': _requirement}
 
             self.tree.create_node(tag=_requirement.requirement_code,
@@ -245,9 +247,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            self.dao.session.add(
-                self.tree.get_node(node_id).data['requirement'])
-            self.dao.do_update()
+            self.dao.do_update(self.tree.get_node(node_id).data['requirement'])
 
             pub.sendMessage('succeed_update_requirement', node_id=node_id)
         except AttributeError:

@@ -83,6 +83,8 @@ help:
 	@echo "	VIRTENV					set the name of the virtual environment to create/use.  Defaults to $(VIRTENV)."
 	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)."
 
+.PHONY: all test clean
+
 clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
 
 clean-build:	## remove build artifacts

@@ -99,7 +99,7 @@ HEADERS = {
         'h(t) Model', 'Specified h(t)', 'h(t) Type', 'Location',
         'Specified MTBF', 'Mult. Adj. Factor', 'Quality', 'R(t) Goal',
         'R(t) Goal Measure', 'Scale Parameter', 'Shape Parameter',
-        'Surv. Analysis'
+        'Surv. Analysis', 'Altitude, Operating', 'Balance ID'
     ],
     'Validation': [
         'Revision ID', 'Validation ID', 'Maximum Acceptable',
@@ -114,12 +114,12 @@ HEADERS = {
 # Row data for the Function import test file.
 ROW_DATA = [
     [
-        1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
+        1, 5, 1, 'PRESS-001', 'Maintain system pressure.', 0,
         'This is a function that is about system pressure.  This remarks box also needs to be larger.',
         1, 0
     ],
     [
-        1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
+        1, 6, 1, 'FLOW-001', 'Maintain system flow.', 0,
         'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
         0, 0
     ],
@@ -128,14 +128,15 @@ ROW_DATA = [
         'GEN-001', "Spec. 12", "Hard One to Meet", 0, '2019-08-18'
     ],
     [
-        1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported', 87.0, '',
+        1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported',
+        87.0, '',
         '', 1, '', 72.0, 'Imported System', '', '', 0, 0, '', 1, 'S1',
-        b'Remarks in a binary field.', 1, '', 0, 0, 2018, 0, 0.0, 0.0, 0, 0, 0,
+        'Remarks in a binary field.', 1, '', 0, 0, 2018, 0, 0.0, 0.0, 0, 0, 0,
         0.0, 0, 0.0, 0.0, 0.0, 4, 1, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0, 0, 0.0, 0,
-        0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, b'Overstress Reason', 0.0, 0, 0, 30.0,
+        0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, 'Overstress Reason', 0.0, 0, 0, 30.0,
         30.0, 25.0, 0.0, 0.0, 40.0, 125.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 1.0, 0.0, 0, 0, 0, 0.0, 0, 0.0, 0.0, 1.0, 2, 0.95, 0,
-        0.0, 0.0, 0
+        0.0, 0.0, 0, 12000, 1
     ],
     [
         1, 12, 832.5, 799.0, 612.3, 226.4, 0.9, 350.00, 500.00, 275.00,

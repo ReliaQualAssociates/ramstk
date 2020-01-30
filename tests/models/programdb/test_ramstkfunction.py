@@ -56,7 +56,7 @@ class TestRAMSTKFunction():
         assert DUT.availability_logistics == 1.0
         assert DUT.availability_mission == 1.0
         assert DUT.cost == 0.0
-        assert DUT.function_code == 'FUNC-0003'
+        assert DUT.function_code == 'Function Code'
         assert DUT.hazard_rate_logistics == 0.0
         assert DUT.hazard_rate_mission == 0.0
         assert DUT.level == 0
@@ -66,9 +66,9 @@ class TestRAMSTKFunction():
         assert DUT.mtbf_logistics == 0.0
         assert DUT.mtbf_mission == 0.0
         assert DUT.mttr == 0.0
-        assert DUT.name == 'Function Name'
+        assert DUT.name == 'New Function'
         assert DUT.parent_id == 0
-        assert DUT.remarks == b''
+        assert DUT.remarks == '\\x'
         assert DUT.safety_critical == 0
         assert DUT.total_mode_count == 0
         assert DUT.total_part_count == 0
@@ -82,11 +82,11 @@ class TestRAMSTKFunction():
         _attributes = DUT.get_attributes()
 
         assert _attributes['revision_id'] == 1
-        assert _attributes['function_id'] == 1
+        assert _attributes['function_id'] == 2
         assert _attributes['availability_logistics'] == 1.0
         assert _attributes['availability_mission'] == 1.0
         assert _attributes['cost'] == 0.0
-        # assert _attributes['function_code'] == 'FUNC-0001'
+        assert _attributes['function_code'] == 'FUNC-0002'
         assert _attributes['hazard_rate_logistics'] == 0.0
         assert _attributes['hazard_rate_mission'] == 0.0
         assert _attributes['level'] == 0
@@ -96,9 +96,9 @@ class TestRAMSTKFunction():
         assert _attributes['mtbf_logistics'] == 0.0
         assert _attributes['mtbf_mission'] == 0.0
         assert _attributes['mttr'] == 0.0
-        # assert _attributes['name'] == 'Function Name'
+        assert _attributes['name'] == 'Function Name'
         assert _attributes['parent_id'] == 0
-        assert _attributes['remarks'] == b''
+        assert _attributes['remarks'] == ''
         assert _attributes['safety_critical'] == 0
         assert _attributes['total_mode_count'] == 0
         assert _attributes['total_part_count'] == 0

@@ -72,9 +72,9 @@ CREATE TABLE ramstk_mission (
     PRIMARY KEY (fld_mission_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_mission" VALUES(1,1,'54657374204D697373696F6E',0.0,'hours');
-INSERT INTO "ramstk_mission" VALUES(1,2,'54657374204D697373696F6E',0.0,'hours');
-INSERT INTO "ramstk_mission" VALUES(1,3,'54657374204D697373696F6E',0.0,'hours');
+INSERT INTO "ramstk_mission" VALUES(1,1,'Test Mission 1',0.0,'hours');
+INSERT INTO "ramstk_mission" VALUES(1,2,'Test Mission 2',0.0,'hours');
+INSERT INTO "ramstk_mission" VALUES(1,3,'Test Mission 3',0.0,'hours');
 CREATE TABLE ramstk_mission_phase (
     fld_mission_id INTEGER,
     fld_phase_id INTEGER NOT NULL,
@@ -85,9 +85,9 @@ CREATE TABLE ramstk_mission_phase (
     PRIMARY KEY (fld_phase_id),
     FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_mission_phase" VALUES(1,1,'54657374204D697373696F6E2050686173652031','',0.0,0.0);
-INSERT INTO "ramstk_mission_phase" VALUES(2,2,'54657374204D697373696F6E2050686173652031','',0.0,0.0);
-INSERT INTO "ramstk_mission_phase" VALUES(3,3,'54657374204D697373696F6E2050686173652031','',0.0,0.0);
+INSERT INTO "ramstk_mission_phase" VALUES(1,1,'Test Mission Phase 1','',0.0,0.0);
+INSERT INTO "ramstk_mission_phase" VALUES(2,2,'Test Mission Phase 2','',0.0,0.0);
+INSERT INTO "ramstk_mission_phase" VALUES(3,3,'Test Mission Phase 3','',0.0,0.0);
 CREATE TABLE ramstk_environment (
     fld_phase_id INTEGER,
     fld_environment_id INTEGER NOT NULL,
@@ -1030,9 +1030,9 @@ CREATE TABLE ramstk_requirement (
     PRIMARY KEY (fld_requirement_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_requirement" VALUES(1,1,0,X'','','','',0,0,'REL-0001','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-INSERT INTO "ramstk_requirement" VALUES(1,2,0,X'','','','',0,0,'','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-INSERT INTO "ramstk_requirement" VALUES(1,3,0,X'','','','',0,0,'','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "ramstk_requirement" VALUES(1,1,0,'','','','',0,0,'REL-0001','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "ramstk_requirement" VALUES(1,2,0,'','','','',0,0,'','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "ramstk_requirement" VALUES(1,3,0,'','','','',0,0,'','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
 CREATE TABLE ramstk_software (
     fld_revision_id INTEGER NOT NULL,
@@ -1158,8 +1158,8 @@ CREATE TABLE ramstk_stakeholder (
     PRIMARY KEY (fld_stakeholder_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_stakeholder" VALUES(1,1,1,X'54657374205374616B65686F6C64657220496E707574','',0.0,0.0,1,1,0,'',1.0,1.0,1.0,1.0,1.0);
-INSERT INTO "ramstk_stakeholder" VALUES(1,2,1,X'5374616B65686F6C64657220496E707574','',0.0,0.0,1,1,0,'',1.0,1.0,1.0,1.0,1.0);
+INSERT INTO "ramstk_stakeholder" VALUES(1,1,1,'Test Stakeholder Input','',0.0,0.0,1,1,0,'',1.0,1.0,1.0,1.0,1.0);
+INSERT INTO "ramstk_stakeholder" VALUES(1,2,1,'Test Stakeholder Input 2','',0.0,0.0,1,1,0,'',1.0,1.0,1.0,1.0,1.0);
 CREATE TABLE ramstk_survival (
     fld_revision_id INTEGER NOT NULL,
     fld_survival_id INTEGER NOT NULL,
@@ -1272,9 +1272,9 @@ CREATE TABLE ramstk_validation (
     PRIMARY KEY (fld_validation_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_validation" VALUES(1,1,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'546573742056616C69646174696F6E','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-INSERT INTO "ramstk_validation" VALUES(1,2,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-INSERT INTO "ramstk_validation" VALUES(1,3,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_validation" VALUES(1,1,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21','Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_validation" VALUES(1,2,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21','Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_validation" VALUES(1,3,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21','Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
 CREATE TABLE ramstk_test (
     fld_revision_id INTEGER NOT NULL,

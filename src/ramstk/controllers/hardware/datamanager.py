@@ -85,6 +85,10 @@ class DataManager(RAMSTKDataManager):
             _error_msg = ("Attempted to delete non-existent hardware ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
+        except NodeIDAbsentError:
+            _error_msg = ("Hardware ID {0:s} was not found as a node "
+                          "in the tree.").format(str(node_id))
+            pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
     def do_get_all_attributes(self, node_id):
         """
@@ -231,33 +235,52 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _hardware in self.dao.session.query(RAMSTKHardware).filter(
-                RAMSTKHardware.revision_id == self._revision_id).order_by(
-                    RAMSTKHardware.parent_id).all():
+        for _hardware in self.dao.do_select_all(RAMSTKHardware,
+                                                key=RAMSTKHardware.revision_id,
+                                                value=self._revision_id,
+                                                order=RAMSTKHardware.parent_id):
 
-            _design_e = self.dao.session.query(RAMSTKDesignElectric).filter(
-                RAMSTKDesignElectric.hardware_id ==
-                _hardware.hardware_id).first()
+            _design_e = self.dao.do_select_all(RAMSTKDesignElectric,
+                                               key=RAMSTKDesignElectric.hardware_id,
+                                               value=_hardware.hardware_id,
+                                               order=None,
+                                               _all=False)
 
-            _design_m = self.dao.session.query(RAMSTKDesignMechanic).filter(
-                RAMSTKDesignMechanic.hardware_id ==
-                _hardware.hardware_id).first()
+            _design_m = self.dao.do_select_all(RAMSTKDesignMechanic,
+                                               key=RAMSTKDesignMechanic.hardware_id,
+                                               value=_hardware.hardware_id,
+                                               order=None,
+                                               _all=False)
 
-            _milhdbkf = self.dao.session.query(RAMSTKMilHdbkF).filter(
-                RAMSTKMilHdbkF.hardware_id == _hardware.hardware_id).first()
+            _milhdbkf = self.dao.do_select_all(RAMSTKMilHdbkF,
+                                               key=RAMSTKMilHdbkF.hardware_id,
+                                               value=_hardware.hardware_id,
+                                               order=None,
+                                               _all=False)
 
-            _nswc = self.dao.session.query(RAMSTKNSWC).filter(
-                RAMSTKNSWC.hardware_id == _hardware.hardware_id).first()
+            _nswc = self.dao.do_select_all(RAMSTKNSWC,
+                                           key=RAMSTKNSWC.hardware_id,
+                                           value=_hardware.hardware_id,
+                                           order=None,
+                                           _all=False)
 
-            _reliability = self.dao.session.query(RAMSTKReliability).filter(
-                RAMSTKReliability.hardware_id ==
-                _hardware.hardware_id).first()
+            _reliability = self.dao.do_select_all(RAMSTKReliability,
+                                                  key=RAMSTKReliability.hardware_id,
+                                                  value=_hardware.hardware_id,
+                                                  order=None,
+                                                  _all=False)
 
-            _allocation = self.dao.session.query(RAMSTKAllocation).filter(
-                RAMSTKAllocation.hardware_id == _hardware.hardware_id).first()
+            _allocation = self.dao.do_select_all(RAMSTKAllocation,
+                                                 key=RAMSTKAllocation.hardware_id,
+                                                 value=_hardware.hardware_id,
+                                                 order=None,
+                                                 _all=False)
 
-            _similaritem = self.dao.session.query(RAMSTKSimilarItem).filter(
-                RAMSTKSimilarItem.hardware_id == _hardware.hardware_id).first()
+            _similaritem = self.dao.do_select_all(RAMSTKSimilarItem,
+                                                  key=RAMSTKSimilarItem.hardware_id,
+                                                  value=_hardware.hardware_id,
+                                                  order=None,
+                                                  _all=False)
 
             _data_package = {
                 'hardware': _hardware,
@@ -340,19 +363,18 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            self.dao.session.add(self.tree.get_node(node_id).data['hardware'])
-            self.dao.session.add(
+            self.dao.do_update(self.tree.get_node(node_id).data['hardware'])
+            self.dao.do_update(
                 self.tree.get_node(node_id).data['design_electric'])
-            self.dao.session.add(
+            self.dao.do_update(
                 self.tree.get_node(node_id).data['design_mechanic'])
-            self.dao.session.add(
+            self.dao.do_update(
                 self.tree.get_node(node_id).data['mil_hdbk_217f'])
-            self.dao.session.add(self.tree.get_node(node_id).data['nswc'])
-            self.dao.session.add(
+            self.dao.do_update(self.tree.get_node(node_id).data['nswc'])
+            self.dao.do_update(
                 self.tree.get_node(node_id).data['reliability'])
-            self.dao.session.add(
+            self.dao.do_update(
                 self.tree.get_node(node_id).data['allocation'])
-            self.dao.do_update()
 
             pub.sendMessage('succeed_update_hardware', node_id=node_id)
         except (AttributeError, DataAccessError):

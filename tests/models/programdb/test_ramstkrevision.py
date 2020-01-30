@@ -33,7 +33,7 @@ ATTRIBUTES = {
     'name': 'Test Revision',
     'reliability_logistics': 1.0,
     'reliability_mission': 1.0,
-    'remarks': b'',
+    'remarks': '',
     'total_part_count': 1,
     'revision_code': '',
     'program_time': 0.0,
@@ -75,7 +75,7 @@ class TestRAMSTKRevision():
         assert DUT.name == 'Test Revision'
         assert DUT.reliability_logistics == 1.0
         assert DUT.reliability_mission == 1.0
-        assert DUT.remarks == b''
+        assert DUT.remarks == ''
         assert DUT.total_part_count == 1
         assert DUT.revision_code == ''
         assert DUT.program_time == 0.0
@@ -109,7 +109,7 @@ class TestRAMSTKRevision():
         assert _attributes['name'] == 'Test Revision'
         assert _attributes['reliability_logistics'] == 1.0
         assert _attributes['reliability_mission'] == 1.0
-        assert _attributes['remarks'] == b''
+        assert _attributes['remarks'] == ''
         assert _attributes['total_part_count'] == 1
         assert _attributes['revision_code'] == ''
         assert _attributes['program_time'] == 0.0

@@ -14,7 +14,7 @@ import pytest
 from ramstk.models.programdb import RAMSTKMission
 
 ATTRIBUTES = {
-    'description': b'Test Mission',
+    'description': 'Test Mission',
     'mission_time': 0.0,
     'time_units': 'hours'
 }
@@ -33,8 +33,8 @@ class TestRAMSTKMission():
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_mission'
         assert DUT.revision_id == 1
-        assert DUT.mission_id == 1
-        assert DUT.description == b'Test Mission'
+        assert DUT.mission_id == 2
+        assert DUT.description == 'Test Mission 2'
         assert DUT.mission_time == 0.0
         assert DUT.time_units == 'hours'
 
@@ -44,7 +44,7 @@ class TestRAMSTKMission():
         DUT = test_program_dao.session.query(RAMSTKMission).first()
 
         _attributes = DUT.get_attributes()
-        assert _attributes['description'] == b'Test Mission'
+        assert _attributes['description'] == 'Test Mission 2'
         assert _attributes['mission_time'] == 0.0
         assert _attributes['time_units'] == 'hours'
 

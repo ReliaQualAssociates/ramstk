@@ -47,6 +47,8 @@ class TestConnectionMethods():
     def test_do_connect_sqlite(self, test_toml_user_configuration):
         """do_connect() should return None when connecting to a database."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         DUT = BaseDatabase()
 
         assert DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO) \
@@ -111,6 +113,8 @@ class TestConnectionMethods():
     def test_do_disconnect(self, test_toml_user_configuration):
         """do_disconnect() should return None when successfully closing a database connection."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -140,6 +144,8 @@ class TestInsertMethods():
                        test_toml_user_configuration):
         """do_insert() should return None when inserting a record into a database table."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -154,6 +160,8 @@ class TestInsertMethods():
         pub.subscribe(self.on_fail_insert_record, 'fail_insert_record')
 
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -172,6 +180,8 @@ class TestInsertMethods():
                             test_toml_user_configuration):
         """do_insert() should raise an UnmappedInstanceError when passed None for the table."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -185,6 +195,8 @@ class TestInsertMethods():
                                     test_toml_user_configuration):
         """do_insert() should raise a DataAccessError when attempting to add a record with a duplicate primary key."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -205,6 +217,8 @@ class TestInsertMethods():
                             test_toml_user_configuration):
         """do_insert() should return None when inserting a record into a database table."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -238,6 +252,8 @@ class TestDeleteMethods():
                        test_toml_user_configuration):
         """do_delete() should return None when inserting a record into a database table."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -255,6 +271,8 @@ class TestDeleteMethods():
         pub.subscribe(self.on_fail_delete_foreign_record, 'fail_delete_record')
 
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -276,6 +294,7 @@ class TestDeleteMethods():
         pub.subscribe(self.on_fail_delete_missing_table, 'fail_delete_record')
 
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -298,6 +317,7 @@ class TestUpdateMethods():
                        test_toml_user_configuration):
         """do_update() should return None when updating a record in a database table."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -328,6 +348,7 @@ class TestSelectMethods():
                        test_toml_user_configuration):
         """do_query() should return None when updating a record in a database table."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -348,6 +369,7 @@ class TestSelectMethods():
                          test_toml_user_configuration):
         """get_last_id() should return an integer for the last used ID."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -365,6 +387,7 @@ class TestSelectMethods():
                                           test_toml_user_configuration):
         """get_last_id() should return an integer for the last used ID when passed a column name as an attribute."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -379,6 +402,7 @@ class TestSelectMethods():
                                         test_toml_user_configuration):
         """get_last_id() should raise an SQLAlchemy OperationalError when passed an unknown column name."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()
@@ -392,6 +416,7 @@ class TestSelectMethods():
                                        test_toml_user_configuration):
         """get_last_id() should raise an SQLAlchemy OperationalError when passed an unknown table."""
         test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             'database'] = test_simple_database
         DUT = BaseDatabase()

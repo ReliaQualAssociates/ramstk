@@ -75,6 +75,7 @@ class RAMSTKLogManager:
         pub.subscribe(self._do_log_fail_message, 'fail_insert_requirement')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_opload')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_opstress')
+        pub.subscribe(self._do_log_fail_message, 'fail_insert_record')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_test_method')
         pub.subscribe(self._do_log_fail_message, 'fail_update_fmea')
         pub.subscribe(self._do_log_fail_message, 'fail_update_function')

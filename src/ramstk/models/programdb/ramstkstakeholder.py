@@ -7,7 +7,7 @@
 """RAMSTKStakeholder Table Module."""
 
 # Third Party Imports
-from sqlalchemy import TEXT, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -24,7 +24,7 @@ class RAMSTKStakeholder(RAMSTK_BASE, RAMSTKBaseTable):
 
     __defaults__ = {
         'customer_rank': 1,
-        'description': b'Stakeholder Input',
+        'description': 'Stakeholder Input',
         'group': '',
         'improvement': 0.0,
         'overall_weight': 0.0,
@@ -59,7 +59,7 @@ class RAMSTKStakeholder(RAMSTK_BASE, RAMSTKBaseTable):
                            Integer,
                            default=__defaults__['customer_rank'])
     description = Column('fld_description',
-                         TEXT,
+                         String,
                          default=__defaults__['description'])
     group = Column('fld_group', String(128), default=__defaults__['group'])
     improvement = Column('fld_improvement',

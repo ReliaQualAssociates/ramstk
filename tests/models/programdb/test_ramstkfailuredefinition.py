@@ -32,7 +32,7 @@ class TestRAMSTKFailureDefinition():
         assert DUT.__tablename__ == 'ramstk_failure_definition'
         assert DUT.revision_id == 1
         assert DUT.definition_id == 1
-        assert DUT.definition == 'Failure Definition'
+        assert DUT.definition == 'Big test definition #1'
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -41,7 +41,7 @@ class TestRAMSTKFailureDefinition():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['definition'] == 'Failure Definition'
+        assert _attributes['definition'] == 'Big test definition #1'
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):

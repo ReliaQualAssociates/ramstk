@@ -15,7 +15,7 @@ import psycopg2
 from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
-from sqlalchemy import create_engine, exc
+from sqlalchemy import and_, create_engine, exc
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -30,7 +30,7 @@ def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
 
     return (engine,
             scoped_session(
-                sessionmaker(autocommit=False, autoflush=True, bind=engine)))
+                sessionmaker(autocommit=False, autoflush=False, bind=engine)))
 
 
 class BaseDatabase():
@@ -232,6 +232,7 @@ class BaseDatabase():
             #   1. Primary key violations.
             #   2. Non-date data supplied to date type fields.
             #   3. Foreign key violations.
+            #   4. np.nan data suppled to any field type.
             self.session.rollback()
             _error_message = (
                 "There was an database error when attempting to add a "
@@ -252,13 +253,47 @@ class BaseDatabase():
         for _record in records:
             self.do_insert(_record)
 
-    def do_update(self) -> None:
+    def do_select_all(self, table, key=None, value=None, order=None,
+                      _all=True) -> None:
+        """
+        Select all records from the RAMSTK database for table.
+
+        :param table: the database table object to select all from.
+        :keyword key: the index key in the table.
+        :keyword value: the value of the index key.
+        :keyword order: the field to order returned results.
+        :keyword _all: whether to return all records or only the first record.
+        :return: a list of table instances; one for each record.
+        """
+        _results = []
+        if isinstance(key, list):
+            _results = self.session.query(table).filter(
+                and_(key[0] == value[0],
+                     key[1] == value[1]))
+        else:
+            _results = self.session.query(table).filter(key == value)
+
+        if order is not None:
+            _results = _results.order_by(order)
+
+        if _all:
+            _results = _results.all()
+        else:
+            _results = _results.first()
+
+        return _results
+
+    def do_update(self, record=None) -> None:
         """
         Update the RAMSTK database with any pending changes.
 
+        :keyword record: the record to update in the database.
         :return: None
         :rtype: None
         """
+        if not record is None:
+            self.session.add(record)
+
         self.session.commit()
 
     def get_last_id(self, table: str, id_column: str) -> Any:
