@@ -122,7 +122,6 @@ class DataManager(RAMSTKDataManager):
                           "in the tree.").format(str(node_id))
             pub.sendMessage('fail_delete_revision', error_message=_error_msg)
 
-
     def _do_delete_failure_definition(self, revision_id: int,
                                       node_id: int) -> None:
         """
@@ -321,8 +320,8 @@ class DataManager(RAMSTKDataManager):
         select the correct record to update.
 
         :param list node_id: the ID of the revision and the failure
-            definition in the RAMSTK Program database table whose attributes are
-            to be set.
+            definition in the RAMSTK Program database table whose attributes
+            are to be set.
         :param dict package: the key:value pair of the attribute to set.
         :return: None
         :rtype: None
@@ -436,7 +435,8 @@ class DataManager(RAMSTKDataManager):
         """
         for _profile in self.tree.get_node(
                 revision_id).data['usage_profile'].all_nodes():
-            self._do_update_usage_profile(revision_id, str(_profile.identifier))
+            self._do_update_usage_profile(revision_id, str(_profile.identifier)
+                                          )
 
     def _do_update_usage_profile(self, revision_id: int, node_id: str) -> None:
         """
@@ -557,7 +557,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _environment = RAMSTKEnvironment(phase_id=phase_id,
                                              environment_id=self._last_id[
-                                                 'environment']+1)
+                                                 'environment'] + 1)
             self.dao.do_insert(_environment)
             self._last_id['environment'] = _environment.environment_id
             _phase_id = '{0:s}.{1:s}'.format(str(mission_id), str(phase_id))
@@ -594,7 +594,8 @@ class DataManager(RAMSTKDataManager):
                 _failure_definition.definition_id] = _failure_definition
             _dic_definitions = RAMSTKDataManager.do_select(
                 self, revision_id, 'failure_definitions')
-            self._last_id['failure_definition'] = _failure_definition.definition_id
+            self._last_id['failure_definition'] = \
+                _failure_definition.definition_id
             pub.sendMessage("succeed_insert_failure_definition",
                             tree=_dic_definitions)
         except DataAccessError as _error:
@@ -733,7 +734,8 @@ class DataManager(RAMSTKDataManager):
         Set the attributes of the record associated with the Node ID.
 
         :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list is:
+            Program database table whose attributes are to be set.  The list
+            is:
 
                 0 - Revision ID
                 1 - Failure Definition ID

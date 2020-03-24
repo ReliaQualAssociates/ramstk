@@ -15,7 +15,7 @@ from sqlalchemy.exc import ArgumentError, NoSuchModuleError, OperationalError
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.db.base import BaseDatabase
+from ramstk.db import BaseDatabase
 from ramstk.exceptions import DataAccessError
 
 
@@ -120,9 +120,8 @@ class RAMSTKProgramManager:
         :rtype: None
         """
         _sql_file = open(
-            self.user_configuration.RAMSTK_CONF_DIR + '/{'
-                                                      '0:s}_program_db.sql'.format(database['dialect']),
-            'r')
+            self.user_configuration.RAMSTK_CONF_DIR
+            + '/{0:s}_program_db.sql'.format(database['dialect']), 'r')
         self.program_dao = program_db
         self.program_dao.do_create_program_db(database, _sql_file)
         pub.sendMessage('succeed_create_program_database',

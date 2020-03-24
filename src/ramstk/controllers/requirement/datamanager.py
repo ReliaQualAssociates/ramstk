@@ -183,7 +183,8 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(_node.identifier)
 
         for _requirement in self.dao.do_select_all(RAMSTKRequirement,
-                                                   RAMSTKRequirement.revision_id, self._revision_id):
+                                                   RAMSTKRequirement.revision_id,
+                                                   self._revision_id):
             _data_package = {'requirement': _requirement}
 
             self.tree.create_node(tag=_requirement.requirement_code,

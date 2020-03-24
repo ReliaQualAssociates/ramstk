@@ -282,7 +282,8 @@ class DataManager(RAMSTKDataManager):
 
 
         :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list is:
+            Program database table whose attributes are to be set.  The list
+            is:
 
                 0 - Validation ID
 
