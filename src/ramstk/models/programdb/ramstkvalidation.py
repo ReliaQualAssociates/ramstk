@@ -11,7 +11,7 @@
 from datetime import date, timedelta
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -42,7 +42,7 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
         'cost_variance': 0.0,
         'date_end': date.today() + timedelta(days=30),
         'date_start': date.today(),
-        'description': b'',
+        'description': '',
         'measurement_unit': '',
         'name': '',
         'status': 0.0,
@@ -110,7 +110,7 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
                         Date,
                         default=__defaults__['date_start'])
     description = Column('fld_description',
-                         BLOB,
+                         String,
                          default=__defaults__['description'])
     measurement_unit = Column('fld_measurement_unit',
                               String(256),

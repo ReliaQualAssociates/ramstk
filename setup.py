@@ -73,7 +73,7 @@ BG_GREEN = '\033[42m'
 class Install(_install):
     """Custom install class for RAMSTK."""
     @staticmethod
-    def pre_install_script():
+    def pre_install_script() -> None:
         """Execute before install."""
         _eggfile = os.path.abspath('.') + '/src/RAMSTK.egg-info'
         print("{0:s}Removing old rotten RAMSTK egg...{1:s}".format(
@@ -85,12 +85,12 @@ class Install(_install):
             print(_error)
 
     @staticmethod
-    def post_install_script():
+    def post_install_script() -> None:
         """Execute after install."""
         print("{0:s}{1:s}Your shiny new RAMSTK-{2:s} is "
               "installed!!{3:s}".format(FG_GREEN, BOLD, __version__, RESET))
 
-    def run(self):
+    def run(self) -> None:
         """Run the install."""
         self.pre_install_script()
 
@@ -101,7 +101,7 @@ class Install(_install):
 
 class Sdist(sdist):
     """Custom ``sdist`` command to ensure that mo files are always created."""
-    def run(self):
+    def run(self) -> None:
         """Run custom sdist command."""
         try:
             self.run_command('compile_catalog')
@@ -114,7 +114,7 @@ class Sdist(sdist):
 
 class MyTest(test):
     """Custom ``test`` command to tell the user to use make test."""
-    def run(self):
+    def run(self) -> None:
         """Run the custom test command."""
         print("{0:s}{1:s}Running tests using setup.py is not supported.  "
               "Please execute tests using the Makefile.  Issue make help for "

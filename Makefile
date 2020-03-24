@@ -83,6 +83,8 @@ help:
 	@echo "	VIRTENV					set the name of the virtual environment to create/use.  Defaults to $(VIRTENV)."
 	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)."
 
+.PHONY: all test clean
+
 clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
 
 clean-build:	## remove build artifacts
@@ -165,6 +167,7 @@ install: clean-build clean-pyc
 		${COPY} "./data/icons/32x32/$$icon" "$(PREFIX)/share/RAMSTK/icons/32x32/" ; \
 	done
 	${COPY} "./data/sqlite_program_db.sql" "$(PREFIX)/share/RAMSTK/"
+	${COPY} "./data/postgres_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/ramstk_common.ramstk" "$(PREFIX)/share/RAMSTK/"
 
 uninstall:
@@ -227,35 +230,6 @@ lint:
 	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
 	flake8 $(SRCFILE)
 
-format:
-	$(info Autoformatting $(SRCFILE)...)
-	isort --atomic --apply --use-parentheses -m5 $(SRCFILE)
-	yapf -i $(SRCFILE)
-
-stylecheck:
-	$(info Style checking $(SRCFILE)...)
-	pycodestyle --statistics --count $(SRCFILE)
-	pydocstyle --count $(SRCFILE)
-
-typecheck:
-	mypy $(SRCFILE)
-
-maintain:
-	$(info Checking maintainability of $(SRCFILE)...)
-	python -m mccabe -m 10 $(SRCFILE)*
-	radon cc -s $(SRCFILE)*
-	radon mi -s $(SRCFILE)*
-	radon hal $(SRCFILE)*
-
-security:
-	$(info Security linting $(SRCFILE)...)
-	bandit --ini .bandit -c .bandit.conf -b .bandit.baseline $(SRCFILE)
-
-lint:
-	$(info Linting $(SRCFILE)...)
-	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
-	flake8 $(SRCFILE)
-
 changelog:
 	github_changelog_generator $(REPO)
 
@@ -296,38 +270,3 @@ dist: clean
 release: dist
 	#twine upload dist/*
 	$(info Future target...)
-
-# This target is for use with IDE integration.
-format:
-	$(info Autoformatting $(SRCFILE)...)
-	isort --atomic --apply --use-parentheses --balanced --multi-line 5 $(SRCFILE)
-	yapf -i $(SRCFILE)
-
-# This target is for use with IDE integration.
-stylecheck:
-	$(info Style checking $(SRCFILE)...)
-	pycodestyle --statistics --count $(SRCFILE)
-	pydocstyle --count $(SRCFILE)
-
-# This target is for use with IDE integration.
-typecheck:
-	mypy $(SRCFILE)
-
-# This target is for use with IDE integration.
-maintain:
-	$(info Checking maintainability of $(SRCFILE)...)
-	python -m mccabe -m 10 $(SRCFILE)*
-	radon cc -s $(SRCFILE)*
-	radon mi -s $(SRCFILE)*
-	radon hal $(SRCFILE)*
-
-# This target is for use with IDE integration.
-security:
-	$(info Security linting $(SRCFILE)...)
-	bandit --ini .bandit -c .bandit.conf -b .bandit.baseline $(SRCFILE)
-
-# This target is for use with IDE integration.
-lint:
-	$(info Linting $(SRCFILE)...)
-	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
-	flake8 $(SRCFILE)

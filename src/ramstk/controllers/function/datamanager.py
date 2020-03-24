@@ -214,6 +214,7 @@ class DataManager(RAMSTKDataManager):
         if self.tree.get_node(parent_id) is not None:
             try:
                 _function = RAMSTKFunction(revision_id=self._revision_id,
+                                           function_id=self.last_id + 1,
                                            name='New Function',
                                            parent_id=parent_id)
                 self.dao.do_insert(_function)

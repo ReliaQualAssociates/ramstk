@@ -8,7 +8,7 @@
 """RAMSTKHazardAnalysis Table."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -31,7 +31,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
         'assembly_severity': 'Major',
         'assembly_probability': 'Level A - Frequent',
         'assembly_hri': 20,
-        'assembly_mitigation': b'',
+        'assembly_mitigation': '',
         'assembly_severity_f': 'Major',
         'assembly_probability_f': 'Level A - Frequent',
         'assembly_hri_f': 20,
@@ -40,7 +40,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
         'function_3': '',
         'function_4': '',
         'function_5': '',
-        'remarks': b'',
+        'remarks': '',
         'result_1': 0.0,
         'result_2': 0.0,
         'result_3': 0.0,
@@ -50,13 +50,13 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
         'system_severity': 'Major',
         'system_probability': 'Level A - Frequent',
         'system_hri': 20,
-        'system_mitigation': b'',
+        'system_mitigation': '',
         'system_severity_f': 'Major',
         'system_probability_f': 'Level A - Frequent',
         'system_hri_f': 20,
-        'user_blob_1': b'',
-        'user_blob_2': b'',
-        'user_blob_3': b'',
+        'user_blob_1': '',
+        'user_blob_2': '',
+        'user_blob_3': '',
         'user_float_1': 0.0,
         'user_float_2': 0.0,
         'user_float_3': 0.0,
@@ -85,6 +85,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
         primary_key=True,
         autoincrement=True,
         nullable=False,
+        info={"identity": (0, 1)},
     )
 
     potential_hazard = Column('fld_potential_hazard',
@@ -106,7 +107,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
                           Integer,
                           default=__defaults__['assembly_hri'])
     assembly_mitigation = Column('fld_assembly_mitigation',
-                                 BLOB,
+                                 String,
                                  default=__defaults__['assembly_mitigation'])
     assembly_severity_f = Column('fld_assembly_severity_f',
                                  String(256),
@@ -133,7 +134,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
     function_5 = Column('fld_function_5',
                         String(128),
                         default=__defaults__['function_5'])
-    remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
+    remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
     result_1 = Column('fld_result_1', Float, default=__defaults__['result_1'])
     result_2 = Column('fld_result_2', Float, default=__defaults__['result_2'])
     result_3 = Column('fld_result_3', Float, default=__defaults__['result_3'])
@@ -152,7 +153,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
                         Integer,
                         default=__defaults__['system_hri'])
     system_mitigation = Column('fld_system_mitigation',
-                               BLOB,
+                               String,
                                default=__defaults__['system_mitigation'])
     system_severity_f = Column('fld_system_severity_f',
                                String(256),
@@ -164,13 +165,13 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
                           Integer,
                           default=__defaults__['system_hri_f'])
     user_blob_1 = Column('fld_user_blob_1',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_1'])
     user_blob_2 = Column('fld_user_blob_2',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_2'])
     user_blob_3 = Column('fld_user_blob_3',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_3'])
     user_float_1 = Column('fld_user_float_1',
                           Float,

@@ -32,10 +32,10 @@ class TestRAMSTKOpLoad():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_op_load'
-        assert DUT.mechanism_id == 1
-        assert DUT.load_id == 1
-        assert DUT.description == 'Test Operating Load'
-        assert DUT.damage_model == ''
+        assert DUT.mechanism_id == 2
+        assert DUT.load_id == 3
+        assert DUT.description == 'Jared Kushner'
+        assert DUT.damage_model == 'Fancy math model'
         assert DUT.priority_id == 0
 
     @pytest.mark.integration
@@ -47,10 +47,10 @@ class TestRAMSTKOpLoad():
 
         assert isinstance(_attributes, dict)
 
-        assert _attributes['mechanism_id'] == 1
-        assert _attributes['load_id'] == 1
-        assert _attributes['description'] == 'Test Operating Load'
-        assert _attributes['damage_model'] == ''
+        assert _attributes['mechanism_id'] == 2
+        assert _attributes['load_id'] == 3
+        assert _attributes['description'] == 'Jared Kushner'
+        assert _attributes['damage_model'] == 'Fancy math model'
         assert _attributes['priority_id'] == 0
 
     @pytest.mark.integration

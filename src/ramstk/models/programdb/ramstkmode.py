@@ -7,7 +7,7 @@
 """RAMSTKMode Table Module."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, Integer, String
+from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -75,7 +75,7 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
                          String(512),
                          default=__defaults__['description'])
     design_provisions = Column('fld_design_provisions',
-                               BLOB,
+                               String,
                                default=__defaults__['design_provisions'])
     detection_method = Column('fld_detection_method',
                               String(512),
@@ -120,12 +120,12 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
                         Float,
                         default=__defaults__['mode_ratio'])
     operator_actions = Column('fld_operator_actions',
-                              BLOB,
+                              String,
                               default=__defaults__['operator_actions'])
     other_indications = Column('fld_other_indications',
                                String(512),
                                default=__defaults__['other_indications'])
-    remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
+    remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
     rpn_severity = Column('fld_rpn_severity',
                           Integer,
                           default=__defaults__['rpn_severity'])

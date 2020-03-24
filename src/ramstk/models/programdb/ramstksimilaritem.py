@@ -8,7 +8,7 @@
 """RAMSTKSimilarItem Table."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -25,16 +25,16 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'change_description_1': b'',
-        'change_description_2': b'',
-        'change_description_3': b'',
-        'change_description_4': b'',
-        'change_description_5': b'',
-        'change_description_6': b'',
-        'change_description_7': b'',
-        'change_description_8': b'',
-        'change_description_9': b'',
-        'change_description_10': b'',
+        'change_description_1': '',
+        'change_description_2': '',
+        'change_description_3': '',
+        'change_description_4': '',
+        'change_description_5': '',
+        'change_description_6': '',
+        'change_description_7': '',
+        'change_description_8': '',
+        'change_description_9': '',
+        'change_description_10': '',
         'change_factor_1': 1.0,
         'change_factor_2': 1.0,
         'change_factor_3': 1.0,
@@ -63,11 +63,11 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
         'result_5': 0.0,
         'temperature_from': 30.0,
         'temperature_to': 30.0,
-        'user_blob_1': b'',
-        'user_blob_2': b'',
-        'user_blob_3': b'',
-        'user_blob_4': b'',
-        'user_blob_5': b'',
+        'user_blob_1': '',
+        'user_blob_2': '',
+        'user_blob_3': '',
+        'user_blob_4': '',
+        'user_blob_5': '',
         'user_float_1': 0.0,
         'user_float_2': 0.0,
         'user_float_3': 0.0,
@@ -98,52 +98,52 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
 
     change_description_1 = Column(
         'fld_change_description_1',
-        BLOB,
+        String,
         default=__defaults__['change_description_1'],
     )
     change_description_2 = Column(
         'fld_change_description_2',
-        BLOB,
+        String,
         default=__defaults__['change_description_2'],
     )
     change_description_3 = Column(
         'fld_change_description_3',
-        BLOB,
+        String,
         default=__defaults__['change_description_3'],
     )
     change_description_4 = Column(
         'fld_change_description_4',
-        BLOB,
+        String,
         default=__defaults__['change_description_4'],
     )
     change_description_5 = Column(
         'fld_change_description_5',
-        BLOB,
+        String,
         default=__defaults__['change_description_5'],
     )
     change_description_6 = Column(
         'fld_change_description_6',
-        BLOB,
+        String,
         default=__defaults__['change_description_6'],
     )
     change_description_7 = Column(
         'fld_change_description_7',
-        BLOB,
+        String,
         default=__defaults__['change_description_7'],
     )
     change_description_8 = Column(
         'fld_change_description_8',
-        BLOB,
+        String,
         default=__defaults__['change_description_8'],
     )
     change_description_9 = Column(
         'fld_change_description_9',
-        BLOB,
+        String,
         default=__defaults__['change_description_9'],
     )
     change_description_10 = Column(
         'fld_change_description_10',
-        BLOB,
+        String,
         default=__defaults__['change_description_10'],
     )
     change_factor_1 = Column('fld_change_factor_1',
@@ -222,19 +222,19 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
                             Float,
                             default=__defaults__['temperature_to'])
     user_blob_1 = Column('fld_user_blob_1',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_1'])
     user_blob_2 = Column('fld_user_blob_2',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_2'])
     user_blob_3 = Column('fld_user_blob_3',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_3'])
     user_blob_4 = Column('fld_user_blob_4',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_4'])
     user_blob_5 = Column('fld_user_blob_5',
-                         BLOB,
+                         String,
                          default=__defaults__['user_blob_5'])
     user_float_1 = Column('fld_user_float_1',
                           Float,

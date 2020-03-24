@@ -31,7 +31,7 @@ ATTRIBUTES = {
     'cost_variance': 0.0,
     'date_end': date.today() + timedelta(days=30),
     'date_start': date.today(),
-    'description': b'Test Validation',
+    'description': 'Test Validation',
     'measurement_unit': '',
     'name': '',
     'status': 0.0,
@@ -60,7 +60,7 @@ class TestRAMSTKValidation():
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_validation'
         assert DUT.revision_id == 1
-        assert DUT.validation_id == 1
+        assert DUT.validation_id == 2
         assert DUT.acceptable_maximum == 0.0
         assert DUT.acceptable_mean == 0.0
         assert DUT.acceptable_minimum == 0.0
@@ -75,7 +75,7 @@ class TestRAMSTKValidation():
         assert DUT.cost_variance == 0.0
         assert DUT.date_end == date(2019, 8, 20)
         assert DUT.date_start == date(2019, 7, 21)
-        assert DUT.description == b'Test Validation'
+        assert DUT.description == 'Test Validation'
         assert DUT.measurement_unit == ''
         assert DUT.name == ''
         assert DUT.status == 0.0
@@ -96,7 +96,7 @@ class TestRAMSTKValidation():
 
         _attributes = DUT.get_attributes()
         assert _attributes['revision_id'] == 1
-        assert _attributes['validation_id'] == 1
+        assert _attributes['validation_id'] == 2
         assert _attributes['acceptable_maximum'] == 0.0
         assert _attributes['acceptable_mean'] == 0.0
         assert _attributes['acceptable_minimum'] == 0.0
@@ -111,7 +111,7 @@ class TestRAMSTKValidation():
         assert _attributes['cost_variance'] == 0.0
         assert _attributes['date_end'] == date(2019, 8, 20)
         assert _attributes['date_start'] == date(2019, 7, 21)
-        assert _attributes['description'] == b'Test Validation'
+        assert _attributes['description'] == 'Test Validation'
         assert _attributes['measurement_unit'] == ''
         assert _attributes['name'] == ''
         assert _attributes['status'] == 0.0
@@ -140,7 +140,7 @@ class TestRAMSTKValidation():
         ATTRIBUTES['description'] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == b''
+        assert DUT.get_attributes()['description'] == ''
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

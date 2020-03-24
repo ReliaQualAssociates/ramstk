@@ -116,7 +116,7 @@ class TestRAMSTKDesignElectric():
         assert DUT.power_operating == 0.0
         assert DUT.power_rated == 0.0
         assert DUT.power_ratio == 0.0
-        assert DUT.reason == b''
+        assert DUT.reason == ''
         assert DUT.resistance == 0.0
         assert DUT.specification_id == 0
         assert DUT.technology_id == 0
@@ -193,7 +193,7 @@ class TestRAMSTKDesignElectric():
         assert _attributes['matching_id'] == 0
         assert _attributes['n_elements'] == 0
         assert _attributes['environment_dormant_id'] == 0
-        assert _attributes['reason'] == b''
+        assert _attributes['reason'] == ''
         assert _attributes['voltage_esd'] == 0.0
         assert _attributes['manufacturing_id'] == 0
         assert _attributes['n_wave_soldered'] == 0

@@ -7,6 +7,7 @@
 """The RAMSTK Import module."""
 
 # Standard Library Imports
+import math
 from collections import OrderedDict
 from datetime import date
 from typing import Any, Dict, List
@@ -460,7 +461,7 @@ class Import:
         _function.level = self._get_input_value(_map, row, 'Level', 0)
         _function.name = self._get_input_value(_map, row, 'Function Name', '')
         _function.parent_id = self._get_input_value(_map, row, 'Parent', 1)
-        _function.remarks = self._get_input_value(_map, row, 'Remarks', b'')
+        _function.remarks = self._get_input_value(_map, row, 'Remarks', '')
         _function.safety_critical = self._get_input_value(
             _map, row, 'Safety Critical', 0)
         _function.type_id = self._get_input_value(_map, row, 'Type', '')
@@ -469,7 +470,7 @@ class Import:
         try:
             _function.remarks = _function.remarks.encode('utf-8')
         except AttributeError:
-            _function.remarks = b''
+            _function.remarks = ''
 
         return _function
 
@@ -541,7 +542,7 @@ class Import:
         try:
             _hardware.remarks = _hardware.remarks.encode('utf-8')
         except AttributeError:
-            _hardware.remarks = b''
+            _hardware.remarks = ''
 
         return _hardware
 
@@ -573,13 +574,12 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.ramstknswc.RAMSTKNSWC`
         """
-        _mil_hdbk_f = RAMSTKNSWC()
+        _nswc = RAMSTKNSWC()
 
         _map = self._dic_field_map['Hardware']
-        _mil_hdbk_f.hardware_id = self._get_input_value(
-            _map, row, 'Hardware ID', 1)
+        _nswc.hardware_id = self._get_input_value(_map, row, 'Hardware ID', 1)
 
-        return _mil_hdbk_f
+        return _nswc
 
     def _do_insert_reliability(self, row: pd.Series) -> RAMSTKReliability:
         """
@@ -674,7 +674,7 @@ class Import:
         try:
             _requirement.description = _requirement.description.encode('utf-8')
         except AttributeError:
-            _requirement.description = b''
+            _requirement.description = ''
 
         return _requirement
 
@@ -760,7 +760,7 @@ class Import:
         try:
             _validation.description = _validation.description.encode('utf-8')
         except AttributeError:
-            _validation.description = b''
+            _validation.description = ''
 
         return _validation
 
@@ -781,14 +781,22 @@ class Import:
         :rtype: the value of the requested input field or the default.
         """
         try:
-            if row.at[mapper[field]] is np.nan:
-                _value = default
-            elif default == date.today():
-                _value = parser.parse(row.at[mapper[field]])
-            else:
-                _value = row.at[mapper[field]]
+            _value = row.at[mapper[field]]
         except KeyError:
             _value = default
+
+        try:
+            # Check for Python NaN's.
+            if math.isnan(_value):
+                _value = default
+        except TypeError:
+            # Check for numpy NaN's.
+            if _value is np.nan:
+                _value = default
+
+        # If it's supposed to be a date, make it a date.
+        if default == date.today():
+            _value = parser.parse(_value)
 
         return _value
 

@@ -1,6 +1,4 @@
-name: Pull Request Confirmations
 on: push
-
 jobs:
   build:
     name: Coveralls GitHub Action

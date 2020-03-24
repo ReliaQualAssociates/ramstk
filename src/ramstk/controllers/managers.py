@@ -13,7 +13,6 @@ from typing import Any, Dict
 # Third Party Imports
 import pandas as pd
 from pubsub import pub
-from sqlalchemy import and_
 from treelib import Tree, tree
 
 # RAMSTK Package Imports
@@ -275,11 +274,10 @@ class RAMSTKDataManager():
         _lst_matrix = []
 
         # Retrieve the matrix values for the desired Matrix ID.
-        for _matrix in self.dao.session.query(RAMSTKMatrix).filter(
-                and_(
-                    RAMSTKMatrix.revision_id == self._revision_id,
-                    RAMSTKMatrix.matrix_type == matrix_type,
-                )).all():
+        for _matrix in self.dao.do_select_all(
+                RAMSTKMatrix,
+                [RAMSTKMatrix.revision_id, RAMSTKMatrix.matrix_type],
+                [self._revision_id, matrix_type]):
             _lst_matrix.append(
                 (_matrix.column_item_id, _matrix.row_item_id, _matrix.value))
 
@@ -328,11 +326,19 @@ class RAMSTKDataManager():
         _column_ids = list(matrix.columns[1:])
         for _row_id in _row_ids:
             for _col_id in _column_ids:
-                _entity = self.dao.session.query(RAMSTKMatrix).filter(
-                    and_(RAMSTKMatrix.revision_id == revision_id,
-                         RAMSTKMatrix.matrix_type == matrix_type,
-                         RAMSTKMatrix.column_item_id == int(_col_id),
-                         RAMSTKMatrix.row_item_id == int(_row_id))).first()
+                _entity = self.dao.do_select_all(
+                    table=RAMSTKMatrix,
+                    key=[
+                        RAMSTKMatrix.revision_id, RAMSTKMatrix.matrix_type,
+                        RAMSTKMatrix.column_item_id, RAMSTKMatrix.row_item_id
+                    ],
+                    value=[
+                        revision_id, matrix_type,
+                        int(_col_id),
+                        int(_row_id)
+                    ],
+                    order=None,
+                    _all=False)
 
                 # If there is no corresponding record in RAMSTKMatrix, then
                 # create a new RAMSTKMatrix record and add it.
@@ -345,9 +351,7 @@ class RAMSTKDataManager():
 
                 _entity.value = int(matrix[_col_id][_row_id])
 
-                self.dao.session.add(_entity)
-
-        self.dao.do_update()
+                self.dao.do_update(_entity)
 
         pub.sendMessage('succeed_update_matrix')
 
@@ -469,7 +473,6 @@ class RAMSTKMatrixManager():
         # matrix will have the same number of rows for a MODULE.
         self.dic_matrices[matrix_type] = pd.DataFrame(_dic_columns)
         (self.n_row, self.n_col) = self.dic_matrices[matrix_type].shape
-
         pub.sendMessage('request_select_matrix', matrix_type=matrix_type)
 
     def do_delete_column(self, node_id, matrix_type):

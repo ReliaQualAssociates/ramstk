@@ -7,7 +7,7 @@
 """RAMSTKOpStress Table."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -54,7 +54,7 @@ class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseTable):
     measurable_parameter = Column('fld_measurable_parameter',
                                   String(512),
                                   default=__defaults__['measurable_parameter'])
-    remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
+    remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load = relationship('RAMSTKOpLoad', back_populates='op_stress')

@@ -10,4 +10,7 @@
 # Third Party Imports
 from sqlalchemy.ext.declarative import declarative_base
 
+# RAMSTK Local Imports
+from .base import BaseDatabase
+
 RAMSTK_BASE = declarative_base()
