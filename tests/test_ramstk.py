@@ -15,6 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
+from ramstk.exceptions import DataAccessError
 from ramstk.ramstk import RAMSTKProgramManager
 
 
@@ -27,19 +28,18 @@ class TestProgramManager():
         print("\033[36m\nsucceed_connect_program_database topic was broadcast")
 
     def on_fail_open_program_bad_url(self, error_message):
-        assert error_message == ('The database URL /bad_database_url.ramstk '
-                                 'did not conform to the RFC 1738 standard '
-                                 'and could not be opened.')
+        assert error_message == ('The database bad_database_url.ramstk does '
+                                 'not exist.')
         print("\033[35m\nfail_connect_program_database topic was broadcast.")
 
     def on_fail_open_program_unknown_dialect(self, error_message):
-        assert error_message == ('RAMSTK does not currently support database '
-                                 'dialect http.')
+        assert error_message == ('Unknown database dialect in database '
+                                 'connection dict.')
         print("\033[35m\nfail_connect_program_database topic was broadcast.")
 
     def on_fail_open_program_non_string_url(self, error_message):
-        assert error_message == ('The URL 8742.11 for the database was not a '
-                                 'string.')
+        assert error_message == ('Unknown dialect or non-string value in '
+                                 'database connection dict.')
         print("\033[35m\nfail_connect_program_database topic was broadcast.")
 
     def on_succeed_close_program(self):
@@ -70,10 +70,17 @@ class TestProgramManager():
     def on_request_update_validation(self):
         print("\033[36mrequest_update_all_validation topic was broadcast")
 
-    def on_succeed_create_program(self, program_db, database):
+    def on_succeed_create_sqlite_program(self, program_db, database):
         assert isinstance(program_db, BaseDatabase)
-        assert database == '/tmp/_ramstk_program_db.ramstk'
-        print("\033[36m\nsucceed_create_program_database topic was broadcast")
+        assert database['database'] == '/tmp/_ramstk_program_db.ramstk'
+        print("\033[36m\nsucceed_create_program_database topic was broadcast "
+              "when creating SQLite database")
+
+    def on_succeed_create_postgres_program(self, program_db, database):
+        assert isinstance(program_db, BaseDatabase)
+        assert database['database'] == 'ramstk_program_db2'
+        print("\033[36m\nsucceed_create_program_database topic was broadcast "
+              "when creating postgres database")
 
     @pytest.mark.unit
     def test_create_program_manager(self):
@@ -121,8 +128,17 @@ class TestProgramManager():
 
         _database = test_program_dao.database
 
+        test_program_db = {
+            'dialect': 'postgres',
+            'user': 'postgres',
+            'password': 'postgres',
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'TestProgramDB'
+        }
+
         DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), _database)
+        DUT.do_open_program(BaseDatabase(), test_program_db)
 
         assert DUT.program_dao.database == _database
 
@@ -135,8 +151,17 @@ class TestProgramManager():
         pub.subscribe(self.on_fail_open_program_bad_url,
                       'fail_connect_program_database')
 
+        test_program_db = {
+            'dialect': 'postgres',
+            'user': 'postgres',
+            'password': 'postgres',
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'bad_database_url.ramstk'
+        }
+
         DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), '/bad_database_url.ramstk')
+        DUT.do_open_program(BaseDatabase(), test_program_db)
 
         pub.unsubscribe(self.on_fail_open_program_bad_url,
                         'fail_connect_program_database')
@@ -147,9 +172,17 @@ class TestProgramManager():
         pub.subscribe(self.on_fail_open_program_unknown_dialect,
                       'fail_connect_program_database')
 
+        test_program_db = {
+            'dialect': 'doyleton',
+            'user': 'postgres',
+            'password': 'postgres',
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'TestProgramDB'
+        }
+
         DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(),
-                            'http:///www.bad_database_dialect.com')
+        DUT.do_open_program(BaseDatabase(), test_program_db)
 
         pub.unsubscribe(self.on_fail_open_program_unknown_dialect,
                         'fail_connect_program_database')
@@ -162,8 +195,16 @@ class TestProgramManager():
 
         DUT = RAMSTKProgramManager()
 
-        with pytest.raises(AttributeError):
-            DUT.do_open_program(BaseDatabase(), 8742.11)
+        test_program_db = {
+            'dialect': 'postgres',
+            'user': 'postgres',
+            'password': 'postgres',
+            'host': 'localhost',
+            'port': '5432',
+            'database': 8742.11
+        }
+
+        DUT.do_open_program(BaseDatabase(), test_program_db)
 
         pub.unsubscribe(self.on_fail_open_program_non_string_url,
                         'fail_connect_program_database')
@@ -174,10 +215,17 @@ class TestProgramManager():
         pub.subscribe(self.on_succeed_close_program,
                       'succeed_disconnect_program_database')
 
-        _database = test_program_dao.database
+        test_program_db = {
+            'dialect': 'postgres',
+            'user': 'postgres',
+            'password': 'postgres',
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'TestProgramDB'
+        }
 
         DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), _database)
+        DUT.do_open_program(BaseDatabase(), test_program_db)
         DUT.do_close_program()
 
         assert DUT.program_dao.session is None
@@ -216,13 +264,18 @@ class TestProgramManager():
         pub.subscribe(self.on_request_update_validation,
                       'request_update_all_validation')
 
-        _database = test_program_dao.database
+        test_program_db = {
+            'dialect': 'postgres',
+            'user': 'postgres',
+            'password': 'postgres',
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'TestProgramDB'
+        }
 
         DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), _database)
+        DUT.do_open_program(BaseDatabase(), test_program_db)
         DUT.do_save_program()
-
-        assert DUT.program_dao.database == _database
 
         pub.unsubscribe(self.on_request_update_revision,
                         'request_update_all_revisions')
@@ -238,20 +291,53 @@ class TestProgramManager():
                         'request_update_all_validation')
 
     @pytest.mark.unit
-    def test_do_create_program(self, test_toml_user_configuration):
-        """do_create_program() should broadcast the success message if it attempts to close a database when not connected."""
-        pub.subscribe(self.on_succeed_create_program,
+    def test_do_create_sqlite_program(self, test_toml_user_configuration):
+        """do_create_program() should broadcast the success message when an SQLite database is created."""
+        pub.subscribe(self.on_succeed_create_sqlite_program,
                       'succeed_create_program_database')
+
+        test_program_db = {
+            'dialect': 'sqlite',
+            'user': '',
+            'password': '',
+            'host': '',
+            'port': '3306',
+            'database': '/tmp/_ramstk_program_db.ramstk'
+        }
 
         _program_db = BaseDatabase()
 
         DUT = RAMSTKProgramManager()
         DUT.user_configuration = test_toml_user_configuration
-        DUT.do_create_program(_program_db, '/tmp/_ramstk_program_db.ramstk')
+        DUT.do_create_program(_program_db, test_program_db)
 
         assert os.path.exists('/tmp/_ramstk_program_db.ramstk')
 
-        pub.unsubscribe(self.on_succeed_create_program,
+        pub.unsubscribe(self.on_succeed_create_sqlite_program,
                         'succeed_create_program_database')
 
         os.remove('/tmp/_ramstk_program_db.ramstk')
+
+    @pytest.mark.unit
+    def test_do_create_postgres_program(self, test_toml_user_configuration):
+        """do_create_program() should broadcast the success message when a postgres database is created."""
+        pub.subscribe(self.on_succeed_create_postgres_program,
+                      'succeed_create_program_database')
+
+        test_program_db = {
+            'dialect': 'postgres',
+            'user': 'postgres',
+            'password': 'postgres',
+            'host': 'localhost',
+            'port': '5432',
+            'database': 'ramstk_program_db2'
+        }
+
+        _program_db = BaseDatabase()
+
+        DUT = RAMSTKProgramManager()
+        DUT.user_configuration = test_toml_user_configuration
+        DUT.do_create_program(_program_db, test_program_db)
+
+        pub.unsubscribe(self.on_succeed_create_postgres_program,
+                        'succeed_create_program_database')

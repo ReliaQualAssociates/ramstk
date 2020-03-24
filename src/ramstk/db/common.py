@@ -508,14 +508,14 @@ RAMSTK_METHODS = {
 }
 
 RAMSTK_MODELS = {
-    0: ('Adhesion Wear Model for Bearings', 'damage'),
-    1: ('Arrhenius', 'damage'),
-    2: ('Coffin-Manson', 'damage'),
-    3: ('Empirical/DOE', 'damage'),
-    4: ('Eyring', 'damage'),
-    5: ('Inverse Power Law (IPL)', 'damage'),
-    6: ('IPL - Arrhenius', 'damage'),
-    7: ('Time Fraction of Damaging Operating Conditions', 'damage')
+    0: ('Adhesion Wear Model for Bearings', 1),
+    1: ('Arrhenius', 1),
+    2: ('Coffin-Manson', 1),
+    3: ('Empirical/DOE', 1),
+    4: ('Eyring', 1),
+    5: ('Inverse Power Law (IPL)', 1),
+    6: ('IPL - Arrhenius', 1),
+    7: ('Time Fraction of Damaging Operating Conditions', 1)
 }
 
 RAMSTK_RPNS = {
@@ -1172,8 +1172,8 @@ def _do_load_pof_variables(site_db: BaseDatabase,
     :return: None
     :rtype: None
     """
-    for _record in site_db.session.query(RAMSTKModel).\
-            filter(RAMSTKModel.model_type == 'damage').all():
+    for _record in site_db.session.query(RAMSTKModel). \
+            filter(RAMSTKModel.model_type == 1).all():
         _attributes = _record.get_attributes()
         site_configuration.RAMSTK_DAMAGE_MODELS[_record.model_id] = (
             _attributes['description'])
@@ -1181,7 +1181,7 @@ def _do_load_pof_variables(site_db: BaseDatabase,
         _attributes = _record.get_attributes()
         site_configuration.RAMSTK_LOAD_HISTORY[_record.history_id] = (
             _attributes['description'])
-    for _record in site_db.session.query(RAMSTKMeasurement).\
+    for _record in site_db.session.query(RAMSTKMeasurement). \
             filter(RAMSTKMeasurement.measurement_type == 'damage').all():
         _attributes = _record.get_attributes()
         site_configuration.RAMSTK_MEASURABLE_PARAMETERS[

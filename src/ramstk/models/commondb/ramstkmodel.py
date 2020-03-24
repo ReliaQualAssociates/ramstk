@@ -22,7 +22,7 @@ class RAMSTKModel(RAMSTK_BASE, RAMSTKBaseTable):
 
     __defaults__ = {
         'description': 'Model Description',
-        'model_type': 'unknown'
+        'model_type': 0
     }
     __tablename__ = 'ramstk_model'
     __table_args__ = {'extend_existing': True}

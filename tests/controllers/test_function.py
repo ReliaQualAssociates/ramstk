@@ -232,7 +232,7 @@ class TestDeleteMethods():
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_function(self, node_id):
-        assert node_id == 4
+        assert node_id == 3
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
     def on_fail_insert_function(self, error_message):
@@ -262,10 +262,10 @@ class TestInsertMethods():
         DUT.do_insert()
 
         assert isinstance(
-            DUT.tree.get_node(4).data['function'], RAMSTKFunction)
-        assert DUT.tree.get_node(4).data['function'].function_id == 4
-        assert DUT.tree.get_node(4).data['function'].name == 'New Function'
-        assert DUT.tree.get_node(4).data['hazards'] == {}
+            DUT.tree.get_node(3).data['function'], RAMSTKFunction)
+        assert DUT.tree.get_node(3).data['function'].function_id == 3
+        assert DUT.tree.get_node(3).data['function'].name == 'New Function'
+        assert DUT.tree.get_node(3).data['hazards'] == {}
 
         pub.unsubscribe(self.on_succeed_insert_function,
                         'succeed_insert_function')
@@ -276,13 +276,13 @@ class TestInsertMethods():
         DUT = dmFunction()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(revision_id=1)
-        DUT.do_insert(parent_id=4)
+        DUT.do_insert(parent_id=3)
 
         assert isinstance(
-            DUT.tree.get_node(5).data['function'], RAMSTKFunction)
-        assert DUT.tree.get_node(5).data['function'].function_id == 5
-        assert DUT.tree.get_node(5).data['function'].name == 'New Function'
-        assert DUT.tree.get_node(5).data['hazards'] == {}
+            DUT.tree.get_node(4).data['function'], RAMSTKFunction)
+        assert DUT.tree.get_node(4).data['function'].function_id == 4
+        assert DUT.tree.get_node(4).data['function'].name == 'New Function'
+        assert DUT.tree.get_node(4).data['hazards'] == {}
 
     @pytest.mark.integration
     def test_do_insert_function_no_parent(self, test_program_dao):
@@ -305,7 +305,7 @@ class TestInsertMethods():
         DUT.do_insert_hazard(1)
 
         assert isinstance(
-            DUT.tree.get_node(1).data['hazards'][4], RAMSTKHazardAnalysis)
+            DUT.tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
 
     @pytest.mark.integration
     def test_insert_hazard_no_function(self, test_program_dao):

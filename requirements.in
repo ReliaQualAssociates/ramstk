@@ -4,6 +4,7 @@ lxml
 matplotlib
 openpyxl
 pandas
+psycopg2
 pycairo
 pygobject>=3.27
 pypubsub

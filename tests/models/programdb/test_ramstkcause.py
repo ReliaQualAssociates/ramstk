@@ -37,15 +37,15 @@ class TestRAMSTKCause():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_cause'
-        assert DUT.mode_id == 1
-        assert DUT.cause_id == 1
-        assert DUT.description == 'Test Functional FMEA Cause #1 for Mode ID 1'
+        assert DUT.mode_id == 5
+        assert DUT.cause_id == 2
+        assert DUT.description == 'Test Failure Cause #2 for Mechanism ID 2'
         assert DUT.rpn == 0
-        assert DUT.rpn_detection == 2
-        assert DUT.rpn_detection_new == 1
+        assert DUT.rpn_detection == 4
+        assert DUT.rpn_detection_new == 3
         assert DUT.rpn_new == 0
-        assert DUT.rpn_occurrence == 8
-        assert DUT.rpn_occurrence_new == 5
+        assert DUT.rpn_occurrence == 4
+        assert DUT.rpn_occurrence_new == 3
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -55,18 +55,17 @@ class TestRAMSTKCause():
         _attributes = DUT.get_attributes()
 
         assert isinstance(_attributes, dict)
-        assert _attributes['mode_id'] == 1
-        assert _attributes['mechanism_id'] == -1
-        assert _attributes['cause_id'] == 1
+        assert _attributes['mode_id'] == 5
+        assert _attributes['mechanism_id'] == 2
+        assert _attributes['cause_id'] == 2
         assert _attributes['description'] == (
-            'Test Functional FMEA Cause #1 for '
-            'Mode ID 1')
+            'Test Failure Cause #2 for Mechanism ID 2')
         assert _attributes['rpn'] == 0
-        assert _attributes['rpn_detection'] == 2
-        assert _attributes['rpn_detection_new'] == 1
+        assert _attributes['rpn_detection'] == 4
+        assert _attributes['rpn_detection_new'] == 3
         assert _attributes['rpn_new'] == 0
-        assert _attributes['rpn_occurrence'] == 8
-        assert _attributes['rpn_occurrence_new'] == 5
+        assert _attributes['rpn_occurrence'] == 4
+        assert _attributes['rpn_occurrence_new'] == 3
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):

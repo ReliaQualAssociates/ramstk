@@ -14,43 +14,285 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmRevision
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,
     RAMSTKMission, RAMSTKMissionPhase, RAMSTKRevision
 )
 
-ATTRIBUTES = {
-    'revision_id': 1,
-    'availability_logistics': 0.9986,
-    'availability_mission': 0.99934,
-    'cost': 12532.15,
-    'cost_per_failure': 0.0000352,
-    'cost_per_hour': 1.2532,
-    'hazard_rate_active': 0.0,
-    'hazard_rate_dormant': 0.0,
-    'hazard_rate_logistics': 0.0,
-    'hazard_rate_mission': 0.0,
-    'hazard_rate_software': 0.0,
-    'mmt': 0.0,
-    'mcmt': 0.0,
-    'mpmt': 0.0,
-    'mtbf_logistics': 0.0,
-    'mtbf_mission': 0.0,
-    'mttr': 0.0,
-    'name': 'Original Revision',
-    'reliability_logistics': 0.99986,
-    'reliability_mission': 0.99992,
-    'remarks': b'This is the original revision.',
-    'n_parts': 128,
-    'revision_code': 'Rev. -',
-    'program_time': 2562,
-    'program_time_sd': 26.83,
-    'program_cost': 26492.83,
-    'program_cost_sd': 15.62,
+MOCK_REVISIONS = {
+    1: {
+        'availability_logistics': 0.9986,
+        'availability_mission': 0.99934,
+        'cost': 12532.15,
+        'cost_failure': 0.0000352,
+        'cost_hour': 1.2532,
+        'hazard_rate_active': 0.0,
+        'hazard_rate_dormant': 0.0,
+        'hazard_rate_logistics': 0.0,
+        'hazard_rate_mission': 0.0,
+        'hazard_rate_software': 0.0,
+        'mmt': 0.0,
+        'mcmt': 0.0,
+        'mpmt': 0.0,
+        'mtbf_logistics': 0.0,
+        'mtbf_mission': 0.0,
+        'mttr': 0.0,
+        'name': 'Original Revision',
+        'reliability_logistics': 0.99986,
+        'reliability_mission': 0.99992,
+        'remarks': 'This is the original revision.',
+        'revision_code': 'Rev. -',
+        'program_time': 2562,
+        'program_time_sd': 26.83,
+        'program_cost': 26492.83,
+        'program_cost_sd': 15.62
+    },
+    2: {
+        'availability_logistics': 1.0,
+        'availability_mission': 1.0,
+        'cost': 0.0,
+        'cost_failure': 0.0,
+        'cost_hour': 0.0,
+        'hazard_rate_active': 0.0,
+        'hazard_rate_dormant': 0.0,
+        'hazard_rate_logistics': 0.0,
+        'hazard_rate_mission': 0.0,
+        'hazard_rate_software': 0.0,
+        'mmt': 0.0,
+        'mcmt': 0.0,
+        'mpmt': 0.0,
+        'mtbf_logistics': 0.0,
+        'mtbf_mission': 0.0,
+        'mttr': 0.0,
+        'name': 'Revision A',
+        'reliability_logistics': 1.0,
+        'reliability_mission': 1.0,
+        'remarks': 'This is the second revision.',
+        'revision_code': 'Rev. A',
+        'program_time': 0,
+        'program_time_sd': 0.0,
+        'program_cost': 0.0,
+        'program_cost_sd': 0.0
+    }
+}
+MOCK_FAILURE_DEFINITIONS = {1: {'definition': 'Failure Definition'}}
+MOCK_MISSIONS = {
+    1: {
+        'description': '',
+        'mission_time': 0.0,
+        'time_units': 'hours'
+    },
+    2: {
+        'description': 'Mission #2',
+        'mission_time': 0.0,
+        'time_units': 'hours'
+    }
+}
+MOCK_MISSION_PHASES = {
+    1: {
+        'description': '',
+        'name': '',
+        'phase_start': 0.0,
+        'phase_end': 0.0
+    },
+    2: {
+        'description': 'Phase #1 for mission #2',
+        'name': '',
+        'phase_start': 0.0,
+        'phase_end': 0.0
+    },
+    3: {
+        'description': 'Phase #2 for mission #2',
+        'name': '',
+        'phase_start': 0.0,
+        'phase_end': 0.0
+    }
+}
+MOCK_ENVIRONMENTS = {
+    1: {
+        'name': 'Condition Name',
+        'units': 'Units',
+        'minimum': 0.0,
+        'maximum': 0.0,
+        'mean': 0.0,
+        'variance': 0.0,
+        'ramp_rate': 0.0,
+        'low_dwell_time': 0.0,
+        'high_dwell_time': 0.0
+    },
+    2: {
+        'name': 'Condition Name',
+        'units': 'Units',
+        'minimum': 0.0,
+        'maximum': 0.0,
+        'mean': 0.0,
+        'variance': 0.0,
+        'ramp_rate': 0.0,
+        'low_dwell_time': 0.0,
+        'high_dwell_time': 0.0
+    },
+    3: {
+        'name': 'Condition Name',
+        'units': 'Units',
+        'minimum': 0.0,
+        'maximum': 0.0,
+        'mean': 0.0,
+        'variance': 0.0,
+        'ramp_rate': 0.0,
+        'low_dwell_time': 0.0,
+        'high_dwell_time': 0.0
+    }
 }
 
 
-@pytest.mark.usefixtures('test_program_dao')
+class MockDao:
+    _all_revisions = []
+    _all_failure_definitions = []
+    _all_missions = []
+    _all_mission_phases = []
+    _all_environments = []
+
+    def _do_delete_revision(self, record):
+        for _idx, _record in enumerate(self._all_revisions):
+            if _record.revision_id == record.revision_id:
+                self._all_revisions.pop(_idx)
+
+    def _do_delete_failure_definition(self, record):
+        for _idx, _record in enumerate(self._all_failure_definitions):
+            if _record.definition_id == record.definition_id:
+                self._all_failure_definitions.pop(_idx)
+
+    def _do_delete_mission(self, record):
+        for _idx, _record in enumerate(self._all_missions):
+            if _record.mission_id == record.mission_id:
+                self._all_missions.pop(_idx)
+
+    def _do_delete_mission_phases(self, record):
+        for _idx, _record in enumerate(self._all_mission_phases):
+            if _record.phase_id == record.phase_id:
+                self._all_mission_phases.pop(_idx)
+
+    def _do_delete_environments(self, record):
+        for _idx, _record in enumerate(self._all_environments):
+            if _record.environment_id == record.environment_id:
+                self._all_environments.pop(_idx)
+
+    def do_delete(self, record):
+        try:
+            if record == RAMSTKRevision:
+                self._do_delete_revision(record)
+            elif record == RAMSTKFailureDefinition:
+                self._do_delete_failure_definition(record)
+            elif record == RAMSTKMission:
+                self._do_delete_mission(record)
+            elif record == RAMSTKMissionPhase:
+                self._do_delete_mission_phases(record)
+            elif record == RAMSTKEnvironment:
+                self._do_delete_environments(record)
+        except AttributeError:
+            raise DataAccessError('')
+
+    def do_insert(self, record):
+        if record == RAMSTKRevision:
+            self._all_revisions.append(record)
+        elif record == RAMSTKFailureDefinition:
+            self._all_failure_definitions.append(record)
+        elif record == RAMSTKMission:
+            self._all_missions.append(record)
+        elif record == RAMSTKMissionPhase:
+            self._all_mission_phases.append(record)
+        elif record == RAMSTKEnvironment:
+            self._all_environments.append(record)
+
+    def _do_select_all_revisions(self, table):
+        self._all_revisions = []
+        for _key in MOCK_REVISIONS:
+            _record = table()
+            _record.revision_id = _key
+            _record.set_attributes(MOCK_REVISIONS[_key])
+            self._all_revisions.append(_record)
+
+        return self._all_revisions
+
+    def _do_select_all_failure_definitions(self, table, value):
+        _idx = 1
+        self._all_failure_definitions = []
+        for _key in MOCK_FAILURE_DEFINITIONS:
+            _record = table()
+            _record.revision_id = value
+            _record.definition_id = _idx
+            _record.set_attributes(MOCK_FAILURE_DEFINITIONS[_key])
+            self._all_failure_definitions.append(_record)
+            _idx += 1
+
+        return self._all_failure_definitions
+
+    def _do_select_all_missions(self, table, value):
+        _idx = 1
+        self._all_missions = []
+        for _key in MOCK_MISSIONS:
+            _record = table()
+            _record.revision_id = value
+            _record.mission_id = _idx
+            _record.set_attributes(MOCK_MISSIONS[_key])
+            self._all_missions.append(_record)
+            _idx += 1
+
+        return self._all_missions
+
+    def _do_select_all_mission_phases(self, table, value):
+        _idx = 1
+        self._all_mission_phases = []
+        for _key in MOCK_MISSION_PHASES:
+            _record = table()
+            _record.mission_id = value
+            _record.phase_id = _idx
+            _record.set_attributes(MOCK_MISSION_PHASES[_key])
+            self._all_mission_phases.append(_record)
+            _idx += 1
+
+        return self._all_mission_phases
+
+    def _do_select_all_environments(self, table, value):
+        _idx = 1
+        self._all_environments = []
+        for _key in MOCK_ENVIRONMENTS:
+            _record = table()
+            _record.phase_id = value
+            _record.environment_id = _idx
+            _record.set_attributes(MOCK_ENVIRONMENTS[_key])
+            self._all_environments.append(_record)
+            _idx += 1
+
+        return self._all_environments
+
+    def do_select_all(self, table, key, value):
+        if table == RAMSTKRevision:
+            return self._do_select_all_revisions(table)
+        elif table == RAMSTKFailureDefinition:
+            return self._do_select_all_failure_definitions(table, value)
+        elif table == RAMSTKMission:
+            return self._do_select_all_missions(table, value)
+        elif table == RAMSTKMissionPhase:
+            for _mission in self._all_missions:
+                return self._do_select_all_mission_phases(
+                    table, _mission.mission_id)
+        elif table == RAMSTKEnvironment:
+            for _phase in self._all_mission_phases:
+                return self._do_select_all_environments(table, _phase.phase_id)
+
+    def do_update(self, record):
+        for _key in MOCK_REVISIONS:
+            if _key == record.revision_id:
+                MOCK_REVISIONS[_key]['name'] = record.name
+
+
+@pytest.fixture
+def mock_program_dao(monkeypatch):
+    yield MockDao()
+
+
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
@@ -96,14 +338,13 @@ class TestCreateControllers():
                                 'request_set_all_revision_attributes')
 
 
-@pytest.mark.usefixtures('test_program_dao')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
-    @pytest.mark.integration
-    def test_do_select_all(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_select_all(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKRevision instances on success."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         assert isinstance(DUT.tree, Tree)
@@ -116,24 +357,24 @@ class TestSelectMethods():
             RAMSTKFailureDefinition)
         assert isinstance(DUT.tree.get_node(1).data['usage_profile'], Tree)
 
-    @pytest.mark.integration
-    def test_do_select_revision(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_select_revision(self, mock_program_dao):
         """do_select() should return an instance of the RAMSTKRevision on success."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         _revision = DUT.do_select(1, table='revision')
 
         assert isinstance(_revision, RAMSTKRevision)
-        assert _revision.availability_logistics == 1.0
-        assert _revision.name == 'Test Revision'
+        assert _revision.availability_logistics == 0.9986
+        assert _revision.name == 'Original Revision'
 
-    @pytest.mark.integration
-    def test_do_select_failure_definition(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_select_failure_definition(self, mock_program_dao):
         """do_select() should return an instance of RAMSTKFailureDefinition on success."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         _failure_definition = DUT.do_select(1, table='failure_definitions')
@@ -142,11 +383,11 @@ class TestSelectMethods():
         assert isinstance(_failure_definition[1], RAMSTKFailureDefinition)
         assert _failure_definition[1].definition == 'Failure Definition'
 
-    @pytest.mark.integration
-    def test_do_select_usage_profile(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_select_usage_profile(self, mock_program_dao):
         """do_select() should return the usage profile treelib Tree() on success."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         _usage_profile = DUT.do_select(1, table='usage_profile')
@@ -158,27 +399,26 @@ class TestSelectMethods():
         assert isinstance(
             _usage_profile.get_node('1.1.1').data, RAMSTKEnvironment)
 
-    @pytest.mark.integration
-    def test_do_select_unknown_table(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_select_unknown_table(self, mock_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         with pytest.raises(KeyError):
             DUT.do_select(1, table='scibbidy-bibbidy-doo')
 
-    @pytest.mark.integration
-    def test_do_select_non_existent_id(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_select_non_existent_id(self, mock_program_dao):
         """do_select() should return None when a non-existent Revision ID is requested."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         assert DUT.do_select(100, table='revision') is None
 
 
-@pytest.mark.usefixtures('test_program_dao')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_revision(self, tree):
@@ -187,8 +427,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_revision(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent revision ID '
-            '300.')
+            'Revision ID 300 was not found as a node in the tree.')
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
     def on_succeed_delete_failure_definition(self, tree):
@@ -231,37 +470,42 @@ class TestDeleteMethods():
             '3.3.30 from mission phase ID 3.3.')
         print("\033[35m\nfail_delete_environment topic was broadcast.")
 
-    @pytest.mark.integration
-    def test_do_delete_revision(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_delete_revision(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib Tree."""
         pub.subscribe(self.on_succeed_delete_revision,
                       'succeed_delete_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete(DUT.last_id)
 
         assert DUT.last_id == 1
 
-    @pytest.mark.integration
-    def test_do_delete_revision_non_existent_id(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_delete_revision,
+                        'succeed_delete_revision')
+
+    @pytest.mark.unit
+    def test_do_delete_revision_non_existent_id(self, mock_program_dao):
         """_do_delete() should send the fail message when attempting to delete a non-existent revision."""
         pub.subscribe(self.on_fail_delete_revision, 'fail_delete_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete(300)
 
-    @pytest.mark.integration
-    def test_do_delete_failure_definition(self, test_program_dao):
+        pub.unsubscribe(self.on_fail_delete_revision, 'fail_delete_revision')
+
+    @pytest.mark.unit
+    def test_do_delete_failure_definition(self, mock_program_dao):
         """_do_delete_failure_definition() should send the success message after successfully deleting a definition."""
         pub.subscribe(self.on_succeed_delete_failure_definition,
                       'succeed_delete_failure_definition')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_failure_definition(1, 1)
 
@@ -271,25 +515,28 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_succeed_delete_failure_definition,
                         'succeed_delete_failure_definition')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_do_delete_failure_definition_non_existent_id(
-            self, test_program_dao):
+            self, mock_program_dao):
         """_do_delete_failure_definition() should send the fail message when attempting to delete a non-existent failure definition."""
         pub.subscribe(self.on_fail_delete_failure_definition,
                       'fail_delete_failure_definition')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_failure_definition(1, 10)
 
-    @pytest.mark.integration
-    def test_do_delete_mission(self, test_program_dao):
+        pub.unsubscribe(self.on_fail_delete_failure_definition,
+                        'fail_delete_failure_definition')
+
+    @pytest.mark.unit
+    def test_do_delete_mission(self, mock_program_dao):
         """_do_delete_mission() should send the success message after successfully deleting a mission."""
         pub.subscribe(self.on_succeed_delete_mission, 'succeed_delete_mission')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission(1, '1')
 
@@ -297,74 +544,90 @@ class TestDeleteMethods():
         assert not DUT.tree.get_node(1).data['usage_profile'].contains('1.1')
         assert not DUT.tree.get_node(1).data['usage_profile'].contains('1.1.1')
 
-    @pytest.mark.integration
-    def test_do_delete_mission_non_existent_id(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_delete_mission,
+                        'succeed_delete_mission')
+
+    @pytest.mark.unit
+    def test_do_delete_mission_non_existent_id(self, mock_program_dao):
         """_do_delete_mission() should send the sfail message when attempting to delete a non-existent mission ID."""
         pub.subscribe(self.on_fail_delete_mission, 'fail_delete_mission')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission(1, '10')
 
-    @pytest.mark.integration
-    def test_do_delete_mission_phase(self, test_program_dao):
+        pub.unsubscribe(self.on_fail_delete_mission, 'fail_delete_mission')
+
+    @pytest.mark.unit
+    def test_do_delete_mission_phase(self, mock_program_dao):
         """_do_delete_mission_phase() should send the success message after successfully deleting a mission phase."""
         pub.subscribe(self.on_succeed_delete_mission_phase,
                       'succeed_delete_mission_phase')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission_phase(1, '2', '2.2')
 
         assert not DUT.tree.get_node(1).data['usage_profile'].contains('2.2')
         assert not DUT.tree.get_node(1).data['usage_profile'].contains('2.2.2')
 
-    @pytest.mark.integration
-    def test_do_delete_mission_phase_non_existent_id(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_delete_mission_phase,
+                        'succeed_delete_mission_phase')
+
+    @pytest.mark.unit
+    def test_do_delete_mission_phase_non_existent_id(self, mock_program_dao):
         """_do_delete_mission_phase() should send the fail message when attempting to delete a non-existent mission phase."""
         pub.subscribe(self.on_fail_delete_mission_phase,
                       'fail_delete_mission_phase')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_mission_phase(1, '2', '2.20')
 
-    @pytest.mark.integration
-    def test_do_delete_environment(self, test_program_dao):
+        pub.unsubscribe(self.on_fail_delete_mission_phase,
+                        'fail_delete_mission_phase')
+
+    @pytest.mark.unit
+    def test_do_delete_environment(self, mock_program_dao):
         """_do_delete_environment() should send the success message after successfully deleting an environment."""
         pub.subscribe(self.on_succeed_delete_environment,
                       'succeed_delete_environment')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_environment(1, '3.3', '3.3.3')
 
         assert not DUT.tree.get_node(1).data['usage_profile'].contains('3.3.3')
 
-    @pytest.mark.integration
-    def test_do_delete_environment_non_existent_id(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_delete_environment,
+                        'succeed_delete_environment')
+
+    @pytest.mark.unit
+    def test_do_delete_environment_non_existent_id(self, mock_program_dao):
         """_do_delete_environment() should send the fail message when attempting to delete a non-existent environment."""
         pub.subscribe(self.on_fail_delete_environment,
                       'fail_delete_environment')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_delete_environment(1, '3.3', '3.3.30')
 
+        pub.unsubscribe(self.on_fail_delete_environment,
+                        'fail_delete_environment')
 
-@pytest.mark.usefixtures('test_program_dao')
+
 class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_revision_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['revision_id'] == 1
-        assert attributes['name'] == 'Test Revision'
-        assert attributes['program_time'] == 0.0
+        assert attributes['name'] == 'Original Revision'
+        assert attributes['program_time'] == 2562
         print("\033[36m\nsucceed_get_revision_attributes topic was broadcast")
 
     def on_succeed_get_failure_definition_attrs(self, attributes):
@@ -379,6 +642,9 @@ class TestGetterSetter():
         assert isinstance(attributes, Tree)
         assert attributes.get_node('1').data.revision_id == 1
         assert attributes.get_node('1').data.time_units == 'hours'
+        assert attributes.get_node('2.2').data.description == ('Phase #1 for '
+                                                               'mission #2')
+        assert attributes.get_node('1.1.1').data.name == 'Condition Name'
         print(
             "\033[36m\nsucceed_get_usage_profile_attributes topic was broadcast"
         )
@@ -386,8 +652,8 @@ class TestGetterSetter():
     def on_succeed_get_all_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['revision_id'] == 1
-        assert attributes['name'] == 'Test Revision'
-        assert attributes['program_time'] == 0.0
+        assert attributes['name'] == 'Original Revision'
+        assert attributes['program_time'] == 2562
         assert isinstance(attributes['failure_definitions'], dict)
         assert isinstance(attributes['failure_definitions'][1],
                           RAMSTKFailureDefinition)
@@ -420,55 +686,67 @@ class TestGetterSetter():
         assert last_id == 2
         print("\033[36m\nsucceed_get_last_id topic was broadcast")
 
-    @pytest.mark.integration
-    def test_do_get_attributes_revision(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_get_attributes_revision(self, mock_program_dao):
         """_do_get_attributes() should return a dict of revision attributes on success."""
         pub.subscribe(self.on_succeed_get_revision_attrs,
                       'succeed_get_revision_attributes')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_get_attributes(1, 'revision')
 
-    @pytest.mark.integration
-    def test_do_get_attributes_failure_definitions(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_get_revision_attrs,
+                        'succeed_get_revision_attributes')
+
+    @pytest.mark.unit
+    def test_do_get_attributes_failure_definitions(self, mock_program_dao):
         """_do_get_attributes() should return a dict of failure definition records on success."""
         pub.subscribe(self.on_succeed_get_failure_definition_attrs,
                       'succeed_get_failure_definitions_attributes')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_get_attributes(1, 'failure_definitions')
 
-    @pytest.mark.integration
-    def test_do_get_attributes_usage_profile(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_get_failure_definition_attrs,
+                        'succeed_get_failure_definitions_attributes')
+
+    @pytest.mark.unit
+    def test_do_get_attributes_usage_profile(self, mock_program_dao):
         """_do_get_attributes() should return treelib Tree() on success."""
         pub.subscribe(self.on_succeed_get_usage_profile_attrs,
                       'succeed_get_usage_profile_attributes')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_get_attributes(1, 'usage_profile')
 
-    @pytest.mark.integration
-    def test_do_get_all_attributes_data_manager(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_get_usage_profile_attrs,
+                        'succeed_get_usage_profile_attributes')
+
+    @pytest.mark.unit
+    def test_do_get_all_attributes_data_manager(self, mock_program_dao):
         """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
         pub.subscribe(self.on_succeed_get_all_attrs,
                       'succeed_get_all_revision_attributes')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_get_all_attributes(1)
 
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_get_all_attrs,
+                        'succeed_get_all_revision_attributes')
+
+    @pytest.mark.unit
+    def test_do_set_attributes(self, mock_program_dao):
         """do_set_attributes() should send the success message."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         pub.sendMessage('request_set_revision_attributes',
@@ -476,11 +754,11 @@ class TestGetterSetter():
                         package={'revision_code': '-'})
         pub.sendMessage('request_set_revision_attributes',
                         node_id=[1, 1, ''],
-                        package={'definition': b'Test Description'})
-        pub.sendMessage('request_set_revision_attributes',
-                        node_id=[1, -1, '1'],
-                        package={'description': b'This is the mission '
-                                                b'description.'})
+                        package={'definition': 'Test Description'})
+        pub.sendMessage(
+            'request_set_revision_attributes',
+            node_id=[1, -1, '1'],
+            package={'description': 'This is the mission description.'})
         pub.sendMessage('request_set_revision_attributes',
                         node_id=[1, -1, '1.1'],
                         package={'phase_end': 5.12})
@@ -490,27 +768,27 @@ class TestGetterSetter():
         assert DUT.do_select(1, table='revision').revision_code == '-'
         assert DUT.do_select(
             1,
-            table='failure_definitions')[1].definition == b'Test Description'
+            table='failure_definitions')[1].definition == 'Test Description'
         assert DUT.do_select(
             1, table='usage_profile').get_node('1').data.description == (
-                b'This is the mission description.')
+                'This is the mission description.')
         assert DUT.do_select(
             1, table='usage_profile').get_node('1.1').data.phase_end == 5.12
         assert DUT.do_select(
             1, table='usage_profile').get_node('1.1.1').data.minimum == 5.12
 
-    @pytest.mark.integration
-    def test_do_set_all_attributes(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_set_all_attributes(self, mock_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
         pub.sendMessage('request_set_all_revision_attributes',
                         attributes={
                             'revision_id': 1,
                             'revision_code': '1',
-                            'remarks': b'These are remarks added by a test.',
+                            'remarks': 'These are remarks added by a test.',
                             'total_part_count': 28,
                             'definition': 'Failure Definition',
                             'phase_end': 0.0
@@ -520,7 +798,7 @@ class TestGetterSetter():
         assert DUT.do_select(1, table='revision').revision_code == '1'
         assert DUT.do_select(
             1,
-            table='revision').remarks == b'These are remarks added by a test.'
+            table='revision').remarks == 'These are remarks added by a test.'
         assert DUT.do_select(1, table='revision').total_part_count == 28
         assert DUT.do_select(
             1,
@@ -528,32 +806,35 @@ class TestGetterSetter():
         assert DUT.do_select(
             1, table='usage_profile').get_node('1.1').data.phase_end == 0.0
 
-    @pytest.mark.integration
-    def test_on_get_tree(self, test_program_dao):
+    @pytest.mark.unit
+    def test_on_get_tree(self, mock_program_dao):
         """on_get_tree() should return the revision treelib Tree."""
         pub.subscribe(self.on_succeed_get_revision_tree,
                       'succeed_get_revision_tree')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_get_tree()
 
-    @pytest.mark.integration
-    def test_do_get_last_id(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_get_revision_tree,
+                        'succeed_get_revision_tree')
+
+    @pytest.mark.unit
+    def test_do_get_last_id(self, mock_program_dao):
         """do_get_last_id() should broadcast the success message with the last ID aste payload."""
         pub.subscribe(self.on_succeed_get_last_id,
                       'succeed_get_last_revision_id')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_get_last_id('revision')
 
         pub.unsubscribe(self.on_succeed_get_last_id,
                         'succeed_get_last_revision_id')
 
-@pytest.mark.usefixtures('test_program_dao')
+
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_revision(self, node_id, tree):
@@ -563,7 +844,7 @@ class TestInsertMethods():
 
     def on_succeed_insert_failure_definition(self, tree):
         assert isinstance(tree, dict)
-        assert isinstance(tree[4], RAMSTKFailureDefinition)
+        assert isinstance(tree[2], RAMSTKFailureDefinition)
         print(
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
@@ -579,14 +860,14 @@ class TestInsertMethods():
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
 
-    @pytest.mark.integration
-    def test_do_insert(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_insert(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new revision."""
         pub.subscribe(self.on_succeed_insert_revision,
                       'succeed_insert_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_insert()
 
@@ -598,30 +879,36 @@ class TestInsertMethods():
             DUT.tree.get_node(3).data['failure_definitions'], dict)
         assert isinstance(DUT.tree.get_node(3).data['usage_profile'], Tree)
 
-    @pytest.mark.integration
-    def test_do_insert_failure_definition(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_insert_revision,
+                        'succeed_insert_revision')
+
+    @pytest.mark.unit
+    def test_do_insert_failure_definition(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new failure definition."""
         pub.subscribe(self.on_succeed_insert_failure_definition,
                       'succeed_insert_failure_definition')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_insert_failure_definition(1)
 
         assert isinstance(
             DUT.tree.get_node(1).data['failure_definitions'], dict)
         assert isinstance(
-            DUT.tree.get_node(1).data['failure_definitions'][4],
+            DUT.tree.get_node(1).data['failure_definitions'][2],
             RAMSTKFailureDefinition)
 
-    @pytest.mark.integration
-    def test_do_insert_mission(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_insert_failure_definition,
+                        'succeed_insert_failure_definition')
+
+    @pytest.mark.unit
+    def test_do_insert_mission(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new mission."""
         pub.subscribe(self.on_succeed_insert_mission, 'succeed_insert_mission')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_insert_mission(1)
 
@@ -630,14 +917,17 @@ class TestInsertMethods():
             DUT.tree.get_node(1).data['usage_profile'].get_node('3').data,
             RAMSTKMission)
 
-    @pytest.mark.integration
-    def test_do_insert_mission_phase(self, test_program_dao):
+        pub.unsubscribe(self.on_succeed_insert_mission,
+                        'succeed_insert_mission')
+
+    @pytest.mark.unit
+    def test_do_insert_mission_phase(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new mission phase."""
         pub.subscribe(self.on_succeed_insert_mission_phase,
                       'succeed_insert_mission_phase')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_insert_mission_phase(1, 1)
 
@@ -645,15 +935,17 @@ class TestInsertMethods():
         assert isinstance(
             DUT.tree.get_node(1).data['usage_profile'].get_node(
                 str('1.4')).data, RAMSTKMissionPhase)
+        pub.unsubscribe(self.on_succeed_insert_mission_phase,
+                        'succeed_insert_mission_phase')
 
-    @pytest.mark.integration
-    def test_do_insert_environment(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_insert_environment(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new environment."""
         pub.subscribe(self.on_succeed_insert_environment,
                       'succeed_insert_environment')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_insert_environment(1, 1, 1)
 
@@ -661,6 +953,9 @@ class TestInsertMethods():
         assert isinstance(
             DUT.tree.get_node(1).data['usage_profile'].get_node(
                 str('1.1.4')).data, RAMSTKEnvironment)
+
+        pub.unsubscribe(self.on_succeed_insert_environment,
+                        'succeed_insert_environment')
 
 
 @pytest.mark.usefixtures('test_program_dao')
@@ -725,13 +1020,13 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_succeed_update_revision,
                         'succeed_update_revision')
 
-    @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_update_non_existent_id(self, mock_program_dao):
         """ do_update() should return a non-zero error code when passed a Revision ID that doesn't exist. """
         pub.subscribe(self.on_fail_update_revision, 'fail_update_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_update(100)
 
@@ -748,25 +1043,25 @@ class TestUpdateMethods():
         DUT.do_select_all()
 
         _failure_definition = DUT.do_select(1, table='failure_definitions')
-        _failure_definition[1].definition = b'Big test definition'
+        _failure_definition[1].definition = 'Big test definition'
 
         DUT._do_update_failure_definition(1, 1)
         _failure_definition = DUT.do_select(1, table='failure_definitions')
 
-        assert _failure_definition[1].definition == b'Big test definition'
+        assert _failure_definition[1].definition == 'Big test definition'
 
         pub.unsubscribe(self.on_succeed_update_failure_definition,
                         'succeed_update_failure_definition')
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_do_update_failure_definition_non_existent_id(
-            self, test_program_dao):
+            self, mock_program_dao):
         """do_update_failure_definition() should broadcast the fail message when attempting to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_failure_definition,
                       'fail_update_failure_definition')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_update_failure_definition(1, 100)
 
@@ -781,16 +1076,16 @@ class TestUpdateMethods():
         DUT.do_select_all()
 
         _failure_definition = DUT.do_select(1, table='failure_definitions')
-        _failure_definition[1].definition = b'Big test definition #1'
-        _failure_definition[2].definition = b'Big test definition #2'
+        _failure_definition[1].definition = 'Big test definition #1'
+        _failure_definition[2].definition = 'Big test definition #2'
 
         assert DUT._do_update_all_failure_definition(1) is None
 
         _failure_definition = DUT.do_select(1, table='failure_definitions')
-        assert _failure_definition[1].definition == b'Big test definition #1'
+        assert _failure_definition[1].definition == 'Big test definition #1'
 
         _failure_definition = DUT.do_select(1, table='failure_definitions')
-        assert _failure_definition[2].definition == b'Big test definition #2'
+        assert _failure_definition[2].definition == 'Big test definition #2'
 
     @pytest.mark.integration
     def test_do_update_usage_profile(self, test_program_dao):
@@ -803,24 +1098,24 @@ class TestUpdateMethods():
         DUT.do_select_all()
 
         _mission = DUT.do_select(1, table='usage_profile').get_node('1').data
-        _mission.description = b'Big ole failure mode'
+        _mission.description = 'Big ole failure mode'
 
         DUT._do_update_usage_profile(1, '1')
         _mission = DUT.do_select(1, table='usage_profile').get_node('1').data
 
-        assert _mission.description == b'Big ole failure mode'
+        assert _mission.description == 'Big ole failure mode'
 
         pub.unsubscribe(self.on_succeed_update_usage_profile,
                         'succeed_update_usage_profile')
 
-    @pytest.mark.integration
-    def test_do_update_usage_profile_non_existent_id(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_update_usage_profile_non_existent_id(self, mock_program_dao):
         """do_update_usage_profile() should broadcast the fail message when attempting to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_usage_profile,
                       'fail_update_usage_profile')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT._do_update_usage_profile(1, '1.10')
 

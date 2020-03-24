@@ -10,7 +10,7 @@
 from datetime import date
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -60,7 +60,7 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseTable):
         'part_number': '',
         'quantity': 1,
         'ref_des': '',
-        'remarks': b'',
+        'remarks': '',
         'repairable': 0,
         'specification_number': '',
         'subcategory_id': 0,
@@ -147,7 +147,7 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseTable):
     ref_des = Column('fld_ref_des',
                      String(256),
                      default=__defaults__['ref_des'])
-    remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
+    remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
     repairable = Column('fld_repairable',
                         Integer,
                         default=__defaults__['repairable'])

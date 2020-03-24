@@ -33,18 +33,18 @@ ATTRIBUTES = {
     'function_1': '0',
     'quality_from_id': 0,
     'change_factor_10': 1.0,
-    'user_blob_3': b'',
+    'user_blob_3': '',
     'environment_from_id': 0,
-    'change_description_7': b'',
+    'change_description_7': '',
     'environment_to_id': 0,
     'result_3': 0.0,
     'temperature_to': 30.0,
-    'user_blob_2': b'',
-    'user_blob_1': b'',
-    'user_blob_5': b'',
-    'user_blob_4': b'',
+    'user_blob_2': '',
+    'user_blob_1': '',
+    'user_blob_5': '',
+    'user_blob_4': '',
     'result_2': 0.0,
-    'change_description_10': b'',
+    'change_description_10': '',
     'result_1': 0.0,
     'result_4': 0.0,
     'result_5': 0.0,
@@ -58,15 +58,15 @@ ATTRIBUTES = {
     'user_int_1': 0,
     'user_int_2': 0,
     'user_int_3': 0,
-    'change_description_6': b'',
+    'change_description_6': '',
     'temperature_from': 30.0,
-    'change_description_4': b'',
-    'change_description_5': b'',
-    'change_description_2': b'',
-    'change_description_3': b'',
-    'change_description_1': b'',
-    'change_description_8': b'',
-    'change_description_9': b''
+    'change_description_4': '',
+    'change_description_5': '',
+    'change_description_2': '',
+    'change_description_3': '',
+    'change_description_1': '',
+    'change_description_8': '',
+    'change_description_9': ''
 }
 
 
@@ -84,16 +84,16 @@ class TestRAMSTKSimilarItem():
         assert DUT.__tablename__ == 'ramstk_similar_item'
         assert DUT.revision_id == 1
         assert DUT.hardware_id == 1
-        assert DUT.change_description_1 == b''
-        assert DUT.change_description_2 == b''
-        assert DUT.change_description_3 == b''
-        assert DUT.change_description_4 == b''
-        assert DUT.change_description_5 == b''
-        assert DUT.change_description_6 == b''
-        assert DUT.change_description_7 == b''
-        assert DUT.change_description_8 == b''
-        assert DUT.change_description_9 == b''
-        assert DUT.change_description_10 == b''
+        assert DUT.change_description_1 == ''
+        assert DUT.change_description_2 == ''
+        assert DUT.change_description_3 == ''
+        assert DUT.change_description_4 == ''
+        assert DUT.change_description_5 == ''
+        assert DUT.change_description_6 == ''
+        assert DUT.change_description_7 == ''
+        assert DUT.change_description_8 == ''
+        assert DUT.change_description_9 == ''
+        assert DUT.change_description_10 == ''
         assert DUT.change_factor_1 == 1.0
         assert DUT.change_factor_2 == 1.0
         assert DUT.change_factor_3 == 1.0
@@ -122,11 +122,11 @@ class TestRAMSTKSimilarItem():
         assert DUT.result_5 == 0.0
         assert DUT.temperature_from == 30.0
         assert DUT.temperature_to == 30.0
-        assert DUT.user_blob_1 == b''
-        assert DUT.user_blob_2 == b''
-        assert DUT.user_blob_3 == b''
-        assert DUT.user_blob_4 == b''
-        assert DUT.user_blob_5 == b''
+        assert DUT.user_blob_1 == ''
+        assert DUT.user_blob_2 == ''
+        assert DUT.user_blob_3 == ''
+        assert DUT.user_blob_4 == ''
+        assert DUT.user_blob_5 == ''
         assert DUT.user_float_1 == 0.0
         assert DUT.user_float_2 == 0.0
         assert DUT.user_float_3 == 0.0
@@ -148,16 +148,16 @@ class TestRAMSTKSimilarItem():
         assert isinstance(_attributes, dict)
 
         assert _attributes['hardware_id'] == 1
-        assert _attributes['change_description_1'] == b''
-        assert _attributes['change_description_2'] == b''
-        assert _attributes['change_description_3'] == b''
-        assert _attributes['change_description_4'] == b''
-        assert _attributes['change_description_5'] == b''
-        assert _attributes['change_description_6'] == b''
-        assert _attributes['change_description_7'] == b''
-        assert _attributes['change_description_8'] == b''
-        assert _attributes['change_description_9'] == b''
-        assert _attributes['change_description_10'] == b''
+        assert _attributes['change_description_1'] == ''
+        assert _attributes['change_description_2'] == ''
+        assert _attributes['change_description_3'] == ''
+        assert _attributes['change_description_4'] == ''
+        assert _attributes['change_description_5'] == ''
+        assert _attributes['change_description_6'] == ''
+        assert _attributes['change_description_7'] == ''
+        assert _attributes['change_description_8'] == ''
+        assert _attributes['change_description_9'] == ''
+        assert _attributes['change_description_10'] == ''
         assert _attributes['change_factor_1'] == 1.0
         assert _attributes['change_factor_2'] == 1.0
         assert _attributes['change_factor_3'] == 1.0
@@ -186,11 +186,11 @@ class TestRAMSTKSimilarItem():
         assert _attributes['result_5'] == 0.0
         assert _attributes['temperature_from'] == 30.0
         assert _attributes['temperature_to'] == 30.0
-        assert _attributes['user_blob_1'] == b''
-        assert _attributes['user_blob_2'] == b''
-        assert _attributes['user_blob_3'] == b''
-        assert _attributes['user_blob_4'] == b''
-        assert _attributes['user_blob_5'] == b''
+        assert _attributes['user_blob_1'] == ''
+        assert _attributes['user_blob_2'] == ''
+        assert _attributes['user_blob_3'] == ''
+        assert _attributes['user_blob_4'] == ''
+        assert _attributes['user_blob_5'] == ''
         assert _attributes['user_float_1'] == 0.0
         assert _attributes['user_float_2'] == 0.0
         assert _attributes['user_float_3'] == 0.0

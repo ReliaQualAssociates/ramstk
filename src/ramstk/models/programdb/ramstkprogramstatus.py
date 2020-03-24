@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKProgramStatus Table Module."""
 
 # Standard Library Imports
@@ -21,7 +21,8 @@ from ramstk.models import RAMSTKBaseTable
 
 class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
     """
-    Class to represent table ramstk_validation in the RAMSTK Program database.
+    Class to represent table ramstk_program_status in the RAMSTK Program
+    database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -38,14 +39,14 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False,
+        nullable=False
     )
     status_id = Column(
         'fld_status_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False,
+        nullable=False
     )
 
     cost_remaining = Column('fld_cost_remaining', Float, default=0.0)
@@ -53,7 +54,7 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
         'fld_date_status',
         Date,
         unique=True,
-        default=date.today(),
+        default=date.today()
     )
     time_remaining = Column('fld_time_remaining', Float, default=0.0)
 

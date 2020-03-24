@@ -18,7 +18,7 @@ from ramstk.models.programdb import RAMSTKRequirement
 
 ATTRIBUTES = {
     'derived': 0,
-    'description': b'',
+    'description': '',
     'figure_number': '',
     'owner': '',
     'page_number': '',
@@ -81,7 +81,7 @@ class TestRAMSTKRequirement():
         assert DUT.revision_id == 1
         assert DUT.requirement_id == 1
         assert DUT.derived == 0
-        assert DUT.description == b''
+        assert DUT.description == ''
         assert DUT.figure_number == ''
         assert DUT.owner == ''
         assert DUT.page_number == ''
@@ -136,7 +136,7 @@ class TestRAMSTKRequirement():
         assert _attributes['revision_id'] == 1
         assert _attributes['requirement_id'] == 1
         assert _attributes['derived'] == 0
-        assert _attributes['description'] == b''
+        assert _attributes['description'] == ''
         assert _attributes['figure_number'] == ''
         assert _attributes['owner'] == ''
         assert _attributes['page_number'] == ''
@@ -197,7 +197,7 @@ class TestRAMSTKRequirement():
         ATTRIBUTES['description'] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == b''
+        assert DUT.get_attributes()['description'] == ''
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

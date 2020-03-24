@@ -34,10 +34,10 @@ class TestRAMSTKControl():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_control'
-        assert DUT.cause_id == 1
-        assert DUT.control_id == 1
-        assert DUT.description == 'Test Functional FMEA Control #1 for Cause ID 1'
-        assert DUT.type_id == 'Detection'
+        assert DUT.cause_id == 2
+        assert DUT.control_id == 5
+        assert DUT.description == 'Test FMEA Control #1 for Cause ID 5'
+        assert DUT.type_id == ''
 
 
     @pytest.mark.integration
@@ -51,11 +51,11 @@ class TestRAMSTKControl():
 
         assert isinstance(_attributes, dict)
 
-        assert _attributes['cause_id'] == 1
-        assert _attributes['control_id'] == 1
-        assert _attributes['description'] == ('Test Functional FMEA Control #1 '
-                                              'for Cause ID 1')
-        assert _attributes['type_id'] == 'Detection'
+        assert _attributes['cause_id'] == 2
+        assert _attributes['control_id'] == 5
+        assert _attributes['description'] == ('Test FMEA Control #1 for Cause '
+                                              'ID 5')
+        assert _attributes['type_id'] == ''
 
 
     @pytest.mark.integration

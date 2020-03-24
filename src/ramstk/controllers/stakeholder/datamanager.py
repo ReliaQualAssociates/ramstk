@@ -128,7 +128,8 @@ class DataManager(RAMSTKDataManager):
 
         try:
             _stakeholder = RAMSTKStakeholder(
-                description=b'New Stakeholder Input')
+                stakeholder_id=self.last_id + 1,
+                description='New Stakeholder Input')
             self.dao.do_insert(_stakeholder)
 
             self.last_id = _stakeholder.stakeholder_id
@@ -162,8 +163,9 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _stakeholder in self.dao.session.query(RAMSTKStakeholder).filter(
-                RAMSTKStakeholder.revision_id == self._revision_id).all():
+        for _stakeholder in self.dao.do_select_all(RAMSTKStakeholder,
+                                                   RAMSTKStakeholder.revision_id,
+                                                   self._revision_id):
             _data_package = {'stakeholder': _stakeholder}
 
             self.tree.create_node(tag=_stakeholder.description,
@@ -227,9 +229,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            self.dao.session.add(
-                self.tree.get_node(node_id).data['stakeholder'])
-            self.dao.do_update()
+            self.dao.do_update(self.tree.get_node(node_id).data['stakeholder'])
 
             pub.sendMessage('succeed_update_stakeholder', node_id=node_id)
         except AttributeError:

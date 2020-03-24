@@ -10,7 +10,7 @@
 from datetime import date, timedelta
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -55,7 +55,7 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
     )
 
     action_recommended = Column('fld_action_recommended',
-                                BLOB,
+                                String,
                                 default=__defaults__['action_recommended'])
     action_category = Column('fld_action_category',
                              String(512),
@@ -70,7 +70,7 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
                            String(512),
                            default=__defaults__['action_status'])
     action_taken = Column('fld_action_taken',
-                          BLOB,
+                          String,
                           default=__defaults__['action_taken'])
     action_approved = Column('fld_action_approved',
                              Integer,

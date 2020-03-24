@@ -41,7 +41,7 @@ ATTRIBUTES = {
     'part_number': '',
     'quantity': 1,
     'ref_des': 'S1',
-    'remarks': b'',
+    'remarks': '',
     'repairable': 0,
     'specification_number': '',
     'subcategory_id': 0,
@@ -93,7 +93,7 @@ class TestRAMSTKHardware():
         assert DUT.part_number == ''
         assert DUT.quantity == 1
         assert DUT.ref_des == 'S1'
-        assert DUT.remarks == b''
+        assert DUT.remarks == ''
         assert DUT.repairable == 0
         assert DUT.specification_number == ''
         assert DUT.subcategory_id == 0
@@ -101,7 +101,7 @@ class TestRAMSTKHardware():
         # assert DUT,total_cost == 0
         # assert DUT.total_part_count == 0
         assert DUT.total_power_dissipation == 0.0
-        assert DUT.year_of_manufacture == date.today().year
+        assert DUT.year_of_manufacture == 2019
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -135,7 +135,7 @@ class TestRAMSTKHardware():
         assert _attributes['part_number'] == ''
         assert _attributes['quantity'] == 1
         assert _attributes['ref_des'] == 'S1'
-        assert _attributes['remarks'] == b''
+        assert _attributes['remarks'] == ''
         assert _attributes['repairable'] == 0
         assert _attributes['specification_number'] == ''
         assert _attributes['subcategory_id'] == 0
@@ -143,7 +143,7 @@ class TestRAMSTKHardware():
         # assert _attributes['total_cost'] == 0.0
         # assert _attributes['total_part_count'] == 0
         assert _attributes['total_power_dissipation'] == 0.0
-        assert _attributes['year_of_manufacture'] == date.today().year
+        assert _attributes['year_of_manufacture'] == 2019
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):

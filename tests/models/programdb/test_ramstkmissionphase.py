@@ -14,7 +14,7 @@ import pytest
 from ramstk.models.programdb import RAMSTKMissionPhase
 
 ATTRIBUTES = {
-    'description': b'Test Mission Phase 1',
+    'description': 'Test Mission Phase 1',
     'name': '',
     'phase_end': 0.0,
     'phase_start': 0.0
@@ -35,7 +35,7 @@ class TestRAMSTKMissionPhase():
         assert DUT.__tablename__ == 'ramstk_mission_phase'
         assert DUT.mission_id == 1
         assert DUT.phase_id == 1
-        assert DUT.description == b'Test Mission Phase 1'
+        assert DUT.description == 'Test Mission Phase 1'
         assert DUT.name == ''
         assert DUT.phase_start == 0.0
         assert DUT.phase_end == 0.0
@@ -46,7 +46,7 @@ class TestRAMSTKMissionPhase():
         DUT = test_program_dao.session.query(RAMSTKMissionPhase).first()
 
         _attributes = DUT.get_attributes()
-        assert _attributes['description'] == b'Test Mission Phase 1'
+        assert _attributes['description'] == 'Test Mission Phase 1'
         assert _attributes['name'] == ''
         assert _attributes['phase_start'] == 0.0
         assert _attributes['phase_end'] == 0.0

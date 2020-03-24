@@ -19,12 +19,12 @@ ATTRIBUTES = {
     'other_indications': '',
     'mode_criticality': 0.0,
     'single_point': 0,
-    'design_provisions': b'',
+    'design_provisions': '',
     'type_id': 0,
     'rpn_severity_new': 1,
     'effect_next': '',
     'detection_method': '',
-    'operator_actions': b'',
+    'operator_actions': '',
     'critical_item': 0,
     'hazard_rate_source': '',
     'severity_class': '',
@@ -59,7 +59,7 @@ class TestRAMSTKMode():
         assert DUT.mode_id == 1
         assert DUT.critical_item == 0
         assert DUT.description == 'Test Functional Failure Mode #1'
-        assert DUT.design_provisions == b''
+        assert DUT.design_provisions == ''
         assert DUT.detection_method == ''
         assert DUT.effect_end == ''
         assert DUT.effect_local == ''
@@ -74,9 +74,9 @@ class TestRAMSTKMode():
         assert DUT.mode_op_time == 0.0
         assert DUT.mode_probability == ''
         assert DUT.mode_ratio == 0.0
-        assert DUT.operator_actions == b''
+        assert DUT.operator_actions == ''
         assert DUT.other_indications == ''
-        assert DUT.remarks == b''
+        assert DUT.remarks == ''
         assert DUT.rpn_severity == 1
         assert DUT.rpn_severity_new == 1
         assert DUT.severity_class == ''
@@ -95,7 +95,7 @@ class TestRAMSTKMode():
         assert _attributes['mode_id'] == 1
         assert _attributes['critical_item'] == 0
         assert _attributes['description'] == 'Test Functional Failure Mode #1'
-        assert _attributes['design_provisions'] == b''
+        assert _attributes['design_provisions'] == ''
         assert _attributes['detection_method'] == ''
         assert _attributes['effect_end'] == ''
         assert _attributes['effect_local'] == ''
@@ -110,9 +110,9 @@ class TestRAMSTKMode():
         assert _attributes['mode_op_time'] == 0.0
         assert _attributes['mode_probability'] == ''
         assert _attributes['mode_ratio'] == 0.0
-        assert _attributes['operator_actions'] == b''
+        assert _attributes['operator_actions'] == ''
         assert _attributes['other_indications'] == ''
-        assert _attributes['remarks'] == b''
+        assert _attributes['remarks'] == ''
         assert _attributes['rpn_severity'] == 1
         assert _attributes['rpn_severity_new'] == 1
         assert _attributes['severity_class'] == ''
