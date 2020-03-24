@@ -11,8 +11,11 @@ import sqlite3
 from typing import Any, Dict, List, TextIO, Tuple
 
 # Third Party Imports
+import psycopg2
+from psycopg2 import sql
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
-from sqlalchemy import create_engine, exc
+from sqlalchemy import and_, create_engine, exc
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -27,11 +30,21 @@ def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
 
     return (engine,
             scoped_session(
-                sessionmaker(autocommit=False, autoflush=True, bind=engine)))
+                sessionmaker(autocommit=False, autoflush=False, bind=engine)))
 
 
 class BaseDatabase():
     """This is the BaseDatabase class."""
+
+    # Define public class dict attributes.
+    cxnargs: Dict[str, str] = {
+        'dialect': '',
+        'user': '',
+        'password': '',
+        'host': '',
+        'port': '',
+        'dbname': ''
+    }
 
     # Define public class scalar attributes.
     engine: Engine = None
@@ -58,36 +71,90 @@ class BaseDatabase():
 
         # Initialize public scalar instance attributes.
 
-    def do_connect(self, database: str) -> None:
+    def do_connect(self, database: Dict) -> None:
         """
         Connect to the database.
 
-        :param str database: the absolute path to the database to connect to.
+        :param dict database: the connection information for the database to
+            connect to.
         :return: None
         :rtype: None
-        :raise: AttributeError if passed a non-string database name.
-        :raise: sqlalchemy.exc.ArgumentError if passed an invalid database
+        :raise: sqlalchemy.exc.OperationalError if passed an invalid database
             URL.
-        :raise: sqlalchemy.exc.NoSuchModuleError if passed a database URL with
+        :raise: sqlalchemy.exc.ArgumentError if passed a database URL with
             an unknown/unsupported SQL dialect.
         """
-        self.database = database
-        self.engine, self.session = do_open_session(self.database)
+        self.cxnargs['dialect'] = database['dialect']
+        self.cxnargs['user'] = database['user']
+        self.cxnargs['password'] = database['password']
+        self.cxnargs['host'] = database['host']
+        self.cxnargs['port'] = database['port']
+        self.cxnargs['dbname'] = database['database']
+
+        try:
+            if self.cxnargs['dialect'] == 'sqlite':
+                self.database = 'sqlite:///' + self.cxnargs['dbname']
+            elif self.cxnargs['dialect'] == 'postgres':
+                self.database = ('postgresql+psycopg2://'
+                                 + self.cxnargs['user'] + ':'
+                                 + self.cxnargs['password'] + '@'
+                                 + self.cxnargs['host'] + ':'
+                                 + self.cxnargs['port'] + '/'
+                                 + self.cxnargs['dbname'])
+            else:
+                raise DataAccessError('Unknown database dialect in database '
+                                      'connection dict.')
+        except TypeError:
+            raise DataAccessError('Unknown dialect or non-string value in '
+                                  'database connection dict.')
+
+        if self.database != '':
+            self.engine, self.session = do_open_session(self.database)
 
     @staticmethod
-    def do_create_program_db(database: str, sql_file: TextIO) -> None:
+    def do_create_program_db(database: Dict, sql_file: TextIO) -> None:
         """
         Create a shiny new, unpopulated RAMSTK program database.
 
         :param str database: the absolute path to the database to connect to.
-        :param str sql_file: the absolute path to the SQL file containing the
-            code to create a RAMSTK program database.
+        :param dict sql_file: a dict containing the database connection
+            arguments.
         :return: None
         :rtype: None
         """
-        conn = sqlite3.connect(database)
-        conn.executescript(sql_file.read().strip())
-        conn.commit()
+        if database['dialect'] == 'sqlite':
+            conn = sqlite3.connect(database['database'])
+            conn.executescript(sql_file.read().strip())
+        elif database['dialect'] == 'postgres':
+            # Create the database.
+            conn = psycopg2.connect(host=database['host'],
+                                    dbname='postgres',
+                                    user=database['user'],
+                                    password=database['password'])
+            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+            cursor = conn.cursor()
+            cursor.execute(
+                sql.SQL('DROP DATABASE IF EXISTS {}').format(
+                    sql.Identifier(database['database'])))
+            cursor.execute(
+                sql.SQL('CREATE DATABASE {}').format(
+                    sql.Identifier(database['database'])))
+            cursor.close()
+            conn.close()
+
+            # Populate the database.
+            conn = psycopg2.connect(host=database['host'],
+                                    dbname=database['database'],
+                                    user=database['user'],
+                                    password=database['password'])
+            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+            conn.set_session(autocommit=True)
+
+            cursor = conn.cursor()
+            cursor.execute(sql_file.read())
+            cursor.close()
+
         conn.close()
 
     def do_delete(self, item: object) -> None:
@@ -99,8 +166,9 @@ class BaseDatabase():
         :return: None
         :rtype: None
         """
-        self.session.execute(
-            "PRAGMA foreign_keys=ON")  # This is only needed for SQLite dbs.
+        if self.cxnargs['dialect'] == 'sqlite':
+            self.session.execute(
+                "PRAGMA foreign_keys=ON")
 
         try:
             self.session.delete(item)
@@ -164,7 +232,7 @@ class BaseDatabase():
             #   1. Primary key violations.
             #   2. Non-date data supplied to date type fields.
             #   3. Foreign key violations.
-            #   4. Database is locked by another session.
+            #   4. np.nan data suppled to any field type.
             self.session.rollback()
             _error_message = (
                 "There was an database error when attempting to add a "
@@ -185,13 +253,47 @@ class BaseDatabase():
         for _record in records:
             self.do_insert(_record)
 
-    def do_update(self) -> None:
+    def do_select_all(self, table, key=None, value=None, order=None,
+                      _all=True) -> None:
+        """
+        Select all records from the RAMSTK database for table.
+
+        :param table: the database table object to select all from.
+        :keyword key: the index key in the table.
+        :keyword value: the value of the index key.
+        :keyword order: the field to order returned results.
+        :keyword _all: whether to return all records or only the first record.
+        :return: a list of table instances; one for each record.
+        """
+        _results = []
+        if isinstance(key, list):
+            _results = self.session.query(table).filter(
+                and_(key[0] == value[0],
+                     key[1] == value[1]))
+        else:
+            _results = self.session.query(table).filter(key == value)
+
+        if order is not None:
+            _results = _results.order_by(order)
+
+        if _all:
+            _results = _results.all()
+        else:
+            _results = _results.first()
+
+        return _results
+
+    def do_update(self, record=None) -> None:
         """
         Update the RAMSTK database with any pending changes.
 
+        :keyword record: the record to update in the database.
         :return: None
         :rtype: None
         """
+        if not record is None:
+            self.session.add(record)
+
         self.session.commit()
 
     def get_last_id(self, table: str, id_column: str) -> Any:

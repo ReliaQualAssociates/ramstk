@@ -13,7 +13,7 @@ import pytest
 from ramstk.models.programdb import RAMSTKTestMethod
 
 ATTRIBUTES = {
-    'remarks': b'',
+    'remarks': '',
     'boundary_conditions': '',
     'description': 'Test Test Method'
 }
@@ -30,11 +30,11 @@ class TestRAMSTKTestMethod():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_test_method'
-        assert DUT.load_id == 1
-        assert DUT.test_id == 1
-        assert DUT.description == 'Test Test Method'
+        assert DUT.load_id == 3
+        assert DUT.test_id == 3
+        assert DUT.description == 'Kick his ass'
         assert DUT.boundary_conditions == ''
-        assert DUT.remarks == b''
+        assert DUT.remarks == 'Doyle Rowland'
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -45,11 +45,11 @@ class TestRAMSTKTestMethod():
 
         assert isinstance(_attributes, dict)
 
-        assert _attributes['load_id'] == 1
-        assert _attributes['test_id'] == 1
-        assert _attributes['description'] == 'Test Test Method'
+        assert _attributes['load_id'] == 3
+        assert _attributes['test_id'] == 3
+        assert _attributes['description'] == 'Kick his ass'
         assert _attributes['boundary_conditions'] == ''
-        assert _attributes['remarks'] == b''
+        assert _attributes['remarks'] == 'Doyle Rowland'
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):

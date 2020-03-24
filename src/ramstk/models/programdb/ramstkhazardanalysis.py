@@ -85,6 +85,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
         primary_key=True,
         autoincrement=True,
         nullable=False,
+        info={"identity": (0, 1)},
     )
 
     potential_hazard = Column('fld_potential_hazard',

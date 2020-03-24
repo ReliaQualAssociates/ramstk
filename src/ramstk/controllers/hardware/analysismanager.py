@@ -703,7 +703,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        self._attributes['reason'] = b""
+        self._attributes['reason'] = ""
         self._attributes['overstress'] = False
 
         def _do_check(overstress, stress_type):
@@ -721,25 +721,25 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is less than limit in a "
                     "harsh environment.\n".format(
-                        str(stress_type))).encode('utf-8')
+                        str(stress_type)))
             if overstress['harsh'][1]:
                 self._attributes['overstress'] = True
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is greater than limit "
                     "in a harsh environment.\n".format(
-                        str(stress_type))).encode('utf-8')
+                        str(stress_type)))
             if overstress['mild'][0]:
                 self._attributes['overstress'] = True
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is less than limit in a "
                     "mild environment.\n".format(
-                        str(stress_type))).encode('utf-8')
+                        str(stress_type)))
             if overstress['mild'][1]:
                 self._attributes['overstress'] = True
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is greater than limit "
                     "in a mild environment.\n".format(
-                        str(stress_type))).encode('utf-8')
+                        str(stress_type)))
 
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hardware item.  We need to build a comprehensive dict of
@@ -808,46 +808,46 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _attributes = _node.data['similar_item'].get_attributes()
 
             _change_description_1 += _name + ':\n' + _attributes[
-                'change_description_1'].decode('utf-8') + '\n\n'
+                'change_description_1'] + '\n\n'
             _change_description_2 += _name + ':\n' + _attributes[
-                'change_description_2'].decode('utf-8') + '\n\n'
+                'change_description_2'] + '\n\n'
             _change_description_3 += _name + ':\n' + _attributes[
-                'change_description_3'].decode('utf-8') + '\n\n'
+                'change_description_3'] + '\n\n'
             _change_description_4 += _name + ':\n' + _attributes[
-                'change_description_4'].decode('utf-8') + '\n\n'
+                'change_description_4'] + '\n\n'
             _change_description_5 += _name + ':\n' + _attributes[
-                'change_description_5'].decode('utf-8') + '\n\n'
+                'change_description_5'] + '\n\n'
             _change_description_6 += _name + ':\n' + _attributes[
-                'change_description_6'].decode('utf-8') + '\n\n'
+                'change_description_6'] + '\n\n'
             _change_description_7 += _name + ':\n' + _attributes[
-                'change_description_7'].decode('utf-8') + '\n\n'
+                'change_description_7'] + '\n\n'
             _change_description_8 += _name + ':\n' + _attributes[
-                'change_description_8'].decode('utf-8') + '\n\n'
+                'change_description_8'] + '\n\n'
             _change_description_9 += _name + ':\n' + _attributes[
-                'change_description_9'].decode('utf-8') + '\n\n'
+                'change_description_9'] + '\n\n'
             _change_description_10 += _name + ':\n' + _attributes[
-                'change_description_10'].decode('utf-8') + '\n\n'
+                'change_description_10'] + '\n\n'
 
         self._attributes[
-            'change_description_1'] = _change_description_1.encode('utf-8')
+            'change_description_1'] = _change_description_1
         self._attributes[
-            'change_description_2'] = _change_description_2.encode('utf-8')
+            'change_description_2'] = _change_description_2
         self._attributes[
-            'change_description_3'] = _change_description_3.encode('utf-8')
+            'change_description_3'] = _change_description_3
         self._attributes[
-            'change_description_4'] = _change_description_4.encode('utf-8')
+            'change_description_4'] = _change_description_4
         self._attributes[
-            'change_description_5'] = _change_description_5.encode('utf-8')
+            'change_description_5'] = _change_description_5
         self._attributes[
-            'change_description_6'] = _change_description_6.encode('utf-8')
+            'change_description_6'] = _change_description_6
         self._attributes[
-            'change_description_7'] = _change_description_7.encode('utf-8')
+            'change_description_7'] = _change_description_7
         self._attributes[
-            'change_description_8'] = _change_description_8.encode('utf-8')
+            'change_description_8'] = _change_description_8
         self._attributes[
-            'change_description_9'] = _change_description_9.encode('utf-8')
+            'change_description_9'] = _change_description_9
         self._attributes[
-            'change_description_10'] = _change_description_10.encode('utf-8')
+            'change_description_10'] = _change_description_10
 
         pub.sendMessage('succeed_roll_up_change_descriptions',
                         attributes=self._attributes)

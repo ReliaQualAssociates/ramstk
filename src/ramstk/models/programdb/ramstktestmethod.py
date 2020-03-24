@@ -8,7 +8,7 @@
 """RAMSTKTestMethod Table."""
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -51,7 +51,7 @@ class RAMSTKTestMethod(RAMSTK_BASE, RAMSTKBaseTable):
     boundary_conditions = Column('fld_boundary_conditions',
                                  String(512),
                                  default=__defaults__['boundary_conditions'])
-    remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
+    remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load = relationship('RAMSTKOpLoad', back_populates='test_method')

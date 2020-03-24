@@ -8,16 +8,11 @@
 """Test class for common database methods and operations."""
 
 # Standard Library Imports
-import os
-import tempfile
 from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
 from pubsub import pub
-from sqlalchemy import MetaData, create_engine, event, exc
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 # RAMSTK Package Imports
 from mock import patch
@@ -31,12 +26,16 @@ from ramstk.db.common import (
     _load_pof_tables, _load_site_info, do_add_administrator,
     do_create_common_db, do_load_variables, do_make_commondb_tables
 )
-from ramstk.exceptions import DataAccessError
 from ramstk.models.commondb import RAMSTKSiteInfo, RAMSTKUser
-from ramstk.models.programdb import RAMSTKFunction, RAMSTKRevision
 
 TEST_COMMON_DB = BaseDatabase()
-TEST_COMMON_DB.do_connect('sqlite:///:memory:')
+TEST_COMMON_DB.do_connect({
+    "dialect": "sqlite",
+    "host": "localhost",
+    "port": "3306",
+    "database": ":memory:",
+    "user": "johnny.tester",
+    "password": "clear.text.password"})
 
 
 def on_fail_read_license(error_message):
@@ -134,7 +133,13 @@ def test_do_add_administrator_choose_no(inputs):
 def test_do_create_common_db(monkeypatch):
     """do_create_common_db() should return None when successfully creating a RAMSTK common database."""
     TEST_COMMON_DB.do_disconnect()
-    TEST_COMMON_DB.do_connect('sqlite:///:memory:')
+    TEST_COMMON_DB.do_connect({
+        "dialect": "sqlite",
+        "host": "localhost",
+        "port": "3306",
+        "database": ":memory:",
+        "user": "johnny.tester",
+        "password": "clear.text.password"})
 
     assert do_create_common_db(TEST_COMMON_DB.engine,
                                TEST_COMMON_DB.session) is None

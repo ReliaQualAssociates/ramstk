@@ -46,12 +46,12 @@ class TestImport():
             'Function Name', 'Parent', 'Remarks', 'Safety Critical', 'Type'
         ]
         assert list(DUT._df_input_data.values[0]) == [
-            1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
+            1, 5, 1, 'PRESS-001', 'Maintain system pressure.', 0,
             'This is a function that is about system pressure.  This remarks box also needs to be larger.',
             1, 0
         ]
         assert list(DUT._df_input_data.values[1]) == [
-            1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
+            1, 6, 1, 'FLOW-001', 'Maintain system flow.', 0,
             'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
             0, 0
         ]
@@ -69,12 +69,12 @@ class TestImport():
             'Function Name', 'Parent', 'Remarks', 'Safety Critical', 'Type'
         ]
         assert list(DUT._df_input_data.values[0]) == [
-            1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
+            1, 5, 1, 'PRESS-001', 'Maintain system pressure.', 0,
             'This is a function that is about system pressure.  This remarks box also needs to be larger.',
             1, 0
         ]
         assert list(DUT._df_input_data.values[1]) == [
-            1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
+            1, 6, 1, 'FLOW-001', 'Maintain system flow.', 0,
             'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
             0, 0
         ]
@@ -282,6 +282,53 @@ class TestImport():
         ])
 
     @pytest.mark.unit
+    def test__get_input_value(self, test_program_dao, test_csv_file_hardware):
+        """_get_input_value() should return the value in the input file."""
+        DUT = Import(test_program_dao)
+        DUT.do_read_file('csv', test_csv_file_hardware)
+
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0], 'Revision '
+                                                                'ID', 10) == 1
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0], 'Hardware '
+                                                                'ID', 1) == 10
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0], 'Category ID',
+                                    1) == 0
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0],
+                                    'Composite Ref. Des.', '') == 'S1'
+
+    @pytest.mark.unit
+    def test__get_input_value_nan(self, test_program_dao,
+                                  test_csv_file_hardware):
+        """_get_input_value() should return the default value when the input file contains a NaN."""
+        DUT = Import(test_program_dao)
+        DUT.do_read_file('csv', test_csv_file_hardware)
+
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0],
+                                    'Alternate Part Number', 'C2') == 'C2'
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0], 'CAGE Code',
+                                    '') == ''
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0], 'Manufacturer',
+                                    54) == 54
+
+    @pytest.mark.unit
+    def test__get_input_value_key_error(self, test_program_dao,
+                                        test_csv_file_hardware):
+        """_get_input_value() should return the default value when the key passed does not exist."""
+        DUT = Import(test_program_dao)
+        DUT.do_read_file('csv', test_csv_file_hardware)
+
+        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
+                                    DUT._df_input_data.iloc[0],
+                                    'Alt. Part Num.', 'C2') == 'C2'
+
+    @pytest.mark.unit
     def test_do_insert_function(self, test_program_dao,
                                 test_csv_file_function):
         """do_insert() should return a zero error code on success and create a new RAMSTKFunction object with it's attributes set from the external file data."""
@@ -314,7 +361,6 @@ class TestImport():
                                 test_csv_file_hardware):
         """do_insert() should return a zero error code on success and create a new RAMSTKHardware, RAMSTKDesignElectric, and RAMSTKReliability object with it's attributes set from the external file data."""
         DUT = Import(test_program_dao)
-
         DUT.do_read_file('csv', test_csv_file_hardware)
 
         for _idx, _key in enumerate(DUT._dic_field_map['Hardware']):
@@ -325,7 +371,7 @@ class TestImport():
                 DUT.do_map_to_field('Design Electric',
                                     list(DUT._df_input_data)[1], 'Hardware ID')
             else:
-                DUT.do_map_to_field('Design Electric',
+                DUT.do_map_to_field('Design Mechanic',
                                     list(DUT._df_input_data)[_idx + 28], _key)
         for _idx, _key in enumerate(DUT._dic_field_map['Reliability']):
             if _idx == 0:

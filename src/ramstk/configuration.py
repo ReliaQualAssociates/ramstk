@@ -262,7 +262,7 @@ class RAMSTKSiteConfiguration:
             "backend": {
                 "type": "sqlite",
                 "host": "localhost",
-                "socket": "3306",
+                "port": "3306",
                 "database": self.RAMSTK_SITE_DIR + "/ramstk_common.ramstk",
                 "user": "ramstk",
                 "password": "ramstk"
@@ -289,9 +289,10 @@ class RAMSTKSiteConfiguration:
         if file_exists(self.RAMSTK_SITE_CONF):
             _config = toml.load(self.RAMSTK_SITE_CONF)
 
-            self.RAMSTK_COM_BACKEND = _config['backend']['type']
+            self.RAMSTK_COM_BACKEND = _config['backend']['dialect']
+            self.RAMSTK_COM_INFO["dialect"] = _config['backend']['dialect']
             self.RAMSTK_COM_INFO["host"] = _config['backend']['host']
-            self.RAMSTK_COM_INFO["socket"] = _config['backend']['socket']
+            self.RAMSTK_COM_INFO["port"] = _config['backend']['port']
             self.RAMSTK_COM_INFO["database"] = _config['backend']['database']
             self.RAMSTK_COM_INFO["user"] = _config['backend']['user']
             self.RAMSTK_COM_INFO["password"] = _config['backend']['password']
@@ -355,15 +356,15 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             +----------+-------------------------------+
             |   Key    | Information                   |
             +==========+===============================+
-            |   host   | Host name (MySQL only)        |
+            |   host   | Host name                     |
             +----------+-------------------------------+
-            |  socket  | Host port (MySQL only)        |
+            |   port   | Host port                     |
             +----------+-------------------------------+
             | database | Database name                 |
             +----------+-------------------------------+
-            |   user   | User name (MySQL only)        |
+            |   user   | User name                     |
             +----------+-------------------------------+
-            | password | User password (MySQL only)    |
+            | password | User password                 |
             +----------+-------------------------------+
 
     :ivar dict RAMSTK_PROG_INFO: Dictionary for RAMSTK Program database
@@ -372,15 +373,15 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             +----------+-------------------------------+
             |   Key    | Information                   |
             +==========+===============================+
-            |   host   | Host name (MySQL only)        |
+            |   host   | Host name                     |
             +----------+-------------------------------+
-            |  socket  | Host port (MySQL only)        |
+            |   port   | Host port                     |
             +----------+-------------------------------+
             | database | Database name                 |
             +----------+-------------------------------+
-            |   user   | User name (MySQL only)        |
+            |   user   | User name                     |
             +----------+-------------------------------+
-            | password | User password (MySQL only)    |
+            | password | User password                 |
             +----------+-------------------------------+
 
     :ivar dict RAMSTK_TABPOS: Dictionary containing the location of tabs in the
@@ -738,7 +739,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "backend": {
                 "type": "sqlite",
                 "host": "localhost",
-                "socket": "3306",
+                "port": "3306",
                 "database": "",
                 "user": "",
                 "password": ""
@@ -839,8 +840,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                     _category[0] + 1] = _config["stress"][_category[1]]
 
             self.RAMSTK_BACKEND = _config["backend"]["type"]
+            self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["type"]
             self.RAMSTK_PROG_INFO["host"] = _config["backend"]["host"]
-            self.RAMSTK_PROG_INFO["socket"] = _config["backend"]["socket"]
+            self.RAMSTK_PROG_INFO["port"] = _config["backend"]["port"]
             self.RAMSTK_PROG_INFO["database"] = _config["backend"]["database"]
             self.RAMSTK_PROG_INFO["user"] = _config["backend"]["user"]
             self.RAMSTK_PROG_INFO["password"] = _config["backend"]["password"]
@@ -899,7 +901,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "backend": {
                 "type": self.RAMSTK_BACKEND,
                 "host": str(self.RAMSTK_PROG_INFO["host"]),
-                "socket": str(self.RAMSTK_PROG_INFO["socket"]),
+                "port": str(self.RAMSTK_PROG_INFO["port"]),
                 "database": str(self.RAMSTK_PROG_INFO["database"]),
                 "user": str(self.RAMSTK_PROG_INFO["user"]),
                 "password": str(self.RAMSTK_PROG_INFO["password"])

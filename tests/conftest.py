@@ -21,9 +21,12 @@ import xml.etree.ElementTree as ET
 from distutils import dir_util
 
 # Third Party Imports
+import psycopg2
 import pytest
 import toml
 import xlwt
+from psycopg2 import sql
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
@@ -54,7 +57,7 @@ ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestProgramDB.ramstk'
-TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
+TEST_COMMON_DB_PATH = TEMPDIR + '/TestCommonDB.ramstk'
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 
 DEBUG_LOG = LOG_DIR + '/RAMSTK_debug.log'
@@ -96,7 +99,7 @@ HEADERS = {
         'h(t) Model', 'Specified h(t)', 'h(t) Type', 'Location',
         'Specified MTBF', 'Mult. Adj. Factor', 'Quality', 'R(t) Goal',
         'R(t) Goal Measure', 'Scale Parameter', 'Shape Parameter',
-        'Surv. Analysis'
+        'Surv. Analysis', 'Altitude, Operating', 'Balance ID'
     ],
     'Validation': [
         'Revision ID', 'Validation ID', 'Maximum Acceptable',
@@ -111,12 +114,12 @@ HEADERS = {
 # Row data for the Function import test file.
 ROW_DATA = [
     [
-        1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
+        1, 5, 1, 'PRESS-001', 'Maintain system pressure.', 0,
         'This is a function that is about system pressure.  This remarks box also needs to be larger.',
         1, 0
     ],
     [
-        1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
+        1, 6, 1, 'FLOW-001', 'Maintain system flow.', 0,
         'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
         0, 0
     ],
@@ -125,16 +128,22 @@ ROW_DATA = [
         'GEN-001', "Spec. 12", "Hard One to Meet", 0, '2019-08-18'
     ],
     [
-        1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported', 87.0, '',
+        1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported',
+        87.0, '',
         '', 1, '', 72.0, 'Imported System', '', '', 0, 0, '', 1, 'S1',
-        b'Remarks in a binary field.', 1, '', 0, 0, 2018, 0, 0.0, 0.0, 0, 0, 0,
+        'Remarks in a binary field.', 1, '', 0, 0, 2018, 0, 0.0, 0.0, 0, 0, 0,
         0.0, 0, 0.0, 0.0, 0.0, 4, 1, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0, 0, 0.0, 0,
-        0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, b'Overstress Reason', 0.0, 0, 0, 30.0,
+        0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, 'Overstress Reason', 0.0, 0, 0, 30.0,
         30.0, 25.0, 0.0, 0.0, 40.0, 125.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 1.0, 0.0, 0, 0, 0, 0.0, 0, 0.0, 0.0, 1.0, 2, 0.95, 0,
-        0.0, 0.0, 0
+        0.0, 0.0, 0, 12000, 1
     ],
-    [1, 12, 832.5, 799.0, 612.3, 226.4, 0.9, 350.00, 500.00, 275.00, '2019-08-18', '2019-09-01', 'Validation task that was imported by test suite.', 0, '', '', 0, '', 120.0, 140.0, 95.0]
+    [
+        1, 12, 832.5, 799.0, 612.3, 226.4, 0.9, 350.00, 500.00, 275.00,
+        '2019-08-18', '2019-09-01',
+        'Validation task that was imported by test suite.', 0, '', '', 0, '',
+        120.0, 140.0, 95.0
+    ]
 ]
 
 
@@ -186,10 +195,13 @@ def make_home_config_dir():
     os.mkdir(VIRTUAL_ENV + '/tmp/analyses/ramstk')
     shutil.copyfile('./data/sqlite_program_db.sql',
                     _config_dir + '/sqlite_program_db.sql')
+    shutil.copyfile('./data/postgres_program_db.sql',
+                    _config_dir + '/postgres_program_db.sql')
 
     yield _config_dir
 
-    shutil.rmtree(VIRTUAL_ENV + '/tmp')
+    shutil.rmtree(VIRTUAL_ENV + '/tmp/.config')
+    shutil.rmtree(VIRTUAL_ENV + '/tmp/analyses')
 
 
 @pytest.fixture(scope='class')
@@ -200,7 +212,7 @@ def test_simple_database():
     # insert_many, delete, and update methods of the database drivers.
     tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
     tempdb = str(tempdir.name) + '/SimpleTestDB.ramstk'
-    test_program_db_uri = 'sqlite:///' + tempdb
+    test_program_db_uri = tempdb
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_simple_db.sql', 'r')
@@ -227,55 +239,60 @@ def test_license_file():
     os.remove(_cwd + '/license.key')
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session', autouse=True)
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
-    # Create the tmp directory if it doesn't exist.
-    if not os.path.exists(TMP_DIR):
-        os.makedirs(TMP_DIR)
-
-    # If there is an existing test database, delete it.
-    if os.path.exists(TEST_COMMON_DB_PATH):
-        os.remove(TEST_COMMON_DB_PATH)
-
-    # We create a new database for each class-level grouping of tests.  This
-    # should prevent errors (e.g., database locked) caused by attempting to
-    # access the database to0 rapidly from test-to-test.  PyTest causes each
-    # temporary directory to be deleted when it is finished with it.
-    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
-    tempdb = str(tempdir.name) + '/TestCommonDB.ramstk'
-    tempuri = 'sqlite:///' + tempdb
+    test_common_db = {
+        'dialect': 'postgres',
+        'user': 'postgres',
+        'password': 'postgres',
+        'host': 'localhost',
+        'port': '5432',
+        'database': 'TestCommonDB'
+    }
 
     # Create the test database.
-    sql_file = open('./devtools/sqlite_test_common_db.sql', 'r')
-    script_str = sql_file.read().strip()
-    conn = sqlite3.connect(tempdb)
-    conn.executescript(script_str)
-    conn.commit()
+    conn = psycopg2.connect(host=test_common_db['host'],
+                            dbname='postgres',
+                            user=test_common_db['user'],
+                            password=test_common_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_common_db['database'])))
+    cursor.execute(
+        sql.SQL('CREATE DATABASE {}').format(
+            sql.Identifier(test_common_db['database'])))
+    cursor.close()
+    conn.close()
+
+    # Populate the test database.
+    conn = psycopg2.connect(host=test_common_db['host'],
+                            dbname=test_common_db['database'],
+                            user=test_common_db['user'],
+                            password=test_common_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    conn.set_session(autocommit=True)
+
+    cursor = conn.cursor()
+    cursor.execute(open('./devtools/test_common_db.sql', 'r').read())
+    cursor.close()
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = BaseDatabase()
-    dao.do_connect(tempuri)
+    dao.do_connect(test_common_db)
 
     yield dao
 
     dao.do_disconnect()
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session', autouse=True)
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
-    # This will create a RAMSTK Program database using the
-    # <DB>_test_program_db.sql file in devtools/ (where <DB> = the database
-    # engine to use) for each group of tests collected in a class.  Group tests
-    # in the class in such a way as to produce predictable behavior (e.g., all
-    # the tests for select() and select_all()).
-
-    # Create the tmp directory if it doesn't exist.
-    if not os.path.exists(TMP_DIR):
-        os.makedirs(TMP_DIR)
-
     # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
@@ -286,25 +303,59 @@ def test_program_dao():
     if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
         os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
 
-    # We create a new database for each class-level grouping of tests.  This
-    # should prevent errors (e.g., database locked) caused by attempting to
-    # access the database to0 rapidly from test-to-test.  PyTest causes each
-    # temporary directory to be deleted when it is finished with it.
-    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
-    tempdb = str(tempdir.name) + '/TestProgramDB.ramstk'
-    test_program_db_uri = 'sqlite:///' + tempdb
+    # This will create a RAMSTK Program database using the
+    # <DB>_test_program_db.sql file in devtools/ (where <DB> = the database
+    # engine to use) for each group of tests collected in a class.  Group tests
+    # in the class in such a way as to produce predictable behavior (e.g., all
+    # the tests for select() and select_all()).
+    test_program_db = {
+        'dialect': 'postgres',
+        'user': 'postgres',
+        'password': 'postgres',
+        'host': 'localhost',
+        'port': '5432',
+        'database': 'TestProgramDB'
+    }
 
     # Create the test database.
-    sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
-    script_str = sql_file.read().strip()
-    conn = sqlite3.connect(tempdb)
-    conn.executescript(script_str)
-    conn.commit()
+    conn = psycopg2.connect(host=test_program_db['host'],
+                            dbname='postgres',
+                            user=test_program_db['user'],
+                            password=test_program_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_program_db['database'])))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier('ramstk_program_db')))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier('ramstk_program_db2')))
+    cursor.execute(
+        sql.SQL('CREATE DATABASE {}').format(
+            sql.Identifier(test_program_db['database'])))
+    cursor.close()
+    conn.close()
+
+    # Populate the test database.
+    conn = psycopg2.connect(host=test_program_db['host'],
+                            dbname=test_program_db['database'],
+                            user=test_program_db['user'],
+                            password=test_program_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    conn.set_session(autocommit=True)
+
+    cursor = conn.cursor()
+    cursor.execute(open('./devtools/test_program_db.sql', 'r').read())
+    cursor.close()
     conn.close()
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = BaseDatabase()
-    dao.do_connect(test_program_db_uri)
+    dao.do_connect(test_program_db)
 
     yield dao
 
@@ -319,9 +370,9 @@ def test_toml_site_configuration():
     _dic_site_configuration = {
         "title": "RAMSTK Site Configuration",
         "backend": {
-            "type": "sqlite",
+            "dialect": "sqlite",
             "host": "localhost",
-            "socket": "3306",
+            "port": "3306",
             "database": VIRTUAL_ENV + "/share/RAMSTK/ramstk_common.ramstk",
             "user": "johnny.tester",
             "password": "clear.text.password"
@@ -363,7 +414,7 @@ def test_toml_user_configuration(make_home_config_dir):
         "backend": {
             "type": "sqlite",
             "host": "localhost",
-            "socket": "3306",
+            "port": "3306",
             "database": "",
             "user": "",
             "password": ""

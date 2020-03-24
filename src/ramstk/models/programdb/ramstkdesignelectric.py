@@ -57,7 +57,7 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
         'power_operating': 0.0,
         'power_rated': 0.0,
         'power_ratio': 0.0,
-        'reason': b'',
+        'reason': '',
         'resistance': 0.0,
         'specification_id': 0,
         'technology_id': 0,
@@ -83,13 +83,11 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
     __tablename__ = 'ramstk_design_electric'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column(
-        'fld_hardware_id',
-        Integer,
-        ForeignKey('ramstk_hardware.fld_hardware_id'),
-        primary_key=True,
-        nullable=False,
-    )
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         ForeignKey('ramstk_hardware.fld_hardware_id'),
+                         primary_key=True,
+                         nullable=False)
 
     application_id = Column('fld_application_id',
                             Integer,
@@ -125,13 +123,11 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
     environment_active_id = Column(
         'fld_environment_active_id',
         Integer,
-        default=__defaults__['environment_active_id'],
-    )
+        default=__defaults__['environment_active_id'])
     environment_dormant_id = Column(
         'fld_environment_dormant_id',
         Integer,
-        default=__defaults__['environment_dormant_id'],
-    )
+        default=__defaults__['environment_dormant_id'])
     family_id = Column('fld_family_id',
                        Integer,
                        default=__defaults__['family_id'])
@@ -189,7 +185,7 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
     power_ratio = Column('fld_power_ratio',
                          Float,
                          default=__defaults__['power_ratio'])
-    reason = Column('fld_reason', String(1024), default=__defaults__['reason'])
+    reason = Column('fld_reason', String, default=__defaults__['reason'])
     resistance = Column('fld_resistance',
                         Float,
                         default=__defaults__['resistance'])
@@ -205,49 +201,37 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
     temperature_case = Column('fld_temperature_case',
                               Float,
                               default=__defaults__['temperature_case'])
-    temperature_dormant = Column(
-        'fld_temperature_dormant',
-        Float,
-        default=__defaults__['temperature_dormant'],
-    )
-    temperature_hot_spot = Column(
-        'fld_temperature_hot_spot',
-        Float,
-        default=__defaults__['temperature_hot_spot'],
-    )
-    temperature_junction = Column(
-        'fld_temperature_junction',
-        Float,
-        default=__defaults__['temperature_junction'],
-    )
+    temperature_dormant = Column('fld_temperature_dormant',
+                                 Float,
+                                 default=__defaults__['temperature_dormant'])
+    temperature_hot_spot = Column('fld_temperature_hot_spot',
+                                  Float,
+                                  default=__defaults__['temperature_hot_spot'])
+    temperature_junction = Column('fld_temperature_junction',
+                                  Float,
+                                  default=__defaults__['temperature_junction'])
     temperature_knee = Column('fld_temperature_knee',
                               Float,
                               default=__defaults__['temperature_knee'])
     temperature_rated_max = Column(
         'fld_temperature_rated_max',
         Float,
-        default=__defaults__['temperature_rated_max'],
-    )
+        default=__defaults__['temperature_rated_max'])
     temperature_rated_min = Column(
         'fld_temperature_rated_min',
         Float,
-        default=__defaults__['temperature_rated_min'],
-    )
+        default=__defaults__['temperature_rated_min'])
     temperature_rise = Column('fld_temperature_rise',
                               Float,
                               default=__defaults__['temperature_rise'])
     theta_jc = Column('fld_theta_jc', Float, default=__defaults__['theta_jc'])
     type_id = Column('fld_type_id', Integer, default=__defaults__['type_id'])
-    voltage_ac_operating = Column(
-        'fld_voltage_ac_operating',
-        Float,
-        default=__defaults__['voltage_ac_operating'],
-    )
-    voltage_dc_operating = Column(
-        'fld_voltage_dc_operating',
-        Float,
-        default=__defaults__['voltage_dc_operating'],
-    )
+    voltage_ac_operating = Column('fld_voltage_ac_operating',
+                                  Float,
+                                  default=__defaults__['voltage_ac_operating'])
+    voltage_dc_operating = Column('fld_voltage_dc_operating',
+                                  Float,
+                                  default=__defaults__['voltage_dc_operating'])
     voltage_esd = Column('fld_voltage_esd',
                          Float,
                          default=__defaults__['voltage_esd'])

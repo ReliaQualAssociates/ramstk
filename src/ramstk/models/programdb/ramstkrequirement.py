@@ -11,7 +11,7 @@
 from datetime import date
 
 # Third Party Imports
-from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -29,7 +29,7 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
 
     __defaults__ = {
         'derived': 0,
-        'description': b'',
+        'description': '',
         'figure_number': '',
         'owner': '',
         'page_number': '',
@@ -94,7 +94,7 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
 
     derived = Column('fld_derived', Integer, default=__defaults__['derived'])
     description = Column('fld_description',
-                         BLOB,
+                         String,
                          default=__defaults__['description'])
     figure_number = Column('fld_figure_number',
                            String(256),

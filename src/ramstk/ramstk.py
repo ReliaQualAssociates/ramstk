@@ -7,16 +7,16 @@
 """This is the RAMSTK program manager."""
 
 # Standard Library Imports
-import re
-from typing import Dict, TextIO
+from typing import Dict
 
 # Third Party Imports
 from pubsub import pub
-from sqlalchemy.exc import ArgumentError, NoSuchModuleError
+from sqlalchemy.exc import ArgumentError, NoSuchModuleError, OperationalError
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.db.base import BaseDatabase
+from ramstk.db import BaseDatabase
+from ramstk.exceptions import DataAccessError
 
 
 class RAMSTKProgramManager:
@@ -107,36 +107,35 @@ class RAMSTKProgramManager:
         pub.subscribe(self.do_save_program, 'request_update_program')
 
     def do_create_program(self, program_db: BaseDatabase,
-                          database: TextIO) -> None:
+                          database: Dict) -> None:
         """
         Create a new RAMSTK Program database.
 
         :param program_db: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
         :type program_db: :class:`ramstk.db.base.BaseDatabase`
-        :param str database: the RFC1738 URL path to the database to create and
-            connect to.
+        :param dict database: a dict containing the database connection
+            arguments.
         :return: None
         :rtype: None
         """
         _sql_file = open(
-            self.user_configuration.RAMSTK_CONF_DIR + '/sqlite_program_db.sql',
-            'r')
+            self.user_configuration.RAMSTK_CONF_DIR
+            + '/{0:s}_program_db.sql'.format(database['dialect']), 'r')
         self.program_dao = program_db
         self.program_dao.do_create_program_db(database, _sql_file)
         pub.sendMessage('succeed_create_program_database',
                         program_db=self.program_dao,
                         database=database)
 
-    def do_open_program(self, program_db: BaseDatabase, database: str) -> None:
+    def do_open_program(self, program_db: BaseDatabase, database: Dict) -> None:
         """
         Open an RAMSTK Program database for analyses.
 
         :param program_dao: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
         :type program_dao: :class:`ramstk.db.base.BaseDatabase`
-        :param str database: the RFC1738 URL path to the database to create and
-            connect to.
+        :param dict database: a dictionary of parameters to pass to the DAO.
         :return: None
         :rtype: None
         """
@@ -147,18 +146,26 @@ class RAMSTKProgramManager:
                             dao=self.program_dao)
             pub.sendMessage('request_retrieve_revisions')
         except NoSuchModuleError:
-            _d = re.search('://', database)
-            _dialect = database[:_d.start(0)]
             _error_msg = ("RAMSTK does not currently support database dialect "
-                          "{0:s}.".format(_dialect))
+                          "{0:s}.".format(database['dialect']))
             pub.sendMessage('fail_connect_program_database',
                             error_message=_error_msg)
         except ArgumentError:
             _error_msg = (
-                "The database URL {0:s} did not conform to the "
-                "RFC 1738 standard and could not be opened.".format(database))
+                "The database URL {0:s} did not conform to the RFC 1738 "
+                "standard and could not be opened.".format(
+                    database['database']))
             pub.sendMessage('fail_connect_program_database',
                             error_message=_error_msg)
+        except OperationalError:
+            _error_msg = (
+                "The database {0:s} does not exist.".format(
+                    database['database']))
+            pub.sendMessage('fail_connect_program_database',
+                            error_message=_error_msg)
+        except DataAccessError as _error:
+            pub.sendMessage('fail_connect_program_database',
+                            error_message=_error.msg)
 
     def do_close_program(self) -> None:
         """

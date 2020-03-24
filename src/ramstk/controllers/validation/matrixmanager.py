@@ -52,7 +52,7 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_create, 'succeed_select_revision')
+        pub.subscribe(self._do_create, 'succeed_retrieve_validations')
         pub.subscribe(self._do_delete_requirement,
                       'succeed_delete_requirement')
         pub.subscribe(self._do_delete_hardware, 'succeed_delete_hardware')
@@ -66,7 +66,7 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._on_get_tree, 'succeed_get_requirement_tree')
         pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
 
-    def _do_create(self, revision_id):  # pylint: disable=unused-argument
+    def _do_create(self, tree):  # pylint: disable=unused-argument
         """
         Create the Requirement data matrices.
 

@@ -43,10 +43,10 @@ class TestRAMSTKSiteInfo():
         assert DUT.site_id == 1
         assert DUT.product_key == '0000'
         assert DUT.expire_on == date(2019, 8, 20)
-        assert DUT.function_enabled == 0
-        assert DUT.requirement_enabled == 0
-        assert DUT.hardware_enabled == 0
-        assert DUT.vandv_enabled == 0
+        assert DUT.function_enabled == 1
+        assert DUT.requirement_enabled == 1
+        assert DUT.hardware_enabled == 1
+        assert DUT.vandv_enabled == 1
         assert DUT.fmea_enabled == 0
 
     @pytest.mark.integration
@@ -58,10 +58,10 @@ class TestRAMSTKSiteInfo():
         assert _attributes['site_id'] == 1
         assert _attributes['product_key'] == '0000'
         assert _attributes['expire_on'] == date(2019, 8, 20)
-        assert _attributes['function_enabled'] == 0
-        assert _attributes['requirement_enabled'] == 0
-        assert _attributes['hardware_enabled'] == 0
-        assert _attributes['vandv_enabled'] == 0
+        assert _attributes['function_enabled'] == 1
+        assert _attributes['requirement_enabled'] == 1
+        assert _attributes['hardware_enabled'] == 1
+        assert _attributes['vandv_enabled'] == 1
         assert _attributes['fmea_enabled'] == 0
 
     @pytest.mark.integration

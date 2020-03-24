@@ -70,44 +70,44 @@ class TestRAMSTKHazardAnalysis():
         assert DUT.revision_id == 1
         assert DUT.function_id == 1
         assert DUT.hazard_id == 1
-        assert DUT.potential_hazard == ''
+        assert DUT.potential_hazard == 'Big Hazard'
         assert DUT.potential_cause == ''
         assert DUT.assembly_effect == ''
-        # assert DUT.assembly_severity == 'Major'
-        # assert DUT.assembly_probability == 'Level A - Frequent'
-        # assert DUT.assembly_hri == 20
+        assert DUT.assembly_severity == 'Major'
+        assert DUT.assembly_probability == 'Level A - Frequent'
+        assert DUT.assembly_hri == 30
         assert DUT.assembly_mitigation == ''
-        # assert DUT.assembly_severity_f == 'Major'
-        # assert DUT.assembly_probability_f == 'Level A - Frequent'
-        # assert DUT.assembly_hri_f == 20
-        # assert DUT.function_1 == ''
-        # assert DUT.function_2 == ''
-        # assert DUT.function_3 == ''
-        # assert DUT.function_4 == ''
-        # assert DUT.function_5 == ''
-        assert DUT.remarks == ''
-        # assert DUT.result_1 == 0.0
-        # assert DUT.result_2 == 0.0
-        # assert DUT.result_3 == 0.0
-        # assert DUT.result_4 == 0.0
-        # assert DUT.result_5 == 0.0
+        assert DUT.assembly_severity_f == 'Medium'
+        assert DUT.assembly_probability_f == 'Level B - Reasonably Probable'
+        assert DUT.assembly_hri_f == 16
+        assert DUT.function_1 == 'uf1*uf2'
+        assert DUT.function_2 == 'res1/ui1'
+        assert DUT.function_3 == ''
+        assert DUT.function_4 == ''
+        assert DUT.function_5 == ''
+        assert DUT.remarks == '\\x'
+        assert DUT.result_1 == 1.2
+        assert DUT.result_2 == 0.6
+        assert DUT.result_3 == 0.0
+        assert DUT.result_4 == 0.0
+        assert DUT.result_5 == 0.0
         assert DUT.system_effect == ''
-        # assert DUT.system_severity == 'Major'
-        # assert DUT.system_probability == 'Level A - Frequent'
-        # assert DUT.system_hri == 20
+        assert DUT.system_severity == 'Medium'
+        assert DUT.system_probability == 'Level A - Frequent'
+        assert DUT.system_hri == 20
         assert DUT.system_mitigation == ''
-        # assert DUT.system_severity_f == 'Major'
-        # assert DUT.system_probability_f == 'Level A - Frequent'
-        # assert DUT.system_hri_f == 20
+        assert DUT.system_severity_f == 'Medium'
+        assert DUT.system_probability_f == 'Level C - Occasional'
+        assert DUT.system_hri_f == 12
         assert DUT.user_blob_1 == ''
         assert DUT.user_blob_2 == ''
         assert DUT.user_blob_3 == ''
-        # assert DUT.user_float_1 == 0.0
-        # assert DUT.user_float_2 == 0.0
-        # assert DUT.user_float_3 == 0.0
-        # assert DUT.user_int_1 == 0
-        # assert DUT.user_int_2 == 0
-        # assert DUT.user_int_3 == 0
+        assert DUT.user_float_1 == 1.5
+        assert DUT.user_float_2 == 0.8
+        assert DUT.user_float_3 == 0.0
+        assert DUT.user_int_1 == 2
+        assert DUT.user_int_2 == 0
+        assert DUT.user_int_3 == 0
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -121,44 +121,45 @@ class TestRAMSTKHazardAnalysis():
         assert _attributes['revision_id'] == 1
         assert _attributes['function_id'] == 1
         assert _attributes['hazard_id'] == 1
-        assert _attributes['potential_hazard'] == ''
+        assert _attributes['potential_hazard'] == 'Big Hazard'
         assert _attributes['potential_cause'] == ''
         assert _attributes['assembly_effect'] == ''
-        # assert _attributes['assembly_severity'] == 'Major'
-        # assert _attributes['assembly_probability'] == 'Level A - Frequent'
-        # assert _attributes['assembly_hri'] == 20
+        assert _attributes['assembly_severity'] == 'Major'
+        assert _attributes['assembly_probability'] == 'Level A - Frequent'
+        assert _attributes['assembly_hri'] == 30
         assert _attributes['assembly_mitigation'] == ''
-        # assert _attributes['assembly_severity_f'] == 'Major'
-        # assert _attributes['assembly_probability_f'] == 'Level A - Frequent'
-        # assert _attributes['assembly_hri_f'] == 20
-        # assert _attributes['function_1'] == ''
-        # assert _attributes['function_2'] == ''
-        # assert _attributes['function_3'] == ''
-        # assert _attributes['function_4'] == ''
-        # assert _attributes['function_5'] == ''
-        assert _attributes['remarks'] == ''
-        # assert _attributes['result_1'] == 0.0
-        # assert _attributes['result_2'] == 0.0
-        # assert _attributes['result_3'] == 0.0
-        # assert _attributes['result_4'] == 0.0
-        # assert _attributes['result_5'] == 0.0
+        assert _attributes['assembly_severity_f'] == 'Medium'
+        assert _attributes['assembly_probability_f'] == ('Level B - '
+                                                         'Reasonably Probable')
+        assert _attributes['assembly_hri_f'] == 16
+        assert _attributes['function_1'] == 'uf1*uf2'
+        assert _attributes['function_2'] == 'res1/ui1'
+        assert _attributes['function_3'] == ''
+        assert _attributes['function_4'] == ''
+        assert _attributes['function_5'] == ''
+        assert _attributes['remarks'] == '\\x'
+        assert _attributes['result_1'] == 1.2
+        assert _attributes['result_2'] == 0.6
+        assert _attributes['result_3'] == 0.0
+        assert _attributes['result_4'] == 0.0
+        assert _attributes['result_5'] == 0.0
         assert _attributes['system_effect'] == ''
-        # assert _attributes['system_severity'] == 'Major'
-        # assert _attributes['system_probability'] == 'Level A - Frequent'
-        # assert _attributes['system_hri'] == 20
+        assert _attributes['system_severity'] == 'Medium'
+        assert _attributes['system_probability'] == 'Level A - Frequent'
+        assert _attributes['system_hri'] == 20
         assert _attributes['system_mitigation'] == ''
-        # assert _attributes['system_severity_f'] == 'Major'
-        # assert _attributes['system_probability_f'] == 'Level A - Frequent'
-        # assert _attributes['system_hri_f'] == 20
+        assert _attributes['system_severity_f'] == 'Medium'
+        assert _attributes['system_probability_f'] == 'Level C - Occasional'
+        assert _attributes['system_hri_f'] == 12
         assert _attributes['user_blob_1'] == ''
         assert _attributes['user_blob_2'] == ''
         assert _attributes['user_blob_3'] == ''
-        # assert _attributes['user_float_1'] == 0.0
-        # assert _attributes['user_float_2'] == 0.0
-        # assert _attributes['user_float_3'] == 0.0
-        # assert _attributes['user_int_1'] == 0
-        # assert _attributes['user_int_2'] == 0
-        # assert _attributes['user_int_3'] == 0
+        assert _attributes['user_float_1'] == 1.5
+        assert _attributes['user_float_2'] == 0.8
+        assert _attributes['user_float_3'] == 0.0
+        assert _attributes['user_int_1'] == 2
+        assert _attributes['user_int_2'] == 0
+        assert _attributes['user_int_3'] == 0
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
