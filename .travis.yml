@@ -1,7 +1,9 @@
 dist: xenial
 sudo: required
 language: python
-services: xvfb
+services:
+    - postgresql
+    - xvfb
 
 python:
     - "3.6"
@@ -19,6 +21,10 @@ install:
     - pip install -U pip-tools
     - pip install -r requirements.txt -r requirements-test.txt
     - make install PREFIX=$VIRTUAL_ENV
+
+# Setup database for testing.
+before_script:
+    - psgl -c 'create database TestProgramDB;' -U postgres
 
 # Command to run tests.  First the full test suite without coverage, then again
 # with coverage.
