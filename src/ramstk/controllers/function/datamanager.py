@@ -12,6 +12,7 @@ from typing import Dict, List
 
 # Third Party Imports
 from pubsub import pub
+from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -37,6 +38,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._last_id = [0, 0]
 
         # Initialize private scalar attributes.
 
@@ -47,7 +49,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_select_all, 'succeed_select_revision')
         pub.subscribe(self._do_delete, 'request_delete_function')
         pub.subscribe(self._do_delete_hazard, 'request_delete_hazard')
         pub.subscribe(self.do_insert, 'request_insert_function')
@@ -88,6 +90,10 @@ class DataManager(RAMSTKDataManager):
                               "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_function',
                             error_message=_error_message)
+        except NodeIDAbsentError:
+            _error_msg = ("Hardware ID {0:s} was not found as a node "
+                          "in the tree.").format(str(node_id))
+            pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
     def _do_delete_hazard(self, function_id, node_id):
         """
@@ -260,12 +266,12 @@ class DataManager(RAMSTKDataManager):
 
         if _node is not None:
             try:
-                _hazard = RAMSTKHazardAnalysis()
-                # noinspection PyTypeHints
-                _hazard.revision_id: int = self._revision_id
-                # noinspection PyTypeHints
-                _hazard.function_id: int = function_id
+                _hazard = RAMSTKHazardAnalysis(revision_id=self._revision_id,
+                                               function_id=function_id,
+                                               hazard_id=self._last_id[1] + 1)
                 self.dao.do_insert(_hazard)
+
+                self._last_id[1] = _hazard.hazard_id
 
                 _node.data['hazards'][_hazard.hazard_id] = _hazard
 
@@ -280,7 +286,7 @@ class DataManager(RAMSTKDataManager):
                                            "non-existent function ID "
                                            "{0:s}.".format(str(function_id))))
 
-    def do_select_all(self, attributes):  # pylint: disable=arguments-differ
+    def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
         """
         Retrieve all the Function data from the RAMSTK Program database.
 
@@ -288,18 +294,23 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes['revision_id']
+        self._revision_id = revision_id
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _function in self.dao.session.query(RAMSTKFunction).filter(
-                RAMSTKFunction.revision_id == self._revision_id).all():
+        for _function in self.dao.do_select_all(RAMSTKFunction,
+                                                key=RAMSTKFunction.revision_id,
+                                                value=self._revision_id,
+                                                order=RAMSTKFunction.function_id):
 
-            _hazards = self.dao.session.query(RAMSTKHazardAnalysis).filter(
-                RAMSTKHazardAnalysis.function_id ==
-                _function.function_id).all()
+            _hazards = self.dao.do_select_all(RAMSTKHazardAnalysis,
+                                              key=RAMSTKHazardAnalysis.function_id,
+                                              value=_function.function_id,
+                                              order=RAMSTKHazardAnalysis.hazard_id)
             _hazards = self.do_build_dict(_hazards, 'hazard_id')
+
+            self._last_id[1] = max(self._last_id[1], max(_hazards.keys()))
 
             _data_package = {
                 'function': _function,
@@ -381,12 +392,11 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            self.dao.session.add(self.tree.get_node(node_id).data['function'])
+            self.dao.do_update(self.tree.get_node(node_id).data['function'])
             for _key in self.tree.get_node(node_id).data['hazards']:
-                self.dao.session.add(
+                self.dao.do_update(
                     self.tree.get_node(node_id).data['hazards'][_key])
 
-            self.dao.do_update()
             pub.sendMessage('succeed_update_function', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_function',
