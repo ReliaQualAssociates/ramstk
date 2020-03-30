@@ -68,7 +68,7 @@ class TestRAMSTKFunction():
         assert DUT.mttr == 0.0
         assert DUT.name == 'New Function'
         assert DUT.parent_id == 0
-        assert DUT.remarks == '\\x'
+        assert DUT.remarks == ''
         assert DUT.safety_critical == 0
         assert DUT.total_mode_count == 0
         assert DUT.total_part_count == 0
