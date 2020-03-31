@@ -9,7 +9,8 @@ jobs:
     name: Python Code Quality and Lint Checks
     runs-on: ubuntu-18.04
     steps:
-    - uses: ricardochaves/python-lint@v1.1.0
+      - uses: actions/checkout@v1
+      - uses: ricardochaves/python-lint@v1.1.0
         with:
           use-pylint: true
           use-pycodestyle: true
