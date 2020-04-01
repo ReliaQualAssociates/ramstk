@@ -24,10 +24,9 @@ jobs:
     name: Coveralls Coverage Report
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1.0.1
-      - uses: coverallsapp/github-action@v1.0.1
+      - uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ secrets.REPO_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
   codacy-coverage-reporter:
     name: Codacy Coverage Report
     runs-on: ubuntu-latest
