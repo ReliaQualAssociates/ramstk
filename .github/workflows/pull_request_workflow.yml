@@ -14,12 +14,12 @@ jobs:
           use-black: false
           use-mypy: true
           use-isort: true
-          extra-pylint-options: ""
-          extra-pycodestyle-options: ""
+          extra-pylint-options: "-j0 --rcfile=./.pylintrc"
+          extra-pycodestyle-options: "--statistics --count"
           extra-flake8-options: ""
           extra-black-options: ""
           extra-mypy-options: ""
-          extra-isort-options: ""
+          extra-isort-options: "--atomic --apply --use-parentheses -m5"
   coveralls:
     name: Coveralls Coverage Report
     runs-on: ubuntu-latest
