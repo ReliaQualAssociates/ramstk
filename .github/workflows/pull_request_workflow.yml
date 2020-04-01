@@ -1,32 +1,35 @@
 name: Pull Request Workflow
 on: pull_request
 jobs:
-  quality_check:
-    name: Python Code Quality and Lint Checks
+  # Execute the test suite with coverage and retain the results.
+  test-suite-with-coverage:
+    name: Test Suite
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7]
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: ricardochaves/python-lint@v1.1.0
+      - uses: actions/checkout@master
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
         with:
-          use-pylint: true
-          use-pycodestyle: true
-          use-flake8: false
-          use-black: false
-          use-mypy: true
-          use-isort: true
-          extra-pylint-options: "-j0 --rcfile=./.pylintrc src/ramstk"
-          extra-pycodestyle-options: "--statistics --count src/ramstk"
-          extra-flake8-options: ""
-          extra-black-options: ""
-          extra-mypy-options: "src/ramstk"
-          extra-isort-options: "--atomic --apply --use-parentheses -m5 src/ramstk"
-  coveralls:
-    name: Coveralls Coverage Report
-    runs-on: ubuntu-latest
-    steps:
-      - uses: coverallsapp/github-action@master
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools>12.0 urllib3 pip-tools
+          pip install -r requirements.txt -r requirements-test.txt
+      - name: Run test suite
+        run: pytest ./tests --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: test-results-${{ matrix.python-version }}
+          path: junit/test-results-${{ matrix.python-version }}.xml
+          # Use always() to always run this step to publish test results when there are test failures
+        if: always()
+
+  # Upload coverage results to Codacy.
   codacy-coverage-reporter:
     name: Codacy Coverage Report
     runs-on: ubuntu-latest

@@ -1,37 +1,10 @@
-name: Push Confirmations
+name: Push Workflows
 on:
   push:
     branches:
       - develop
       - master
 jobs:
-  quality_chk:
-    name: Python Code Quality and Lint Checks
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v1
-      - uses: ricardochaves/python-lint@v1.1.0
-        with:
-          use-pylint: true
-          use-pycodestyle: true
-          use-flake8: false
-          use-black: false
-          use-mypy: true
-          use-isort: true
-          extra-pylint-options: "-j0 --rcfile=./.pylintrc src/ramstk"
-          extra-pycodestyle-options: "--statistics --count src/ramstk"
-          extra-flake8-options: ""
-          extra-black-options: ""
-          extra-mypy-options: "src/ramstk"
-          extra-isort-options: "--atomic --apply --use-parentheses -m5 src/ramstk"
-  coveralls:
-    name: Coveralls Coverage Report
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1.0.1
-      - uses: coverallsapp/github-action@v1.0.1
-        with:
-          github-token: ${{ secrets.REPO_TOKEN }}
   codacy-coverage-reporter:
     name: Codacy Coverage Report
     runs-on: ubuntu-latest
