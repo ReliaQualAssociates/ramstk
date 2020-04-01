@@ -18,12 +18,12 @@ jobs:
           use-black: false
           use-mypy: true
           use-isort: true
-          extra-pylint-options: "-j0 --rcfile=./.pylintrc"
-          extra-pycodestyle-options: "--statistics --count"
+          extra-pylint-options: "-j0 --rcfile=./.pylintrc src/ramstk"
+          extra-pycodestyle-options: "--statistics --count src/ramstk"
           extra-flake8-options: ""
           extra-black-options: ""
-          extra-mypy-options: ""
-          extra-isort-options: "--atomic --apply --use-parentheses -m5"
+          extra-mypy-options: "src/ramstk"
+          extra-isort-options: "--atomic --apply --use-parentheses -m5 src/ramstk"
   coveralls:
     name: Coveralls Coverage Report
     runs-on: ubuntu-latest
