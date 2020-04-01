@@ -141,7 +141,7 @@ class RAMSTKProgramManager:
         """
         try:
             self.program_dao = program_db
-            self.program_dao.do_connect(self.user_configuration.RAMSTK_PROG_INFO)
+            self.program_dao.do_connect(database)
             pub.sendMessage('succeed_connect_program_database',
                             dao=self.program_dao)
             pub.sendMessage('request_retrieve_revisions')

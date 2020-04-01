@@ -181,10 +181,6 @@ class OpenProject():
 
             _dialog.destroy()
 
-            _database = (str(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND + ':///'
-                + self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']))
-
             pub.sendMessage('request_open_program',
                             program_db=BaseDatabase(),
-                            database=_database)
+                            database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)

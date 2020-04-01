@@ -412,7 +412,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "loglevel": "INFO"
         },
         "backend": {
-            "type": "sqlite",
+            "dialect": "sqlite",
             "host": "localhost",
             "port": "3306",
             "database": "",

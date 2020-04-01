@@ -260,7 +260,7 @@ class RAMSTKSiteConfiguration:
         _dic_site_configuration = {
             "title": "RAMSTK Site Configuration",
             "backend": {
-                "type": "sqlite",
+                "dialect": "sqlite",
                 "host": "localhost",
                 "port": "3306",
                 "database": self.RAMSTK_SITE_DIR + "/ramstk_common.ramstk",
@@ -737,7 +737,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "loglevel": "INFO"
             },
             "backend": {
-                "type": "sqlite",
+                "dialect": "sqlite",
                 "host": "localhost",
                 "port": "3306",
                 "database": "",
@@ -839,8 +839,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 self.RAMSTK_STRESS_LIMITS[
                     _category[0] + 1] = _config["stress"][_category[1]]
 
-            self.RAMSTK_BACKEND = _config["backend"]["type"]
-            self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["type"]
+            self.RAMSTK_BACKEND = _config["backend"]["dialect"]
+            self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["dialect"]
             self.RAMSTK_PROG_INFO["host"] = _config["backend"]["host"]
             self.RAMSTK_PROG_INFO["port"] = _config["backend"]["port"]
             self.RAMSTK_PROG_INFO["database"] = _config["backend"]["database"]
@@ -899,7 +899,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "loglevel": self.RAMSTK_LOGLEVEL
             },
             "backend": {
-                "type": self.RAMSTK_BACKEND,
+                "dialect": self.RAMSTK_PROG_INFO["dialect"],
                 "host": str(self.RAMSTK_PROG_INFO["host"]),
                 "port": str(self.RAMSTK_PROG_INFO["port"]),
                 "database": str(self.RAMSTK_PROG_INFO["database"]),
