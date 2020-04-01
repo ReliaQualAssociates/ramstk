@@ -1,5 +1,9 @@
-name: Push Workflow
-on: push
+name: Push Confirmations
+on:
+  push:
+    branches:
+      - develop
+      - master
 jobs:
   quality_chk:
     name: Python Code Quality and Lint Checks
@@ -20,20 +24,3 @@ jobs:
           extra-black-options: ""
           extra-mypy-options: ""
           extra-isort-options: ""
-  coveralls:
-    name: Coveralls Coverage Report
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1.0.1
-      - uses: coverallsapp/github-action@v1.0.1
-        with:
-          github-token: ${{ secrets.REPO_TOKEN }}
-  codacy-coverage-reporter:
-    name: Codacy Coverage Report
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Run codacy-coverage-reporter
-        uses: mrfyda/codacy-coverage-reporter-action@master
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
