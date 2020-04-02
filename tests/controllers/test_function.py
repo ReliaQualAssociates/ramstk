@@ -14,7 +14,8 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amFunction, dmFunction
+from ramstk.controllers import amFunction, dmFunction, mmFunction
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFunction, RAMSTKHazardAnalysis
 
 MOCK_FUNCTIONS = {
@@ -105,6 +106,22 @@ MOCK_HAZARDS = {
         'user_int_3': 0
     }
 }
+MOCK_HRDWR_TREE = Tree()
+MOCK_HRDWR_TREE.create_node(tag='hardware',
+                            identifier=0,
+                            parent=None,
+                            data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1', identifier=1, parent=0, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1', identifier=2, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS2', identifier=3, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS3', identifier=4, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=5, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A1', identifier=6, parent=5, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2', identifier=7, parent=5, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
+                            identifier=8,
+                            parent=7,
+                            data=None)
 
 
 class MockDao:
@@ -237,6 +254,20 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_function_tree')
         assert pub.isSubscribed(DUT.do_calculate_fha, 'request_calculate_fha')
 
+    @pytest.mark.unit
+    def test_matrix_manager_create(self):
+        """__init__() should create an instance of the function matrix
+        manager."""
+        DUT = mmFunction()
+
+        assert isinstance(DUT, mmFunction)
+        assert isinstance(DUT._column_tables, dict)
+        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._row_tree, Tree)
+        assert DUT.dic_matrices == {}
+        assert DUT.n_row == 1
+        assert DUT.n_col == 1
+
 
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
@@ -306,6 +337,37 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='function') is None
 
+    @pytest.mark.xfail
+    def test_do_create_matrix(self, test_program_dao):
+        """_do_create() should create an instance of the hardware matrix manager."""
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmFunction()
+        DUT._col_tree.create_node(tag='requirements',
+                                  identifier=0,
+                                  parent=None,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0001',
+                                  identifier=1,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='FUNC-0001',
+                                  identifier=2,
+                                  parent=0,
+                                  data=None)
+        DUT._col_tree.create_node(tag='REL-0002',
+                                  identifier=3,
+                                  parent=0,
+                                  data=None)
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        assert DUT.do_select('fnctn_hrdwr', 1, 0) == 'REL-0001'
+        assert DUT.do_select('fnctn_hrdwr', 2, 0) == 'FUNC-0001'
+        assert DUT.do_select('fnctn_hrdwr', 3, 0) == 'REL-0002'
+        assert DUT.do_select('fnctn_hrdwr', 1, 1) == 0
+
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
@@ -341,6 +403,9 @@ class TestDeleteMethods():
 
         assert DUT.last_id == 1
 
+        pub.unsubscribe(self.on_succeed_delete_function,
+                        'succeed_delete_function')
+
     @pytest.mark.unit
     def test_do_delete_function_non_existent_id(self, mock_program_dao):
         """_do_delete() should send the fail message."""
@@ -372,6 +437,44 @@ class TestDeleteMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT._do_delete_hazard(1, 10)
+
+    @pytest.mark.integration
+    def test_do_delete_matrix_row(self, test_program_dao):
+        """do_delete_row() should remove the appropriate row from the hardware matrices."""
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmFunction()
+        DUT._col_tree = MOCK_HRDWR_TREE
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        assert DUT.do_select('fnctn_hrdwr', 1, 7) == 0
+
+        DATAMGR.tree.remove_node(1)
+        pub.sendMessage('succeed_delete_function', tree=DATAMGR.tree)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('fnctn_hrdwr', 1, 7)
+
+    @pytest.mark.xfail
+    def test_do_delete_matrix_column(self, test_program_dao):
+        """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmFunction()
+        DUT._col_tree = MOCK_HRDWR_TREE
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        assert DUT.do_select('fnctn_hrdwr', 1, 8) == 0
+
+        DUT._col_tree.remove_node(8)
+        pub.sendMessage('succeed_delete_hardware', tree=DUT._col_tree)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('fnctn_hrdwr', 1, 8)
 
 
 class TestInsertMethods():
@@ -462,6 +565,48 @@ class TestInsertMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_insert_hazard(function_id=10)
+
+    @pytest.mark.integration
+    def test_do_insert_matrix_row(self, test_program_dao):
+        """do_insert_row() should add a row to the end of each hardware matrix."""
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmFunction()
+        DUT._col_tree = MOCK_HRDWR_TREE
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('fnctn_hrdwr', 4, 2)
+
+        DATAMGR.tree.create_node(tag='Test Insert Function',
+                                 identifier=4,
+                                 parent=1,
+                                 data=None)
+        pub.sendMessage('succeed_insert_function',
+                        node_id=4,
+                        tree=DATAMGR.tree)
+
+        assert DUT.do_select('fnctn_hrdwr', 4, 2) == 0
+
+    @pytest.mark.xfail
+    def test_do_insert_matrix_column(self, test_program_dao):
+        """do_insert_column() should add a column to the right of the requested hardware matrix."""
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmFunction()
+        DUT._col_tree = MOCK_HRDWR_TREE
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('hrdwr_rqrmnt', 4, 8)
+
+        pub.sendMessage('succeed_insert_requirement', node_id=6)
+
+        assert DUT.do_select('hrdwr_rqrmnt', 6, 8) == 0
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -642,6 +787,9 @@ class TestUpdateMethods():
             'Attempted to save non-existent function with function ID 100.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
+    def on_succeed_update_matrix(self):
+        print("\033[36m\nsucceed_update_matrix topic was broadcast")
+
     @pytest.mark.unit
     def test_do_update_data_manager(self, mock_program_dao):
         """ do_update() should return a zero error code on success. """
@@ -673,6 +821,28 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(revision_id=1)
         DUT.do_update(100)
+
+    @pytest.mark.integration
+    def test_do_update_matrix_manager(self, test_program_dao):
+        """do_update() should ."""
+        DATAMGR = dmFunction()
+        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = mmFunction()
+        DUT._col_tree = MOCK_HRDWR_TREE
+
+        pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
+
+        pub.sendMessage('succeed_select_revision', revision_id=1)
+
+        DUT.dic_matrices['fnctn_hrdwr'][1][2] = 1
+        DUT.dic_matrices['fnctn_hrdwr'][1][3] = 2
+        DUT.dic_matrices['fnctn_hrdwr'][2][2] = 2
+        DUT.dic_matrices['fnctn_hrdwr'][3][5] = 1
+
+        pub.sendMessage('request_update_function_matrix',
+                        revision_id=1,
+                        matrix_type='fnctn_hrdwr')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')

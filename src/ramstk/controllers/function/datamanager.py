@@ -183,7 +183,7 @@ class DataManager(RAMSTKDataManager):
                     node_id[0],
                     table='hazards')[node_id[1]].set_attributes(_attributes)
 
-    def do_get_all_attributes(self, node_id):
+    def do_get_all_attributes(self, node_id: int) -> None:
         """
         Retrieve all RAMSTK data tables' attributes for the function.
 
@@ -208,7 +208,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_function_attributes',
                         attributes=_attributes)
 
-    def do_get_tree(self):
+    def do_get_tree(self) -> None:
         """
         Retrieve the function treelib Tree.
 
@@ -217,7 +217,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_function_tree', dmtree=self.tree)
 
-    def do_insert(self, parent_id=0):  # pylint: disable=arguments-differ
+    def do_insert(self, parent_id: int = 0) -> None:  # pylint: disable=arguments-differ
         """
         Add a new function as child of the parent ID function.
 
@@ -253,7 +253,7 @@ class DataManager(RAMSTKDataManager):
                                            "child of non-existent parent node "
                                            "{0:s}.".format(str(parent_id))))
 
-    def do_insert_hazard(self, function_id):
+    def do_insert_hazard(self, function_id: int) -> None:
         """
         Add a new hazard to function ID.
 

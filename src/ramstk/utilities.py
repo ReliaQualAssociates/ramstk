@@ -120,7 +120,7 @@ def split_string(string: str) -> List[str]:
     return _strlist
 
 
-# TODO: This is probably not needed and should be retired.
+# TODO: Remove boolean_to_integer() function from utilities.py
 def boolean_to_integer(boolean: bool) -> int:
     """
     Convert boolean representations of TRUE/FALSE to an integer value.
@@ -137,7 +137,7 @@ def boolean_to_integer(boolean: bool) -> int:
     return _result
 
 
-# TODO: This is probably not needed and should be retired.
+# TODO: Remove integer_to_boolean() function from utilities.py
 def integer_to_boolean(integer: int) -> bool:
     """
     Convert an integer to boolean value.

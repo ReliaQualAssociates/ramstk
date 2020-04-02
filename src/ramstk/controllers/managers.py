@@ -399,13 +399,12 @@ class RAMSTKMatrixManager():
 
     _tag = 'matrix'
 
-    def __init__(self, column_tables=None, row_table=None):
+    def __init__(self, column_tables: Dict = None, row_table: Any = None):
         """
         Initialize a Matrix data model instance.
 
-        :param list column_tables: a list of RAMSTK data table objects that
-            comprise the columns.  One table per matrix managed by this
-            manager.
+        :param dict column_tables: a dict of RAMSTK data table objects that
+            comprise the columns.
         :param row_table: the RAMSTK data table object that comprises the rows
             of the matrix(ces) managed by this manager.
         """
@@ -556,7 +555,7 @@ class RAMSTKMatrixManager():
         for _col in matrix:
             self.dic_matrices[matrix_type][_col[0]][_col[1]] = _col[2]
 
-    def do_select(self, matrix_type, col, row):
+    def do_select(self, matrix_type, row, col):
         """
         Select the value from the cell identified by col and row.
 
@@ -572,7 +571,7 @@ class RAMSTKMatrixManager():
         :raise: KeyError if passed a matrix type, column, or row that doesn't
             exist.
         """
-        return self.dic_matrices[matrix_type][col][row]
+        return self.dic_matrices[matrix_type].loc[row, col]
 
     def do_update(self, revision_id, matrix_type):
         """
