@@ -85,8 +85,8 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        for _page in range(self.get_n_pages()):
-            self.remove_page(_page)
+        for _page in self.get_children():
+            self.remove(_page)
 
         for _workspace in self.dic_work_views[module]:
             self.insert_page(_workspace, _workspace.hbx_tab_label, -1)

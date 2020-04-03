@@ -8,8 +8,8 @@
 """The RAMSTK GTK3 revision package."""
 
 # RAMSTK Local Imports
-#from .listview import FailureDefinition as lvwFailureDefinition
 #from .listview import UsageProfile as lvwUsageProfile
+from .listview import FunctionHardware as mtxFunctionHardware
 from .moduleview import ModuleView as mvwFunction
 from .workview import GeneralData as wvwFunctionGD
 from .workview import HazOps as wvwHazOps

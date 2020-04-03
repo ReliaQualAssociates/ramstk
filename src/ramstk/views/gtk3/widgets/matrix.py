@@ -8,79 +8,49 @@
 """The RAMSTKBaseMatrix Module."""
 
 # Standard Library Imports
-import locale
 from typing import Any, Dict, List
 
 # Third Party Imports
 import pandas as pd
-from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, Pango, _
 
 # RAMSTK Local Imports
-from .button import do_make_buttonbox
 from .label import RAMSTKLabel
 
 
-class RAMSTKBaseMatrix(Gtk.HBox):
+class RAMSTKMatrixView(Gtk.HBox):
     """
     The RAMSTK base widget for displaying RAMSTK Matrix views.
 
     The attributes of an RAMSTKBaseMatrix are:
 
-    :ivar list _dic_icons: dictionary of icons to use in the various
-        RAMSTKMatrix views.
-    :ivar _ramstk_matrix: the RAMSTKDataMatrix to display in the Matrix View.
     :ivar int _n_columns: the number of columns in the matrix.
     :ivar int _n_rows: the number rows in the matrix.
-    :ivar matrix: the Gtk.TreeView() displaying the RAMSTKDataMatrix.
-    :type matrix: :class:`Gtk.TreeView`
+    :ivar list dic_icons: dictionary of icons to use in the various
+        RAMSTKMatrix views.
+    :ivar matrix: the RAMSTKDataMatrix to display in the Matrix View.
+    :ivar matrixview: the Gtk.TreeView() displaying the RAMSTKDataMatrix.
+    :type matrixview: :class:`Gtk.TreeView`
     """
-
-    RAMSTK_CONFIGURATION = None
-
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 test: bool = False,
-                 **kwargs: Any) -> None:
+    def __init__(self, module: str) -> None:
         """
-        Initialize an instance of the RAMSTKBaseMatrix widget class.
+        Initialize a RAMSTKMatrixView() instance.
 
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
-        :param bool test: indicates whether the RAMSTBaseMatrix is being
-            created by a test or not (default).
+        :return: None
+        :rtype: None
         """
-        self.RAMSTK_USR_CONFIGURATION = configuration
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {
-            0:
-            self.RAMSTK_USR_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
-            1:
-            self.RAMSTK_USR_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/partial.png',
-            2:
-            self.RAMSTK_USR_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/complete.png',
-            'save':
-            self.RAMSTK_USR_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
-            'save-all':
-            self.RAMSTK_USR_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/save-all.png',
-            'view-refresh':
-            self.RAMSTK_USR_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/view-refresh.png'
-        }
+        self.dic_icons = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._matrix_type = kwargs['matrix_type']
+        self._matrix_type = module
         self._revision_id = None
-        self._ramstk_matrix = None
         self._n_columns = 0
         self._n_rows = 0
 
@@ -89,60 +59,11 @@ class RAMSTKBaseMatrix(Gtk.HBox):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.matrix = None
+        self.matrixview = Gtk.TreeView()
         self.n_fixed_columns = 0
-        self.hbx_tab_label = Gtk.HBox()
-        self.matrix = Gtk.TreeView(None)
-
-        try:
-            locale.setlocale(locale.LC_ALL,
-                             self.RAMSTK_USR_CONFIGURATION.RAMSTK_LOCALE)
-        except locale.Error:
-            locale.setlocale(locale.LC_ALL, '')
-
-        if not test:
-            self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_matrix, 'retrieved_matrix')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.pack_start(
-            do_make_buttonbox(
-                self,
-                icons=['view-refresh'],
-                tooltips=[
-                    self._dic_matrix_labels[self._matrix_type][0],
-                ],
-                callbacks=[self._do_request_create],
-                orientation='vertical',
-                height=-1,
-                width=-1), False, False, 0)
-
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.add(self.matrix)
-
-        self.pack_end(_scrolledwindow, True, True, 0)
-
-        _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>"
-                          + self._dic_matrix_labels[self._matrix_type][1]
-                          + "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(self._dic_matrix_labels[self._matrix_type][2])
-
-        # self.hbx_tab_label.pack_start(_image, True, True, 0)
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
-        self.hbx_tab_label.show_all()
-
-        self.show_all()
 
     def _do_set_properties(self, cell: Gtk.CellRenderer, editable: bool,
                            position: int, col_index: int,
@@ -248,15 +169,15 @@ class RAMSTKBaseMatrix(Gtk.HBox):
         _column_item_id = col_index
         _row_item_id = model[path][0]
         if _model.get_value(row, 0) == 'Partial':
-            self._ramstk_matrix[_column_item_id][_row_item_id] = 1
+            self.matrix[_column_item_id][_row_item_id] = 1
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self._dic_icons[1], 22, 22)
         elif _model.get_value(row, 0) == 'Complete':
-            self._ramstk_matrix[_column_item_id][_row_item_id] = 2
+            self.matrix[_column_item_id][_row_item_id] = 2
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self._dic_icons[2], 22, 22)
         else:
-            self._ramstk_matrix[_column_item_id][_row_item_id] = 0
+            self.matrix[_column_item_id][_row_item_id] = 0
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self._dic_icons[0], 22, 22)
 
@@ -289,11 +210,10 @@ class RAMSTKBaseMatrix(Gtk.HBox):
                        column_headings: Dict[int, str],
                        row_headings: Dict[int, str], rows: str) -> None:
         """
-        Load the RAMSTKMatrix view with the values from the RAMSTKDataMatrix.
+        Load the RAMSTKMatrixView with the values from the data matrix.
 
-        :param matrix: the RAMSTKDataMatrix to display in the RAMSTKMatrix
-            widget.
-        :type matrix: :class:`ramstk.views.gtk3.widgets.matrix.RAMSTKMatrix`
+        :param matrix: the data to display in the RAMSTKMatrixView() widget.
+        :type matrix: :class:`pandas.DataFrame`
         :param dict column_headings: the dicionary containing the headings to
             use for the matrix columns.  Keys are the column <MODULE> IDs;
             values are a noun field associated with the key.
@@ -305,17 +225,17 @@ class RAMSTKBaseMatrix(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        self._ramstk_matrix = matrix
-        self._n_columns = len(self._ramstk_matrix.columns)
-        self._n_rows = len(self._ramstk_matrix.index)
+        self.matrix = matrix
+        self._n_columns = len(self.matrix.columns)
+        self._n_rows = len(self.matrix.index)
 
         _gobject_types = [GObject.TYPE_INT, GObject.TYPE_STRING] + \
                          [GdkPixbuf.Pixbuf, GObject.TYPE_STRING] * \
-            (self._n_columns) + [GObject.TYPE_STRING]
+                         (self._n_columns) + [GObject.TYPE_STRING]
 
         _model = Gtk.TreeStore(*_gobject_types)
 
-        self.matrix.set_model(_model)
+        self.matrixview.set_model(_model)
 
         # The first column will contain the Function ID and Function Code.
         _cell = Gtk.CellRendererText()
@@ -335,7 +255,7 @@ class RAMSTKBaseMatrix(Gtk.HBox):
             _cell,
         ], rows)
         _column.set_attributes(_cell, markup=1)
-        self.matrix.append_column(_column)
+        self.matrixview.append_column(_column)
 
         # The remaining columns will be Gtk.CellRendererCombo()'s for
         # displaying the interaction between Function and Hardware.
@@ -343,14 +263,14 @@ class RAMSTKBaseMatrix(Gtk.HBox):
         for i in range(self._n_columns):  # pylint: disable=E0602
             _cell = self._make_combo_cell()
             self._do_set_properties(_cell, True, i + j + 1,
-                                    self._ramstk_matrix.columns[i], _model)
+                                    self.matrixview.columns[i], _model)
 
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
-            _heading = column_headings[self._ramstk_matrix.columns[i]]
+            _heading = column_headings[self.matrixview.columns[i]]
             _column = self._make_column([_pbcell, _cell], _heading)
             _column.set_attributes(_pbcell, pixbuf=i + j)
-            self.matrix.append_column(_column)
+            self.matrixview.append_column(_column)
 
             j += 1
 
@@ -365,12 +285,12 @@ class RAMSTKBaseMatrix(Gtk.HBox):
         except UnboundLocalError:
             _column.set_visible(False)
 
-        self.matrix.append_column(_column)
+        self.matrixview.append_column(_column)
 
         # Now we load the data into the RAMSTK Matrix View.
-        for i in list(self._ramstk_matrix.index):
+        for i in list(self.matrix.index):
             _data = [i, "<span weight='bold'>" + row_headings[i] + "</span>"]
-            for j in list(self._ramstk_matrix.loc[i]):
+            for j in list(self.matrix.loc[i]):
                 _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons[j], 22, 22)
                 _data.append(_pixbuf)

@@ -26,6 +26,7 @@ from .button import do_make_buttonbox
 from .dialog import RAMSTKMessageDialog
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
+from .matrix import RAMSTKMatrixView
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
 
@@ -160,52 +161,66 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: dict
         """
         return {
-            'calculate':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/calculate.png',
-            'calculate_all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/calculate-all.png',
             'add':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
-            'remove':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/remove.png',
-            'reports':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/reports.png',
-            'save':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
-            'save-all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/save-all.png',
-            'important':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/important.png',
-            'error':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/error.png',
-            'question':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/question.png',
-            'insert_sibling':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/insert_sibling.png',
-            'insert_child':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/insert_child.png',
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/add.png',
+            'calculate':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/calculate.png',
+            'calculate_all':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/calculate-all.png',
             'cancel':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/cancel.png',
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/cancel.png',
+            'complete':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/complete.png',
+            'error':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/error.png',
             'export':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/export.png',
-            'warning':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/warning.png',
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/export.png',
+            'important':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/important.png',
+            'insert_child':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/insert_child.png',
+            'insert_sibling':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/insert_sibling.png',
+            'none':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/none.png',
+            'partial':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/partial.png',
+            'question':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/question.png',
+            'refresh-view':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/view-refresh.png',
+            'remove':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/remove.png',
             'rollup':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/rollup.png'
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/rollup.png',
+            'reports':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/reports.png',
+            'save':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/save.png',
+            'save-all':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/save-all.png',
+            'warning':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/warning.png'
         }
 
     def _make_toolbar(self,
@@ -663,13 +678,22 @@ class RAMSTKBaseView(Gtk.HBox):
 
 class RAMSTKListView(RAMSTKBaseView):
     """
-    Class to display data in the RAMSTK List Book.
+    Class to display list and matrix type data in the RAMSTK List Book.
 
     This is the meta class for all RAMSTK List View classes.  Attributes of the
     RAMSTKListView are:
 
+    :ivar str _matrix_type: the name of the matrix displayed by this view.
     :ivar str _module: the capitalized name of the RAMSTK module the List View
         is associated with.
+    :ivar int _n_columns: the number of columns in a matrix.
+    :ivar int _n_rows: the number of rows in a matrix.
+    :ivar matrix: the Pandas DataFrame() containing the matrix data.
+    :ivar matrix: :class:`Pandas.DataFrame`
+    :ivar matrixview: the MatrixView() displaying the matrix data.
+    :type matrixview: :class:`ramstk.views.gtk3.widgets.RAMSTKMatrixView`
+    :ivar int n_fixed_columns: the number of matrix columns on the left that
+        contain fixed data.
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
     :type tab_label: :class:`Gtk.Label`
     """
@@ -702,6 +726,7 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.matrixview = RAMSTKMatrixView(module=module)
         self.tab_label = Gtk.Label()
 
         self.__set_properties()
@@ -715,10 +740,12 @@ class RAMSTKListView(RAMSTKBaseView):
         """
         self.treeview.set_rubber_banding(True)
 
-    def make_ui(self) -> None:
+    def make_ui(self, vtype='list') -> None:
         """
         Build the user interface.
 
+        :param str vtype: the type of view to create; 'list' (default) or
+            'matrix'.
         :return: None
         :rtype: None
         """
@@ -726,7 +753,20 @@ class RAMSTKListView(RAMSTKBaseView):
         self.hbx_tab_label.show_all()
 
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.add(self.treeview)
+        if vtype == 'matrix':
+            self.matrixview.dic_icons = {
+                'complete':
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                    + '/32x32/complete.png',
+                'none':
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                    + '/32x32/none.png',
+                'partial':
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                    + '/32x32/partial.png'}
+            _scrolledwindow.add(self.matrixview)
+        else:
+            _scrolledwindow.add(self.treeview)
 
         self.pack_end(_scrolledwindow, True, True, 0)
 
