@@ -8,6 +8,7 @@
 """Function Controller Package matrix manager."""
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -49,61 +50,48 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_create, 'succeed_select_revision')
+        pub.subscribe(self._do_create, 'request_create_matrix')
+        pub.subscribe(self._on_delete_function, 'succeed_delete_function')
         #pub.subscribe(self._do_delete_hardware, 'succeed_delete_hardware')
+        pub.subscribe(self._on_insert_function, 'succeed_insert_function')
         #pub.subscribe(self._do_insert_hardware,
         #              'succeed_insert_hardware')
-        #pub.subscribe(self._do_insert_validation, 'succeed_insert_validation')
         pub.subscribe(self.do_update, 'request_update_function_matrix')
-        pub.subscribe(self._on_delete_function, 'succeed_delete_function')
         pub.subscribe(self._on_get_tree, 'succeed_get_function_tree')
         pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
         #pub.subscribe(self._on_get_tree, 'succeed_get_validation_tree')
-        pub.subscribe(self._on_insert_function, 'succeed_insert_function')
 
-    def _do_create(self, revision_id: int) -> None: # pylint: disable=unused-argument
+    def _do_create(self, tree: treelib.Tree) -> None:
         """
         Create the Function data matrices.
 
-        :param int revision_id: the revision ID to gather the data that will be
-            used to create the matrices.
-        :return:
-        :rtype:
+        :param tree: the treelib Tree() containing the work stream module's
+            data.
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
+        self._row_tree = tree
         self.dic_matrices = {}
 
-        pub.sendMessage('request_get_function_tree')
         # pub.sendMessage('request_get_hardware_tree')
 
         RAMSTKMatrixManager.do_create(self, 'fnctn_hrdwr')
 
-    def _on_delete_function(self, tree) -> None:
+    def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None: # pylint: disable=unused-argument
         """
-        Delete the node ID column from the Function::Hardware matrix.
+        Delete the matrix row associated with the deleted function.
 
-        :param tree: the function treelib Tree() after deleting a function.
-        :type tree: :class:`treelib.Tree`:
+        :param int node_id: the treelib Tree() node ID associated with the
+            deleted function.
+        :param tree: the treelib Tree() containing the remaining function data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        self._row_tree = tree
-        self._do_create(0)
+        self.do_delete_row(node_id)
 
-    def _on_insert_function(self, node_id: int, tree) -> None:  # pylint: disable=unused-argument
-        """
-        Insert the node ID column to the Function::Hardware matrix.
-
-        :param int node_id: the function treelib Node ID that is to be
-            inserted.  Note that node ID = function ID = matrix row ID.
-        :param tree: the function treelib Tree() after inserting a function.
-        :type tree: :class:`treelib.Tree`:
-        :return: None
-        :rtype: None
-        """
-        self._row_tree = tree
-        self._do_create(0)
-
-    def _on_get_tree(self, dmtree) -> None:
+    def _on_get_tree(self, dmtree: treelib.Tree) -> None:
         """
         Request the function treelib Tree().
 
@@ -116,3 +104,15 @@ class MatrixManager(RAMSTKMatrixManager):
             self._row_tree = dmtree
         else:
             self._col_tree = dmtree
+
+    def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:    # pylint: disable=unused-argument
+        """
+
+        :param int node_id: the treelib Tree() node ID associated with the
+            inserted function.
+        :param tree: the treelib Tree() containing the remaining function data.
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        self.do_insert_row(node_id)

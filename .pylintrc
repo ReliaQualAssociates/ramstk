@@ -28,6 +28,10 @@ profile=no
 #ignore=CVS
 ignore=git
 
+# Add files or directories matching the regex patterns to the blacklist. The
+# regex matches against base names, not paths.
+ignore-patterns=test_*?.py
+
 # Pickle collected data for later comparisons.
 persistent=yes
 

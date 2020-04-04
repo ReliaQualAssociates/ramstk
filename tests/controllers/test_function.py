@@ -221,7 +221,7 @@ class TestCreateControllers():
         assert DUT._tag == 'function'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_revision')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
         assert pub.isSubscribed(DUT._do_delete_hazard, 'request_delete_hazard')
         assert pub.isSubscribed(DUT.do_insert, 'request_insert_function')
@@ -287,7 +287,7 @@ class TestSelectMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.unsubscribe(self.on_succeed_retrieve_functions,
                         'succeed_retrieve_functions')
@@ -297,7 +297,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKFunction on success."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _function = DUT.do_select(1, table='function')
 
@@ -310,7 +310,7 @@ class TestSelectMethods():
         """do_select() should return an instance of RAMSTKHazardAnalysis on success."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _failure_definition = DUT.do_select(1, table='hazards')
 
@@ -323,7 +323,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select(1, table='scibbidy-bibbidy-doo')
@@ -333,7 +333,7 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent Function ID is requested."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         assert DUT.do_select(100, table='function') is None
 
@@ -342,7 +342,7 @@ class TestSelectMethods():
         """_do_create() should create an instance of the hardware matrix manager."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -371,7 +371,8 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_function(self, tree):
+    def on_succeed_delete_function(self, node_id, tree):
+        assert node_id == 2
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_function topic was broadcast.")
 
@@ -398,7 +399,7 @@ class TestDeleteMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete(DUT.last_id)
 
         assert DUT.last_id == 1
@@ -413,7 +414,7 @@ class TestDeleteMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete(300)
 
     @pytest.mark.unit
@@ -423,7 +424,7 @@ class TestDeleteMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_hazard(1, 1)
 
         assert DUT.tree.get_node(1).data['hazards'] == {}
@@ -435,7 +436,7 @@ class TestDeleteMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_hazard(1, 10)
 
     @pytest.mark.integration
@@ -443,16 +444,16 @@ class TestDeleteMethods():
         """do_delete_row() should remove the appropriate row from the hardware matrices."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree = MOCK_HRDWR_TREE
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        pub.sendMessage('request_create_matrix', tree=DATAMGR.tree)
 
         assert DUT.do_select('fnctn_hrdwr', 1, 7) == 0
 
         DATAMGR.tree.remove_node(1)
-        pub.sendMessage('succeed_delete_function', tree=DATAMGR.tree)
+        pub.sendMessage('succeed_delete_function', node_id=1, tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
             DUT.do_select('fnctn_hrdwr', 1, 7)
@@ -462,7 +463,7 @@ class TestDeleteMethods():
         """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree = MOCK_HRDWR_TREE
 
@@ -507,7 +508,7 @@ class TestInsertMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert()
 
         assert isinstance(
@@ -524,7 +525,7 @@ class TestInsertMethods():
         """do_insert() should send the success message after successfully inserting a child function."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert(parent_id=2)
 
         assert isinstance(
@@ -540,7 +541,7 @@ class TestInsertMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert(parent_id=40)
 
     @pytest.mark.unit
@@ -550,7 +551,7 @@ class TestInsertMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert_hazard(1)
 
         assert isinstance(
@@ -563,7 +564,7 @@ class TestInsertMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert_hazard(function_id=10)
 
     @pytest.mark.integration
@@ -571,14 +572,14 @@ class TestInsertMethods():
         """do_insert_row() should add a row to the end of each hardware matrix."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree = MOCK_HRDWR_TREE
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        pub.sendMessage('request_create_matrix', tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 4, 2)
+            DUT.do_select('fnctn_hrdwr', 4, 4)
 
         DATAMGR.tree.create_node(tag='Test Insert Function',
                                  identifier=4,
@@ -588,14 +589,14 @@ class TestInsertMethods():
                         node_id=4,
                         tree=DATAMGR.tree)
 
-        assert DUT.do_select('fnctn_hrdwr', 4, 2) == 0
+        assert DUT.do_select('fnctn_hrdwr', 4, 4) == 0
 
     @pytest.mark.xfail
     def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested hardware matrix."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree = MOCK_HRDWR_TREE
 
@@ -652,7 +653,7 @@ class TestGetterSetter():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_get_attributes(1, 'function')
 
     @pytest.mark.unit
@@ -663,7 +664,7 @@ class TestGetterSetter():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_get_attributes(1, 'hazards')
 
     @pytest.mark.unit
@@ -674,7 +675,7 @@ class TestGetterSetter():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_all_attributes(1)
 
         pub.unsubscribe(self.on_succeed_get_all_attrs,
@@ -685,7 +686,7 @@ class TestGetterSetter():
         """do_set_attributes() should send the success message."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_function_attributes',
                         node_id=[1, -1],
@@ -702,7 +703,7 @@ class TestGetterSetter():
         """do_set_all_attributes() should send the success message."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_all_function_attributes',
                         attributes={
@@ -739,7 +740,7 @@ class TestGetterSetter():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_function_tree,
@@ -751,7 +752,7 @@ class TestGetterSetter():
         """_get_all_attributes() should update the attributes dict on success."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amFunction(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_function_attributes', node_id=1)
@@ -767,7 +768,7 @@ class TestGetterSetter():
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_function_tree message."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amFunction(test_toml_user_configuration)
         DATAMGR.do_get_tree()
 
@@ -798,13 +799,13 @@ class TestUpdateMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         DUT.tree.get_node(1).data['function'].name = 'Test Function'
         DUT.tree.get_node(1).data['hazards'][1].potential_hazard = 'Big Hazard'
         DUT.do_update(1)
 
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         assert DUT.tree.get_node(1).data['function'].name == 'Test Function'
         assert DUT.tree.get_node(
             1).data['hazards'][1].potential_hazard == 'Big Hazard'
@@ -819,7 +820,7 @@ class TestUpdateMethods():
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_update(100)
 
     @pytest.mark.integration
@@ -827,13 +828,13 @@ class TestUpdateMethods():
         """do_update() should ."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree = MOCK_HRDWR_TREE
 
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        pub.sendMessage('request_create_matrix', tree=DATAMGR.tree)
 
         DUT.dic_matrices['fnctn_hrdwr'][1][2] = 1
         DUT.dic_matrices['fnctn_hrdwr'][1][3] = 2
@@ -843,6 +844,7 @@ class TestUpdateMethods():
         pub.sendMessage('request_update_function_matrix',
                         revision_id=1,
                         matrix_type='fnctn_hrdwr')
+        pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -854,7 +856,7 @@ class TestAnalysisMethods():
         """do_calculate_hri() should calculate the hazard risk index hazard analysis."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amFunction(test_toml_user_configuration)
 
         pub.sendMessage('request_get_function_tree')
@@ -883,7 +885,7 @@ class TestAnalysisMethods():
         """do_calculate_user_defined() should calculate the user-defined hazard analysis."""
         DATAMGR = dmFunction()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amFunction(test_toml_user_configuration)
 
         pub.sendMessage('request_get_function_tree')

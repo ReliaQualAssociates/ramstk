@@ -577,11 +577,12 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.show()
             _menu.append(_menu_item)
 
-    def on_delete(self, tree: treelib.Tree) -> None:  # pylint: disable=unused-argument
+    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:  # pylint: disable=unused-argument
         """
         Update the RAMSTKTreeView after deleting a line item.
 
-        :param tree: the treelib Tree() containing the
+        :param int node_id: the treelib Tree() node ID that was deleted.
+        :param tree: the treelib Tree() containing the workflow module data.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None

@@ -274,16 +274,21 @@ class RAMSTKDataManager():
         _lst_matrix = []
 
         # Retrieve the matrix values for the desired Matrix ID.
-        for _matrix in self.dao.do_select_all(
-                RAMSTKMatrix,
-                [RAMSTKMatrix.revision_id, RAMSTKMatrix.matrix_type],
-                [self._revision_id, matrix_type]):
-            _lst_matrix.append(
-                (_matrix.column_item_id, _matrix.row_item_id, _matrix.value))
+        try:
+            for _matrix in self.dao.do_select_all(
+                    RAMSTKMatrix,
+                    key=[RAMSTKMatrix.revision_id, RAMSTKMatrix.matrix_type],
+                    value=[self._revision_id, matrix_type]):
+                _lst_matrix.append(
+                    (_matrix.column_item_id, _matrix.row_item_id, _matrix.value))
 
-        pub.sendMessage('succeed_retrieve_matrix',
-                        matrix_type=matrix_type,
-                        matrix=_lst_matrix)
+            pub.sendMessage('succeed_retrieve_matrix',
+                            matrix_type=matrix_type,
+                            matrix=_lst_matrix)
+        except TypeError:
+            pub.sendMessage('fail_retrieve_matrix',
+                            error_message=("No matrix returned for {0:s} "
+                                           "matrix.".format(str(matrix_type))))
 
     def do_set_tree(self, module_tree):
         """
@@ -552,8 +557,9 @@ class RAMSTKMatrixManager():
         :return: None
         :rtype: None
         """
-        for _col in matrix:
-            self.dic_matrices[matrix_type][_col[0]][_col[1]] = _col[2]
+        if matrix_type in self.dic_matrices:
+            for _col in matrix:
+                self.dic_matrices[matrix_type].loc[_col[1], _col[0]] = _col[2]
 
     def do_select(self, matrix_type, row, col):
         """
@@ -562,16 +568,16 @@ class RAMSTKMatrixManager():
         :param str matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
             this matrix manager.
-        :param str col: the column of the cell.  This is the first index of the
-            Pandas DataFrame.
         :param str row: the row of the cell.  This is the second index of the
+            Pandas DataFrame.
+        :param str col: the column of the cell.  This is the first index of the
             Pandas DataFrame.
         :return: the value in the cell at (col, row).
         :rtype: int
         :raise: KeyError if passed a matrix type, column, or row that doesn't
             exist.
         """
-        return self.dic_matrices[matrix_type].loc[row, col]
+        return self.dic_matrices[matrix_type].at[row, col]
 
     def do_update(self, revision_id, matrix_type):
         """

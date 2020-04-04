@@ -8,7 +8,7 @@
 """Function Package Data Model."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -49,7 +49,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'succeed_select_revision')
+        pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self._do_delete, 'request_delete_function')
         pub.subscribe(self._do_delete_hazard, 'request_delete_hazard')
         pub.subscribe(self.do_insert, 'request_insert_function')
@@ -69,7 +69,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_set_attributes, 'wvw_editing_function')
         pub.subscribe(self.do_set_attributes, 'wvw_editing_hazard')
 
-    def _do_delete(self, node_id):
+    def _do_delete(self, node_id: int) -> None:
         """
         Remove a function.
 
@@ -84,7 +84,8 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_function', tree=self.tree)
+            pub.sendMessage('succeed_delete_function',
+                            node_id=node_id, tree=self.tree)
         except (AttributeError, DataAccessError):
             _error_message = ("Attempted to delete non-existent function ID "
                               "{0:s}.").format(str(node_id))
@@ -95,7 +96,7 @@ class DataManager(RAMSTKDataManager):
                           "in the tree.").format(str(node_id))
             pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
-    def _do_delete_hazard(self, function_id, node_id):
+    def _do_delete_hazard(self, function_id: int, node_id: int) -> None:
         """
         Remove a hazard from function ID.
 
@@ -119,7 +120,7 @@ class DataManager(RAMSTKDataManager):
                                            "{1:s}.").format(
                                                str(node_id), str(function_id)))
 
-    def _do_get_attributes(self, node_id, table):
+    def _do_get_attributes(self, node_id: int, table: str) -> None:
         """
         Retrieve the RAMSTK data table attributes for the function.
 
@@ -286,7 +287,7 @@ class DataManager(RAMSTKDataManager):
                                            "non-existent function ID "
                                            "{0:s}.".format(str(function_id))))
 
-    def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the Function data from the RAMSTK Program database.
 
@@ -294,7 +295,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = revision_id
+        self._revision_id = attributes['revision_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -310,7 +311,10 @@ class DataManager(RAMSTKDataManager):
                                               order=RAMSTKHazardAnalysis.hazard_id)
             _hazards = self.do_build_dict(_hazards, 'hazard_id')
 
-            self._last_id[1] = max(self._last_id[1], max(_hazards.keys()))
+            try:
+                self._last_id[1] = max(self._last_id[1], max(_hazards.keys()))
+            except ValueError:
+                self._last_id[1] = self._last_id[1]
 
             _data_package = {
                 'function': _function,
@@ -326,7 +330,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_functions', tree=self.tree)
 
-    def do_set_all_attributes(self, attributes, hazard_id=None):
+    def do_set_all_attributes(self, attributes: Dict[str, Any],
+                              hazard_id: int = None) -> None:
         """
         Set all the attributes of the record associated with the Module ID.
 
@@ -380,7 +385,7 @@ class DataManager(RAMSTKDataManager):
                     self.do_select(node_id[0],
                                    table=_table).set_attributes(_attributes)
 
-    def do_update(self, node_id):
+    def do_update(self, node_id: int) -> None:
         """
         Update the record associated with node ID in RAMSTK Program database.
 
