@@ -57,7 +57,8 @@ class RAMSTKProgramManager:
             },
             'function': {
                 'analysis': None,
-                'data': None
+                'data': None,
+                'matrix': None
             },
             'ffmea': {
                 'analysis': None,
@@ -128,7 +129,8 @@ class RAMSTKProgramManager:
                         program_db=self.program_dao,
                         database=database)
 
-    def do_open_program(self, program_db: BaseDatabase, database: Dict) -> None:
+    def do_open_program(self, program_db: BaseDatabase,
+                        database: Dict[str, str]) -> None:
         """
         Open an RAMSTK Program database for analyses.
 
@@ -139,8 +141,9 @@ class RAMSTKProgramManager:
         :return: None
         :rtype: None
         """
+        self.program_dao = program_db
+
         try:
-            self.program_dao = program_db
             self.program_dao.do_connect(database)
             pub.sendMessage('succeed_connect_program_database',
                             dao=self.program_dao)
