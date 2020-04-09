@@ -272,7 +272,7 @@ class ModuleView(RAMSTKModuleView):
         """
         _model, _row = self.treeview.selection.get_selected()
 
-        if module == 'function':
+        if (module == 'function' and _row is not None):
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
             _title = _("Analyzing Function {0:s}: {1:s}").format(

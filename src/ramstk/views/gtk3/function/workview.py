@@ -7,11 +7,10 @@
 """The RAMSTK GTK3 Function Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
@@ -383,10 +382,9 @@ class HazOps(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_tree, 'succeed_retrieve_functions')
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self.__do_set_parent, 'selected_function')
-        pub.subscribe(self.__do_load_tree, 'succeed_get_hazards_attributes')
+        pub.subscribe(self._do_load_tree, 'succeed_get_hazards_attributes')
 
         # These subscriptions cause the cursor to change to/from busy when
         # certain actions are performed.
@@ -410,9 +408,7 @@ class HazOps(RAMSTKWorkView):
         :rtype: None
         """
         try:
-            self._revision_id = attributes["revision_id"]
-            self._parent_id = attributes["function_id"]
-            self._do_load_tree(tree=attributes)
+            self._do_load_tree(attributes=attributes)
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
@@ -563,55 +559,25 @@ class HazOps(RAMSTKWorkView):
                 _severity = severity[_key][1]
                 _model.append((_severity, ))
 
-    def _do_load_tree(self, tree: Tree) -> None:
+    def _do_load_tree(self, attributes: Dict[int, Any]) -> None:
         """
         Load the Hazard Analysis Work View's Gtk.TreeModel.
 
-        :param tree: the function Tree() with the hazard attributes in the
-            data package.
-        :type tree: :class:`treelib.Tree`
+        :param dict attributes: the hazards dict for the selected function ID.
         :return: None
         :rtype: None
         """
         _model = self.treeview.get_model()
         _model.clear()
 
-        for _node in tree.all_nodes()[1:]:
-            _hazards = _node.data['hazards']
-
-            for _key in _hazards:
-                _hazard = _hazards[_key]
-                _attributes: Tuple[
-                    int, int, int, str, str, str, str, str, int, str, str, str,
-                    int, str, str, str, int, str, str, str, int, str, str, str,
-                    str, str, str, float, float, float, float, float, str, str,
-                    str, float, float, float, int, int, int, str] = (
-                        _hazard.revision_id, _hazard.function_id,
-                        _hazard.hazard_id, _hazard.potential_hazard,
-                        _hazard.potential_cause, _hazard.assembly_effect,
-                        _hazard.assembly_severity,
-                        _hazard.assembly_probability, _hazard.assembly_hri,
-                        _hazard.assembly_mitigation,
-                        _hazard.assembly_severity_f,
-                        _hazard.assembly_probability_f, _hazard.assembly_hri_f,
-                        _hazard.system_effect, _hazard.system_severity,
-                        _hazard.system_probability, _hazard.system_hri,
-                        _hazard.system_mitigation, _hazard.system_severity_f,
-                        _hazard.system_probability_f, _hazard.system_hri_f,
-                        _hazard.remarks, _hazard.function_1,
-                        _hazard.function_2, _hazard.function_3,
-                        _hazard.function_4, _hazard.function_5,
-                        _hazard.result_1, _hazard.result_2, _hazard.result_3,
-                        _hazard.result_4, _hazard.result_5,
-                        _hazard.user_blob_1, _hazard.user_blob_2,
-                        _hazard.user_blob_3, _hazard.user_float_1,
-                        _hazard.user_float_2, _hazard.user_float_3,
-                        _hazard.user_int_1, _hazard.user_int_2,
-                        _hazard.user_int_3, '')
-                try:
-                    _model.append(None, _attributes)
-                except ValueError as _error:
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        _hazards = list(attributes.values())
+        for _hazard in _hazards:
+            _attributes = list(_hazard.get_attributes().values())
+            _attributes.append('')
+            try:
+                _model.append(None, _attributes)
+            except ValueError as _error:
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         self.do_expand_tree()
 
@@ -822,6 +788,7 @@ class HazOps(RAMSTKWorkView):
 
         _model, _row = selection.get_selected()
         try:
+            self._parent_id = _model.get_value(_row, 1)
             self._hazard_id = _model.get_value(_row, 2)
         except TypeError as _error:
             self._hazard_id = -1
