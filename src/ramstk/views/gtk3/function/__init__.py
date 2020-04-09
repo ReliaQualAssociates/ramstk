@@ -8,7 +8,6 @@
 """The RAMSTK GTK3 revision package."""
 
 # RAMSTK Local Imports
-#from .listview import UsageProfile as lvwUsageProfile
 from .listview import FunctionHardware as mtxFunctionHardware
 from .moduleview import ModuleView as mvwFunction
 from .workview import GeneralData as wvwFunctionGD

@@ -105,7 +105,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _hazards = RAMSTKDataManager.do_select(self, function_id, 'hazards')
+        _hazards = super().do_select(function_id, 'hazards')
         try:
             self.dao.do_delete(_hazards[node_id])
 

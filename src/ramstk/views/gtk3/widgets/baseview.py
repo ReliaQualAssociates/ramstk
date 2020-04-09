@@ -74,7 +74,7 @@ class RAMSTKBaseView(Gtk.HBox):
     }
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str) -> None:
+                 logger: RAMSTKLogManager, module: str = '') -> None:
         """
         Initialize the RAMSTK Base View.
 
@@ -687,7 +687,7 @@ class RAMSTKListView(RAMSTKBaseView):
     :type tab_label: :class:`Gtk.Label`
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str) -> None:
+                 logger: RAMSTKLogManager, module: str = '') -> None:
         """
         Initialize the List View.
 
@@ -795,7 +795,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
     :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str) -> None:
+                 logger: RAMSTKLogManager, module: str = '') -> None:
         """
         Initialize the RAMSTKModuleView meta-class.
 
@@ -954,7 +954,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
     is for.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str) -> None:
+                 logger: RAMSTKLogManager, module: str = '') -> None:
         """
         Initialize the RAMSTKWorkView meta-class.
 

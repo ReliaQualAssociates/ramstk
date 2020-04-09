@@ -31,7 +31,7 @@ class ModuleView(RAMSTKModuleView):
     Module View are inherited.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+                 logger: RAMSTKLogManager, module='revision') -> None:
         """
         Initialize the Revision Module View.
 
@@ -40,7 +40,7 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, 'revision')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
