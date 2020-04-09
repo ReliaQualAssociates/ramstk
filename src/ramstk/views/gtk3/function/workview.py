@@ -29,10 +29,7 @@ class GeneralData(RAMSTKWorkView):
     The Function Work View displays all the general data attributes for the
     selected Function. The attributes of a Function General Data Work View are:
 
-    :cvar list _lst_labels: the list of label text.
-
     Callbacks signals in _lst_handler_id:
-
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
     +==========+===========================================+
@@ -48,7 +45,7 @@ class GeneralData(RAMSTKWorkView):
     _lst_labels = [_("Function Code:"), _("Function Name:"), _("Remarks:")]
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+                 logger: RAMSTKLogManager, module: str = 'function') -> None:
         """
         Initialize the Function Work View general data page.
 
@@ -57,7 +54,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, 'function')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -87,6 +84,7 @@ class GeneralData(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_function')
         pub.subscribe(self._on_edit, 'mvw_editing_function')
 
@@ -221,7 +219,7 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_update_all_functions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _on_edit(self, node_id: List, package: Dict) -> None:
+    def _on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
         """
         Update the Function Work View Gtk.Widgets().
 
@@ -233,8 +231,7 @@ class GeneralData(RAMSTKWorkView):
             Program database table whose attributes are to be set.  The list is:
 
                 0 - Function ID
-                1 - Failure Definition ID
-                2 - Usage ID
+                1 - Hazard ID
 
         :param dict package: the key:value for the attribute being updated.
         :return: None
@@ -282,16 +279,16 @@ class GeneralData(RAMSTKWorkView):
         except KeyError as _error:
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-        _new_text = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
         try:
             if index == 2:
-                _new_text = self.txtRemarks.do_get_text()
+                _new_text: str = self.txtRemarks.do_get_text()
             else:
-                _new_text: str = str(entry.get_text())
+                _new_text = str(entry.get_text())
         except ValueError as _error:
+            _new_text = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage('wvw_editing_function',
@@ -300,12 +297,12 @@ class GeneralData(RAMSTKWorkView):
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-    def _on_toggled(self, togglebutton, index):
+    def _on_toggled(self, checkbutton: RAMSTKCheckButton, index: int) -> None:
         """
         Handle RAMSTKCheckButton() 'toggle' signals.
 
-        :param togglebutton: the RAMSTKToggleButton() that called this method.
-        :type: :class:`ramstk.gui.gtk.ramstk.Button.RAMSTKToggleButton`
+        :param checkbutton: the RAMSTKCheckButton() that called this method.
+        :type: :class:`ramstk.gui.gtk.ramstk.Button.RAMSTKCheckButton`
         :param int index: the index in the signal handler ID list.
         :return: None
         :rtype: None
@@ -317,15 +314,15 @@ class GeneralData(RAMSTKWorkView):
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        togglebutton.handler_block(self._lst_handler_id[index])
+        checkbutton.handler_block(self._lst_handler_id[index])
 
-        _new_text = int(togglebutton.get_active())
+        _new_text = int(checkbutton.get_active())
 
         pub.sendMessage('wvw_editing_function',
                         node_id=[self._function_id, -1, ''],
                         package={_key: _new_text})
 
-        togglebutton.handler_unblock(self._lst_handler_id[index])
+        checkbutton.handler_unblock(self._lst_handler_id[index])
 
 
 class HazOps(RAMSTKWorkView):
@@ -335,10 +332,9 @@ class HazOps(RAMSTKWorkView):
     The WorkView displays all the attributes for the Hazards Analysis (HazOps).
     The attributes of a HazOps Work View are:
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each Gtk.Widget() associated with an editable
-                           Functional HazOps attribute.
+    :ivar int _hazard_id: the ID of the currently selected hazard.
 
+    self._lst_handler_id signals are:
     +-------+-------------------------------------------+
     | Index | Widget - Signal                           |
     +=======+===========================================+
@@ -348,7 +344,7 @@ class HazOps(RAMSTKWorkView):
     +-------+-------------------------------------------+
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module='hazard') -> None:
+                 logger: RAMSTKLogManager, module: str = 'hazard') -> None:
         """
         Initialize the Work View for the HazOps.
 
@@ -384,35 +380,34 @@ class HazOps(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self.__do_set_parent, 'selected_function')
+        pub.subscribe(self.__do_load_tree, 'succeed_calculate_hazard')
+        pub.subscribe(self.__do_load_tree, 'succeed_delete_hazard')
         pub.subscribe(self._do_load_tree, 'succeed_get_hazards_attributes')
+        pub.subscribe(self.__do_load_tree, 'succeed_insert_hazard')
 
         # These subscriptions cause the cursor to change to/from busy when
         # certain actions are performed.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_hazard')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_calculate_hazard')
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_hazard')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_hazard')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
         pub.subscribe(self._do_set_cursor_active, 'fail_insert_hazard')
         pub.subscribe(self._do_set_cursor_active, 'fail_delete_hazard')
         pub.subscribe(self._do_set_cursor_active, 'fail_update_function')
 
-    def __do_load_tree(self, attributes: Dict[int, Any]) -> None:
+    # pylint: disable=unused-argument
+    def __do_load_tree(self, node_id: int) -> None:
         """
-        Wrapper method for _do_load_tree().
+        Wrapper method responds to calculate, delete, insert messages.
 
-        The pubsub message the WorkView listens for sends a data package named
-        attributes.  _do_load_tree() needs a data package named tree.  This
-        method simply makes that conversion happen.
-
-        :param dict attributes: the hazards dict for the selected function ID.
+        :param int node_id: the hazard ID that was deleted or inserted.
         :return: None
         :rtype: None
         """
-        try:
-            self._do_load_tree(attributes=attributes)
-        except KeyError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        pub.sendMessage('request_get_function_attributes',
+                        node_id=self._parent_id, table='hazards')
 
-    def __do_set_parent(self, attributes: Dict[int, Any]) -> None:
+    def __do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """
         Set the hazard's parent ID when a function is selected.
 
@@ -531,7 +526,7 @@ class HazOps(RAMSTKWorkView):
             _hazard = '{0:s}, {1:s}'.format(hazards[_key][0], hazards[_key][1])
             _model.append((_hazard, ))
 
-    def _do_load_probability(self, probability: List) -> None:
+    def _do_load_probability(self, probability: List[str]) -> None:
         """
         Load the Gtk.CellRendererCombos() containing probabilities.
 
@@ -563,25 +558,29 @@ class HazOps(RAMSTKWorkView):
         """
         Load the Hazard Analysis Work View's Gtk.TreeModel.
 
-        :param dict attributes: the hazards dict for the selected function ID.
+        :param dict attributes: the hazards dict for the selected function
+            ID, if any.
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
+        _model: Gtk.ListStore = self.treeview.get_model()
         _model.clear()
 
-        _hazards = list(attributes.values())
-        for _hazard in _hazards:
-            _attributes = list(_hazard.get_attributes().values())
-            _attributes.append('')
-            try:
-                _model.append(None, _attributes)
-            except ValueError as _error:
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        if attributes is not None:
+            _hazards = list(attributes.values())
+            for _hazard in _hazards:
+                _attributes = list(_hazard.get_attributes().values())
+                _attributes.append('')
+                # noinspection PyDeepBugsSwappedArgs
+                try:
+                    _model.append(None, _attributes)
+                except ValueError as _error:
+                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        self.do_expand_tree()
+            self.do_expand_tree()
 
-    def _do_set_cursor_active(self, error_message: str) -> None:  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def _do_set_cursor_active(self, error_message: str) -> None:
         """
         Returns the cursor to the active cursor on a fail message.
 
@@ -623,10 +622,8 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = '{0:d}.{1:d}'.format(self._parent_id, self._hazard_id)
-
         self.do_set_cursor_busy()
-        pub.sendMessage('request_calculate_hazop', node_id=_node_id)
+        pub.sendMessage('request_calculate_fha', node_id=self._parent_id)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -637,10 +634,9 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = '{0:d}.{1:d}'.format(self._parent_id, self._hazard_id)
-
         self.do_set_cursor_busy()
-        pub.sendMessage('request_delete_hazop', node_id=_node_id)
+        pub.sendMessage('request_delete_hazard',
+                        function_id=self._parent_id, node_id=self._hazard_id)
 
     def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """
@@ -663,10 +659,8 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = '{0:d}.{1:d}'.format(self._parent_id, self._hazard_id)
-
         self.do_set_cursor_busy()
-        pub.sendMessage('request_update_hazard', node_id=_node_id)
+        pub.sendMessage('request_update_hazard', node_id=self._parent_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -797,7 +791,8 @@ class HazOps(RAMSTKWorkView):
         self.treeview.handler_unblock(self._lst_handler_id[0])
 
     def do_load_combobox(self, hazards: Dict[Any, Any],
-                         severity: Dict[Any, Any], probability: List) -> None:
+                         severity: Dict[Any, Any], probability: List[str]) -> \
+            None:
         """
         Load the Gtk.CellRendererCombo() widgets.
 

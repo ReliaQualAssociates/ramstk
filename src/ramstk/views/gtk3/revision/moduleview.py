@@ -337,6 +337,7 @@ class ModuleView(RAMSTKModuleView):
         _title = _("Analyzing Revision {0:s}: {1:s}").format(
             str(_attributes['revision_code']), str(_attributes['name']))
 
+        pub.sendMessage('request_clear_workviews')
         pub.sendMessage('selected_revision', attributes=_attributes)
         pub.sendMessage('request_get_revision_attributes',
                         node_id=self._revision_id,
