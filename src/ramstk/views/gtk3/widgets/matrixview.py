@@ -44,17 +44,17 @@ class RAMSTKMatrixView(Gtk.HBox):
         GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
-        self.dic_icons = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self._matrix_type = module
-        self._revision_id = None
         self._n_columns = 0
         self._n_rows = 0
+        self._revision_id = None
 
         # Initialize public dictionary attributes.
+        self.dic_icons = {}
 
         # Initialize public list attributes.
 
