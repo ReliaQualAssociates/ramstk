@@ -90,7 +90,11 @@ class TestProgramManager():
         assert isinstance(DUT, RAMSTKProgramManager)
         assert isinstance(DUT.dic_managers, dict)
         assert DUT.dic_managers['revision'] == {'data': None}
-        assert DUT.dic_managers['function'] == {'analysis': None, 'data': None}
+        assert DUT.dic_managers['function'] == {
+            'analysis': None,
+            'data': None,
+            'matrix': None
+        }
         assert DUT.dic_managers['ffmea'] == {'analysis': None, 'data': None}
         assert DUT.dic_managers['requirement'] == {
             'data': None,

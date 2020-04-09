@@ -421,7 +421,8 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_revision(self, tree):
+    def on_succeed_delete_revision(self, node_id, tree):
+        assert node_id == 2
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_revision topic was broadcast.")
 

@@ -112,7 +112,8 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_revision', tree=self.tree)
+            pub.sendMessage('succeed_delete_revision', node_id=node_id,
+                            tree=self.tree)
         except DataAccessError:
             _error_msg = ("Attempted to delete non-existent revision ID "
                           "{0:s}.").format(str(node_id))

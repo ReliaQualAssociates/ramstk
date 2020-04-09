@@ -20,7 +20,7 @@ ATTRIBUTES = {
     'matrix_type': 'fnctn_hrdwr',
     'parent_id': 0,
     'row_id': 1,
-    'row_item_id': 1,
+    'row_item_id': 2,
     'value': 0
 }
 
@@ -44,7 +44,7 @@ class TestRAMSTKMatrix():
         assert DUT.matrix_type == 'fnctn_hrdwr'
         assert DUT.parent_id == 0
         assert DUT.row_id == 1
-        assert DUT.row_item_id == 1
+        assert DUT.row_item_id == 2
         assert DUT.value == 0.0
 
     @pytest.mark.integration
