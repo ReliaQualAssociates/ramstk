@@ -151,8 +151,8 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :type __page: :class:`Gtk.Widget`
         :param int page_num: the newly selected page number.
             0 = Revision Tree
-            1 = Requirements Tree
-            2 = Function Tree
+            1 = Function Tree
+            2 = Requirements Tree
             3 = Hardware Tree
             4 = Software Tree (future)
             5 = Testing Tree (future)

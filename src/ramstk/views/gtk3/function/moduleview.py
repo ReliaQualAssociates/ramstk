@@ -70,6 +70,7 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self._on_insert, 'succeed_insert_function')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_functions')
         pub.subscribe(self._do_refresh_tree, 'wvw_editing_function')
+        pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
     def __make_ui(self) -> None:
         """
@@ -263,6 +264,22 @@ class ModuleView(RAMSTKModuleView):
 
         super().on_insert(_data, prow=_prow)
 
+    def _on_module_switch(self, module: str = '') -> None:
+        """
+
+        :param module:
+        :return:
+        """
+        _model, _row = self.treeview.selection.get_selected()
+
+        if module == 'function':
+            _code = _model.get_value(_row, self._lst_col_order[5])
+            _name = _model.get_value(_row, self._lst_col_order[15])
+            _title = _("Analyzing Function {0:s}: {1:s}").format(
+                str(_code), str(_name))
+
+            pub.sendMessage('request_set_title', title=_title)
+
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
         Handle events for the Function package Module View RAMSTKTreeView().
@@ -281,54 +298,66 @@ class ModuleView(RAMSTKModuleView):
 
         _model, _row = selection.get_selected()
 
-        _attributes['revision_id'] = _model.get_value(_row,
-                                                      self._lst_col_order[0])
-        _attributes['function_id'] = _model.get_value(_row,
-                                                      self._lst_col_order[1])
-        _attributes['availability_logistics'] = _model.get_value(
-            _row, self._lst_col_order[2])
-        _attributes['availability_mission'] = _model.get_value(
-            _row, self._lst_col_order[3])
-        _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
-        _attributes['function_code'] = _model.get_value(
-            _row, self._lst_col_order[5])
-        _attributes['failure_rate_logistics'] = _model.get_value(
-            _row, self._lst_col_order[6])
-        _attributes['failure_rate_mission'] = _model.get_value(
-            _row, self._lst_col_order[7])
-        _attributes['level'] = _model.get_value(_row, self._lst_col_order[8])
-        _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
-        _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[10])
-        _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[11])
-        _attributes['mtbf_logistics'] = _model.get_value(
-            _row, self._lst_col_order[12])
-        _attributes['mtbf_mission'] = _model.get_value(_row,
-                                                       self._lst_col_order[13])
-        _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
-        _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
-        _attributes['parent'] = _model.get_value(_row, self._lst_col_order[16])
-        _attributes['remarks'] = _model.get_value(_row,
-                                                  self._lst_col_order[17])
-        _attributes['safety_critical'] = _model.get_value(
-            _row, self._lst_col_order[18])
-        _attributes['total_mode_count'] = _model.get_value(
-            _row, self._lst_col_order[19])
-        _attributes['total_part_count'] = _model.get_value(
-            _row, self._lst_col_order[20])
-        _attributes['type'] = _model.get_value(_row, self._lst_col_order[21])
+        if _row is not None:
+            _attributes['revision_id'] = _model.get_value(
+                _row, self._lst_col_order[0])
+            _attributes['function_id'] = _model.get_value(
+                _row, self._lst_col_order[1])
+            _attributes['availability_logistics'] = _model.get_value(
+                _row, self._lst_col_order[2])
+            _attributes['availability_mission'] = _model.get_value(
+                _row, self._lst_col_order[3])
+            _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
+            _attributes['function_code'] = _model.get_value(
+                _row, self._lst_col_order[5])
+            _attributes['failure_rate_logistics'] = _model.get_value(
+                _row, self._lst_col_order[6])
+            _attributes['failure_rate_mission'] = _model.get_value(
+                _row, self._lst_col_order[7])
+            _attributes['level'] = _model.get_value(
+                _row, self._lst_col_order[8])
+            _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
+            _attributes['mcmt'] = _model.get_value(
+                _row, self._lst_col_order[10])
+            _attributes['mpmt'] = _model.get_value(
+                _row, self._lst_col_order[11])
+            _attributes['mtbf_logistics'] = _model.get_value(
+                _row, self._lst_col_order[12])
+            _attributes['mtbf_mission'] = _model.get_value(
+                _row, self._lst_col_order[13])
+            _attributes['mttr'] = _model.get_value(
+                _row, self._lst_col_order[14])
+            _attributes['name'] = _model.get_value(
+                _row, self._lst_col_order[15])
+            _attributes['parent'] = _model.get_value(
+                _row, self._lst_col_order[16])
+            _attributes['remarks'] = _model.get_value(
+                _row, self._lst_col_order[17])
+            _attributes['safety_critical'] = _model.get_value(
+                _row, self._lst_col_order[18])
+            _attributes['total_mode_count'] = _model.get_value(
+                _row, self._lst_col_order[19])
+            _attributes['total_part_count'] = _model.get_value(
+                _row, self._lst_col_order[20])
+            _attributes['type'] = _model.get_value(
+                _row, self._lst_col_order[21])
 
-        self._function_id = _attributes['function_id']
-        self._parent_id = _attributes['parent']
+            self._function_id = _attributes['function_id']
+            self._parent_id = _attributes['parent']
 
-        _prow = _model.iter_parent(_row)
-        if _prow is not None:
-            self._parent_id = self._function_id
-        else:
-            self._parent_id = 0
+            _prow = _model.iter_parent(_row)
+            if _prow is not None:
+                self._parent_id = self._function_id
+            else:
+                self._parent_id = 0
 
-        pub.sendMessage('selected_function', attributes=_attributes)
-        pub.sendMessage('request_get_function_attributes',
-                        node_id=self._function_id,
-                        table='hazards')
+            _title = _("Analyzing Function {0:s}: {1:s}").format(
+                str(_attributes['function_code']), str(_attributes['name']))
+
+            pub.sendMessage('selected_function', attributes=_attributes)
+            pub.sendMessage('request_get_function_attributes',
+                            node_id=self._function_id,
+                            table='hazards')
+            pub.sendMessage('request_set_title', title=_title)
 
         selection.handler_unblock(self._lst_handler_id[0])

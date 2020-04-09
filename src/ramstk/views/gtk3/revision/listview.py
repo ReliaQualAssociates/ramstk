@@ -14,8 +14,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.logger import RAMSTKLogManager
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,
     RAMSTKMission, RAMSTKMissionPhase
@@ -68,8 +66,7 @@ class FailureDefinition(RAMSTKListView):
     :ivar int _definition_id: the Failure Definition ID of the definition
         selected in the List View.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration, logger, module='failure_definition') -> None:
         """
         Initialize the List View for the Failure Definition package.
 
@@ -77,8 +74,9 @@ class FailureDefinition(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the module.
         """
-        super().__init__(configuration, logger, 'failure_definition')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -392,8 +390,7 @@ class UsageProfile(RAMSTKListView):
 
     All attributes of a Usage Profile List View are inherited.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration, logger, module='usage_profile') -> None:
         """
         Initialize the List View for the Usage Profile.
 
@@ -401,8 +398,9 @@ class UsageProfile(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the module.
         """
-        super().__init__(configuration, logger, 'usage_profile')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,

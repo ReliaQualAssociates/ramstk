@@ -26,7 +26,7 @@ jobs:
           pip install -r requirements.txt -r requirements-test.txt
       # Install the checked out RAMSTK.
       - name: Install RAMSTK
-        run: make PREFIX="$HOME/.local/usr" install
+        run: make install
       # Run the test suite.
       - name: Run test suite
         run: pytest ./tests --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml

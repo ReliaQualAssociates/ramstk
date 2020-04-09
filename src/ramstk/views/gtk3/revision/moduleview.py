@@ -69,6 +69,7 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self._on_insert, 'succeed_insert_revision')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
         pub.subscribe(self._do_refresh_tree, 'wvw_editing_revision')
+        pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
     def __make_ui(self) -> None:
         """
@@ -248,6 +249,22 @@ class ModuleView(RAMSTKModuleView):
         super().on_insert(
             tree.get_node(node_id).data['revision'].get_attributes())
 
+    def _on_module_switch(self, module: str = '') -> None:
+        """
+
+        :param module:
+        :return:
+        """
+        _model, _row = self.treeview.selection.get_selected()
+
+        if module == 'revision':
+            _code = _model.get_value(_row, self._lst_col_order[22])
+            _name = _model.get_value(_row, self._lst_col_order[17])
+            _title = _("Analyzing Revision {0:s}: {1:s}").format(
+                str(_code), str(_name))
+
+            pub.sendMessage('request_set_title', title=_title)
+
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
         Handle events for the Revision package Module View RAMSTKTreeView().
@@ -317,6 +334,9 @@ class ModuleView(RAMSTKModuleView):
 
         self._revision_id = _attributes['revision_id']
 
+        _title = _("Analyzing Revision {0:s}: {1:s}").format(
+            str(_attributes['revision_code']), str(_attributes['name']))
+
         pub.sendMessage('selected_revision', attributes=_attributes)
         pub.sendMessage('request_get_revision_attributes',
                         node_id=self._revision_id,
@@ -324,5 +344,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_get_revision_attributes',
                         node_id=self._revision_id,
                         table='usage_profile')
+        pub.sendMessage('request_set_title', title=_title)
 
         selection.handler_unblock(self._lst_handler_id[0])

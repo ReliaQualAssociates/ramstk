@@ -116,6 +116,7 @@ def the_one_ring() -> None:
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
     _program_mgr.dic_managers['function']['data'] = dmFunction()
+    # _program_mgr.dic_managers['function']['matrix'] = mmFunction()
     _program_mgr.dic_managers['function']['analysis'] = amFunction(
         user_configuration)
     _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)

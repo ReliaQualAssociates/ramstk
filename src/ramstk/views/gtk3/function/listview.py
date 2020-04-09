@@ -10,8 +10,6 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, Pango, _
 from ramstk.views.gtk3.widgets import RAMSTKListView, do_make_buttonbox
 
@@ -55,8 +53,7 @@ class FunctionHardware(RAMSTKListView):
 
     The attributes of the Function-Hardware Matrix View are:
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration, logger, module='fnctn_hrdwr') -> None:
         """
         Initialize the List View for the Failure Definition package.
 
@@ -64,8 +61,9 @@ class FunctionHardware(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param module: the name of the module.
         """
-        super().__init__(configuration, logger, module='fnctn_hrdwr')
+        super().__init__(configuration, logger, module)
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -152,7 +150,7 @@ class FunctionHardware(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        print("Load the matrix!")
+        pub.sendMessage('request_create_matrix')
 
     @staticmethod
     def _do_request_refresh(__button: Gtk.Button) -> None:
@@ -162,4 +160,4 @@ class FunctionHardware(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        print("Refresh the matrix!")
+        pub.sendMessage('request_create_matrix')

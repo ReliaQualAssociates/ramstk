@@ -40,7 +40,7 @@ class RAMSTKDialog(Gtk.Dialog):
         except KeyError:
             _dlgparent = None
 
-        Gtk.Dialog.__init__(self, title=dlgtitle, parent=_dlgparent)
+        super().__init__(title=dlgtitle, parent=_dlgparent)
 
         try:
             self.add_buttons(kwargs['dlgbuttons'])

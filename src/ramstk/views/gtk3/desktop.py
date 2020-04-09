@@ -138,6 +138,7 @@ class RAMSTKDesktop(Gtk.Window):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_request_open, 'request_open_program ')
+        pub.subscribe(self._on_select, 'request_set_title')
         pub.subscribe(self._do_set_status, 'request_set_status')
 
     def __make_menu(self) -> None:
@@ -529,6 +530,24 @@ class RAMSTKDesktop(Gtk.Window):
         self.set_title(
             _("RAMSTK - Analyzing {0:s}").format(
                 self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']))
+
+    def _on_select(self, title: str) -> None:
+        """
+        Respond to load the Work View Gtk.Notebook() widgets.
+
+        This method handles the results of the an individual module's
+        _on_select() method.  It sets the title of the RAMSTK Work Book and
+        raises an error dialog if needed.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.set_title(title)
+        except AttributeError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            self.do_raise_dialog(severity='warning',
+                                 user_msg=_error)
 
     @staticmethod
     def _on_window_state_event(window: Gtk.Window,

@@ -171,15 +171,13 @@ class GeneralData(RAMSTKWorkView):
         """
         self._revision_id = attributes['revision_id']
 
-        super().on_select(title=_("Analyzing Revision {0:s} - {1:s}").format(
-            str(attributes['revision_code']), str(attributes['name'])))
-
         self.txtName.do_update(str(attributes['name']),
                                self._lst_handler_id[0])
         self.txtRemarks.do_update(str(attributes['remarks']),
                                   self._lst_handler_id[1])
         self.txtCode.do_update(str(attributes['revision_code']),
                                self._lst_handler_id[2])
+
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """

@@ -187,9 +187,6 @@ class GeneralData(RAMSTKWorkView):
         """
         self._function_id = attributes['function_id']
 
-        super().on_select(title=_("Analyzing Function {0:s} - {1:s}").format(
-            str(attributes['function_code']), str(attributes['name'])))
-
         self.txtCode.do_update(str(attributes['function_code']),
                                self._lst_handler_id[0])
         self.txtName.do_update(str(attributes['name']),
@@ -352,7 +349,7 @@ class HazOps(RAMSTKWorkView):
     +-------+-------------------------------------------+
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+                 logger: RAMSTKLogManager, module='hazard') -> None:
         """
         Initialize the Work View for the HazOps.
 
@@ -361,7 +358,7 @@ class HazOps(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, 'hazard')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -714,7 +711,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor_busy()
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_hazops')
 
     def _on_button_press(self, treeview: RAMSTKTreeView,

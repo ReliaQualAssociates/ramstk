@@ -99,6 +99,12 @@ class RAMSTKBaseView(Gtk.HBox):
         # Initialize private list attributes.
         self._lst_col_order: List[int] = []
         self._lst_handler_id: List[int] = []
+        self._lst_layouts: List[str] = ['allocation', 'failure_definition',
+                                        'fmea', 'function', 'hardware',
+                                        'hazard', 'incident', 'pof',
+                                        'requirement', 'revision',
+                                        'similar_item', 'software',
+                                        'stakeholder', 'testing', 'validation']
 
         # Initialize private scalar attributes.
         self._mission_time = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
@@ -144,14 +150,16 @@ class RAMSTKBaseView(Gtk.HBox):
                 self.treeview.selection.connect('changed',
                                                 self._on_row_change))
         except AttributeError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            if self._module in self._lst_layouts:
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         try:
             self._lst_handler_id.append(
                 self.treeview.connect('button_press_event',
                                       self._on_button_press))
         except AttributeError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            if self._module in self._lst_layouts:
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def __set_icons(self) -> Dict:
         """
@@ -301,14 +309,16 @@ class RAMSTKBaseView(Gtk.HBox):
             except KeyError as _error:
                 _bg_color = '#000000'
                 _fg_color = '#FFFFFF'
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+                if module in self._lst_layouts:
+                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
             _treeview.make_model(_bg_color, _fg_color)
 
         except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            if module in self._lst_layouts:
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         return _treeview
 
@@ -385,14 +395,13 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         try:
-            if kwargs['error_code'] != 0:
-                _dialog = RAMSTKMessageDialog(
-                    kwargs['user_msg'],
-                    self._dic_icons[kwargs['severity']],
-                    kwargs['severity'],
-                    parent=self)
-                if _dialog.do_run() == Gtk.ResponseType.OK:
-                    _dialog.destroy()
+            _dialog = RAMSTKMessageDialog(
+                kwargs['user_msg'],
+                self._dic_icons[kwargs['severity']],
+                kwargs['severity'],
+                parent=self)
+            if _dialog.do_run() == Gtk.ResponseType.OK:
+                _dialog.destroy()
         except KeyError as _error:
             _debug_msg = ("Failed attempting to raise a RAMSTKMessageDialog "
                           "with either the severity or message missing.")
@@ -645,27 +654,6 @@ class RAMSTKBaseView(Gtk.HBox):
                         module_id=module_id,
                         key=_key,
                         value=_new_text)
-
-    def on_select(self, **kwargs: Any) -> None:
-        """
-        Respond to load the Work View Gtk.Notebook() widgets.
-
-        This method handles the results of the an individual module's
-        _on_select() method.  It sets the title of the RAMSTK Work Book and
-        raises an error dialog if needed.
-
-        :return: None
-        :rtype: None
-        """
-        _title = kwargs['title']
-
-        try:
-            _workbook = self.get_parent().get_parent()
-            _workbook.set_title(_title)
-        except AttributeError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        return self.do_raise_dialog(severity='warning', **kwargs)
 
     def on_select_revision(self, attributes: Dict[str, Any]) -> None:
         """
