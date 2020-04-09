@@ -257,10 +257,13 @@ class ModuleView(RAMSTKModuleView):
         _data = tree.get_node(node_id).data['function'].get_attributes()
         _model, _row = self.treeview.selection.get_selected()
 
-        if self._function_id == self._parent_id:
-            _prow = _row
-        else:
-            _prow = _model.iter_parent(_row)
+        try:
+            if self._function_id == self._parent_id:
+                _prow = _row
+            else:
+                _prow = _model.iter_parent(_row)
+        except TypeError:
+            _prow = None
 
         super().on_insert(_data, prow=_prow)
 
