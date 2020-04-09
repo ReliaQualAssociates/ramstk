@@ -169,20 +169,19 @@ class DataManager(RAMSTKDataManager):
                     _allocation, _similaritem
                 ])
 
-                _data_package = {
-                    'hardware': _hardware,
-                    'design_electric': _design_e,
-                    'design_mechanic': _design_m,
-                    'mil_hdbk_217f': _milhdbkf,
-                    'nswc': _nswc,
-                    'reliability': _reliability,
-                    'allocation': _allocation,
-                    'similar_item': _similaritem
-                }
                 self.tree.create_node(tag=_hardware.comp_ref_des,
                                       identifier=_hardware.hardware_id,
                                       parent=parent_id,
-                                      data=_data_package)
+                                      data={
+                                          'hardware': _hardware,
+                                          'design_electric': _design_e,
+                                          'design_mechanic': _design_m,
+                                          'mil_hdbk_217f': _milhdbkf,
+                                          'nswc': _nswc,
+                                          'reliability': _reliability,
+                                          'allocation': _allocation,
+                                          'similar_item': _similaritem
+                                      })
 
                 pub.sendMessage('inserted_hardware', tree=self.tree)
                 pub.sendMessage('succeed_insert_hardware',
@@ -282,22 +281,20 @@ class DataManager(RAMSTKDataManager):
                                                   order=None,
                                                   _all=False)
 
-            _data_package = {
-                'hardware': _hardware,
-                'design_electric': _design_e,
-                'design_mechanic': _design_m,
-                'mil_hdbk_217f': _milhdbkf,
-                'nswc': _nswc,
-                'reliability': _reliability,
-                'allocation': _allocation,
-                'similar_item': _similaritem
-            }
-
             try:
                 self.tree.create_node(tag=_hardware.comp_ref_des,
                                       identifier=_hardware.hardware_id,
                                       parent=_hardware.parent_id,
-                                      data=_data_package)
+                                      data={
+                                          'hardware': _hardware,
+                                          'design_electric': _design_e,
+                                          'design_mechanic': _design_m,
+                                          'mil_hdbk_217f': _milhdbkf,
+                                          'nswc': _nswc,
+                                          'reliability': _reliability,
+                                          'allocation': _allocation,
+                                          'similar_item': _similaritem
+                                      })
             except NodeIDAbsentError as _error:
                 print(_error)
                 _error_msg = ('Failed to build Hardware tree for Revision ID '

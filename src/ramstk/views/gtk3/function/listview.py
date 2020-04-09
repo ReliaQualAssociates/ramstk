@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.revision.listview.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.function.listview.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -10,41 +10,8 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import Gtk, Pango, _
+from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKListView, do_make_buttonbox
-
-
-def _do_make_column(header: str, index: int,
-                    visible: int) -> Gtk.TreeViewColumn:
-    """
-    Make a column with a CellRendererText() and the passed header text.
-
-    :param str header: the text to display in the header of the column.
-    :param int index: the index number in the Gtk.TreeModel() to display in
-        this column.
-    :param int visible: indicates whether or not the column will be visible.
-    :return: _column
-    :rtype: :class:`Gtk.TreeViewColumn`
-    """
-    _cell = Gtk.CellRendererText()
-    _cell.set_property('wrap-width', 250)
-    _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-    _cell.set_property('yalign', 0.1)
-    _label = Gtk.Label()
-    _label.set_line_wrap(True)
-    _label.set_alignment(xalign=0.5, yalign=0.5)
-    _label.set_justify(Gtk.Justification.CENTER)
-    _label.set_markup("<span weight='bold'>" + header + "</span>")
-    _label.set_use_markup(True)
-    _label.show_all()
-    _column = Gtk.TreeViewColumn()
-    _column.set_widget(_label)
-    _column.set_visible(visible)
-    _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-    _column.pack_start(_cell, True)
-    _column.set_attributes(_cell, text=index)
-
-    return _column
 
 
 class FunctionHardware(RAMSTKListView):
