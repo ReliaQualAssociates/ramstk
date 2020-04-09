@@ -444,6 +444,8 @@ def test_toml_user_configuration(make_home_config_dir):
             "functionfg": "#000000",
             "hardwarebg": "#FFFFFF",
             "hardwarefg": "#000000",
+            "hazardbg": "#FFFFFF",
+            "hazardfg": "#000000",
             "requirementbg": "#FFFFFF",
             "requirementfg": "#000000",
             "revisionbg": "#FFFFFF",

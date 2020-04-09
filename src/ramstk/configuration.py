@@ -507,18 +507,20 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize private list attributes.
         self._lst_colors = [
-            "revisionfg",
-            "functionfg",
-            "requirementfg",
-            "hardwarefg",
-            "validationfg",
-            "revisionbg",
             "functionbg",
-            "requirementbg",
+            "functionfg",
             "hardwarebg",
+            "hardwarefg",
+            "hazardbg",
+            "hazardfg",
+            "revisionbg",
+            "revisionfg",
+            "requirementfg",
+            "requirementbg",
             "validationbg",
+            "validationfg",
             "stakeholderbg",
-            "stakeholderfg",
+            "stakeholderfg"
         ]
         self._lst_format_files = [
             "allocation",
@@ -769,6 +771,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "functionfg": "#000000",
                 "hardwarebg": "#FFFFFF",
                 "hardwarefg": "#000000",
+                "hazardbg": "#FFFFFF",
+                "hazardfg": "#000000",
                 "requirementbg": "#FFFFFF",
                 "requirementfg": "#000000",
                 "revisionbg": "#FFFFFF",
@@ -932,6 +936,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "functionfg": self.RAMSTK_COLORS['functionfg'],
                 "hardwarebg": self.RAMSTK_COLORS['hardwarebg'],
                 "hardwarefg": self.RAMSTK_COLORS['hardwarefg'],
+                "hazardbg": self.RAMSTK_COLORS['hazardbg'],
+                "hazardfg": self.RAMSTK_COLORS['hazardfg'],
                 "requirementbg": self.RAMSTK_COLORS['requirementbg'],
                 "requirementfg": self.RAMSTK_COLORS['requirementfg'],
                 "revisionbg": self.RAMSTK_COLORS['revisionbg'],

@@ -307,8 +307,8 @@ class RAMSTKBaseView(Gtk.HBox):
                 _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
                                                                          + 'fg']
             except KeyError as _error:
-                _bg_color = '#000000'
-                _fg_color = '#FFFFFF'
+                _bg_color = '#FFFFFF'
+                _fg_color = '#000000'
                 if module in self._lst_layouts:
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 

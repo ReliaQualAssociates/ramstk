@@ -587,6 +587,8 @@ class TestGetterSetter():
             'functionfg': '#000000',
             'hardwarebg': '#FFFFFF',
             'hardwarefg': '#000000',
+            'hazardbg': '#FFFFFF',
+            'hazardfg': '#000000',
             'requirementbg': '#FFFFFF',
             'requirementfg': '#000000',
             'revisionbg': '#FFFFFF',
@@ -594,7 +596,7 @@ class TestGetterSetter():
             'stakeholderbg': '#FFFFFF',
             'stakeholderfg': '#000000',
             'validationbg': '#FFFFFF',
-            'validationfg': '#000000',
+            'validationfg': '#000000'
         }
         assert DUT.RAMSTK_FORMAT_FILE == {
             'allocation': 'Allocation.xml',
