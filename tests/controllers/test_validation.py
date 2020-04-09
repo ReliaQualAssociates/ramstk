@@ -316,7 +316,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='validation') is None
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the validation matrix manager."""
         DATAMGR = dmValidation()
@@ -389,7 +389,7 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_validation,
                         'fail_delete_validation')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_delete_matrix_column_hardware(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested validation matrix."""
         DATAMGR = dmValidation()
@@ -419,7 +419,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_hrdwr', 1, 1)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_delete_matrix_column_requirement(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested validation matrix."""
         DATAMGR = dmValidation()
@@ -452,7 +452,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_rqrmnt', 1, 1)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_delete_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the validation matrices."""
         DATAMGR = dmValidation()
@@ -518,7 +518,7 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_validation,
                         'succeed_insert_validation')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_matrix_column_hardware(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
         DATAMGR = dmValidation()
@@ -548,7 +548,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('vldtn_hrdwr', 4, 1) == 0
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_matrix_column_requirement(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
         DATAMGR = dmValidation()
@@ -581,7 +581,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('vldtn_rqrmnt', 4, 1) == 0
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each validation matrix."""
         DATAMGR = dmValidation()

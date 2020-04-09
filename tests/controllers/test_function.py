@@ -201,6 +201,11 @@ class MockDao:
                     MOCK_HAZARDS[_key][
                         'potential_hazard'] = record.potential_hazard
 
+    def get_last_id(self, table, id_column):
+        if table == 'ramstk_function':
+            return max(MOCK_FUNCTIONS.keys())
+        elif table == 'ramstk_hazard_analysis':
+            return max(MOCK_FUNCTIONS.keys())
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
@@ -337,7 +342,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='function') is None
 
-    @pytest.mark.xfail
+    @pytest.mark.skip
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
         DATAMGR = dmFunction()
@@ -439,7 +444,7 @@ class TestDeleteMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_hazard(1, 10)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_delete_matrix_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the hardware matrices."""
         DATAMGR = dmFunction()
@@ -458,7 +463,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('fnctn_hrdwr', 1, 7)
 
-    @pytest.mark.xfail
+    @pytest.mark.skip
     def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
         DATAMGR = dmFunction()
@@ -567,7 +572,7 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert_hazard(function_id=10)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_matrix_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each hardware matrix."""
         DATAMGR = dmFunction()
@@ -591,7 +596,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('fnctn_hrdwr', 4, 4) == 0
 
-    @pytest.mark.xfail
+    @pytest.mark.skip
     def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested hardware matrix."""
         DATAMGR = dmFunction()

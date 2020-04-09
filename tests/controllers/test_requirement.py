@@ -293,7 +293,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='requirement') is None
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
         DATAMGR = dmRequirement()
@@ -381,7 +381,7 @@ class TestDeleteMethods():
         DUT.do_select_all(1)
         DUT._do_delete_requirement(300)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested requirement matrix."""
         DATAMGR = dmRequirement()
@@ -431,7 +431,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('rqrmnt_hrdwr', 1, 1)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_delete_matrix_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the requirement matrices."""
         DATAMGR = dmRequirement()
@@ -639,7 +639,7 @@ class TestInsertMethods():
         DUT.do_select_all(1)
         DUT.do_insert_requirement(parent_id=32)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested requirement matrix."""
         DATAMGR = dmRequirement()
@@ -689,7 +689,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('rqrmnt_hrdwr', 9, 1) == 0
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_matrix_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each requirement matrix."""
         DATAMGR = dmRequirement()
