@@ -342,37 +342,24 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='function') is None
 
-    @pytest.mark.skip
-    def test_do_create_matrix(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_create_matrix(self, mock_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
         DATAMGR = dmFunction()
-        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
+        DUT._col_tree = MOCK_HRDWR_TREE
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        pub.sendMessage('request_create_matrix', tree=DATAMGR.tree)
 
-        assert DUT.do_select('fnctn_hrdwr', 1, 0) == 'REL-0001'
-        assert DUT.do_select('fnctn_hrdwr', 2, 0) == 'FUNC-0001'
-        assert DUT.do_select('fnctn_hrdwr', 3, 0) == 'REL-0002'
         assert DUT.do_select('fnctn_hrdwr', 1, 1) == 0
-
+        assert DUT.do_select('fnctn_hrdwr', 1, 2) == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 3) == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 4) == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 5) == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 6) == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 7) == 0
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
@@ -444,11 +431,11 @@ class TestDeleteMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_hazard(1, 10)
 
-    @pytest.mark.skip
-    def test_do_delete_matrix_row(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_delete_matrix_row(self, mock_program_dao):
         """do_delete_row() should remove the appropriate row from the hardware matrices."""
         DATAMGR = dmFunction()
-        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree = MOCK_HRDWR_TREE
@@ -463,6 +450,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('fnctn_hrdwr', 1, 7)
 
+    # TODO: un-skip test_do_delete_matrix_column in test_function.py.
     @pytest.mark.skip
     def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
@@ -572,11 +560,11 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert_hazard(function_id=10)
 
-    @pytest.mark.skip
-    def test_do_insert_matrix_row(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_insert_matrix_row(self, mock_program_dao):
         """do_insert_row() should add a row to the end of each hardware matrix."""
         DATAMGR = dmFunction()
-        DATAMGR.do_connect(test_program_dao)
+        DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmFunction()
         DUT._col_tree = MOCK_HRDWR_TREE
@@ -596,6 +584,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('fnctn_hrdwr', 4, 4) == 0
 
+    # TODO: un-skip test_do_insert_matrix_column in test_function.py.
     @pytest.mark.skip
     def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested hardware matrix."""
@@ -608,11 +597,11 @@ class TestInsertMethods():
         pub.sendMessage('succeed_select_revision', revision_id=1)
 
         with pytest.raises(KeyError):
-            DUT.do_select('hrdwr_rqrmnt', 4, 8)
+            DUT.do_select('fnctn_hrdwr', 4, 8)
 
         pub.sendMessage('succeed_insert_requirement', node_id=6)
 
-        assert DUT.do_select('hrdwr_rqrmnt', 6, 8) == 0
+        assert DUT.do_select('fnctn_hrdwr', 6, 8) == 0
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
