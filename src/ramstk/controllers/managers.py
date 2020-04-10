@@ -12,8 +12,8 @@ from typing import Any, Dict
 
 # Third Party Imports
 import pandas as pd
+import treelib
 from pubsub import pub
-from treelib import Tree, tree
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
@@ -107,7 +107,7 @@ class RAMSTKDataManager():
         # Initialize public scalar attributes.
         self.dao = None
         self.last_id = None
-        self.tree = Tree()
+        self.tree = treelib.Tree()
 
         # Add the root to the Tree().  This is neccessary to allow multiple
         # entries at the top level as there can only be one root in a treelib
@@ -117,8 +117,8 @@ class RAMSTKDataManager():
             self.tree.create_node(tag=self._tag,
                                   identifier=self._root,
                                   parent=None)
-        except (tree.MultipleRootError, tree.NodeIDAbsentError,
-                tree.DuplicatedNodeIdError):
+        except (treelib.tree.MultipleRootError, treelib.tree.NodeIDAbsentError,
+                treelib.tree.DuplicatedNodeIdError):
             pass
 
         # Subscribe to PyPubSub messages.
@@ -256,7 +256,7 @@ class RAMSTKDataManager():
             _entity = self.tree.get_node(node_id).data[table]
         except AttributeError:
             _entity = None
-        except tree.NodeIDAbsentError:
+        except treelib.tree.NodeIDAbsentError:
             _entity = None
 
         return _entity
@@ -278,7 +278,8 @@ class RAMSTKDataManager():
             for _matrix in self.dao.do_select_all(
                     RAMSTKMatrix,
                     key=[RAMSTKMatrix.revision_id, RAMSTKMatrix.matrix_type],
-                    value=[self._revision_id, matrix_type]):
+                    value=[self._revision_id, matrix_type],
+                    order=RAMSTKMatrix.row_id):
                 _lst_matrix.append(
                     (_matrix.column_item_id, _matrix.row_item_id, _matrix.value))
 
@@ -415,13 +416,15 @@ class RAMSTKMatrixManager():
         """
         # Initialize private dictionary attributes.
         self._column_tables = column_tables
+        self._dic_columns = {}
+        self._dic_matrix = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._col_tree = Tree()
+        self._col_tree = treelib.Tree()
         self._row_table = row_table
-        self._row_tree = Tree()
+        self._row_tree = treelib.Tree()
 
         # Initialize public dictionary attributes.
         self.dic_matrices = {}
@@ -435,29 +438,22 @@ class RAMSTKMatrixManager():
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load, 'succeed_retrieve_matrix')
 
-    def do_create(self, matrix_type):
+    def do_create_columns(self, matrix_type: str) -> None:
         """
-        Create the data matrices for MODULE and add to the matrix frame.
+        Create the matrix columns.
 
-        :param str matrix_type: the type of the Matrix to add.
+        This will effectively create the requested matrix since the row
+        headings column was already created.  All values in the resulting
+        matrix will be zero.  Call do_load() to load the actual values into
+        the matrix.
+
+        :param str matrix_type: the type (name) of the matrix to create the
+            columns for.
         :return: None
         :rtype: None
         """
-        _dic_columns = {}
+        _lst_values = [0] * self.n_row
 
-        # Retrieve the row information from the row tree.
-        _lst_row_ids = [_node for _node in self._row_tree.nodes]
-        _dic_columns['rows'] = [
-            self._row_tree.get_node(_node).tag
-            for _node in self._row_tree.nodes
-        ]
-
-        _lst_values = [
-            0,
-        ] * len(_lst_row_ids)
-        _dic_columns['rows'][0] = self._column_tables[matrix_type][1]
-
-        # Retrieve the column information from the column tree.
         _dic_col_ids = {
             _node: self._col_tree.get_node(_node).tag
             for _node in self._col_tree.nodes
@@ -467,17 +463,39 @@ class RAMSTKMatrixManager():
 
         for _col_id in _dic_col_ids:
             _lst_values[0] = _dic_col_ids[_col_id]
-            _dic_columns[_col_id] = pd.Series(
+            self._dic_matrix[_col_id] = pd.Series(
                 _lst_values,
-                index=_lst_row_ids,
+                index=[_node for _node in self._row_tree.nodes],
             )
 
-        # Put it together into a dict of pandas data frames (each matrix is a
-        # data frame).  For now only the n_row attribute has meaning as each
-        # matrix will have the same number of rows for a MODULE.
-        self.dic_matrices[matrix_type] = pd.DataFrame(_dic_columns)
+        self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)
         (self.n_row, self.n_col) = self.dic_matrices[matrix_type].shape
-        pub.sendMessage('request_select_matrix', matrix_type=matrix_type)
+
+    def do_create_rows(self, tree: treelib.Tree) -> None:
+        """
+        Create the matrix rows.
+
+        All matrices for a given workflow module will have the same row
+        headings.  This method will create a matrix with only one column
+        containing the row headings.
+
+        :param tree: the treelib Tree() containing the workflow module's data.
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        self._row_tree = tree
+        self._dic_matrix = {}
+
+        self._dic_matrix['rows'] = [
+            self._row_tree.get_node(_node).tag
+            for _node in self._row_tree.nodes
+        ]
+
+        for _matrix_type in self._column_tables.keys():
+            self._dic_matrix['rows'][0] = self._column_tables[_matrix_type][1]
+            self.dic_matrices[_matrix_type] = pd.DataFrame(self._dic_matrix)
+            (self.n_row, self.n_col) = self.dic_matrices[_matrix_type].shape
 
     def do_delete_column(self, node_id, matrix_type):
         """
@@ -507,6 +525,24 @@ class RAMSTKMatrixManager():
             self.dic_matrices[_matrix] = self.dic_matrices[_matrix].drop(
                 [node_id])
 
+    def do_insert_column(self, node_id, matrix_type):
+        """
+        Insert a column into the requested matrix.
+
+        :param int node_id: the MODULE treelib Node ID that was inserted.
+            Note that node ID = MODULE ID = matrix row ID.
+        :param str matrix_type: the type of the Matrix to select from.  This
+            selects the correct matrix from the dict of matrices managed by
+            this matrix manager.
+        :return: None
+        :rtype: None
+        :raise: KeyError if passed a node ID or matrix type that doesn't exist.
+        """
+        _lst_values = [0] * self.n_row
+        _lst_values[0] = ''
+
+        self.dic_matrices[matrix_type][node_id] = _lst_values
+
     def do_insert_row(self, node_id):
         """
         Insert a row into each matrix managed by this matrix manager.
@@ -527,24 +563,6 @@ class RAMSTKMatrixManager():
             self.dic_matrices[_matrix] = self.dic_matrices[_matrix].append(
                 _new_row)
 
-    def do_insert_column(self, node_id, matrix_type):
-        """
-        Insert a column into the requested matrix.
-
-        :param int node_id: the MODULE treelib Node ID that was inserted.
-            Note that node ID = MODULE ID = matrix row ID.
-        :param str matrix_type: the type of the Matrix to select from.  This
-            selects the correct matrix from the dict of matrices managed by
-            this matrix manager.
-        :return: None
-        :rtype: None
-        :raise: KeyError if passed a node ID or matrix type that doesn't exist.
-        """
-        _lst_values = [0] * self.n_row
-        _lst_values[0] = ''
-
-        self.dic_matrices[matrix_type][node_id] = _lst_values
-
     def do_load(self, matrix_type, matrix):
         """
         Load the matrix values.
@@ -560,6 +578,9 @@ class RAMSTKMatrixManager():
         if matrix_type in self.dic_matrices:
             for _col in matrix:
                 self.dic_matrices[matrix_type].loc[_col[1], _col[0]] = _col[2]
+
+            pub.sendMessage('succeed_load_matrix', matrix_type=matrix_type,
+                            matrix=self.dic_matrices[matrix_type])
 
     def do_select(self, matrix_type, row, col):
         """

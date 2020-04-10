@@ -50,33 +50,32 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_create, 'request_create_matrix')
+        pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
+        pub.subscribe(self._do_create_columns, 'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
-        #pub.subscribe(self._do_delete_hardware, 'succeed_delete_hardware')
+        #pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self._on_insert_function, 'succeed_insert_function')
-        #pub.subscribe(self._do_insert_hardware,
+        #pub.subscribe(self._on_insert_hardware,
         #              'succeed_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_function_matrix')
         pub.subscribe(self._on_get_tree, 'succeed_get_function_tree')
-        pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
         #pub.subscribe(self._on_get_tree, 'succeed_get_validation_tree')
 
-    def _do_create(self, tree: treelib.Tree) -> None:
+    def _do_create_columns(self, tree: treelib.Tree) -> None:
         """
-        Create the Function data matrices.
+        Create the Function data matrix columns.
 
-        :param tree: the treelib Tree() containing the work stream module's
-            data.
+        :param tree: the treelib Tree() containing the correlated workflow
+            module's data.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        self._row_tree = tree
-        self.dic_matrices = {}
+        self._col_tree = tree
 
-        # pub.sendMessage('request_get_hardware_tree')
-
-        RAMSTKMatrixManager.do_create(self, 'fnctn_hrdwr')
+        if tree.get_node(0).tag == 'hardware':
+            super().do_create_columns('fnctn_hrdwr')
+            pub.sendMessage('request_select_matrix', matrix_type='fnctn_hrdwr')
 
     def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None: # pylint: disable=unused-argument
         """
