@@ -1117,6 +1117,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='hardware') is None
 
+    # TODO: un-skip test_do_create_matrix in test_hardware.py.
     @pytest.mark.skip
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
@@ -1187,8 +1188,9 @@ class TestDeleteMethods():
 
         DUT._do_delete(300)
 
+    # TODO: un-skip test_do_delete_matrix_row in test_hardware.py.
     @pytest.mark.skip
-    def test_do_delete_row(self, test_program_dao):
+    def test_do_delete_matrix_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the hardware matrices."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
@@ -1220,6 +1222,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('hrdwr_rqrmnt', 1, 7)
 
+    # TODO: un-skip test_do_delete_matrix_column in test_hardware.py.
     @pytest.mark.skip
     def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
@@ -1529,8 +1532,9 @@ class TestInsertMethods():
 
         assert DUT.do_insert(parent_id=8, part=1) is None
 
+    # TODO: un-skip test_do_insert_matrix_row in test_hardware.py.
     @pytest.mark.skip
-    def test_do_insert_row(self, test_program_dao):
+    def test_do_insert_matrix_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
@@ -1562,8 +1566,9 @@ class TestInsertMethods():
 
         assert DUT.do_select('hrdwr_rqrmnt', 1, 12) == 0
 
+    # TODO: un-skip test_do_insert_matrix_column in test_hardware.py.
     @pytest.mark.skip
-    def test_do_insert_column(self, test_program_dao):
+    def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
@@ -1677,7 +1682,8 @@ class TestUpdateMethods():
 
         pub.sendMessage('request_update_all_hardware')
 
-    @pytest.mark.integration
+    # TODO: un-skip test_do_update_matrix_manager in test_hardware.py.
+    @pytest.mark.skip
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should ."""
         DATAMGR = dmHardware()
