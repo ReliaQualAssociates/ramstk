@@ -7,6 +7,7 @@
 """The RAMSTK Failure Definition List View Module."""
 
 # Third Party Imports
+import pandas as pd
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -52,7 +53,7 @@ class FunctionHardware(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_matrix, 'retrieved_matrix')
+        pub.subscribe(self._do_load_matrix, 'succeed_load_matrix')
 
     def __make_buttonbox(self) -> Gtk.ButtonBox:
         """
@@ -109,15 +110,16 @@ class FunctionHardware(RAMSTKListView):
             _("Displays the Function-Hardware matrix for the selected "
               "revision."))
 
-    @staticmethod
-    def _do_load_matrix() -> None:
+    def _do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
         """
         Load the RAMSTKMatrixView() with matrix data.
 
+        :param str matrix_type: the type of matrix to load.
         :return: None
         :rtype: None
         """
-        pub.sendMessage('request_create_matrix')
+        if self._module == matrix_type.capitalize():
+            self.matrixview.matrixview.do_load_matrix(matrix)
 
     @staticmethod
     def _do_request_refresh(__button: Gtk.Button) -> None:

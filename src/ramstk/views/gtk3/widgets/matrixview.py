@@ -20,6 +20,7 @@ from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, Pango, _
 from .label import RAMSTKLabel
 
 
+# noinspection PyUnresolvedReferences
 class RAMSTKMatrixView(Gtk.HBox):
     """
     The RAMSTK base widget for displaying RAMSTK Matrix views.
@@ -72,41 +73,50 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         :param cell: the cell whose properties are to be set.
         :type cell: :class:`Gtk.CellRenderer`
-        :param bool editable: indicates whether or not the cell is editable.
-        :param int position: the position in the Gtk.TreeModel() that this cell
-            falls.
-        :param int col_index: the column_item_id of the Matrix cell to be
-            edited.
         :param model: the :class:`Gtk.TreeModel` associated with the treeview.
         :return: None
         :rtype: None
         """
         try:
+            _bg_color = kwargs['bg_color']
+        except KeyError:
+            _bg_color = '#FFFFFF'
+        try:
             _editable = kwargs['editable']
         except KeyError:
-            _editable = True
+            _editable = False
+        try:
+            _fg_color = kwargs['fg_color']
+        except KeyError:
+            _fg_color = '#000000'
+        try:
+            _idx_column = kwargs['col_index']
+        except KeyError:
+            _idx_column = 0
         try:
             _position = kwargs['position']
         except KeyError:
             _position = 0
         try:
-            _idx_column = kwargs['col_index']
+            _visible = kwargs['visible']
         except KeyError:
-            _idx_column = 0
+            _visible = True
 
-        cell.set_property('background', '#FFFFFF')
+        cell.set_property('background', _bg_color)
         cell.set_property('editable', _editable)
-        cell.set_property('foreground', '#000000')
+        cell.set_property('foreground', _fg_color)
+        cell.set_property('visible', _visible)
         cell.set_property('wrap-width', 250)
         cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
         cell.set_property('yalign', 0.1)
-        cell.connect('changed', self._on_cell_edit, _position, _idx_column,
-                     model)
+        if _editable:
+            cell.connect('changed', self.do_edit_cell, _position, _idx_column,
+                         model)
 
-    def _make_column(self,
-                     cells: List[Gtk.CellRenderer],
-                     heading: str,
-                     visible: bool = True) -> Gtk.TreeViewColumn:
+    def _do_make_column(self,
+                        cells: List[Gtk.CellRenderer],
+                        heading: str,
+                        visible: bool = True) -> Gtk.TreeViewColumn:
         """
         Make a Gtk.TreeViewColumn().
 
@@ -116,14 +126,14 @@ class RAMSTKMatrixView(Gtk.HBox):
         :return: _column
         :rtype: :class:`Gtk.TreeViewColumn`
         """
-        _column = Gtk.TreeViewColumn("")
+        _column = Gtk.TreeViewColumn()
 
         for _cell in cells:
             if isinstance(_cell, Gtk.CellRendererPixbuf):
                 _column.pack_start(_cell, False)
             else:
                 _column.pack_start(_cell, True)
-                _column.connect('notify::width', self._on_resize_wrap, _cell)
+                _column.connect('notify::width', self._resize_wrap, _cell)
 
         _label = RAMSTKLabel(heading)
         _label.do_set_properties(width=-1,
@@ -138,7 +148,7 @@ class RAMSTKMatrixView(Gtk.HBox):
         return _column
 
     @staticmethod
-    def _make_combo_cell() -> Gtk.CellRendererCombo:
+    def _do_make_combo_cell() -> Gtk.CellRendererCombo:
         """
         Make a Gtk.CellRendererCombo().
 
@@ -156,10 +166,33 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         return _cell
 
+    @staticmethod
+    def _resize_wrap(column: Gtk.TreeViewColumn, __param: Any,
+                     cell: Gtk.CellRenderer) -> None:
+        """
+        Dynamically set the wrap-width property for a Gtk.CellRenderer().
+
+        This method is called when the column width is resized.
+
+        :param column: the Gtk.TreeViewColumn() being resized.
+        :type column: :class:`Gtk.TreeViewColumn`
+        :param GParamInt __param: the triggering parameter.
+        :param cell: the Gtk.CellRenderer() that needs to be resized.
+        :type cell: :class:`Gtk.CellRenderer`
+        :return: None
+        :rtype: None
+        """
+        _width = column.get_width()
+
+        if _width > 0:
+            _width += 10
+
+        cell.set_property('wrap-width', _width)
+
     # pylint: disable=too-many-arguments
-    def _on_cell_edit(self, cell: Gtk.CellRendererCombo, path: str,
-                      row: Gtk.TreeIter, position: int, col_index: int,
-                      model: Gtk.TreeModel) -> None:
+    def do_edit_cell(self, cell: Gtk.CellRendererCombo, path: str,
+                     row: Gtk.TreeIter, position: int, col_index: int,
+                     model: Gtk.TreeModel) -> None:
         """
         Respond to `changed` signals for the Gtk.CellRendererCombo()s.
 
@@ -196,32 +229,9 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         model[path][position - 1] = _pixbuf
 
-    @staticmethod
-    def _on_resize_wrap(column: Gtk.TreeViewColumn, __param: Any,
-                        cell: Gtk.CellRenderer) -> None:
-        """
-        Dynamically set the wrap-width property for a Gtk.CellRenderer().
-
-        This method is called when the column width is resized.
-
-        :param column: the Gtk.TreeViewColumn() being resized.
-        :type column: :class:`Gtk.TreeViewColumn`
-        :param GParamInt __param: the triggering parameter.
-        :param cell: the Gtk.CellRenderer() that needs to be resized.
-        :type cell: :class:`Gtk.CellRenderer`
-        :return: None
-        :rtype: None
-        """
-        _width = column.get_width()
-
-        if _width > 0:
-            _width += 10
-
-        cell.set_property('wrap-width', _width)
-
     def do_load_matrix(self, matrix: pd.DataFrame,
                        column_headings: Dict[int, str],
-                       row_headings: Dict[int, str], rows: str) -> None:
+                       row_headings: Dict[int, str]) -> None:
         """
         Load the RAMSTKMatrixView with the values from the data matrix.
 
@@ -233,8 +243,6 @@ class RAMSTKMatrixView(Gtk.HBox):
         :param dict row_headings: the dictionary containing the headings to
             use for the matrix rows.  Keys are the row <MODULE> IDs; values are
             a noun field associated with the key.
-        :param str rows: the heading to put in the first column of the matrix.
-            This indicates what information is found in the rows.
         :return: None
         :rtype: None
         """
@@ -250,31 +258,28 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         self.matrixview.set_model(_model)
 
-        # The first column will contain the Function ID and Function Code.
-        _cell = Gtk.CellRendererText()
-        _cell.set_property('background', 'light gray')
-        _column = self._make_column([
-            _cell,
-        ], '', visible=False)
-        _column.set_attributes(_cell, text=0)
-        _cell = Gtk.CellRendererText()
-        _cell.set_alignment(0.9, 0.5)
-        _cell.set_property('background', 'light gray')
-        _cell.set_property('editable', False)
-        _cell.set_property('foreground', '#000000')
-        _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-        _column = self._make_column([
-            _cell,
-        ], rows)
-        _column.set_attributes(_cell, markup=1)
+        # The first column will contain a cell for the Function ID and Function
+        # Code.  The Function ID will not be visible, but can be used for
+        # program control.
+        _id_cell = Gtk.CellRendererText()
+        self._do_set_properties(_id_cell, None, bg_color='light gray',
+                                visible=False)
+
+        _code_cell = Gtk.CellRendererText()
+        self._do_set_properties(_code_cell, None, bg_color='light gray')
+        _code_cell.set_alignment(0.9, 0.5)
+
+        _column = self._do_make_column([_id_cell, _code_cell], '')
+        _column.set_attributes(_id_cell, text=0)
+        _column.set_attributes(_code_cell, markup=1)
+
         self.matrixview.append_column(_column)
 
         # The remaining columns will be Gtk.CellRendererCombo()'s for
         # displaying the interaction between Function and Hardware.
         j = 2
         for i in range(self._n_columns):  # pylint: disable=E0602
-            _cell = self._make_combo_cell()
+            _cell = self._do_make_combo_cell()
             self._do_set_properties(_cell, _model,
                                     editable=True,
                                     position=i + j + 1,
@@ -283,16 +288,14 @@ class RAMSTKMatrixView(Gtk.HBox):
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
             _heading = column_headings[self.matrixview.columns[i]]
-            _column = self._make_column([_pbcell, _cell], _heading)
+            _column = self._do_make_column([_pbcell, _cell], _heading)
             _column.set_attributes(_pbcell, pixbuf=i + j)
             self.matrixview.append_column(_column)
 
             j += 1
 
         # Add one more column so the last column will not be extra wide.
-        _column = self._make_column([
-            Gtk.CellRendererText(),
-        ], '')
+        _column = self._do_make_column([Gtk.CellRendererText()], '')
 
         try:
             # pylint: disable=undefined-loop-variable
