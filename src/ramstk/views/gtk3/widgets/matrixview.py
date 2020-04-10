@@ -65,9 +65,8 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         # Subscribe to PyPubSub messages.
 
-    def _do_set_properties(self, cell: Gtk.CellRenderer, editable: bool,
-                           position: int, col_index: int,
-                           model: Gtk.TreeModel) -> None:
+    def _do_set_properties(self, cell: Gtk.CellRenderer,
+                           model: Gtk.TreeModel, **kwargs) -> None:
         """
         Set common properties of Gtk.CellRenderers().
 
@@ -82,13 +81,27 @@ class RAMSTKMatrixView(Gtk.HBox):
         :return: None
         :rtype: None
         """
+        try:
+            _editable = kwargs['editable']
+        except KeyError:
+            _editable = True
+        try:
+            _position = kwargs['position']
+        except KeyError:
+            _position = 0
+        try:
+            _idx_column = kwargs['col_index']
+        except KeyError:
+            _idx_column = 0
+
         cell.set_property('background', '#FFFFFF')
-        cell.set_property('editable', editable)
+        cell.set_property('editable', _editable)
         cell.set_property('foreground', '#000000')
         cell.set_property('wrap-width', 250)
         cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
         cell.set_property('yalign', 0.1)
-        cell.connect('changed', self._on_cell_edit, position, col_index, model)
+        cell.connect('changed', self._on_cell_edit, _position, _idx_column,
+                     model)
 
     def _make_column(self,
                      cells: List[Gtk.CellRenderer],
@@ -262,8 +275,10 @@ class RAMSTKMatrixView(Gtk.HBox):
         j = 2
         for i in range(self._n_columns):  # pylint: disable=E0602
             _cell = self._make_combo_cell()
-            self._do_set_properties(_cell, True, i + j + 1,
-                                    self.matrixview.columns[i], _model)
+            self._do_set_properties(_cell, _model,
+                                    editable=True,
+                                    position=i + j + 1,
+                                    col_index=self.matrixview.columns[i])
 
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
