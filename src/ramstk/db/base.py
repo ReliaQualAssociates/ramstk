@@ -252,27 +252,42 @@ class BaseDatabase():
         for _record in records:
             self.do_insert(_record)
 
-    def do_select_all(self, table, key=None, value=None, order=None,
-                      _all=True) -> None:
+    def do_select_all(self, table, **kwargs) -> None:
         """
         Select all records from the RAMSTK database for table.
 
         :param table: the database table object to select all from.
-        :keyword key: the index key in the table.
-        :keyword value: the value of the index key.
-        :keyword order: the field to order returned results.
-        :keyword _all: whether to return all records or only the first record.
         :return: a list of table instances; one for each record.
         """
-        _results = []
-        if isinstance(key, list):
-            _results = self.session.query(table).filter(
-                and_(key[0] == value[0], key[1] == value[1]))
-        else:
-            _results = self.session.query(table).filter(key == value)
+        try:
+            _key = kwargs['key']
+        except KeyError:
+            _key = None
+        try:
+            _value = kwargs['value']
+        except KeyError:
+            _value = None
+        try:
+            _order = kwargs['order']
+        except KeyError:
+            _order = None
+        try:
+            _all = kwargs['_all']
+        except KeyError:
+            _all = True
 
-        if order is not None:
-            _results = _results.order_by(order)
+        _results = []
+
+        if isinstance(_key, list):
+            _results = self.session.query(table).filter(
+                and_(_key[0] == _value[0], _key[1] == _value[1]))
+        elif _key is not None:
+            _results = self.session.query(table).filter(_key == _value)
+        else:
+            _results = self.session.query(table)
+
+        if _order is not None:
+            _results = _results.order_by(_order)
 
         if _all:
             _results = _results.all()

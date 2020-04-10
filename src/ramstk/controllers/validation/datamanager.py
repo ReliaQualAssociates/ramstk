@@ -130,8 +130,8 @@ class DataManager(RAMSTKDataManager):
             self.status_tree.remove_node(_node.identifier)
 
         for _status in self.dao.do_select_all(RAMSTKProgramStatus,
-                                              RAMSTKProgramStatus.revision_id,
-                                              self._revision_id):
+                                              key=RAMSTKProgramStatus.revision_id,
+                                              value=self._revision_id):
 
             _data_package = {'status': _status}
 
@@ -244,8 +244,8 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(_node.identifier)
 
         for _validation in self.dao.do_select_all(RAMSTKValidation,
-                                                  RAMSTKValidation.revision_id,
-                                                  self._revision_id):
+                                                  key=RAMSTKValidation.revision_id,
+                                                  value=self._revision_id):
 
             _data_package = {'validation': _validation}
 

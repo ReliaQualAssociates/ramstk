@@ -279,8 +279,8 @@ class DataManager(RAMSTKDataManager):
                           parent=None)
 
         for _mission in self.dao.do_select_all(RAMSTKMission,
-                                               RAMSTKMission.revision_id,
-                                               revision_id):
+                                               key=RAMSTKMission.revision_id,
+                                               value=revision_id):
             _tree.create_node(tag=_mission.description,
                               identifier='{0:d}'.format(_mission.mission_id),
                               parent=revision_id,
@@ -288,8 +288,8 @@ class DataManager(RAMSTKDataManager):
             self._last_id['mission'] = _mission.mission_id
 
             for _phase in self.dao.do_select_all(RAMSTKMissionPhase,
-                                                 RAMSTKMissionPhase.mission_id,
-                                                 _mission.mission_id):
+                                                 key=RAMSTKMissionPhase.mission_id,
+                                                 value=_mission.mission_id):
                 _tree.create_node(tag=_phase.description,
                                   identifier='{0:d}.{1:d}'.format(
                                       _mission.mission_id, _phase.phase_id),
@@ -298,8 +298,8 @@ class DataManager(RAMSTKDataManager):
                 self._last_id['mission_phase'] = _phase.phase_id
 
                 for _environment in self.dao.do_select_all(RAMSTKEnvironment,
-                                                           RAMSTKEnvironment.phase_id,
-                                                           _phase.phase_id):
+                                                           key=RAMSTKEnvironment.phase_id,
+                                                           value=_phase.phase_id):
                     _tree.create_node(tag=_environment.name,
                                       identifier='{0:d}.{1:d}.{2:d}'.format(
                                           _mission.mission_id, _phase.phase_id,
@@ -671,11 +671,13 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _revision in self.dao.do_select_all(RAMSTKRevision, None, None):
+        for _revision in self.dao.do_select_all(RAMSTKRevision, key=None,
+                                                value=None):
 
             _failure_definitions = self.dao.do_select_all(
-                RAMSTKFailureDefinition, RAMSTKFailureDefinition.revision_id,
-                _revision.revision_id)
+                RAMSTKFailureDefinition,
+                key=RAMSTKFailureDefinition.revision_id,
+                value=_revision.revision_id)
             _failure_definitions = self.do_build_dict(_failure_definitions,
                                                       'definition_id')
             try:
