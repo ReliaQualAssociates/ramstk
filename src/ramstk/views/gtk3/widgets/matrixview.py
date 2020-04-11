@@ -66,14 +66,14 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         # Subscribe to PyPubSub messages.
 
-    def _do_set_properties(self, cell: Gtk.CellRenderer,
-                           model: Gtk.TreeModel, **kwargs) -> None:
+    # TODO: Move _do_set_properties from matrixview.py and share with treeview.
+    @staticmethod
+    def _do_set_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
         """
         Set common properties of Gtk.CellRenderers().
 
         :param cell: the cell whose properties are to be set.
         :type cell: :class:`Gtk.CellRenderer`
-        :param model: the :class:`Gtk.TreeModel` associated with the treeview.
         :return: None
         :rtype: None
         """
@@ -90,14 +90,6 @@ class RAMSTKMatrixView(Gtk.HBox):
         except KeyError:
             _fg_color = '#000000'
         try:
-            _idx_column = kwargs['col_index']
-        except KeyError:
-            _idx_column = 0
-        try:
-            _position = kwargs['position']
-        except KeyError:
-            _position = 0
-        try:
             _visible = kwargs['visible']
         except KeyError:
             _visible = True
@@ -109,9 +101,6 @@ class RAMSTKMatrixView(Gtk.HBox):
         cell.set_property('wrap-width', 250)
         cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
         cell.set_property('yalign', 0.1)
-        if _editable:
-            cell.connect('changed', self.do_edit_cell, _position, _idx_column,
-                         model)
 
     def _do_make_column(self,
                         cells: List[Gtk.CellRenderer],
@@ -191,8 +180,7 @@ class RAMSTKMatrixView(Gtk.HBox):
 
     # pylint: disable=too-many-arguments
     def do_edit_cell(self, cell: Gtk.CellRendererCombo, path: str,
-                     row: Gtk.TreeIter, position: int, col_index: int,
-                     model: Gtk.TreeModel) -> None:
+                     row: Gtk.TreeIter, model: Gtk.TreeModel, **kwargs) -> None:
         """
         Respond to `changed` signals for the Gtk.CellRendererCombo()s.
 
@@ -210,24 +198,32 @@ class RAMSTKMatrixView(Gtk.HBox):
         :return: None
         :rtype: None
         """
+        try:
+            _idx_column = kwargs['col_index']
+        except KeyError:
+            _idx_column = 0
+        try:
+            _position = kwargs['position']
+        except KeyError:
+            _position = 0
+
         _model = cell.get_property('model')
 
-        _column_item_id = col_index
-        _row_item_id = model[path][0]
+        _idx_row = model[path][0]
         if _model.get_value(row, 0) == 'Partial':
-            self.matrix[_column_item_id][_row_item_id] = 1
+            self.matrix[_idx_column][_idx_row] = 1
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self._dic_icons[1], 22, 22)
         elif _model.get_value(row, 0) == 'Complete':
-            self.matrix[_column_item_id][_row_item_id] = 2
+            self.matrix[_idx_column][_idx_row] = 2
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self._dic_icons[2], 22, 22)
         else:
-            self.matrix[_column_item_id][_row_item_id] = 0
+            self.matrix[_idx_column][_idx_row] = 0
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self._dic_icons[0], 22, 22)
 
-        model[path][position - 1] = _pixbuf
+        model[path][_position - 1] = _pixbuf
 
     def do_load_matrix(self, matrix: pd.DataFrame,
                        column_headings: Dict[int, str],
@@ -262,11 +258,11 @@ class RAMSTKMatrixView(Gtk.HBox):
         # Code.  The Function ID will not be visible, but can be used for
         # program control.
         _id_cell = Gtk.CellRendererText()
-        self._do_set_properties(_id_cell, None, bg_color='light gray',
+        self._do_set_properties(_id_cell, bg_color='light gray',
                                 visible=False)
 
         _code_cell = Gtk.CellRendererText()
-        self._do_set_properties(_code_cell, None, bg_color='light gray')
+        self._do_set_properties(_code_cell, bg_color='light gray')
         _code_cell.set_alignment(0.9, 0.5)
 
         _column = self._do_make_column([_id_cell, _code_cell], '')
@@ -280,10 +276,10 @@ class RAMSTKMatrixView(Gtk.HBox):
         j = 2
         for i in range(self._n_columns):  # pylint: disable=E0602
             _cell = self._do_make_combo_cell()
-            self._do_set_properties(_cell, _model,
-                                    editable=True,
-                                    position=i + j + 1,
-                                    col_index=self.matrixview.columns[i])
+            self._do_set_properties(_cell, editable=True)
+            _cell.connect('changed', self.do_edit_cell, _model,
+                          position=i + j + 1,
+                          col_index=self.matrixview.columns[i])
 
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)

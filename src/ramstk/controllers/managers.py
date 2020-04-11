@@ -465,7 +465,7 @@ class RAMSTKMatrixManager():
             _lst_values[0] = _dic_col_ids[_col_id]
             self._dic_matrix[_col_id] = pd.Series(
                 _lst_values,
-                index=[_node for _node in self._row_tree.nodes],
+                index=list(self._row_tree.nodes)
             )
 
         self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)

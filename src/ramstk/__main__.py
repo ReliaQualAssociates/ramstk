@@ -19,9 +19,10 @@ from ramstk.configuration import (
     RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 )
 from ramstk.controllers import (
-    amFMEA, amFunction, amHardware, amStakeholder, amValidation, dmFMEA,
-    dmFunction, dmHardware, dmOptions, dmPoF, dmRequirement, dmRevision,
-    dmStakeholder, dmValidation, mmHardware, mmRequirement, mmValidation
+    amFMEA, amFunction, amHardware, amStakeholder, amValidation,
+    dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
+    dmRequirement, dmRevision, dmStakeholder, dmValidation,
+    mmFunction, mmHardware, mmRequirement, mmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
@@ -116,7 +117,7 @@ def the_one_ring() -> None:
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
     _program_mgr.dic_managers['function']['data'] = dmFunction()
-    # _program_mgr.dic_managers['function']['matrix'] = mmFunction()
+    _program_mgr.dic_managers['function']['matrix'] = mmFunction()
     _program_mgr.dic_managers['function']['analysis'] = amFunction(
         user_configuration)
     _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)

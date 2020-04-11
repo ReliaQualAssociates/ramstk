@@ -36,8 +36,9 @@ class TestRAMSTKMatrix():
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
                                              key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_id],
-                                             value=[1, 1],
+                                                  RAMSTKMatrix.matrix_type],
+                                             value=[1, 'fnctn_hrdwr'],
+                                             order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
 
         assert isinstance(DUT, RAMSTKMatrix)
@@ -47,11 +48,9 @@ class TestRAMSTKMatrix():
         assert DUT.revision_id == 1
         assert DUT.matrix_id == 1
         assert DUT.column_id == 8
-        assert DUT.column_item_id == 8
         assert DUT.matrix_type == 'fnctn_hrdwr'
         assert DUT.parent_id == 0
         assert DUT.row_id == 8
-        assert DUT.row_item_id == 3
         assert DUT.value == 0
 
     @pytest.mark.integration
@@ -62,11 +61,18 @@ class TestRAMSTKMatrix():
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
                                              key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_id],
-                                             value=[1, 1],
+                                                  RAMSTKMatrix.matrix_type],
+                                             value=[1, 'fnctn_hrdwr'],
+                                             order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
 
-        assert DUT.get_attributes() == ATTRIBUTES
+        _attributes = DUT.get_attributes()
+
+        assert _attributes['column_id'] == 8
+        assert _attributes['matrix_type'] == 'fnctn_hrdwr'
+        assert _attributes['parent_id'] == 0
+        assert _attributes['row_id'] == 8
+        assert _attributes['value'] == 0
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -76,8 +82,9 @@ class TestRAMSTKMatrix():
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
                                              key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_id],
-                                             value=[1, 1],
+                                                  RAMSTKMatrix.matrix_type],
+                                             value=[1, 'fnctn_hrdwr'],
+                                             order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
 
         ATTRIBUTES.pop('revision_id')
@@ -95,8 +102,9 @@ class TestRAMSTKMatrix():
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
                                              key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_id],
-                                             value=[1, 1],
+                                                  RAMSTKMatrix.matrix_type],
+                                             value=[1, 'fnctn_hrdwr'],
+                                             order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
 
         with pytest.raises(AttributeError):
