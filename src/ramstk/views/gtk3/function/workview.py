@@ -782,7 +782,6 @@ class HazOps(RAMSTKWorkView):
 
         _model, _row = selection.get_selected()
         try:
-            self._parent_id = _model.get_value(_row, 1)
             self._hazard_id = _model.get_value(_row, 2)
         except TypeError as _error:
             self._hazard_id = -1
