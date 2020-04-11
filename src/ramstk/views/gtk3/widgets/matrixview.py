@@ -14,10 +14,11 @@ from typing import Any, Dict, List
 import pandas as pd
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, Pango, _
+from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, _
 
 # RAMSTK Local Imports
 from .label import RAMSTKLabel
+from .treeview import do_set_cell_properties
 
 
 # noinspection PyUnresolvedReferences
@@ -65,42 +66,6 @@ class RAMSTKMatrixView(Gtk.HBox):
         self.n_fixed_columns = 0
 
         # Subscribe to PyPubSub messages.
-
-    # TODO: Move _do_set_properties from matrixview.py and share with treeview.
-    @staticmethod
-    def _do_set_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
-        """
-        Set common properties of Gtk.CellRenderers().
-
-        :param cell: the cell whose properties are to be set.
-        :type cell: :class:`Gtk.CellRenderer`
-        :return: None
-        :rtype: None
-        """
-        try:
-            _bg_color = kwargs['bg_color']
-        except KeyError:
-            _bg_color = '#FFFFFF'
-        try:
-            _editable = kwargs['editable']
-        except KeyError:
-            _editable = False
-        try:
-            _fg_color = kwargs['fg_color']
-        except KeyError:
-            _fg_color = '#000000'
-        try:
-            _visible = kwargs['visible']
-        except KeyError:
-            _visible = True
-
-        cell.set_property('background', _bg_color)
-        cell.set_property('editable', _editable)
-        cell.set_property('foreground', _fg_color)
-        cell.set_property('visible', _visible)
-        cell.set_property('wrap-width', 250)
-        cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-        cell.set_property('yalign', 0.1)
 
     def _do_make_column(self,
                         cells: List[Gtk.CellRenderer],
@@ -258,11 +223,11 @@ class RAMSTKMatrixView(Gtk.HBox):
         # Code.  The Function ID will not be visible, but can be used for
         # program control.
         _id_cell = Gtk.CellRendererText()
-        self._do_set_properties(_id_cell, bg_color='light gray',
-                                visible=False)
+        do_set_cell_properties(_id_cell, bg_color='light gray',
+                               visible=False)
 
         _code_cell = Gtk.CellRendererText()
-        self._do_set_properties(_code_cell, bg_color='light gray')
+        do_set_cell_properties(_code_cell, bg_color='light gray')
         _code_cell.set_alignment(0.9, 0.5)
 
         _column = self._do_make_column([_id_cell, _code_cell], '')
@@ -276,7 +241,7 @@ class RAMSTKMatrixView(Gtk.HBox):
         j = 2
         for i in range(self._n_columns):  # pylint: disable=E0602
             _cell = self._do_make_combo_cell()
-            self._do_set_properties(_cell, editable=True)
+            do_set_cell_properties(_cell, editable=True)
             _cell.connect('changed', self.do_edit_cell, _model,
                           position=i + j + 1,
                           col_index=self.matrixview.columns[i])

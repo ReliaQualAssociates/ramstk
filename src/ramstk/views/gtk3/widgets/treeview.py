@@ -24,6 +24,51 @@ from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango
 from .label import RAMSTKLabel
 
 
+def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
+    """
+    Set common properties of Gtk.CellRenderers().
+
+    :param cell: the cell whose properties are to be set.
+    :type cell: :class:`Gtk.CellRenderer`
+    :return: None
+    :rtype: None
+    """
+    try:
+        _bg_color = kwargs['bg_color']
+    except KeyError:
+        _bg_color = '#FFFFFF'
+    try:
+        _editable = kwargs['editable']
+    except KeyError:
+        _editable = False
+    try:
+        _fg_color = kwargs['fg_color']
+    except KeyError:
+        _fg_color = '#000000'
+    try:
+        _visible = kwargs['visible']
+    except KeyError:
+        _visible = True
+
+    if not _editable:
+        _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
+        cell.set_property('cell-background-rgba', _color)
+        _fg_color = '#000000'
+    else:
+        cell.set_property('cell-background', _bg_color)
+
+    cell.set_property('visible', _visible)
+    cell.set_property('yalign', 0.1)
+
+    if isinstance(cell, Gtk.CellRendererText):
+        cell.set_property('editable', _editable)
+        cell.set_property('foreground', _fg_color)
+        cell.set_property('wrap-width', 250)
+        cell.set_property('wrap-mode', Pango.WrapMode.WORD)
+    elif isinstance(cell, Gtk.CellRendererToggle):
+        cell.set_property('activatable', _editable)
+
+
 class RAMSTKTreeView(Gtk.TreeView):
     """The RAMSTKTreeView class."""
 
@@ -46,7 +91,7 @@ class RAMSTKTreeView(Gtk.TreeView):
 
         # Initialize public list instance attributes.
         self.datatypes: List[str] = []
-        self.editable: List[int] = []
+        self.editable: List[bool] = []
         self.headings: List[str] = []
         self.korder: List[int] = []
         self.order: List[int] = []
@@ -175,36 +220,6 @@ class RAMSTKTreeView(Gtk.TreeView):
         _cell = Gtk.CellRendererToggle()
 
         return _cell
-
-    @staticmethod
-    def _do_set_properties(cell: Gtk.CellRenderer, bg_color: str,
-                           fg_color: str, editable: int) -> None:
-        """
-        Set common properties of Gtk.CellRenderers().
-
-        :param cell: the cell whose properties are to be set.
-        :type cell: :class:`Gtk.CellRenderer`
-        :param str bg_color: the cell background color.
-        :param str fg_color: the cell foreground color.
-        :param int editable: indicates whether the cell is editable.
-        :return: None
-        :rtype: None
-        """
-        if editable == 0:
-            _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
-            cell.set_property('cell-background-rgba', _color)
-        else:
-            cell.set_property('cell-background', bg_color)
-
-        if isinstance(cell, Gtk.CellRendererText):
-            cell.set_property('editable', editable)
-            cell.set_property('foreground', fg_color)
-            cell.set_property('wrap-width', 250)
-            cell.set_property('wrap-mode', Pango.WrapMode.WORD)
-        elif isinstance(cell, Gtk.CellRendererToggle):
-            cell.set_property('activatable', editable)
-
-        cell.set_property('yalign', 0.1)
 
     def do_edit_cell(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      position: int) -> None:
@@ -492,8 +507,8 @@ class RAMSTKTreeView(Gtk.TreeView):
 
         for _idx, _widget in enumerate(self.widgets):
             _cell = self._do_make_cell(_widget)
-            self._do_set_properties(_cell, bg_color, fg_color,
-                                    self.editable[_idx])
+            do_set_cell_properties(_cell, bg_color=bg_color, fg_color=fg_color,
+                                   editable=self.editable[_idx])
 
             if self.pixbuf_col is not None and _idx == 0:
                 _pbcell = Gtk.CellRendererPixbuf()
