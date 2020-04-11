@@ -284,6 +284,11 @@ class TestSelectMethods():
             tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
 
+    def on_request_select_matrix(self, matrix_type):
+        assert matrix_type == 'fnctn_hrdwr'
+        print("\033[36m\nrequest_select_matrix topic was broadcast for the "
+              "fnctn_hrdwr matrix.")
+
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKFunction instances on success."""
@@ -345,6 +350,8 @@ class TestSelectMethods():
     @pytest.mark.unit
     def test_do_create_matrix(self, mock_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
+        pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
+
         DUT = mmFunction()
 
         DATAMGR = dmFunction()
@@ -353,6 +360,9 @@ class TestSelectMethods():
 
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
+        pub.unsubscribe(self.on_request_select_matrix, 'request_select_matrix')
+
+        assert DUT._col_tree == MOCK_HRDWR_TREE
         assert DUT.do_select('fnctn_hrdwr', 1, 1) == 0
         assert DUT.do_select('fnctn_hrdwr', 1, 2) == 0
         assert DUT.do_select('fnctn_hrdwr', 1, 3) == 0
@@ -371,6 +381,11 @@ class TestDeleteMethods():
     def on_fail_delete_function(self, error_message):
         assert error_message == (
             'Attempted to delete non-existent function ID 300.')
+        print("\033[35m\nfail_delete_function topic was broadcast.")
+
+    def on_fail_delete_function_no_tree(self, error_message):
+        assert error_message == (
+            'Attempted to delete non-existent function ID 2.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     def on_succeed_delete_hazard(self, node_id):
@@ -401,13 +416,30 @@ class TestDeleteMethods():
 
     @pytest.mark.unit
     def test_do_delete_function_non_existent_id(self, mock_program_dao):
-        """_do_delete() should send the fail message."""
+        """_do_delete() should send the fail message when attempting to delete a function ID that doesn't exist in the database."""
         pub.subscribe(self.on_fail_delete_function, 'fail_delete_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete(300)
+
+        pub.unsubscribe(self.on_fail_delete_function, 'fail_delete_function')
+
+    @pytest.mark.unit
+    def test_do_delete_function_not_in_tree(self, mock_program_dao):
+        """_do_delete() should send the fail message when attempting to remove a node that doesn't exist from the tree."""
+        pub.subscribe(self.on_fail_delete_function_no_tree,
+                      'fail_delete_function')
+
+        DUT = dmFunction()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.remove_node(2)
+        DUT._do_delete(2)
+
+        pub.unsubscribe(self.on_fail_delete_function_no_tree,
+                        'fail_delete_function')
 
     @pytest.mark.unit
     def test_do_delete_hazard(self, mock_program_dao):
@@ -782,6 +814,11 @@ class TestUpdateMethods():
             'Attempted to save non-existent function with function ID 100.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
+    def on_fail_update_function_no_data(self, error_message):
+        assert error_message == (
+            'No data package found for function ID 0.')
+        print("\033[35m\nfail_update_function topic was broadcast")
+
     def on_succeed_update_matrix(self):
         print("\033[36m\nsucceed_update_matrix topic was broadcast")
 
@@ -816,6 +853,24 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_update(100)
+
+        pub.unsubscribe(self.on_fail_update_function, 'fail_update_function')
+
+    @pytest.mark.unit
+    def test_do_update_no_data_package(self, mock_program_dao):
+        """ do_update() should return a non-zero error code when passed a Function ID that has no data package. """
+        pub.subscribe(self.on_fail_update_function_no_data,
+                      'fail_update_function')
+
+        DUT = dmFunction()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        #DUT.tree.get_node(1).data = None
+
+        DUT.do_update(0)
+
+        pub.unsubscribe(self.on_fail_update_function_no_data,
+                        'fail_update_function')
 
     # TODO: un-skip test_do_update_matrix_manager in test_function.py.
     @pytest.mark.skip

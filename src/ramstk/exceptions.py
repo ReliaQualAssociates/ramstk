@@ -24,10 +24,14 @@ class RAMSTKError(Exception):
 
 
 class DataAccessError(RAMSTKError):
-    """Exception raised by methods in the data access package."""
+    """Exception raised when attempting to access non-existent data."""
     def __init__(self, msg: str) -> None:
         """
         Initialize DataAccessError instance.
+
+        This exception is intended for use for non-existent data in the data
+        access object and the treelib Tree()'s.  Use it to override the
+        native exceptions.
 
         :param str msg: the message to display to the user when this
             exception is raised.

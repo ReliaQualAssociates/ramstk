@@ -86,15 +86,11 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_delete_function',
                             node_id=node_id, tree=self.tree)
-        except (AttributeError, DataAccessError):
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
             _error_message = ("Attempted to delete non-existent function ID "
                               "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_function',
                             error_message=_error_message)
-        except NodeIDAbsentError:
-            _error_msg = ("Hardware ID {0:s} was not found as a node "
-                          "in the tree.").format(str(node_id))
-            pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
     def _do_delete_hazard(self, function_id: int, node_id: int) -> None:
         """
@@ -410,8 +406,7 @@ class DataManager(RAMSTKDataManager):
                                            'function with function ID '
                                            '{0:s}.').format(str(node_id)))
         except TypeError:
-            if node_id != 0:
-                pub.sendMessage('fail_update_function',
-                                error_message=('No data package found for '
-                                               'function ID {0:s}.').format(
-                                                   str(node_id)))
+            pub.sendMessage('fail_update_function',
+                            error_message=('No data package found for '
+                                           'function ID {0:s}.').format(
+                                               str(node_id)))

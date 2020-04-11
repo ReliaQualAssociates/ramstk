@@ -254,9 +254,7 @@ class RAMSTKDataManager():
         """
         try:
             _entity = self.tree.get_node(node_id).data[table]
-        except AttributeError:
-            _entity = None
-        except treelib.tree.NodeIDAbsentError:
+        except (AttributeError, treelib.tree.NodeIDAbsentError):
             _entity = None
 
         return _entity

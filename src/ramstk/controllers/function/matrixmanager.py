@@ -58,8 +58,6 @@ class MatrixManager(RAMSTKMatrixManager):
         #pub.subscribe(self._on_insert_hardware,
         #              'succeed_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_function_matrix')
-        pub.subscribe(self._on_get_tree, 'succeed_get_function_tree')
-        #pub.subscribe(self._on_get_tree, 'succeed_get_validation_tree')
 
     def _do_create_columns(self, tree: treelib.Tree) -> None:
         """
@@ -89,20 +87,6 @@ class MatrixManager(RAMSTKMatrixManager):
         :rtype: None
         """
         self.do_delete_row(node_id)
-
-    def _on_get_tree(self, dmtree: treelib.Tree) -> None:
-        """
-        Request the function treelib Tree().
-
-        :param dmtree: the function treelib Tree().
-        :type dmtree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        if dmtree.get_node(0).tag == 'function':
-            self._row_tree = dmtree
-        else:
-            self._col_tree = dmtree
 
     def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:    # pylint: disable=unused-argument
         """
