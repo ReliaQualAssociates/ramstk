@@ -418,8 +418,26 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
-        This method is called by other views when the work stream module's data
-        model attributes are edited via their gtk.Widgets().
+        This method receives two dicts.  This first is from the
+        workflow's workview module and is sent when a workview widget is
+        edited/changed.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: database field new value
+
+        The second dict is from the workflow's moduleview.
+
+            `keys` key: `keys` value
+
+        corresponds to:
+
+            database field name: TreeModel column position
+
+        Since both dicts contain the same key values, this method can refresh
+        the proper column of the RAMSTKTreeView with the new data.
 
         :param dict package: the key:value for the data being updated.
         :param dict keys: the name:index relationship for the work stream

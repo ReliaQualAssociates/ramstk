@@ -104,6 +104,19 @@ class ModuleView(RAMSTKModuleView):
         This method is called by other views when the Revision data model
         attributes are edited via their gtk.Widgets().
 
+        The calling method is passes a dict containing the database field name
+        as key.  The dict's value is the data to write to the database.
+
+        `package` key: `package` value
+        database field name: database field new value
+
+        This method passes that `package` of data and a second dict
+        containing the database field name as key.  The value of this second
+        dict is the TreeModel's default column position for that data.
+
+        `keys` key: `keys` value
+        database field name: TreeModel column position
+
         :param list node_id: unused in this method.
         :param dict package: the key:value for the data being updated.
         :return: None
@@ -112,7 +125,7 @@ class ModuleView(RAMSTKModuleView):
         self.do_refresh_tree(package, {
             'name': 17,
             'remarks': 20,
-            'function_code': 22
+            'revision_code': 22
         })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:

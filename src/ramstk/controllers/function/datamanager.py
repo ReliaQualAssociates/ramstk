@@ -263,10 +263,12 @@ class DataManager(RAMSTKDataManager):
         _node = self.tree.get_node(function_id)
 
         if _node is not None:
+            _last_id = self.dao.get_last_id('ramstk_hazard_analysis',
+                                            'hazard_id')
             try:
                 _hazard = RAMSTKHazardAnalysis(revision_id=self._revision_id,
                                                function_id=function_id,
-                                               hazard_id=self._last_id[1] + 1)
+                                               hazard_id=_last_id + 1)
                 self.dao.do_insert(_hazard)
 
                 self._last_id[1] = _hazard.hazard_id

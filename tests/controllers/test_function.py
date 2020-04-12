@@ -516,7 +516,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     def on_succeed_insert_hazard(self, node_id):
-        assert node_id == 2
+        assert node_id == 3
         print("\033[36m\nsucceed_insert_hazard topic was broadcast.")
 
     def on_fail_insert_hazard(self, error_message):

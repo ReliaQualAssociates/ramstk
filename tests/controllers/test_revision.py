@@ -287,6 +287,18 @@ class MockDao:
             if _key == record.revision_id:
                 MOCK_REVISIONS[_key]['name'] = record.name
 
+    def get_last_id(self, table, id_column):
+        if table == 'ramstk_revision':
+            return max(MOCK_REVISIONS.keys())
+        elif table == 'ramstk_environment':
+            return max(MOCK_ENVIRONMENTS.keys())
+        elif table == 'ramstk_failure_definition':
+            return max(MOCK_FAILURE_DEFINITIONS.keys())
+        elif table == 'ramstk_mission':
+            return max(MOCK_MISSIONS.keys())
+        elif table == 'ramstk_mission_phase':
+            return max(MOCK_MISSION_PHASES.keys())
+
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):

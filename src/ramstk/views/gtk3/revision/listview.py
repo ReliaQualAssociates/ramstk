@@ -983,8 +983,12 @@ class UsageProfile(RAMSTKListView):
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
         _model, _row = self.treeview.selection.get_selected()
-        _level = _model.get_value(_row, 11)
-        _prow = _model.iter_parent(_row)
+        try:
+            _level = _model.get_value(_row, 11)
+            _prow = _model.iter_parent(_row)
+        except TypeError:
+            _level = 'mission'
+            _prow = None
 
         if _level == 'mission':
             pub.sendMessage('request_insert_mission',

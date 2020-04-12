@@ -518,7 +518,8 @@ class DataManager(RAMSTKDataManager):
         _tree = Tree()
 
         try:
-            _revision = RAMSTKRevision(revision_id=self.last_id + 1,
+            _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
+            _revision = RAMSTKRevision(revision_id=_last_id + 1,
                                        name='New Revision')
             self.dao.do_insert(_revision)
 
@@ -556,9 +557,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_environment',
+                                            'environment_id')
             _environment = RAMSTKEnvironment(phase_id=phase_id,
-                                             environment_id=self._last_id[
-                                                 'environment'] + 1)
+                                             environment_id=_last_id + 1)
             self.dao.do_insert(_environment)
             self._last_id['environment'] = _environment.environment_id
             _phase_id = '{0:s}.{1:s}'.format(str(mission_id), str(phase_id))
@@ -587,9 +589,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_failure_definition',
+                                            'definition_id')
             _failure_definition = RAMSTKFailureDefinition(
-                revision_id=revision_id, definition_id=self._last_id[
-                    'failure_definition'] + 1)
+                revision_id=revision_id, definition_id=_last_id + 1)
             self.dao.do_insert(_failure_definition)
             self.tree.get_node(revision_id).data['failure_definitions'][
                 _failure_definition.definition_id] = _failure_definition
@@ -613,8 +616,9 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_mission', 'mission_id')
             _mission = RAMSTKMission(revision_id=revision_id,
-                                     mission_id=self._last_id['mission'] + 1)
+                                     mission_id=_last_id + 1)
             self.dao.do_insert(_mission)
 
             self.tree.get_node(revision_id).data['usage_profile'].create_node(
@@ -641,9 +645,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_mission_phase',
+                                            'phase_id')
             _phase = RAMSTKMissionPhase(mission_id=mission_id,
-                                        phase_id=self._last_id[
-                                            'mission_phase'] + 1)
+                                        phase_id=_last_id + 1)
             self.dao.do_insert(_phase)
             self._last_id['mission_phase'] = _phase.phase_id
 
