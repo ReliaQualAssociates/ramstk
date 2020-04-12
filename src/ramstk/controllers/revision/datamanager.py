@@ -676,8 +676,11 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _revision in self.dao.do_select_all(RAMSTKRevision, key=None,
-                                                value=None):
+        for _revision in self.dao.do_select_all(
+                RAMSTKRevision,
+                key=None,
+                value=None,
+                order=RAMSTKRevision.revision_id):
 
             _failure_definitions = self.dao.do_select_all(
                 RAMSTKFailureDefinition,

@@ -267,7 +267,8 @@ class MockDao:
 
         return self._all_environments
 
-    def do_select_all(self, table, key, value):
+    def do_select_all(self, table, key, value, order=None,
+                      _all=False):
         if table == RAMSTKRevision:
             return self._do_select_all_revisions(table)
         elif table == RAMSTKFailureDefinition:
