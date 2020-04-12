@@ -99,6 +99,8 @@ class ModuleView(RAMSTKModuleView):
 
         super().make_ui()
 
+        self.treeview.do_set_editable_columns(self._on_cell_edit)
+
     # pylint: disable=unused-argument
     def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
         """
@@ -220,6 +222,18 @@ class ModuleView(RAMSTKModuleView):
         """
         Handle edits of Function package Module View RAMSTKTreeview().
 
+        This function sends a dict with it's message that relates the
+        database field and the new data for that field.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: new value
+
+        The workview module listens for this message so it can update it's
+        widgets.  Other modules may listen as well.
+
         :param __cell: the Gtk.CellRenderer() that was edited.
         :type __cell: :class:`Gtk.CellRenderer`
         :param str path: the Gtk.TreeView() path of the
@@ -231,17 +245,17 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {17: 'name', 20: 'remarks', 22: 'function_code'}
+        _dic_keys = {5: 'function_code', 15: 'name', 17: 'remarks'}
         try:
             _key = _dic_keys[self._lst_col_order[position]]
         except KeyError:
             _key = ''
 
-        self.treeview.do_edit_cell(self, __cell, path, new_text, position)
+        self.treeview.do_edit_cell(__cell, path, new_text, position)
 
         pub.sendMessage('mvw_editing_function',
                         node_id=[self._function_id, -1, ''],
-                        package={_key, new_text})
+                        package={_key: new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """

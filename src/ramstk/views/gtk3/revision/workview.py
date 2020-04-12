@@ -210,8 +210,17 @@ class GeneralData(RAMSTKWorkView):
         Update the Revision Work View Gtk.Widgets().
 
         This method updates the Revision Work View Gtk.Widgets() with changes
-        to the Revision data model attributes.  This method is called whenever
-        an attribute is edited in a different RAMSTK View.
+        to the Revision data model attributes.  The moduleview sends a dict that
+        relates the database field and the new data for that field.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: new value
+
+        This method uses the key to determine which widget needs to be
+        updated with the new data.
 
         :param list node_id: a list of the ID's of the record in the RAMSTK
             Program database table whose attributes are to be set.  The list is:

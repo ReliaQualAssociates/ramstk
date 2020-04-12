@@ -413,10 +413,11 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.visible.append(False)
         self.widgets.append('text')
 
-    def do_set_editable_columns(self) -> None:
+    def do_set_editable_columns(self, method: object) -> None:
         """
         Set the treeview columns editable or read-only.
 
+        :param method: the callback method for the cell.
         :return: None
         :rtype: None
         """
@@ -429,9 +430,9 @@ class RAMSTKTreeView(Gtk.TreeView):
             for __, _cell in enumerate(_cells):
                 if self.editable[_idx]:
                     try:
-                        _cell.connect('edited', self.do_edit_cell, _idx)
+                        _cell.connect('edited', method, _idx)
                     except TypeError:
-                        _cell.connect('toggled', self.do_edit_cell, None, _idx)
+                        _cell.connect('toggled', method, None, _idx)
 
     def do_set_visible_columns(self, **kwargs: Any) -> None:
         """
@@ -534,7 +535,7 @@ class RAMSTKTreeView(Gtk.TreeView):
 
             self.append_column(_column)
 
-        self.do_set_editable_columns()
+        self.do_set_editable_columns(self.do_edit_cell)
 
     @staticmethod
     def _format_cell(__column: Gtk.TreeViewColumn, cell: Gtk.CellRenderer,

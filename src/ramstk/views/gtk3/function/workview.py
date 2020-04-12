@@ -224,8 +224,17 @@ class GeneralData(RAMSTKWorkView):
         Update the Function Work View Gtk.Widgets().
 
         This method updates the Function Work View Gtk.Widgets() with changes
-        to the Function data model attributes.  This method is called whenever
-        an attribute is edited in a different RAMSTK View.
+        to the Function data model attributes.  The moduleview sends a dict that
+        relates the database field and the new data for that field.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: new value
+
+        This method uses the key to determine which widget needs to be
+        updated with the new data.
 
         :param list node_id: a list of the ID's of the record in the RAMSTK
             Program database table whose attributes are to be set.  The list is:
@@ -245,7 +254,6 @@ class GeneralData(RAMSTKWorkView):
             'remarks': [self.txtRemarks.do_update, 2],
             'safety_critical': [self.chkSafetyCritical.do_update, 3]
         }
-
         _function, _id = _dic_switch.get(_key)
         _function(_value, self._lst_handler_id[_id])
 
