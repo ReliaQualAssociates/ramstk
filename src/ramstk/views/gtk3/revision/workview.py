@@ -178,7 +178,6 @@ class GeneralData(RAMSTKWorkView):
         self.txtCode.do_update(str(attributes['revision_code']),
                                self._lst_handler_id[2])
 
-
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
         Request to save the currently selected Revision.
@@ -210,8 +209,8 @@ class GeneralData(RAMSTKWorkView):
         Update the Revision Work View Gtk.Widgets().
 
         This method updates the Revision Work View Gtk.Widgets() with changes
-        to the Revision data model attributes.  The moduleview sends a dict that
-        relates the database field and the new data for that field.
+        to the Revision data model attributes.  The moduleview sends a dict
+        that relates the database field and the new data for that field.
 
             `package` key: `package` value
 
@@ -223,7 +222,8 @@ class GeneralData(RAMSTKWorkView):
         updated with the new data.
 
         :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list is:
+            Program database table whose attributes are to be set.  The list
+            is:
 
                 0 - Revision ID
                 1 - Failure Definition ID

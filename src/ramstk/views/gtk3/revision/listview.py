@@ -66,7 +66,8 @@ class FailureDefinition(RAMSTKListView):
     :ivar int _definition_id: the Failure Definition ID of the definition
         selected in the List View.
     """
-    def __init__(self, configuration, logger, module='failure_definition') -> None:
+    def __init__(self, configuration, logger,
+                 module='failure_definition') -> None:
         """
         Initialize the List View for the Failure Definition package.
 
@@ -248,7 +249,8 @@ class FailureDefinition(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, __button: Gtk.ToolButton) -> None:  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """
         Request to add a Failure Definition record.
 
@@ -683,7 +685,8 @@ class UsageProfile(RAMSTKListView):
         """
         self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
                                   + "</span>")
-        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.tab_label.set_xalign(xalign=0.5)
+        self.tab_label.set_yalign(yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
         self.tab_label.set_tooltip_text(
@@ -867,8 +870,8 @@ class UsageProfile(RAMSTKListView):
 
         _node = tree.nodes[list(tree.nodes.keys())[0]]
         _entity = _node.data
-        # The root node will have no data package, so this indicates the need to
-        # clear the tree in preparation for the load.
+        # The root node will have no data package, so this indicates the need
+        # to clear the tree in preparation for the load.
         if _entity is None:
             _model.clear()
 

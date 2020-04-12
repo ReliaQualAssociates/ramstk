@@ -30,7 +30,8 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
 
 
-def do_read_site_configuration(logger: RAMSTKLogManager) -> RAMSTKSiteConfiguration:
+def do_read_site_configuration(logger: RAMSTKLogManager) -> \
+        RAMSTKSiteConfiguration:
     """
     Create a site configuration instance.
 
@@ -63,7 +64,7 @@ def do_read_user_configuration() -> RAMSTKUserConfiguration:
     :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
     def on_fail_create_user_configuration(error_message: str) -> None:
-        logger.do_log_error(__name__, error_message)
+        print(error_message)
 
     pub.subscribe(on_fail_create_user_configuration,
                   'fail_create_user_configuration')
@@ -77,7 +78,8 @@ def do_read_user_configuration() -> RAMSTKUserConfiguration:
 
 def the_one_ring() -> None:
     """Execute the main function for RAMSTK."""
-    #splScreen = SplashScreen()
+    # TODO: Implement splash screen.
+    # splScreen = SplashScreen()
 
     # Read the user configuration file and create a logger.  The user
     # configuration file contains information needed to create the logger so
@@ -148,11 +150,11 @@ def the_one_ring() -> None:
     _logger.do_log_info(__name__, "Launching RAMSTK GUI.")
     # If you don't do this, the splash screen will show, but won't render it's
     # contents
-    #while Gtk.events_pending():
-    #    Gtk.main_iteration()
+    # while Gtk.events_pending():
+    #     Gtk.main_iteration()
 
     sleep(1)
-    #splScreen.window.destroy()
+    # splScreen.window.destroy()
 
     # Create the RAMSTK Book.  This needs to be initialized after reading the
     # configuration and creating the logger.

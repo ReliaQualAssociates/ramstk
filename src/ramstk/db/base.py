@@ -314,8 +314,8 @@ class BaseDatabase():
         Retrieve the list of program databases available to RAMSTK.
 
         This method is used to create a user-selectable list of databases when
-        using the postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses an
-        open file dialog.
+        using the postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses
+        an open file dialog.
 
         :param dict database: the connection information for the dialect's
             administrative database.
@@ -327,7 +327,7 @@ class BaseDatabase():
 
         if database['dialect'] == 'postgres':
             _query = self.sqlstatements['select'].format('datname') + \
-                     self.sqlstatements['from'].format('pg_database;')
+                 self.sqlstatements['from'].format('pg_database;')
             database = ('postgresql+psycopg2://'
                         + database['user'] + ':'
                         + database['password'] + '@'

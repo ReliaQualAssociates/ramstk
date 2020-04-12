@@ -109,8 +109,12 @@ class RAMSTKMatrixView(Gtk.HBox):
         cell.set_property('wrap-width', _width)
 
     # pylint: disable=too-many-arguments
-    def do_edit_cell(self, cell: Gtk.CellRendererCombo, path: str,
-                     row: Gtk.TreeIter, model: Gtk.TreeModel, **kwargs) -> None:
+    def do_edit_cell(self,
+                     cell: Gtk.CellRendererCombo,
+                     path: str,
+                     row: Gtk.TreeIter,
+                     model: Gtk.TreeModel,
+                     **kwargs) -> None:
         """
         Respond to `changed` signals for the Gtk.CellRendererCombo()s.
 
@@ -214,7 +218,8 @@ class RAMSTKMatrixView(Gtk.HBox):
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
             _heading = column_headings[self.matrixview.columns[i]]
-            _column = treeview.do_make_column([_pbcell, _cell], heading=_heading)
+            _column = treeview.do_make_column([_pbcell, _cell],
+                                              heading=_heading)
             _column.set_attributes(_pbcell, pixbuf=i + j)
             self.matrixview.append_column(_column)
 

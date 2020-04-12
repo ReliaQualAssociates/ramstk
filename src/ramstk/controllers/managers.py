@@ -279,7 +279,9 @@ class RAMSTKDataManager():
                     value=[self._revision_id, matrix_type],
                     order=RAMSTKMatrix.row_id):
                 _lst_matrix.append(
-                    (_matrix.column_item_id, _matrix.row_item_id, _matrix.value))
+                    (_matrix.column_item_id,
+                     _matrix.row_item_id,
+                     _matrix.value))
 
             pub.sendMessage('succeed_retrieve_matrix',
                             matrix_type=matrix_type,

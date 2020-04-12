@@ -81,7 +81,7 @@ class ModuleView(RAMSTKModuleView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
+        _scrolledwindow.add(
             do_make_buttonbox(self,
                               icons=['add', 'remove'],
                               tooltips=[

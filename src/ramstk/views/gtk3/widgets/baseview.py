@@ -302,10 +302,10 @@ class RAMSTKBaseView(Gtk.HBox):
             _treeview.do_parse_format(_fmt_path, _fmt_file)
 
             try:
-                _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                         + 'bg']
-                _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                         + 'fg']
+                _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                    module + 'bg']
+                _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                    module + 'fg']
             except KeyError as _error:
                 _bg_color = '#FFFFFF'
                 _fg_color = '#000000'
@@ -462,10 +462,12 @@ class RAMSTKBaseView(Gtk.HBox):
         _sibling = kwargs['sibling']
 
         if _sibling:
-            pub.sendMessage('request_insert_{0:s}'.format(self._module.lower()))
+            pub.sendMessage(
+                'request_insert_{0:s}'.format(self._module.lower()))
         else:
-            pub.sendMessage('request_insert_{0:s}'.format(self._module.lower()),
-                            parent_id=self._parent_id)
+            pub.sendMessage(
+                'request_insert_{0:s}'.format(self._module.lower()),
+                parent_id=self._parent_id)
 
     def do_request_insert_child(self, __button: Gtk.ToolButton,
                                 **kwargs: Any) -> Any:
@@ -549,7 +551,8 @@ class RAMSTKBaseView(Gtk.HBox):
         self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor))
         Gdk.flush()
 
-    def do_set_cursor_active(self, node_id: Any) -> None:   # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def do_set_cursor_active(self, node_id: Any) -> None:
         """
         Set the active cursor for the Module, List, and Work Book Gdk.Window().
 
@@ -604,7 +607,8 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.show()
             _menu.append(_menu_item)
 
-    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Update the RAMSTKTreeView after deleting a line item.
 

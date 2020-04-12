@@ -55,7 +55,7 @@ class RAMSTKDialog(Gtk.Dialog):
         self.set_destroy_with_parent(True)
         self.set_modal(True)
 
-    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
+    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
         """Destroy the RAMSTK Dialog."""
         self.destroy()
 
@@ -141,7 +141,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
         return _model.get_value(_row, 0)
 
-    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
+    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
         """Destroy the RAMSTKDateSelect dialog."""
         self.destroy()
 
@@ -176,7 +176,7 @@ class RAMSTKDateSelect(Gtk.Dialog):
         self.vbox.pack_start(self._calendar, True, True, 0)
         self.vbox.show_all()
 
-    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
+    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
         """Destroy the RAMSTKDateSelect dialog."""
         self.destroy()
 
@@ -244,7 +244,7 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         _filter.add_pattern("*")
         self.add_filter(_filter)
 
-    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
+    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
         """Destroy the RAMSTKFileChooser dialog."""
         self.destroy()
 
@@ -349,6 +349,6 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         """Run the RAMSTK Message Dialog."""
         return self.run()
 
-    def do_destroy(self) -> None:   # pylint: disable=arguments-differ
+    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
         """Destroy the RAMSTK Message Dialog."""
         self.destroy()

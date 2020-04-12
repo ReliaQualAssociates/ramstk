@@ -33,7 +33,6 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         RAMSTK module name; value is the View associated with that RAMSTK
         module.
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
@@ -130,7 +129,8 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        for _key in list(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[1:]:
+        for _key in list(
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[1:]:
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
 

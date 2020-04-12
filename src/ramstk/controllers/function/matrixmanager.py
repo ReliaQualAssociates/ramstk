@@ -50,12 +50,13 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        # TODO: Update Function module matrixmanager to respond to hardware.
         pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
         pub.subscribe(self._do_create_columns, 'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
-        #pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self._on_insert_function, 'succeed_insert_function')
-        #pub.subscribe(self._on_insert_hardware,
+        # pub.subscribe(self._on_insert_hardware,
         #              'succeed_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_function_matrix')
 
@@ -75,7 +76,8 @@ class MatrixManager(RAMSTKMatrixManager):
             super().do_create_columns('fnctn_hrdwr')
             pub.sendMessage('request_select_matrix', matrix_type='fnctn_hrdwr')
 
-    def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None: # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Delete the matrix row associated with the deleted function.
 
@@ -88,7 +90,8 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_delete_row(node_id)
 
-    def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
         """
 
         :param int node_id: the treelib Tree() node ID associated with the

@@ -131,7 +131,8 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
-    def do_insert_requirement(self, parent_id=None):  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def do_insert_requirement(self, parent_id=None):
         """
         Add a new requirement.
 
@@ -182,9 +183,10 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _requirement in self.dao.do_select_all(RAMSTKRequirement,
-                                                   key=RAMSTKRequirement.revision_id,
-                                                   value=self._revision_id):
+        for _requirement in self.dao.do_select_all(
+                RAMSTKRequirement,
+                key=RAMSTKRequirement.revision_id,
+                value=self._revision_id):
             _data_package = {'requirement': _requirement}
 
             self.tree.create_node(tag=_requirement.requirement_code,

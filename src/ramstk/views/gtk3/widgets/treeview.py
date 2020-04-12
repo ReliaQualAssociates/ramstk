@@ -64,6 +64,7 @@ def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
 
     return _column
 
+
 def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
     """
     Set common properties of Gtk.CellRenderers().
@@ -111,7 +112,6 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
 
 class RAMSTKTreeView(Gtk.TreeView):
     """The RAMSTKTreeView class."""
-
     def __init__(self) -> None:
         """
         Initialize a RAMSTKTreeView() instance.
@@ -143,9 +143,10 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.index_col: int = 0
         self.selection = self.get_selection()
 
-    def _do_make_cell(self, widget: str
-                      ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle,
-                                 Gtk.CellRendererSpin, Gtk.CellRendererCombo]:
+    def _do_make_cell(
+            self, widget: str
+    ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle, Gtk.
+               CellRendererSpin, Gtk.CellRendererCombo]:
         """
         Create the appropriate type of Gtk.CellRenderer().
 
@@ -516,7 +517,9 @@ class RAMSTKTreeView(Gtk.TreeView):
 
         for _idx, _widget in enumerate(self.widgets):
             _cell = self._do_make_cell(_widget)
-            do_set_cell_properties(_cell, bg_color=bg_color, fg_color=fg_color,
+            do_set_cell_properties(_cell,
+                                   bg_color=bg_color,
+                                   fg_color=fg_color,
                                    editable=self.editable[_idx])
 
             if self.pixbuf_col is not None and _idx == 0:
@@ -527,9 +530,11 @@ class RAMSTKTreeView(Gtk.TreeView):
                                          visible=self.visible[_idx])
                 _column.set_attributes(_pbcell, pixbuf=self.pixbuf_col)
             else:
-                _column = do_make_column([_cell],
-                                         heading=self.headings[_idx],
-                                         visible=self.visible[_idx],)
+                _column = do_make_column(
+                    [_cell],
+                    heading=self.headings[_idx],
+                    visible=self.visible[_idx],
+                )
             _column.set_cell_data_func(
                 _cell, self._format_cell,
                 (self.order[_idx], self.datatypes[_idx]))
@@ -613,7 +618,6 @@ class RAMSTKTreeView(Gtk.TreeView):
 
 class CellRendererML(Gtk.CellRendererText):
     """Create a multi-line cell renderer."""
-
     def __init__(self) -> None:
         """Initialize a CellRendererML instance."""
         GObject.GObject.__init__(self)
@@ -626,8 +630,8 @@ class CellRendererML(Gtk.CellRendererText):
         self.textedit = Gtk.TextView()
         self.textbuffer = self.textedit.get_buffer()
 
-    def do_get_size(self, widget,
-                    cell_area):  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def do_get_size(self, widget, cell_area):
         """
         Get the size of the CellRendererML.
 
@@ -729,7 +733,8 @@ class CellRendererML(Gtk.CellRendererText):
         _keyname = Gdk.keyval_name(event.keyval)
 
         if event.get_state() & (
-                Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK) and \
+                Gdk.ModifierType.SHIFT_MASK
+                | Gdk.ModifierType.CONTROL_MASK) and \
                 _keyname == 'Return':
             self.textedit_window.response(Gtk.ResponseType.OK)
 
