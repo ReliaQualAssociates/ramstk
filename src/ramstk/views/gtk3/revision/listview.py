@@ -134,7 +134,7 @@ class FailureDefinition(RAMSTKListView):
             _("Add a new Failure Definition."),
             _("Remove the currently selected Failure Definition.")
         ]
-        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
+        _callbacks = [self._do_request_insert, self._do_request_delete]
         _icons = ['add', 'remove']
 
         _buttonbox = do_make_buttonbox(self,
@@ -248,10 +248,12 @@ class FailureDefinition(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, sibling: bool = True) -> None:  # pylint: disable=unused-argument
+    def _do_request_insert(self, __button: Gtk.ToolButton) -> None:  # pylint: disable=unused-argument
         """
         Request to add a Failure Definition record.
 
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: None
         :rtype: None
         """

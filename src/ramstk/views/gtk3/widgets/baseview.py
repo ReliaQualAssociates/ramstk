@@ -462,9 +462,9 @@ class RAMSTKBaseView(Gtk.HBox):
         _sibling = kwargs['sibling']
 
         if _sibling:
-            pub.sendMessage('request_insert_{0:s}'.format(self._module))
+            pub.sendMessage('request_insert_{0:s}'.format(self._module.lower()))
         else:
-            pub.sendMessage('request_insert_{0:s}'.format(self._module),
+            pub.sendMessage('request_insert_{0:s}'.format(self._module.lower()),
                             parent_id=self._parent_id)
 
     def do_request_insert_child(self, __button: Gtk.ToolButton,
