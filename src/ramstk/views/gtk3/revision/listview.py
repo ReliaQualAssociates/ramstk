@@ -14,8 +14,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.logger import RAMSTKLogManager
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,
     RAMSTKMission, RAMSTKMissionPhase
@@ -68,8 +66,8 @@ class FailureDefinition(RAMSTKListView):
     :ivar int _definition_id: the Failure Definition ID of the definition
         selected in the List View.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration, logger,
+                 module='failure_definition') -> None:
         """
         Initialize the List View for the Failure Definition package.
 
@@ -77,11 +75,10 @@ class FailureDefinition(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the module.
         """
-        RAMSTKListView.__init__(self,
-                                configuration,
-                                logger,
-                                module='failure_definition')
+        super().__init__(configuration, logger, module)
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -116,7 +113,7 @@ class FailureDefinition(RAMSTKListView):
 
         The pubsub message the ListView listens for sends a data package named
         attributes.  _do_load_tree() needs a data package named tree.  This
-        method simply makes that conversion to happen.
+        method simply makes that conversion happen.
 
         :param dict attributes: the failure definition dict for the selected
             revision ID.
@@ -138,7 +135,7 @@ class FailureDefinition(RAMSTKListView):
             _("Add a new Failure Definition."),
             _("Remove the currently selected Failure Definition.")
         ]
-        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
+        _callbacks = [self._do_request_insert, self._do_request_delete]
         _icons = ['add', 'remove']
 
         _buttonbox = do_make_buttonbox(self,
@@ -189,7 +186,8 @@ class FailureDefinition(RAMSTKListView):
               "selected revision."))
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
-        RAMSTKListView.make_ui(self)
+
+        super().make_ui()
 
     def __set_properties(self) -> None:
         """
@@ -251,10 +249,13 @@ class FailureDefinition(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_request_insert(self, sibling=True) -> None:  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """
         Request to add a Failure Definition record.
 
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -350,7 +351,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
+        super().on_cell_edit(__cell, path, new_text, position)
 
         pub.sendMessage('lvw_editing_failure_definition',
                         node_id=[self._revision_id, self._definition_id, ''],
@@ -393,8 +394,7 @@ class UsageProfile(RAMSTKListView):
 
     All attributes of a Usage Profile List View are inherited.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration, logger, module='usage_profile') -> None:
         """
         Initialize the List View for the Usage Profile.
 
@@ -402,11 +402,10 @@ class UsageProfile(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the module.
         """
-        RAMSTKListView.__init__(self,
-                                configuration,
-                                logger,
-                                module='usage_profile')
+        super().__init__(configuration, logger, module)
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -686,14 +685,16 @@ class UsageProfile(RAMSTKListView):
         """
         self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
                                   + "</span>")
-        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.tab_label.set_xalign(xalign=0.5)
+        self.tab_label.set_yalign(yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
         self.tab_label.set_tooltip_text(
             _("Displays usage profiles for the selected revision."))
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
-        RAMSTKListView.make_ui(self)
+
+        super().make_ui()
 
     def __set_properties(self) -> None:
         """
@@ -869,8 +870,8 @@ class UsageProfile(RAMSTKListView):
 
         _node = tree.nodes[list(tree.nodes.keys())[0]]
         _entity = _node.data
-        # The root node will have no data package, so this indicates the need to
-        # clear the tree in preparation for the load.
+        # The root node will have no data package, so this indicates the need
+        # to clear the tree in preparation for the load.
         if _entity is None:
             _model.clear()
 
@@ -987,8 +988,12 @@ class UsageProfile(RAMSTKListView):
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
         _model, _row = self.treeview.selection.get_selected()
-        _level = _model.get_value(_row, 11)
-        _prow = _model.iter_parent(_row)
+        try:
+            _level = _model.get_value(_row, 11)
+            _prow = _model.iter_parent(_row)
+        except TypeError:
+            _level = 'mission'
+            _prow = None
 
         if _level == 'mission':
             pub.sendMessage('request_insert_mission',
@@ -1128,7 +1133,7 @@ class UsageProfile(RAMSTKListView):
 
         try:
             _key = _dic_keys[_level][position]
-            RAMSTKListView.on_cell_edit(self, __cell, path, new_text, position)
+            super().on_cell_edit(__cell, path, new_text, position)
             pub.sendMessage('lvw_editing_usage_profile',
                             node_id=[self._revision_id, -1, _node_id],
                             package={_key: new_text})

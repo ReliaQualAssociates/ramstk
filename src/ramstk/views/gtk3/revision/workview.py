@@ -56,7 +56,8 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKWorkView.__init__(self, configuration, logger, module='revision')
+        super().__init__(configuration, logger, 'revision')
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -82,7 +83,6 @@ class GeneralData(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_revision')
         pub.subscribe(self._on_edit, 'mvw_editing_revision')
 
@@ -93,10 +93,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = RAMSTKWorkView.make_ui(self,
-                                                          icons=[],
-                                                          tooltips=[],
-                                                          callbacks=[])
+        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[],
+                                                   tooltips=[],
+                                                   callbacks=[])
 
         _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
 
@@ -172,11 +171,6 @@ class GeneralData(RAMSTKWorkView):
         """
         self._revision_id = attributes['revision_id']
 
-        RAMSTKWorkView.on_select(
-            self,
-            title=_("Analyzing Revision {0:s} - {1:s}").format(
-                str(attributes['revision_code']), str(attributes['name'])))
-
         self.txtName.do_update(str(attributes['name']),
                                self._lst_handler_id[0])
         self.txtRemarks.do_update(str(attributes['remarks']),
@@ -215,11 +209,21 @@ class GeneralData(RAMSTKWorkView):
         Update the Revision Work View Gtk.Widgets().
 
         This method updates the Revision Work View Gtk.Widgets() with changes
-        to the Revision data model attributes.  This method is called whenever
-        an attribute is edited in a different RAMSTK View.
+        to the Revision data model attributes.  The moduleview sends a dict
+        that relates the database field and the new data for that field.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: new value
+
+        This method uses the key to determine which widget needs to be
+        updated with the new data.
 
         :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list is:
+            Program database table whose attributes are to be set.  The list
+            is:
 
                 0 - Revision ID
                 1 - Failure Definition ID
@@ -240,8 +244,11 @@ class GeneralData(RAMSTKWorkView):
         _function, _id = _dic_switch.get(_key)
         _function(_value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-                      index: int) -> None:
+    def _on_focus_out(
+            self,
+            entry: Gtk.Entry,
+            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -269,16 +276,13 @@ class GeneralData(RAMSTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index in [0, 2]:
-            try:
+        try:
+            if index in [0, 2]:
                 _new_text: str = str(entry.get_text())
-            except ValueError:
-                _new_text = ''
-        else:
-            try:
+            else:
                 _new_text = self.txtRemarks.do_get_text()
-            except ValueError:
-                _new_text = ''
+        except ValueError:
+            _new_text = ''
 
         pub.sendMessage('wvw_editing_revision',
                         node_id=[self._revision_id, -1, ''],

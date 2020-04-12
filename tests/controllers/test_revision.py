@@ -267,7 +267,8 @@ class MockDao:
 
         return self._all_environments
 
-    def do_select_all(self, table, key, value):
+    def do_select_all(self, table, key, value, order=None,
+                      _all=False):
         if table == RAMSTKRevision:
             return self._do_select_all_revisions(table)
         elif table == RAMSTKFailureDefinition:
@@ -286,6 +287,18 @@ class MockDao:
         for _key in MOCK_REVISIONS:
             if _key == record.revision_id:
                 MOCK_REVISIONS[_key]['name'] = record.name
+
+    def get_last_id(self, table, id_column):
+        if table == 'ramstk_revision':
+            return max(MOCK_REVISIONS.keys())
+        elif table == 'ramstk_environment':
+            return max(MOCK_ENVIRONMENTS.keys())
+        elif table == 'ramstk_failure_definition':
+            return max(MOCK_FAILURE_DEFINITIONS.keys())
+        elif table == 'ramstk_mission':
+            return max(MOCK_MISSIONS.keys())
+        elif table == 'ramstk_mission_phase':
+            return max(MOCK_MISSION_PHASES.keys())
 
 
 @pytest.fixture
@@ -421,7 +434,8 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_revision(self, tree):
+    def on_succeed_delete_revision(self, node_id, tree):
+        assert node_id == 2
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_revision topic was broadcast.")
 

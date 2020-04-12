@@ -167,8 +167,7 @@ class BaseDatabase():
         :rtype: None
         """
         if self.cxnargs['dialect'] == 'sqlite':
-            self.session.execute(
-                "PRAGMA foreign_keys=ON")
+            self.session.execute("PRAGMA foreign_keys=ON")
 
         try:
             self.session.delete(item)
@@ -253,28 +252,42 @@ class BaseDatabase():
         for _record in records:
             self.do_insert(_record)
 
-    def do_select_all(self, table, key=None, value=None, order=None,
-                      _all=True) -> None:
+    def do_select_all(self, table, **kwargs) -> None:
         """
         Select all records from the RAMSTK database for table.
 
         :param table: the database table object to select all from.
-        :keyword key: the index key in the table.
-        :keyword value: the value of the index key.
-        :keyword order: the field to order returned results.
-        :keyword _all: whether to return all records or only the first record.
         :return: a list of table instances; one for each record.
         """
-        _results = []
-        if isinstance(key, list):
-            _results = self.session.query(table).filter(
-                and_(key[0] == value[0],
-                     key[1] == value[1]))
-        else:
-            _results = self.session.query(table).filter(key == value)
+        try:
+            _key = kwargs['key']
+        except KeyError:
+            _key = None
+        try:
+            _value = kwargs['value']
+        except KeyError:
+            _value = None
+        try:
+            _order = kwargs['order']
+        except KeyError:
+            _order = None
+        try:
+            _all = kwargs['_all']
+        except KeyError:
+            _all = True
 
-        if order is not None:
-            _results = _results.order_by(order)
+        _results = []
+
+        if isinstance(_key, list):
+            _results = self.session.query(table).filter(
+                and_(_key[0] == _value[0], _key[1] == _value[1]))
+        elif _key is not None:
+            _results = self.session.query(table).filter(_key == _value)
+        else:
+            _results = self.session.query(table)
+
+        if _order is not None:
+            _results = _results.order_by(_order)
 
         if _all:
             _results = _results.all()
@@ -283,7 +296,7 @@ class BaseDatabase():
 
         return _results
 
-    def do_update(self, record=None) -> None:
+    def do_update(self, record: object = None) -> None:
         """
         Update the RAMSTK database with any pending changes.
 
@@ -295,6 +308,41 @@ class BaseDatabase():
             self.session.add(record)
 
         self.session.commit()
+
+    def get_database_list(self, database: Dict[str, str]) -> List:
+        """
+        Retrieve the list of program databases available to RAMSTK.
+
+        This method is used to create a user-selectable list of databases when
+        using the postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses
+        an open file dialog.
+
+        :param dict database: the connection information for the dialect's
+            administrative database.
+        :return: the list of databases available to RAMSTK for the selected
+            dialect.
+        :rtype: list
+        """
+        _databases = []
+
+        if database['dialect'] == 'postgres':
+            _query = self.sqlstatements['select'].format('datname') + \
+                 self.sqlstatements['from'].format('pg_database;')
+            database = ('postgresql+psycopg2://'
+                        + database['user'] + ':'
+                        + database['password'] + '@'
+                        + database['host'] + ':'
+                        + database['port'] + '/'
+                        + database['database'])
+            __, _session = do_open_session(database)
+
+            # Remove the databases not associated with RAMSTK.
+            for db in _session.execute(_query):
+                if (db[0] != 'postgres' and db[0] != 'template0'
+                        and db[0] != 'template1'):
+                    _databases.append(db[0])
+
+        return _databases
 
     def get_last_id(self, table: str, id_column: str) -> Any:
         """

@@ -9,7 +9,8 @@ from ramstk.views.gtk3.widgets import RAMSTKListView
 class FailureDefinition(RAMSTKListView):
     _definition_id: int
 
-    def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager, module: str = '') -> None:
         self._definition_id = None
         self._do_request_delete = None
         self.__do_load_tree = None

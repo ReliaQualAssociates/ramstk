@@ -23,6 +23,8 @@ class RAMSTKBaseBook(Gtk.Notebook):
     :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
 
+    RAMSTK_SITE_CONFIGURATION = None
+
     dic_tab_position = {
         'left': Gtk.PositionType.LEFT,
         'right': Gtk.PositionType.RIGHT,

@@ -18,7 +18,7 @@ from ramstk.db.base import BaseDatabase
 from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets.dialog import (
-    RAMSTKDialog, RAMSTKFileChooser, RAMSTKMessageDialog
+    RAMSTKDatabaseSelect, RAMSTKDialog, RAMSTKFileChooser, RAMSTKMessageDialog
 )
 from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 
@@ -65,8 +65,8 @@ class CreateProject:
         if file_exists(new_program):
             _dlgConfirm = RAMSTKDialog(
                 _("RAMSTK - Confirm Overwrite"),
-                dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES,
-                            Gtk.STOCK_NO, Gtk.ResponseType.NO))
+                dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES, Gtk.STOCK_NO,
+                            Gtk.ResponseType.NO))
 
             _label = RAMSTKLabel(
                 _("RAMSTK Program database already exists. "
@@ -88,7 +88,8 @@ class CreateProject:
 
     def _do_request_create_sqlite3_project(self) -> None:
         """Create a RAMSTK Project database using SQLite3."""
-        _dialog = RAMSTKFileChooser(_("Create a RAMSTK Program Database"))
+        _dialog = RAMSTKFileChooser(_("Create a RAMSTK Program Database"),
+                                    parent=None)
         _dialog.set_current_folder(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
 
@@ -164,12 +165,15 @@ class OpenProject():
                         "database can be opened.")
             _icon = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                      + '/32x32/information.png')
-            _dialog = RAMSTKMessageDialog(_prompt, _icon, 'information',
+            _dialog = RAMSTKMessageDialog(_prompt,
+                                          _icon,
+                                          'information',
                                           parent=self._parent)
             if _dialog.run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 
-        else:
+        elif self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
+                'dialect'] == 'sqlite':
             _dialog = RAMSTKFileChooser(_("RAMSTK - Open Program"),
                                         parent=self._parent)
             _dialog.set_current_folder(
@@ -181,10 +185,21 @@ class OpenProject():
 
             _dialog.destroy()
 
-            _database = (str(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_BACKEND + ':///'
-                + self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']))
+        else:
+            _dialog = RAMSTKDatabaseSelect(
+                dlgtitle=("Select RAMSTK Program "
+                          "Database on the {0:s} Server".format(
+                              self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
+                                  'dialect'])),
+                dlgparent=None,
+                dao=BaseDatabase(),
+                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
+                'database'] = _dialog.do_run()
 
-            pub.sendMessage('request_open_program',
-                            program_db=BaseDatabase(),
-                            database=_database)
+            _dialog.destroy()
+
+        pub.sendMessage(
+            'request_open_program',
+            program_db=BaseDatabase(),
+            database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)

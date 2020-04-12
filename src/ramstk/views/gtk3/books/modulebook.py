@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.mwi.ModuleBook.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.books.modulebook.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -17,6 +17,7 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
+from ramstk.views.gtk3.function import mvwFunction
 from ramstk.views.gtk3.revision import mvwRevision
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -32,7 +33,6 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         RAMSTK module name; value is the View associated with that RAMSTK
         module.
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
@@ -49,7 +49,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self._dic_module_views = {
             'revision': mvwRevision(configuration, logger),
             #    'requirement': mvwRequirement(configuration),
-            #    'function': mvwFunction(configuration),
+            'function': mvwFunction(configuration, logger),
             #    'hardware': mvwHardware(configuration),
             #    'validation': mvwValidation(configuration),
         }
@@ -119,13 +119,18 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
 
     def _on_open(self, tree: Tree) -> None:  # pylint: disable=unused-argument
         """
-        Update the status bar and clear the progress bar.
+        Insert a page in the module book for each active work stream module.
 
+        :param tree: the work stream module's treelib Tree() containing all
+            the data for the work stream module.  Unused in this method,
+            but is required as an argument since it is the data package for
+            the 'succeed_retrieve_revisions' message.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        # Insert a page for each of the active RAMSTK Modules.
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER:
+        for _key in list(
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[1:]:
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
 
@@ -146,8 +151,8 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :type __page: :class:`Gtk.Widget`
         :param int page_num: the newly selected page number.
             0 = Revision Tree
-            1 = Requirements Tree
-            2 = Function Tree
+            1 = Function Tree
+            2 = Requirements Tree
             3 = Hardware Tree
             4 = Software Tree (future)
             5 = Testing Tree (future)

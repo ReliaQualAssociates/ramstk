@@ -490,7 +490,7 @@ class Preferences(Gtk.Window, RAMSTKBaseView):
             [_("Functional FMEA"), 'ffmea', ''],
             [_("Function"), 'function', ''],
             [_("Hardware"), 'hardware', ''],
-            [_("HazOps"), 'hazops', ''],
+            [_("Hazards"), 'hazard', ''],
             [_("Physics of Failure Analysis"), 'pof', ''],
             [_("Requirement"), 'requirement', ''],
             [_("Revision"), 'revision', ''],
@@ -873,8 +873,8 @@ class Preferences(Gtk.Window, RAMSTKBaseView):
             _fmt_path = "/root/tree[@name='DFMECA']/column"
         elif _module == 'ffmea':
             _fmt_path = "/root/tree[@name='FFMEA']/column"
-        elif _module == 'hazops':
-            _fmt_path = "/root/tree[@name='HazOps']/column"
+        elif _module == 'hazard':
+            _fmt_path = "/root/tree[@name='Hazard']/column"
         elif _module == 'pof':
             _fmt_path = "/root/tree[@name='PoF']/column"
         elif _module == 'similaritem':

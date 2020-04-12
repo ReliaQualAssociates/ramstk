@@ -7,8 +7,7 @@
 """RAMSTK Revision GTK3 module view."""
 
 # Standard Library Imports
-import datetime
-from typing import Any, Dict, List
+from typing import Dict, List
 
 # Third Party Imports
 import treelib
@@ -19,8 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKLabel, RAMSTKMessageDialog, RAMSTKModuleView,
-    RAMSTKTreeView, do_make_buttonbox
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView, do_make_buttonbox
 )
 
 
@@ -33,7 +31,7 @@ class ModuleView(RAMSTKModuleView):
     Module View are inherited.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+                 logger: RAMSTKLogManager, module='revision') -> None:
         """
         Initialize the Revision Module View.
 
@@ -42,10 +40,8 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKModuleView.__init__(self,
-                                  configuration,
-                                  logger,
-                                  module='revision')
+        super().__init__(configuration, logger, module)
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -73,10 +69,11 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self._on_insert, 'succeed_insert_revision')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
         pub.subscribe(self._do_refresh_tree, 'wvw_editing_revision')
+        pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
     def __make_ui(self) -> None:
         """
-        Build the user interface.
+        Build the user interface for the Revision work stream module.
 
         :return: None
         :rtype: None
@@ -84,12 +81,12 @@ class ModuleView(RAMSTKModuleView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
+        _scrolledwindow.add(
             do_make_buttonbox(self,
                               icons=['add', 'remove'],
                               tooltips=[
-                                  _("Add a new Revision."),
-                                  _("Remove the currently selected Revision.")
+                                  _("Add a new revision."),
+                                  _("Remove the currently selected revision.")
                               ],
                               callbacks=[
                                   self.do_request_insert_sibling,
@@ -97,40 +94,41 @@ class ModuleView(RAMSTKModuleView):
                               ]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-        self.treeview.set_tooltip_text(_("Displays the list of revisions."))
+        super().make_ui()
 
-        RAMSTKModuleView.make_ui(self)
-
-        _label = RAMSTKLabel(_("Revisions"))
-        _label.do_set_properties(width=-1,
-                                 height=-1,
-                                 tooltip=_("Displays the program revisions."))
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
-
-        self.show_all()
+        self.treeview.do_set_editable_columns(self._on_cell_edit)
 
     # pylint: disable=unused-argument
-    def _do_refresh_tree(self,
-                         node_id: List,
-                         package: Dict) -> None:
+    def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
         This method is called by other views when the Revision data model
         attributes are edited via their gtk.Widgets().
 
+        The calling method is passes a dict containing the database field name
+        as key.  The dict's value is the data to write to the database.
+
+        `package` key: `package` value
+        database field name: database field new value
+
+        This method passes that `package` of data and a second dict
+        containing the database field name as key.  The value of this second
+        dict is the TreeModel's default column position for that data.
+
+        `keys` key: `keys` value
+        database field name: TreeModel column position
+
         :param list node_id: unused in this method.
         :param dict package: the key:value for the data being updated.
         :return: None
         :rtype: None
         """
-        _dic_keys = {'name': 17, 'remarks': 20, 'revision_code': 22}
-        [[_key, _value]] = package.items()
-
-        _position = self._lst_col_order[_dic_keys[_key]]
-
-        _model, _row = self.treeview.get_selection().get_selected()
-        _model.set(_row, _position, _value)
+        self.do_refresh_tree(package, {
+            'name': 17,
+            'remarks': 20,
+            'revision_code': 22
+        })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -141,11 +139,15 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
         _prompt = _("You are about to delete Revision {0:d} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._revision_id)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question')
+        _dialog = RAMSTKMessageDialog(_prompt,
+                                      self._dic_icons['question'],
+                                      'question',
+                                      parent=_parent)
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
@@ -153,19 +155,6 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._revision_id)
 
         _dialog.do_destroy()
-
-    @staticmethod
-    def _do_request_insert(**kwargs: Any) -> None:
-        """
-        Request insert a new Revision into the RAMSTK Program database.
-
-        :return: None
-        :rtype: None
-        """
-        _sibling = kwargs['sibling']
-
-        if _sibling:
-            pub.sendMessage('request_insert_revision')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -221,20 +210,15 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add']
-            _labels = [
-                _("Add Revision"),
-                _("Remove the Selected Revision"),
-                _("Save Selected Revision"),
-                _("Save All Revisions")
-            ]
-            _callbacks = [self.do_request_insert_sibling]
-
-            RAMSTKModuleView.on_button_press(self,
-                                             event,
-                                             icons=_icons,
-                                             labels=_labels,
-                                             callbacks=_callbacks)
+            super().on_button_press(event,
+                                    icons=['add'],
+                                    labels=[
+                                        _("Add Revision"),
+                                        _("Remove Selected Revision"),
+                                        _("Save Selected Revision"),
+                                        _("Save All Revisions")
+                                    ],
+                                    callbacks=[self.do_request_insert_sibling])
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -242,6 +226,18 @@ class ModuleView(RAMSTKModuleView):
                       position: int) -> None:
         """
         Handle edits of Revision package Module View RAMSTKTreeview().
+
+        This function sends a dict with it's message that relates the
+        database field and the new data for that field.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: new value
+
+        The workview module listens for this message so it can update it's
+        widgets.  Other modules may listen as well.
 
         :param __cell: the Gtk.CellRenderer() that was edited.
         :type __cell: :class:`Gtk.CellRenderer`
@@ -260,39 +256,41 @@ class ModuleView(RAMSTKModuleView):
         except KeyError:
             _key = ''
 
-        self.treeview.do_edit_cell(self, __cell, path, new_text, position)
+        self.treeview.do_edit_cell(__cell, path, new_text, position)
 
         pub.sendMessage('mvw_editing_revision',
                         node_id=[self._revision_id, -1, ''],
-                        package={_key, new_text})
+                        package={_key: new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Add row to module view for newly added revision.
 
         :param int node_id: the ID of the newly added revision.
+        :param tree: the treelib Tree() containing the work stream module's
+            data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        _attributes = []
-        _model = self.treeview.get_model()
-        _data = tree.get_node(node_id).data['revision'].get_attributes()
+        super().on_insert(
+            tree.get_node(node_id).data['revision'].get_attributes())
 
-        for _key in self.treeview.korder:
-            if _key == 'dict':
-                _attributes.append(str(_data))
-            else:
-                try:
-                    if isinstance(_data[_key], datetime.date):
-                        _data[_key] = _data[_key].strftime("%Y-%m-%d")
-                    _data[_key] = _data[_key].decode('utf-8')
-                except (AttributeError, KeyError):
-                    pass
-                _attributes.append(_data[_key])
+    def _on_module_switch(self, module: str = '') -> None:
+        """
 
-        _row = _model.append(None, _attributes)
+        :param module:
+        :return:
+        """
+        _model, _row = self.treeview.selection.get_selected()
 
-        self.treeview.selection.select_iter(_row)
+        if module == 'revision':
+            _code = _model.get_value(_row, self._lst_col_order[22])
+            _name = _model.get_value(_row, self._lst_col_order[17])
+            _title = _("Analyzing Revision {0:s}: {1:s}").format(
+                str(_code), str(_name))
+
+            pub.sendMessage('request_set_title', title=_title)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -363,6 +361,10 @@ class ModuleView(RAMSTKModuleView):
 
         self._revision_id = _attributes['revision_id']
 
+        _title = _("Analyzing Revision {0:s}: {1:s}").format(
+            str(_attributes['revision_code']), str(_attributes['name']))
+
+        pub.sendMessage('request_clear_workviews')
         pub.sendMessage('selected_revision', attributes=_attributes)
         pub.sendMessage('request_get_revision_attributes',
                         node_id=self._revision_id,
@@ -370,5 +372,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_get_revision_attributes',
                         node_id=self._revision_id,
                         table='usage_profile')
+        pub.sendMessage('request_set_title', title=_title)
 
         selection.handler_unblock(self._lst_handler_id[0])
