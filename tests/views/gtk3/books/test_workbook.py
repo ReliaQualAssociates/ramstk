@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name, len-as-condition
 # -*- coding: utf-8 -*-
 #
 #       tests.views.gtk3.books.test_workbook.py is part of The RAMSTK Project
@@ -35,6 +35,6 @@ class TestRAMSTKWorkBook():
         assert DUT.dic_tab_position['top'] == Gtk.PositionType.TOP
         assert DUT.dic_tab_position['bottom'] == Gtk.PositionType.BOTTOM
         assert isinstance(DUT, RAMSTKWorkBook)
-        assert isinstance(DUT._dic_work_views, dict)
+        assert isinstance(DUT.dic_work_views, dict)
         assert len(DUT._lst_handler_id) == 0
         assert pub.isSubscribed(DUT._on_module_change, 'mvwSwitchedPage')

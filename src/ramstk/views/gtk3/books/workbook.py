@@ -7,7 +7,7 @@
 """RAMSTK GTK3 Work Book Module."""
 
 # Standard Library Imports
-from typing import List
+from typing import Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.function import wvwFunctionGD, wvwHazOps
 from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -28,21 +29,25 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         Initialize an instance of the Work View class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration:
+            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKBaseBook.__init__(self, configuration)
+        super().__init__(configuration)
 
         # Initialize private dictionary attributes.
-        self._dic_work_views = {
-            'revision': [
-                wvwRevisionGD(configuration, logger),
-            ],
-            #    'function': [
-            #        wvwFunctionGD(configuration),
-            #        wvwFFMEA(configuration),
-            #    ],
+
+        # Initialize private list attributes.
+        self._lst_handler_id: List[int] = []
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+        self.dic_work_views: Dict[str, List[object]] = {
+            'revision': [wvwRevisionGD(configuration, logger)],
+            'function': [wvwFunctionGD(configuration, logger),
+                         wvwHazOps(configuration, logger)],
             #    'requirement':
             #    [
             #        wvwRequirementGD(configuration),
@@ -64,13 +69,6 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             #    ],
         }
 
-        # Initialize private list attributes.
-        self._lst_handler_id: List[int] = []
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
@@ -87,5 +85,8 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        for _workspace in self._dic_work_views[module]:
+        for _page in self.get_children():
+            self.remove(_page)
+
+        for _workspace in self.dic_work_views[module]:
             self.insert_page(_workspace, _workspace.hbx_tab_label, -1)

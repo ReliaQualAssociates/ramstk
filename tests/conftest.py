@@ -412,7 +412,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "loglevel": "INFO"
         },
         "backend": {
-            "type": "sqlite",
+            "dialect": "sqlite",
             "host": "localhost",
             "port": "3306",
             "database": "",
@@ -431,7 +431,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "fmea": "FMEA.xml",
             "function": "Function.xml",
             "hardware": "Hardware.xml",
-            "hazops": "HazOps.xml",
+            "hazard": "HazOps.xml",
             "pof": "PoF.xml",
             "requirement": "Requirement.xml",
             "revision": "Revision.xml",
@@ -444,6 +444,8 @@ def test_toml_user_configuration(make_home_config_dir):
             "functionfg": "#000000",
             "hardwarebg": "#FFFFFF",
             "hardwarefg": "#000000",
+            "hazardbg": "#FFFFFF",
+            "hazardfg": "#000000",
             "requirementbg": "#FFFFFF",
             "requirementfg": "#000000",
             "revisionbg": "#FFFFFF",

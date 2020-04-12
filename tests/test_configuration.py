@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name, unused-argument
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.test_configuration.py is part of The RAMSTK Project
@@ -322,7 +322,10 @@ class TestCreateConfiguration():
 
         assert DUT.RAMSTK_COLORS == {}
         assert DUT.RAMSTK_FORMAT_FILE == {}
-        assert DUT.RAMSTK_PAGE_NUMBER == {}
+        assert DUT.RAMSTK_PAGE_NUMBER == {
+            0: 'revision',
+            1: 'function'
+        }
         assert DUT.RAMSTK_PROG_INFO == {}
         assert DUT.RAMSTK_STRESS_LIMITS == {}
         assert DUT.RAMSTK_TABPOS == {
@@ -340,7 +343,7 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_MTIME == 100.0
         assert DUT.RAMSTK_GUI_LAYOUT == "advanced"
         assert DUT.RAMSTK_METHOD == "STANDARD"  # STANDARD or LRM
-        assert DUT.RAMSTK_LOCALE == "en_US"
+        assert DUT.RAMSTK_LOCALE == "en_US.UTF8"
         assert DUT.RAMSTK_LOGLEVEL == "INFO"
 
         # If testing RAMSTK that was installed by `pip install -e .`, then you
@@ -584,6 +587,8 @@ class TestGetterSetter():
             'functionfg': '#000000',
             'hardwarebg': '#FFFFFF',
             'hardwarefg': '#000000',
+            'hazardbg': '#FFFFFF',
+            'hazardfg': '#000000',
             'requirementbg': '#FFFFFF',
             'requirementfg': '#000000',
             'revisionbg': '#FFFFFF',
@@ -591,7 +596,7 @@ class TestGetterSetter():
             'stakeholderbg': '#FFFFFF',
             'stakeholderfg': '#000000',
             'validationbg': '#FFFFFF',
-            'validationfg': '#000000',
+            'validationfg': '#000000'
         }
         assert DUT.RAMSTK_FORMAT_FILE == {
             'allocation': 'Allocation.xml',
@@ -599,7 +604,7 @@ class TestGetterSetter():
             'fmea': 'FMEA.xml',
             'function': 'Function.xml',
             'hardware': 'Hardware.xml',
-            'hazops': 'HazOps.xml',
+            'hazard': 'HazOps.xml',
             'pof': 'PoF.xml',
             'requirement': 'Requirement.xml',
             'revision': 'Revision.xml',

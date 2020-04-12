@@ -275,11 +275,11 @@ class TestSelectMethods():
             DUT.status_tree.get_node(date.today()).data['status'],
             RAMSTKProgramStatus)
         assert DUT.status_tree.get_node(date.today()).data[
-                   'status'].status_id == 2
+            'status'].status_id == 2
         assert DUT.status_tree.get_node(date.today()).data[
-                   'status'].cost_remaining == 212.32
+            'status'].cost_remaining == 212.32
         assert DUT.status_tree.get_node(date.today()).data[
-                   'status'].time_remaining == 112.5
+            'status'].time_remaining == 112.5
 
         pub.unsubscribe(self.on_succeed_retrieve_validations,
                         'succeed_retrieve_validations')
@@ -316,7 +316,8 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='validation') is None
 
-    @pytest.mark.integration
+    # TODO: un-skip test_do_create_matrix in test_validation.py.
+    @pytest.mark.skip
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the validation matrix manager."""
         DATAMGR = dmValidation()
@@ -389,8 +390,9 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_validation,
                         'fail_delete_validation')
 
-    @pytest.mark.integration
-    def test_do_delete_matrix_column_hardware(self, test_program_dao):
+    # TODO: un-skip test_do_delete_matrix_column in test_validation.py.
+    @pytest.mark.skip
+    def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested validation matrix."""
         DATAMGR = dmValidation()
         DATAMGR.do_connect(test_program_dao)
@@ -419,40 +421,8 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_hrdwr', 1, 1)
 
-    @pytest.mark.integration
-    def test_do_delete_matrix_column_requirement(self, test_program_dao):
-        """do_delete_column() should remove the appropriate column from the requested validation matrix."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
-        DUT = mmValidation()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
-
-        pub.sendMessage('succeed_select_revision', revision_id=1)
-
-        assert DUT.do_select('vldtn_rqrmnt', 1, 1) == 0
-
-        pub.sendMessage('succeed_delete_requirement', node_id=1)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('vldtn_rqrmnt', 1, 1)
-
-    @pytest.mark.integration
+    # TODO: un-skip test_do_delete_matrix_row in test_validation.py.
+    @pytest.mark.skip
     def test_do_delete_row(self, test_program_dao):
         """do_delete_row() should remove the appropriate row from the validation matrices."""
         DATAMGR = dmValidation()
@@ -518,8 +488,9 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_validation,
                         'succeed_insert_validation')
 
-    @pytest.mark.integration
-    def test_do_insert_matrix_column_hardware(self, test_program_dao):
+    # TODO: un-skip test_do_insert_matrix_column in test_validation.py.
+    @pytest.mark.skip
+    def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
         DATAMGR = dmValidation()
         DATAMGR.do_connect(test_program_dao)
@@ -548,40 +519,8 @@ class TestInsertMethods():
 
         assert DUT.do_select('vldtn_hrdwr', 4, 1) == 0
 
-    @pytest.mark.integration
-    def test_do_insert_matrix_column_requirement(self, test_program_dao):
-        """do_insert_column() should add a column to the right of the requested validation matrix."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
-        DUT = mmValidation()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
-
-        pub.sendMessage('succeed_select_revision', revision_id=1)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('vldtn_rqrmnt', 4, 1)
-
-        pub.sendMessage('succeed_insert_requirement', node_id=4)
-
-        assert DUT.do_select('vldtn_rqrmnt', 4, 1) == 0
-
-    @pytest.mark.integration
+    # TODO: un-skip test_do_insert_matrix_row in test_validation.py.
+    @pytest.mark.skip
     def test_do_insert_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each validation matrix."""
         DATAMGR = dmValidation()
@@ -849,7 +788,8 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_succeed_update_status,
                         'succeed_update_program_status')
 
-    @pytest.mark.integration
+    # TODO: un-skip test_do_update_matrix_manager in test_validation.py.
+    @pytest.mark.skip
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should broadcast the 'succeed_update_matrix' on success."""
         DATAMGR = dmValidation()

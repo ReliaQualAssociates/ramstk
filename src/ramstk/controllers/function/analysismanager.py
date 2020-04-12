@@ -33,7 +33,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             current instance of the RAMSTK application.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super(AnalysisManager, self).__init__(configuration, **kwargs)
+        super().__init__(configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -142,7 +142,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _attributes.pop('hazard_id')
         self._attributes['hazards'][_hazard_id].set_attributes(_attributes)
 
-    def do_calculate_fha(self, node_id):
+    def do_calculate_fha(self, node_id: int) -> None:
         """
         Perform a hazards analysis calculation for currently selected item.
 
@@ -159,3 +159,5 @@ class AnalysisManager(RAMSTKAnalysisManager):
         for _key in _hazards:
             self._do_calculate_hri(_hazards[_key])
             self._do_calculate_user_defined(_hazards[_key])
+
+        pub.sendMessage('succeed_calculate_hazard', node_id=node_id)

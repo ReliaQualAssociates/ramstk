@@ -17,6 +17,7 @@ from .fmea.analysismanager import AnalysisManager as amFMEA
 from .fmea.datamanager import DataManager as dmFMEA
 from .function.analysismanager import AnalysisManager as amFunction
 from .function.datamanager import DataManager as dmFunction
+from .function.matrixmanager import MatrixManager as mmFunction
 from .hardware.analysismanager import AnalysisManager as amHardware
 from .hardware.datamanager import DataManager as dmHardware
 from .hardware.matrixmanager import MatrixManager as mmHardware

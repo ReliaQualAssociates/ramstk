@@ -41,10 +41,12 @@ class DataManager(RAMSTKDataManager):
         RAMSTKDataManager.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._last_id = {'failure_definition': 1,
-                         'mission': 1,
-                         'mission_phase': 1,
-                         'environment': 1}
+        self._last_id = {
+            'failure_definition': 1,
+            'mission': 1,
+            'mission_phase': 1,
+            'environment': 1
+        }
 
         # Initialize private list attributes.
 
@@ -112,7 +114,9 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_revision', tree=self.tree)
+            pub.sendMessage('succeed_delete_revision',
+                            node_id=node_id,
+                            tree=self.tree)
         except DataAccessError:
             _error_msg = ("Attempted to delete non-existent revision ID "
                           "{0:s}.").format(str(node_id))
@@ -278,17 +282,18 @@ class DataManager(RAMSTKDataManager):
                           parent=None)
 
         for _mission in self.dao.do_select_all(RAMSTKMission,
-                                               RAMSTKMission.revision_id,
-                                               revision_id):
+                                               key=RAMSTKMission.revision_id,
+                                               value=revision_id):
             _tree.create_node(tag=_mission.description,
                               identifier='{0:d}'.format(_mission.mission_id),
                               parent=revision_id,
                               data=_mission)
             self._last_id['mission'] = _mission.mission_id
 
-            for _phase in self.dao.do_select_all(RAMSTKMissionPhase,
-                                                 RAMSTKMissionPhase.mission_id,
-                                                 _mission.mission_id):
+            for _phase in self.dao.do_select_all(
+                    RAMSTKMissionPhase,
+                    key=RAMSTKMissionPhase.mission_id,
+                    value=_mission.mission_id):
                 _tree.create_node(tag=_phase.description,
                                   identifier='{0:d}.{1:d}'.format(
                                       _mission.mission_id, _phase.phase_id),
@@ -296,9 +301,10 @@ class DataManager(RAMSTKDataManager):
                                   data=_phase)
                 self._last_id['mission_phase'] = _phase.phase_id
 
-                for _environment in self.dao.do_select_all(RAMSTKEnvironment,
-                                                           RAMSTKEnvironment.phase_id,
-                                                           _phase.phase_id):
+                for _environment in self.dao.do_select_all(
+                        RAMSTKEnvironment,
+                        key=RAMSTKEnvironment.phase_id,
+                        value=_phase.phase_id):
                     _tree.create_node(tag=_environment.name,
                                       identifier='{0:d}.{1:d}.{2:d}'.format(
                                           _mission.mission_id, _phase.phase_id,
@@ -338,10 +344,8 @@ class DataManager(RAMSTKDataManager):
         for _key in list(package.keys()):
             if _key in _attributes:
                 _attributes[_key] = package[_key]
-                self.do_select(
-                    node_id[0],
-                    table='failure_definitions')[node_id[1]].set_attributes(
-                        _attributes)
+                self.do_select(node_id[0], table='failure_definitions')[
+                    node_id[1]].set_attributes(_attributes)
 
     def _do_set_usage_profile(self, node_id: List, package: Dict) -> None:
         """
@@ -435,8 +439,8 @@ class DataManager(RAMSTKDataManager):
         """
         for _profile in self.tree.get_node(
                 revision_id).data['usage_profile'].all_nodes():
-            self._do_update_usage_profile(revision_id, str(_profile.identifier)
-                                          )
+            self._do_update_usage_profile(revision_id,
+                                          str(_profile.identifier))
 
     def _do_update_usage_profile(self, revision_id: int, node_id: str) -> None:
         """
@@ -517,7 +521,8 @@ class DataManager(RAMSTKDataManager):
         _tree = Tree()
 
         try:
-            _revision = RAMSTKRevision(revision_id=self.last_id + 1,
+            _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
+            _revision = RAMSTKRevision(revision_id=_last_id + 1,
                                        name='New Revision')
             self.dao.do_insert(_revision)
 
@@ -535,7 +540,8 @@ class DataManager(RAMSTKDataManager):
                                   })
             self.do_insert_failure_definition(self.last_id)
             self.do_insert_mission(self.last_id)
-            pub.sendMessage('succeed_insert_revision', node_id=self.last_id,
+            pub.sendMessage('succeed_insert_revision',
+                            node_id=self.last_id,
                             tree=self.tree)
         except DataAccessError as _error:
             print(_error)
@@ -555,9 +561,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_environment',
+                                            'environment_id')
             _environment = RAMSTKEnvironment(phase_id=phase_id,
-                                             environment_id=self._last_id[
-                                                 'environment'] + 1)
+                                             environment_id=_last_id + 1)
             self.dao.do_insert(_environment)
             self._last_id['environment'] = _environment.environment_id
             _phase_id = '{0:s}.{1:s}'.format(str(mission_id), str(phase_id))
@@ -586,9 +593,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_failure_definition',
+                                            'definition_id')
             _failure_definition = RAMSTKFailureDefinition(
-                revision_id=revision_id, definition_id=self._last_id[
-                    'failure_definition'] + 1)
+                revision_id=revision_id, definition_id=_last_id + 1)
             self.dao.do_insert(_failure_definition)
             self.tree.get_node(revision_id).data['failure_definitions'][
                 _failure_definition.definition_id] = _failure_definition
@@ -612,8 +620,9 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_mission', 'mission_id')
             _mission = RAMSTKMission(revision_id=revision_id,
-                                     mission_id=self._last_id['mission'] + 1)
+                                     mission_id=_last_id + 1)
             self.dao.do_insert(_mission)
 
             self.tree.get_node(revision_id).data['usage_profile'].create_node(
@@ -640,9 +649,9 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            _last_id = self.dao.get_last_id('ramstk_mission_phase', 'phase_id')
             _phase = RAMSTKMissionPhase(mission_id=mission_id,
-                                        phase_id=self._last_id[
-                                            'mission_phase'] + 1)
+                                        phase_id=_last_id + 1)
             self.dao.do_insert(_phase)
             self._last_id['mission_phase'] = _phase.phase_id
 
@@ -670,11 +679,16 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _revision in self.dao.do_select_all(RAMSTKRevision, None, None):
+        for _revision in self.dao.do_select_all(
+                RAMSTKRevision,
+                key=None,
+                value=None,
+                order=RAMSTKRevision.revision_id):
 
             _failure_definitions = self.dao.do_select_all(
-                RAMSTKFailureDefinition, RAMSTKFailureDefinition.revision_id,
-                _revision.revision_id)
+                RAMSTKFailureDefinition,
+                key=RAMSTKFailureDefinition.revision_id,
+                value=_revision.revision_id)
             _failure_definitions = self.do_build_dict(_failure_definitions,
                                                       'definition_id')
             try:
@@ -723,13 +737,11 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(node_id=[attributes['revision_id'],
-                                            definition_id, usage_id],
-                                   package={_key: attributes[_key]})
+            self.do_set_attributes(
+                node_id=[attributes['revision_id'], definition_id, usage_id],
+                package={_key: attributes[_key]})
 
-    def do_set_attributes(self,
-                          node_id: List,
-                          package: Dict) -> None:
+    def do_set_attributes(self, node_id: List, package: Dict) -> None:
         """
         Set the attributes of the record associated with the Node ID.
 

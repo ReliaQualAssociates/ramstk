@@ -39,7 +39,7 @@ class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseTable):
         'mttr': 0.0,
         'name': 'Function Name',
         'parent_id': 0,
-        'remarks': b'',
+        'remarks': '',
         'safety_critical': 0,
         'total_mode_count': 0,
         'total_part_count': 0,

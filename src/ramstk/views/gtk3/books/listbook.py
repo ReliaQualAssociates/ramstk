@@ -3,7 +3,7 @@
 #       ramstk.views.gtk3.books.listbook.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK GTK3 List Book Module."""
 
 # Standard Library Imports
@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.function import mtxFunctionHardware
 from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -51,8 +52,8 @@ class RAMSTKListBook(RAMSTKBaseBook):
                 lvwUsageProfile(configuration, logger),
                 lvwFailureDefinition(configuration, logger)
             ],
-            #    'function':
-            #    [mtxFunction(configuration, matrix_type='fnctn_hrdwr')],
+            'function':
+                [mtxFunctionHardware(configuration, logger)],
             #    'requirement': [
             #        lvwStakeholder(configuration),
             #        mtxRequirement(configuration, matrix_type='rqrmnt_hrdwr'),
@@ -65,7 +66,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
             #    'validation': [
             #        mtxValidation(configuration, matrix_type='vldtn_rqrmnt'),
             #        mtxValidation(configuration, matrix_type='vldtn_hrdwr'),
-            #    ],
+            #    ]
         }
 
         # Initialize private list attributes.
@@ -113,5 +114,8 @@ class RAMSTKListBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
+        for _page in self.get_children():
+            self.remove(_page)
+
         for _list in self._dic_list_views[module]:
             self.insert_page(_list, _list.hbx_tab_label, -1)

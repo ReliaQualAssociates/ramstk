@@ -71,9 +71,25 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
 
 
 class RAMSTKDateSelect(Gtk.Dialog):
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        self._calendar = None
+        self.vbox = None
+        ...
     def do_destroy(self) -> None: ...
     def do_run(self) -> Any: ...
+
+    def add_buttons(self, STOCK_OK, ACCEPT):
+        pass
+
+    def set_title(self, param):
+        pass
+
+    def destroy(self):
+        pass
+
+    def run(self):
+        pass
+
 
 class RAMSTKFileChooser(Gtk.FileChooserDialog):
     def __init__(self, title: str, **kwargs: Any) -> None: ...

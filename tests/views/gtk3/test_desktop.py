@@ -23,9 +23,11 @@ from ramstk.views.gtk3.books import (
 class TestRAMSTKBook():
     """Test class for the RAMSTKBook."""
     @pytest.mark.gui
-    def test_create_basebook(self, test_toml_user_configuration):
+    def test_create_basebook(self, test_toml_user_configuration,
+                             test_toml_site_configuration):
         """__init__() should create a RAMSTKBook."""
-        DUT = RAMSTKDesktop(test_toml_user_configuration,
+        DUT = RAMSTKDesktop([test_toml_user_configuration,
+                             test_toml_site_configuration],
                             RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))
 
         assert isinstance(DUT, RAMSTKDesktop)

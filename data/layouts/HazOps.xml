@@ -9,7 +9,7 @@
 All rights reserved. -->
 
 <root>
-    <tree name="HazOps">
+    <tree name="Hazard">
         <column>
             <defaulttitle>Revision ID</defaulttitle>
             <usertitle>Revision ID</usertitle>

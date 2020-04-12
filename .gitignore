@@ -46,12 +46,12 @@ out/
 *.log
 *.txt
 *.xls*
-.coverage
+*coverage*
+.dmypy.json
 .python-version
 _temp/
 devtools/update_docs.txt
 pylintout
-coverage.xml
 
 # Override settings for some specific files.
 !/license.txt

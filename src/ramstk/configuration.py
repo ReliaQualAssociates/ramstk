@@ -260,7 +260,7 @@ class RAMSTKSiteConfiguration:
         _dic_site_configuration = {
             "title": "RAMSTK Site Configuration",
             "backend": {
-                "type": "sqlite",
+                "dialect": "sqlite",
                 "host": "localhost",
                 "port": "3306",
                 "database": self.RAMSTK_SITE_DIR + "/ramstk_common.ramstk",
@@ -417,7 +417,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             * Revision
             * Validation
 
-    :ivar list RAMSTK_PAGE_NUMBER: List indicating which page each RAMSTK
+    :ivar list RAMSTK_PAGE_NUMBER: Dictionary indicating which page each RAMSTK
         module occupies in the ModuleBook.
     :ivar list RAMSTK_RISK_POINTS: List for risk level cutoffs.  Cutoffs are:
 
@@ -507,18 +507,20 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize private list attributes.
         self._lst_colors = [
-            "revisionfg",
-            "functionfg",
-            "requirementfg",
-            "hardwarefg",
-            "validationfg",
-            "revisionbg",
             "functionbg",
-            "requirementbg",
+            "functionfg",
             "hardwarebg",
+            "hardwarefg",
+            "hazardbg",
+            "hazardfg",
+            "revisionbg",
+            "revisionfg",
+            "requirementfg",
+            "requirementbg",
             "validationbg",
+            "validationfg",
             "stakeholderbg",
-            "stakeholderfg",
+            "stakeholderfg"
         ]
         self._lst_format_files = [
             "allocation",
@@ -526,7 +528,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "fmea",
             "function",
             "hardware",
-            "hazops",
+            "hazard",
             "pof",
             "requirement",
             "revision",
@@ -546,7 +548,10 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         # Initialize public dictionary attributes.
         self.RAMSTK_COLORS: Dict[str, str] = {}
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
-        self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
+        self.RAMSTK_PAGE_NUMBER: Dict[int, str] = {
+            0: 'revision',
+            1: 'function',
+        }
         self.RAMSTK_PROG_INFO: Dict[int, str] = {}
         self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}
         self.RAMSTK_TABPOS = {
@@ -568,7 +573,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_MTIME = 100.0
         self.RAMSTK_GUI_LAYOUT = "advanced"
         self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
-        self.RAMSTK_LOCALE = "en_US"
+        self.RAMSTK_LOCALE = "en_US.UTF8"
         self.RAMSTK_LOGLEVEL = "INFO"
         if sys.platform == "linux" or sys.platform == "linux2":
             self.RAMSTK_OS = "Linux"
@@ -734,7 +739,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "loglevel": "INFO"
             },
             "backend": {
-                "type": "sqlite",
+                "dialect": "sqlite",
                 "host": "localhost",
                 "port": "3306",
                 "database": "",
@@ -753,7 +758,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "fmea": "FMEA.xml",
                 "function": "Function.xml",
                 "hardware": "Hardware.xml",
-                "hazops": "HazOps.xml",
+                "hazard": "HazOps.xml",
                 "pof": "PoF.xml",
                 "requirement": "Requirement.xml",
                 "revision": "Revision.xml",
@@ -766,6 +771,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "functionfg": "#000000",
                 "hardwarebg": "#FFFFFF",
                 "hardwarefg": "#000000",
+                "hazardbg": "#FFFFFF",
+                "hazardfg": "#000000",
                 "requirementbg": "#FFFFFF",
                 "requirementfg": "#000000",
                 "revisionbg": "#FFFFFF",
@@ -836,8 +843,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 self.RAMSTK_STRESS_LIMITS[
                     _category[0] + 1] = _config["stress"][_category[1]]
 
-            self.RAMSTK_BACKEND = _config["backend"]["type"]
-            self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["type"]
+            self.RAMSTK_BACKEND = _config["backend"]["dialect"]
+            self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["dialect"]
             self.RAMSTK_PROG_INFO["host"] = _config["backend"]["host"]
             self.RAMSTK_PROG_INFO["port"] = _config["backend"]["port"]
             self.RAMSTK_PROG_INFO["database"] = _config["backend"]["database"]
@@ -896,7 +903,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "loglevel": self.RAMSTK_LOGLEVEL
             },
             "backend": {
-                "type": self.RAMSTK_BACKEND,
+                "dialect": self.RAMSTK_PROG_INFO["dialect"],
                 "host": str(self.RAMSTK_PROG_INFO["host"]),
                 "port": str(self.RAMSTK_PROG_INFO["port"]),
                 "database": str(self.RAMSTK_PROG_INFO["database"]),
@@ -916,7 +923,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "fmea": self.RAMSTK_FORMAT_FILE['fmea'],
                 "function": self.RAMSTK_FORMAT_FILE['function'],
                 "hardware": self.RAMSTK_FORMAT_FILE['hardware'],
-                "hazops": self.RAMSTK_FORMAT_FILE['hazops'],
+                "hazard": self.RAMSTK_FORMAT_FILE['hazard'],
                 "pof": self.RAMSTK_FORMAT_FILE['pof'],
                 "requirement": self.RAMSTK_FORMAT_FILE['requirement'],
                 "revision": self.RAMSTK_FORMAT_FILE['revision'],
@@ -929,6 +936,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "functionfg": self.RAMSTK_COLORS['functionfg'],
                 "hardwarebg": self.RAMSTK_COLORS['hardwarebg'],
                 "hardwarefg": self.RAMSTK_COLORS['hardwarefg'],
+                "hazardbg": self.RAMSTK_COLORS['hazardbg'],
+                "hazardfg": self.RAMSTK_COLORS['hazardfg'],
                 "requirementbg": self.RAMSTK_COLORS['requirementbg'],
                 "requirementfg": self.RAMSTK_COLORS['requirementfg'],
                 "revisionbg": self.RAMSTK_COLORS['revisionbg'],

@@ -242,20 +242,20 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         self.set_property('tooltip-markup', _tooltip)
         self.get_child().set_property('width-request', _width)
 
-    def do_update(self, value: str, handler_id: int) -> None:
+    def do_update(self, value: int, handler_id: int) -> None:
         """
         Update the RAMSTK CheckButton with a new value.
 
-        :param str value: the information to update the RAMSTKCheckButton() to
+        :param int value: the information to update the RAMSTKCheckButton() to
             display.
         :param int handler_id: the handler ID associated with the
             RAMSTKCheckButton().
         :return: None
         :rtype: None
         """
-        with self.handler_block(handler_id):
-            self.set_active(int(value))
-            self.handler_unblock(handler_id)
+        self.handler_block(handler_id)
+        self.set_active(int(value))
+        self.handler_unblock(handler_id)
 
 
 class RAMSTKOptionButton(Gtk.RadioButton):

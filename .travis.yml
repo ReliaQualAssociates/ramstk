@@ -12,6 +12,10 @@ python:
 env:
     system_site_packages: true
 
+before_install:
+    - sudo apt-get install jq
+    - curl -LSs "$(curl -LSs https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({name, browser_download_url} | select(.name | endswith(".jar"))) | .[0].browser_download_url')" -o codacy-coverage-reporter-assembly.jar
+
 install:
     - sudo apt-get update
     - sudo apt-get install -y libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev
@@ -35,6 +39,7 @@ script:
 # After the build was successful what to do?
 after_success:
     - coveralls
+    - java -jar codacy-coverage-reporter-assembly.jar report -l Java -r coverage.xml
 
 # What's the environment look like if the build fails silently.
 after_failure:

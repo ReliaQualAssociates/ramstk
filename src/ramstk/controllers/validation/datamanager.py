@@ -129,9 +129,10 @@ class DataManager(RAMSTKDataManager):
         for _node in self.status_tree.children(self.status_tree.root):
             self.status_tree.remove_node(_node.identifier)
 
-        for _status in self.dao.do_select_all(RAMSTKProgramStatus,
-                                              RAMSTKProgramStatus.revision_id,
-                                              self._revision_id):
+        for _status in self.dao.do_select_all(
+                RAMSTKProgramStatus,
+                key=RAMSTKProgramStatus.revision_id,
+                value=self._revision_id):
 
             _data_package = {'status': _status}
 
@@ -243,9 +244,10 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _validation in self.dao.do_select_all(RAMSTKValidation,
-                                                  RAMSTKValidation.revision_id,
-                                                  self._revision_id):
+        for _validation in self.dao.do_select_all(
+                RAMSTKValidation,
+                key=RAMSTKValidation.revision_id,
+                value=self._revision_id):
 
             _data_package = {'validation': _validation}
 
@@ -316,8 +318,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['validation'])
+            self.dao.do_update(self.tree.get_node(node_id).data['validation'])
 
             pub.sendMessage('succeed_update_validation', node_id=node_id)
         except AttributeError:
