@@ -6,6 +6,14 @@ import treelib
 from ramstk.views.gtk3 import Gtk
 from typing import Any, List
 
+def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
+        Gtk.TreeViewColumn: ...
+    pass
+
+def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None: ...
+    pass
+
+
 class RAMSTKTreeView(Gtk.TreeView):
     datatypes: List[str] = ...
     editable: List[int] = ...
@@ -38,9 +46,6 @@ class RAMSTKTreeView(Gtk.TreeView):
         pass
 
     def _do_make_cell(self, _widget):
-        pass
-
-    def _do_make_column(self, param, param1, param2):
         pass
 
     def _do_make_combo_cell(self):

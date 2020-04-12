@@ -26,4 +26,4 @@ from .label import RAMSTKLabel, do_make_label_group
 from .matrixview import RAMSTKMatrixView
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
-from .treeview import RAMSTKTreeView, do_set_cell_properties
+from .treeview import RAMSTKTreeView, do_make_column, do_set_cell_properties

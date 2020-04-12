@@ -8,7 +8,7 @@
 """The RAMSTKBaseMatrix Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import pandas as pd
@@ -17,8 +17,7 @@ import pandas as pd
 from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, _
 
 # RAMSTK Local Imports
-from .label import RAMSTKLabel
-from .treeview import do_set_cell_properties
+from . import treeview
 
 
 # noinspection PyUnresolvedReferences
@@ -66,40 +65,6 @@ class RAMSTKMatrixView(Gtk.HBox):
         self.n_fixed_columns = 0
 
         # Subscribe to PyPubSub messages.
-
-    def _do_make_column(self,
-                        cells: List[Gtk.CellRenderer],
-                        heading: str,
-                        visible: bool = True) -> Gtk.TreeViewColumn:
-        """
-        Make a Gtk.TreeViewColumn().
-
-        :param list cells: list of Gtk.CellRenderer()s that are to be packed in
-            the column.
-        :param str heading: the column heading text.
-        :return: _column
-        :rtype: :class:`Gtk.TreeViewColumn`
-        """
-        _column = Gtk.TreeViewColumn()
-
-        for _cell in cells:
-            if isinstance(_cell, Gtk.CellRendererPixbuf):
-                _column.pack_start(_cell, False)
-            else:
-                _column.pack_start(_cell, True)
-                _column.connect('notify::width', self._resize_wrap, _cell)
-
-        _label = RAMSTKLabel(heading)
-        _label.do_set_properties(width=-1,
-                                 height=-1,
-                                 justify=Gtk.Justification.CENTER)
-        _label.set_angle(90)
-        _column.set_widget(_label)
-        _column.set_resizable(True)
-        _column.set_alignment(0.5)
-        _column.set_visible(visible)
-
-        return _column
 
     @staticmethod
     def _do_make_combo_cell() -> Gtk.CellRendererCombo:
@@ -223,14 +188,14 @@ class RAMSTKMatrixView(Gtk.HBox):
         # Code.  The Function ID will not be visible, but can be used for
         # program control.
         _id_cell = Gtk.CellRendererText()
-        do_set_cell_properties(_id_cell, bg_color='light gray',
-                               visible=False)
+        treeview.do_set_cell_properties(_id_cell, bg_color='light gray',
+                                        visible=False)
 
         _code_cell = Gtk.CellRendererText()
-        do_set_cell_properties(_code_cell, bg_color='light gray')
+        treeview.do_set_cell_properties(_code_cell, bg_color='light gray')
         _code_cell.set_alignment(0.9, 0.5)
 
-        _column = self._do_make_column([_id_cell, _code_cell], '')
+        _column = treeview.do_make_column([_id_cell, _code_cell])
         _column.set_attributes(_id_cell, text=0)
         _column.set_attributes(_code_cell, markup=1)
 
@@ -241,7 +206,7 @@ class RAMSTKMatrixView(Gtk.HBox):
         j = 2
         for i in range(self._n_columns):  # pylint: disable=E0602
             _cell = self._do_make_combo_cell()
-            do_set_cell_properties(_cell, editable=True)
+            treeview.do_set_cell_properties(_cell, editable=True)
             _cell.connect('changed', self.do_edit_cell, _model,
                           position=i + j + 1,
                           col_index=self.matrixview.columns[i])
@@ -249,14 +214,14 @@ class RAMSTKMatrixView(Gtk.HBox):
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
             _heading = column_headings[self.matrixview.columns[i]]
-            _column = self._do_make_column([_pbcell, _cell], _heading)
+            _column = treeview.do_make_column([_pbcell, _cell], heading=_heading)
             _column.set_attributes(_pbcell, pixbuf=i + j)
             self.matrixview.append_column(_column)
 
             j += 1
 
         # Add one more column so the last column will not be extra wide.
-        _column = self._do_make_column([Gtk.CellRendererText()], '')
+        _column = treeview.do_make_column([Gtk.CellRendererText()])
 
         try:
             # pylint: disable=undefined-loop-variable

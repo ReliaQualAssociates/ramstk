@@ -24,6 +24,46 @@ from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango
 from .label import RAMSTKLabel
 
 
+def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
+        Gtk.TreeViewColumn:
+    """
+    Make a Gtk.TreeViewColumn().
+
+    :param list cells: list of Gtk.CellRenderer()s that are to be packed in
+        the column.
+    :param int visible: indicates whether the column will be visible.
+    :param str heading: the column heading text.
+    :return: _column
+    :rtype: :class:`Gtk.TreeViewColumn`
+    """
+    try:
+        _heading = kwargs['heading']
+    except KeyError:
+        _heading = ""
+    try:
+        _visible = kwargs['visible']
+    except KeyError:
+        _visible = True
+
+    _column = Gtk.TreeViewColumn("")
+
+    for _cell in cells:
+        if isinstance(_cell, Gtk.CellRendererPixbuf):
+            _column.pack_start(_cell, False)
+        else:
+            _column.pack_start(_cell, True)
+
+    _label = RAMSTKLabel(_heading)
+    _label.do_set_properties(width=-1,
+                             height=-1,
+                             justify=Gtk.Justification.CENTER)
+    _column.set_widget(_label)
+    _column.set_resizable(True)
+    _column.set_alignment(0.5)
+    _column.set_visible(_visible)
+
+    return _column
+
 def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
     """
     Set common properties of Gtk.CellRenderers().
@@ -125,38 +165,6 @@ class RAMSTKTreeView(Gtk.TreeView):
             _cell = self._do_make_text_cell(False)
 
         return _cell
-
-    def _do_make_column(self, cells: List[Gtk.CellRenderer], visible: int,
-                        heading: str) -> Gtk.TreeViewColumn:
-        """
-        Make a Gtk.TreeViewColumn().
-
-        :param list cells: list of Gtk.CellRenderer()s that are to be packed in
-            the column.
-        :param int visible: indicates whether the column will be visible.
-        :param str heading: the column heading text.
-        :return: _column
-        :rtype: :class:`Gtk.TreeViewColumn`
-        """
-        _column = Gtk.TreeViewColumn("")
-
-        for _cell in cells:
-            if isinstance(_cell, Gtk.CellRendererPixbuf):
-                _column.pack_start(_cell, False)
-            else:
-                _column.pack_start(_cell, True)
-                _column.connect('notify::width', self._resize_wrap, _cell)
-
-        _label = RAMSTKLabel(heading)
-        _label.do_set_properties(width=-1,
-                                 height=-1,
-                                 justify=Gtk.Justification.CENTER)
-        _column.set_widget(_label)
-        _column.set_resizable(True)
-        _column.set_alignment(0.5)
-        _column.set_visible(visible)
-
-        return _column
 
     @staticmethod
     def _do_make_combo_cell() -> Gtk.CellRendererCombo:
@@ -514,13 +522,14 @@ class RAMSTKTreeView(Gtk.TreeView):
             if self.pixbuf_col is not None and _idx == 0:
                 _pbcell = Gtk.CellRendererPixbuf()
                 _pbcell.set_property('xalign', 0.5)
-                _column = self._do_make_column([_pbcell, _cell],
-                                               self.visible[_idx],
-                                               self.headings[_idx])
+                _column = do_make_column([_pbcell, _cell],
+                                         heading=self.headings[_idx],
+                                         visible=self.visible[_idx])
                 _column.set_attributes(_pbcell, pixbuf=self.pixbuf_col)
             else:
-                _column = self._do_make_column([_cell], self.visible[_idx],
-                                               self.headings[_idx])
+                _column = do_make_column([_cell],
+                                         heading=self.headings[_idx],
+                                         visible=self.visible[_idx],)
             _column.set_cell_data_func(
                 _cell, self._format_cell,
                 (self.order[_idx], self.datatypes[_idx]))
