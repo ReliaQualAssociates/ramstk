@@ -1,0 +1,45 @@
+name: Code Formatting Checks
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  format_code_base:
+    name: Format Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          python -m pip install -U pip setuptools>12.0 urllib3 pip-tools
+          python -m pip install -r requirements-dev.txt
+          mkdir -p ./out
+
+      - name: Check Code Formatting
+        run: |
+          isort --atomic --use-parentheses -m5 -rc ./src/ramstk | tee ./out/isort_results.txt
+          yapf -r ./src/ramstk | tee ./out/yapf_results.txt
+
+      - name: Upload isort Artifact
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: isort_results.txt
+          path: ./out
+
+      - name: Upload yapf Artifact
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: yapf_results.txt
+          path: ./out

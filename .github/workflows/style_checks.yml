@@ -1,0 +1,62 @@
+name: Code Style Checks
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  check_formatting:
+    name: Check Coding Style
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          python -m pip install -U pip setuptools>12.0 urllib3 pip-tools
+          python -m pip install -r requirements-dev.txt
+          mkdir -p ./out
+
+      - name: Check Coding Style
+        run: |
+          bandit --ini .bandit -c .bandit.conf -b .bandit.baseline -r ./src/ramstk | tee ./out/bandit_results.txt
+          pycodestyle --statistics --count ./src/ramstk | tee ./out/pycodestyle_results.txt
+          pydocstyle --count ./src/ramstk | tee ./out/pydocstyle_results.txt
+          mypy ./src/ramstk | tee ./out/mypy_results.txt
+        continue-on-error: true
+
+      - name: Upload bandit Artifact
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: bandit_results.txt
+          path: ./out
+
+      - name: Upload pycodestyle Artifact
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: pycodestyle_results.txt
+          path: ./out
+
+      - name: Upload pydocstyle Artifact
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: pydocstyle_results.txt
+          path: ./out
+
+      - name: Upload mypy Artifact
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: mypy_results.txt
+          path: ./out
