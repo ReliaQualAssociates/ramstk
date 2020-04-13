@@ -1,0 +1,82 @@
+name: Push to develop or master Branch Workflow
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  quality_checks:
+    name: Quality Assurance Checks of Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          python -m pip install -U pip setuptools>12.0 urllib3 pip-tools
+          python -m pip install -r requirements-dev.txt
+          mkdir -p ./out
+
+      - name: Check Code Formatting
+        continue-on-error: true
+        run: |
+          isort --atomic --use-parentheses -m5 -rc ./src/ramstk | tee ./out/format_results.txt
+          yapf -r ./src/ramstk | tee -a ./out/format_results.txt
+
+      - name: Lint Code
+        continue-on-error: true
+        run: |
+          pylint -j0 --rcfile=./.pylintrc ./src/ramstk | tee ./out/lint_results.txt
+          flake8 --statistics ./src/ramstk | tee -a ./out/lint_results.txt
+
+      - name: Check Coding Style
+        continue-on-error: true
+        run: |
+          bandit --ini .bandit -c .bandit.conf -b .bandit.baseline -r ./src/ramstk | tee ./out/style_results.txt
+          pycodestyle --statistics --count ./src/ramstk | tee -a ./out/style_results.txt
+          pydocstyle --count ./src/ramstk | tee -a ./out/style_results.txt
+          mypy ./src/ramstk | tee -a ./out/style_results.txt
+
+      - name: Check Code Maintainability
+        continue-on-error: true
+        run: |
+          python -m mccabe -m 10 ./src/ramstk/* | tee ./out/maintainability_results.txt
+          radon cc -s ./src/ramstk/* | tee -a ./out/maintainability_results.txt
+          radon mi -s ./src/ramstk/* | tee -a ./out/maintainability_results.txt
+          radon hal ./src/ramstk/* | tee -a ./out/maintainability_results.txt
+
+      - name: Upload Format Check Results
+        continue-on-error: true
+        uses: actions/upload-artifact@v1
+        with:
+          name: format_results.txt
+          path: ./out
+
+      - name: Upload Lint Results
+        continue-on-error: true
+        uses: actions/upload-artifact@v1
+        with:
+          name: lint_results.txt
+          path: ./out
+
+      - name: Upload Style Check Results
+        continue-on-error: true
+        uses: actions/upload-artifact@v1
+        with:
+          name: style_results.txt
+          path: ./out
+
+      - name: Upload Maintainability Artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v1
+        with:
+          name: maintainability_results.txt
+          path: ./out
