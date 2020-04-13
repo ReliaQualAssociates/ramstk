@@ -50,7 +50,12 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        # TODO: Update Function module matrixmanager to respond to hardware.
+        # // TODO: Update Function module matrixmanager to respond to hardware.
+        # //
+        # // The Function module matrixmanager is currently only responding to
+        # // Function module pubsub messages.  Ensure the Function module
+        # // matrix manager is updated to respond to Hardware module pubsub
+        # // messages when the Hardware module is refactored.
         pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
         pub.subscribe(self._do_create_columns, 'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
