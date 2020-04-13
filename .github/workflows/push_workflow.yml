@@ -82,7 +82,7 @@ jobs:
           path: ./out
 
   todo_to_issue:
-    name: Create Issues from TODO Comments
+    name: Create Issues from TODO Comments (master Branch Only)
     runs-on: ubuntu-latest
 
     steps:
