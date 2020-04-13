@@ -124,6 +124,16 @@ Add the bug number to the log message. In order to keep the issue tracking syste
 
 This doesn't mean that you don't need an understandable log message.  It should be clear from the log message what has been changed without looking at the issue report.
 
+#### TODO Comments
+
+When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add a TODO comment using the following format:
+
+    # // TODO: <One-line description of required work.
+    # //
+    # // Long and detailed description of work to be performed.
+
+The github action, dtinth/todo-actions will find these TODO comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
+
 ### Process Guidelines
 
 RAMSTK uses:

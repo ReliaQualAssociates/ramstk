@@ -80,3 +80,11 @@ jobs:
         with:
           name: maintainability_results.txt
           path: ./out
+
+  todo_to_issue:
+    name: Create Issues from TODO Comments
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dtinth/todo-actions@v0.2.0

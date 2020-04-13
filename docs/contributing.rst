@@ -13,7 +13,7 @@ The fundamental rules are:
 * You *CAN* be a Big Head, but only if you invite me to all your house parties.
 * You *CAN* be an Erlich Bachman because the world needs dreamers.
 * You *CAN* be a Richard Hendricks, because ethical software is a good thing.
-* You *CAN* be a Dinesh Chugtai because every team needs someone to pick on.
+* You *CAN* be a Dinesh Chugtai because every team needs someone to good-heartedly pick on.
 
 See the Code of Conduct file in the root `RAMSTK` directory.
 
