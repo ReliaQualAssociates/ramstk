@@ -22,7 +22,7 @@ jobs:
       - name: Setup Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y gfortran-7-multilib libblas-dev liblapack-dev libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev
+          sudo apt-get install -y libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest python3-scipy libenchant1c2a libenchant-dev
 
       - name: Install Python Dependencies
         run: |
@@ -32,4 +32,4 @@ jobs:
 
       - name: Run Test Suite
         run: |
-          py.test -x --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term ./test
+          py.test -x --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term ./tests
