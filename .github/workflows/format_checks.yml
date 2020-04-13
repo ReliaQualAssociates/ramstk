@@ -27,19 +27,11 @@ jobs:
 
       - name: Check Code Formatting
         run: |
-          isort --atomic --use-parentheses -m5 -rc ./src/ramstk | tee ./out/isort_results.txt
-          yapf -r ./src/ramstk | tee ./out/yapf_results.txt
+          isort --atomic --use-parentheses -m5 -rc ./src/ramstk | tee ./out/format_results.txt
+          yapf -r ./src/ramstk | tee -a ./out/format_results.txt
 
-      - name: Upload isort Artifact
+      - name: Upload Format Check Results
         uses: actions/upload-artifact@v1
-        if: failure()
         with:
-          name: isort_results.txt
-          path: ./out
-
-      - name: Upload yapf Artifact
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: yapf_results.txt
+          name: format_results.txt
           path: ./out

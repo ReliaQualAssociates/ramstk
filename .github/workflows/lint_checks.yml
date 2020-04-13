@@ -26,19 +26,12 @@ jobs:
           mkdir -p ./out
 
       - name: Lint Code
-        continue-on-error: true
         run: |
-          pylint -j0 --rcfile=./.pylintrc ./src/ramstk | tee ./out/pylint_results.txt
-          flake8 | tee ./out/flake8_results.txt
+          pylint -j0 --rcfile=./.pylintrc ./src/ramstk | tee ./out/lint_results.txt
+          flake8 | tee -a ./out/lint_results.txt
 
-      - name: Upload pylint Artifact
+      - name: Upload Lint Results
         uses: actions/upload-artifact@v1
         with:
-          name: pylint_results.txt
-          path: ./out
-
-      - name: Upload flake8 Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: flake8_results.txt
+          name: lint_results.txt
           path: ./out
