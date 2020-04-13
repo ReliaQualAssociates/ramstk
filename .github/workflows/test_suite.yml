@@ -1,4 +1,4 @@
-name: Test Suite
+name: Execute Test Suite
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - master
 
 jobs:
-  check_formatting:
+  test_suite:
     name: Test Suite with Coverage
     runs-on: ubuntu-latest
     strategy:
