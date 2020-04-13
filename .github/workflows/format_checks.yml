@@ -1,4 +1,4 @@
-name: Code Formatting Checks
+name: Push to develop or master Branch Workflow
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
       - master
 
 jobs:
-  format_code_base:
-    name: Format Code
+  quality_checks:
+    name: Quality Assurance Checks of Code
     runs-on: ubuntu-latest
 
     steps:
@@ -34,4 +34,15 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: format_results.txt
+          path: ./out
+
+      - name: Lint Code
+        run: |
+          pylint -j0 --rcfile=./.pylintrc ./src/ramstk | tee ./out/lint_results.txt
+          flake8 --statistics ./src/ramstk | tee -a ./out/lint_results.txt
+
+      - name: Upload Lint Results
+        uses: actions/upload-artifact@v1
+        with:
+          name: lint_results.txt
           path: ./out
