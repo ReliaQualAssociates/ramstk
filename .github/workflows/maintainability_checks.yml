@@ -1,0 +1,39 @@
+name: Code Maintainability Checks
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  lint_code_base:
+    name: Code Maintainability Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          python -m pip install -U pip setuptools>12.0 urllib3 pip-tools
+          python -m pip install -r requirements-dev.txt
+          mkdir -p ./out
+
+      - name: Check Code Maintainability
+        run: |
+          python -m mccabe -m 10 ./src/ramstk/* | tee ./out/maintainability_results.txt
+          radon cc -s ./src/ramstk/* | tee -a ./out/maintainability_results.txt
+          radon mi -s ./src/ramstk/* | tee -a ./out/maintainability_results.txt
+          radon hal ./src/ramstk/* | tee -a ./out/maintainability_results.txt
+
+      - name: Upload Maintainability Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: maintainability_results.txt
+          path: ./out
