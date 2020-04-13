@@ -26,37 +26,15 @@ jobs:
           mkdir -p ./out
 
       - name: Check Coding Style
-        run: |
-          bandit --ini .bandit -c .bandit.conf -b .bandit.baseline -r ./src/ramstk | tee ./out/bandit_results.txt
-          pycodestyle --statistics --count ./src/ramstk | tee ./out/pycodestyle_results.txt
-          pydocstyle --count ./src/ramstk | tee ./out/pydocstyle_results.txt
-          mypy ./src/ramstk | tee ./out/mypy_results.txt
         continue-on-error: true
+        run: |
+          bandit --ini .bandit -c .bandit.conf -b .bandit.baseline -r ./src/ramstk | tee ./out/style_results.txt
+          pycodestyle --statistics --count ./src/ramstk | tee -a ./out/style_results.txt
+          pydocstyle --count ./src/ramstk | tee -a ./out/style_results.txt
+          mypy ./src/ramstk | tee -a ./out/style_results.txt
 
-      - name: Upload bandit Artifact
+      - name: Upload Style Check Results
         uses: actions/upload-artifact@v1
-        if: failure()
         with:
-          name: bandit_results.txt
-          path: ./out
-
-      - name: Upload pycodestyle Artifact
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: pycodestyle_results.txt
-          path: ./out
-
-      - name: Upload pydocstyle Artifact
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: pydocstyle_results.txt
-          path: ./out
-
-      - name: Upload mypy Artifact
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: mypy_results.txt
+          name: style_results.txt
           path: ./out
