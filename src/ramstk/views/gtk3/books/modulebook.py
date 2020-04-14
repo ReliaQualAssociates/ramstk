@@ -18,6 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.function import mvwFunction
+from ramstk.views.gtk3.requirement import mvwRequirement
 from ramstk.views.gtk3.revision import mvwRevision
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -48,10 +49,10 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # Initialize private dictionary attributes.
         self._dic_module_views = {
             'revision': mvwRevision(configuration, logger),
-            #    'requirement': mvwRequirement(configuration),
             'function': mvwFunction(configuration, logger),
-            #    'hardware': mvwHardware(configuration),
-            #    'validation': mvwValidation(configuration),
+            'requirement': mvwRequirement(configuration, logger),
+            #    'hardware': mvwHardware(configuration, logger),
+            #    'validation': mvwValidation(configuration, logger),
         }
 
         # Initialize private list attributes.
@@ -165,6 +166,12 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         """
         # Key errors occur when no RAMSTK Program database has been loaded.  In
         # that case, select the Revision page to load.
+        # // TODO: Raise error dialog when RAMSTKModuleBook switches page
+        # //
+        # // The KeyError in RAMSTKModuleBook._on_switch_page() should send
+        # // a pubsub message for listeners to respond to.  An error dialog
+        # // should be raised for the user to understand why the Revision
+        # // module was shown instead.
         try:
             _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[
                 page_num]

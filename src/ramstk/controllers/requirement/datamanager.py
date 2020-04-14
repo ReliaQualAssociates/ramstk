@@ -99,12 +99,9 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        if table in ['stakeholders', 'usage_profile']:
-            _attributes = self.do_select(node_id, table=table)
-        else:
-            _attributes = self.do_select(node_id, table=table).get_attributes()
+        _attributes = self.do_select(node_id, table=table).get_attributes()
 
-        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
+        pub.sendMessage('succeed_get_requirement_attributes',
                         attributes=_attributes)
 
     def do_get_all_attributes(self, node_id):

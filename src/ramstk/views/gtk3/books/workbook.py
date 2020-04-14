@@ -48,25 +48,25 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             'revision': [wvwRevisionGD(configuration, logger)],
             'function': [wvwFunctionGD(configuration, logger),
                          wvwHazOps(configuration, logger)],
-            #    'requirement':
-            #    [
-            #        wvwRequirementGD(configuration),
-            #        wvwRequirementAnalysis(configuration),
-            #    ],
-            #    'hardware': [
-            #        wvwHardwareGD(configuration),
-            #        wvwAllocation(configuration),
-            #        wvwHazOps(configuration),
-            #        wvwSimilarItem(configuration),
-            #        wvwHardwareAI(configuration),
-            #        wvwHardwareAR(configuration),
-            #        wvwDFMECA(configuration),
-            #        wvwPoF(configuration),
-            #    ],
-            #    'validation': [
-            #        wvwValidationGD(configuration),
-            #        wvwBurndownCurve(configuration),
-            #    ],
+            'requirement':
+            [
+                # wvwRequirementGD(configuration),
+                # wvwRequirementAnalysis(configuration),
+            ],
+            'hardware': [
+                # wvwHardwareGD(configuration),
+                # wvwAllocation(configuration),
+                # wvwHazOps(configuration),
+                # wvwSimilarItem(configuration),
+                # wvwHardwareAI(configuration),
+                # wvwHardwareAR(configuration),
+                # wvwDFMECA(configuration),
+                # wvwPoF(configuration),
+            ],
+            'validation': [
+                # wvwValidationGD(configuration),
+                # wvwBurndownCurve(configuration),
+            ],
         }
 
         # Initialize public list attributes.

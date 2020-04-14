@@ -29,8 +29,7 @@ class MatrixManager(RAMSTKMatrixManager):
 
     def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """Initialize an instance of the function matrix manager."""
-        RAMSTKMatrixManager.__init__(
-            self,
+        super().__init__(
             column_tables={
                 'fnctn_hrdwr':
                 [RAMSTKHardware, 'hardware_id', 'comp_ref_des']

@@ -28,8 +28,7 @@ class MatrixManager(RAMSTKMatrixManager):
     """
     def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """Initialize an instance of the requirement matrix manager."""
-        RAMSTKMatrixManager.__init__(
-            self,
+        super().__init__(
             column_tables={
                 'rqrmnt_hrdwr':
                 [RAMSTKHardware, 'hardware_id', 'comp_ref_des']
@@ -106,7 +105,8 @@ class MatrixManager(RAMSTKMatrixManager):
 
         :param int node_id: the treelib Tree() node ID associated with the
             inserted requirement.
-        :param tree: the treelib Tree() containing the remaining requirement data.
+        :param tree: the treelib Tree() containing the remaining requirement
+            data.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.function.moduleview.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.requirement.moduleview.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Function GTK3 module view."""
+"""RAMSTK Requirement GTK3 module view."""
 
 # Standard Library Imports
 from typing import Dict, List
@@ -24,16 +24,16 @@ from ramstk.views.gtk3.widgets import (
 
 class ModuleView(RAMSTKModuleView):
     """
-    Display Function attribute data in the RAMSTK Module Book.
+    Display Requirement attribute data in the RAMSTK Module Book.
 
-    The Function Module View displays all the Functions associated with the
-    connected RAMSTK Program in a flat list.  All attributes of a Function
-    Module View are inherited.
+    The Requirement Module View displays all the Requirements associated with
+    the connected RAMSTK Program in a flat list.  All attributes of a
+    Requirement Module View are inherited.
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module='function') -> None:
+                 logger: RAMSTKLogManager, module='requirement') -> None:
         """
-        Initialize the Function Module View.
+        Initialize the Requirement Module View.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
@@ -45,17 +45,17 @@ class ModuleView(RAMSTKModuleView):
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
+            to_tty=True)
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/function.png')
+            + '/32x32/requirement.png')
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._function_id: int = -1
+        self._requirement_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -66,15 +66,15 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_delete, 'succeed_delete_function')
-        pub.subscribe(self._on_insert, 'succeed_insert_function')
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_functions')
-        pub.subscribe(self._do_refresh_tree, 'wvw_editing_function')
+        pub.subscribe(self.on_delete, 'succeed_delete_requirement')
+        pub.subscribe(self._on_insert, 'succeed_insert_requirement')
+        pub.subscribe(self.do_load_tree, 'succeed_retrieve_requirements')
+        pub.subscribe(self._do_refresh_tree, 'wvw_editing_requirement')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
     def __make_ui(self) -> None:
         """
-        Build the user interface for the Function work stream module.
+        Build the user interface for the Requirement work stream module.
 
         :return: None
         :rtype: None
@@ -87,9 +87,9 @@ class ModuleView(RAMSTKModuleView):
                 self,
                 icons=['insert_sibling', 'insert_child', 'remove'],
                 tooltips=[
-                    _("Add a new sibling function."),
-                    _("Add a new child function."),
-                    _("Remove the currently selected function.")
+                    _("Add a new sibling requirement."),
+                    _("Add a new child requirement."),
+                    _("Remove the currently selected requirement.")
                 ],
                 callbacks=[
                     self.do_request_insert_sibling,
@@ -106,7 +106,7 @@ class ModuleView(RAMSTKModuleView):
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
-        This method is called by other views when the Function data model
+        This method is called by other views when the Requirement data model
         attributes are edited via their gtk.Widgets().
 
         :param list node_id: unused in this method.
@@ -115,7 +115,7 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_refresh_tree(package, {
-            'function_code': 5,
+            'requirement_code': 5,
             'name': 15,
             'remarks': 17,
             'safety_critical': 18
@@ -123,7 +123,7 @@ class ModuleView(RAMSTKModuleView):
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to delete selected record from the RAMSTKFunction table.
+        Send request to delete selected record from the RAMSTKRequirement table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -132,9 +132,9 @@ class ModuleView(RAMSTKModuleView):
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent(
         ).get_parent()
-        _prompt = _("You are about to delete Function {0:d} and all "
+        _prompt = _("You are about to delete Requirement {0:d} and all "
                     "data associated with it.  Is this really what "
-                    "you want to do?").format(self._function_id)
+                    "you want to do?").format(self._requirement_id)
         _dialog = RAMSTKMessageDialog(_prompt,
                                       self._dic_icons['question'],
                                       'question',
@@ -142,14 +142,14 @@ class ModuleView(RAMSTKModuleView):
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
-            pub.sendMessage('request_delete_function',
-                            node_id=self._function_id)
+            pub.sendMessage('request_delete_requirement',
+                            node_id=self._requirement_id)
 
         _dialog.do_destroy()
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to update the selected record to the RAMSTKFunction table.
+        Send request to update the selected record to the RAMSTKRequirement table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -157,12 +157,12 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_function', node_id=self._function_id)
+        pub.sendMessage('request_update_requirement', node_id=self._requirement_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to save all the records to the RAMSTKFunction table.
+        Send request to save all the records to the RAMSTKRequirement table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -170,15 +170,15 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_functions')
+        pub.sendMessage('request_update_all_requirements')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
-        Handle mouse clicks on the Function Module View RAMSTKTreeView().
+        Handle mouse clicks on the Requirement Module View RAMSTKTreeView().
 
-        :param treeview: the Function class Gtk.TreeView().
+        :param treeview: the Requirement class Gtk.TreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
             important attribute is which mouse button was clicked).
@@ -204,11 +204,11 @@ class ModuleView(RAMSTKModuleView):
             super().on_button_press(event,
                                     icons=['insert_sibling', 'insert_child'],
                                     labels=[
-                                        _("Add Sibling Function"),
-                                        _("Add Child Function"),
-                                        _("Remove Selected Function"),
-                                        _("Save Selected Function"),
-                                        _("Save All Functions")
+                                        _("Add Sibling Requirement"),
+                                        _("Add Child Requirement"),
+                                        _("Remove Selected Requirement"),
+                                        _("Save Selected Requirement"),
+                                        _("Save All Requirements")
                                     ],
                                     callbacks=[
                                         self.do_request_insert_sibling,
@@ -220,9 +220,9 @@ class ModuleView(RAMSTKModuleView):
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
         """
-        Handle edits of Function package Module View RAMSTKTreeview().
+        Handle edits of Requirement package Module View RAMSTKTreeview().
 
-        This function sends a dict with it's message that relates the
+        This requirement sends a dict with it's message that relates the
         database field and the new data for that field.
 
             `package` key: `package` value
@@ -245,7 +245,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {5: 'function_code', 15: 'name', 17: 'remarks'}
+        _dic_keys = {5: 'requirement_code', 15: 'name', 17: 'remarks'}
         try:
             _key = _dic_keys[self._lst_col_order[position]]
         except KeyError:
@@ -253,26 +253,26 @@ class ModuleView(RAMSTKModuleView):
 
         self.treeview.do_edit_cell(__cell, path, new_text, position)
 
-        pub.sendMessage('mvw_editing_function',
-                        node_id=[self._function_id, -1, ''],
+        pub.sendMessage('mvw_editing_requirement',
+                        node_id=[self._requirement_id, -1, ''],
                         package={_key: new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """
-        Add row to module view for newly added function.
+        Add row to module view for newly added requirement.
 
-        :param int node_id: the ID of the newly added function.
+        :param int node_id: the ID of the newly added requirement.
         :param tree: the treelib Tree() containing the work stream module's
             data.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        _data = tree.get_node(node_id).data['function'].get_attributes()
+        _data = tree.get_node(node_id).data['requirement'].get_attributes()
         _model, _row = self.treeview.selection.get_selected()
 
         try:
-            if self._function_id == self._parent_id:
+            if self._requirement_id == self._parent_id:
                 _prow = _row
             else:
                 _prow = _model.iter_parent(_row)
@@ -289,22 +289,22 @@ class ModuleView(RAMSTKModuleView):
         """
         _model, _row = self.treeview.selection.get_selected()
 
-        if (module == 'function' and _row is not None):
+        if (module == 'requirement' and _row is not None):
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Function {0:s}: {1:s}").format(
+            _title = _("Analyzing Requirement {0:s}: {1:s}").format(
                 str(_code), str(_name))
 
             pub.sendMessage('request_set_title', title=_title)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
-        Handle events for the Function package Module View RAMSTKTreeView().
+        Handle events for the Requirement package Module View RAMSTKTreeView().
 
-        This method is called whenever a Function Module View RAMSTKTreeView()
+        This method is called whenever a Requirement Module View RAMSTKTreeView()
         row is activated/changed.
 
-        :param selection: the Function class Gtk.TreeSelection().
+        :param selection: the Requirement class Gtk.TreeSelection().
         :type selection: :class:`Gtk.TreeSelection`
         :return: None
         :rtype: None
@@ -318,63 +318,118 @@ class ModuleView(RAMSTKModuleView):
         if _row is not None:
             _attributes['revision_id'] = _model.get_value(
                 _row, self._lst_col_order[0])
-            _attributes['function_id'] = _model.get_value(
+            _attributes['requirement_id'] = _model.get_value(
                 _row, self._lst_col_order[1])
-            _attributes['availability_logistics'] = _model.get_value(
+            _attributes['derived'] = _model.get_value(
                 _row, self._lst_col_order[2])
-            _attributes['availability_mission'] = _model.get_value(
+            _attributes['description'] = _model.get_value(
                 _row, self._lst_col_order[3])
-            _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
-            _attributes['function_code'] = _model.get_value(
+            _attributes['figure_number'] = _model.get_value(
+                _row, self._lst_col_order[4])
+            _attributes['owner'] = _model.get_value(
                 _row, self._lst_col_order[5])
-            _attributes['failure_rate_logistics'] = _model.get_value(
+            _attributes['page_number'] = _model.get_value(
                 _row, self._lst_col_order[6])
-            _attributes['failure_rate_mission'] = _model.get_value(
-                _row, self._lst_col_order[7])
-            _attributes['level'] = _model.get_value(
-                _row, self._lst_col_order[8])
-            _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
-            _attributes['mcmt'] = _model.get_value(
-                _row, self._lst_col_order[10])
-            _attributes['mpmt'] = _model.get_value(
-                _row, self._lst_col_order[11])
-            _attributes['mtbf_logistics'] = _model.get_value(
-                _row, self._lst_col_order[12])
-            _attributes['mtbf_mission'] = _model.get_value(
-                _row, self._lst_col_order[13])
-            _attributes['mttr'] = _model.get_value(
-                _row, self._lst_col_order[14])
-            _attributes['name'] = _model.get_value(
-                _row, self._lst_col_order[15])
             _attributes['parent_id'] = _model.get_value(
+                _row, self._lst_col_order[7])
+            _attributes['priority'] = _model.get_value(
+                _row, self._lst_col_order[8])
+            _attributes['requirement_code'] = _model.get_value(
+                _row, self._lst_col_order[9])
+            _attributes['specification'] = _model.get_value(
+                _row, self._lst_col_order[10])
+            _attributes['requirement_type'] = _model.get_value(
+                _row, self._lst_col_order[11])
+            _attributes['validated'] = _model.get_value(
+                _row, self._lst_col_order[12])
+            _attributes['validated_date'] = _model.get_value(
+                _row, self._lst_col_order[13])
+            _attributes['q_clarity_0'] = _model.get_value(
+                _row, self._lst_col_order[14])
+            _attributes['q_clarity_1'] = _model.get_value(
+                _row, self._lst_col_order[15])
+            _attributes['q_clarity_2'] = _model.get_value(
                 _row, self._lst_col_order[16])
-            _attributes['remarks'] = _model.get_value(
+            _attributes['q_clarity_3'] = _model.get_value(
                 _row, self._lst_col_order[17])
-            _attributes['safety_critical'] = _model.get_value(
+            _attributes['q_clarity_4'] = _model.get_value(
                 _row, self._lst_col_order[18])
-            _attributes['total_mode_count'] = _model.get_value(
+            _attributes['q_clarity_5'] = _model.get_value(
                 _row, self._lst_col_order[19])
-            _attributes['total_part_count'] = _model.get_value(
+            _attributes['q_clarity_6'] = _model.get_value(
                 _row, self._lst_col_order[20])
-            _attributes['type'] = _model.get_value(
+            _attributes['q_clarity_7'] = _model.get_value(
                 _row, self._lst_col_order[21])
+            _attributes['q_clarity_8'] = _model.get_value(
+                _row, self._lst_col_order[22])
+            _attributes['q_complete_0'] = _model.get_value(
+                _row, self._lst_col_order[23])
+            _attributes['q_complete_1'] = _model.get_value(
+                _row, self._lst_col_order[24])
+            _attributes['q_complete_2'] = _model.get_value(
+                _row, self._lst_col_order[25])
+            _attributes['q_complete_3'] = _model.get_value(
+                _row, self._lst_col_order[26])
+            _attributes['q_complete_4'] = _model.get_value(
+                _row, self._lst_col_order[27])
+            _attributes['q_complete_5'] = _model.get_value(
+                _row, self._lst_col_order[28])
+            _attributes['q_complete_6'] = _model.get_value(
+                _row, self._lst_col_order[29])
+            _attributes['q_complete_7'] = _model.get_value(
+                _row, self._lst_col_order[30])
+            _attributes['q_complete_8'] = _model.get_value(
+                _row, self._lst_col_order[31])
+            _attributes['q_complete_9'] = _model.get_value(
+                _row, self._lst_col_order[32])
+            _attributes['q_consistent_0'] = _model.get_value(
+                _row, self._lst_col_order[33])
+            _attributes['q_consistent_1'] = _model.get_value(
+                _row, self._lst_col_order[34])
+            _attributes['q_consistent_2'] = _model.get_value(
+                _row, self._lst_col_order[35])
+            _attributes['q_consistent_3'] = _model.get_value(
+                _row, self._lst_col_order[36])
+            _attributes['q_consistent_4'] = _model.get_value(
+                _row, self._lst_col_order[37])
+            _attributes['q_consistent_5'] = _model.get_value(
+                _row, self._lst_col_order[38])
+            _attributes['q_consistent_6'] = _model.get_value(
+                _row, self._lst_col_order[39])
+            _attributes['q_consistent_7'] = _model.get_value(
+                _row, self._lst_col_order[40])
+            _attributes['q_consistent_8'] = _model.get_value(
+                _row, self._lst_col_order[41])
+            _attributes['q_verifiable_0'] = _model.get_value(
+                _row, self._lst_col_order[42])
+            _attributes['q_verifiable_1'] = _model.get_value(
+                _row, self._lst_col_order[43])
+            _attributes['q_verifiable_2'] = _model.get_value(
+                _row, self._lst_col_order[44])
+            _attributes['q_verifiable_3'] = _model.get_value(
+                _row, self._lst_col_order[45])
+            _attributes['q_verifiable_4'] = _model.get_value(
+                _row, self._lst_col_order[46])
+            _attributes['q_verifiable_5'] = _model.get_value(
+                _row, self._lst_col_order[47])
 
-            self._function_id = _attributes['function_id']
+            self._requirement_id = _attributes['requirement_id']
             self._parent_id = _attributes['parent_id']
 
             _prow = _model.iter_parent(_row)
             if _prow is not None:
-                self._parent_id = self._function_id
+                self._parent_id = self._requirement_id
             else:
                 self._parent_id = 0
 
-            _title = _("Analyzing Function {0:s}: {1:s}").format(
-                str(_attributes['function_code']), str(_attributes['name']))
+            _title = _("Analyzing {0:s} Requirement: {1:s}").format(
+                str(_attributes['requirement_type']),
+                str(_attributes['requirement_code']))
 
-            pub.sendMessage('selected_function', attributes=_attributes)
-            pub.sendMessage('request_get_function_attributes',
-                            node_id=self._function_id,
-                            table='hazards')
+            pub.sendMessage('selected_requirement', attributes=_attributes)
+            pub.sendMessage('request_get_requirement_attributes',
+                            node_id=self._requirement_id,
+                            table='requirement')
             pub.sendMessage('request_set_title', title=_title)
 
         selection.handler_unblock(self._lst_handler_id[0])
