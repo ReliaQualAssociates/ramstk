@@ -231,14 +231,14 @@ class TestCreateControllers():
         assert DUT.n_col == 1
         assert pub.isSubscribed(DUT.do_load, 'succeed_retrieve_matrix')
         assert pub.isSubscribed(DUT._do_create, 'succeed_retrieve_validations')
-        assert pub.isSubscribed(DUT._do_delete_requirement,
-                                'succeed_delete_requirement')
+        # assert pub.isSubscribed(DUT._do_delete_requirement,
+        #                         'succeed_delete_requirement')
         assert pub.isSubscribed(DUT._do_delete_hardware,
                                 'succeed_delete_hardware')
         assert pub.isSubscribed(DUT.do_delete_row, 'succeed_delete_validation')
         assert pub.isSubscribed(DUT.do_insert_row, 'succeed_insert_validation')
-        assert pub.isSubscribed(DUT._do_insert_requirement,
-                                'succeed_insert_requirement')
+        # assert pub.isSubscribed(DUT._do_insert_requirement,
+        #                         'succeed_insert_requirement')
         assert pub.isSubscribed(DUT._do_insert_hardware,
                                 'succeed_insert_hardware')
         assert pub.isSubscribed(DUT.do_update,

@@ -53,14 +53,14 @@ class MatrixManager(RAMSTKMatrixManager):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_create, 'succeed_retrieve_validations')
-        pub.subscribe(self._do_delete_requirement,
-                      'succeed_delete_requirement')
+        # pub.subscribe(self._do_delete_requirement,
+        #               'succeed_delete_requirement')
         pub.subscribe(self._do_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self.do_delete_row, 'succeed_delete_validation')
         pub.subscribe(self.do_insert_row, 'succeed_insert_validation')
         pub.subscribe(self._do_insert_hardware, 'succeed_insert_hardware')
-        pub.subscribe(self._do_insert_requirement,
-                      'succeed_insert_requirement')
+        # pub.subscribe(self._do_insert_requirement,
+        #               'succeed_insert_requirement')
         pub.subscribe(self.do_update, 'request_update_validation_matrix')
         pub.subscribe(self._on_get_tree, 'succeed_get_validation_tree')
         pub.subscribe(self._on_get_tree, 'succeed_get_requirement_tree')

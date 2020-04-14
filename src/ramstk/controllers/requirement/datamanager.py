@@ -6,6 +6,9 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Package Data Model."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
@@ -45,7 +48,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'succeed_select_revision')
+        pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self._do_delete_requirement,
                       'request_delete_requirement')
         pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')
@@ -75,7 +78,10 @@ class DataManager(RAMSTKDataManager):
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
-            pub.sendMessage('succeed_delete_requirement', node_id=node_id)
+
+            pub.sendMessage('succeed_delete_requirement',
+                            node_id=node_id,
+                            tree=self.tree)
         except DataAccessError:
             _error_msg = ("Attempted to delete non-existent requirement ID "
                           "{0:s}.").format(str(node_id))
@@ -157,7 +163,9 @@ class DataManager(RAMSTKDataManager):
                                   identifier=self.last_id,
                                   parent=parent_id,
                                   data={'requirement': _requirement})
-            pub.sendMessage('succeed_insert_requirement', node_id=self.last_id)
+            pub.sendMessage('succeed_insert_requirement',
+                            node_id=self.last_id,
+                            tree=self.tree)
         except NodeIDAbsentError:
             pub.sendMessage(
                 "fail_insert_requirement",
@@ -170,15 +178,16 @@ class DataManager(RAMSTKDataManager):
                             error_message=("Failed to insert requirement into "
                                            "program dabase."))
 
-    def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:  # pylint:
+        # disable=arguments-differ
         """
         Retrieve all the Requirement data from the RAMSTK Program database.
 
-        :param int revision_id: the Revision ID to select the Requirements for.
+        :param dict attributes: the attributes for the selected Requirement.
         :return: None
         :rtype: None
         """
-        self._revision_id = revision_id
+        self._revision_id = attributes['revision_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -186,12 +195,13 @@ class DataManager(RAMSTKDataManager):
         for _requirement in self.dao.do_select_all(
                 RAMSTKRequirement,
                 key=RAMSTKRequirement.revision_id,
-                value=self._revision_id):
+                value=self._revision_id,
+                order=RAMSTKRequirement.requirement_id):
             _data_package = {'requirement': _requirement}
 
             self.tree.create_node(tag=_requirement.requirement_code,
                                   identifier=_requirement.requirement_id,
-                                  parent=self._root,
+                                  parent=_requirement.parent_id,
                                   data=_data_package)
 
         self.last_id = max(self.tree.nodes.keys())

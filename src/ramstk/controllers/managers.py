@@ -469,7 +469,7 @@ class RAMSTKMatrixManager():
             )
 
         self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)
-        (self.n_row, self.n_col) = self.dic_matrices[matrix_type].shape
+        (__, self.n_col) = self.dic_matrices[matrix_type].shape
 
     def do_create_rows(self, tree: treelib.Tree) -> None:
         """
@@ -495,7 +495,7 @@ class RAMSTKMatrixManager():
         for _matrix_type in self._column_tables.keys():
             self._dic_matrix['rows'][0] = self._column_tables[_matrix_type][1]
             self.dic_matrices[_matrix_type] = pd.DataFrame(self._dic_matrix)
-            (self.n_row, self.n_col) = self.dic_matrices[_matrix_type].shape
+            (self.n_row, __) = self.dic_matrices[_matrix_type].shape
 
     def do_delete_column(self, node_id, matrix_type):
         """

@@ -57,7 +57,8 @@ class MatrixManager(RAMSTKMatrixManager):
         # // matrix manager is updated to respond to Hardware module pubsub
         # // messages when the Hardware module is refactored.
         pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
-        pub.subscribe(self._do_create_columns, 'succeed_retrieve_hardware')
+        pub.subscribe(self._do_create_function_matrix_columns,
+                      'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
         # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self._on_insert_function, 'succeed_insert_function')
@@ -65,7 +66,7 @@ class MatrixManager(RAMSTKMatrixManager):
         #              'succeed_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_function_matrix')
 
-    def _do_create_columns(self, tree: treelib.Tree) -> None:
+    def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
         """
         Create the Function data matrix columns.
 

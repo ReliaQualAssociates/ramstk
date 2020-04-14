@@ -294,7 +294,7 @@ class DataManager(RAMSTKDataManager):
         """
         Retrieve all the Function data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes for the selected Revision.
+        :param dict attributes: the attributes for the selected Function.
         :return: None
         :rtype: None
         """
