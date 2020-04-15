@@ -11,5 +11,4 @@
 # from .listview import RequirementHardware as mtxRequirementHardware
 from .moduleview import ModuleView as mvwRequirement
 from .workview import GeneralData as wvwRequirementGD
-
-# from .workview import HazOps as wvwHazOps
+from .workview import RequirementAnalysis as wvwRequirementAnalysis

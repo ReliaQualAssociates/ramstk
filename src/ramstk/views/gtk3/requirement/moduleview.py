@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.requirement.moduleview.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.requirement.moduleview.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -45,7 +46,7 @@ class ModuleView(RAMSTKModuleView):
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=True)
+            to_tty=False)
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = (
@@ -126,12 +127,46 @@ class ModuleView(RAMSTKModuleView):
             'specification': 10,
             'requirement_type': 11,
             'validated': 12,
-            'validated_date': 13
+            'validated_date': 13,
+            'q_clarity_0': 14,
+            'q_clarity_1': 15,
+            'q_clarity_2': 16,
+            'q_clarity_3': 17,
+            'q_clarity_4': 18,
+            'q_clarity_5': 19,
+            'q_clarity_6': 20,
+            'q_clarity_7': 21,
+            'q_clarity_8': 22,
+            'q_complete_0': 23,
+            'q_complete_1': 24,
+            'q_complete_2': 25,
+            'q_complete_3': 26,
+            'q_complete_4': 27,
+            'q_complete_5': 28,
+            'q_complete_6': 29,
+            'q_complete_7': 30,
+            'q_complete_8': 31,
+            'q_complete_9': 32,
+            'q_consistent_0': 33,
+            'q_consistent_1': 34,
+            'q_consistent_2': 35,
+            'q_consistent_3': 36,
+            'q_consistent_4': 37,
+            'q_consistent_5': 38,
+            'q_consistent_6': 39,
+            'q_consistent_7': 40,
+            'q_consistent_8': 41,
+            'q_verifiable_0': 42,
+            'q_verifiable_1': 43,
+            'q_verifiable_2': 44,
+            'q_verifiable_3': 45,
+            'q_verifiable_4': 46,
+            'q_verifiable_5': 47
         })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to delete selected record from the RAMSTKRequirement table.
+        Request to delete selected record from the RAMSTKRequirement table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -157,7 +192,7 @@ class ModuleView(RAMSTKModuleView):
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to update the selected record to the RAMSTKRequirement table.
+        Request to update the selected record to the RAMSTKRequirement table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -165,7 +200,8 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_requirement', node_id=self._requirement_id)
+        pub.sendMessage('request_update_requirement',
+                        node_id=self._requirement_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -297,7 +333,7 @@ class ModuleView(RAMSTKModuleView):
         """
         _model, _row = self.treeview.selection.get_selected()
 
-        if (module == 'requirement' and _row is not None):
+        if module == 'requirement' and _row is not None:
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
             _title = _("Analyzing Requirement {0:s}: {1:s}").format(
@@ -309,8 +345,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Handle events for the Requirement package Module View RAMSTKTreeView().
 
-        This method is called whenever a Requirement Module View RAMSTKTreeView()
-        row is activated/changed.
+        This method is called whenever a Requirement Module View
+        RAMSTKTreeView() row is activated/changed.
 
         :param selection: the Requirement class Gtk.TreeSelection().
         :type selection: :class:`Gtk.TreeSelection`
