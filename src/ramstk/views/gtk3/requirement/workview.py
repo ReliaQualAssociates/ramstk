@@ -105,7 +105,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtValidatedDate = RAMSTKEntry()
 
         self.__set_properties()
-        #self.__load_combobox()
+        self.__load_combobox()
         self.__make_ui()
         self.__set_callbacks()
 
@@ -127,19 +127,16 @@ class GeneralData(RAMSTKWorkView):
         # Load the requirement type Gtk.ComboBox(); each _type is
         # (Code, Description, Type).
         _types = []
-        for _index, _key in enumerate(
-                self.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE):
-            _types.append(
-                self.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key])
+        for _index, _key in enumerate(self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE):
+            _types.append(self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key])
         self.cmbRequirementType.do_load_combo(entries=list(_types),
                                               simple=False)
 
         # Load the owner Gtk.ComboBox(); each _owner is
         # (Description, Group Type).
         _owners = []
-        for _index, _key in enumerate(
-                self.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS):
-            _owners.append(self.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
+        for _index, _key in enumerate(self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS):
+            _owners.append(self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
         self.cmbOwner.do_load_combo(list(_owners))
 
         # Load the priority Gtk.Combo().
@@ -429,7 +426,7 @@ class GeneralData(RAMSTKWorkView):
         _row = combo.get_active_iter()
 
         if _key == 'requirement_type':
-            _new_text = [_model.get_value(_row, 0), _model.get_value(_row, 1)]
+            _new_text = _model.get_value(_row, 1)
         elif _key == 'priority':
             _new_text = int(_model.get_value(_row, 0))
         elif _key == 'owner':

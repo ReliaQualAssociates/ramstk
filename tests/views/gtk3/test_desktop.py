@@ -26,9 +26,13 @@ class TestRAMSTKBook():
     def test_create_basebook(self, test_toml_user_configuration,
                              test_toml_site_configuration):
         """__init__() should create a RAMSTKBook."""
-        DUT = RAMSTKDesktop([test_toml_user_configuration,
-                             test_toml_site_configuration],
-                            RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))
+        test_toml_user_configuration.RAMSTK_REQUIREMENT_TYPE = \
+            test_toml_site_configuration.RAMSTK_REQUIREMENT_TYPE
+        test_toml_user_configuration.RAMSTK_WORKGROUPS = \
+            test_toml_site_configuration.RAMSTK_WORKGROUPS
+        DUT = RAMSTKDesktop(
+            [test_toml_user_configuration, test_toml_site_configuration],
+            RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))
 
         assert isinstance(DUT, RAMSTKDesktop)
         assert isinstance(DUT.RAMSTK_USER_CONFIGURATION,
