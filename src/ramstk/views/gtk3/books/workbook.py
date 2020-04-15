@@ -16,6 +16,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import wvwFunctionGD, wvwHazOps
+from ramstk.views.gtk3.requirement import wvwRequirementGD
 from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -50,7 +51,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                          wvwHazOps(configuration, logger)],
             'requirement':
             [
-                # wvwRequirementGD(configuration),
+                wvwRequirementGD(configuration, logger),
                 # wvwRequirementAnalysis(configuration),
             ],
             'hardware': [

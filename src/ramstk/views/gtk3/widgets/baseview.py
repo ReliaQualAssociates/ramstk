@@ -434,7 +434,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         corresponds to:
 
-            database field name: TreeModel column position
+            database field name: TreeModel default column position
 
         Since both dicts contain the same key values, this method can refresh
         the proper column of the RAMSTKTreeView with the new data.
@@ -1039,6 +1039,10 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _icons = kwargs['icons']
         _tooltips = kwargs['tooltips']
         _callbacks = kwargs['callbacks']
+        try:
+            _y_inc = kwargs['y_inc']
+        except KeyError:
+            _y_inc = 25
 
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
@@ -1056,7 +1060,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _frame.do_set_properties(title=_("General Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 5,
+                                             y_inc=_y_inc)
         _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])

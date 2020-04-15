@@ -213,7 +213,7 @@ class TestCreateControllers():
                                 'request_delete_requirement')
         assert pub.isSubscribed(DUT.do_insert_requirement,
                                 'request_insert_requirement')
-        assert pub.isSubscribed(DUT.do_update_requirement,
+        assert pub.isSubscribed(DUT.do_update,
                                 'request_update_requirement')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_requirements')
@@ -509,11 +509,10 @@ class TestGetterSetter():
         DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_requirement_attributes',
-                        node_id=1,
-                        key='requirement_code',
-                        value='FUNC-0001')
+                        node_id=[1, -1],
+                        package={'requirement_code': 'REQ-0001'})
         assert DUT.do_select(
-            1, table='requirement').requirement_code == 'FUNC-0001'
+            1, table='requirement').requirement_code == 'REQ-0001'
 
     @pytest.mark.unit
     def test_do_set_all_attributes(self, mock_program_dao):
@@ -715,7 +714,7 @@ class TestUpdateMethods():
 
         _requirement = DUT.do_select(1, table='requirement')
         _requirement.description = 'Test Requirement'
-        DUT.do_update_requirement(1)
+        DUT.do_update(1)
 
         DUT.do_select_all(attributes={'revision_id': 1})
         _requirement = DUT.do_select(1, table='requirement')
@@ -734,7 +733,7 @@ class TestUpdateMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_update_requirement(100)
+        DUT.do_update(100)
 
     # TODO: un-skip test_do_update_matrix_manager in test_requirement.py.
     @pytest.mark.skip

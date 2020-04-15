@@ -115,10 +115,18 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_refresh_tree(package, {
-            'requirement_code': 5,
-            'name': 15,
-            'remarks': 17,
-            'safety_critical': 18
+            'derived': 2,
+            'description': 3,
+            'figure_number': 4,
+            'owner': 5,
+            'page_number': 6,
+            'parent_id': 7,
+            'priority': 8,
+            'requirement_code': 9,
+            'specification': 10,
+            'requirement_type': 11,
+            'validated': 12,
+            'validated_date': 13
         })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:

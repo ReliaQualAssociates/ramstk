@@ -7,7 +7,9 @@
 """Requirement Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+# Standard Library Imports\
+from datetime import date
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -52,7 +54,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_delete_requirement,
                       'request_delete_requirement')
         pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')
-        pub.subscribe(self.do_update_requirement, 'request_update_requirement')
+        pub.subscribe(self.do_update, 'request_update_requirement')
         pub.subscribe(self.do_update_all, 'request_update_all_requirements')
         pub.subscribe(self._do_get_attributes,
                       'request_get_requirement_attributes')
@@ -63,6 +65,7 @@ class DataManager(RAMSTKDataManager):
                       'request_set_requirement_attributes')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_requirement_attributes')
+        pub.subscribe(self.do_set_attributes, 'wvw_editing_requirement')
 
     def _do_delete_requirement(self, node_id):
         """
@@ -205,7 +208,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_requirements', tree=self.tree)
 
-    def do_set_all_attributes(self, attributes):
+    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
         """
         Set all the attributes of the record associated with the Module ID.
 
@@ -218,25 +221,34 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(attributes['requirement_id'], _key,
-                                   attributes[_key])
+            self.do_set_attributes(
+                node_id=[attributes['requirement_id'], -1],
+                package={_key: attributes[_key]})
 
-    def do_set_attributes(self, node_id, key, value):
+    def do_set_attributes(self, node_id: List, package: Dict) -> None:
         """
-        Set the attributes of the record associated with the node ID.
+        Set the attributes of the record associated with the Module ID.
 
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
+        :param list node_id: a list of the ID's of the record in the RAMSTK
+            Program database table whose attributes are to be set.  The list
+            is:
+
+                0 - Requirement ID
+
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
+        [[_key, _value]] = package.items()
+
         for _table in ['requirement']:
-            _attributes = self.do_select(node_id,
+            _attributes = self.do_select(node_id[0],
                                          table=_table).get_attributes()
-            if key in _attributes:
-                _attributes[key] = value
+            if _key in _attributes:
+                _attributes[_key] = _value
+
+                if _key == 'validated_date' and not _value:
+                    _attributes[_key] = date.today()
 
                 try:
                     _attributes.pop('revision_id')
@@ -244,10 +256,10 @@ class DataManager(RAMSTKDataManager):
                 except KeyError:
                     pass
 
-                self.do_select(node_id,
+                self.do_select(node_id[0],
                                table=_table).set_attributes(_attributes)
 
-    def do_update_requirement(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with node ID in RAMSTK Program database.
 
