@@ -26,8 +26,12 @@ class TestRAMSTKBook():
     def test_create_basebook(self, test_toml_user_configuration,
                              test_toml_site_configuration):
         """__init__() should create a RAMSTKBook."""
+        test_toml_user_configuration.RAMSTK_AFFINITY_GROUPS = \
+            test_toml_site_configuration.RAMSTK_AFFINITY_GROUPS
         test_toml_user_configuration.RAMSTK_REQUIREMENT_TYPE = \
             test_toml_site_configuration.RAMSTK_REQUIREMENT_TYPE
+        test_toml_user_configuration.RAMSTK_STAKEHOLDERS = \
+            test_toml_site_configuration.RAMSTK_STAKEHOLDERS
         test_toml_user_configuration.RAMSTK_WORKGROUPS = \
             test_toml_site_configuration.RAMSTK_WORKGROUPS
         DUT = RAMSTKDesktop(

@@ -752,7 +752,7 @@ class RAMSTKListView(RAMSTKBaseView):
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param str module: the name of the RAMSTK workflow module.
         """
-        RAMSTKBaseView.__init__(self, configuration, logger, module)
+        super().__init__(configuration, logger, module)
 
         self._module: str = ''
         for __, char in enumerate(module):
@@ -770,8 +770,8 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.matrixview = RAMSTKMatrixView(module=module)
-        self.tab_label = Gtk.Label()
+        self.matrixview: RAMSTKMatrixView = RAMSTKMatrixView(module=module)
+        self.tab_label: Gtk.Label = Gtk.Label()
 
         self.__set_properties()
 
