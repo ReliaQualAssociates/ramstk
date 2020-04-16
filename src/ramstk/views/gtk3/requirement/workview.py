@@ -18,8 +18,9 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox, RAMSTKDateSelect,
-    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView
+    RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox,
+    RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
+    RAMSTKTextView, RAMSTKWorkView, do_make_buttonbox
 )
 
 
@@ -166,7 +167,7 @@ class GeneralData(RAMSTKWorkView):
                                                'for the selected '
                                                'requirement.')],
                                    callbacks=[self._do_request_create_code])
-
+        print(_y_pos)
         # self.txtName has a height of 100 so the labels need adjusted.
         # The first two labels will be properly placed and the last widget
         # is the common RAMSTKEntry() widget that we don't want to move.
@@ -801,7 +802,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
         _scrolledwindow.add_with_viewport(
-            super().make_buttonbox(icons=[], tooltips=[], callbacks=[]))
+            do_make_buttonbox(self, icons=[], tooltips=[], callbacks=[]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
         _hpaned = Gtk.HPaned()

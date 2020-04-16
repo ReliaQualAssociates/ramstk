@@ -570,39 +570,6 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
 
-    def make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:
-        """
-        Create the Gtk.ButtonBox() for the Work Views.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Work View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        try:
-            _icons = kwargs['icons']
-        except KeyError:
-            _icons = []
-        try:
-            _tooltips = kwargs['tooltips']
-        except KeyError:
-            _tooltips = []
-        try:
-            _callbacks = kwargs['callbacks']
-        except KeyError:
-            _callbacks = []
-
-        # do_make_buttonbox always adds the save and save-all options to the
-        # end of the list of callbacks, icons, and tooltips that are passed to
-        # this method.
-        _buttonbox = do_make_buttonbox(self,
-                                       icons=_icons,
-                                       tooltips=_tooltips,
-                                       callbacks=_callbacks,
-                                       orientation='vertical',
-                                       height=-1,
-                                       width=-1)
-
-        return _buttonbox
-
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """
         Handle mouse clicks on the View's RTKTreeView().
@@ -826,7 +793,7 @@ class RAMSTKListView(RAMSTKBaseView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(super().make_buttonbox(**kwargs))
+        _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
         self.hbx_tab_label.pack_end(self.tab_label, True, True, 0)
@@ -1042,20 +1009,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
 
-    # // TODO: Remove reference in workviews to _make_buttonbox() method.
-    # //
-    # // In each workflow module's work view, remove any reference to
-    # // _make_buttonbox() and replace it with the RAMSTKBaseView
-    # // make_buttonbox() method call.
-    def _make_buttonbox(self, **kwargs: Any) -> Gtk.ButtonBox:
-        """
-        Create the Gtk.ButtonBox() for the Work Views.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Work View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        return super().make_buttonbox(**kwargs)
-
     def make_ui(self, **kwargs: Any) -> Tuple[int, List[int], Gtk.Fixed]:
         """
         Make the Function class Gtk.Notebook() general data page.
@@ -1073,8 +1026,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            self._make_buttonbox(**kwargs))
+        _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
         _fixed = Gtk.Fixed()
