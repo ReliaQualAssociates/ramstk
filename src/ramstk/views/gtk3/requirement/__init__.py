@@ -8,7 +8,8 @@
 """The RAMSTK GTK3 revision package."""
 
 # RAMSTK Local Imports
-# from .listview import RequirementHardware as mtxRequirementHardware
+from .listview import RequirementHardware as mtxRequirementHardware
+from .listview import Stakeholders as lvwStakeholders
 from .moduleview import ModuleView as mvwRequirement
 from .workview import GeneralData as wvwRequirementGD
 from .workview import RequirementAnalysis as wvwRequirementAnalysis

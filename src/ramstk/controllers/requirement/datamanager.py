@@ -33,9 +33,9 @@ class DataManager(RAMSTKDataManager):
     _tag = 'requirement'
     _root = 0
 
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, **kwargs):
         """Initialize a Requirement data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
 

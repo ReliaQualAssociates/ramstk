@@ -710,6 +710,36 @@ class RAMSTKBaseView(Gtk.HBox):
                         key=_key,
                         value=_new_text)
 
+    def on_insert(self, data: Any, prow: Gtk.TreeIter = None) -> None:
+        """
+        Add row to module view for newly added work stream element.
+
+        :param data: the data package for the work stream element to add.
+        :param prow: the parent row in the treeview.
+        :type prow: :class:`Gtk.TreeIter`
+        :return: None
+        :rtype: None
+        """
+        _attributes = []
+        _model = self.treeview.get_model()
+
+        for _key in self.treeview.korder:
+            if _key == 'dict':
+                _attributes.append(str(data))
+            else:
+                try:
+                    if isinstance(data[_key], datetime.date):
+                        data[_key] = data[_key].strftime("%Y-%m-%d")
+                    data[_key] = data[_key].decode('utf-8')
+                except (AttributeError, KeyError) as _error:
+                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+                _attributes.append(data[_key])
+
+        _row = _model.append(prow, _attributes)
+
+        self.treeview.selection.select_iter(_row)
+
     def on_select_revision(self, attributes: Dict[str, Any]) -> None:
         """
         Set the Revision ID when a new Revision is selected.
@@ -972,36 +1002,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
                                        icons=_icons,
                                        labels=_labels,
                                        callbacks=_callbacks)
-
-    def on_insert(self, data: Any, prow: Gtk.TreeIter = None) -> None:
-        """
-        Add row to module view for newly added work stream element.
-
-        :param data: the data package for the work stream element to add.
-        :param prow: the parent row in the treeview.
-        :type prow: :class:`Gtk.TreeIter`
-        :return: None
-        :rtype: None
-        """
-        _attributes = []
-        _model = self.treeview.get_model()
-
-        for _key in self.treeview.korder:
-            if _key == 'dict':
-                _attributes.append(str(data))
-            else:
-                try:
-                    if isinstance(data[_key], datetime.date):
-                        data[_key] = data[_key].strftime("%Y-%m-%d")
-                    data[_key] = data[_key].decode('utf-8')
-                except (AttributeError, KeyError) as _error:
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-                _attributes.append(data[_key])
-
-        _row = _model.append(prow, _attributes)
-
-        self.treeview.selection.select_iter(_row)
 
 
 class RAMSTKWorkView(RAMSTKBaseView):
