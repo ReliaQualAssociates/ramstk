@@ -23,3 +23,9 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
     def handler_unblock(self, param):
         pass
+
+    def get_model(self) -> object:
+        pass
+
+    def get_active_iter(self) -> object:
+        pass

@@ -354,108 +354,36 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _attributes = {}
+        _key_index = {'revision_id': 0, 'requirement_id': 1, 'derived': 2,
+                      'description': 3, 'figure_number': 4, 'owner': 5,
+                      'page_number': 6, 'parent_id': 7, 'priority': 8,
+                      'requirement_code': 9, 'specification': 10,
+                      'requirement_type': 11, 'validated': 12,
+                      'validated_date': 13, 'q_clarity_0': 14,
+                      'q_clarity_1': 15, 'q_clarity_2': 16, 'q_clarity_3': 17,
+                      'q_clarity_4': 18, 'q_clarity_5': 19, 'q_clarity_6': 20,
+                      'q_clarity_7': 21, 'q_clarity_8': 22, 'q_complete_0': 23,
+                      'q_complete_1': 24, 'q_complete_2': 25,
+                      'q_complete_3': 26, 'q_complete_4': 27,
+                      'q_complete_5': 28, 'q_complete_6': 29,
+                      'q_complete_7': 30, 'q_complete_8': 31,
+                      'q_complete_9': 32, 'q_consistent_0': 33,
+                      'q_consistent_1': 34, 'q_consistent_2': 35,
+                      'q_consistent_3': 36, 'q_consistent_4': 37,
+                      'q_consistent_5': 38, 'q_consistent_6': 39,
+                      'q_consistent_7': 40, 'q_consistent_8': 41,
+                      'q_verifiable_0': 42, 'q_verifiable_1': 43,
+                      'q_verifiable_2': 44, 'q_verifiable_3': 45,
+                      'q_verifiable_4': 46, 'q_verifiable_5': 47}
 
         selection.handler_block(self._lst_handler_id[0])
 
         _model, _row = selection.get_selected()
 
         if _row is not None:
-            _attributes['revision_id'] = _model.get_value(
-                _row, self._lst_col_order[0])
-            _attributes['requirement_id'] = _model.get_value(
-                _row, self._lst_col_order[1])
-            _attributes['derived'] = _model.get_value(
-                _row, self._lst_col_order[2])
-            _attributes['description'] = _model.get_value(
-                _row, self._lst_col_order[3])
-            _attributes['figure_number'] = _model.get_value(
-                _row, self._lst_col_order[4])
-            _attributes['owner'] = _model.get_value(
-                _row, self._lst_col_order[5])
-            _attributes['page_number'] = _model.get_value(
-                _row, self._lst_col_order[6])
-            _attributes['parent_id'] = _model.get_value(
-                _row, self._lst_col_order[7])
-            _attributes['priority'] = _model.get_value(
-                _row, self._lst_col_order[8])
-            _attributes['requirement_code'] = _model.get_value(
-                _row, self._lst_col_order[9])
-            _attributes['specification'] = _model.get_value(
-                _row, self._lst_col_order[10])
-            _attributes['requirement_type'] = _model.get_value(
-                _row, self._lst_col_order[11])
-            _attributes['validated'] = _model.get_value(
-                _row, self._lst_col_order[12])
-            _attributes['validated_date'] = _model.get_value(
-                _row, self._lst_col_order[13])
-            _attributes['q_clarity_0'] = _model.get_value(
-                _row, self._lst_col_order[14])
-            _attributes['q_clarity_1'] = _model.get_value(
-                _row, self._lst_col_order[15])
-            _attributes['q_clarity_2'] = _model.get_value(
-                _row, self._lst_col_order[16])
-            _attributes['q_clarity_3'] = _model.get_value(
-                _row, self._lst_col_order[17])
-            _attributes['q_clarity_4'] = _model.get_value(
-                _row, self._lst_col_order[18])
-            _attributes['q_clarity_5'] = _model.get_value(
-                _row, self._lst_col_order[19])
-            _attributes['q_clarity_6'] = _model.get_value(
-                _row, self._lst_col_order[20])
-            _attributes['q_clarity_7'] = _model.get_value(
-                _row, self._lst_col_order[21])
-            _attributes['q_clarity_8'] = _model.get_value(
-                _row, self._lst_col_order[22])
-            _attributes['q_complete_0'] = _model.get_value(
-                _row, self._lst_col_order[23])
-            _attributes['q_complete_1'] = _model.get_value(
-                _row, self._lst_col_order[24])
-            _attributes['q_complete_2'] = _model.get_value(
-                _row, self._lst_col_order[25])
-            _attributes['q_complete_3'] = _model.get_value(
-                _row, self._lst_col_order[26])
-            _attributes['q_complete_4'] = _model.get_value(
-                _row, self._lst_col_order[27])
-            _attributes['q_complete_5'] = _model.get_value(
-                _row, self._lst_col_order[28])
-            _attributes['q_complete_6'] = _model.get_value(
-                _row, self._lst_col_order[29])
-            _attributes['q_complete_7'] = _model.get_value(
-                _row, self._lst_col_order[30])
-            _attributes['q_complete_8'] = _model.get_value(
-                _row, self._lst_col_order[31])
-            _attributes['q_complete_9'] = _model.get_value(
-                _row, self._lst_col_order[32])
-            _attributes['q_consistent_0'] = _model.get_value(
-                _row, self._lst_col_order[33])
-            _attributes['q_consistent_1'] = _model.get_value(
-                _row, self._lst_col_order[34])
-            _attributes['q_consistent_2'] = _model.get_value(
-                _row, self._lst_col_order[35])
-            _attributes['q_consistent_3'] = _model.get_value(
-                _row, self._lst_col_order[36])
-            _attributes['q_consistent_4'] = _model.get_value(
-                _row, self._lst_col_order[37])
-            _attributes['q_consistent_5'] = _model.get_value(
-                _row, self._lst_col_order[38])
-            _attributes['q_consistent_6'] = _model.get_value(
-                _row, self._lst_col_order[39])
-            _attributes['q_consistent_7'] = _model.get_value(
-                _row, self._lst_col_order[40])
-            _attributes['q_consistent_8'] = _model.get_value(
-                _row, self._lst_col_order[41])
-            _attributes['q_verifiable_0'] = _model.get_value(
-                _row, self._lst_col_order[42])
-            _attributes['q_verifiable_1'] = _model.get_value(
-                _row, self._lst_col_order[43])
-            _attributes['q_verifiable_2'] = _model.get_value(
-                _row, self._lst_col_order[44])
-            _attributes['q_verifiable_3'] = _model.get_value(
-                _row, self._lst_col_order[45])
-            _attributes['q_verifiable_4'] = _model.get_value(
-                _row, self._lst_col_order[46])
-            _attributes['q_verifiable_5'] = _model.get_value(
-                _row, self._lst_col_order[47])
+            for _key in _key_index:
+                _attributes[_key] = _model.get_value(
+                    _row, self._lst_col_order[_key_index[_key]])
 
             self._requirement_id = _attributes['requirement_id']
             self._parent_id = _attributes['parent_id']

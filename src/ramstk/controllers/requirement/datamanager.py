@@ -66,6 +66,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_requirement_attributes')
         pub.subscribe(self.do_set_attributes, 'wvw_editing_requirement')
+        pub.subscribe(self.do_create_code, 'request_create_requirement_code')
+        pub.subscribe(self.do_create_all_codes,
+                      'request_create_all_requirement_codes')
 
     def _do_delete_requirement(self, node_id):
         """
@@ -106,6 +109,29 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_get_requirement_attributes',
                         attributes=_attributes)
+
+    def do_create_code(self, node_id: int, prefix: str) -> None:
+        """
+        Request to create the requirement code.
+
+        :param int node_id: the Requirement ID to create the code for.
+        :param str prefix: the code prefix to use for the requested code.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _requirement = self.tree.get_node(node_id).data['requirement']
+            _requirement.create_code(prefix=prefix)
+
+            pub.sendMessage('succeed_create_requirement_code',
+                            requirement_code=_requirement.get_attributes()[
+                                'requirement_code'])
+        except TypeError:
+            if node_id != 0:
+                pub.sendMessage('fail_create_requirement_code',
+                                error_message=('No data package found for '
+                                               'requirement ID {0:s}.').format(
+                                                   str(node_id)))
 
     def do_get_all_attributes(self, node_id):
         """
@@ -152,10 +178,12 @@ class DataManager(RAMSTKDataManager):
             parent_id = self._root
 
         try:
-            _requirement = RAMSTKRequirement(revision_id=self._revision_id,
-                                             requirement_id=self.last_id + 1,
-                                             parent_id=parent_id,
-                                             description='New Requirement')
+            _requirement = RAMSTKRequirement()
+            _requirement.revision_id = self._revision_id
+            _requirement.requirement_id = self.last_id + 1
+            _requirement.parent_id = parent_id
+            _requirement.description = 'New Requirement'
+
             self.dao.do_insert(_requirement)
 
             self.last_id = _requirement.requirement_id
@@ -178,8 +206,8 @@ class DataManager(RAMSTKDataManager):
                             error_message=("Failed to insert requirement into "
                                            "program dabase."))
 
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:  # pylint:
-        # disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the Requirement data from the RAMSTK Program database.
 

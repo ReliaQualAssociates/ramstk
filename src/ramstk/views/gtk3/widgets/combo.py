@@ -154,3 +154,20 @@ class RAMSTKComboBox(Gtk.ComboBox):
             if _value == value:
                 self.set_active(int(_key))
         self.handler_unblock(handler_id)
+
+    def get_value(self, index: int = 0) -> str:
+        """
+        Return the value in the RAMSTKComboBox model at the index position.
+
+        :keyword int index: the column in the RAMSTKComboBox() model whose
+            value is to be retrieved.  Defaults to zero which will always
+            read a 'simple' RAMSTKComboBox().
+        :return: _value
+        :rtype: str
+        """
+        _model: object = self.get_model()
+        _row: object = self.get_active_iter()
+
+        _value: str = _model.get_value(_row, index)
+
+        return _value

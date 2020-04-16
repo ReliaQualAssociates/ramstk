@@ -76,6 +76,9 @@ class GeneralData(RAMSTKWorkView):
             to_tty=True)
 
         # Initialize private dictionary attributes.
+        self._dic_icons['create_code'] = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/create_code.png')
 
         # Initialize private list attributes.
 
@@ -112,6 +115,7 @@ class GeneralData(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_requirement')
+        pub.subscribe(self._do_load_code, 'succeed_create_requirement_code')
         pub.subscribe(self._on_edit, 'mvw_editing_requirement')
 
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
@@ -155,14 +159,17 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         _lst_tweak = [75, 75, 85, 85, 85, 95, 95, 95, 105, 105]
-        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[],
-                                                   tooltips=[],
-                                                   callbacks=[])
+        (_x_pos,
+         _y_pos,
+         _fixed) = super().make_ui(icons=['create_code'],
+                                   tooltips=[_('Automatically create code '
+                                               'for the selected '
+                                               'requirement.')],
+                                   callbacks=[self._do_request_create_code])
 
         # self.txtName has a height of 100 so the labels need adjusted.
-        # The first two labels will be properly placed and the last two
-        # widgets are the common RAMSTKEntry() widgets that we don't want to
-        # move.
+        # The first two labels will be properly placed and the last widget
+        # is the common RAMSTKEntry() widget that we don't want to move.
         for _idx, _label in enumerate(_fixed.get_children()[2:-1]):
             _fixed.move(_label, 5, _y_pos[_idx + 2] + _lst_tweak[_idx])
 
@@ -290,15 +297,15 @@ class GeneralData(RAMSTKWorkView):
         self.chkValidated.do_update(False, self._lst_handler_id[9])
         self.txtValidatedDate.do_update('', self._lst_handler_id[10])
 
-    def _do_load_code(self, code):
+    def _do_load_code(self, requirement_code: int) -> None:
         """
         Load the Requirement code RAMSTKEntry().
 
-        :param str code: the Requirement code to load.
+        :param str requirement_code: the Requirement code to load.
         :return: None
         :rtype: None
         """
-        self.txtCode.do_update(str(code), self._lst_handler_id[0])
+        self.txtCode.do_update(str(requirement_code), self._lst_handler_id[0])
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -337,6 +344,23 @@ class GeneralData(RAMSTKWorkView):
         else:
             self.txtValidatedDate.do_update("", self._lst_handler_id[10])
 
+    def _do_request_create_code(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request that requirement codes be built.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :py:class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        _prefix = self.cmbRequirementType.get_value()
+
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_create_requirement_code',
+                        node_id=self._requirement_id,
+                        prefix=_prefix)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
         Request to save the currently selected Requirement.
@@ -349,6 +373,7 @@ class GeneralData(RAMSTKWorkView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_requirement',
                         node_id=self._requirement_id)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """

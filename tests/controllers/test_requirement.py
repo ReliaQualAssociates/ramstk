@@ -161,7 +161,10 @@ class MockDao:
 
         return self._all_requirements
 
-    def do_select_all(self, table, key=None, value=None,
+    def do_select_all(self,
+                      table,
+                      key=None,
+                      value=None,
                       order=None,
                       _all=False):
         if table == RAMSTKRequirement:
@@ -190,6 +193,7 @@ class MockDao:
         if table == 'ramstk_requirement':
             return max(MOCK_REQUIREMENTS.keys())
 
+
 @pytest.fixture
 def mock_program_dao(monkeypatch):
     yield MockDao()
@@ -213,8 +217,7 @@ class TestCreateControllers():
                                 'request_delete_requirement')
         assert pub.isSubscribed(DUT.do_insert_requirement,
                                 'request_insert_requirement')
-        assert pub.isSubscribed(DUT.do_update,
-                                'request_update_requirement')
+        assert pub.isSubscribed(DUT.do_update, 'request_update_requirement')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_requirements')
         assert pub.isSubscribed(DUT._do_get_attributes,
@@ -227,6 +230,10 @@ class TestCreateControllers():
                                 'request_set_requirement_attributes')
         assert pub.isSubscribed(DUT.do_set_all_attributes,
                                 'request_set_all_requirement_attributes')
+        assert pub.isSubscribed(DUT.do_set_attributes,
+                                'wvw_editing_requirement')
+        assert pub.isSubscribed(DUT.do_create_code,
+                                'request_create_requirement_code')
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -479,6 +486,11 @@ class TestGetterSetter():
             dmtree.get_node(1).data['requirement'], RAMSTKRequirement)
         print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
 
+    def on_succeed_create_requirement_code(self, requirement_code):
+        assert requirement_code == 'DOYLE-0001'
+        print("\033[36m\nsucceed_create_requirement_code topic was "
+              "broadcast")
+
     @pytest.mark.unit
     def test_do_get_attributes_requirement(self, mock_program_dao):
         """_do_get_attributes() should return a dict of requirement attributes on success."""
@@ -549,6 +561,35 @@ class TestGetterSetter():
 
         pub.unsubscribe(self.on_succeed_get_requirement_tree,
                         'succeed_get_requirement_tree')
+
+    @pytest.mark.unit
+    def test_do_create_requirement_code(self, mock_program_dao):
+        """do_create_requirement_code() should return"""
+        pub.subscribe(self.on_succeed_create_requirement_code,
+                      'succeed_create_requirement_code')
+
+        DUT = dmRequirement()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('request_create_requirement_code',
+                        node_id=1,
+                        prefix="DOYLE")
+
+        pub.unsubscribe(self.on_succeed_create_requirement_code,
+                      'succeed_create_requirement_code')
+
+    @pytest.mark.unit
+    def test_do_create_all_requirement_codes(self, mock_program_dao):
+        """do_create_requirement_code() should return"""
+        DUT = dmRequirement()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('request_create_all_requirement_codes', prefix="DOYLE")
+
+        assert DUT.tree.get_node(
+            2).data['requirement'].requirement_code == 'DOYLE-0002'
 
 
 class TestInsertMethods():

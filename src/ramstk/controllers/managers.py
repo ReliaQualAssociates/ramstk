@@ -199,6 +199,17 @@ class RAMSTKDataManager():
         """
         self.dao = dao
 
+    def do_create_all_codes(self, prefix: str) -> None:
+        """
+        Create codes for all MODULE data table records.
+
+        :param str prefix: the string to use as a prefix for each code.
+        :return: None
+        :rtype: None
+        """
+        for _node in self.tree.all_nodes():
+            self.do_create_code(_node.identifier, prefix)
+
     def do_delete(self, node_id, table):
         """
         Remove a RAMSTK data table record.

@@ -82,14 +82,14 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False,
+        nullable=False
     )
     requirement_id = Column(
         'fld_requirement_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False,
+        nullable=False
     )
 
     derived = Column('fld_derived', Integer, default=__defaults__['derived'])
@@ -305,21 +305,19 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
             'q_verifiable_2': self.q_verifiable_2,
             'q_verifiable_3': self.q_verifiable_3,
             'q_verifiable_4': self.q_verifiable_4,
-            'q_verifiable_5': self.q_verifiable_5,
+            'q_verifiable_5': self.q_verifiable_5
         }
 
         return _attributes
 
-    def create_code(self, prefix):
+    def create_code(self, prefix: str) -> None:
         """
         Create the Requirement code based on the requirement type and it's ID.
 
         :param str prefix: the prefix to use for the Requirement code.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         # Pad the suffix (Requirement ID) with zeros so the suffix is four
         # characters wide and then create the code.
         _zeds = 4 - len(str(self.requirement_id))
@@ -327,5 +325,3 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
         _code = '{0:s}-{1:s}{2:d}'.format(prefix, _pad, self.requirement_id)
 
         self.requirement_code = str(none_to_default(_code, ''))
-
-        return _return
