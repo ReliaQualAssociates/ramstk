@@ -800,10 +800,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
         _scrolledwindow.add_with_viewport(
-            RAMSTKWorkView._make_buttonbox(self,
-                                           icons=[],
-                                           tooltips=[],
-                                           callbacks=[]))
+            super().make_buttonbox(icons=[], tooltips=[], callbacks=[]))
         self.pack_start(_scrolledwindow, False, False, 0)
 
         _hpaned = Gtk.HPaned()

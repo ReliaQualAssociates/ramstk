@@ -123,7 +123,12 @@ def the_one_ring() -> None:
     # this information available without refactoring all the views to pass
     # the site configuration object in addition to the user configuration
     # object.
-    user_configuration.RAMSTK_REQUIREMENT_TYPE = site_configuration.RAMSTK_REQUIREMENT_TYPE
+    user_configuration.RAMSTK_AFFINITY_GROUPS = \
+        site_configuration.RAMSTK_AFFINITY_GROUPS
+    user_configuration.RAMSTK_REQUIREMENT_TYPE = \
+        site_configuration.RAMSTK_REQUIREMENT_TYPE
+    user_configuration.RAMSTK_STAKEHOLDERS = \
+        site_configuration.RAMSTK_STAKEHOLDERS
     user_configuration.RAMSTK_WORKGROUPS = site_configuration.RAMSTK_WORKGROUPS
 
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")

@@ -12,7 +12,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKListView, do_make_buttonbox
+from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 class FunctionHardware(RAMSTKListView):
@@ -55,30 +55,6 @@ class FunctionHardware(RAMSTKListView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_matrix, 'succeed_load_matrix')
 
-    def __make_buttonbox(self) -> Gtk.ButtonBox:
-        """
-        Make the buttonbox for the Failure Definition List View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Failure Definition
-            List View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Refresh the matrix view.")
-        ]
-        _callbacks = [self._do_request_refresh]
-        _icons = ['refresh-view']
-
-        _buttonbox = do_make_buttonbox(self,
-                                       icons=_icons,
-                                       tooltips=_tooltips,
-                                       callbacks=_callbacks,
-                                       orientation='vertical',
-                                       height=-1,
-                                       width=-1)
-
-        return _buttonbox
-
     def __make_ui(self) -> None:
         """
         Build the user interface.
@@ -95,9 +71,10 @@ class FunctionHardware(RAMSTKListView):
             _("Displays the Function-Hardware matrix for the selected "
               "revision."))
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-
-        super().make_ui(vtype='matrix')
+        super().make_ui(vtype='matrix',
+                        icons=['refresh-view'],
+                        tooltips=[_("Refresh the matrix view.")],
+                        callbacks=[self._do_request_refresh])
 
     def __set_properties(self) -> None:
         """

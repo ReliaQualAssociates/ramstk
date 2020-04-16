@@ -53,6 +53,7 @@ class ModuleView(RAMSTKModuleView):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/requirement.png')
         self._dic_key_index = {
+            'requirement_id': 1,
             'derived': 2,
             'description': 3,
             'figure_number': 4,
