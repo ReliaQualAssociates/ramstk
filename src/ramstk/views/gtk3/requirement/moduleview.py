@@ -52,6 +52,54 @@ class ModuleView(RAMSTKModuleView):
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/requirement.png')
+        self._dic_key_index = {
+            'derived': 2,
+            'description': 3,
+            'figure_number': 4,
+            'owner': 5,
+            'page_number': 6,
+            'parent_id': 7,
+            'priority': 8,
+            'requirement_code': 9,
+            'specification': 10,
+            'requirement_type': 11,
+            'validated': 12,
+            'validated_date': 13,
+            'q_clarity_0': 14,
+            'q_clarity_1': 15,
+            'q_clarity_2': 16,
+            'q_clarity_3': 17,
+            'q_clarity_4': 18,
+            'q_clarity_5': 19,
+            'q_clarity_6': 20,
+            'q_clarity_7': 21,
+            'q_clarity_8': 22,
+            'q_complete_0': 23,
+            'q_complete_1': 24,
+            'q_complete_2': 25,
+            'q_complete_3': 26,
+            'q_complete_4': 27,
+            'q_complete_5': 28,
+            'q_complete_6': 29,
+            'q_complete_7': 30,
+            'q_complete_8': 31,
+            'q_complete_9': 32,
+            'q_consistent_0': 33,
+            'q_consistent_1': 34,
+            'q_consistent_2': 35,
+            'q_consistent_3': 36,
+            'q_consistent_4': 37,
+            'q_consistent_5': 38,
+            'q_consistent_6': 39,
+            'q_consistent_7': 40,
+            'q_consistent_8': 41,
+            'q_verifiable_0': 42,
+            'q_verifiable_1': 43,
+            'q_verifiable_2': 44,
+            'q_verifiable_3': 45,
+            'q_verifiable_4': 46,
+            'q_verifiable_5': 47
+        }
 
         # Initialize private list attributes.
 
@@ -103,6 +151,7 @@ class ModuleView(RAMSTKModuleView):
         self.treeview.do_set_editable_columns(self._on_cell_edit)
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
@@ -115,54 +164,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_refresh_tree(package, {
-            'derived': 2,
-            'description': 3,
-            'figure_number': 4,
-            'owner': 5,
-            'page_number': 6,
-            'parent_id': 7,
-            'priority': 8,
-            'requirement_code': 9,
-            'specification': 10,
-            'requirement_type': 11,
-            'validated': 12,
-            'validated_date': 13,
-            'q_clarity_0': 14,
-            'q_clarity_1': 15,
-            'q_clarity_2': 16,
-            'q_clarity_3': 17,
-            'q_clarity_4': 18,
-            'q_clarity_5': 19,
-            'q_clarity_6': 20,
-            'q_clarity_7': 21,
-            'q_clarity_8': 22,
-            'q_complete_0': 23,
-            'q_complete_1': 24,
-            'q_complete_2': 25,
-            'q_complete_3': 26,
-            'q_complete_4': 27,
-            'q_complete_5': 28,
-            'q_complete_6': 29,
-            'q_complete_7': 30,
-            'q_complete_8': 31,
-            'q_complete_9': 32,
-            'q_consistent_0': 33,
-            'q_consistent_1': 34,
-            'q_consistent_2': 35,
-            'q_consistent_3': 36,
-            'q_consistent_4': 37,
-            'q_consistent_5': 38,
-            'q_consistent_6': 39,
-            'q_consistent_7': 40,
-            'q_consistent_8': 41,
-            'q_verifiable_0': 42,
-            'q_verifiable_1': 43,
-            'q_verifiable_2': 44,
-            'q_verifiable_3': 45,
-            'q_verifiable_4': 46,
-            'q_verifiable_5': 47
-        })
+        self.do_refresh_tree(package, self._dic_key_index)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -354,36 +356,15 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _attributes = {}
-        _key_index = {'revision_id': 0, 'requirement_id': 1, 'derived': 2,
-                      'description': 3, 'figure_number': 4, 'owner': 5,
-                      'page_number': 6, 'parent_id': 7, 'priority': 8,
-                      'requirement_code': 9, 'specification': 10,
-                      'requirement_type': 11, 'validated': 12,
-                      'validated_date': 13, 'q_clarity_0': 14,
-                      'q_clarity_1': 15, 'q_clarity_2': 16, 'q_clarity_3': 17,
-                      'q_clarity_4': 18, 'q_clarity_5': 19, 'q_clarity_6': 20,
-                      'q_clarity_7': 21, 'q_clarity_8': 22, 'q_complete_0': 23,
-                      'q_complete_1': 24, 'q_complete_2': 25,
-                      'q_complete_3': 26, 'q_complete_4': 27,
-                      'q_complete_5': 28, 'q_complete_6': 29,
-                      'q_complete_7': 30, 'q_complete_8': 31,
-                      'q_complete_9': 32, 'q_consistent_0': 33,
-                      'q_consistent_1': 34, 'q_consistent_2': 35,
-                      'q_consistent_3': 36, 'q_consistent_4': 37,
-                      'q_consistent_5': 38, 'q_consistent_6': 39,
-                      'q_consistent_7': 40, 'q_consistent_8': 41,
-                      'q_verifiable_0': 42, 'q_verifiable_1': 43,
-                      'q_verifiable_2': 44, 'q_verifiable_3': 45,
-                      'q_verifiable_4': 46, 'q_verifiable_5': 47}
 
         selection.handler_block(self._lst_handler_id[0])
 
         _model, _row = selection.get_selected()
 
         if _row is not None:
-            for _key in _key_index:
+            for _key in self._dic_key_index:
                 _attributes[_key] = _model.get_value(
-                    _row, self._lst_col_order[_key_index[_key]])
+                    _row, self._lst_col_order[self._dic_key_index[_key]])
 
             self._requirement_id = _attributes['requirement_id']
             self._parent_id = _attributes['parent_id']

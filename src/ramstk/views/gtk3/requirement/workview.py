@@ -415,6 +415,7 @@ class GeneralData(RAMSTKWorkView):
         return _date
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _do_set_cursor_active(self, error_message: str) -> None:
         """
         Returns the cursor to the active cursor on a fail message.
@@ -1060,6 +1061,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _do_set_cursor_active(self, error_message: str) -> None:
         """
         Returns the cursor to the active cursor on a fail message.

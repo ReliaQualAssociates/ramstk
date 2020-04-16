@@ -70,7 +70,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_create_all_codes,
                       'request_create_all_requirement_codes')
 
-    def _do_delete_requirement(self, node_id):
+    def _do_delete_requirement(self, node_id: int) -> None:
         """
         Remove a requirement.
 
@@ -94,7 +94,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('fail_delete_requirement',
                             error_message=_error_msg)
 
-    def _do_get_attributes(self, node_id, table):
+    def _do_get_attributes(self, node_id: int, table: str) -> None:
         """
         Retrieve the RAMSTK data table attributes for the requirement.
 
@@ -133,7 +133,7 @@ class DataManager(RAMSTKDataManager):
                                                'requirement ID {0:s}.').format(
                                                    str(node_id)))
 
-    def do_get_all_attributes(self, node_id):
+    def do_get_all_attributes(self, node_id: int) -> None:
         """
         Retrieve all RAMSTK data tables' attributes for the requirement.
 
@@ -154,7 +154,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_requirement_attributes',
                         attributes=_attributes)
 
-    def do_get_tree(self):
+    def do_get_tree(self) -> None:
         """
         Retrieve the requirement treelib Tree.
 
@@ -164,7 +164,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
     # pylint: disable=arguments-differ
-    def do_insert_requirement(self, parent_id=None):
+    def do_insert_requirement(self, parent_id=None) -> None:
         """
         Add a new requirement.
 
@@ -253,7 +253,8 @@ class DataManager(RAMSTKDataManager):
                 node_id=[attributes['requirement_id'], -1],
                 package={_key: attributes[_key]})
 
-    def do_set_attributes(self, node_id: List, package: Dict) -> None:
+    def do_set_attributes(self, node_id: List,
+                          package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -287,7 +288,7 @@ class DataManager(RAMSTKDataManager):
                 self.do_select(node_id[0],
                                table=_table).set_attributes(_attributes)
 
-    def do_update(self, node_id):
+    def do_update(self, node_id: int) -> None:
         """
         Update the record associated with node ID in RAMSTK Program database.
 
