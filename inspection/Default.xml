@@ -23,7 +23,7 @@
     <option name="myIgnoreTupleInReturn" value="true" />
     <option name="myIgnoreEmptyBaseClasses" value="true" />
   </inspection_tool>
-  <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+  <inspection_tool class="PyUnresolvedReferencesInspection" enabled="false" level="WARNING" enabled_by_default="false">
     <option name="ignoredIdentifiers">
       <list>
         <option value="gi.repository.GObject.*" />
