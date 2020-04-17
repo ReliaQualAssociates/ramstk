@@ -8,7 +8,7 @@
 """RAMSTK Requirement GTK3 module view."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -19,7 +19,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView, do_make_buttonbox
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView
 )
 
 
@@ -105,7 +105,6 @@ class ModuleView(RAMSTKModuleView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._requirement_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -129,27 +128,17 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            do_make_buttonbox(
-                self,
-                icons=['insert_sibling', 'insert_child', 'remove'],
-                tooltips=[
-                    _("Add a new sibling requirement."),
-                    _("Add a new child requirement."),
-                    _("Remove the currently selected requirement.")
-                ],
-                callbacks=[
-                    self.do_request_insert_sibling,
-                    self.do_request_insert_child, self._do_request_delete
-                ]))
-        self.pack_start(_scrolledwindow, False, False, 0)
-
-        super().make_ui()
-
-        self.treeview.do_set_editable_columns(self._on_cell_edit)
+        super().make_ui(icons=['insert_sibling', 'insert_child', 'remove'],
+                        tooltips=[
+                            _("Add a new sibling requirement."),
+                            _("Add a new child requirement."),
+                            _("Remove the currently selected requirement.")
+                        ],
+                        callbacks=[
+                            self.do_request_insert_sibling,
+                            self.do_request_insert_child,
+                            self._do_request_delete
+                        ])
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -180,7 +169,7 @@ class ModuleView(RAMSTKModuleView):
         ).get_parent()
         _prompt = _("You are about to delete Requirement {0:d} and all "
                     "data associated with it.  Is this really what "
-                    "you want to do?").format(self._requirement_id)
+                    "you want to do?").format(self._record_id)
         _dialog = RAMSTKMessageDialog(_prompt,
                                       self._dic_icons['question'],
                                       'question',
@@ -189,7 +178,7 @@ class ModuleView(RAMSTKModuleView):
 
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_requirement',
-                            node_id=self._requirement_id)
+                            node_id=self._record_id)
 
         _dialog.do_destroy()
 
@@ -204,7 +193,7 @@ class ModuleView(RAMSTKModuleView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_requirement',
-                        node_id=self._requirement_id)
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -301,7 +290,7 @@ class ModuleView(RAMSTKModuleView):
         self.treeview.do_edit_cell(__cell, path, new_text, position)
 
         pub.sendMessage('mvw_editing_requirement',
-                        node_id=[self._requirement_id, -1, ''],
+                        node_id=[self._record_id, -1, ''],
                         package={_key: new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
@@ -316,17 +305,7 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _data = tree.get_node(node_id).data['requirement'].get_attributes()
-        _model, _row = self.treeview.selection.get_selected()
-
-        try:
-            if self._requirement_id == self._parent_id:
-                _prow = _row
-            else:
-                _prow = _model.iter_parent(_row)
-        except TypeError:
-            _prow = None
-
-        super().on_insert(_data, prow=_prow)
+        super().on_insert(_data)
 
     def _on_module_switch(self, module: str = '') -> None:
         """
@@ -356,23 +335,16 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _attributes = {}
-
-        selection.handler_block(self._lst_handler_id[0])
-
         _model, _row = selection.get_selected()
+        _attributes: Dict[str, Any] = super().on_row_change(selection)
 
-        if _row is not None:
-            for _key in self._dic_key_index:
-                _attributes[_key] = _model.get_value(
-                    _row, self._lst_col_order[self._dic_key_index[_key]])
-
-            self._requirement_id = _attributes['requirement_id']
+        if _attributes:
+            self._record_id = _attributes['requirement_id']
             self._parent_id = _attributes['parent_id']
 
             _prow = _model.iter_parent(_row)
             if _prow is not None:
-                self._parent_id = self._requirement_id
+                self._parent_id = self._record_id
             else:
                 self._parent_id = 0
 
@@ -382,7 +354,7 @@ class ModuleView(RAMSTKModuleView):
 
             pub.sendMessage('selected_requirement', attributes=_attributes)
             pub.sendMessage('request_get_requirement_attributes',
-                            node_id=self._requirement_id,
+                            node_id=self._record_id,
                             table='requirement')
             pub.sendMessage('request_set_title', title=_title)
 

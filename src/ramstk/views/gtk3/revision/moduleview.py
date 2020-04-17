@@ -18,7 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView, do_make_buttonbox
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView
 )
 
 
@@ -78,27 +78,18 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add(
-            do_make_buttonbox(self,
-                              icons=['add', 'remove'],
-                              tooltips=[
-                                  _("Add a new revision."),
-                                  _("Remove the currently selected revision.")
-                              ],
-                              callbacks=[
-                                  self.do_request_insert_sibling,
-                                  self._do_request_delete
-                              ]))
-        self.pack_start(_scrolledwindow, False, False, 0)
-
-        super().make_ui()
-
-        self.treeview.do_set_editable_columns(self._on_cell_edit)
+        super().make_ui(icons=['add', 'remove'],
+                        tooltips=[
+                            _("Add a new revision."),
+                            _("Remove the currently selected revision.")
+                        ],
+                        callbacks=[
+                            self.do_request_insert_sibling,
+                            self._do_request_delete
+                        ])
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.

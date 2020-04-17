@@ -7,7 +7,7 @@
 """The RAMSTK Failure Definition List View Module."""
 
 # Standard Library Imports
-from typing import Dict
+from typing import Any, Dict
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -77,7 +77,6 @@ class Stakeholders(RAMSTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._stakeholder_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -226,7 +225,7 @@ class Stakeholders(RAMSTKListView):
         """
         self.do_refresh_tree(package, self._dic_key_index)
         pub.sendMessage('lvw_editing_stakeholder',
-                        node_id=[self._stakeholder_id, -1],
+                        node_id=[self._record_id, -1],
                         package=package)
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
@@ -240,7 +239,7 @@ class Stakeholders(RAMSTKListView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_calculate_stakeholder',
-                        node_id=self._stakeholder_id)
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
@@ -267,14 +266,14 @@ class Stakeholders(RAMSTKListView):
         """
         _prompt = _("You are about to delete Stakeholder input {0:d} and "
                     "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._stakeholder_id)
+                    "want to do?").format(self._record_id)
         _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                       'question')
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_stakeholder',
-                            node_id=self._stakeholder_id)
+                            node_id=self._record_id)
 
         _dialog.do_destroy()
 
@@ -289,7 +288,7 @@ class Stakeholders(RAMSTKListView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_stakeholder',
-                        node_id=self._stakeholder_id)
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -406,7 +405,7 @@ class Stakeholders(RAMSTKListView):
             new_text = float(new_text)
 
         pub.sendMessage('lvw_editing_stakeholder',
-                        node_id=[self._stakeholder_id, -1],
+                        node_id=[self._record_id, -1],
                         package={_key: new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
@@ -422,7 +421,7 @@ class Stakeholders(RAMSTKListView):
         """
         _data = tree.get_node(node_id).data['stakeholder'].get_attributes()
 
-        super().on_insert(_data, prow=None)
+        super().on_insert(_data)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -436,18 +435,10 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _attributes = {}
+        _attributes: Dict[str, Any] = super().on_row_change(selection)
 
-        selection.handler_block(self._lst_handler_id[0])
-
-        _model, _row = selection.get_selected()
-
-        if _row is not None:
-            for _key in self._dic_key_index:
-                _attributes[_key] = _model.get_value(
-                    _row, self._lst_col_order[self._dic_key_index[_key]])
-
-            self._stakeholder_id = _attributes['stakeholder_id']
+        if _attributes:
+            self._record_id = _attributes['stakeholder_id']
 
         selection.handler_unblock(self._lst_handler_id[0])
 

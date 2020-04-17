@@ -7,10 +7,13 @@
 """The RAMSTK Failure Definition List View Module."""
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import pandas as pd
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKListView
 
@@ -21,7 +24,10 @@ class FunctionHardware(RAMSTKListView):
 
     The attributes of the Function-Hardware Matrix View are:
     """
-    def __init__(self, configuration, logger, module='fnctn_hrdwr') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'fnctn_hrdwr') -> None:
         """
         Initialize the List View for the Failure Definition package.
 
@@ -95,7 +101,7 @@ class FunctionHardware(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        if self._module == matrix_type.capitalize():
+        if matrix_type.capitalize() == self._module:
             self.matrixview.matrixview.do_load_matrix(matrix)
 
     @staticmethod

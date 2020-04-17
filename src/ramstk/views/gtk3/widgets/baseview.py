@@ -73,8 +73,10 @@ class RAMSTKBaseView(Gtk.HBox):
         'bottom': Gtk.PositionType.BOTTOM
     }
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str = '') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = '') -> None:
         """
         Initialize the RAMSTK Base View.
 
@@ -89,9 +91,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self.RAMSTK_USER_CONFIGURATION = configuration
         self.RAMSTK_LOGGER = logger
         self.RAMSTK_LOGGER.do_create_logger(
-            __name__,
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
+            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL)
 
         # Initialize private dictionary attributes.
         self._dic_icons = self.__set_icons()
@@ -99,30 +99,31 @@ class RAMSTKBaseView(Gtk.HBox):
         # Initialize private list attributes.
         self._lst_col_order: List[int] = []
         self._lst_handler_id: List[int] = []
-        self._lst_layouts: List[str] = ['allocation', 'failure_definition',
-                                        'fmea', 'function', 'hardware',
-                                        'hazard', 'incident', 'pof',
-                                        'requirement', 'revision',
-                                        'similar_item', 'software',
-                                        'stakeholder', 'testing', 'validation']
+        self._lst_layouts: List[str] = [
+            'allocation', 'failure_definition', 'fmea', 'function', 'hardware',
+            'hazard', 'incident', 'pof', 'requirement', 'revision',
+            'similar_item', 'software', 'stakeholder', 'testing', 'validation'
+        ]
 
         # Initialize private scalar attributes.
-        self._mission_time = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
+        self._mission_time: float = float(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         self._module: str = module
-        self._notebook = Gtk.Notebook()
-        self._revision_id = 0
-        self._parent_id = 0
+        self._notebook: Gtk.Notebook = Gtk.Notebook()
+        self._revision_id: int = 0
+        self._parent_id: int = 0
+        self._record_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.treeview = self._make_treeview(module)
-        self.fmt = ('{0:0.'
-                    + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
-                    + 'G}')
-        self.hbx_tab_label = Gtk.HBox()
+        self.treeview: RAMSTKTreeView = self._make_treeview(module)
+        self.fmt: str = (
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
+        self.hbx_tab_label: Gtk.HBox = Gtk.HBox()
 
         try:
             locale.setlocale(locale.LC_ALL,
@@ -170,65 +171,62 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         return {
             'add':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/add.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
             'calculate':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/calculate.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate.png',
             'calculate_all':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/calculate-all.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate-all.png',
             'cancel':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/cancel.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/cancel.png',
             'complete':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/complete.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/complete.png',
             'error':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/error.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/error.png',
             'export':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/export.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/export.png',
             'important':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/important.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/important.png',
             'insert_child':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/insert_child.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_child.png',
             'insert_sibling':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/insert_sibling.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_sibling.png',
             'none':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/none.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
             'partial':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/partial.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/partial.png',
             'question':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/question.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/question.png',
             'refresh-view':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/view-refresh.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/view-refresh.png',
             'remove':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/remove.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/remove.png',
             'rollup':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/rollup.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/rollup.png',
             'reports':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/reports.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/reports.png',
             'save':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/save.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
             'save-all':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/save-all.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/save-all.png',
             'warning':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/warning.png'
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/warning.png'
         }
 
     def _make_toolbar(self,
@@ -395,11 +393,10 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         try:
-            _dialog = RAMSTKMessageDialog(
-                kwargs['user_msg'],
-                self._dic_icons[kwargs['severity']],
-                kwargs['severity'],
-                parent=self)
+            _dialog = RAMSTKMessageDialog(kwargs['user_msg'],
+                                          self._dic_icons[kwargs['severity']],
+                                          kwargs['severity'],
+                                          parent=self)
             if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
         except KeyError as _error:
@@ -462,12 +459,12 @@ class RAMSTKBaseView(Gtk.HBox):
         _sibling = kwargs['sibling']
 
         if _sibling:
-            pub.sendMessage(
-                'request_insert_{0:s}'.format(self._module.lower()))
+            pub.sendMessage('request_insert_{0:s}'.format(
+                self._module.lower()))
         else:
-            pub.sendMessage(
-                'request_insert_{0:s}'.format(self._module.lower()),
-                parent_id=self._parent_id)
+            pub.sendMessage('request_insert_{0:s}'.format(
+                self._module.lower()),
+                            parent_id=self._parent_id)
 
     def do_request_insert_child(self, __button: Gtk.ToolButton,
                                 **kwargs: Any) -> Any:
@@ -552,6 +549,7 @@ class RAMSTKBaseView(Gtk.HBox):
         Gdk.flush()
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_set_cursor_active(self, node_id: Any) -> None:
         """
         Set the active cursor for the Module, List, and Work Book Gdk.Window().
@@ -677,7 +675,7 @@ class RAMSTKBaseView(Gtk.HBox):
                         key=_key,
                         value=_new_text)
 
-    def on_insert(self, data: Any, prow: Gtk.TreeIter = None) -> None:
+    def on_insert(self, data: Any) -> None:
         """
         Add row to module view for newly added work stream element.
 
@@ -688,7 +686,15 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         _attributes = []
-        _model = self.treeview.get_model()
+        _model, _row = self.treeview.selection.get_selected()
+
+        try:
+            if self._record_id == self._parent_id:
+                _prow = _row
+            else:
+                _prow = _model.iter_parent(_row)
+        except TypeError:
+            _prow = None
 
         for _key in self.treeview.korder:
             if _key == 'dict':
@@ -703,9 +709,31 @@ class RAMSTKBaseView(Gtk.HBox):
 
                 _attributes.append(data[_key])
 
-        _row = _model.append(prow, _attributes)
+        _row = _model.append(_prow, _attributes)
 
         self.treeview.selection.select_iter(_row)
+
+    def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
+        """
+        Common method for views to use for RAMSTKTreeView() row changes.
+
+        :param selection: the current Gtk.TreeSelection().
+        :type selection: :class:`Gtk.TreeSelection`
+        :return: _attributes; the dict containing the record's attributes.
+        :rtype: dict
+        """
+        _attributes: Dict[str, Any] = {}
+
+        selection.handler_block(self._lst_handler_id[0])
+
+        _model, _row = selection.get_selected()
+
+        if _row is not None:
+            for _key in self._dic_key_index:
+                _attributes[_key] = _model.get_value(
+                    _row, self._lst_col_order[self._dic_key_index[_key]])
+
+        return _attributes
 
     def on_select_revision(self, attributes: Dict[str, Any]) -> None:
         """
@@ -738,8 +766,10 @@ class RAMSTKListView(RAMSTKBaseView):
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
     :type tab_label: :class:`Gtk.Label`
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str = '') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = '') -> None:
         """
         Initialize the List View.
 
@@ -803,14 +833,15 @@ class RAMSTKListView(RAMSTKBaseView):
         if vtype == 'matrix':
             self.matrixview.dic_icons = {
                 'complete':
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                    + '/32x32/complete.png',
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/complete.png',
                 'none':
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                    + '/32x32/none.png',
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/none.png',
                 'partial':
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                    + '/32x32/partial.png'}
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/partial.png'
+            }
             _scrolledwindow.add(self.matrixview)
         else:
             _scrolledwindow.add(self.treeview)
@@ -852,8 +883,10 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
     :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str = '') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = '') -> None:
         """
         Initialize the RAMSTKModuleView meta-class.
 
@@ -903,16 +936,33 @@ class RAMSTKModuleView(RAMSTKBaseView):
         #     revision_id=self._revision_id)
         # ExportModule(self._mdcRAMSTK, module, _tree)
 
-    def make_ui(self) -> None:
+    def make_ui(self, icons: List[str], tooltips: List[str],
+                callbacks: List[object]) -> None:
         """
         Build the user interface.
 
+        :param icons: the list of icons to display on the toolbar, if any,
+            in addition to the default Save and Save All.  Pass an empty list
+            if there are no additional buttons.
+        :param tooltips: the list of tooltip strings for the extra buttons.
+            Pass an empty list if there are no additional buttons.
+        :param callbacks: the list of callback functions for each extra button.
+              Pass an empty list if there are no additional buttons.
         :return: None
         :rtype: None
         """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            do_make_buttonbox(self,
+                              icons=icons,
+                              tooltips=tooltips,
+                              callbacks=callbacks))
+        self.pack_start(_scrolledwindow, False, False, 0)
+
         self.treeview.set_tooltip_text(
-            _("Displays the list of "
-              "{0:s}s.").format(self._module))
+            _("Displays the list of {0:s}s.").format(self._module))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
 
@@ -931,6 +981,8 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
+
+        self.treeview.do_set_editable_columns(self._on_cell_edit)
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """
@@ -981,8 +1033,10 @@ class RAMSTKWorkView(RAMSTKBaseView):
     :ivar str _module: the all capitalized name of the RAMSKT module the View
     is for.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str = '') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = '') -> None:
         """
         Initialize the RAMSTKWorkView meta-class.
 
@@ -1036,7 +1090,10 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _frame.do_set_properties(title=_("General Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 5,
+        _x_pos, _y_pos = do_make_label_group(self._lst_labels,
+                                             _fixed,
+                                             5,
+                                             5,
                                              y_inc=_y_inc)
         _x_pos += 50
 

@@ -7,7 +7,7 @@
 """RAMSTK Function GTK3 module view."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -18,7 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView, do_make_buttonbox
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView
 )
 
 
@@ -30,8 +30,10 @@ class ModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  All attributes of a Function
     Module View are inherited.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module='function') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module='function') -> None:
         """
         Initialize the Function Module View.
 
@@ -51,11 +53,34 @@ class ModuleView(RAMSTKModuleView):
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/function.png')
+        self._dic_key_index = {
+            'revision_id': 0,
+            'function_id': 1,
+            'availability_logistics': 2,
+            'availability_mission': 3,
+            'cost': 4,
+            'function_code': 5,
+            'failure_rate_logistics': 6,
+            'failure_rate_mission': 7,
+            'level': 8,
+            'mmt': 9,
+            'mcmt': 10,
+            'mpmt': 11,
+            'mtbf_logistics': 12,
+            'mtbf_mission': 13,
+            'mttr': 14,
+            'name': 15,
+            'parent_id': 16,
+            'remarks': 17,
+            'safety_critical': 18,
+            'total_mode_count': 19,
+            'total_part_count': 20,
+            'type': 21
+        }
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._function_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -79,29 +104,19 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            do_make_buttonbox(
-                self,
-                icons=['insert_sibling', 'insert_child', 'remove'],
-                tooltips=[
-                    _("Add a new sibling function."),
-                    _("Add a new child function."),
-                    _("Remove the currently selected function.")
-                ],
-                callbacks=[
-                    self.do_request_insert_sibling,
-                    self.do_request_insert_child, self._do_request_delete
-                ]))
-        self.pack_start(_scrolledwindow, False, False, 0)
-
-        super().make_ui()
-
-        self.treeview.do_set_editable_columns(self._on_cell_edit)
+        super().make_ui(icons=['insert_sibling', 'insert_child', 'remove'],
+                        tooltips=[
+                            _("Add a new sibling function."),
+                            _("Add a new child function."),
+                            _("Remove the currently selected function.")
+                        ],
+                        callbacks=[
+                            self.do_request_insert_sibling,
+                            self.do_request_insert_child, self._do_request_delete
+                        ])
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
@@ -134,7 +149,7 @@ class ModuleView(RAMSTKModuleView):
         ).get_parent()
         _prompt = _("You are about to delete Function {0:d} and all "
                     "data associated with it.  Is this really what "
-                    "you want to do?").format(self._function_id)
+                    "you want to do?").format(self._record_id)
         _dialog = RAMSTKMessageDialog(_prompt,
                                       self._dic_icons['question'],
                                       'question',
@@ -142,8 +157,7 @@ class ModuleView(RAMSTKModuleView):
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
-            pub.sendMessage('request_delete_function',
-                            node_id=self._function_id)
+            pub.sendMessage('request_delete_function', node_id=self._record_id)
 
         _dialog.do_destroy()
 
@@ -157,7 +171,7 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_function', node_id=self._function_id)
+        pub.sendMessage('request_update_function', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -254,7 +268,7 @@ class ModuleView(RAMSTKModuleView):
         self.treeview.do_edit_cell(__cell, path, new_text, position)
 
         pub.sendMessage('mvw_editing_function',
-                        node_id=[self._function_id, -1, ''],
+                        node_id=[self._record_id, -1, ''],
                         package={_key: new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
@@ -269,17 +283,7 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _data = tree.get_node(node_id).data['function'].get_attributes()
-        _model, _row = self.treeview.selection.get_selected()
-
-        try:
-            if self._function_id == self._parent_id:
-                _prow = _row
-            else:
-                _prow = _model.iter_parent(_row)
-        except TypeError:
-            _prow = None
-
-        super().on_insert(_data, prow=_prow)
+        super().on_insert(_data)
 
     def _on_module_switch(self, module: str = '') -> None:
         """
@@ -289,7 +293,7 @@ class ModuleView(RAMSTKModuleView):
         """
         _model, _row = self.treeview.selection.get_selected()
 
-        if (module == 'function' and _row is not None):
+        if module == 'function' and _row is not None:
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
             _title = _("Analyzing Function {0:s}: {1:s}").format(
@@ -309,62 +313,16 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _attributes = {}
-
-        selection.handler_block(self._lst_handler_id[0])
-
         _model, _row = selection.get_selected()
+        _attributes: Dict[str, Any] = super().on_row_change(selection)
 
-        if _row is not None:
-            _attributes['revision_id'] = _model.get_value(
-                _row, self._lst_col_order[0])
-            _attributes['function_id'] = _model.get_value(
-                _row, self._lst_col_order[1])
-            _attributes['availability_logistics'] = _model.get_value(
-                _row, self._lst_col_order[2])
-            _attributes['availability_mission'] = _model.get_value(
-                _row, self._lst_col_order[3])
-            _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
-            _attributes['function_code'] = _model.get_value(
-                _row, self._lst_col_order[5])
-            _attributes['failure_rate_logistics'] = _model.get_value(
-                _row, self._lst_col_order[6])
-            _attributes['failure_rate_mission'] = _model.get_value(
-                _row, self._lst_col_order[7])
-            _attributes['level'] = _model.get_value(
-                _row, self._lst_col_order[8])
-            _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
-            _attributes['mcmt'] = _model.get_value(
-                _row, self._lst_col_order[10])
-            _attributes['mpmt'] = _model.get_value(
-                _row, self._lst_col_order[11])
-            _attributes['mtbf_logistics'] = _model.get_value(
-                _row, self._lst_col_order[12])
-            _attributes['mtbf_mission'] = _model.get_value(
-                _row, self._lst_col_order[13])
-            _attributes['mttr'] = _model.get_value(
-                _row, self._lst_col_order[14])
-            _attributes['name'] = _model.get_value(
-                _row, self._lst_col_order[15])
-            _attributes['parent_id'] = _model.get_value(
-                _row, self._lst_col_order[16])
-            _attributes['remarks'] = _model.get_value(
-                _row, self._lst_col_order[17])
-            _attributes['safety_critical'] = _model.get_value(
-                _row, self._lst_col_order[18])
-            _attributes['total_mode_count'] = _model.get_value(
-                _row, self._lst_col_order[19])
-            _attributes['total_part_count'] = _model.get_value(
-                _row, self._lst_col_order[20])
-            _attributes['type'] = _model.get_value(
-                _row, self._lst_col_order[21])
-
-            self._function_id = _attributes['function_id']
+        if _attributes:
+            self._record_id = _attributes['function_id']
             self._parent_id = _attributes['parent_id']
 
             _prow = _model.iter_parent(_row)
             if _prow is not None:
-                self._parent_id = self._function_id
+                self._parent_id = self._record_id
             else:
                 self._parent_id = 0
 
@@ -373,7 +331,7 @@ class ModuleView(RAMSTKModuleView):
 
             pub.sendMessage('selected_function', attributes=_attributes)
             pub.sendMessage('request_get_function_attributes',
-                            node_id=self._function_id,
+                            node_id=self._record_id,
                             table='hazards')
             pub.sendMessage('request_set_title', title=_title)
 

@@ -84,7 +84,6 @@ class GeneralData(RAMSTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._requirement_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -318,7 +317,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._requirement_id = attributes['requirement_id']
+        self._record_id = attributes['requirement_id']
 
         self.txtCode.do_update(str(attributes['requirement_code']),
                                self._lst_handler_id[0])
@@ -359,7 +358,7 @@ class GeneralData(RAMSTKWorkView):
 
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_create_requirement_code',
-                        node_id=self._requirement_id,
+                        node_id=self._record_id,
                         prefix=_prefix)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
@@ -374,7 +373,7 @@ class GeneralData(RAMSTKWorkView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_requirement',
-                        node_id=self._requirement_id)
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -432,7 +431,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_active(node_id=self._requirement_id)
+        self.do_set_cursor_active(node_id=self._record_id)
 
     def _on_combo_changed(self, combo: Gtk.CellRendererCombo,
                           index: int) -> None:
@@ -467,7 +466,7 @@ class GeneralData(RAMSTKWorkView):
             _new_text = ''
 
         pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._requirement_id, -1],
+                        node_id=[self._record_id, -1],
                         package={_key: _new_text})
 
         combo.handler_unblock(self._lst_handler_id[index])
@@ -561,7 +560,7 @@ class GeneralData(RAMSTKWorkView):
             _new_text = str(entry.get_text())
 
         pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._requirement_id, -1],
+                        node_id=[self._record_id, -1],
                         package={_key: _new_text})
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -588,7 +587,7 @@ class GeneralData(RAMSTKWorkView):
         _new_text = int(checkbutton.get_active())
 
         pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._requirement_id, -1, ''],
+                        node_id=[self._record_id, -1, ''],
                         package={_key: _new_text})
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
@@ -728,7 +727,6 @@ class RequirementAnalysis(RAMSTKWorkView):
         self._lst_verifiable_a: List = []
 
         # Initialize private scalar attributes.
-        self._requirement_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -979,7 +977,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._requirement_id = attributes['requirement_id']
+        self._record_id = attributes['requirement_id']
 
         # Load the Requirement analyses answers.  It's easiest to pack the
         # answers into a list and iterate for each tree.
@@ -1044,7 +1042,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_requirement',
-                        node_id=self._requirement_id)
+                        node_id=self._record_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1075,7 +1073,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_active(node_id=self._requirement_id)
+        self.do_set_cursor_active(node_id=self._record_id)
 
     def _on_cell_edit(self, cell: Gtk.CellRendererToggle, path: str,
                       model: Gtk.TreeModel, index: int) -> None:
@@ -1123,5 +1121,5 @@ class RequirementAnalysis(RAMSTKWorkView):
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._requirement_id, -1],
+                        node_id=[self._record_id, -1],
                         package={_key: _new_text})

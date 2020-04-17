@@ -89,7 +89,6 @@ class FailureDefinition(RAMSTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._definition_id = -1
 
         # Initialize public dictionary attributes.
 
@@ -216,7 +215,7 @@ class FailureDefinition(RAMSTKListView):
         """
         _prompt = _("You are about to delete Failure Definition {0:d} and "
                     "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._definition_id)
+                    "want to do?").format(self._record_id)
         _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                       'question')
         _response = _dialog.do_run()
@@ -224,7 +223,7 @@ class FailureDefinition(RAMSTKListView):
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_failure_definition',
                             revision_id=self._revision_id,
-                            node_id=self._definition_id)
+                            node_id=self._record_id)
 
         _dialog.do_destroy()
 
@@ -253,7 +252,7 @@ class FailureDefinition(RAMSTKListView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_failure_definition',
                         revision_id=self._revision_id,
-                        node_id=self._definition_id)
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -333,7 +332,7 @@ class FailureDefinition(RAMSTKListView):
         super().on_cell_edit(__cell, path, new_text, position)
 
         pub.sendMessage('lvw_editing_failure_definition',
-                        node_id=[self._revision_id, self._definition_id, ''],
+                        node_id=[self._revision_id, self._record_id, ''],
                         package={'definition': new_text})
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
@@ -359,7 +358,7 @@ class FailureDefinition(RAMSTKListView):
             _attributes['definition_id'] = _model.get_value(_row, 1)
             _attributes['definition'] = _model.get_value(_row, 2)
 
-            self._definition_id = _attributes['definition_id']
+            self._record_id = _attributes['definition_id']
 
             pub.sendMessage('selected_failure_definition',
                             attributes=_attributes)
