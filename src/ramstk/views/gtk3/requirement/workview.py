@@ -170,9 +170,10 @@ class GeneralData(RAMSTKWorkView):
         # self.txtName has a height of 100 so the labels need adjusted.
         # The first two labels will be properly placed and the last widget
         # is the common RAMSTKEntry() widget that we don't want to move.
-        for _idx, _label in enumerate(_fixed.get_children()[:-1]):
-            print(_idx, _label, _label.get_text())
-            _fixed.move(_label, 5, _y_pos[_idx] + _lst_tweak[_idx])
+        for _idx, _widget in enumerate(_fixed.get_children()[:-1]):
+            if isinstance(_widget, RAMSTKLabel):
+                print(_idx, _widget, _widget.get_text())
+                _fixed.move(_widget, 5, _y_pos[_idx] + _lst_tweak[_idx])
 
         _fixed.put(self.txtName.scrollwindow, _x_pos, _y_pos[1])
         _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2] + _lst_tweak[0])
