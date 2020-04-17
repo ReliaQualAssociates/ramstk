@@ -158,7 +158,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _lst_tweak = [75, 75, 85, 85, 85, 95, 95, 95, 105, 105]
+        _lst_tweak = [0, 0, 75, 75, 85, 85, 85, 95, 95, 95, 105, 105]
         (_x_pos,
          _y_pos,
          _fixed) = super().make_ui(icons=['create_code'],
@@ -170,9 +170,9 @@ class GeneralData(RAMSTKWorkView):
         # self.txtName has a height of 100 so the labels need adjusted.
         # The first two labels will be properly placed and the last widget
         # is the common RAMSTKEntry() widget that we don't want to move.
-        for _idx, _label in enumerate(_fixed.get_children()[2:-1]):
-            print(_idx, _label.get_text())
-            _fixed.move(_label, 5, _y_pos[_idx + 2] + _lst_tweak[_idx])
+        for _idx, _label in enumerate(_fixed.get_children()[:-1]):
+            print(_idx, _label, _label.get_text())
+            _fixed.move(_label, 5, _y_pos[_idx] + _lst_tweak[_idx])
 
         _fixed.put(self.txtName.scrollwindow, _x_pos, _y_pos[1])
         _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2] + _lst_tweak[0])
@@ -575,20 +575,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {3: 'derived', 9: 'validated'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        checkbutton.handler_block(self._lst_handler_id[index])
-
-        _new_text = int(checkbutton.get_active())
-
-        pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._record_id, -1, ''],
-                        package={_key: _new_text})
+        super().on_toggled(checkbutton, index,
+                           message='wvw_editing_requirement',
+                           keys={3: 'derived', 9: 'validated'})
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 

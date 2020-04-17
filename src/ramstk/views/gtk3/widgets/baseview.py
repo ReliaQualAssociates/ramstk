@@ -13,6 +13,8 @@ import locale
 from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
+# noinspection PyPackageRequirements
+import pandas as pd
 import treelib
 from pubsub import pub
 
@@ -22,7 +24,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 
 # RAMSTK Local Imports
-from .button import do_make_buttonbox
+from .button import RAMSTKCheckButton, do_make_buttonbox
 from .dialog import RAMSTKMessageDialog
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
@@ -606,6 +608,7 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu.append(_menu_item)
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Update the RAMSTKTreeView after deleting a line item.
@@ -680,8 +683,6 @@ class RAMSTKBaseView(Gtk.HBox):
         Add row to module view for newly added work stream element.
 
         :param data: the data package for the work stream element to add.
-        :param prow: the parent row in the treeview.
-        :type prow: :class:`Gtk.TreeIter`
         :return: None
         :rtype: None
         """
@@ -802,6 +803,8 @@ class RAMSTKListView(RAMSTKBaseView):
 
         self.__set_properties()
 
+        pub.subscribe(self.do_load_matrix, 'succeed_load_matrix')
+
     def __set_properties(self) -> None:
         """
         Set common properties of the ListView and widgets.
@@ -810,6 +813,18 @@ class RAMSTKListView(RAMSTKBaseView):
         :rtype: None
         """
         self.treeview.set_rubber_banding(True)
+
+    def do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
+        """
+        Load the RAMSTKMatrixView() with matrix data.
+
+        :param str matrix_type: the type of matrix to load.
+        :param matrix: the data matrix to display.
+        :return: None
+        :rtype: None
+        """
+        if matrix_type.capitalize() == self._module:
+            self.matrixview.matrixview.do_load_matrix(matrix)
 
     def make_ui(self, vtype: str = 'list', **kwargs) -> None:
         """
@@ -896,7 +911,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param str module: the name of the RAMSTK workflow module.
         """
-        RAMSTKBaseView.__init__(self, configuration, logger, module)
+        super().__init__(configuration, logger, module)
 
         # Initialize private dictionary attributes.
         self._dic_icons['insert_part'] = (
@@ -1065,7 +1080,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
     def make_ui(self, **kwargs: Any) -> Tuple[int, List[int], Gtk.Fixed]:
         """
-        Make the Function class Gtk.Notebook() general data page.
+        Common method to create work view Gtk.Notebook() general data pages.
 
         :return: (_x_pos, _y_pos, _fixed); the x-position of the left edge of
             each widget, the list of y-positions of the top of each widget, and
@@ -1103,3 +1118,31 @@ class RAMSTKWorkView(RAMSTKBaseView):
         self.pack_start(_frame, True, True, 0)
 
         return _x_pos, _y_pos, _fixed
+
+    def on_toggled(self,
+                   checkbutton: RAMSTKCheckButton,
+                   index: int,
+                   **kwargs) -> None:
+        """
+        Common method to respond to work view checkbutton 'toggles'.
+
+        :param checkbutton: the Gtk.CheckButton() that was toggled.
+        :param index: the index of the Gtk.CheckButton() in the list handler
+            list.
+        :return: None
+        """
+        _message = kwargs['message']
+        _keys = kwargs['keys']
+        try:
+            _key = _keys[index]
+        except KeyError as _error:
+            _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        checkbutton.handler_block(self._lst_handler_id[index])
+
+        _new_text = int(checkbutton.get_active())
+
+        pub.sendMessage(_message,
+                        node_id=[self._record_id, -1, ''],
+                        package={_key: _new_text})

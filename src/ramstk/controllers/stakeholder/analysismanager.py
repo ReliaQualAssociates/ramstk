@@ -93,4 +93,4 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.sendMessage('succeed_calculate_stakeholder',
                         node_id=node_id,
                         package={'overall_weight':
-                                     self._attributes['overall_weight']})
+                                 self._attributes['overall_weight']})

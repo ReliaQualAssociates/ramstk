@@ -315,20 +315,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {3: 'safety_critical'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        checkbutton.handler_block(self._lst_handler_id[index])
-
-        _new_text = int(checkbutton.get_active())
-
-        pub.sendMessage('wvw_editing_function',
-                        node_id=[self._record_id, -1, ''],
-                        package={_key: _new_text})
+        super().on_toggled(checkbutton, index,
+                           message='wvw_editing_function',
+                           keys={3: 'safety_critical'})
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 

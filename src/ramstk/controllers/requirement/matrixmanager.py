@@ -26,7 +26,9 @@ class MatrixManager(RAMSTKMatrixManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the requirement item being analyzed.
     """
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def __init__(self, **kwargs):
         """Initialize an instance of the requirement matrix manager."""
         super().__init__(
             column_tables={
@@ -48,7 +50,7 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        # // TODO: Update Requirement module matrixmanager to respond to hardware.
+        # // TODO: Update Requirement matrixmanager to respond to hardware.
         # //
         # // The Requirement module matrixmanager is currently only responding
         # // to Requirement module pubsub messages.  Ensure the Requirement
@@ -85,6 +87,7 @@ class MatrixManager(RAMSTKMatrixManager):
                             matrix_type='rqrmnt_hrdwr')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_delete_requirement(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Delete the matrix row associated with the deleted requirement.
@@ -100,6 +103,7 @@ class MatrixManager(RAMSTKMatrixManager):
         self.do_delete_row(node_id)
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> None:
         """
 

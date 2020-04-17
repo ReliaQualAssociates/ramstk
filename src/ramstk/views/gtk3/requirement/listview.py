@@ -10,8 +10,6 @@
 from typing import Any, Dict
 
 # Third Party Imports
-# noinspection PyPackageRequirements
-import pandas as pd
 import treelib
 from pubsub import pub
 
@@ -26,14 +24,11 @@ from ramstk.views.gtk3.widgets import (
 
 class Stakeholders(RAMSTKListView):
     """
-    Display all the Stakeholder Inputs associated with the selected Stakeholder.
+    Display all the Stakeholder Inputs associated with the selected Revision.
 
     The Stakeholder List View displays all the stakeholder inputs associated
     with the selected Stakeholder.  The attributes of the Stakeholder List View
     are:
-
-    :ivar int _stakeholder_id: the Stakeholder ID of the input being displayed
-                               in the List View.
     """
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -483,9 +478,6 @@ class RequirementHardware(RAMSTKListView):
         self.__set_properties()
         self.__make_ui()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_matrix, 'succeed_load_matrix')
-
     def __make_ui(self) -> None:
         """
         Build the user interface.
@@ -518,17 +510,6 @@ class RequirementHardware(RAMSTKListView):
         self.treeview.set_tooltip_text(
             _("Displays the Requirement-Hardware matrix for the selected "
               "revision."))
-
-    def _do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
-        """
-        Load the RAMSTKMatrixView() with matrix data.
-
-        :param str matrix_type: the type of matrix to load.
-        :return: None
-        :rtype: None
-        """
-        if matrix_type.capitalize() == self._module:
-            self.matrixview.matrixview.do_load_matrix(matrix)
 
     @staticmethod
     def _do_request_refresh(__button: Gtk.Button) -> None:

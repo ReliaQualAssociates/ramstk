@@ -309,9 +309,10 @@ class ModuleView(RAMSTKModuleView):
 
     def _on_module_switch(self, module: str = '') -> None:
         """
+        Method to set the module view title when the page is switched.
 
-        :param module:
-        :return:
+        :param module: the name of the module of the new page.
+        :return: None
         """
         _model, _row = self.treeview.selection.get_selected()
 
