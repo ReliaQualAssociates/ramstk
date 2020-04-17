@@ -29,8 +29,7 @@ class MatrixManager(RAMSTKMatrixManager):
 
     def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """Initialize an instance of the function matrix manager."""
-        RAMSTKMatrixManager.__init__(
-            self,
+        super().__init__(
             column_tables={
                 'fnctn_hrdwr':
                 [RAMSTKHardware, 'hardware_id', 'comp_ref_des']
@@ -50,9 +49,15 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        # TODO: Update Function module matrixmanager to respond to hardware.
+        # // TODO: Update Function module matrixmanager to respond to hardware.
+        # //
+        # // The Function module matrixmanager is currently only responding to
+        # // Function module pubsub messages.  Ensure the Function module
+        # // matrix manager is updated to respond to Hardware module pubsub
+        # // messages when the Hardware module is refactored.
         pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
-        pub.subscribe(self._do_create_columns, 'succeed_retrieve_hardware')
+        pub.subscribe(self._do_create_function_matrix_columns,
+                      'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
         # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self._on_insert_function, 'succeed_insert_function')
@@ -60,7 +65,7 @@ class MatrixManager(RAMSTKMatrixManager):
         #              'succeed_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_function_matrix')
 
-    def _do_create_columns(self, tree: treelib.Tree) -> None:
+    def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
         """
         Create the Function data matrix columns.
 

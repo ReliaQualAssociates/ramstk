@@ -20,7 +20,7 @@ from ramstk.models.programdb import (
 )
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKListView, RAMSTKMessageDialog, RAMSTKTreeView, do_make_buttonbox
+    RAMSTKListView, RAMSTKMessageDialog, RAMSTKTreeView
 )
 
 
@@ -89,7 +89,6 @@ class FailureDefinition(RAMSTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._definition_id = -1
 
         # Initialize public dictionary attributes.
 
@@ -122,31 +121,6 @@ class FailureDefinition(RAMSTKListView):
         """
         if attributes is not None:
             self._do_load_tree(tree=attributes)
-
-    def __make_buttonbox(self) -> Gtk.ButtonBox:
-        """
-        Make the buttonbox for the Failure Definition List View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Failure Definition
-            List View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Add a new Failure Definition."),
-            _("Remove the currently selected Failure Definition.")
-        ]
-        _callbacks = [self._do_request_insert, self._do_request_delete]
-        _icons = ['add', 'remove']
-
-        _buttonbox = do_make_buttonbox(self,
-                                       icons=_icons,
-                                       tooltips=_tooltips,
-                                       callbacks=_callbacks,
-                                       orientation='vertical',
-                                       height=-1,
-                                       width=-1)
-
-        return _buttonbox
 
     def __make_treeview(self) -> None:
         """
@@ -185,9 +159,13 @@ class FailureDefinition(RAMSTKListView):
             _("Displays failure definitions for the "
               "selected revision."))
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-
-        super().make_ui()
+        super().make_ui(
+            icons=['add', 'remove'],
+            tooltips=[
+                _("Add a new Failure Definition."),
+                _("Remove the currently selected Failure Definition.")
+            ],
+            callbacks=[self._do_request_insert, self._do_request_delete])
 
     def __set_properties(self) -> None:
         """
@@ -237,7 +215,7 @@ class FailureDefinition(RAMSTKListView):
         """
         _prompt = _("You are about to delete Failure Definition {0:d} and "
                     "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._definition_id)
+                    "want to do?").format(self._record_id)
         _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                       'question')
         _response = _dialog.do_run()
@@ -245,7 +223,7 @@ class FailureDefinition(RAMSTKListView):
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_failure_definition',
                             revision_id=self._revision_id,
-                            node_id=self._definition_id)
+                            node_id=self._record_id)
 
         _dialog.do_destroy()
 
@@ -274,7 +252,7 @@ class FailureDefinition(RAMSTKListView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_failure_definition',
                         revision_id=self._revision_id,
-                        node_id=self._definition_id)
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -354,7 +332,7 @@ class FailureDefinition(RAMSTKListView):
         super().on_cell_edit(__cell, path, new_text, position)
 
         pub.sendMessage('lvw_editing_failure_definition',
-                        node_id=[self._revision_id, self._definition_id, ''],
+                        node_id=[self._revision_id, self._record_id, ''],
                         package={'definition': new_text})
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
@@ -380,7 +358,7 @@ class FailureDefinition(RAMSTKListView):
             _attributes['definition_id'] = _model.get_value(_row, 1)
             _attributes['definition'] = _model.get_value(_row, 2)
 
-            self._definition_id = _attributes['definition_id']
+            self._record_id = _attributes['definition_id']
 
             pub.sendMessage('selected_failure_definition',
                             attributes=_attributes)
@@ -549,38 +527,6 @@ class UsageProfile(RAMSTKListView):
             ]
         }[level]
 
-    def __make_buttonbox(self) -> Gtk.ButtonBox:
-        """
-        Make the buttonbox for the Usage Profile List View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Usage Profile List
-            View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Add a new Usage Profile entity at the same level "
-              "as the currently selected entity."),
-            _("Add a new Usage Profile entity one level below the "
-              "currently selected entity."),
-            _("Remove the curently selected entity from the Usage "
-              "Profile.")
-        ]
-        _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete
-        ]
-        _icons = ['insert_sibling', 'insert_child', 'remove']
-
-        _buttonbox = do_make_buttonbox(self,
-                                       icons=_icons,
-                                       tooltips=_tooltips,
-                                       callbacks=_callbacks,
-                                       orientation='vertical',
-                                       height=-1,
-                                       width=-1)
-
-        return _buttonbox
-
     def __make_cell(self, cell: str, editable: bool,
                     position: int) -> Gtk.CellRenderer:
         """
@@ -692,9 +638,20 @@ class UsageProfile(RAMSTKListView):
         self.tab_label.set_tooltip_text(
             _("Displays usage profiles for the selected revision."))
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-
-        super().make_ui()
+        super().make_ui(
+            icons=['insert_sibling', 'insert_child', 'remove'],
+            tooltips=[
+                _("Add a new Usage Profile entity at the same level "
+                  "as the currently selected entity."),
+                _("Add a new Usage Profile entity one level below the "
+                  "currently selected entity."),
+                _("Remove the curently selected entity from the Usage "
+                  "Profile.")
+            ],
+            callbacks=[
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_delete
+            ])
 
     def __set_properties(self) -> None:
         """

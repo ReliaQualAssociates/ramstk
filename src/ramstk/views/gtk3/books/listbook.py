@@ -16,6 +16,9 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import mtxFunctionHardware
+from ramstk.views.gtk3.requirement import (
+    lvwStakeholders, mtxRequirementHardware
+)
 from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -54,19 +57,19 @@ class RAMSTKListBook(RAMSTKBaseBook):
             ],
             'function':
                 [mtxFunctionHardware(configuration, logger)],
-            #    'requirement': [
-            #        lvwStakeholder(configuration),
-            #        mtxRequirement(configuration, matrix_type='rqrmnt_hrdwr'),
-            #        mtxRequirement(configuration, matrix_type='rqrmnt_vldtn'),
-            #    ],
-            #    'hardware': [
-            #        mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
-            #        mtxHardware(configuration, matrix_type='hrdwr_vldtn'),
-            #    ],
-            #    'validation': [
-            #        mtxValidation(configuration, matrix_type='vldtn_rqrmnt'),
-            #        mtxValidation(configuration, matrix_type='vldtn_hrdwr'),
-            #    ]
+            'requirement': [
+                lvwStakeholders(configuration, logger),
+                mtxRequirementHardware(configuration, logger),
+                # mtxRequirement(configuration, matrix_type='rqrmnt_vldtn'),
+            ],
+            'hardware': [
+                # mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
+                # mtxHardware(configuration, matrix_type='hrdwr_vldtn'),
+            ],
+            'validation': [
+                # mtxValidation(configuration, matrix_type='vldtn_rqrmnt'),
+                # mtxValidation(configuration, matrix_type='vldtn_hrdwr'),
+            ]
         }
 
         # Initialize private list attributes.
@@ -111,6 +114,8 @@ class RAMSTKListBook(RAMSTKBaseBook):
         """
         Load the List Views for the RAMSTK module selected in the Module Book.
 
+        :param str module: the name of the RAMSTK workflow module that has
+            been selected in the Module Book.
         :return: None
         :rtype: None
         """

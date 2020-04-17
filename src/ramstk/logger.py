@@ -78,8 +78,9 @@ class RAMSTKLogManager:
         pub.subscribe(self._do_log_fail_message, 'fail_insert_record')
         pub.subscribe(self._do_log_fail_message, 'fail_insert_test_method')
         pub.subscribe(self._do_log_fail_message, 'fail_update_fmea')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_function')
         pub.subscribe(self._do_log_fail_message, 'fail_update_revision')
+        pub.subscribe(self._do_log_fail_message, 'fail_update_function')
+        pub.subscribe(self._do_log_fail_message, 'fail_update_requirement')
 
         if file_exists(self.log_file):
             os.remove(self.log_file)

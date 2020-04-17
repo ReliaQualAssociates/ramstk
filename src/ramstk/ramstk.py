@@ -3,7 +3,7 @@
 #       ramstk.ramstk.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """This is the RAMSTK program manager."""
 
 # Standard Library Imports

@@ -68,7 +68,11 @@ class MockDao:
     def do_insert(self, record):
         self._all.append(record)
 
-    def do_select_all(self, table, key, value):
+    def do_select_all(self, table,
+                      key=None,
+                      value=None,
+                      order=None,
+                      _all=False):
         self._all = []
         for _key in MOCK_STAKEHOLDERS:
             _record = table()
@@ -119,7 +123,7 @@ class TestCreateControllers():
         assert DUT._tag == 'stakeholder'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_revision')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT._do_delete_stakeholder,
                                 'request_delete_stakeholder')
         assert pub.isSubscribed(DUT.do_insert_stakeholder,
@@ -171,7 +175,7 @@ class TestSelectMethods():
                       'succeed_retrieve_stakeholders')
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.tree.get_node(1).data, dict)
@@ -186,7 +190,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKStakeholder on success."""
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _stakeholder = DUT.do_select(1, table='stakeholder')
 
@@ -199,7 +203,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select(1, table='scibbidy-bibbidy-doo')
@@ -209,7 +213,7 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent Stakeholder ID is requested."""
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         assert DUT.do_select(100, table='stakeholder') is None
 
@@ -217,8 +221,9 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_stakeholder(self, node_id):
+    def on_succeed_delete_stakeholder(self, node_id, tree):
         assert node_id == 2
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_stakeholder topic was broadcast.")
 
     def on_fail_delete_stakeholder(self, error_message):
@@ -235,7 +240,7 @@ class TestDeleteMethods():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_stakeholder(DUT.last_id)
 
         assert DUT.last_id == 1
@@ -251,7 +256,7 @@ class TestDeleteMethods():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_stakeholder(300)
 
 
@@ -290,7 +295,7 @@ class TestGetterSetter():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_attributes(1, 'stakeholder')
 
         pub.unsubscribe(self.on_succeed_get_stakeholder_attrs,
@@ -304,7 +309,7 @@ class TestGetterSetter():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_all_attributes(1)
 
         pub.unsubscribe(self.on_succeed_get_all_attrs,
@@ -315,12 +320,11 @@ class TestGetterSetter():
         """do_set_attributes() should send the success message."""
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_stakeholder_attributes',
-                        node_id=1,
-                        key='stakeholder',
-                        value='Customer')
+                        node_id=[1, -1],
+                        package={'stakeholder': 'Customer'})
         assert DUT.do_select(1, table='stakeholder').stakeholder == 'Customer'
 
     @pytest.mark.unit
@@ -328,7 +332,7 @@ class TestGetterSetter():
         """do_set_all_attributes() should send the success message."""
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_all_stakeholder_attributes',
                         attributes={
@@ -352,7 +356,7 @@ class TestGetterSetter():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_stakeholder_tree,
@@ -362,8 +366,9 @@ class TestGetterSetter():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_stakeholder(self, node_id):
+    def on_succeed_insert_stakeholder(self, node_id, tree):
         assert node_id == 3
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_stakeholder topic was broadcast")
 
     def on_fail_insert_stakeholder(self, error_message):
@@ -379,7 +384,7 @@ class TestInsertMethods():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_insert_stakeholder(parent_id=0)
 
         assert isinstance(
@@ -413,13 +418,13 @@ class TestUpdateMethods():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _stakeholder = DUT.do_select(1, table='stakeholder')
         _stakeholder.description = 'Test Stakeholder'
         DUT.do_update_stakeholder(1)
 
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         _stakeholder = DUT.do_select(1, table='stakeholder')
 
         assert _stakeholder.description == 'Test Stakeholder'
@@ -435,7 +440,7 @@ class TestUpdateMethods():
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_update_stakeholder(100)
 
         pub.unsubscribe(self.on_fail_update_stakeholder,
@@ -451,7 +456,7 @@ class TestAnalysisMethods():
         """do_calculate_stakeholder() should calculate the improvement factor and overall weight of a stakeholder input."""
         DATAMGR = dmStakeholder()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amStakeholder(test_toml_user_configuration)
 
         pub.sendMessage('request_get_stakeholder_tree')

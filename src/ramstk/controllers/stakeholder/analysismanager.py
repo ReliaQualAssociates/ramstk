@@ -12,6 +12,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import improvementfactor
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
 
 
@@ -22,7 +23,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     This class manages the functional analysis for functional hazards analysis
     (FHA).  Attributes of the function Analysis Manager are:
     """
-    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration: RAMSTKUserConfiguration, **kwargs):
         """
         Initialize an instance of the function analysis manager.
 
@@ -51,7 +52,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(self.do_calculate_stakeholder,
                       'request_calculate_stakeholder')
 
-    def _do_calculate_improvement(self):
+    def _do_calculate_improvement(self) -> None:
         """
         Calculate improvement factor and weight for currently selected item.
 
@@ -69,7 +70,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
              user_float_4=self._attributes['user_float_4'],
              user_float_5=self._attributes['user_float_5'])
 
-    def do_calculate_stakeholder(self, node_id):
+    def do_calculate_stakeholder(self, node_id: int) -> None:
         """
         Calculate improvement factor and weight for currently selected item.
 
@@ -86,4 +87,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._do_calculate_improvement()
 
         pub.sendMessage('succeed_calculate_stakeholder',
-                        attributes=self._attributes)
+                        node_id=node_id,
+                        package={'improvement':
+                                 self._attributes['improvement']})
+        pub.sendMessage('succeed_calculate_stakeholder',
+                        node_id=node_id,
+                        package={'overall_weight':
+                                 self._attributes['overall_weight']})

@@ -78,7 +78,9 @@ def do_read_user_configuration() -> RAMSTKUserConfiguration:
 
 def the_one_ring() -> None:
     """Execute the main function for RAMSTK."""
-    # TODO: Implement splash screen.
+    # // TODO: Implement splash screen.
+    # //
+    # // Add a splash screen to the launch of RAMSTK.
     # splScreen = SplashScreen()
 
     # Read the user configuration file and create a logger.  The user
@@ -114,6 +116,20 @@ def the_one_ring() -> None:
     do_load_variables(site_db, site_configuration)
     _logger.do_log_info(__name__,
                         "Loaded global RAMSTK configuration variables.")
+
+    # Copy some site-level configuration variables to the user-level
+    # configuration.  These are used to load RAMSTKComboBox widgets with
+    # information during initialization.  This is the easiest way to make
+    # this information available without refactoring all the views to pass
+    # the site configuration object in addition to the user configuration
+    # object.
+    user_configuration.RAMSTK_AFFINITY_GROUPS = \
+        site_configuration.RAMSTK_AFFINITY_GROUPS
+    user_configuration.RAMSTK_REQUIREMENT_TYPE = \
+        site_configuration.RAMSTK_REQUIREMENT_TYPE
+    user_configuration.RAMSTK_STAKEHOLDERS = \
+        site_configuration.RAMSTK_STAKEHOLDERS
+    user_configuration.RAMSTK_WORKGROUPS = site_configuration.RAMSTK_WORKGROUPS
 
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()

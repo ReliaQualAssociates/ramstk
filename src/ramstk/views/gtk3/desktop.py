@@ -8,19 +8,25 @@
 
 # Standard Library Imports
 import locale
-from typing import List
+from typing import TypeVar
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTK_FAILURE_PROBABILITY
+from ramstk.configuration import (
+    RAMSTK_FAILURE_PROBABILITY,
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import CreateProject, OpenProject
 from ramstk.views.gtk3.books import (
     RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
 )
+
+Tconfiguration = TypeVar('Tconfiguration', RAMSTKUserConfiguration,
+                         RAMSTKSiteConfiguration)
 
 
 def destroy(__widget: Gtk.Widget, __event: Gdk.Event = None) -> None:
@@ -72,7 +78,8 @@ class RAMSTKDesktop(Gtk.Window):
 
     RAMSTK_USER_CONFIGURATION = None
 
-    def __init__(self, configuration: List, logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration: Tconfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the RAMSTK Book.
 
@@ -87,7 +94,7 @@ class RAMSTKDesktop(Gtk.Window):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id: List[int] = []
+        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
         try:
@@ -308,8 +315,8 @@ class RAMSTKDesktop(Gtk.Window):
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', OpenProject,
-                        self.RAMSTK_USER_CONFIGURATION, self)
+        _button.connect('clicked', OpenProject, self.RAMSTK_USER_CONFIGURATION,
+                        self)
         self.toolbar.insert(_button, _position)
         _position += 1
 
@@ -435,6 +442,7 @@ class RAMSTKDesktop(Gtk.Window):
         """
         pub.sendMessage('request_close_project')
 
+    # noinspection PyDeepBugsSwappedArgs
     def _do_request_save_project(self, widget: Gtk.Widget,
                                  end: bool = False) -> None:
         """
@@ -526,6 +534,7 @@ class RAMSTKDesktop(Gtk.Window):
         """
         _message = _("Opening Program Database {0:s}"). \
             format(self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])
+        # noinspection PyDeepBugsSwappedArgs
         self.statusbar.push(1, _message)
         self.set_title(
             _("RAMSTK - Analyzing {0:s}").format(
@@ -546,8 +555,7 @@ class RAMSTKDesktop(Gtk.Window):
             self.set_title(title)
         except AttributeError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-            self.do_raise_dialog(severity='warning',
-                                 user_msg=_error)
+            self.do_raise_dialog(severity='warning', user_msg=_error)
 
     @staticmethod
     def _on_window_state_event(window: Gtk.Window,

@@ -324,7 +324,8 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_FORMAT_FILE == {}
         assert DUT.RAMSTK_PAGE_NUMBER == {
             0: 'revision',
-            1: 'function'
+            1: 'function',
+            2: 'requirement'
         }
         assert DUT.RAMSTK_PROG_INFO == {}
         assert DUT.RAMSTK_STRESS_LIMITS == {}

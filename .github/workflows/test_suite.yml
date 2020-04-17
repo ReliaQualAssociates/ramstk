@@ -1,0 +1,35 @@
+name: Execute Test Suite
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  test_suite:
+    name: Test Suite with Coverage
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+
+      - name: Setup Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest python3-scipy libenchant1c2a libenchant-dev
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install -U pip setuptools>12.0 urllib3 pip-tools
+          python -m pip install -r requirements.txt -r requirements-dev.txt -r requirements-test.txt
+          mkdir -p ./out
+
+      - name: Run Test Suite
+        run: |
+          py.test -x --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term ./tests

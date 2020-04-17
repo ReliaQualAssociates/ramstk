@@ -222,7 +222,7 @@ maintain:
 # This target is for use with IDE integration.
 security:
 	$(info Security linting $(SRCFILE)...)
-	bandit --ini .bandit -c .bandit.conf -b .bandit.baseline $(SRCFILE)
+	bandit --ini .bandit -c .bandit.conf -b .bandit.baseline -r $(SRCFILE)
 
 # This target is for use with IDE integration.
 lint:
