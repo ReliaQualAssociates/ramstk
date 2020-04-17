@@ -97,7 +97,7 @@ class TestExport():
         """do_load_output() should return None when loading Requirements for export."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
-        _requirement.do_select_all(1)
+        _requirement.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
@@ -146,7 +146,7 @@ class TestExport():
         """do_export() should return None when exporting to an Excel file."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
-        _requirement.do_select_all(1)
+        _requirement.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
@@ -160,7 +160,7 @@ class TestExport():
         """do_export() should return None when exporting to an Excel file."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
-        _requirement.do_select_all(1)
+        _requirement.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
@@ -174,7 +174,7 @@ class TestExport():
         """do_export() should return None when exporting to an Excel file."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
-        _requirement.do_select_all(1)
+        _requirement.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
@@ -189,7 +189,7 @@ class TestExport():
         """do_export() should return None when exporting to an Excel file and default to using the xlwt engine."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
-        _requirement.do_select_all(1)
+        _requirement.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 

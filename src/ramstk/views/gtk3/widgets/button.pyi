@@ -45,6 +45,9 @@ class RAMSTKCheckButton(Gtk.CheckButton):
     def connect(self, param, _on_toggled, param1):
         pass
 
+    def get_active(self):
+        pass
+
 
 class RAMSTKOptionButton(Gtk.RadioButton):
     def __init__(self, group: Gtk.RadioButton=..., label: str=...) -> None: ...

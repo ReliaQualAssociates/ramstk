@@ -18,7 +18,7 @@ from pubsub import pub
 from ramstk.gui.gtk.ramstk import (
     RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry,
     RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog, RAMSTKPlot,
-    RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group,
+    RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
@@ -880,12 +880,12 @@ class GeneralData(RAMSTKWorkView):
                         int(self._validation_id),
                     )
 
-            pub.sendMessage(
-                'wvw_editing_requirement',
-                module_id=self._validation_id,
-                key='name',
-                value=_name,
-            )
+            # pub.sendMessage(
+            #     'wvw_editing_requirement',
+            #     module_id=self._validation_id,
+            #     key='name',
+            #     value=_name,
+            # )
 
         elif _key == 'measurement_unit':
             _new_text = _model.get_value(_row, 0)

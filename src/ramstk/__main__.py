@@ -117,6 +117,20 @@ def the_one_ring() -> None:
     _logger.do_log_info(__name__,
                         "Loaded global RAMSTK configuration variables.")
 
+    # Copy some site-level configuration variables to the user-level
+    # configuration.  These are used to load RAMSTKComboBox widgets with
+    # information during initialization.  This is the easiest way to make
+    # this information available without refactoring all the views to pass
+    # the site configuration object in addition to the user configuration
+    # object.
+    user_configuration.RAMSTK_AFFINITY_GROUPS = \
+        site_configuration.RAMSTK_AFFINITY_GROUPS
+    user_configuration.RAMSTK_REQUIREMENT_TYPE = \
+        site_configuration.RAMSTK_REQUIREMENT_TYPE
+    user_configuration.RAMSTK_STAKEHOLDERS = \
+        site_configuration.RAMSTK_STAKEHOLDERS
+    user_configuration.RAMSTK_WORKGROUPS = site_configuration.RAMSTK_WORKGROUPS
+
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()

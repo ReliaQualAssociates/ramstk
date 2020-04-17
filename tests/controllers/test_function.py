@@ -272,6 +272,19 @@ class TestCreateControllers():
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1
         assert DUT.n_col == 1
+        assert pub.isSubscribed(DUT.do_create_rows,
+                                'succeed_retrieve_functions')
+        assert pub.isSubscribed(DUT._do_create_function_matrix_columns,
+                                'succeed_retrieve_hardware')
+        assert pub.isSubscribed(DUT._on_delete_function,
+                                'succeed_delete_function')
+        # assert pub.isSubscribed(DUT._on_delete_hardware, 'succeed_delete_hardware')
+        assert pub.isSubscribed(DUT._on_insert_function,
+                                'succeed_insert_function')
+        # assert pub.isSubscribed(DUT._on_insert_hardware,
+        #              'succeed_insert_hardware')
+        assert pub.isSubscribed(DUT.do_update,
+                                'request_update_function_matrix')
 
 
 class TestSelectMethods():
@@ -349,7 +362,7 @@ class TestSelectMethods():
 
     @pytest.mark.unit
     def test_do_create_matrix(self, mock_program_dao):
-        """_do_create() should create an instance of the hardware matrix manager."""
+        """_do_create() should create an instance of the function matrix manager."""
         pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
 
         DUT = mmFunction()
@@ -631,7 +644,7 @@ class TestInsertMethods():
         with pytest.raises(KeyError):
             DUT.do_select('fnctn_hrdwr', 4, 8)
 
-        pub.sendMessage('succeed_insert_requirement', node_id=6)
+        # pub.sendMessage('succeed_insert_hardware', node_id=6)
 
         assert DUT.do_select('fnctn_hrdwr', 6, 8) == 0
 
@@ -872,7 +885,10 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_function_no_data,
                         'fail_update_function')
 
-    # TODO: un-skip test_do_update_matrix_manager in test_function.py.
+    # // TODO: activate test_do_update_matrix_manager in test_function.py.
+    # //
+    # // The test_do_update_matrix_manager() in test_function.py needs to be
+    # // set as an integration test when the Hardware module is refactored.
     @pytest.mark.skip
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should ."""

@@ -12,3 +12,6 @@ class RAMSTKFrame(Gtk.Frame):
 
     def add(self, _scrollwindow):
         pass
+
+    def set_shadow_type(self, ETCHED_OUT):
+        pass

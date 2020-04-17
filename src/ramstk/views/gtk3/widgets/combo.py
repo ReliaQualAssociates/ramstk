@@ -30,10 +30,12 @@ class RAMSTKComboBox(Gtk.ComboBox):
         self._index = index
 
         if not simple:
-            _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                  GObject.TYPE_STRING)
+            _list = Gtk.ListStore()
+            _list.set_column_types([GObject.TYPE_STRING, GObject.TYPE_STRING,
+                                    GObject.TYPE_STRING])
         else:
-            _list = Gtk.ListStore(GObject.TYPE_STRING)
+            _list = Gtk.ListStore()
+            _list.set_column_types([GObject.TYPE_STRING])
         self.set_model(_list)
 
         _cell = Gtk.CellRendererText()
@@ -62,6 +64,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
         return _options
 
+    # noinspection PyIncorrectDocstring
     def do_load_combo(self, entries: List[List[str]],
                       simple: bool = True) -> None:
         """
@@ -96,6 +99,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
             for __, _entry in enumerate(entries):
                 _model.append([_entry[self._index]])
 
+    # noinspection PyIncorrectDocstring
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
         Set the properties of the RAMSTK combobox.
@@ -154,3 +158,20 @@ class RAMSTKComboBox(Gtk.ComboBox):
             if _value == value:
                 self.set_active(int(_key))
         self.handler_unblock(handler_id)
+
+    def get_value(self, index: int = 0) -> str:
+        """
+        Return the value in the RAMSTKComboBox model at the index position.
+
+        :keyword int index: the column in the RAMSTKComboBox() model whose
+            value is to be retrieved.  Defaults to zero which will always
+            read a 'simple' RAMSTKComboBox().
+        :return: _value
+        :rtype: str
+        """
+        _model = self.get_model()
+        _row = self.get_active_iter()
+
+        _value: str = _model.get_value(_row, index)
+
+        return _value

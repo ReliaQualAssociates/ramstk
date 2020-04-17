@@ -66,7 +66,6 @@ class GeneralData(RAMSTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._function_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -182,7 +181,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._function_id = attributes['function_id']
+        self._record_id = attributes['function_id']
 
         self.txtCode.do_update(str(attributes['function_code']),
                                self._lst_handler_id[0])
@@ -203,7 +202,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_function', node_id=self._function_id)
+        pub.sendMessage('request_update_function', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -301,7 +300,7 @@ class GeneralData(RAMSTKWorkView):
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage('wvw_editing_function',
-                        node_id=[self._function_id, -1],
+                        node_id=[self._record_id, -1],
                         package={_key: _new_text})
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -316,20 +315,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {3: 'safety_critical'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        checkbutton.handler_block(self._lst_handler_id[index])
-
-        _new_text = int(checkbutton.get_active())
-
-        pub.sendMessage('wvw_editing_function',
-                        node_id=[self._function_id, -1, ''],
-                        package={_key: _new_text})
+        super().on_toggled(checkbutton, index,
+                           message='wvw_editing_function',
+                           keys={3: 'safety_critical'})
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 
@@ -374,7 +362,6 @@ class HazOps(RAMSTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._hazard_id: int = -1
 
         # Initialize public dictionary attributes.
 
@@ -603,7 +590,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_active(node_id=self._hazard_id)
+        self.do_set_cursor_active(node_id=self._record_id)
 
     def _get_cell_model(self, column: int) -> Gtk.TreeModel:
         """
@@ -645,7 +632,7 @@ class HazOps(RAMSTKWorkView):
         """
         self.do_set_cursor_busy()
         pub.sendMessage('request_delete_hazard',
-                        function_id=self._parent_id, node_id=self._hazard_id)
+                        function_id=self._parent_id, node_id=self._record_id)
 
     def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """
@@ -773,7 +760,7 @@ class HazOps(RAMSTKWorkView):
 
         if not self.treeview.do_edit_cell(__cell, path, new_text, position):
             pub.sendMessage('wvw_editing_hazard',
-                            node_id=[self._parent_id, self._hazard_id, ''],
+                            node_id=[self._parent_id, self._record_id, ''],
                             package={_key: new_text})
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
@@ -791,9 +778,9 @@ class HazOps(RAMSTKWorkView):
 
         _model, _row = selection.get_selected()
         try:
-            self._hazard_id = _model.get_value(_row, 2)
+            self._record_id = _model.get_value(_row, 2)
         except TypeError as _error:
-            self._hazard_id = -1
+            self._record_id = -1
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         self.treeview.handler_unblock(self._lst_handler_id[0])

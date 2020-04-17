@@ -4,38 +4,36 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Controller Package matrix manager."""
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKMatrixManager
-from ramstk.models.programdb import (
-    RAMSTKHardware, RAMSTKRequirement, RAMSTKValidation
-)
+from ramstk.models.programdb import RAMSTKHardware, RAMSTKRequirement
 
 
 class MatrixManager(RAMSTKMatrixManager):
     """
-    Contain the attributes and methods of the Hardware matrix manager.
+    Contain the attributes and methods of the Requirement matrix manager.
 
-    This class manages the hardware matrices for Requirements and Validation.
-    Attributes of the hardware Matrix Manager are:
+    This class manages the requirement matrices for Hardware and Validation.
+    Attributes of the requirement Matrix Manager are:
 
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
-        the hardware item being analyzed.
+        the requirement item being analyzed.
     """
-
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
-        """Initialize an instance of the hardware matrix manager."""
-        RAMSTKMatrixManager.__init__(
-            self,
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def __init__(self, **kwargs):
+        """Initialize an instance of the requirement matrix manager."""
+        super().__init__(
             column_tables={
                 'rqrmnt_hrdwr':
-                [RAMSTKHardware, 'hardware_id', 'comp_ref_des'],
-                'rqrmnt_vldtn': [RAMSTKValidation, 'validation_id', 'name']
+                [RAMSTKHardware, 'hardware_id', 'comp_ref_des']
             },
             row_table=RAMSTKRequirement)
 
@@ -52,98 +50,69 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_create, 'succeed_retrieve_requirements')
-        pub.subscribe(self._do_delete_hardware,
-                      'succeed_delete_hardware')
-        pub.subscribe(self._do_delete_validation, 'succeed_delete_validation')
-        pub.subscribe(self.do_delete_row, 'succeed_delete_requirement')
-        pub.subscribe(self.do_insert_row, 'succeed_insert_requirement')
-        pub.subscribe(self._do_insert_hardware,
-                      'succeed_insert_hardware')
-        pub.subscribe(self._do_insert_validation, 'succeed_insert_validation')
+        # // TODO: Update Requirement matrixmanager to respond to hardware.
+        # //
+        # // The Requirement module matrixmanager is currently only responding
+        # // to Requirement module pubsub messages.  Ensure the Requirement
+        # // module matrix manager is updated to respond to Hardware module
+        # // pubsub messages when the Hardware module is refactored.
+        pub.subscribe(self.do_create_rows, 'succeed_retrieve_requirements')
+        pub.subscribe(self._do_create_requirement_matrix_columns,
+                      'succeed_retrieve_hardware')
+        pub.subscribe(self._on_delete_requirement,
+                      'succeed_delete_requirement')
+        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        pub.subscribe(self._on_insert_requirement,
+                      'succeed_insert_requirement')
+        # pub.subscribe(self._on_insert_hardware,
+        #              'succeed_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_requirement_matrix')
-        pub.subscribe(self._on_get_tree, 'succeed_get_requirement_tree')
-        pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
-        pub.subscribe(self._on_get_tree, 'succeed_get_validation_tree')
 
-    def _do_create(self, tree):     # pylint: disable=unused-argument
+    def _do_create_requirement_matrix_columns(self, tree: treelib.Tree) -> \
+            None:
         """
-        Create the Requirement data matrices.
+        Create the Requirement data matrix columns.
 
-        :param int revision_id: the revision ID to gather the data that will be
-            used to create the matrices.
-        :return:
-        :rtype:
-        """
-        self.dic_matrices = {}
-
-        pub.sendMessage('request_get_requirement_tree')
-
-        pub.sendMessage('request_get_hardware_tree')
-        RAMSTKMatrixManager.do_create(self, 'rqrmnt_hrdwr')
-
-        # See ISSUE at https://github.com/ReliaQualAssociates/ramstk/issues/250
-        # pub.sendMessage('request_get_validation_tree')
-        # RAMSTKMatrixManager.do_create(self, 'hrdwr_vldtn')
-
-    def _do_delete_hardware(self, node_id):
-        """
-        Delete the node ID column from the Requirements::Hardware matrix.
-
-        :param int node_id: the hardware treelib Node ID that was deleted.
-            Note that node ID = hardware ID = matrix row ID.
+        :param tree: the treelib Tree() containing the correlated workflow
+            module's data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_delete_column(self, node_id,
-                                                    'rqrmnt_hrdwr')
+        self._col_tree = tree
 
-    def _do_delete_validation(self, node_id):
+        if tree.get_node(0).tag == 'hardware':
+            super().do_create_columns('rqrmnt_hrdwr')
+            pub.sendMessage('request_select_matrix',
+                            matrix_type='rqrmnt_hrdwr')
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_delete_requirement(self, node_id: int, tree: treelib.Tree) -> None:
         """
-        Delete the node ID column from the Requirements::Validation matrix.
+        Delete the matrix row associated with the deleted requirement.
 
-        :param int node_id: the validation treelib Node ID that was deleted.
-            Note that node ID = validation ID = matrix row ID.
+        :param int node_id: the treelib Tree() node ID associated with the
+            deleted requirement.
+        :param tree: the treelib Tree() containing the remaining requirement
+            data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_delete_column(self, node_id,
-                                                    'rqrmnt_vldtn')
+        self.do_delete_row(node_id)
 
-    def _do_insert_hardware(self, node_id):
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> None:
         """
-        Insert the node ID column to the Requirements::Hardware matrix.
 
-        :param int node_id: the requirement treelib Node ID that is to be
-            inserted.  Note that node ID = requirement ID = matrix row ID.
+        :param int node_id: the treelib Tree() node ID associated with the
+            inserted requirement.
+        :param tree: the treelib Tree() containing the remaining requirement
+            data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_insert_column(self, node_id,
-                                                    'rqrmnt_hrdwr')
-
-    def _do_insert_validation(self, node_id):
-        """
-        Insert the node ID column to the Requirements::Validation matrix.
-
-        :param int node_id: the validation treelib Node ID that is to be
-            inserted.  Note that node ID = validation ID = matrix row ID.
-        :return: None
-        :rtype: None
-        """
-        return RAMSTKMatrixManager.do_insert_column(self, node_id,
-                                                    'rqmnt_vldtn')
-
-    def _on_get_tree(self, dmtree):
-        """
-        Request the requirement treelib Tree().
-
-        :param dmtree: the requirement treelib Tree().
-        :type dmtree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        if dmtree.get_node(0).tag == 'requirement':
-            self._row_tree = dmtree
-        else:
-            self._col_tree = dmtree
+        self.do_insert_row(node_id)

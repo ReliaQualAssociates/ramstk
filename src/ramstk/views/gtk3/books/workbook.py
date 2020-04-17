@@ -16,13 +16,15 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import wvwFunctionGD, wvwHazOps
+from ramstk.views.gtk3.requirement import (
+    wvwRequirementAnalysis, wvwRequirementGD
+)
 from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
 class RAMSTKWorkBook(RAMSTKBaseBook):
     """This is the Work Book for the pyGTK multiple window interface."""
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
@@ -46,27 +48,28 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         # Initialize public dictionary attributes.
         self.dic_work_views: Dict[str, List[object]] = {
             'revision': [wvwRevisionGD(configuration, logger)],
-            'function': [wvwFunctionGD(configuration, logger),
-                         wvwHazOps(configuration, logger)],
-            #    'requirement':
-            #    [
-            #        wvwRequirementGD(configuration),
-            #        wvwRequirementAnalysis(configuration),
-            #    ],
-            #    'hardware': [
-            #        wvwHardwareGD(configuration),
-            #        wvwAllocation(configuration),
-            #        wvwHazOps(configuration),
-            #        wvwSimilarItem(configuration),
-            #        wvwHardwareAI(configuration),
-            #        wvwHardwareAR(configuration),
-            #        wvwDFMECA(configuration),
-            #        wvwPoF(configuration),
-            #    ],
-            #    'validation': [
-            #        wvwValidationGD(configuration),
-            #        wvwBurndownCurve(configuration),
-            #    ],
+            'function': [
+                wvwFunctionGD(configuration, logger),
+                wvwHazOps(configuration, logger)
+            ],
+            'requirement': [
+                wvwRequirementGD(configuration, logger),
+                wvwRequirementAnalysis(configuration, logger)
+            ],
+            'hardware': [
+                # wvwHardwareGD(configuration, logger),
+                # wvwAllocation(configuration, logger),
+                # wvwHazOps(configuration, logger),
+                # wvwSimilarItem(configuration, logger),
+                # wvwHardwareAI(configuration, logger),
+                # wvwHardwareAR(configuration, logger),
+                # wvwDFMECA(configuration, logger),
+                # wvwPoF(configuration, logger)
+            ],
+            'validation': [
+                # wvwValidationGD(configuration, logger),
+                # wvwBurndownCurve(configuration, logger)
+            ]
         }
 
         # Initialize public list attributes.

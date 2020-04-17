@@ -1251,7 +1251,7 @@ class TestDeleteMethods():
 
         assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 0
 
-        pub.sendMessage('succeed_delete_requirement', node_id=1)
+        # pub.sendMessage('succeed_delete_requirement', node_id=1)
 
         with pytest.raises(KeyError):
             DUT.do_select('hrdwr_rqrmnt', 1, 1)
@@ -1596,7 +1596,7 @@ class TestInsertMethods():
         with pytest.raises(KeyError):
             DUT.do_select('hrdwr_rqrmnt', 4, 8)
 
-        pub.sendMessage('succeed_insert_requirement', node_id=6)
+        # pub.sendMessage('succeed_insert_requirement', node_id=6)
 
         assert DUT.do_select('hrdwr_rqrmnt', 6, 8) == 0
 
