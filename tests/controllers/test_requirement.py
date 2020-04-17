@@ -387,6 +387,9 @@ class TestDeleteMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_requirement(300)
 
+        pub.unsubscribe(self.on_fail_delete_requirement,
+                        'fail_delete_requirement')
+
     # TODO: un-skip test_do_delete_matrix_column in test_requirement.py.
     @pytest.mark.skip
     def test_do_delete_matrix_column(self, test_program_dao):

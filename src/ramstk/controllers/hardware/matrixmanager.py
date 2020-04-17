@@ -55,12 +55,12 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._do_create, 'succeed_select_revision')
         # pub.subscribe(self._do_delete_requirement,
         #               'succeed_delete_requirement')
-        pub.subscribe(self._do_delete_validation, 'succeed_delete_validation')
+        # pub.subscribe(self._do_delete_validation, 'succeed_delete_validation')
         pub.subscribe(self.do_delete_row, 'succeed_delete_hardware')
         pub.subscribe(self.do_insert_row, 'succeed_insert_hardware')
         # pub.subscribe(self._do_insert_requirement,
         #               'succeed_insert_requirement')
-        pub.subscribe(self._do_insert_validation, 'succeed_insert_validation')
+        # pub.subscribe(self._do_insert_validation, 'succeed_insert_validation')
         pub.subscribe(self.do_update, 'request_update_hardware_matrix')
         pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
         pub.subscribe(self._on_get_tree, 'succeed_get_requirement_tree')

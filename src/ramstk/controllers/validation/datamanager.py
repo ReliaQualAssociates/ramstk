@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -25,17 +25,16 @@ class DataManager(RAMSTKDataManager):
     """
     Contain the attributes and methods of the Validation data manager.
 
-    This class manages the validation data from the RAMSTKValidation,
-    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKMilHdbkF, RAMSTKNSWC, and
-    RAMSKTReliability data models.
+    This class manages the validation data from the RAMSTKValidation and
+    RAMSKTProgramStatus data models.
     """
 
     _tag: str = 'validation'
     _root: int = 0
 
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, **kwargs):
         """Initialize a Validation data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -54,10 +53,10 @@ class DataManager(RAMSTKDataManager):
                                      identifier=self._root)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'succeed_select_revision')
+        pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_set_tree, 'succeed_calculate_all_validation')
         pub.subscribe(self._do_delete_validation, 'request_delete_validation')
-        pub.subscribe(self.do_insert, 'request_insert_validation')
+        pub.subscribe(self.do_insert_validation, 'request_insert_validation')
         pub.subscribe(self.do_update, 'request_update_validation')
         pub.subscribe(self.do_update_all, 'request_update_all_validation')
         pub.subscribe(self.do_get_attributes,
@@ -72,9 +71,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_update_program_status,
                       'succeed_calculate_tasks')
 
-    def _do_delete_validation(self, node_id):
+    def _do_delete_validation(self, node_id: int) -> None:
         """
-        Remove a Validation item.
+        Remove a Validation task.
 
         :param int node_id: the node (validation) ID to be removed from the
             RAMSTK Program database.
@@ -82,30 +81,34 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            RAMSTKDataManager.do_delete(self, node_id, 'validation')
+            super().do_delete(node_id, 'validation')
 
             self.tree.remove_node(node_id)
             self.last_id[0] = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_validation', node_id=node_id)
+            pub.sendMessage('succeed_delete_validation',
+                            node_id=node_id,
+                            tree=self.tree)
         except DataAccessError:
             _error_msg = ("Attempted to delete non-existent validation ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_validation', error_message=_error_msg)
         except NodeIDAbsentError:
-            _error_msg = ("Validation ID {0:s} was not found as a node "
-                          "in the tree.").format(str(node_id))
+            _error_msg = ("Attempted to delete non-existent validation ID "
+                          "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_validation', error_message=_error_msg)
 
-    def _do_insert_status(self):  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def _do_insert_status(self):
         """
         Add a new program status record.
 
         :return: _status; the newly inserted RAMSTKProgramStatus record.
         :rtype: :class:`ramstk.models.programdb.RAMSTKProgramStatus`
         """
-        _status = RAMSTKProgramStatus(revision_id=self._revision_id,
-                                      status_id=self.last_id[1])
+        _status = RAMSTKProgramStatus()
+        _status.revision_id = self._revision_id
+        _status.status_id = self.last_id[1]
 
         self.dao.do_insert(_status)
 
@@ -203,7 +206,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_validation_tree', dmtree=self.tree)
 
-    def do_insert(self):  # pylint: disable=arguments-differ
+    def do_insert_validation(self) -> None:  # pylint: disable=arguments-differ
         """
         Add a new validation task.
 
@@ -211,9 +214,11 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _validation = RAMSTKValidation(revision_id=self._revision_id,
-                                           validation_id=self.last_id[0] + 1,
-                                           name="New Validation Task")
+            _validation = RAMSTKValidation()
+            _validation.revision_id = self._revision_id
+            _validation.validation_id = self.last_id[0] + 1
+            _validation.name = "New Validation Task"
+
             self.dao.do_insert(_validation)
 
             self.last_id[0] = _validation.validation_id
@@ -225,21 +230,22 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_validation',
-                            node_id=self.last_id[0])
+                            node_id=self.last_id[0],
+                            tree=self.tree)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_validation", error_message=_error)
 
-    def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the Validation BoM data from the RAMSTK Program database.
 
-        :param int revision_id: the Revision ID to select the Validation tasks
-            for.
+        :param dict attributes: the attributes for the selected Requirement.
         :return: None
         :rtype: None
         """
-        self._revision_id = revision_id
+        self._revision_id = attributes['revision_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -247,7 +253,8 @@ class DataManager(RAMSTKDataManager):
         for _validation in self.dao.do_select_all(
                 RAMSTKValidation,
                 key=RAMSTKValidation.revision_id,
-                value=self._revision_id):
+                value=self._revision_id,
+                order=RAMSTKValidation.validation_id):
 
             _data_package = {'validation': _validation}
 

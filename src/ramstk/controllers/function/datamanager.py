@@ -33,7 +33,7 @@ class DataManager(RAMSTKDataManager):
 
     def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """Initialize a Function data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -79,7 +79,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            RAMSTKDataManager.do_delete(self, node_id, 'function')
+            super().do_delete(node_id, 'function')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
@@ -120,16 +120,6 @@ class DataManager(RAMSTKDataManager):
     def _do_get_attributes(self, node_id: int, table: str) -> None:
         """
         Retrieve the RAMSTK data table attributes for the function.
-
-        .. important:: the failure definition will return a dict of all the
-            failure definitions associated with the node (function) ID.  This
-            dict uses the definition ID as the key and the instance of the
-            RAMSTKFailureDefinition as the value.  The subscribing methods and
-            functions will need to unpack this dict.
-
-        .. important:: the usage profile will return a treelib Tree() of all
-            the usage profiles associated with the node (function) ID.  The
-            subscribing methods and functions will need to parse this Tree().
 
         :param int node_id: the node (function) ID of the function to get the
             attributes for.

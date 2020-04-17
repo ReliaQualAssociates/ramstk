@@ -3,11 +3,10 @@
 #       ramstk.controllers.requirement.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Package Data Model."""
 
 # Standard Library Imports
-# Standard Library Imports\
 from datetime import date
 from typing import Any, Dict, List
 
@@ -80,7 +79,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            RAMSTKDataManager.do_delete(self, node_id, 'requirement')
+            super().do_delete(node_id, 'requirement')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
@@ -164,7 +163,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
     # pylint: disable=arguments-differ
-    def do_insert_requirement(self, parent_id=None) -> None:
+    def do_insert_requirement(self, parent_id: int = None) -> None:
         """
         Add a new requirement.
 

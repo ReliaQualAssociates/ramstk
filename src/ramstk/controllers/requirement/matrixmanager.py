@@ -22,9 +22,6 @@ class MatrixManager(RAMSTKMatrixManager):
 
     This class manages the requirement matrices for Hardware and Validation.
     Attributes of the requirement Matrix Manager are:
-
-    :ivar dict _attributes: the dict used to hold the aggregate attributes for
-        the requirement item being analyzed.
     """
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -68,8 +65,8 @@ class MatrixManager(RAMSTKMatrixManager):
         #              'succeed_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_requirement_matrix')
 
-    def _do_create_requirement_matrix_columns(self, tree: treelib.Tree) -> \
-            None:
+    def _do_create_requirement_matrix_columns(self,
+                                              tree: treelib.Tree) -> None:
         """
         Create the Requirement data matrix columns.
 

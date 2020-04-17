@@ -93,6 +93,22 @@ MOCK_VALIDATIONS = {
         'time_variance': 0.0
     }
 }
+MOCK_HRDWR_TREE = Tree()
+MOCK_HRDWR_TREE.create_node(tag='hardware',
+                            identifier=0,
+                            parent=None,
+                            data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1', identifier=1, parent=0, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1', identifier=2, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS2', identifier=3, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS3', identifier=4, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=5, parent=1, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A1', identifier=6, parent=5, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2', identifier=7, parent=5, data=None)
+MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
+                            identifier=8,
+                            parent=7,
+                            data=None)
 
 
 class MockDao:
@@ -124,7 +140,8 @@ class MockDao:
         elif record == RAMSTKProgramStatus:
             self._all_status.append(record)
 
-    def do_select_all(self, table, key, value):
+    def do_select_all(self, table, key=None, value=None, order=None,
+                      _all=None):
         if table == RAMSTKValidation:
             self._all_validations = []
             for _key in MOCK_VALIDATIONS:
@@ -177,7 +194,7 @@ def mock_program_dao(monkeypatch):
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self):
+    def test_data_manager_create(self):
         """__init__() should return a Validation data manager."""
         DUT = dmValidation()
 
@@ -187,10 +204,11 @@ class TestCreateControllers():
         assert DUT._tag == 'validation'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_revision')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT._do_delete_validation,
                                 'request_delete_validation')
-        assert pub.isSubscribed(DUT.do_insert, 'request_insert_validation')
+        assert pub.isSubscribed(DUT.do_insert_validation,
+                                'request_insert_validation')
         assert pub.isSubscribed(DUT.do_update, 'request_update_validation')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_validation')
@@ -229,25 +247,19 @@ class TestCreateControllers():
         assert isinstance(DUT.dic_matrices, dict)
         assert DUT.n_row == 1
         assert DUT.n_col == 1
-        assert pub.isSubscribed(DUT.do_load, 'succeed_retrieve_matrix')
-        assert pub.isSubscribed(DUT._do_create, 'succeed_retrieve_validations')
-        # assert pub.isSubscribed(DUT._do_delete_requirement,
-        #                         'succeed_delete_requirement')
-        assert pub.isSubscribed(DUT._do_delete_hardware,
-                                'succeed_delete_hardware')
-        assert pub.isSubscribed(DUT.do_delete_row, 'succeed_delete_validation')
-        assert pub.isSubscribed(DUT.do_insert_row, 'succeed_insert_validation')
-        # assert pub.isSubscribed(DUT._do_insert_requirement,
-        #                         'succeed_insert_requirement')
-        assert pub.isSubscribed(DUT._do_insert_hardware,
-                                'succeed_insert_hardware')
-        assert pub.isSubscribed(DUT.do_update,
-                                'request_update_validation_matrix')
-        assert pub.isSubscribed(DUT._on_get_tree,
-                                'succeed_get_validation_tree')
-        assert pub.isSubscribed(DUT._on_get_tree,
-                                'succeed_get_requirement_tree')
-        assert pub.isSubscribed(DUT._on_get_tree, 'succeed_get_hardware_tree')
+        assert pub.isSubscribed(DUT.do_create_rows,
+                                'succeed_retrieve_validations')
+        assert pub.isSubscribed(DUT._do_create_validation_matrix_columns,
+                                'succeed_retrieve_hardware')
+        #assert pub.isSubscribed(DUT._on_delete_requirement,
+        #                        'succeed_delete_requirement')
+        # assert pub.isSubscribed(DUT._on_delete_hardware, 'succeed_delete_hardware')
+        #assert pub.isSubscribed(DUT._on_insert_requirement,
+        #                        'succeed_insert_requirement')
+        # assert pub.isSubscribed(DUT._on_insert_hardware,
+        #              'succeed_insert_hardware')
+        #assert pub.isSubscribed(DUT.do_update,
+        #                        'request_update_requirement_matrix')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -259,6 +271,11 @@ class TestSelectMethods():
             tree.get_node(1).data['validation'], RAMSTKValidation)
         print("\033[36m\nsucceed_retrieve_validations topic was broadcast.")
 
+    def on_request_select_matrix(self, matrix_type):
+        assert matrix_type == 'vldtn_hrdwr'
+        print("\033[36m\nrequest_select_matrix topic was broadcast for the "
+              "vldtn_hrdwr matrix.")
+
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKValidation instances on success."""
@@ -267,7 +284,7 @@ class TestSelectMethods():
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         assert isinstance(
             DUT.status_tree.get_node(date.today()).data, dict)
@@ -289,7 +306,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKValidation on success."""
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _validation = DUT.do_select(1, table='validation')
 
@@ -302,7 +319,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select(1, table='scibbidy-bibbidy-doo')
@@ -312,53 +329,46 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent Validation ID is requested."""
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         assert DUT.do_select(100, table='validation') is None
 
-    # TODO: un-skip test_do_create_matrix in test_validation.py.
-    @pytest.mark.skip
-    def test_do_create_matrix(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_create_matrix(self, mock_program_dao):
         """_do_create() should create an instance of the validation matrix manager."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
+
         DUT = mmValidation()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
 
-        assert DUT.do_select('vldtn_rqrmnt', 1, 0) == 'REL-0001'
-        assert DUT.do_select('vldtn_rqrmnt', 2, 0) == 'FUNC-0001'
-        assert DUT.do_select('vldtn_rqrmnt', 3, 0) == 'REL-0002'
-        assert DUT.do_select('vldtn_rqrmnt', 1, 1) == 0
+        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
+
+        pub.unsubscribe(self.on_request_select_matrix, 'request_select_matrix')
+
+        assert DUT._col_tree == MOCK_HRDWR_TREE
+        assert DUT.do_select('vldtn_hrdwr', 1, 1) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 2) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 3) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 4) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 5) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 6) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 7) == 0
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_validation(self, node_id):
+    def on_succeed_delete_validation(self, node_id, tree):
         assert node_id == 2
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_validation topic was broadcast.")
 
     def on_fail_delete_validation(self, error_message):
-        assert error_message == ('Validation ID 300 was not found as a node '
-                                 'in the tree.')
+        assert error_message == ('Attempted to delete non-existent validation '
+                                 'ID 300.')
         print("\033[35m\nfail_delete_validation topic was broadcast.")
 
     @pytest.mark.unit
@@ -369,7 +379,7 @@ class TestDeleteMethods():
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_validation(DUT.last_id[0])
 
         assert DUT.last_id[0] == 1
@@ -384,7 +394,7 @@ class TestDeleteMethods():
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_validation(300)
 
         pub.unsubscribe(self.on_fail_delete_validation,
@@ -396,7 +406,7 @@ class TestDeleteMethods():
         """do_delete_column() should remove the appropriate column from the requested validation matrix."""
         DATAMGR = dmValidation()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='hardware',
                                   identifier=0,
@@ -412,7 +422,7 @@ class TestDeleteMethods():
                                   parent=0,
                                   data=None)
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        pub.sendMessage('selected_revision', revision_id=1)
 
         assert DUT.do_select('vldtn_hrdwr', 1, 1) == 0
 
@@ -421,46 +431,34 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_hrdwr', 1, 1)
 
-    # TODO: un-skip test_do_delete_matrix_row in test_validation.py.
-    @pytest.mark.skip
-    def test_do_delete_row(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_delete_matrix_row(self, mock_program_dao):
         """do_delete_row() should remove the appropriate row from the validation matrices."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
 
-        assert DUT.do_select('vldtn_rqrmnt', 1, 2) == 0
+        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
-        pub.sendMessage('succeed_delete_validation', node_id=2)
+        assert DUT.do_select('vldtn_hrdwr', 1, 7) == 0
+
+        DATAMGR.tree.remove_node(1)
+        pub.sendMessage('succeed_delete_validation',
+                        node_id=1,
+                        tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_rqrmnt', 1, 2)
+            DUT.do_select('vldtn_rqrmnt', 1, 7)
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_validation(self, node_id):
+    def on_succeed_insert_validation(self, node_id, tree):
         assert node_id == 3
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_validation topic was broadcast.")
 
     def on_fail_insert_validation(self, error_msg):
@@ -476,8 +474,8 @@ class TestInsertMethods():
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
-        DUT.do_insert()
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_insert_validation()
 
         assert isinstance(
             DUT.tree.get_node(3).data['validation'], RAMSTKValidation)
@@ -494,7 +492,7 @@ class TestInsertMethods():
         """do_insert_column() should add a column to the right of the requested validation matrix."""
         DATAMGR = dmValidation()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='hardware',
                                   identifier=0,
@@ -510,7 +508,7 @@ class TestInsertMethods():
                                   parent=0,
                                   data=None)
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        pub.sendMessage('selected_revision', revision_id=1)
 
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_hrdwr', 4, 1)
@@ -519,39 +517,29 @@ class TestInsertMethods():
 
         assert DUT.do_select('vldtn_hrdwr', 4, 1) == 0
 
-    # TODO: un-skip test_do_insert_matrix_row in test_validation.py.
-    @pytest.mark.skip
-    def test_do_insert_row(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_insert_matrix_row(self, mock_program_dao):
         """do_insert_row() should add a row to the end of each validation matrix."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
         DUT = mmValidation()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_rqrmnt', 1, 5)
+            DUT.do_select('vldtn_hrdwr', 3, 4)
 
-        pub.sendMessage('succeed_insert_validation', node_id=5)
+        DATAMGR.tree.create_node(tag='Test Insert Validation',
+                                 identifier=3,
+                                 parent=0,
+                                 data=None)
+        pub.sendMessage('succeed_insert_validation',
+                        node_id=3,
+                        tree=DATAMGR.tree)
 
-        assert DUT.do_select('vldtn_rqrmnt', 1, 5) == 0
+        assert DUT.do_select('vldtn_hrdwr', 3, 4) == 0
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -587,7 +575,7 @@ class TestGetterSetter():
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_attributes(1, 'validation')
 
         pub.unsubscribe(self.on_succeed_get_validation_attrs,
@@ -601,7 +589,7 @@ class TestGetterSetter():
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_all_attributes(1)
 
         pub.unsubscribe(self.on_succeed_get_all_attrs,
@@ -612,7 +600,7 @@ class TestGetterSetter():
         """do_set_attributes() should send the success message."""
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_validation_attributes',
                         node_id=[1],
@@ -625,7 +613,7 @@ class TestGetterSetter():
         """do_set_attributes() should return None and leave all attributes unchanged if passed an attribute key that does not exist."""
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_validation_attributes',
                         node_id=[1],
@@ -641,7 +629,7 @@ class TestGetterSetter():
         """do_set_all_attributes() should send the success message."""
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_all_validation_attributes',
                         attributes={
@@ -659,58 +647,18 @@ class TestGetterSetter():
         ).description == 'This is a description added by a test.'
 
     @pytest.mark.unit
-    def test_on_get_tree_data_manager(self, mock_program_dao):
+    def test_on_get_tree(self, mock_program_dao):
         """on_get_tree() should return the validation treelib Tree."""
         pub.subscribe(self.on_succeed_get_validation_tree,
                       'succeed_get_validation_tree')
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_validation_tree,
                         'succeed_get_validation_tree')
-
-    @pytest.mark.unit
-    def test_on_get_validation_tree(self, mock_program_dao):
-        """_on_get_tree() should respond to the 'succeed_get_validation_tree' message and assign the tree to the _row_tree attribute."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
-        DUT = mmValidation()
-
-        pub.sendMessage('request_get_validation_tree')
-
-        assert isinstance(DUT._row_tree, Tree)
-        assert isinstance(DUT._row_tree.get_node(1).data, dict)
-        assert isinstance(
-            DUT._row_tree.get_node(1).data['validation'], RAMSTKValidation)
-        assert DUT._row_tree.get_node(1).data['validation'].validation_id == 1
-        assert DUT._row_tree.get_node(1).data[
-            'validation'].description == ''
-
-    @pytest.mark.integration
-    def test_on_get_requirement_tree(self, test_program_dao):
-        """_on_get_tree() should respond to the 'succeed_get_requirement_tree' message and assign the tree to the _col_tree attribute."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
-        DUT = mmValidation()
-
-        _tree = Tree()
-        _tree.create_node(tag='requirements',
-                          identifier=0,
-                          parent=None,
-                          data=None)
-        _tree.create_node(tag='REL-0001', identifier=1, parent=0, data=None)
-        _tree.create_node(tag='FUNC-0001', identifier=2, parent=0, data=None)
-        _tree.create_node(tag='REL-0002', identifier=3, parent=0, data=None)
-
-        pub.sendMessage('succeed_get_requirement_tree', dmtree=_tree)
-
-        assert isinstance(DUT._col_tree, Tree)
-        assert DUT._col_tree.get_node(1).data is None
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -742,14 +690,14 @@ class TestUpdateMethods():
 
         DUT = dmValidation()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _validation = DUT.do_select(1, 'validation')
         _validation.name = 'Test Validation'
         _validation.time_maximum = 10.5
         DUT.do_update(1)
 
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         _validation = DUT.do_select(1, 'validation')
 
         assert _validation.name == 'Test Validation'
@@ -765,7 +713,7 @@ class TestUpdateMethods():
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_update(100)
 
     @pytest.mark.integration
@@ -776,10 +724,10 @@ class TestUpdateMethods():
 
         DUT = dmValidation()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_update_program_status(47832.00, 528.3)
 
-        DUT.do_select_all(revision_id=1)
+        DUT.do_select_all(attributes={'revision_id': 1})
         assert DUT.status_tree.get_node(
             date.today()).data['status'].cost_remaining == 47832.00
         assert DUT.status_tree.get_node(
@@ -794,7 +742,7 @@ class TestUpdateMethods():
         """do_update() should broadcast the 'succeed_update_matrix' on success."""
         DATAMGR = dmValidation()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmValidation()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -815,7 +763,7 @@ class TestUpdateMethods():
 
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        pub.sendMessage('selected_revision', revision_id=1)
 
         DUT.dic_matrices['vldtn_rqrmnt'][1][2] = 1
         DUT.dic_matrices['vldtn_rqrmnt'][1][3] = 2
@@ -836,7 +784,7 @@ class TestAnalysisMethods():
         """do_calculate_tasks() should calculate the validation task time and cost."""
         DATAMGR = dmValidation()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amValidation(test_toml_user_configuration)
 
         pub.sendMessage('request_get_validation_tree')
