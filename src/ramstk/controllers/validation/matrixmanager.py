@@ -28,9 +28,7 @@ class MatrixManager(RAMSTKMatrixManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the validation item being analyzed.
     """
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def __init__(self, **kwargs):
+    def __init__(self) -> None:
         """Initialize an instance of the validation matrix manager."""
         super().__init__(
             column_tables={

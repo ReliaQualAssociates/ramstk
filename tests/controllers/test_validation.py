@@ -21,6 +21,7 @@ from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import (
     amValidation, dmRequirement, dmValidation, mmValidation
 )
+from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
@@ -217,7 +218,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmValidation)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'validation'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -247,8 +248,8 @@ class TestCreateControllers():
         assert isinstance(DUT, amValidation)
         assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
+        assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
-        assert DUT._tree is None
         assert pub.isSubscribed(DUT.on_get_all_attributes,
                                 'succeed_get_all_validation_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_validation_tree')

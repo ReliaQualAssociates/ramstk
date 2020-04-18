@@ -7,10 +7,14 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Controller Package analysis manager."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
 
 
@@ -24,7 +28,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the validation item being analyzed.
     """
-    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 **kwargs: Dict[str, Any]) -> None:
         """
         Initialize an instance of the validation analysis manager.
 
@@ -32,7 +38,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             current instance of the RAMSTK application.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super(AnalysisManager, self).__init__(configuration, **kwargs)
+        super().__init__(configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -53,7 +59,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(self.do_calculate_tasks,
                       'request_calculate_validation_tasks')
 
-    def do_calculate_tasks(self):
+    def do_calculate_tasks(self) -> None:
         """
         Calculate mean, standard error, and bounds on the task time and cost.
 

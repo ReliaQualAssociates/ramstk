@@ -43,7 +43,7 @@ class TestCreateControllers():
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.site_configuration, RAMSTKSiteConfiguration)
         assert isinstance(DUT.user_configuration, RAMSTKUserConfiguration)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert isinstance(DUT.common_dao, BaseDatabase)
         assert DUT._tag == 'options'
         assert DUT._root == 0

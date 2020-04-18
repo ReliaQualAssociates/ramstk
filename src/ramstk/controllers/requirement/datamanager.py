@@ -31,7 +31,7 @@ class DataManager(RAMSTKDataManager):
 
     _tag = 'requirement'
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Requirement data manager instance."""
         super().__init__(**kwargs)
 
@@ -162,7 +162,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
     # pylint: disable=arguments-differ
-    def do_insert_requirement(self, parent_id: int = None) -> None:
+    def do_insert_requirement(self, parent_id: int = 0) -> None:
         """
         Add a new requirement.
 
@@ -172,8 +172,6 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _tree = Tree()
-        if parent_id is None:
-            parent_id = self._root
 
         try:
             _requirement = RAMSTKRequirement()
