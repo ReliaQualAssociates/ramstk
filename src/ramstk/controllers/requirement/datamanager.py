@@ -30,7 +30,6 @@ class DataManager(RAMSTKDataManager):
     """
 
     _tag = 'requirement'
-    _root = 0
 
     def __init__(self, **kwargs):
         """Initialize a Requirement data manager instance."""

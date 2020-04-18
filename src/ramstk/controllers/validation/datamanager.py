@@ -29,9 +29,8 @@ class DataManager(RAMSTKDataManager):
     """
 
     _tag: str = 'validation'
-    _root: int = 0
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize a Validation data manager instance."""
         super().__init__(**kwargs)
 
@@ -99,7 +98,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('fail_delete_validation', error_message=_error_msg)
 
     # pylint: disable=arguments-differ
-    def _do_insert_status(self):
+    def _do_insert_status(self) -> RAMSTKProgramStatus:
         """
         Add a new program status record.
 

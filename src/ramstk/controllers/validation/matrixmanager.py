@@ -53,7 +53,6 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-
         pub.subscribe(self.do_create_rows, 'succeed_retrieve_validations')
         pub.subscribe(self._do_create_validation_matrix_columns,
                       'succeed_retrieve_hardware')
@@ -104,8 +103,7 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_delete_column(self, node_id,
-                                                    'vldtn_hrdwr')
+        return super().do_delete_column(node_id, 'vldtn_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -118,8 +116,7 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_delete_column(self, node_id,
-                                                    'vldtn_rqrmnt')
+        return super().do_delete_column(node_id, 'vldtn_rqrmnt')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -137,7 +134,7 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_delete_row(node_id)
 
-    def _on_insert_hardware(self, node_id):
+    def _on_insert_hardware(self, node_id: int) -> None:
         """
         Insert the node ID column to the Validation::Hardware matrix.
 
@@ -146,8 +143,7 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_insert_column(self, node_id,
-                                                    'vldtn_hrdwr')
+        return super().do_insert_column(node_id, 'vldtn_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -160,8 +156,7 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_insert_column(self, node_id,
-                                                    'vldtn_rqrmnt')
+        return super().do_insert_column(node_id, 'vldtn_rqrmnt')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

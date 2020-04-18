@@ -90,6 +90,9 @@ class RAMSTKDataManager():
         module being modeled.
     :type tree: :class:`treelib.Tree`
     """
+
+    _root = 0
+
     def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an RAMSTK data model instance.
