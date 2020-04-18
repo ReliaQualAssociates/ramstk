@@ -30,7 +30,7 @@ class DataManager(RAMSTKDataManager):
 
     _tag: str = 'validation'
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Validation data manager instance."""
         super().__init__(**kwargs)
 

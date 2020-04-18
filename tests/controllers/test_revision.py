@@ -14,6 +14,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmRevision
+from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,
@@ -315,7 +316,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmRevision)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'revision'
         assert DUT._root == 0
         assert DUT._revision_id == 0

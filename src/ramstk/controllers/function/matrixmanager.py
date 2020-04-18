@@ -26,8 +26,7 @@ class MatrixManager(RAMSTKMatrixManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the function item being analyzed.
     """
-
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self):
         """Initialize an instance of the function matrix manager."""
         super().__init__(
             column_tables={
@@ -82,6 +81,7 @@ class MatrixManager(RAMSTKMatrixManager):
             pub.sendMessage('request_select_matrix', matrix_type='fnctn_hrdwr')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Delete the matrix row associated with the deleted function.
@@ -96,6 +96,7 @@ class MatrixManager(RAMSTKMatrixManager):
         self.do_delete_row(node_id)
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
         """
 

@@ -252,7 +252,7 @@ class BaseDatabase():
         for _record in records:
             self.do_insert(_record)
 
-    def do_select_all(self, table, **kwargs) -> None:
+    def do_select_all(self, table, **kwargs) -> List[object]:
         """
         Select all records from the RAMSTK database for table.
 

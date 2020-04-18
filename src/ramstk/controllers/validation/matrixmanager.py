@@ -7,6 +7,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Controller Package matrix manager."""
 
+# Standard Library Imports
+from typing import Any
+
 # Third Party Imports
 import treelib
 from pubsub import pub
@@ -28,9 +31,7 @@ class MatrixManager(RAMSTKMatrixManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the validation item being analyzed.
     """
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def __init__(self, **kwargs):
+    def __init__(self) -> None:
         """Initialize an instance of the validation matrix manager."""
         super().__init__(
             column_tables={
@@ -94,7 +95,7 @@ class MatrixManager(RAMSTKMatrixManager):
                 pub.sendMessage('request_select_matrix',
                                 matrix_type='vldtn_rqrmnt')
 
-    def _on_delete_hardware(self, node_id: int) -> None:
+    def _on_delete_hardware(self, node_id: int) -> Any:
         """
         Delete the node ID column from the Validation::Hardware matrix.
 
@@ -107,7 +108,7 @@ class MatrixManager(RAMSTKMatrixManager):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def _on_delete_requirement(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_delete_requirement(self, node_id: int, tree: treelib.Tree) -> Any:
         """
         Delete the node ID column from the Validation::Requirements matrix.
 
@@ -120,7 +121,7 @@ class MatrixManager(RAMSTKMatrixManager):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def _on_delete_validation(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_delete_validation(self, node_id: int, tree: treelib.Tree) -> Any:
         """
         Delete the matrix row associated with the deleted validation.
 
@@ -134,7 +135,7 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_delete_row(node_id)
 
-    def _on_insert_hardware(self, node_id: int) -> None:
+    def _on_insert_hardware(self, node_id: int) -> Any:
         """
         Insert the node ID column to the Validation::Hardware matrix.
 
@@ -147,7 +148,7 @@ class MatrixManager(RAMSTKMatrixManager):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> Any:
         """
         Insert the node ID column to the Hardware::Requirements matrix.
 

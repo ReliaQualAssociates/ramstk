@@ -23,9 +23,7 @@ class MatrixManager(RAMSTKMatrixManager):
     This class manages the requirement matrices for Hardware and Validation.
     Attributes of the requirement Matrix Manager are:
     """
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def __init__(self, **kwargs):
+    def __init__(self) -> None:
         """Initialize an instance of the requirement matrix manager."""
         super().__init__(
             column_tables={
