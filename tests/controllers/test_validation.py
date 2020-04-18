@@ -14,10 +14,13 @@ from datetime import date, timedelta
 import pytest
 from pubsub import pub
 from treelib import Tree
+from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amValidation, dmValidation, mmValidation
+from ramstk.controllers import (
+    amValidation, dmRequirement, dmValidation, mmValidation
+)
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
@@ -110,15 +113,28 @@ MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
                             parent=7,
                             data=None)
 
+MOCK_RQRMNT_TREE = Tree()
+MOCK_RQRMNT_TREE.create_node(tag='requirement',
+                            identifier=0,
+                            parent=None,
+                            data=None)
+MOCK_RQRMNT_TREE.create_node(tag='REL-0001', identifier=1, parent=0, data=None)
+MOCK_RQRMNT_TREE.create_node(tag='PRF-0002', identifier=2, parent=0, data=None)
+
 
 class MockDao:
     _all_validations = []
     _all_status = []
 
     def _do_delete_validation(self, record):
+        _popped = False
         for _idx, _validation in enumerate(self._all_validations):
             if _validation.validation_id == record.validation_id:
                 self._all_validations.pop(_idx)
+                _popped = True
+
+        if not _popped:
+            self._all_validations.pop(record.validation_id)
 
     def _do_delete_status(self, record):
         for _idx, _status in enumerate(self._all_status):
@@ -126,18 +142,17 @@ class MockDao:
                 self._all_status.pop(_idx)
 
     def do_delete(self, record):
-        try:
-            if record == RAMSTKValidation:
-                self._do_delete_validation(record)
-            elif record == RAMSTKProgramStatus:
-                self._do_delete_status(record)
-        except AttributeError:
+        if record is None:
             raise DataAccessError('')
+        elif isinstance(record, RAMSTKValidation):
+            self._do_delete_validation(record)
+        elif isinstance(record, RAMSTKProgramStatus):
+            self._do_delete_status(record)
 
     def do_insert(self, record):
-        if record == RAMSTKValidation:
+        if isinstance(record, RAMSTKValidation):
             self._all_validations.append(record)
-        elif record == RAMSTKProgramStatus:
+        elif isinstance(record, RAMSTKProgramStatus):
             self._all_status.append(record)
 
     def do_select_all(self, table, key=None, value=None, order=None,
@@ -180,9 +195,11 @@ class MockDao:
                 MOCK_STATUS[_key]['time_remaining'] = record.time_remaining
 
     def do_update(self, record):
-        if record == RAMSTKValidation:
+        if record is None:
+            raise TypeError
+        elif isinstance(record, RAMSTKValidation):
             self._do_update_validation(record)
-        elif record == RAMSTKProgramStatus:
+        elif isinstance(record, RAMSTKProgramStatus):
             self._do_update_status(record)
 
 @pytest.fixture
@@ -388,8 +405,8 @@ class TestDeleteMethods():
                         'succeed_delete_validation')
 
     @pytest.mark.unit
-    def test_do_delete_validation_non_existent_id(self, mock_program_dao):
-        """_do_delete() should send the fail message."""
+    def test_do_delete_validation_non_existent_db_id(self, mock_program_dao):
+        """_do_delete() should send the fail message when attempting to delete a record that doesn't exist in the database."""
         pub.subscribe(self.on_fail_delete_validation, 'fail_delete_validation')
 
         DUT = dmValidation()
@@ -400,29 +417,16 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_validation,
                         'fail_delete_validation')
 
-    # TODO: un-skip test_do_delete_matrix_column in test_validation.py.
-    @pytest.mark.skip
-    def test_do_delete_matrix_column(self, test_program_dao):
-        """do_delete_column() should remove the appropriate column from the requested validation matrix."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+    @pytest.mark.unit
+    def test_do_delete_matrix_hardware_column(self, mock_program_dao):
+        """do_delete_matrix_column() should remove the appropriate column from the requested validation matrix."""
         DUT = mmValidation()
-        DUT._col_tree.create_node(tag='hardware',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='S1', identifier=1, parent=0, data=None)
-        DUT._col_tree.create_node(tag='S1:SS1',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='S1:SS2',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
 
-        pub.sendMessage('selected_revision', revision_id=1)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         assert DUT.do_select('vldtn_hrdwr', 1, 1) == 0
 
@@ -430,6 +434,24 @@ class TestDeleteMethods():
 
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_hrdwr', 1, 1)
+
+    @pytest.mark.unit
+    def test_do_delete_matrix_requirement_column(self, mock_program_dao):
+        """do_delete_matrix_column() should remove the appropriate column from the requested validation matrix."""
+        DUT = mmValidation()
+
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
+
+        assert DUT.do_select('vldtn_rqrmnt', 1, 1) == 0
+
+        pub.sendMessage('succeed_delete_requirement', node_id=1, tree=None)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_rqrmnt', 1, 1)
 
     @pytest.mark.unit
     def test_do_delete_matrix_row(self, mock_program_dao):
@@ -486,36 +508,47 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_validation,
                         'succeed_insert_validation')
 
-    # TODO: un-skip test_do_insert_matrix_column in test_validation.py.
-    @pytest.mark.skip
-    def test_do_insert_matrix_column(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_insert_matrix_hardware_column(self, mock_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmValidation()
-        DUT._col_tree.create_node(tag='hardware',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='S1', identifier=1, parent=0, data=None)
-        DUT._col_tree.create_node(tag='S1:SS1',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='S1:SS2',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
 
-        pub.sendMessage('selected_revision', revision_id=1)
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_hrdwr', 4, 1)
+            DUT.do_select('vldtn_hrdwr', 1, 9)
 
-        pub.sendMessage('succeed_insert_hardware', node_id=4)
+        MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=9, parent=0,
+                                     data=None)
 
-        assert DUT.do_select('vldtn_hrdwr', 4, 1) == 0
+        pub.sendMessage('succeed_insert_hardware', node_id=9)
+
+        assert DUT.do_select('vldtn_hrdwr', 1, 9) == 0
+
+    @pytest.mark.unit
+    def test_do_insert_matrix_requirement_column(self, mock_program_dao):
+        """do_insert_column() should add a column to the right of the requested validation matrix."""
+        DUT = mmValidation()
+
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
+
+        with pytest.raises(KeyError):
+            DUT.do_select('vldtn_rqrmnt', 1, 3)
+
+        MOCK_RQRMNT_TREE.create_node(tag='FUN-0003', identifier=3, parent=0,
+                                     data=None)
+
+        pub.sendMessage('succeed_insert_requirement', node_id=3, tree=MOCK_RQRMNT_TREE)
+
+        assert DUT.do_select('vldtn_rqrmnt', 1, 3) == 0
 
     @pytest.mark.unit
     def test_do_insert_matrix_row(self, mock_program_dao):
@@ -674,6 +707,11 @@ class TestUpdateMethods():
             'ID 100.')
         print("\033[35m\nfail_update_validation topic was broadcast")
 
+    def on_fail_update_validation2(self, error_msg):
+        assert error_msg == (
+            'No data package found for validation task ID 1.')
+        print("\033[35m\nfail_update_validation topic was broadcast")
+
     def on_succeed_update_status(self, node_id):
         assert node_id == date.today()
         print("\033[36m\nsucceed_update_program_status topic was broadcast")
@@ -708,13 +746,43 @@ class TestUpdateMethods():
 
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
-        """ do_update() should return a non-zero error code when passed a Validation ID that doesn't exist. """
+        """ do_update() should raise the 'fail_update_validation' message when passed a Validation ID that doesn't exist. """
         pub.subscribe(self.on_fail_update_validation, 'fail_update_validation')
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
+
         DUT.do_update(100)
+
+        pub.unsubscribe(self.on_fail_update_validation,
+                       'fail_update_validation')
+
+    @pytest.mark.unit
+    def test_do_update_missing_from_tree(self, mock_program_dao):
+        """ do_update() should raise the 'fail_update_validation' message when passed a Validation ID that doesn't exist in the tree. """
+        pub.subscribe(self.on_fail_update_validation2,
+                      'fail_update_validation')
+
+        DUT = dmValidation()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        DUT.tree.get_node(1).data['validation'] = None
+
+        DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_validation2,
+                      'fail_update_validation')
+
+    @pytest.mark.unit
+    def test_do_update_node_zero(self, mock_program_dao):
+        """ do_update() should return None when passed Validation ID=0. """
+        DUT = dmValidation()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        assert DUT.do_update(0) is None
 
     @pytest.mark.integration
     def test_do_update_status(self, test_program_dao):

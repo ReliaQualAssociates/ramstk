@@ -13,7 +13,6 @@ from typing import Any, Dict, List
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -79,7 +78,14 @@ class DataManager(RAMSTKDataManager):
             RAMSTK Program database.
         :return: None
         :rtype: None
+        :raises: NodeIDAbsentError if the record is deleted from the
+            database but there is no corresponding node in the tree.  This
+            condition shouldn't happen, so it should be dealt with using the
+            logger and a user dialog.
         """
+        _error_msg = ("Attempted to delete non-existent validation ID "
+                      "{0:s}.").format(str(node_id))
+
         try:
             super().do_delete(node_id, 'validation')
 
@@ -90,12 +96,6 @@ class DataManager(RAMSTKDataManager):
                             node_id=node_id,
                             tree=self.tree)
         except DataAccessError:
-            _error_msg = ("Attempted to delete non-existent validation ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_validation', error_message=_error_msg)
-        except NodeIDAbsentError:
-            _error_msg = ("Attempted to delete non-existent validation ID "
-                          "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_validation', error_message=_error_msg)
 
     # pylint: disable=arguments-differ
@@ -174,7 +174,7 @@ class DataManager(RAMSTKDataManager):
                             node_id=_status.date_status)
         except DataAccessError:
             _error_msg = "Failed to update program status."
-            pub.sendMessage('fail_update_update_program', error_msg=_error_msg)
+            pub.sendMessage('fail_update_program_status', error_msg=_error_msg)
 
     def do_get_all_attributes(self, node_id):
         """
@@ -206,7 +206,8 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_validation_tree', dmtree=self.tree)
 
-    def do_insert_validation(self) -> None:  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def do_insert_validation(self) -> None:
         """
         Add a new validation task.
 
@@ -299,6 +300,7 @@ class DataManager(RAMSTKDataManager):
         :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
+        :raises: KeyError if the revision ID or validation ID keys are missing.
         """
         [[_key, _value]] = package.items()
 
@@ -306,12 +308,8 @@ class DataManager(RAMSTKDataManager):
                                      table='validation').get_attributes()
         if _key in _attributes:
             _attributes[_key] = _value
-
-            try:
-                _attributes.pop('revision_id')
-                _attributes.pop('validation_id')
-            except KeyError:
-                pass
+            _attributes.pop('revision_id')
+            _attributes.pop('validation_id')
 
             self.do_select(node_id[0],
                            table='validation').set_attributes(_attributes)

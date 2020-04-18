@@ -11,6 +11,7 @@
 from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import pandas as pd
 import treelib
 from pubsub import pub
@@ -69,12 +70,12 @@ class RAMSTKAnalysisManager():
         """
         self._attributes = attributes
 
-    def on_get_tree(self, dmtree):
+    def on_get_tree(self, dmtree: treelib.Tree) -> None:
         """
         Set the analysis manager's treelib Tree().
 
-        :param tree: the data manager's treelib Tree().
-        :type tree: :class:`treelib.Tree`
+        :param dmtree: the data manager's treelib Tree().
+        :type dmtree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
@@ -114,9 +115,7 @@ class RAMSTKDataManager():
         # Tree().  Manipulation and viewing of a RAMSTK module tree needs to
         # ignore the root of the tree.
         try:
-            self.tree.create_node(tag=self._tag,
-                                  identifier=self._root,
-                                  parent=None)
+            self.tree.create_node(tag=self._tag, identifier=self._root)
         except (treelib.tree.MultipleRootError, treelib.tree.NodeIDAbsentError,
                 treelib.tree.DuplicatedNodeIdError):
             pass
@@ -484,6 +483,8 @@ class RAMSTKMatrixManager():
         self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)
         (__, self.n_col) = self.dic_matrices[matrix_type].shape
 
+        pub.sendMessage('request_select_matrix', matrix_type=matrix_type)
+
     def do_create_rows(self, tree: treelib.Tree) -> None:
         """
         Create the matrix rows.
@@ -498,17 +499,24 @@ class RAMSTKMatrixManager():
         :rtype: None
         """
         self._row_tree = tree
-        self._dic_matrix = {}
 
-        self._dic_matrix['rows'] = [
+        self._dic_matrix = {'rows': [
             self._row_tree.get_node(_node).tag
             for _node in self._row_tree.nodes
-        ]
+        ]}
 
         for _matrix_type in self._column_tables.keys():
             self._dic_matrix['rows'][0] = self._column_tables[_matrix_type][1]
             self.dic_matrices[_matrix_type] = pd.DataFrame(self._dic_matrix)
             (self.n_row, __) = self.dic_matrices[_matrix_type].shape
+
+            # If the column tree has already been loaded, we can build the
+            # matrix.  Otherwise the matrix will be built when the column
+            # tree is loaded.
+            if self._col_tree:
+                self.do_create_columns(_matrix_type)
+                pub.sendMessage('request_select_matrix',
+                                matrix_type=_matrix_type)
 
     def do_delete_column(self, node_id, matrix_type):
         """
@@ -551,10 +559,11 @@ class RAMSTKMatrixManager():
         :rtype: None
         :raise: KeyError if passed a node ID or matrix type that doesn't exist.
         """
-        _lst_values = [0] * self.n_row
+        _lst_values: List[Any] = [0] * self.n_row
         _lst_values[0] = ''
 
-        self.dic_matrices[matrix_type][node_id] = _lst_values
+        self.dic_matrices[matrix_type] = pd.concat([self.dic_matrices[matrix_type],
+                                                    pd.DataFrame({node_id: _lst_values})], axis=1)
 
     def do_insert_row(self, node_id):
         """
@@ -611,7 +620,7 @@ class RAMSTKMatrixManager():
         :raise: KeyError if passed a matrix type, column, or row that doesn't
             exist.
         """
-        return self.dic_matrices[matrix_type].at[row, col]
+        return self.dic_matrices[matrix_type].loc[row, col]
 
     def do_update(self, revision_id: int, matrix_type: str) -> None:
         """

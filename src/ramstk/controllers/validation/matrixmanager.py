@@ -34,8 +34,8 @@ class MatrixManager(RAMSTKMatrixManager):
         """Initialize an instance of the validation matrix manager."""
         super().__init__(
             column_tables={
-                # 'vldtn_rqrmnt':
-                # [RAMSTKRequirement, 'requirement_id', 'requirement_code'],
+                'vldtn_rqrmnt':
+                [RAMSTKRequirement, 'requirement_id', 'requirement_code'],
                 'vldtn_hrdwr': [RAMSTKHardware, 'hardware_id', 'comp_ref_des']
             },
             row_table=RAMSTKValidation)
@@ -53,24 +53,21 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        # // TODO: Update Requirement matrixmanager to respond to hardware.
-        # //
-        # // The Requirement module matrixmanager is currently only responding
-        # // to Requirement module pubsub messages.  Ensure the Requirement
-        # // module matrix manager is updated to respond to Hardware module
-        # // pubsub messages when the Hardware module is refactored.
+
         pub.subscribe(self.do_create_rows, 'succeed_retrieve_validations')
         pub.subscribe(self._do_create_validation_matrix_columns,
                       'succeed_retrieve_hardware')
+        pub.subscribe(self._do_create_validation_matrix_columns,
+                      'succeed_retrieve_requirements')
         pub.subscribe(self._on_delete_validation,
                       'succeed_delete_validation')
-        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
-        # pub.subscribe(self._on_delete_requirement,
-        #               'succeed_delete_requirement')
+        pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        pub.subscribe(self._on_delete_requirement,
+                      'succeed_delete_requirement')
         pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
-        # pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
-        # pub.subscribe(self._on_insert_requirement,
-        #               'succeed_insert_requirement')
+        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
+        pub.subscribe(self._on_insert_requirement,
+                      'succeed_insert_requirement')
         pub.subscribe(self.do_update, 'request_update_validation_matrix')
 
     def _do_create_validation_matrix_columns(self,
@@ -86,12 +83,19 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self._col_tree = tree
 
-        if tree.get_node(0).tag == 'hardware':
-            super().do_create_columns('vldtn_hrdwr')
-            pub.sendMessage('request_select_matrix',
-                            matrix_type='vldtn_hrdwr')
+        # If the row tree has already been loaded, we can build the matrix.
+        # Otherwise the matrix will be built when the row tree is loaded.
+        if self._row_tree.all_nodes():
+            if tree.get_node(0).tag == 'hardware':
+                super().do_create_columns('vldtn_hrdwr')
+                pub.sendMessage('request_select_matrix',
+                                matrix_type='vldtn_hrdwr')
+            elif tree.get_node(0).tag == 'requirement':
+                super().do_create_columns('vldtn_rqrmnt')
+                pub.sendMessage('request_select_matrix',
+                                matrix_type='vldtn_rqrmnt')
 
-    def _on_delete_hardware(self, node_id):
+    def _on_delete_hardware(self, node_id: int) -> None:
         """
         Delete the node ID column from the Validation::Hardware matrix.
 
@@ -103,7 +107,9 @@ class MatrixManager(RAMSTKMatrixManager):
         return RAMSTKMatrixManager.do_delete_column(self, node_id,
                                                     'vldtn_hrdwr')
 
-    def _on_delete_requirement(self, node_id):
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_delete_requirement(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Delete the node ID column from the Validation::Requirements matrix.
 
@@ -143,7 +149,9 @@ class MatrixManager(RAMSTKMatrixManager):
         return RAMSTKMatrixManager.do_insert_column(self, node_id,
                                                     'vldtn_hrdwr')
 
-    def _on_insert_requirement(self, node_id):
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Insert the node ID column to the Hardware::Requirements matrix.
 
