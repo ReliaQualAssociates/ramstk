@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.validation.moduleview.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.validation.moduleview.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -148,9 +149,32 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_refresh_tree(package, {
-            'name': 17,
-            'remarks': 20,
-            'validation_code': 22
+            'description': 2,
+            'task_type': 3,
+            'task_specification': 4,
+            'measurement_unit': 5,
+            'acceptable_minimum': 6,
+            'acceptable_mean': 7,
+            'acceptable_maximum': 8,
+            'acceptable_variance': 9,
+            'date_start': 10,
+            'date_end': 11,
+            'status': 12,
+            'time_minimum': 13,
+            'time_average': 14,
+            'time_maximum': 15,
+            'cost_minimum': 18,
+            'cost_average': 19,
+            'cost_maximum': 20,
+            'confidence': 23,
+            'time_ll': 24,
+            'time_mean': 25,
+            'time_ul': 26,
+            'time_variance': 27,
+            'cost_ll': 28,
+            'cost_mean': 29,
+            'cost_ul': 30,
+            'cost_variance': 31
         })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:

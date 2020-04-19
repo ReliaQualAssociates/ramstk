@@ -11,5 +11,4 @@
 # from .listview import FailureDefinition as lvwFailureDefinition
 # from .listview import UsageProfile as lvwUsageProfile
 from .moduleview import ModuleView as mvwValidation
-
-# from .workview import GeneralData as wvwRevisionGD
+from .workview import GeneralData as wvwValidationGD
