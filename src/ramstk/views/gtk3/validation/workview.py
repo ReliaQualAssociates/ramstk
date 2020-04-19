@@ -11,6 +11,8 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 # Third Party Imports
+import numpy as np
+from matplotlib.patches import Ellipse
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -18,8 +20,9 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView
+    RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry,
+    RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog, RAMSTKPlot,
+    RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView, do_make_buttonbox
 )
 
 
@@ -253,16 +256,19 @@ class GeneralData(RAMSTKWorkView):
 
         # Now add a Gtk.VPaned() to the right side of the Gtk.HBox().  This
         # Gtk.VPaned() will create the R. TOP and R. BOTTOM views.
-        _vpaned = Gtk.VPaned()
+        _vpaned: Gtk.VPaned = Gtk.VPaned()
 
         _r_top_fixed = Gtk.Fixed()
+        # noinspection PyTypeChecker
         _scrollwindow = RAMSTKScrolledWindow(_r_top_fixed)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Task Effort"))
         _frame.add(_scrollwindow)
+        # noinspection PyArgumentList
         _vpaned.pack1(_frame, True, True)
 
         _r_bottom_fixed = Gtk.Fixed()
+        # noinspection PyTypeChecker
         _scrollwindow = RAMSTKScrolledWindow(_r_bottom_fixed)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Project Effort"))
@@ -562,8 +568,7 @@ class GeneralData(RAMSTKWorkView):
         _types = self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         for _key, _type in _types.items():
             if _type[1] == attributes['task_type']:
-                _name = '{0:s}-{1:04d}'.format(_type[0],
-                                               int(self._record_id))
+                _name = '{0:s}-{1:04d}'.format(_type[0], int(self._record_id))
 
         self.txtCode.set_text(str(attributes['validation_id']))
         self.txtTask.do_update(attributes['description'],
@@ -673,8 +678,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_validation',
-                        node_id=self._record_id)
+        pub.sendMessage('request_update_validation', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -927,3 +931,261 @@ class GeneralData(RAMSTKWorkView):
                         value=float(spinbutton.get_value()))
 
         spinbutton.handler_unblock(self._lst_handler_id[index])
+
+
+class BurndownCurve(RAMSTKWorkView):
+    """
+    Display Validation task burndown curve in the RAMSTK Work Book.
+
+    The Validation Burndown Curve displays the planned burndown curve (solid
+    line) for all tasks in the V&V plan as well as the actual progress
+    (points).  The attributes of a Validation Burndown Curve View are:
+
+    :ivar int _record_id: the ID of the Validation task currently being
+                              displayed.
+    :ivar burndown: the RAMSTKPlot() widget to display the burndown curve of
+                    program V&V task effort.
+    """
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
+        """
+        Initialize the Work View for the Validation package.
+
+        :param configuration: the RAMSTK configuration instance.
+        :type configuration: :class:`ramstk.RAMSTK.Configuration`
+        """
+        super().__init__(configuration, logger, 'validation')
+
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
+
+        # Initialize private dictionary attributes.
+        self._dic_icons['calculate-all'] = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
+            '/32x32/calculate-all.png'
+        self._dic_icons['plot'] = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
+            '/32x32/charts.png'
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.burndown: RAMSTKPlot = RAMSTKPlot()
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        # pub.subscribe(self._do_load_page, 'selected_validation')
+        pub.subscribe(self._do_load_page, 'calculated_validation')
+
+    def __make_ui(self) -> None:
+        """
+        Make the Validation class Gtk.Notebook() burndown curve page.
+
+        :return: None
+        :rtype: None
+        """
+
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            do_make_buttonbox(self,
+                              icons=['calculate-all'],
+                              tooltips=[
+                                  _("Calculate the cost and time "
+                                    "of the program (i.e., all "
+                                    "Validation tasks).")
+                              ],
+                              callbacks=[self._do_request_calculate_all]))
+        self.pack_start(_scrolledwindow, False, False, 0)
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("Program Validation Effort"))
+        _frame.add(self.burndown.plot)
+        _frame.show_all()
+
+        self.pack_start(_frame, True, True, 0)
+
+        # Insert the tab.
+        _label = RAMSTKLabel(
+            _("<span weight='bold'>" + _("Program\nValidation\nProgress")
+              + "</span>"))
+        _label.do_set_properties(height=30,
+                                 width=-1,
+                                 justify=Gtk.Justification.CENTER,
+                                 tooltip=_("Shows a plot of the total "
+                                           "expected time to complete all "
+                                           "V&amp;V tasks and the current "
+                                           "progress."))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+        self.show_all()
+
+    def _do_clear_page(self) -> None:
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.burndown.axis.cla()
+        self.burndown.figure.clf()
+        self.burndown.plot.draw()
+
+    def _do_load_page(self, attributes: Dict) -> None:
+        """
+        Load the actual burndown progress.
+
+        :param dict attributes: a dict of attribute key:value pairs for the
+            Validation program status.
+        :return: None
+        :rtype: None
+        """
+        _y_minimum = attributes['y_minimum']
+        _y_average = attributes['y_average']
+        _y_maximum = attributes['y_maximum']
+        _assessment_dates = attributes['assessment_dates']
+        _targets = attributes['targets']
+        _y_actual = attributes['y_actual']
+        _y_actual = {
+            _key: _value
+            for _key, _value in _y_actual.items() if _value != 0
+        }
+
+        self.burndown.axis.cla()
+        self.burndown.axis.grid(True, which='both')
+
+        self._do_load_planned(attributes)
+
+        # Add a vertical line at the scheduled end-date for each task
+        # identified as a Reliability Assessment.  Add an annotation box
+        # showing the minimum and maximum goal values for each milestone.
+        if _assessment_dates:
+            for __, _dates in enumerate(_assessment_dates):
+                _y_max = list(_y_maximum.values())[0]
+                self.burndown.axis.axvline(x=_dates,
+                                           ymin=0,
+                                           ymax=1.05 * _y_max,
+                                           color='m',
+                                           linewidth=2.5,
+                                           linestyle=':')
+
+            for _index, _target in enumerate(_targets):
+                self.burndown.axis.annotate(
+                    str(self.fmt.format(_target[1])) + "\n"
+                    + str(self.fmt.format(_target[0])),
+                    xy=(_assessment_dates[_index],
+                        0.95 * max(_y_maximum.values())),
+                    xycoords='data',
+                    xytext=(-55, 0),
+                    textcoords='offset points',
+                    size=12,
+                    va="center",
+                    bbox=dict(boxstyle="round",
+                              fc='#E5E5E5',
+                              ec='None',
+                              alpha=0.5),
+                    arrowprops=dict(arrowstyle="wedge,tail_width=1.",
+                                    fc='#E5E5E5',
+                                    ec='None',
+                                    alpha=0.5,
+                                    patchA=None,
+                                    patchB=Ellipse((2, -1), 0.5, 0.5),
+                                    relpos=(0.2, 0.5)))
+
+        if _y_actual:
+            self.burndown.do_add_line(x_values=list(_y_actual.keys()),
+                                      y_values=list(_y_actual.values()),
+                                      marker='o')
+
+        else:
+            _prompt = _("Actual program status information is not "
+                        "available.  You must calculate the program to make "
+                        "this information available for plotting.")
+            _dialog = RAMSTKMessageDialog(_prompt,
+                                          self._dic_icons['important'],
+                                          'warning')
+            _response = _dialog.do_run()
+
+            if _response == Gtk.ResponseType.OK:
+                _dialog.do_destroy()
+
+        self.burndown.do_make_title(_("Total Validation Effort"))
+        self.burndown.do_make_labels(_("Total Time [hours]"),
+                                     -0.5,
+                                     0,
+                                     set_x=False)
+        _text = (_("Maximum Expected Time"), _("Mean Expected Time"),
+                 _("Minimum Expected Time"), _("Actual Remaining Time"))
+        # noinspection PyTypeChecker
+        self.burndown.do_make_legend(_text)
+        self.burndown.figure.canvas.draw()
+
+    def _do_load_planned(self, attributes) -> None:
+        """
+        Load the LCL, expected, and UCL planned burndown curves.
+
+        :param dict attributes: a dict of attribute key:value pairs for the
+                                Validation program status.
+        :return: None
+        :rtype: None
+        """
+        _y_minimum = attributes['y_minimum']
+        _y_average = attributes['y_average']
+        _y_maximum = attributes['y_maximum']
+
+        _time_minimum = list(reversed(np.cumsum(list(_y_minimum.values()))))
+        _time_average = list(reversed(np.cumsum(list(_y_average.values()))))
+        _time_maximum = list(reversed(np.cumsum(list(_y_maximum.values()))))
+
+        if _y_maximum:
+            self.burndown.do_load_plot(x_values=list(_y_maximum.keys()),
+                                       y_values=_time_maximum,
+                                       plot_type='date',
+                                       marker='r--')
+        if _y_average:
+            self.burndown.do_load_plot(x_values=list(_y_average.keys()),
+                                       y_values=_time_average,
+                                       plot_type='date',
+                                       marker='b-')
+        if _y_minimum:
+            self.burndown.do_load_plot(x_values=list(_y_minimum.keys()),
+                                       y_values=_time_minimum,
+                                       plot_type='date',
+                                       marker='g--')
+
+    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to calculate program cost and time.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_calculate_all_validations')
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to save all Validation tasks and program results.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_all_validations')
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)

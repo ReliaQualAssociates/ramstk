@@ -20,7 +20,7 @@ from ramstk.views.gtk3.requirement import (
     wvwRequirementAnalysis, wvwRequirementGD
 )
 from ramstk.views.gtk3.revision import wvwRevisionGD
-from ramstk.views.gtk3.validation import wvwValidationGD
+from ramstk.views.gtk3.validation import wvwBurndownCurve, wvwValidationGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -69,7 +69,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             ],
             'validation': [
                 wvwValidationGD(configuration, logger),
-                # wvwBurndownCurve(configuration, logger)
+                wvwBurndownCurve(configuration, logger)
             ]
         }
 
