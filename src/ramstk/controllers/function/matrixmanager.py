@@ -26,7 +26,7 @@ class MatrixManager(RAMSTKMatrixManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the function item being analyzed.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize an instance of the function matrix manager."""
         super().__init__(
             column_tables={

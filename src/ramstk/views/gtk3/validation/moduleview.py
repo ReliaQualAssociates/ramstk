@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.revision.moduleview.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.validation.moduleview.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Revision GTK3 module view."""
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTK Validation GTK3 module view."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -24,16 +24,18 @@ from ramstk.views.gtk3.widgets import (
 
 class ModuleView(RAMSTKModuleView):
     """
-    Display Revision attribute data in the RAMSTK Module Book.
+    Display Validation attribute data in the RAMSTK Module Book.
 
-    The Revision Module View displays all the Revisions associated with the
-    connected RAMSTK Program in a flat list.  All attributes of a Revision
+    The Validation Module View displays all the Validations associated with the
+    connected RAMSTK Program in a flat list.  All attributes of a Validation
     Module View are inherited.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module='revision') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module='validation') -> None:
         """
-        Initialize the Revision Module View.
+        Initialize the Validation Module View.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
@@ -46,27 +48,41 @@ class ModuleView(RAMSTKModuleView):
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
             to_tty=False)
-        self._dic_key_index = {'revision_id': 0,
-                               'availability_logistics': 1,
-                               'availability_mission': 2,
-                               'cost': 3, 'cost_per_failure': 4,
-                               'cost_per_hour': 5, 'hazard_rate_active': 6,
-                               'hazard_rate_dormant': 7,
-                               'hazard_rate_logistics': 8,
-                               'hazard_rate_mission': 9,
-                               'hazard_rate_software': 10, 'mmt': 11,
-                               'mcmt': 12, 'mpmt': 13, 'mtbf_logistics': 14,
-                               'mtbf_mission': 15, 'mttr': 16, 'name': 17,
-                               'reliability_logistics': 18,
-                               'reliability_mission': 19, 'remarks': 20,
-                               'n_parts': 21, 'revision_code': 22,
-                               'program_time': 23, 'program_time_sd': 24,
-                               'program_cost': 25, 'program_cost_sd': 26}
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/revision.png')
+            + '/32x32/validation.png')
+        self._dic_key_index = {
+            'revision_id': 0,
+            'validation_id': 1,
+            'description': 2,
+            'task_type': 3,
+            'task_specification': 4,
+            'measurement_unit': 5,
+            'acceptable_minimum': 6,
+            'acceptable_mean': 7,
+            'acceptable_maximum': 8,
+            'acceptable_variance': 9,
+            'date_start': 10,
+            'date_end': 11,
+            'status': 12,
+            'time_minimum': 13,
+            'time_average': 14,
+            'time_maximum': 15,
+            'cost_minimum': 18,
+            'cost_average': 19,
+            'cost_maximum': 20,
+            'confidence': 23,
+            'time_ll': 24,
+            'time_mean': 25,
+            'time_ul': 26,
+            'time_variance': 27,
+            'cost_ll': 28,
+            'cost_mean': 29,
+            'cost_ul': 30,
+            'cost_variance': 31
+        }
 
         # Initialize private list attributes.
 
@@ -81,23 +97,23 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_delete, 'succeed_delete_revision')
-        pub.subscribe(self._on_insert, 'succeed_insert_revision')
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
-        pub.subscribe(self._do_refresh_tree, 'wvw_editing_revision')
+        pub.subscribe(self.on_delete, 'succeed_delete_validation')
+        pub.subscribe(self._on_insert, 'succeed_insert_validation')
+        pub.subscribe(self.do_load_tree, 'succeed_retrieve_validations')
+        pub.subscribe(self._do_refresh_tree, 'wvw_editing_validation')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
     def __make_ui(self) -> None:
         """
-        Build the user interface for the Revision work stream module.
+        Build the user interface for the Validation work stream module.
 
         :return: None
         :rtype: None
         """
         super().make_ui(icons=['add', 'remove'],
                         tooltips=[
-                            _("Add a new revision."),
-                            _("Remove the currently selected revision.")
+                            _("Add a new validation task."),
+                            _("Remove the currently selected validation task.")
                         ],
                         callbacks=[
                             self.do_request_insert_sibling,
@@ -110,7 +126,7 @@ class ModuleView(RAMSTKModuleView):
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
-        This method is called by other views when the Revision data model
+        This method is called by other views when the Validation data model
         attributes are edited via their gtk.Widgets().
 
         The calling method is passes a dict containing the database field name
@@ -134,12 +150,12 @@ class ModuleView(RAMSTKModuleView):
         self.do_refresh_tree(package, {
             'name': 17,
             'remarks': 20,
-            'revision_code': 22
+            'validation_code': 22
         })
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to delete selected record from the RAMSTKRevision table.
+        Send request to delete selected record from the RAMSTKValidation table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -148,9 +164,9 @@ class ModuleView(RAMSTKModuleView):
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent(
         ).get_parent()
-        _prompt = _("You are about to delete Revision {0:d} and all "
+        _prompt = _("You are about to delete Validation {0:d} and all "
                     "data associated with it.  Is this really what "
-                    "you want to do?").format(self._revision_id)
+                    "you want to do?").format(self._record_id)
         _dialog = RAMSTKMessageDialog(_prompt,
                                       self._dic_icons['question'],
                                       'question',
@@ -158,14 +174,14 @@ class ModuleView(RAMSTKModuleView):
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
-            pub.sendMessage('request_delete_revision',
-                            node_id=self._revision_id)
+            pub.sendMessage('request_delete_validation',
+                            node_id=self._record_id)
 
         _dialog.do_destroy()
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to update the selected record to the RAMSTKRevision table.
+        Send request to update the selected record to the RAMSTKValidation table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -173,12 +189,13 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_revision', node_id=self._revision_id)
+        pub.sendMessage('request_update_validation',
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to save all the records to the RAMSTKRevision table.
+        Send request to save all the records to the RAMSTKValidation table.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -186,15 +203,15 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_revisions')
+        pub.sendMessage('request_update_all_validations')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
-        Handle mouse clicks on the Revision Module View RAMSTKTreeView().
+        Handle mouse clicks on the Validation Module View RAMSTKTreeView().
 
-        :param treeview: the Revision class Gtk.TreeView().
+        :param treeview: the Validation class Gtk.TreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
             important attribute is which mouse button was clicked).
@@ -220,10 +237,10 @@ class ModuleView(RAMSTKModuleView):
             super().on_button_press(event,
                                     icons=['add'],
                                     labels=[
-                                        _("Add Revision"),
-                                        _("Remove Selected Revision"),
-                                        _("Save Selected Revision"),
-                                        _("Save All Revisions")
+                                        _("Add Validation"),
+                                        _("Remove Selected Validation"),
+                                        _("Save Selected Validation"),
+                                        _("Save All Validations")
                                     ],
                                     callbacks=[self.do_request_insert_sibling])
 
@@ -232,7 +249,7 @@ class ModuleView(RAMSTKModuleView):
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
         """
-        Handle edits of Revision package Module View RAMSTKTreeview().
+        Handle edits of Validation package Module View RAMSTKTreeview().
 
         This function sends a dict with it's message that relates the
         database field and the new data for that field.
@@ -257,7 +274,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {17: 'name', 20: 'remarks', 22: 'revision_code'}
+        _dic_keys = {17: 'name', 20: 'remarks', 22: 'validation_code'}
         try:
             _key = _dic_keys[self._lst_col_order[position]]
         except KeyError:
@@ -265,15 +282,15 @@ class ModuleView(RAMSTKModuleView):
 
         self.treeview.do_edit_cell(__cell, path, new_text, position)
 
-        pub.sendMessage('mvw_editing_revision',
-                        node_id=[self._revision_id, -1, ''],
+        pub.sendMessage('mvw_editing_validation',
+                        node_id=[self._record_id, -1, ''],
                         package={_key: new_text})
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """
-        Add row to module view for newly added revision.
+        Add row to module view for newly added validation.
 
-        :param int node_id: the ID of the newly added revision.
+        :param int node_id: the ID of the newly added validation.
         :param tree: the treelib Tree() containing the work stream module's
             data.
         :type tree: :class:`treelib.Tree`
@@ -281,7 +298,7 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         super().on_insert(
-            tree.get_node(node_id).data['revision'].get_attributes())
+            tree.get_node(node_id).data['validation'].get_attributes())
 
     def _on_module_switch(self, module: str = '') -> None:
         """
@@ -291,43 +308,38 @@ class ModuleView(RAMSTKModuleView):
         """
         _model, _row = self.treeview.selection.get_selected()
 
-        if module == 'revision':
+        if module == 'validation':
             _code = _model.get_value(_row, self._lst_col_order[22])
             _name = _model.get_value(_row, self._lst_col_order[17])
-            _title = _("Analyzing Revision {0:s}: {1:s}").format(
+            _title = _("Analyzing Validation {0:s}: {1:s}").format(
                 str(_code), str(_name))
 
             pub.sendMessage('request_set_title', title=_title)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
-        Handle events for the Revision package Module View RAMSTKTreeView().
+        Handle events for the Validation package Module View RAMSTKTreeView().
 
-        This method is called whenever a Revision Module View RAMSTKTreeView()
+        This method is called whenever a Validation Module View RAMSTKTreeView()
         row is activated/changed.
 
-        :param selection: the Revision class Gtk.TreeSelection().
+        :param selection: the Validation class Gtk.TreeSelection().
         :type selection: :class:`Gtk.TreeSelection`
         :return: None
         :rtype: None
         """
-        _model, _row = selection.get_selected()
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
         if _attributes:
-            self._revision_id = _attributes['revision_id']
+            self._record_id = _attributes['validation_id']
 
-            _title = _("Analyzing Revision {0:s}: {1:s}").format(
-                str(_attributes['revision_code']), str(_attributes['name']))
+            _title = _("Analyzing Validation {0:s}").format(
+                str(_attributes['validation_id']))
 
-            pub.sendMessage('request_clear_workviews')
-            pub.sendMessage('selected_revision', attributes=_attributes)
-            pub.sendMessage('request_get_revision_attributes',
-                            node_id=self._revision_id,
-                            table='failure_definitions')
-            pub.sendMessage('request_get_revision_attributes',
-                            node_id=self._revision_id,
-                            table='usage_profile')
+            pub.sendMessage('selected_validation', attributes=_attributes)
+            pub.sendMessage('request_get_validation_attributes',
+                            node_id=self._record_id,
+                            table='validation')
             pub.sendMessage('request_set_title', title=_title)
 
         selection.handler_unblock(self._lst_handler_id[0])
