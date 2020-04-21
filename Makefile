@@ -22,6 +22,7 @@ MKDIR 		= mkdir -pv
 SED			= sed
 COPY 		= cp -v
 RMDIR		= rm -fvr
+GIT			= $(shell which git)
 
 # Data files.
 LAYOUTS		= $(shell ls ./data/layouts)
@@ -65,10 +66,11 @@ help:
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
 	@echo "	bumpver					bump the minor or patch version of RAMSTK."
-	@echo "	tag					tag the current branch."
-	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install"
+	@echo "	tag					    tag the current branch."
+	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install."
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi. <FUTURE>"
+	@echo " sync					synchronize the local repository with the upstream repository."
 	@echo ""
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
 	@echo ""
@@ -194,6 +196,16 @@ test-all:
 reports: coverage
 	coverage html -d $(COVDIR)
 	python-codacy-coverage -r coverage.xml
+
+sync:
+	@echo "Execute the following to bring the local repo in sync with upstream:"
+	@echo ""
+	@echo "  ${GIT} checkout develop"
+	@echo "  ${GIT} pull upstream develop"
+	@echo "  ${GIT} push upstream develop"
+	@echo "  ${GIT} checkout master"
+	@echo "  ${GIT} pull upstream master"
+	@echo "  ${GIT} push origin master"
 
 # This target is for use with IDE integration.
 format:

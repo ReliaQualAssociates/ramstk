@@ -238,7 +238,6 @@ class DataManager(RAMSTKDataManager):
                                 node_id=self.last_id,
                                 tree=self.tree)
             except DataAccessError as _error:
-                print(_error)
                 pub.sendMessage("fail_insert_function", error_message=_error)
         else:
             pub.sendMessage("fail_insert_function",
