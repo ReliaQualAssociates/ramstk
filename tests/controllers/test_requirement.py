@@ -243,7 +243,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, mmRequirement)
         assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._col_tree, dict)
         assert isinstance(DUT._row_tree, Tree)
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1
@@ -338,14 +338,14 @@ class TestSelectMethods():
 
         pub.unsubscribe(self.on_request_select_matrix, 'request_select_matrix')
 
-        assert DUT._col_tree == MOCK_HRDWR_TREE
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 1) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 2) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 3) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 4) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 5) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 6) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 7) == 0
+        assert DUT._col_tree['rqrmnt_hrdwr'] == MOCK_HRDWR_TREE
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS2') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS3') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1:A1') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1:A2') == 0
 
 
 class TestDeleteMethods():
@@ -453,7 +453,7 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 7) == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4') == 0
 
         DATAMGR.tree.remove_node(1)
         pub.sendMessage('succeed_delete_requirement',
@@ -461,7 +461,7 @@ class TestDeleteMethods():
                         tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 1, 7)
+            DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4')
 
 
 class TestGetterSetter():
@@ -718,7 +718,7 @@ class TestInsertMethods():
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 4, 4)
+            DUT.do_select('rqrmnt_hrdwr', 4, 'S1:SS4')
 
         DATAMGR.tree.create_node(tag='Test Insert Requirement',
                                  identifier=4,
@@ -728,7 +728,7 @@ class TestInsertMethods():
                         node_id=4,
                         tree=DATAMGR.tree)
 
-        assert DUT.do_select('rqrmnt_hrdwr', 4, 4) == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 4, 'S1:SS4') == 0
 
 
 class TestUpdateMethods():

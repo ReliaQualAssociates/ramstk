@@ -438,6 +438,7 @@ class RAMSTKMatrixManager():
             of the matrix(ces) managed by this manager.
         """
         # Initialize private dictionary attributes.
+        self._col_tree: Dict[str, treelib.Tree] = {}
         self._column_tables: Dict = column_tables
         self._dic_columns: Dict = {}
         self._dic_matrix: Dict = {}
@@ -445,7 +446,6 @@ class RAMSTKMatrixManager():
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._col_tree: treelib.Tree = treelib.Tree()
         self._row_table: Any = row_table
         self._row_tree: treelib.Tree = treelib.Tree()
 
@@ -475,25 +475,20 @@ class RAMSTKMatrixManager():
         :return: None
         :rtype: None
         """
-        _lst_values = [0] * self.n_row
+        self._dic_matrix = {'id': self._dic_matrix['id'],
+                            'display_name': self._dic_matrix['display_name']}
 
-        _dic_col_ids = {
-            _node: self._col_tree.get_node(_node).tag
-            for _node in self._col_tree.nodes
-        }
-        _dic_col_ids.pop(0)
-        _lst_col_ids = _dic_col_ids.keys()
+        try:
+            _lst_columns = [self._col_tree[matrix_type].get_node(_node).tag
+                            for _node in self._col_tree[matrix_type].nodes][1:]
+        except KeyError:
+            _lst_columns = []
 
-        for _col_id in _dic_col_ids:
-            _lst_values[0] = _dic_col_ids[_col_id]
-            self._dic_matrix[_col_id] = pd.Series(_lst_values,
-                                                  index=list(
-                                                      self._row_tree.nodes))
+        for _column in _lst_columns:
+            self._dic_matrix[_column] = [0] * self.n_row
 
         self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)
         (__, self.n_col) = self.dic_matrices[matrix_type].shape
-
-        pub.sendMessage('request_select_matrix', matrix_type=matrix_type)
 
     def do_create_rows(self, tree: treelib.Tree) -> None:
         """
@@ -510,15 +505,22 @@ class RAMSTKMatrixManager():
         """
         self._row_tree = tree
 
+        # Build a dict containing the record ID's of the row module items
+        # and the name to display in the RAMSTKMatrixView() for the rows.
+        # We do not want the ID/tag of the root node in the tree as this is
+        # simply the name of the work flow module.
         self._dic_matrix = {
-            'rows': [
+            'id': [
+                self._row_tree.get_node(_node).identifier
+                for _node in self._row_tree.nodes
+            ][1:],
+            'display_name': [
                 self._row_tree.get_node(_node).tag
                 for _node in self._row_tree.nodes
-            ]
+            ][1:]
         }
 
         for _matrix_type in self._column_tables.keys():
-            self._dic_matrix['rows'][0] = self._column_tables[_matrix_type][1]
             self.dic_matrices[_matrix_type] = pd.DataFrame(self._dic_matrix)
             (self.n_row, __) = self.dic_matrices[_matrix_type].shape
 
@@ -527,8 +529,6 @@ class RAMSTKMatrixManager():
             # tree is loaded.
             if self._col_tree:
                 self.do_create_columns(_matrix_type)
-                pub.sendMessage('request_select_matrix',
-                                matrix_type=_matrix_type)
 
     def do_delete_column(self, node_id: int, matrix_type: str) -> Any:
         """
@@ -558,7 +558,7 @@ class RAMSTKMatrixManager():
             self.dic_matrices[_matrix] = self.dic_matrices[_matrix].drop(
                 [node_id])
 
-    def do_insert_column(self, node_id: int, matrix_type: str) -> Any:
+    def do_insert_column(self, node_id: str, matrix_type: str) -> Any:
         """
         Insert a column into the requested matrix.
 
@@ -620,7 +620,7 @@ class RAMSTKMatrixManager():
                             matrix_type=matrix_type,
                             matrix=self.dic_matrices[matrix_type])
 
-    def do_select(self, matrix_type: str, row: str, col: str) -> Any:
+    def do_select(self, matrix_type: str, row: int, col: str) -> Any:
         """
         Select the value from the cell identified by col and row.
 

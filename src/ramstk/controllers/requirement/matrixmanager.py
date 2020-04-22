@@ -74,13 +74,14 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        self._col_tree = tree
-
         # If the row tree has already been loaded, we can build the matrix.
         # Otherwise the matrix will be built when the row tree is loaded.
-        if self._row_tree.all_nodes():
-            if tree.get_node(0).tag == 'hardware':
+        if tree.get_node(0).tag == 'hardware':
+            self._col_tree['rqrmnt_hrdwr'] = tree
+            if self._row_tree.all_nodes():
                 super().do_create_columns('rqrmnt_hrdwr')
+                pub.sendMessage('request_select_matrix',
+                                matrix_type='rqrmnt_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

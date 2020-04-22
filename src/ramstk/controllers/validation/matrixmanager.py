@@ -81,16 +81,17 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        self._col_tree = tree
-
         # If the row tree has already been loaded, we can build the matrix.
         # Otherwise the matrix will be built when the row tree is loaded.
-        if self._row_tree.all_nodes():
-            if tree.get_node(0).tag == 'hardware':
+        if tree.get_node(0).tag == 'hardware':
+            self._col_tree['vldtn_hrdwr'] = tree
+            if self._row_tree.all_nodes():
                 super().do_create_columns('vldtn_hrdwr')
                 pub.sendMessage('request_select_matrix',
                                 matrix_type='vldtn_hrdwr')
-            elif tree.get_node(0).tag == 'requirement':
+        elif tree.get_node(0).tag == 'requirement':
+            self._col_tree['vldtn_rqrmnt'] = tree
+            if self._row_tree.all_nodes():
                 super().do_create_columns('vldtn_rqrmnt')
                 pub.sendMessage('request_select_matrix',
                                 matrix_type='vldtn_rqrmnt')
@@ -104,7 +105,8 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return super().do_delete_column(node_id, 'vldtn_hrdwr')
+        _tag = self._col_tree['vldtn_hrdwr'].get_node(node_id).tag
+        return super().do_delete_column(_tag, 'vldtn_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -117,7 +119,8 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return super().do_delete_column(node_id, 'vldtn_rqrmnt')
+        _tag = self._col_tree['vldtn_rqrmnt'].get_node(node_id).tag
+        return super().do_delete_column(_tag, 'vldtn_rqrmnt')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -144,7 +147,8 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return super().do_insert_column(node_id, 'vldtn_hrdwr')
+        _tag = self._col_tree['vldtn_hrdwr'].get_node(node_id).tag
+        return super().do_insert_column(_tag, 'vldtn_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -157,7 +161,8 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        return super().do_insert_column(node_id, 'vldtn_rqrmnt')
+        _tag = self._col_tree['vldtn_rqrmnt'].get_node(node_id).tag
+        return super().do_insert_column(_tag, 'vldtn_rqrmnt')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

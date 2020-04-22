@@ -53,7 +53,7 @@ MOCK_VALIDATIONS = {
         'date_start': date.today(),
         'description': '',
         'measurement_unit': '',
-        'name': '',
+        'name': 'PRF-0001',
         'status': 0.0,
         'task_type': '',
         'task_specification': '',
@@ -303,8 +303,8 @@ class TestCreateControllers():
         DUT = mmValidation()
 
         assert isinstance(DUT, mmValidation)
-        assert isinstance(DUT._col_tree, Tree)
-        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._col_tree, dict)
+        assert isinstance(DUT._row_tree, Tree)
         assert isinstance(DUT.dic_matrices, dict)
         assert DUT.n_row == 1
         assert DUT.n_col == 1
@@ -312,15 +312,18 @@ class TestCreateControllers():
                                 'succeed_retrieve_validations')
         assert pub.isSubscribed(DUT._do_create_validation_matrix_columns,
                                 'succeed_retrieve_hardware')
-        #assert pub.isSubscribed(DUT._on_delete_requirement,
-        #                        'succeed_delete_requirement')
-        # assert pub.isSubscribed(DUT._on_delete_hardware, 'succeed_delete_hardware')
-        #assert pub.isSubscribed(DUT._on_insert_requirement,
-        #                        'succeed_insert_requirement')
-        # assert pub.isSubscribed(DUT._on_insert_hardware,
-        #              'succeed_insert_hardware')
-        #assert pub.isSubscribed(DUT.do_update,
-        #                        'request_update_requirement_matrix')
+        assert pub.isSubscribed(DUT._do_create_validation_matrix_columns,
+                                'succeed_retrieve_requirements')
+        assert pub.isSubscribed(DUT._on_delete_validation,
+                      'succeed_delete_validation')
+        assert pub.isSubscribed(DUT._on_delete_hardware, 'succeed_delete_hardware')
+        assert pub.isSubscribed(DUT._on_delete_requirement,
+                      'succeed_delete_requirement')
+        assert pub.isSubscribed(DUT._on_insert_validation, 'succeed_insert_validation')
+        assert pub.isSubscribed(DUT._on_insert_hardware, 'succeed_insert_hardware')
+        assert pub.isSubscribed(DUT._on_insert_requirement,
+                      'succeed_insert_requirement')
+        assert pub.isSubscribed(DUT.do_update, 'request_update_validation_matrix')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -372,7 +375,7 @@ class TestSelectMethods():
 
         assert isinstance(_validation, RAMSTKValidation)
         assert _validation.acceptable_maximum == 30.0
-        assert _validation.name == ''
+        assert _validation.name == 'PRF-0001'
 
     @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
@@ -408,14 +411,14 @@ class TestSelectMethods():
 
         pub.unsubscribe(self.on_request_select_matrix, 'request_select_matrix')
 
-        assert DUT._col_tree == MOCK_HRDWR_TREE
-        assert DUT.do_select('vldtn_hrdwr', 1, 1) == 0
-        assert DUT.do_select('vldtn_hrdwr', 1, 2) == 0
-        assert DUT.do_select('vldtn_hrdwr', 1, 3) == 0
-        assert DUT.do_select('vldtn_hrdwr', 1, 4) == 0
-        assert DUT.do_select('vldtn_hrdwr', 1, 5) == 0
-        assert DUT.do_select('vldtn_hrdwr', 1, 6) == 0
-        assert DUT.do_select('vldtn_hrdwr', 1, 7) == 0
+        assert DUT._col_tree['vldtn_hrdwr'] == MOCK_HRDWR_TREE
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1') == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS1') == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS2') == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS3') == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS4') == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS1:A1') == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS1:A2') == 0
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -471,12 +474,12 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
-        assert DUT.do_select('vldtn_hrdwr', 1, 1) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1') == 0
 
         pub.sendMessage('succeed_delete_hardware', node_id=1)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_hrdwr', 1, 1)
+            DUT.do_select('vldtn_hrdwr', 1, 'S1')
 
     @pytest.mark.unit
     def test_do_delete_matrix_requirement_column(self, mock_program_dao):
@@ -489,12 +492,12 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
 
-        assert DUT.do_select('vldtn_rqrmnt', 1, 1) == 0
+        assert DUT.do_select('vldtn_rqrmnt', 1, 'REL-0001') == 0
 
         pub.sendMessage('succeed_delete_requirement', node_id=1, tree=None)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_rqrmnt', 1, 1)
+            DUT.do_select('vldtn_rqrmnt', 1, 'REL-0001')
 
     @pytest.mark.unit
     def test_do_delete_matrix_row(self, mock_program_dao):
@@ -507,7 +510,7 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
-        assert DUT.do_select('vldtn_hrdwr', 1, 7) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1') == 0
 
         DATAMGR.tree.remove_node(1)
         pub.sendMessage('succeed_delete_validation',
@@ -515,7 +518,7 @@ class TestDeleteMethods():
                         tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_rqrmnt', 1, 7)
+            DUT.do_select('vldtn_rqrmnt', 1, 'S1')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -563,16 +566,16 @@ class TestInsertMethods():
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_hrdwr', 1, 9)
+            DUT.do_select('vldtn_hrdwr', 1, 'S1:SS9')
 
-        MOCK_HRDWR_TREE.create_node(tag='S1:SS4',
+        MOCK_HRDWR_TREE.create_node(tag='S1:SS9',
                                     identifier=9,
                                     parent=0,
                                     data=None)
 
         pub.sendMessage('succeed_insert_hardware', node_id=9)
 
-        assert DUT.do_select('vldtn_hrdwr', 1, 9) == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS9') == 0
 
     @pytest.mark.unit
     def test_do_insert_matrix_requirement_column(self, mock_program_dao):
@@ -586,9 +589,9 @@ class TestInsertMethods():
         pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_rqrmnt', 1, 4)
+            DUT.do_select('vldtn_rqrmnt', 1, 'FUN-0004')
 
-        MOCK_RQRMNT_TREE.create_node(tag='FUN-0003',
+        MOCK_RQRMNT_TREE.create_node(tag='FUN-0004',
                                      identifier=4,
                                      parent=0,
                                      data=None)
@@ -597,7 +600,7 @@ class TestInsertMethods():
                         node_id=4,
                         tree=MOCK_RQRMNT_TREE)
 
-        assert DUT.do_select('vldtn_rqrmnt', 1, 4) == 0
+        assert DUT.do_select('vldtn_rqrmnt', 1, 'FUN-0004') == 0
 
     @pytest.mark.unit
     def test_do_insert_matrix_row(self, mock_program_dao):
@@ -611,7 +614,7 @@ class TestInsertMethods():
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_hrdwr', 4, 4)
+            DUT.do_select('vldtn_hrdwr', 4, 'S1')
 
         DATAMGR.tree.create_node(tag='Test Insert Validation',
                                  identifier=4,
@@ -621,7 +624,7 @@ class TestInsertMethods():
                         node_id=4,
                         tree=DATAMGR.tree)
 
-        assert DUT.do_select('vldtn_hrdwr', 4, 4) == 0
+        assert DUT.do_select('vldtn_hrdwr', 4, 'S1') == 0
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -630,7 +633,7 @@ class TestGetterSetter():
     def on_succeed_get_validation_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['validation_id'] == 1
-        assert attributes['name'] == ''
+        assert attributes['name'] == 'PRF-0001'
         assert attributes['time_average'] == 0.0
         print(
             "\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
@@ -638,7 +641,7 @@ class TestGetterSetter():
     def on_succeed_get_all_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['validation_id'] == 1
-        assert attributes['name'] == ''
+        assert attributes['name'] == 'PRF-0001'
         print(
             "\033[36m\nsucceed_get_all_validation_attributes topic was broadcast"
         )

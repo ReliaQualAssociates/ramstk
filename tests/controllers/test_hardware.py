@@ -956,7 +956,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, mmHardware)
         assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._col_tree, dict)
         assert isinstance(DUT._row_tree, Tree)
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1
