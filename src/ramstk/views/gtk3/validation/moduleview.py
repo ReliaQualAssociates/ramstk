@@ -148,7 +148,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_refresh_tree(package, self._dic_key_index[2:])
+        self.do_refresh_tree(package, self._dic_key_index)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """

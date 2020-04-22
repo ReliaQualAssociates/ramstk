@@ -8,6 +8,7 @@
 """RAMSTK Entry Module."""
 
 # Standard Library Imports
+from datetime import datetime
 from typing import Any, Tuple
 
 # RAMSTK Package Imports
@@ -128,7 +129,10 @@ class RAMSTKEntry(Gtk.Entry):
         :rtype: None
         """
         self.handler_block(handler_id)
-        self.set_text(str(value))
+        try:
+            self.set_text(datetime.strftime(value, '%Y-%m-%d'))
+        except TypeError:
+            self.set_text(str(value))
         self.handler_unblock(handler_id)
 
 

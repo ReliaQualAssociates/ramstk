@@ -35,6 +35,7 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._dic_status: Dict[Any, float] = {}
 
         # Initialize private list attributes.
 
@@ -62,12 +63,14 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_validation_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_validation_tree')
+        pub.subscribe(self.do_get_status_tree, 'request_get_status_tree')
         pub.subscribe(self.do_set_attributes,
                       'request_set_validation_attributes')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_validation_attributes')
         pub.subscribe(self._do_update_program_status,
-                      'succeed_calculate_tasks')
+                      'succeed_calculate_all_tasks')
+        pub.subscribe(self.do_set_attributes, 'wvw_editing_validation')
 
     def _do_delete_validation(self, node_id: int) -> None:
         """
@@ -107,13 +110,14 @@ class DataManager(RAMSTKDataManager):
         """
         _status = RAMSTKProgramStatus()
         _status.revision_id = self._revision_id
-        _status.status_id = self.last_id[1]
+        _status.status_id = self.last_id[1] + 1
 
         self.dao.do_insert(_status)
 
         self.last_id[1] = _status.status_id
 
         _data_package = {'status': _status}
+        self._dic_status[_status.date_status] = _status.time_remaining
         self.status_tree.create_node(tag=_status.status_id,
                                      identifier=_status.date_status,
                                      parent=self._root,
@@ -134,14 +138,18 @@ class DataManager(RAMSTKDataManager):
         for _status in self.dao.do_select_all(
                 RAMSTKProgramStatus,
                 key=RAMSTKProgramStatus.revision_id,
-                value=self._revision_id):
+                value=self._revision_id,
+                order=RAMSTKProgramStatus.date_status):
 
             _data_package = {'status': _status}
+            self._dic_status[_status.date_status] = _status.time_remaining
 
             self.status_tree.create_node(tag=_status.status_id,
                                          identifier=_status.date_status,
                                          parent=self._root,
                                          data=_data_package)
+
+            self.last_id[1] = max(self.last_id[1], _status.status_id)
 
     def _do_update_program_status(self, cost_remaining, time_remaining):
         """
@@ -170,7 +178,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update(_status)
 
             pub.sendMessage('succeed_update_program_status',
-                            node_id=_status.date_status)
+                            attributes={'y_actual': self._dic_status})
         except DataAccessError:
             _error_msg = "Failed to update program status."
             pub.sendMessage('fail_update_program_status', error_msg=_error_msg)
@@ -196,7 +204,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_validation_attributes',
                         attributes=_attributes)
 
-    def do_get_tree(self):
+    def do_get_tree(self) -> None:
         """
         Retrieve the validation treelib Tree.
 
@@ -204,6 +212,15 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage('succeed_get_validation_tree', dmtree=self.tree)
+
+    def do_get_status_tree(self) -> None:
+        """
+        Retrieve the status treelib Tree().
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_status_tree', stree=self.status_tree)
 
     # pylint: disable=arguments-differ
     def do_insert_validation(self) -> None:
@@ -213,10 +230,11 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        _last_id = self.dao.get_last_id('ramstk_validation', 'validation_id')
         try:
             _validation = RAMSTKValidation()
             _validation.revision_id = self._revision_id
-            _validation.validation_id = self.last_id[0] + 1
+            _validation.validation_id = _last_id + 1
             _validation.name = "New Validation Task"
 
             self.dao.do_insert(_validation)
@@ -233,7 +251,6 @@ class DataManager(RAMSTKDataManager):
                             node_id=self.last_id[0],
                             tree=self.tree)
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_validation", error_message=_error)
 
     # pylint: disable=arguments-differ
@@ -285,7 +302,9 @@ class DataManager(RAMSTKDataManager):
             self.do_set_attributes([attributes['validation_id']],
                                    package={_key: attributes[_key]})
 
-    def do_set_attributes(self, node_id: List, package: Dict) -> None:
+    def do_set_attributes(self,
+                          node_id: List[int],
+                          package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Nonee ID.
 
