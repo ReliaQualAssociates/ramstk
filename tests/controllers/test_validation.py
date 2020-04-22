@@ -15,13 +15,10 @@ import pandas as pd
 import pytest
 from pubsub import pub
 from treelib import Tree
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import (
-    amValidation, dmRequirement, dmValidation, mmValidation
-)
+from ramstk.controllers import amValidation, dmValidation, mmValidation
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
@@ -658,6 +655,12 @@ class TestGetterSetter():
             stree.get_node(date.today()).data['status'], RAMSTKProgramStatus)
         print("\033[36m\nsucceed_get_status_tree topic was broadcast")
 
+    def on_request_get_validation_tree(self):
+        print("\033[36m\nrequest_get_validation_tree topic was broadcast")
+
+    def on_request_get_status_tree(self):
+        print("\033[36m\nrequest_get_status_tree topic was broadcast")
+
     @pytest.mark.unit
     def test_do_get_attributes_validation(self, mock_program_dao):
         """do_get_attributes() should return a dict of validation attributes on success."""
@@ -738,7 +741,7 @@ class TestGetterSetter():
         ).description == 'This is a description added by a test.'
 
     @pytest.mark.unit
-    def test_on_get_tree(self, mock_program_dao):
+    def test_on_get_validation_tree(self, mock_program_dao):
         """on_get_tree() should return the validation treelib Tree."""
         pub.subscribe(self.on_succeed_get_validation_tree,
                       'succeed_get_validation_tree')
@@ -781,6 +784,34 @@ class TestGetterSetter():
         assert isinstance(DUT._status_tree, Tree)
         assert isinstance(
             DUT._status_tree.get_node(date.today()).data['status'], RAMSTKProgramStatus)
+
+    @pytest.mark.unit
+    def test_analysis_manager_do_request_trees(self, mock_program_dao,
+                                               test_toml_user_configuration):
+        """_do_request_tree() should send the tree request messages."""
+        pub.subscribe(self.on_request_get_validation_tree,
+                      'request_get_validation_tree')
+        pub.subscribe(self.on_request_get_status_tree,
+                      'request_get_status_tree')
+
+        DUT = amValidation(test_toml_user_configuration)
+
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        assert isinstance(DUT._tree, Tree)
+        assert isinstance(
+            DUT._tree.get_node(1).data['validation'], RAMSTKValidation)
+        assert isinstance(DUT._status_tree, Tree)
+        assert isinstance(
+            DUT._status_tree.get_node(date.today()).data['status'],
+            RAMSTKProgramStatus)
+
+        pub.unsubscribe(self.on_request_get_validation_tree,
+                        'request_get_validation_tree')
+        pub.unsubscribe(self.on_request_get_status_tree,
+                        'request_get_status_tree')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -1005,11 +1036,11 @@ class TestAnalysisMethods():
             1).data['validation'].cost_ul == pytest.approx(3390.65075984)
         assert DUT._tree.get_node(
             1).data['validation'].cost_variance == pytest.approx(
-            195069.44444444)
+                195069.44444444)
 
     @pytest.mark.unit
     def test_do_calculate_all_tasks(self, mock_program_dao,
-                                test_toml_user_configuration):
+                                    test_toml_user_configuration):
         """_do_calculate_all_tasks() should calculate the validation tasks time and cost."""
         DATAMGR = dmValidation()
         DATAMGR.do_connect(mock_program_dao)
