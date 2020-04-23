@@ -201,7 +201,6 @@ class GeneralData(RAMSTKWorkView):
         :return: _code
         :rtype: str
         """
-
         _code = ''
 
         # Update the Validation task name for the selected Validation task.
@@ -209,6 +208,10 @@ class GeneralData(RAMSTKWorkView):
         for _key, _type in _types.items():
             if _type[1] == task_type:
                 _code = '{0:s}-{1:04d}'.format(_type[0], int(self._record_id))
+
+        pub.sendMessage('wvw_editing_validation',
+                        node_id=[self._record_id, -1, ''],
+                        package={'name': _code})
 
         return _code
 
@@ -898,6 +901,7 @@ class GeneralData(RAMSTKWorkView):
             14: 'cost_minimum',
             15: 'cost_average',
             16: 'cost_maximum',
+            32: 'name'
         }
         try:
             _key = _dic_keys[index]
@@ -906,7 +910,7 @@ class GeneralData(RAMSTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index in [0, 2, 8, 9]:
+        if index in [0, 2, 8, 9, 32]:
             try:
                 _new_text = str(entry.get_text())
             except ValueError:

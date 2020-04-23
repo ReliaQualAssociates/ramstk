@@ -20,6 +20,7 @@ from ramstk.views.gtk3.requirement import (
     lvwStakeholders, mtxRequirementHardware
 )
 from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
+from ramstk.views.gtk3.validation import mtxValidationRequirement
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -64,11 +65,10 @@ class RAMSTKListBook(RAMSTKBaseBook):
             ],
             'hardware': [
                 # mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
-                # mtxHardware(configuration, matrix_type='hrdwr_vldtn'),
+                # mtxHardware(configuration, matrix_type='hrdwr_vldtn')
             ],
             'validation': [
-                # mtxValidation(configuration, matrix_type='vldtn_rqrmnt'),
-                # mtxValidation(configuration, matrix_type='vldtn_hrdwr'),
+                mtxValidationRequirement(configuration, logger)
             ]
         }
 

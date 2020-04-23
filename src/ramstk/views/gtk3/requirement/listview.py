@@ -3,8 +3,8 @@
 #       ramstk.views.gtk3.requirement.listview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Failure Definition List View Module."""
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Requirement List View Module."""
 
 # Standard Library Imports
 from typing import Any, Dict
@@ -35,7 +35,7 @@ class Stakeholders(RAMSTKListView):
                  logger: RAMSTKLogManager,
                  module: str = 'stakeholder') -> None:
         """
-        Initialize the List View for the Failure Definition package.
+        Initialize the List View for the Requirement package.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
@@ -177,7 +177,7 @@ class Stakeholders(RAMSTKListView):
 
     def __set_properties(self) -> None:
         """
-        Set properties of the Failure Definition ListView and widgets.
+        Set properties of the Requirement ListView and widgets.
 
         :return: None
         :rtype: None
@@ -449,7 +449,7 @@ class RequirementHardware(RAMSTKListView):
                  logger: RAMSTKLogManager,
                  module: str = 'rqrmnt_hrdwr') -> None:
         """
-        Initialize the List View for the Failure Definition package.
+        Initialize the List View for the Requirement package.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
@@ -485,6 +485,11 @@ class RequirementHardware(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().make_ui(vtype='matrix',
+                        icons=['refresh-view'],
+                        tooltips=[_("Refresh the matrix view.")],
+                        callbacks=[self._do_request_refresh])
+
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Requirement-Hardware\nMatrix")
                                   + "</span>")
@@ -494,11 +499,6 @@ class RequirementHardware(RAMSTKListView):
         self.tab_label.set_tooltip_text(
             _("Displays the Requirement-Hardware matrix for the selected "
               "revision."))
-
-        super().make_ui(vtype='matrix',
-                        icons=['refresh-view'],
-                        tooltips=[_("Refresh the matrix view.")],
-                        callbacks=[self._do_request_refresh])
 
     def __set_properties(self) -> None:
         """

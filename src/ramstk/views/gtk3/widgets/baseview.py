@@ -824,7 +824,7 @@ class RAMSTKListView(RAMSTKBaseView):
         :rtype: None
         """
         if matrix_type.capitalize() == self._module:
-            self.matrixview.matrixview.do_load_matrix(matrix)
+            self.matrixview.do_load_matrix(matrix)
 
     def make_ui(self, vtype: str = 'list', **kwargs) -> None:
         """

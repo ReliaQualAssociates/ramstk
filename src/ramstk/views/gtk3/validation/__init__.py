@@ -8,8 +8,7 @@
 """The RAMSTK GTK3 revision package."""
 
 # RAMSTK Local Imports
-# from .listview import FailureDefinition as lvwFailureDefinition
-# from .listview import UsageProfile as lvwUsageProfile
+from .listview import ValidationRequirement as mtxValidationRequirement
 from .moduleview import ModuleView as mvwValidation
 from .workview import BurndownCurve as wvwBurndownCurve
 from .workview import GeneralData as wvwValidationGD

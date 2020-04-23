@@ -82,7 +82,8 @@ class ModuleView(RAMSTKModuleView):
             'cost_ll': 28,
             'cost_mean': 29,
             'cost_ul': 30,
-            'cost_variance': 31
+            'cost_variance': 31,
+            'name': 32
         }
 
         # Initialize private list attributes.

@@ -138,6 +138,12 @@ class RAMSTKDataManager():
         pub.subscribe(self.do_update_matrix, 'request_update_matrix')
         pub.subscribe(self.do_connect, 'succeed_connect_program_database')
 
+        self._mtx_prefix = self._tag
+        for _letter in self._tag.lower():
+            if _letter in ('a', 'e', 'i', 'o', 'u'):
+                self._mtx_prefix = self._mtx_prefix.replace(_letter, "")
+        self._mtx_prefix = self._mtx_prefix + '_'
+
     def _do_set_attributes(self, node_id: int, key: str, value: Any,
                            table: str, poppers: Dict[str, Any]) -> None:
         """
@@ -303,9 +309,10 @@ class RAMSTKDataManager():
                 _lst_matrix.append((_matrix.column_item_id,
                                     _matrix.row_item_id, _matrix.value))
 
-            pub.sendMessage('succeed_retrieve_matrix',
-                            matrix_type=matrix_type,
-                            matrix=_lst_matrix)
+            if self._mtx_prefix in  matrix_type:
+                pub.sendMessage('succeed_retrieve_matrix',
+                                matrix_type=matrix_type,
+                                matrix=_lst_matrix)
         except TypeError:
             pub.sendMessage('fail_retrieve_matrix',
                             error_message=("No matrix returned for {0:s} "
@@ -350,7 +357,7 @@ class RAMSTKDataManager():
         :rtype: None
         """
         _row_ids = list(matrix.index[1:])
-        _column_ids = list(matrix.columns[1:])
+        _column_ids = list(matrix.columns[2:])
         for _row_id in _row_ids:
             for _col_id in _column_ids:
                 _entity: List[object] = self.dao.do_select_all(
@@ -460,6 +467,7 @@ class RAMSTKMatrixManager():
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load, 'succeed_retrieve_matrix')
+        pub.subscribe(self.do_request_update, 'do_request_update_matrix')
 
     def do_create_columns(self, matrix_type: str) -> None:
         """
@@ -529,6 +537,8 @@ class RAMSTKMatrixManager():
             # tree is loaded.
             if self._col_tree:
                 self.do_create_columns(_matrix_type)
+                pub.sendMessage('request_select_matrix',
+                                matrix_type=_matrix_type)
 
     def do_delete_column(self, node_id: int, matrix_type: str) -> Any:
         """
@@ -620,6 +630,24 @@ class RAMSTKMatrixManager():
                             matrix_type=matrix_type,
                             matrix=self.dic_matrices[matrix_type])
 
+    def do_request_update(self, revision_id: int, matrix_type: str) -> None:
+        """
+        Update the requested matrix in the RAMSTK program database.
+
+        :param int revision_id: the Revision ID the associated matrix
+            belongs to.
+        :param str matrix_type: the type of the Matrix to select from.  This
+            selects the correct matrix from the dict of matrices managed by
+            this matrix manager.
+        :return: None
+        :rtype: None
+        """
+        if matrix_type in self.dic_matrices:
+            pub.sendMessage('request_update_matrix',
+                            revision_id=revision_id,
+                            matrix_type=matrix_type,
+                            matrix=self.dic_matrices[matrix_type])
+
     def do_select(self, matrix_type: str, row: int, col: str) -> Any:
         """
         Select the value from the cell identified by col and row.
@@ -637,20 +665,3 @@ class RAMSTKMatrixManager():
             exist.
         """
         return self.dic_matrices[matrix_type].loc[row, col]
-
-    def do_update(self, revision_id: int, matrix_type: str) -> None:
-        """
-        Update the requested matrix in the RAMSTK program database.
-
-        :param int revision_id: the Revision ID the associated matrix
-            belongs to.
-        :param str matrix_type: the type of the Matrix to select from.  This
-            selects the correct matrix from the dict of matrices managed by
-            this matrix manager.
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('request_update_matrix',
-                        revision_id=revision_id,
-                        matrix_type=matrix_type,
-                        matrix=self.dic_matrices[matrix_type])
