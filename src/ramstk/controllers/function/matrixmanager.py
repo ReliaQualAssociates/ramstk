@@ -62,7 +62,7 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._on_insert_function, 'succeed_insert_function')
         # pub.subscribe(self._on_insert_hardware,
         #              'succeed_insert_hardware')
-        pub.subscribe(self.do_update, 'request_update_function_matrix')
+        #pub.subscribe(self.do_update, 'request_update_function_matrix')
 
     def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
         """

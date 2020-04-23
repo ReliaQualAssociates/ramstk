@@ -323,7 +323,6 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._on_insert_hardware, 'succeed_insert_hardware')
         assert pub.isSubscribed(DUT._on_insert_requirement,
                       'succeed_insert_requirement')
-        assert pub.isSubscribed(DUT.do_update, 'request_update_validation_matrix')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')

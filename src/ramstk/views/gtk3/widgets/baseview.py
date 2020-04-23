@@ -814,6 +814,17 @@ class RAMSTKListView(RAMSTKBaseView):
         """
         self.treeview.set_rubber_banding(True)
 
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+        """Send request to update the selected row in the matrix."""
+        print(self._module.lower())
+        pub.sendMessage('do_request_update_matrix',
+                        revision_id=self._revision_id,
+                        matrix_type=self._module.lower())
+
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+        """Send request to update all the rows in the matrix."""
+        print(self._module.lower())
+
     def do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
         """
         Load the RAMSTKMatrixView() with matrix data.

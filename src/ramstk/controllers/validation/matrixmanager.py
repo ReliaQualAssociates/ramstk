@@ -68,7 +68,6 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
         pub.subscribe(self._on_insert_requirement,
                       'succeed_insert_requirement')
-        pub.subscribe(self.do_update, 'request_update_validation_matrix')
 
     def _do_create_validation_matrix_columns(self,
                                              tree: treelib.Tree) -> None:

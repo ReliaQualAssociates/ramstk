@@ -285,8 +285,8 @@ class TestCreateControllers():
                                 'succeed_insert_function')
         # assert pub.isSubscribed(DUT._on_insert_hardware,
         #              'succeed_insert_hardware')
-        assert pub.isSubscribed(DUT.do_update,
-                                'request_update_function_matrix')
+        #assert pub.isSubscribed(DUT.do_update,
+        #                        'request_update_function_matrix')
 
 
 class TestSelectMethods():
@@ -909,7 +909,7 @@ class TestUpdateMethods():
         DUT.dic_matrices['fnctn_hrdwr'][2][2] = 2
         DUT.dic_matrices['fnctn_hrdwr'][3][5] = 1
 
-        pub.sendMessage('request_update_function_matrix',
+        pub.sendMessage('do_request_update_matrix',
                         revision_id=1,
                         matrix_type='fnctn_hrdwr')
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
