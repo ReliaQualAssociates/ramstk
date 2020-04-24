@@ -18,7 +18,8 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from __mocks__ import (
-    MOCK_HRDWR_TREE, MOCK_RQRMNT_TREE, MOCK_STATUS, MOCK_VALIDATIONS
+    MOCK_FNCTN_TREE, MOCK_HRDWR_TREE,
+    MOCK_RQRMNT_TREE, MOCK_STATUS, MOCK_VALIDATIONS
 )
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amValidation, dmValidation, mmValidation
@@ -293,6 +294,49 @@ class TestSelectMethods():
         assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS4') == 0
         assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS1:A1') == 0
         assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS1:A2') == 0
+
+    @pytest.mark.unit
+    def test_do_create_matrix_no_row_tree_hardware(self, mock_program_dao):
+        """_do_create_validation_matrix_columns() should not create a vldtn-hrdwr matrix unless there is a row tree already populated."""
+        DUT = mmValidation()
+
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DUT._row_tree = Tree()
+
+        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
+
+        assert DUT._col_tree['vldtn_hrdwr'] == MOCK_HRDWR_TREE
+
+    @pytest.mark.unit
+    def test_do_create_matrix_no_row_tree_requirement(self, mock_program_dao):
+        """_do_create_validation_matrix_columns() should not create a vldtn-rqrmnt matrix unless there is a row tree already populated."""
+        DUT = mmValidation()
+
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DUT._row_tree = Tree()
+
+        pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
+
+        assert DUT._col_tree['vldtn_rqrmnt'] == MOCK_RQRMNT_TREE
+
+    @pytest.mark.unit
+    def test_do_create_matrix_wrong_column_tree(self, mock_program_dao):
+        """_do_create_validation_matrix_columns() should not create a matrix when passed a column tree that doesn't exist in the matrix dict."""
+        DUT = mmValidation()
+        DUT._row_tree = Tree()
+
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_FNCTN_TREE)
+
+        with pytest.raises(KeyError):
+            DUT._col_tree['vldtn_rqrmnt']
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')

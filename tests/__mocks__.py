@@ -470,6 +470,12 @@ MOCK_VALIDATIONS = {
 }
 
 # Mock treelib Tree()'s.
+MOCK_FNCTN_TREE = Tree()
+MOCK_FNCTN_TREE.create_node(tag='function',
+                            identifier=0,
+                            parent=None,
+                            data=None)
+
 MOCK_HRDWR_TREE = Tree()
 MOCK_HRDWR_TREE.create_node(tag='hardware',
                             identifier=0,

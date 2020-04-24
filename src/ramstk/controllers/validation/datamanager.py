@@ -171,17 +171,13 @@ class DataManager(RAMSTKDataManager):
         except AttributeError:
             _status = self._do_insert_status()
 
-        try:
-            _status.cost_remaining = cost_remaining
-            _status.time_remaining = time_remaining
+        _status.cost_remaining = cost_remaining
+        _status.time_remaining = time_remaining
 
-            self.dao.do_update(_status)
+        self.dao.do_update(_status)
 
-            pub.sendMessage('succeed_update_program_status',
-                            attributes={'y_actual': self._dic_status})
-        except DataAccessError:
-            _error_msg = "Failed to update program status."
-            pub.sendMessage('fail_update_program_status', error_msg=_error_msg)
+        pub.sendMessage('succeed_update_program_status',
+                        attributes={'y_actual': self._dic_status})
 
     def do_get_all_attributes(self, node_id):
         """

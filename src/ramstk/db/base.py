@@ -279,6 +279,12 @@ class BaseDatabase():
         _results = []
 
         if isinstance(_key, list):
+            # TODO: Refactor db.base.do_select_all()
+            #
+            # The approach for dealing with multiple field=value filters
+            # needs to be fixed to accomodate an arbitrary number of pairs.
+            # It also needs to be simplified (if possible) as it is
+            # difficult to follow the logic.
             try:
                 _results = self.session.query(table).filter(
                     _key[0] == _value[0]).filter(_key[1] == _value[1]).filter(
