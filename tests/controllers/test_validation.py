@@ -17,139 +17,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
+from __mocks__ import (
+    MOCK_HRDWR_TREE, MOCK_RQRMNT_TREE, MOCK_STATUS, MOCK_VALIDATIONS
+)
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amValidation, dmValidation, mmValidation
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
-
-MOCK_STATUS = {
-    1: {
-        'cost_remaining': 284.98,
-        'date_status': date.today() - timedelta(days=1),
-        'time_remaining': 125.0
-    },
-    2: {
-        'cost_remaining': 212.32,
-        'date_status': date.today(),
-        'time_remaining': 112.5
-    }
-}
-MOCK_VALIDATIONS = {
-    1: {
-        'acceptable_maximum': 30.0,
-        'acceptable_mean': 20.0,
-        'acceptable_minimum': 10.0,
-        'acceptable_variance': 0.0,
-        'confidence': 95.0,
-        'cost_average': 0.0,
-        'cost_ll': 0.0,
-        'cost_maximum': 0.0,
-        'cost_mean': 0.0,
-        'cost_minimum': 0.0,
-        'cost_ul': 0.0,
-        'cost_variance': 0.0,
-        'date_end': date.today() + timedelta(days=30),
-        'date_start': date.today(),
-        'description': '',
-        'measurement_unit': '',
-        'name': 'PRF-0001',
-        'status': 0.0,
-        'task_type': '',
-        'task_specification': '',
-        'time_average': 0.0,
-        'time_ll': 0.0,
-        'time_maximum': 0.0,
-        'time_mean': 0.0,
-        'time_minimum': 0.0,
-        'time_ul': 0.0,
-        'time_variance': 0.0
-    },
-    2: {
-        'acceptable_maximum': 30.0,
-        'acceptable_mean': 20.0,
-        'acceptable_minimum': 10.0,
-        'acceptable_variance': 0.0,
-        'confidence': 95.0,
-        'cost_average': 0.0,
-        'cost_ll': 0.0,
-        'cost_maximum': 0.0,
-        'cost_mean': 0.0,
-        'cost_minimum': 0.0,
-        'cost_ul': 0.0,
-        'cost_variance': 0.0,
-        'date_end': date.today() + timedelta(days=20),
-        'date_start': date.today() - timedelta(days=10),
-        'description': '',
-        'measurement_unit': '',
-        'name': '',
-        'status': 0.0,
-        'task_type': 'Reliability, Assessment',
-        'task_specification': '',
-        'time_average': 0.0,
-        'time_ll': 0.0,
-        'time_maximum': 0.0,
-        'time_mean': 0.0,
-        'time_minimum': 0.0,
-        'time_ul': 0.0,
-        'time_variance': 0.0
-    },
-    3: {
-        'acceptable_maximum': 30.0,
-        'acceptable_mean': 20.0,
-        'acceptable_minimum': 10.0,
-        'acceptable_variance': 0.0,
-        'confidence': 95.0,
-        'cost_average': 0.0,
-        'cost_ll': 0.0,
-        'cost_maximum': 0.0,
-        'cost_mean': 0.0,
-        'cost_minimum': 0.0,
-        'cost_ul': 0.0,
-        'cost_variance': 0.0,
-        'date_end': date.today() + timedelta(days=30),
-        'date_start': date.today(),
-        'description': '',
-        'measurement_unit': '',
-        'name': '',
-        'status': 0.0,
-        'task_type': 'Reliability, Assessment',
-        'task_specification': '',
-        'time_average': 20.0,
-        'time_ll': 19.0,
-        'time_maximum': 40.0,
-        'time_mean': 34.0,
-        'time_minimum': 12.0,
-        'time_ul': 49.0,
-        'time_variance': 0.0
-    }
-}
-
-MOCK_HRDWR_TREE = Tree()
-MOCK_HRDWR_TREE.create_node(tag='hardware',
-                            identifier=0,
-                            parent=None,
-                            data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1', identifier=1, parent=0, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1', identifier=2, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS2', identifier=3, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS3', identifier=4, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=5, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A1', identifier=6, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2', identifier=7, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
-                            identifier=8,
-                            parent=7,
-                            data=None)
-
-MOCK_RQRMNT_TREE = Tree()
-MOCK_RQRMNT_TREE.create_node(tag='requirement',
-                             identifier=0,
-                             parent=None,
-                             data=None)
-MOCK_RQRMNT_TREE.create_node(tag='REL-0001', identifier=1, parent=0, data=None)
-MOCK_RQRMNT_TREE.create_node(tag='PRF-0002', identifier=2, parent=0, data=None)
-MOCK_RQRMNT_TREE.create_node(tag='FUN-0003', identifier=3, parent=0, data=None)
 
 
 class MockDao:
@@ -225,12 +100,12 @@ class MockDao:
                 MOCK_STATUS[_key]['time_remaining'] = record.time_remaining
 
     def do_update(self, record):
-        if record is None:
-            raise TypeError
-        elif isinstance(record, RAMSTKValidation):
+        if isinstance(record, RAMSTKValidation):
             self._do_update_validation(record)
         elif isinstance(record, RAMSTKProgramStatus):
             self._do_update_status(record)
+        else:
+            raise DataAccessError
 
     def get_last_id(self, table, id_column):
         if table == 'ramstk_validation':

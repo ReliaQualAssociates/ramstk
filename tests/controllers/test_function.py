@@ -13,116 +13,12 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
+from __mocks__ import MOCK_FUNCTIONS, MOCK_HAZARDS, MOCK_HRDWR_TREE
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amFunction, dmFunction, mmFunction
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFunction, RAMSTKHazardAnalysis
-
-MOCK_FUNCTIONS = {
-    1: {
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'cost': 0.0,
-        'function_code': 'PRESS-001',
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'level': 0,
-        'mcmt': 0.0,
-        'mmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Function Name',
-        'parent_id': 0,
-        'remarks': '',
-        'safety_critical': 0,
-        'total_mode_count': 0,
-        'total_part_count': 0,
-        'type_id': 0
-    },
-    2: {
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'cost': 0.0,
-        'function_code': 'PRESS-001',
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'level': 0,
-        'mcmt': 0.0,
-        'mmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Function Name',
-        'parent_id': 0,
-        'remarks': '',
-        'safety_critical': 0,
-        'total_mode_count': 0,
-        'total_part_count': 0,
-        'type_id': 0
-    }
-}
-MOCK_HAZARDS = {
-    1: {
-        'assembly_effect': '',
-        'assembly_hri': 20,
-        'assembly_hri_f': 4,
-        'assembly_mitigation': '',
-        'assembly_probability': 'Level A - Frequent',
-        'assembly_probability_f': 'Level A - Frequent',
-        'assembly_severity': 'Medium',
-        'assembly_severity_f': 'Medium',
-        'function_1': '',
-        'function_2': '',
-        'function_3': '',
-        'function_4': '',
-        'function_5': '',
-        'potential_cause': '',
-        'potential_hazard': '',
-        'remarks': '',
-        'result_1': 0.0,
-        'result_2': 0.0,
-        'result_3': 0.0,
-        'result_4': 0.0,
-        'result_5': 0.0,
-        'system_effect': '',
-        'system_hri': 20,
-        'system_hri_f': 20,
-        'system_mitigation': '',
-        'system_probability': 'Level A - Frequent',
-        'system_probability_f': 'Level A - Frequent',
-        'system_severity': 'Medium',
-        'system_severity_f': 'Medium',
-        'user_blob_1': '',
-        'user_blob_2': '',
-        'user_blob_3': '',
-        'user_float_1': 0.0,
-        'user_float_2': 0.0,
-        'user_float_3': 0.0,
-        'user_int_1': 0,
-        'user_int_2': 0,
-        'user_int_3': 0
-    }
-}
-MOCK_HRDWR_TREE = Tree()
-MOCK_HRDWR_TREE.create_node(tag='hardware',
-                            identifier=0,
-                            parent=None,
-                            data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1', identifier=1, parent=0, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1', identifier=2, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS2', identifier=3, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS3', identifier=4, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=5, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A1', identifier=6, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2', identifier=7, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
-                            identifier=8,
-                            parent=7,
-                            data=None)
 
 
 class MockDao:
