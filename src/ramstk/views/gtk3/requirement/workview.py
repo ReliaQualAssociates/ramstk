@@ -158,7 +158,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _lst_tweak = [0, 0, 75, 75, 85, 85, 85, 95, 95, 95, 105, 105]
+        _lst_adjust = [0, 0, 75, 75, 85, 85, 85, 95, 95, 95, 105, 105]
         (_x_pos,
          _y_pos,
          _fixed) = super().make_ui(icons=['create_code'],
@@ -172,20 +172,20 @@ class GeneralData(RAMSTKWorkView):
         # is the common RAMSTKEntry() widget that we don't want to move.
         for _idx, _widget in enumerate(_fixed.get_children()[:-1]):
             if isinstance(_widget, RAMSTKLabel):
-                _fixed.move(_widget, 5, _y_pos[_idx] + _lst_tweak[_idx])
+                _fixed.move(_widget, 5, _y_pos[_idx] + _lst_adjust[_idx])
 
         _fixed.put(self.txtName.scrollwindow, _x_pos, _y_pos[1])
-        _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2] + _lst_tweak[2])
-        _fixed.put(self.chkDerived, _x_pos, _y_pos[3] + _lst_tweak[3])
-        _fixed.put(self.txtSpecification, _x_pos, _y_pos[4] + _lst_tweak[4])
-        _fixed.put(self.txtPageNum, _x_pos, _y_pos[5] + _lst_tweak[5])
-        _fixed.put(self.txtFigNum, _x_pos, _y_pos[6] + _lst_tweak[6])
-        _fixed.put(self.cmbPriority, _x_pos, _y_pos[7] + _lst_tweak[7])
-        _fixed.put(self.cmbOwner, _x_pos, _y_pos[8] + _lst_tweak[8])
-        _fixed.put(self.chkValidated, _x_pos, _y_pos[9] + _lst_tweak[9])
-        _fixed.put(self.txtValidatedDate, _x_pos, _y_pos[10] + _lst_tweak[10])
+        _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2] + _lst_adjust[2])
+        _fixed.put(self.chkDerived, _x_pos, _y_pos[3] + _lst_adjust[3])
+        _fixed.put(self.txtSpecification, _x_pos, _y_pos[4] + _lst_adjust[4])
+        _fixed.put(self.txtPageNum, _x_pos, _y_pos[5] + _lst_adjust[5])
+        _fixed.put(self.txtFigNum, _x_pos, _y_pos[6] + _lst_adjust[6])
+        _fixed.put(self.cmbPriority, _x_pos, _y_pos[7] + _lst_adjust[7])
+        _fixed.put(self.cmbOwner, _x_pos, _y_pos[8] + _lst_adjust[8])
+        _fixed.put(self.chkValidated, _x_pos, _y_pos[9] + _lst_adjust[9])
+        _fixed.put(self.txtValidatedDate, _x_pos, _y_pos[10] + _lst_adjust[10])
         _fixed.put(self.btnValidateDate, _x_pos + 205,
-                   _y_pos[10] + _lst_tweak[11])
+                   _y_pos[10] + _lst_adjust[11])
 
         _label = RAMSTKLabel(_("General\nData"))
         _label.do_set_properties(

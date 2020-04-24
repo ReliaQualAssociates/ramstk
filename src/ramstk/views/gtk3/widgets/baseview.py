@@ -186,6 +186,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'complete':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/complete.png',
+            'chart':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/charts.png',
             'error':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/error.png',

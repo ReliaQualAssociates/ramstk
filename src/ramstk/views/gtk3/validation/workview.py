@@ -10,10 +10,12 @@
 from typing import Any, Dict, List
 
 # Third Party Imports
+# pylint: disable=ungrouped-imports
 # noinspection PyPackageRequirements
 import pandas as pd
 # noinspection PyPackageRequirements
 from matplotlib.patches import Ellipse
+# pylint: disable=ungrouped-imports
 # noinspection PyPackageRequirements
 from pandas.plotting import register_matplotlib_converters
 from pubsub import pub
@@ -279,7 +281,6 @@ class GeneralData(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-
         # Retrieve the label widgets so some can be moved to R. TOP and R.
         # BOTTOM.
         _labels = _fixed.get_children()[:-2]
@@ -313,62 +314,81 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
         _vpaned.pack2(_frame, True, True)
 
+        # Adjust the L. SIDE labels to accomodate the task description widget.
+        _lst_adjust = [80, 90, 100, 110, 115, 120, 125]
+        for _idx, _label in enumerate(_labels[2:9]):
+            _fixed.remove(_label)
+            _fixed.put(_label, 5, _y_pos[_idx] + _lst_adjust[_idx] + 65)
+
         # Place the widgets in the L. SIDE of the Gtk.HBox().
-        _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1])
-        _fixed.put(self.cmbTaskType, _x_pos, _y_pos[2] + 80)
-        _fixed.put(self.txtSpecification, _x_pos, _y_pos[3] + 100)
-        _fixed.put(self.cmbMeasurementUnit, _x_pos, _y_pos[4] + 100)
-        _fixed.put(self.txtMinAcceptable, _x_pos, _y_pos[5] + 100)
-        _fixed.put(self.txtMaxAcceptable, _x_pos, _y_pos[6] + 100)
-        _fixed.put(self.txtMeanAcceptable, _x_pos, _y_pos[7] + 100)
-        _fixed.put(self.txtVarAcceptable, _x_pos, _y_pos[8] + 100)
+        _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1] + 10)
+        _fixed.put(self.cmbTaskType, _x_pos, _y_pos[2] + _lst_adjust[0])
+        _fixed.put(self.txtSpecification, _x_pos, _y_pos[3] + _lst_adjust[1])
+        _fixed.put(self.cmbMeasurementUnit, _x_pos, _y_pos[4] + _lst_adjust[2])
+        _fixed.put(self.txtMinAcceptable, _x_pos, _y_pos[5] + _lst_adjust[3])
+        _fixed.put(self.txtMaxAcceptable, _x_pos, _y_pos[6] + _lst_adjust[4])
+        _fixed.put(self.txtMeanAcceptable, _x_pos, _y_pos[7] + _lst_adjust[5])
+        _fixed.put(self.txtVarAcceptable, _x_pos, _y_pos[8] + _lst_adjust[6])
 
         # Move the R. TOP labels to the new _r_top_fixed and then place the
         # data entry widgets associated with these labels.
         _adjust = _y_pos[9] - 5
+        _lst_adjust = [
+            _adjust, _adjust - 10, _adjust - 20, _adjust - 30, _adjust - 40,
+            _adjust - 50, _adjust - 60, _adjust - 70, _adjust - 80,
+            _adjust - 90, _adjust - 100
+        ]
         for _idx, _label in enumerate(_labels[9:20]):
             _fixed.remove(_label)
-            _r_top_fixed.put(_label, 5, _y_pos[_idx + 9] - _adjust)
+            _r_top_fixed.put(_label, 5, _y_pos[_idx + 9] - _lst_adjust[_idx])
 
-        _r_top_fixed.put(self.txtStartDate, _x_pos, _y_pos[9] - _adjust)
-        _r_top_fixed.put(self.btnStartDate, _x_pos + 105, _y_pos[9] - _adjust)
-        _r_top_fixed.put(self.txtEndDate, _x_pos, _y_pos[10] - _adjust)
-        _r_top_fixed.put(self.btnEndDate, _x_pos + 105, _y_pos[10] - _adjust)
-        _r_top_fixed.put(self.spnStatus, _x_pos, _y_pos[11] - _adjust)
-        _r_top_fixed.put(self.txtMinTime, _x_pos, _y_pos[12] - _adjust)
-        _r_top_fixed.put(self.txtExpTime, _x_pos, _y_pos[13] - _adjust)
-        _r_top_fixed.put(self.txtMaxTime, _x_pos, _y_pos[14] - _adjust)
-        _r_top_fixed.put(self.txtMeanTimeLL, _x_pos, _y_pos[15] - _adjust)
-        _r_top_fixed.put(self.txtMeanTime, _x_pos + 105, _y_pos[15] - _adjust)
-        _r_top_fixed.put(self.txtMeanTimeUL, _x_pos + 210,
-                         _y_pos[15] - _adjust)
-        _r_top_fixed.put(self.txtMinCost, _x_pos, _y_pos[16] - _adjust)
-        _r_top_fixed.put(self.txtExpCost, _x_pos, _y_pos[17] - _adjust)
-        _r_top_fixed.put(self.txtMaxCost, _x_pos, _y_pos[18] - _adjust)
-        _r_top_fixed.put(self.txtMeanCostLL, _x_pos, _y_pos[19] - _adjust)
-        _r_top_fixed.put(self.txtMeanCost, _x_pos + 105, _y_pos[19] - _adjust)
-        _r_top_fixed.put(self.txtMeanCostUL, _x_pos + 210,
-                         _y_pos[19] - _adjust)
+        _r_top_fixed.put(self.txtStartDate, _x_pos, _y_pos[9] - _lst_adjust[0])
+        _r_top_fixed.put(self.btnStartDate, _x_pos + 175,
+                         _y_pos[9] - _lst_adjust[0])
+        _r_top_fixed.put(self.txtEndDate, _x_pos, _y_pos[10] - _lst_adjust[1])
+        _r_top_fixed.put(self.btnEndDate, _x_pos + 175,
+                         _y_pos[10] - _lst_adjust[1])
+        _r_top_fixed.put(self.spnStatus, _x_pos, _y_pos[11] - _lst_adjust[2])
+        _r_top_fixed.put(self.txtMinTime, _x_pos, _y_pos[12] - _lst_adjust[3])
+        _r_top_fixed.put(self.txtExpTime, _x_pos, _y_pos[13] - _lst_adjust[4])
+        _r_top_fixed.put(self.txtMaxTime, _x_pos, _y_pos[14] - _lst_adjust[5])
+        _r_top_fixed.put(self.txtMeanTimeLL, _x_pos,
+                         _y_pos[15] - _lst_adjust[6])
+        _r_top_fixed.put(self.txtMeanTime, _x_pos + 175,
+                         _y_pos[15] - _lst_adjust[6])
+        _r_top_fixed.put(self.txtMeanTimeUL, _x_pos + 350,
+                         _y_pos[15] - _lst_adjust[6])
+        _r_top_fixed.put(self.txtMinCost, _x_pos, _y_pos[16] - _lst_adjust[7])
+        _r_top_fixed.put(self.txtExpCost, _x_pos, _y_pos[17] - _lst_adjust[8])
+        _r_top_fixed.put(self.txtMaxCost, _x_pos, _y_pos[18] - _lst_adjust[9])
+        _r_top_fixed.put(self.txtMeanCostLL, _x_pos,
+                         _y_pos[19] - _lst_adjust[10])
+        _r_top_fixed.put(self.txtMeanCost, _x_pos + 175,
+                         _y_pos[19] - _lst_adjust[10])
+        _r_top_fixed.put(self.txtMeanCostUL, _x_pos + 350,
+                         _y_pos[19] - _lst_adjust[10])
 
         # Move the R. BOTTOM labels to the new _r_bottom_fixed and then place
         # the data entry widgets associated with these labels.
         _adjust = _y_pos[20] - 5
+        _lst_adjust = [_adjust, _adjust - 10]
         for _idx, _label in enumerate(_labels[20:22]):
             _fixed.remove(_label)
-            _r_bottom_fixed.put(_label, 5, _y_pos[_idx + 20] - _adjust)
+            _r_bottom_fixed.put(_label, 5,
+                                _y_pos[_idx + 20] - _lst_adjust[_idx])
 
         _r_bottom_fixed.put(self.txtProjectTimeLL, _x_pos,
-                            _y_pos[20] - _adjust)
-        _r_bottom_fixed.put(self.txtProjectTime, _x_pos + 105,
-                            _y_pos[20] - _adjust)
-        _r_bottom_fixed.put(self.txtProjectTimeUL, _x_pos + 210,
-                            _y_pos[20] - _adjust)
+                            _y_pos[20] - _lst_adjust[0])
+        _r_bottom_fixed.put(self.txtProjectTime, _x_pos + 175,
+                            _y_pos[20] - _lst_adjust[0])
+        _r_bottom_fixed.put(self.txtProjectTimeUL, _x_pos + 350,
+                            _y_pos[20] - _lst_adjust[0])
         _r_bottom_fixed.put(self.txtProjectCostLL, _x_pos,
-                            _y_pos[21] - _adjust)
-        _r_bottom_fixed.put(self.txtProjectCost, _x_pos + 105,
-                            _y_pos[21] - _adjust)
-        _r_bottom_fixed.put(self.txtProjectCostUL, _x_pos + 210,
-                            _y_pos[21] - _adjust)
+                            _y_pos[21] - _lst_adjust[1])
+        _r_bottom_fixed.put(self.txtProjectCost, _x_pos + 175,
+                            _y_pos[21] - _lst_adjust[1])
+        _r_bottom_fixed.put(self.txtProjectCostUL, _x_pos + 350,
+                            _y_pos[21] - _lst_adjust[1])
 
         _hbox.pack_end(_vpaned, True, True, 0)
         self.pack_start(_hbox, True, True, 0)
@@ -398,12 +418,11 @@ class GeneralData(RAMSTKWorkView):
                                   self.txtStartDate)
 
         # noinspection PyArgumentList
-        self._lst_handler_id.append(self.txtTask.do_get_buffer().connect(
-            'changed', self._on_focus_out, 0))
+        self._lst_handler_id.append(self.txtTask.do_get_buffer().connect('changed', self._on_focus_out, None, 0))
         self._lst_handler_id.append(
             self.cmbTaskType.connect('changed', self._on_combo_changed, 1))
         self._lst_handler_id.append(
-            self.txtSpecification.connect('changed', self._on_focus_out, 2))
+            self.txtSpecification.connect('focus-out-event', self._on_focus_out, 2))
         self._lst_handler_id.append(
             self.cmbMeasurementUnit.connect('changed', self._on_combo_changed,
                                             3))
@@ -411,19 +430,19 @@ class GeneralData(RAMSTKWorkView):
             self.txtMinAcceptable.connect('focus-out-event',
                                           self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtMeanAcceptable.connect('focus-out-event',
-                                           self._on_focus_out, 5))
-        self._lst_handler_id.append(
             self.txtMaxAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 6))
+                                          self._on_focus_out, 5))
+        self._lst_handler_id.append(
+            self.txtMeanAcceptable.connect('focus-out-event',
+                                           self._on_focus_out, 6))
         self._lst_handler_id.append(
             self.txtVarAcceptable.connect('focus-out-event',
                                           self._on_focus_out, 7))
         self._lst_handler_id.append(
-            self.txtStartDate.connect('focus-out-event', self._on_focus_out,
+            self.txtStartDate.connect('changed', self._on_focus_out, None,
                                       8))
         self._lst_handler_id.append(
-            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 9))
+            self.txtEndDate.connect('changed', self._on_focus_out, None, 9))
         self._lst_handler_id.append(
             self.spnStatus.connect('focus-out-event', self._on_value_changed,
                                    10))
@@ -879,7 +898,7 @@ class GeneralData(RAMSTKWorkView):
 
         :param entry: the Gtk.Entry() that called the method.
         :type entry: :class:`Gtk.Entry`
-        :param __event: the Gdk.EventFocus that triggerd the signal.
+        :param __event: the Gdk.EventFocus that triggered the signal.
         :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Validation class Gtk.TreeModel()
             associated with the data from the calling Gtk.Entry().
@@ -888,10 +907,10 @@ class GeneralData(RAMSTKWorkView):
         """
         _dic_keys = {
             0: 'description',
-            2: 'specification',
+            2: 'task_specification',
             4: 'acceptable_minimum',
-            6: 'acceptable_mean',
             5: 'acceptable_maximum',
+            6: 'acceptable_mean',
             7: 'acceptable_variance',
             8: 'date_start',
             9: 'date_end',
@@ -910,7 +929,9 @@ class GeneralData(RAMSTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index in [0, 2, 8, 9, 32]:
+        if index == 0:
+            _new_text: Any = self.txtTask.do_get_text()
+        elif index in [2, 8, 9, 32]:
             try:
                 _new_text = str(entry.get_text())
             except ValueError:
@@ -920,7 +941,7 @@ class GeneralData(RAMSTKWorkView):
                 _new_text = float(entry.get_text())
             except ValueError:
                 _new_text = 0.0
-
+        print({_key: _new_text})
         pub.sendMessage('wvw_editing_validation',
                         node_id=[self._record_id, -1, ''],
                         package={_key: _new_text})
@@ -1022,11 +1043,11 @@ class BurndownCurve(RAMSTKWorkView):
                                    Gtk.PolicyType.AUTOMATIC)
         _scrolledwindow.add_with_viewport(
             do_make_buttonbox(self,
-                              icons=['calculate'],
+                              icons=['chart'],
                               tooltips=[
-                                  _("Calculate and plot the overall "
-                                    "Validation program plan (i.e., all "
-                                    "Validation tasks) and current status.")
+                                  _("Plot the overall Validation program plan "
+                                    "(i.e., all Validation tasks) and current "
+                                    "status.")
                               ],
                               callbacks=[self._do_request_calculate_all]))
         self.pack_start(_scrolledwindow, False, False, 0)
@@ -1176,6 +1197,19 @@ class BurndownCurve(RAMSTKWorkView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_calculate_plan')
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to save all Validation tasks and program results.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_validation', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
