@@ -333,5 +333,15 @@ experience. -->
             <visible>0</visible>
             <key>cost_variance</key>
         </column>
+        <column>
+            <defaulttitle>Code</defaulttitle>
+            <usertitle>Code</usertitle>
+            <datatype>gchararray</datatype>
+            <position>32</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>name</key>
+        </column>
     </tree>
 </root>

@@ -9,12 +9,14 @@
 
 # Standard Library Imports
 from collections import OrderedDict
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import fha
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
 
 
@@ -25,7 +27,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
     This class manages the functional analysis for functional hazards analysis
     (FHA).  Attributes of the function Analysis Manager are:
     """
-    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 **kwargs: Dict[str, Any]) -> None:
         """
         Initialize an instance of the function analysis manager.
 

@@ -14,7 +14,7 @@ from ramstk.views.gtk3 import GObject, Gtk
 
 class RAMSTKScrolledWindow(Gtk.ScrolledWindow):
     """This is the RAMSTK ScrolledWindow class."""
-    def __init__(self, child: Gtk.Widget) -> None:
+    def __init__(self, child: object) -> None:
         """
         Create ScrolledWindow() widgets.
 

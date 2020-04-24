@@ -1,0 +1,5 @@
+paths:
+  "src/ramstk/**.py":
+    - Did you write a test for all newly created functions/methods?
+    - Did you remove all of your print statements?
+    - Did you pass an error message to be handled by the logger for all caught exceptions?

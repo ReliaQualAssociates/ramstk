@@ -11,6 +11,7 @@
 from datetime import date, timedelta
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -186,7 +187,7 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
             'time_mean': self.time_mean,
             'time_minimum': self.time_minimum,
             'time_ul': self.time_ul,
-            'time_variance': self.time_variance,
+            'time_variance': self.time_variance
         }
 
         return _attributes

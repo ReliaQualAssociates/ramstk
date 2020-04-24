@@ -23,11 +23,11 @@ class TestRAMSTKMatrixView():
         DUT = RAMSTKMatrixView('fnctn_hrdwr')
 
         assert isinstance(DUT, RAMSTKMatrixView)
+        assert isinstance(DUT, Gtk.TreeView)
         assert DUT._matrix_type == 'fnctn_hrdwr'
         assert DUT._n_columns == 0
         assert DUT._n_rows == 0
         assert DUT._revision_id is None
         assert DUT.dic_icons == {}
         assert DUT.matrix is None
-        assert isinstance(DUT.matrixview, Gtk.TreeView)
         assert DUT.n_fixed_columns == 0

@@ -7,6 +7,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/ReliaQualAssociates/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ReliaQualAssociates/ramstk&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/ReliaQualAssociates/ramstk?utm_source=github.com&utm_medium=referral&utm_content=ReliaQualAssociates/ramstk&utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master)](https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master)
+[![codecov](https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg)](https://codecov.io/gh/ReliaQualAssociates/ramstk)
 [![CodeFactor](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge)](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk)
 [![BCH Compliance](https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master)](https://bettercodehub.com/)
 

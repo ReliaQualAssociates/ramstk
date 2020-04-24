@@ -34,6 +34,11 @@ class TestRAMSTKBook():
             test_toml_site_configuration.RAMSTK_STAKEHOLDERS
         test_toml_user_configuration.RAMSTK_WORKGROUPS = \
             test_toml_site_configuration.RAMSTK_WORKGROUPS
+        test_toml_user_configuration.RAMSTK_VALIDATION_TYPE = \
+            test_toml_site_configuration.RAMSTK_VALIDATION_TYPE
+        test_toml_user_configuration.RAMSTK_MEASUREMENT_UNITS = \
+            test_toml_site_configuration.RAMSTK_MEASUREMENT_UNITS
+
         DUT = RAMSTKDesktop(
             [test_toml_user_configuration, test_toml_site_configuration],
             RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))

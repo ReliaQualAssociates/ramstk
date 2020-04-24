@@ -3,8 +3,8 @@
 #       ramstk.views.gtk3.requirement.listview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Failure Definition List View Module."""
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Requirement List View Module."""
 
 # Standard Library Imports
 from typing import Any, Dict
@@ -35,7 +35,7 @@ class Stakeholders(RAMSTKListView):
                  logger: RAMSTKLogManager,
                  module: str = 'stakeholder') -> None:
         """
-        Initialize the List View for the Failure Definition package.
+        Initialize the List View for the Requirement package.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
@@ -177,7 +177,7 @@ class Stakeholders(RAMSTKListView):
 
     def __set_properties(self) -> None:
         """
-        Set properties of the Failure Definition ListView and widgets.
+        Set properties of the Requirement ListView and widgets.
 
         :return: None
         :rtype: None
@@ -449,7 +449,7 @@ class RequirementHardware(RAMSTKListView):
                  logger: RAMSTKLogManager,
                  module: str = 'rqrmnt_hrdwr') -> None:
         """
-        Initialize the List View for the Failure Definition package.
+        Initialize the List View for the Requirement package.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
@@ -458,10 +458,6 @@ class RequirementHardware(RAMSTKListView):
         :param module: the name of the module.
         """
         super().__init__(configuration, logger, module)
-        self.RAMSTK_LOGGER.do_create_logger(
-            __name__,
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
 
         # Initialize private dictionary attributes.
 
@@ -475,48 +471,9 @@ class RequirementHardware(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        self.__set_properties()
-        self.__make_ui()
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.tab_label.set_markup("<span weight='bold'>"
-                                  + _("Requirement-Hardware\nMatrix")
-                                  + "</span>")
-        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays the Requirement-Hardware matrix for the selected "
-              "revision."))
-
         super().make_ui(vtype='matrix',
-                        icons=['refresh-view'],
-                        tooltips=[_("Refresh the matrix view.")],
-                        callbacks=[self._do_request_refresh])
+                        tab_label=_("Requirement-Hardware\nMatrix"),
+                        tooltip=_("Displays the Requirement-Hardware matrix "
+                                  "for the selected revision."))
 
-    def __set_properties(self) -> None:
-        """
-        Set properties of the Requirement::Hardware Matrix View and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.treeview.set_tooltip_text(
-            _("Displays the Requirement-Hardware matrix for the selected "
-              "revision."))
-
-    @staticmethod
-    def _do_request_refresh(__button: Gtk.Button) -> None:
-        """
-        Refresh the RAMSTKMatrixView().
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('request_create_matrix')
+        # Subscribe to PyPubSub messages.

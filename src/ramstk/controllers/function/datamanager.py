@@ -29,11 +29,10 @@ class DataManager(RAMSTKDataManager):
     """
 
     _tag = 'function'
-    _root = 0
 
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Function data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -52,7 +51,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self._do_delete, 'request_delete_function')
         pub.subscribe(self._do_delete_hazard, 'request_delete_hazard')
-        pub.subscribe(self.do_insert, 'request_insert_function')
+        pub.subscribe(self.do_insert_function, 'request_insert_function')
         pub.subscribe(self.do_insert_hazard, 'request_insert_hazard')
         pub.subscribe(self.do_update, 'request_update_function')
         pub.subscribe(self.do_update, 'request_update_hazard')
@@ -79,7 +78,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            RAMSTKDataManager.do_delete(self, node_id, 'function')
+            super().do_delete(node_id, 'function')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
@@ -120,16 +119,6 @@ class DataManager(RAMSTKDataManager):
     def _do_get_attributes(self, node_id: int, table: str) -> None:
         """
         Retrieve the RAMSTK data table attributes for the function.
-
-        .. important:: the failure definition will return a dict of all the
-            failure definitions associated with the node (function) ID.  This
-            dict uses the definition ID as the key and the instance of the
-            RAMSTKFailureDefinition as the value.  The subscribing methods and
-            functions will need to unpack this dict.
-
-        .. important:: the usage profile will return a treelib Tree() of all
-            the usage profiles associated with the node (function) ID.  The
-            subscribing methods and functions will need to parse this Tree().
 
         :param int node_id: the node (function) ID of the function to get the
             attributes for.
@@ -217,7 +206,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_function_tree', dmtree=self.tree)
 
     # pylint: disable=arguments-differ
-    def do_insert(self, parent_id: int = 0) -> None:
+    def do_insert_function(self, parent_id: int = 0) -> None:
         """
         Add a new function as child of the parent ID function.
 
@@ -229,10 +218,12 @@ class DataManager(RAMSTKDataManager):
         if self.tree.get_node(parent_id) is not None:
             _last_id = self.dao.get_last_id('ramstk_function', 'function_id')
             try:
-                _function = RAMSTKFunction(revision_id=self._revision_id,
-                                           function_id=_last_id + 1,
-                                           name='New Function',
-                                           parent_id=parent_id)
+                _function = RAMSTKFunction()
+                _function.revision_id = self._revision_id
+                _function.function_id = _last_id + 1
+                _function.name = 'New Function'
+                _function.parent_id = parent_id
+
                 self.dao.do_insert(_function)
 
                 self.last_id = _function.function_id
@@ -247,7 +238,6 @@ class DataManager(RAMSTKDataManager):
                                 node_id=self.last_id,
                                 tree=self.tree)
             except DataAccessError as _error:
-                print(_error)
                 pub.sendMessage("fail_insert_function", error_message=_error)
         else:
             pub.sendMessage("fail_insert_function",
@@ -270,9 +260,11 @@ class DataManager(RAMSTKDataManager):
             _last_id = self.dao.get_last_id('ramstk_hazard_analysis',
                                             'hazard_id')
             try:
-                _hazard = RAMSTKHazardAnalysis(revision_id=self._revision_id,
-                                               function_id=function_id,
-                                               hazard_id=_last_id + 1)
+                _hazard = RAMSTKHazardAnalysis()
+                _hazard.revision_id = self._revision_id
+                _hazard.function_id = function_id
+                _hazard.hazard_id = _last_id + 1
+
                 self.dao.do_insert(_hazard)
 
                 self._last_id[1] = _hazard.hazard_id

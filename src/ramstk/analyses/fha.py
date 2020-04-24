@@ -6,7 +6,12 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Functional Hazards Analysis (FHA) Module."""
 
+# Standard Library Imports
+from typing import Any, Dict, List
+
+# Third Party Imports
 # Third Party imports
+# noinspection PyPackageRequirements
 from sympy import symbols, sympify
 
 # RAMSTK Package Imports
@@ -29,7 +34,7 @@ SEVERITY = {
 }
 
 
-def calculate_hri(probability, severity):
+def calculate_hri(probability: str, severity: str) -> int:
     """
     Calculate the hazard risk index (HRI).
 
@@ -50,7 +55,7 @@ def calculate_hri(probability, severity):
                                "description.").format(probability, severity))
 
 
-def calculate_user_defined(fha):
+def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the user-defined hazards analysis.
 
@@ -147,7 +152,8 @@ def calculate_user_defined(fha):
     return fha
 
 
-def set_user_defined_floats(fha, floats):
+def set_user_defined_floats(fha: Dict[str, Any],
+                            floats: List[float]) -> Dict[str, Any]:
     """
     Set the user-defined float values for the user-defined calculations.
 
@@ -157,6 +163,7 @@ def set_user_defined_floats(fha, floats):
         values.
     :rtype: dict
     """
+    _key = ''
     for _idx in [0, 1, 2]:
         try:
             _key = list(fha.keys())[_idx]
@@ -167,7 +174,8 @@ def set_user_defined_floats(fha, floats):
     return fha
 
 
-def set_user_defined_ints(fha, ints):
+def set_user_defined_ints(fha: Dict[str, Any],
+                          ints: List[int]) -> Dict[str, Any]:
     """
     Set the user-defined integer values for the user-defined calculations.
 
@@ -177,6 +185,7 @@ def set_user_defined_ints(fha, ints):
         values.
     :rtype: dict
     """
+    _key = ''
     for _idx in [3, 4, 5]:
         try:
             _key = list(fha.keys())[_idx]
@@ -187,7 +196,8 @@ def set_user_defined_ints(fha, ints):
     return fha
 
 
-def set_user_defined_functions(fha, functions):
+def set_user_defined_functions(fha: Dict[str, Any],
+                               functions: List[str]) -> Dict[str, Any]:
     """
     Set the user-defined functions for the user-defined calculations.
 
@@ -199,6 +209,7 @@ def set_user_defined_functions(fha, functions):
     :return: fha; the functional hazard assessment dict with updated functions.
     :rtype: dict
     """
+    _key = ''
     for _idx in [6, 7, 8, 9, 10]:
         try:
             _key = list(fha.keys())[_idx]
@@ -212,7 +223,8 @@ def set_user_defined_functions(fha, functions):
     return fha
 
 
-def set_user_defined_results(fha, results):
+def set_user_defined_results(fha: Dict[str, Any],
+                             results: List[float]) -> Dict[str, Any]:
     """
     Set the user-defined results for the user-defined calculations.
 
@@ -225,6 +237,7 @@ def set_user_defined_results(fha, results):
     :return: fha; the functional hazard assessment dict with updated results.
     :rtype: dict
     """
+    _key = ''
     for _idx in [11, 12, 13, 14, 15]:
         try:
             _key = list(fha.keys())[_idx]

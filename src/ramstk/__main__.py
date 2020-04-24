@@ -130,6 +130,10 @@ def the_one_ring() -> None:
     user_configuration.RAMSTK_STAKEHOLDERS = \
         site_configuration.RAMSTK_STAKEHOLDERS
     user_configuration.RAMSTK_WORKGROUPS = site_configuration.RAMSTK_WORKGROUPS
+    user_configuration.RAMSTK_VALIDATION_TYPE = \
+        site_configuration.RAMSTK_VALIDATION_TYPE
+    user_configuration.RAMSTK_MEASUREMENT_UNITS = \
+        site_configuration.RAMSTK_MEASUREMENT_UNITS
 
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()

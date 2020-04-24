@@ -6,11 +6,11 @@ import treelib
 from ramstk.views.gtk3 import Gtk
 from typing import Any, List
 
-def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
+def do_make_column(cells: List[object], **kwargs) -> \
         Gtk.TreeViewColumn: ...
     pass
 
-def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None: ...
+def do_set_cell_properties(cell: object, **kwargs) -> None: ...
     pass
 
 

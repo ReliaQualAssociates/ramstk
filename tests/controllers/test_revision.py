@@ -13,137 +13,17 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
+from __mocks__ import (
+    MOCK_ENVIRONMENTS, MOCK_FAILURE_DEFINITIONS,
+    MOCK_MISSION_PHASES, MOCK_MISSIONS, MOCK_REVISIONS
+)
 from ramstk.controllers import dmRevision
+from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,
     RAMSTKMission, RAMSTKMissionPhase, RAMSTKRevision
 )
-
-MOCK_REVISIONS = {
-    1: {
-        'availability_logistics': 0.9986,
-        'availability_mission': 0.99934,
-        'cost': 12532.15,
-        'cost_failure': 0.0000352,
-        'cost_hour': 1.2532,
-        'hazard_rate_active': 0.0,
-        'hazard_rate_dormant': 0.0,
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'hazard_rate_software': 0.0,
-        'mmt': 0.0,
-        'mcmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Original Revision',
-        'reliability_logistics': 0.99986,
-        'reliability_mission': 0.99992,
-        'remarks': 'This is the original revision.',
-        'revision_code': 'Rev. -',
-        'program_time': 2562,
-        'program_time_sd': 26.83,
-        'program_cost': 26492.83,
-        'program_cost_sd': 15.62
-    },
-    2: {
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'cost': 0.0,
-        'cost_failure': 0.0,
-        'cost_hour': 0.0,
-        'hazard_rate_active': 0.0,
-        'hazard_rate_dormant': 0.0,
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'hazard_rate_software': 0.0,
-        'mmt': 0.0,
-        'mcmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Revision A',
-        'reliability_logistics': 1.0,
-        'reliability_mission': 1.0,
-        'remarks': 'This is the second revision.',
-        'revision_code': 'Rev. A',
-        'program_time': 0,
-        'program_time_sd': 0.0,
-        'program_cost': 0.0,
-        'program_cost_sd': 0.0
-    }
-}
-MOCK_FAILURE_DEFINITIONS = {1: {'definition': 'Failure Definition'}}
-MOCK_MISSIONS = {
-    1: {
-        'description': '',
-        'mission_time': 0.0,
-        'time_units': 'hours'
-    },
-    2: {
-        'description': 'Mission #2',
-        'mission_time': 0.0,
-        'time_units': 'hours'
-    }
-}
-MOCK_MISSION_PHASES = {
-    1: {
-        'description': '',
-        'name': '',
-        'phase_start': 0.0,
-        'phase_end': 0.0
-    },
-    2: {
-        'description': 'Phase #1 for mission #2',
-        'name': '',
-        'phase_start': 0.0,
-        'phase_end': 0.0
-    },
-    3: {
-        'description': 'Phase #2 for mission #2',
-        'name': '',
-        'phase_start': 0.0,
-        'phase_end': 0.0
-    }
-}
-MOCK_ENVIRONMENTS = {
-    1: {
-        'name': 'Condition Name',
-        'units': 'Units',
-        'minimum': 0.0,
-        'maximum': 0.0,
-        'mean': 0.0,
-        'variance': 0.0,
-        'ramp_rate': 0.0,
-        'low_dwell_time': 0.0,
-        'high_dwell_time': 0.0
-    },
-    2: {
-        'name': 'Condition Name',
-        'units': 'Units',
-        'minimum': 0.0,
-        'maximum': 0.0,
-        'mean': 0.0,
-        'variance': 0.0,
-        'ramp_rate': 0.0,
-        'low_dwell_time': 0.0,
-        'high_dwell_time': 0.0
-    },
-    3: {
-        'name': 'Condition Name',
-        'units': 'Units',
-        'minimum': 0.0,
-        'maximum': 0.0,
-        'mean': 0.0,
-        'variance': 0.0,
-        'ramp_rate': 0.0,
-        'low_dwell_time': 0.0,
-        'high_dwell_time': 0.0
-    }
-}
 
 
 class MockDao:
@@ -315,7 +195,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmRevision)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'revision'
         assert DUT._root == 0
         assert DUT._revision_id == 0

@@ -18,6 +18,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amFMEA, dmFMEA
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
 )
@@ -56,7 +57,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmFMEA)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'fmea'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -82,7 +83,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmFMEA)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'fmea'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -96,8 +97,8 @@ class TestCreateControllers():
         assert isinstance(DUT, amFMEA)
         assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
+        assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
-        assert DUT._tree is None
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_fmea_tree')
         assert pub.isSubscribed(DUT._do_calculate_criticality,
                                 'request_calculate_criticality')

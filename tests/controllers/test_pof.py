@@ -14,6 +14,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmPoF
+from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
     RAMSTKOpStress, RAMSTKTestMethod
@@ -30,7 +31,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmPoF)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'pof'
         assert DUT._root == 0
         assert DUT._revision_id == 0

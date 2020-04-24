@@ -106,8 +106,14 @@ def do_make_buttonbox(view: Any, **kwargs: Any) -> Gtk.ButtonBox:
              _("Save all items.")])
         _callbacks.extend(
             [view._do_request_update, view._do_request_update_all])
-    except AttributeError:
-        pass
+    except AttributeError as _error:
+        # TODO: Handle AttributeError in do_make_buttonbox().
+        #
+        # This error is a programming error not a runtime error.  It would
+        # be the result of a view not having an icon or callback function in
+        # the default list.  The solution should be to ensure the icons and
+        # functions lists above are in the base view for each type of view.
+        print(_error)
 
     if _orientation == 'horizontal':
         _buttonbox = Gtk.HButtonBox()
@@ -136,7 +142,7 @@ def do_make_buttonbox(view: Any, **kwargs: Any) -> Gtk.ButtonBox:
 
         try:
             _button.connect('clicked', _callbacks[i])
-        except IndexError:
+        except IndexError as _error:
             _button.set_sensitive(False)
 
         _buttonbox.pack_start(_button, True, True, 0)

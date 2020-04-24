@@ -29,9 +29,8 @@ class DataManager(RAMSTKDataManager):
     """
 
     _tag = 'stakeholder'
-    _root = 0
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Stakeholder data manager instance."""
         super().__init__(**kwargs)
 
@@ -120,7 +119,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_stakeholder_tree', dmtree=self.tree)
 
-    def do_insert_stakeholder(self, parent_id: int = -1) -> None:
+    def do_insert_stakeholder(self, parent_id: int = 0) -> None:
         """
         Add a new stakeholder.
 
@@ -142,7 +141,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id = _stakeholder.stakeholder_id
             self.tree.create_node(tag=_stakeholder.description,
                                   identifier=self.last_id,
-                                  parent=self._root,
+                                  parent=parent_id,
                                   data={'stakeholder': _stakeholder})
             pub.sendMessage('succeed_insert_stakeholder',
                             node_id=self.last_id,
@@ -211,8 +210,7 @@ class DataManager(RAMSTKDataManager):
 
         :param int node_id: the ID of the record in the RAMSTK Program
             database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """

@@ -121,7 +121,7 @@ class TestExport():
         """do_load_output() should return None when loading Validations for export."""
         _validation = dmValidation()
         _validation.do_connect(test_program_dao)
-        _validation.do_select_all(1)
+        _validation.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 

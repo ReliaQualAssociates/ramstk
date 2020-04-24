@@ -106,6 +106,8 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
         cell.set_property('foreground', _fg_color)
         cell.set_property('wrap-width', 250)
         cell.set_property('wrap-mode', Pango.WrapMode.WORD)
+    elif isinstance(cell, Gtk.CellRendererCombo):
+        cell.set_property('editable', _editable)
     elif isinstance(cell, Gtk.CellRendererToggle):
         cell.set_property('activatable', _editable)
 
