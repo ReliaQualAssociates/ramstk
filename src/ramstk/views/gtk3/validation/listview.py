@@ -60,6 +60,7 @@ class ValidationRequirement(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().make_ui(vtype='matrix')
 
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Validation-Requirement\nMatrix")

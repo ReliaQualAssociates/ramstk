@@ -11,6 +11,7 @@
 from typing import Any
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import pandas as pd
 
 # RAMSTK Package Imports
@@ -35,6 +36,8 @@ class RAMSTKMatrixView(Gtk.TreeView):
     :ivar matrixview: the Gtk.TreeView() displaying the RAMSTKDataMatrix.
     :type matrixview: :class:`Gtk.TreeView`
     """
+
+    # noinspection PyMissingConstructor
     def __init__(self, module: str) -> None:
         """
         Initialize a RAMSTKMatrixView() instance.
@@ -74,7 +77,8 @@ class RAMSTKMatrixView(Gtk.TreeView):
         :rtype: :class:`Gtk.CellRendererCombo`
         """
         _cell = Gtk.CellRendererCombo()
-        _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
+        _cellmodel = Gtk.ListStore()
+        _cellmodel.set_column_types([GObject.TYPE_STRING])
         _cellmodel.append([""])
         _cellmodel.append([_("Partial")])
         _cellmodel.append([_("Complete")])
@@ -186,18 +190,21 @@ class RAMSTKMatrixView(Gtk.TreeView):
 
         _column = treeview.do_make_column([_id_cell, _code_cell])
         _column.set_attributes(_id_cell, text=0)
+        # noinspection PyArgumentList
         _column.set_attributes(_code_cell, markup=1)
         self.append_column(_column)
 
         # The remaining columns will be Gtk.CellRendererCombo()'s for
         # displaying the interaction between the row module and the column
         # module.
+        i = 0
         j = 2
         for i in range(self._n_columns - 2):
             _heading = self.matrix.columns[i + 2]
 
             _cell = self._do_make_combo_cell()
             treeview.do_set_cell_properties(_cell, editable=True)
+
             _cell.connect('changed', self.do_edit_cell, i + j + 1, _heading)
 
             _pbcell = Gtk.CellRendererPixbuf()
@@ -208,6 +215,7 @@ class RAMSTKMatrixView(Gtk.TreeView):
             _label = _column.get_widget()
             _label.set_angle(90.0)
             _column.set_widget(_label)
+            # noinspection PyArgumentList
             _column.set_attributes(_pbcell, pixbuf=i + j)
             self.append_column(_column)
 
@@ -218,7 +226,7 @@ class RAMSTKMatrixView(Gtk.TreeView):
         _column = treeview.do_make_column([_cell])
         _column.set_attributes(_cell, text=i + j + 2)
         self.append_column(_column)
-        print(self.matrix)
+
         # Now we load the data into the RAMSTK Matrix View.
         for i in list(self.matrix.index)[1:]:
             _data = [
