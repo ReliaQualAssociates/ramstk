@@ -5,7 +5,7 @@
 PREFIX		= /usr/local
 
 CHANGELOG	= CHANGELOG.md
-REPO		= ReliaQualAssociates/ramstk
+REPO		= ramstk
 REQFILE		= requirements.txt
 DEVREQFILE	= requirements-dev.txt
 TSTREQFILE	= requirements-test.txt
@@ -40,7 +40,7 @@ help:
 	@echo "	lsvenv					list all the available virtual environments."
 	@echo "	usevenv VIRTENV=<name>			use the VIRTENV requested."
 	@echo "Targets related to use of pip-tools:"
-	@echo "	requirements				create/update the requirements_run.txt, requirements_dev.txt, and requirements_doc.txt files."
+	@echo "	requirements				create/update the requirements.txt, requirements-dev.txt, and requirements-test.txt files."
 	@echo "	upgrade					update the requirements (txt) files with the latest package versions available."
 	@echo "	depends					install the packages found in the requirements files into the current (virtual) environment."
 	@echo "Targets related to use of py.test/pytest/tox:"
@@ -243,7 +243,7 @@ lint:
 	flake8 $(SRCFILE)
 
 changelog:
-	github_changelog_generator $(REPO)
+	github_changelog_generator --project $(REPO) --user $(GITHUB_USER) -t $(TOKEN)
 
 bumpver:
 	$(shell sh ./devtools/bump_version.sh -b)
