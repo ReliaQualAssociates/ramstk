@@ -485,10 +485,7 @@ class RequirementHardware(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        super().make_ui(vtype='matrix',
-                        icons=['refresh-view'],
-                        tooltips=[_("Refresh the matrix view.")],
-                        callbacks=[self._do_request_refresh])
+        super().make_ui(vtype='matrix')
 
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Requirement-Hardware\nMatrix")
@@ -510,13 +507,3 @@ class RequirementHardware(RAMSTKListView):
         self.treeview.set_tooltip_text(
             _("Displays the Requirement-Hardware matrix for the selected "
               "revision."))
-
-    @staticmethod
-    def _do_request_refresh(__button: Gtk.Button) -> None:
-        """
-        Refresh the RAMSTKMatrixView().
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('request_create_matrix')

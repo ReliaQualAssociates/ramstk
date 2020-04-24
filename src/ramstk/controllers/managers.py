@@ -309,7 +309,7 @@ class RAMSTKDataManager():
                 _lst_matrix.append((_matrix.column_item_id,
                                     _matrix.row_item_id, _matrix.value))
 
-            if self._mtx_prefix in  matrix_type:
+            if self._mtx_prefix in matrix_type:
                 pub.sendMessage('succeed_retrieve_matrix',
                                 matrix_type=matrix_type,
                                 matrix=_lst_matrix)
@@ -356,8 +356,10 @@ class RAMSTKDataManager():
         :return: None
         :rtype: None
         """
-        _row_ids = list(matrix.index[1:])
-        _column_ids = list(matrix.columns[2:])
+        _row_ids = list(matrix.index)[1:]
+        _column_ids = list(matrix.loc[0, :])[2:]
+
+        _next_id = self.dao.get_last_id('ramstk_matrix', 'matrix_id') + 1
         for _row_id in _row_ids:
             for _col_id in _column_ids:
                 _entity: List[object] = self.dao.do_select_all(
@@ -368,7 +370,7 @@ class RAMSTKDataManager():
                     ],
                     value=[
                         revision_id, matrix_type,
-                        int(_col_id),
+                        int(_col_id) + 2,
                         int(_row_id)
                     ],
                     order=None,
@@ -379,11 +381,11 @@ class RAMSTKDataManager():
                 if _entity is None:
                     _entity = RAMSTKMatrix()
                     _entity.revision_id = revision_id
+                    _entity.matrix_id = _next_id
                     _entity.matrix_type = matrix_type
-                    _entity.column_item_id = int(_col_id)
+                    _entity.column_item_id = int(_col_id) + 2
                     _entity.row_item_id = int(_row_id)
-
-                _entity.value = int(matrix[_col_id][_row_id])
+                _entity.value = int(matrix.iloc[_row_id, _col_id + 2])
 
                 self.dao.do_update(_entity)
 
@@ -492,8 +494,10 @@ class RAMSTKMatrixManager():
         except KeyError:
             _lst_columns = []
 
-        for _column in _lst_columns:
-            self._dic_matrix[_column] = [0] * self.n_row
+        for _idx, _column in enumerate(_lst_columns):
+            _values = [0] * (self.n_row - 1)
+            _values.insert(0, _idx)
+            self._dic_matrix[_column] = _values
 
         self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)
         (__, self.n_col) = self.dic_matrices[matrix_type].shape
@@ -517,15 +521,14 @@ class RAMSTKMatrixManager():
         # and the name to display in the RAMSTKMatrixView() for the rows.
         # We do not want the ID/tag of the root node in the tree as this is
         # simply the name of the work flow module.
+        _row_ids = [self._row_tree.get_node(_node).identifier for _node in
+                    self._row_tree.nodes][1:]
+        _row_ids.insert(0, -1)
+        _display_names = [self._row_tree.get_node(_node).tag for _node in self._row_tree.nodes][1:]
+        _display_names.insert(0, 'column_id')
         self._dic_matrix = {
-            'id': [
-                self._row_tree.get_node(_node).identifier
-                for _node in self._row_tree.nodes
-            ][1:],
-            'display_name': [
-                self._row_tree.get_node(_node).tag
-                for _node in self._row_tree.nodes
-            ][1:]
+            'id': _row_ids,
+            'display_name': _display_names
         }
 
         for _matrix_type in self._column_tables.keys():
@@ -624,7 +627,7 @@ class RAMSTKMatrixManager():
         """
         if matrix_type in self.dic_matrices:
             for _col in matrix:
-                self.dic_matrices[matrix_type].loc[_col[1], _col[0]] = _col[2]
+                self.dic_matrices[matrix_type].iloc[_col[1], _col[0]] = _col[2]
 
             pub.sendMessage('succeed_load_matrix',
                             matrix_type=matrix_type,

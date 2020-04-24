@@ -6,9 +6,6 @@
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Validation List View Module."""
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
@@ -63,10 +60,6 @@ class ValidationRequirement(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        super().make_ui(vtype='matrix',
-                        icons=['refresh-view'],
-                        tooltips=[_("Refresh the matrix view.")],
-                        callbacks=[self._do_request_refresh])
 
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Validation-Requirement\nMatrix")
@@ -88,13 +81,3 @@ class ValidationRequirement(RAMSTKListView):
         self.matrixview.set_tooltip_text(
             _("Displays the Validation-Requirement matrix for the selected "
               "revision."))
-
-    @staticmethod
-    def _do_request_refresh(__button: Gtk.Button) -> None:
-        """
-        Refresh the RAMSTKMatrixView().
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('request_create_matrix')

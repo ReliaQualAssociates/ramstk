@@ -132,7 +132,7 @@ class RAMSTKMatrixView(Gtk.TreeView):
         _model = cell.get_property('model')
         _treemodel = self.get_model()
 
-        _idx_row = _treemodel[path][0]
+        _idx_row = int(path) + 1
         if _model.get_value(row, 0) == 'Partial':
             self.matrix.loc[_idx_row, idx_column] = 1
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -218,9 +218,9 @@ class RAMSTKMatrixView(Gtk.TreeView):
         _column = treeview.do_make_column([_cell])
         _column.set_attributes(_cell, text=i + j + 2)
         self.append_column(_column)
-
+        print(self.matrix)
         # Now we load the data into the RAMSTK Matrix View.
-        for i in list(self.matrix.index):
+        for i in list(self.matrix.index)[1:]:
             _data = [
                 self.matrix.loc[i, 'id'], "<span weight='bold'>"
                 + self.matrix.loc[i, 'display_name'] + "</span>"

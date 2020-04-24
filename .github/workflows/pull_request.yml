@@ -37,8 +37,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: Zomzog/changelog-checker@v1.0.0
+      - uses: peterjgrainger/action-changelog-reminder@v1.2.0
         with:
-          fileName: CHANGELOG.md
-          noChangelogLabel: Missing updated CHANGELOG!
+          changelog_regex: 'CHANGELOG.md'
+          customPrMessage: 'Remember to add a CHANGELOG'
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
