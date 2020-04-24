@@ -8,9 +8,10 @@
 """The RAMSTKBaseMatrix Module."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import pandas as pd
 
 # RAMSTK Package Imports
@@ -21,7 +22,7 @@ from . import treeview
 
 
 # noinspection PyUnresolvedReferences
-class RAMSTKMatrixView(Gtk.HBox):
+class RAMSTKMatrixView(Gtk.TreeView):
     """
     The RAMSTK base widget for displaying RAMSTK Matrix views.
 
@@ -35,6 +36,8 @@ class RAMSTKMatrixView(Gtk.HBox):
     :ivar matrixview: the Gtk.TreeView() displaying the RAMSTKDataMatrix.
     :type matrixview: :class:`Gtk.TreeView`
     """
+
+    # noinspection PyMissingConstructor
     def __init__(self, module: str) -> None:
         """
         Initialize a RAMSTKMatrixView() instance.
@@ -61,7 +64,6 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         # Initialize public scalar attributes.
         self.matrix = None
-        self.matrixview = Gtk.TreeView()
         self.n_fixed_columns = 0
 
         # Subscribe to PyPubSub messages.
@@ -75,7 +77,8 @@ class RAMSTKMatrixView(Gtk.HBox):
         :rtype: :class:`Gtk.CellRendererCombo`
         """
         _cell = Gtk.CellRendererCombo()
-        _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
+        _cellmodel = Gtk.ListStore()
+        _cellmodel.set_column_types([GObject.TYPE_STRING])
         _cellmodel.append([""])
         _cellmodel.append([_("Partial")])
         _cellmodel.append([_("Complete")])
@@ -110,11 +113,11 @@ class RAMSTKMatrixView(Gtk.HBox):
 
     # pylint: disable=too-many-arguments
     def do_edit_cell(self,
-                     cell: Gtk.CellRendererCombo,
+                     cell: Gtk.CellRenderer,
                      path: str,
                      row: Gtk.TreeIter,
-                     model: Gtk.TreeModel,
-                     **kwargs) -> None:
+                     position: int,
+                     idx_column: str) -> None:
         """
         Respond to `changed` signals for the Gtk.CellRendererCombo()s.
 
@@ -125,74 +128,60 @@ class RAMSTKMatrixView(Gtk.HBox):
             selected row in the RAMSTKMatrix.
         :type row: :class:`Gtk.TreeIter`
         :param int position: the position of the cell in the RAMSTKMatrix.
-        :param int col_index: the column_item_id of the Matrix cell to be
+        :param int idx_column: the column_item_id of the Matrix cell to be
             edited.
-        :param model: the Gtk.TreeModel() associated with the RAMSTKMatrix.
-        :type model: :class:`Gtk.TreeModel`
         :return: None
         :rtype: None
         """
-        try:
-            _idx_column = kwargs['col_index']
-        except KeyError:
-            _idx_column = 0
-        try:
-            _position = kwargs['position']
-        except KeyError:
-            _position = 0
-
         _model = cell.get_property('model')
+        _treemodel = self.get_model()
 
-        _idx_row = model[path][0]
+        _idx_row = int(path) + 1
         if _model.get_value(row, 0) == 'Partial':
-            self.matrix[_idx_column][_idx_row] = 1
+            self.matrix.loc[_idx_row, idx_column] = 1
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self._dic_icons[1], 22, 22)
+                self.dic_icons['partial'], 22, 22)
         elif _model.get_value(row, 0) == 'Complete':
-            self.matrix[_idx_column][_idx_row] = 2
+            self.matrix.loc[_idx_row, idx_column] = 2
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self._dic_icons[2], 22, 22)
+                self.dic_icons['complete'], 22, 22)
         else:
-            self.matrix[_idx_column][_idx_row] = 0
+            self.matrix.loc[_idx_row, idx_column] = 0
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self._dic_icons[0], 22, 22)
+                self.dic_icons['none'], 22, 22)
 
-        model[path][_position - 1] = _pixbuf
+        _treemodel[path][position - 1] = _pixbuf
 
-    def do_load_matrix(self, matrix: pd.DataFrame,
-                       column_headings: Dict[int, str],
-                       row_headings: Dict[int, str]) -> None:
+    def do_load_matrix(self, matrix: pd.DataFrame) -> None:
         """
         Load the RAMSTKMatrixView with the values from the data matrix.
 
         :param matrix: the data to display in the RAMSTKMatrixView() widget.
         :type matrix: :class:`pandas.DataFrame`
-        :param dict column_headings: the dicionary containing the headings to
-            use for the matrix columns.  Keys are the column <MODULE> IDs;
-            values are a noun field associated with the key.
-        :param dict row_headings: the dictionary containing the headings to
-            use for the matrix rows.  Keys are the row <MODULE> IDs; values are
-            a noun field associated with the key.
         :return: None
         :rtype: None
         """
         self.matrix = matrix
         self._n_columns = len(self.matrix.columns)
-        self._n_rows = len(self.matrix.index)
+        self._n_rows = len(self.matrix.index) - 1
 
-        _gobject_types = [GObject.TYPE_INT, GObject.TYPE_STRING] + \
-                         [GdkPixbuf.Pixbuf, GObject.TYPE_STRING] * \
-                         (self._n_columns) + [GObject.TYPE_STRING]
+        _model = self.get_model()
+        try:
+            _model.clear()
+        except AttributeError:
+            _model = Gtk.ListStore()
+        _model.set_column_types([GObject.TYPE_INT, GObject.TYPE_STRING]
+                                + [GdkPixbuf.Pixbuf, GObject.TYPE_STRING]
+                                * (self._n_columns - 2)
+                                + [GObject.TYPE_STRING])
+        self.set_model(_model)
 
-        _model = Gtk.TreeStore(*_gobject_types)
-
-        self.matrixview.set_model(_model)
-
-        # The first column will contain a cell for the Function ID and Function
-        # Code.  The Function ID will not be visible, but can be used for
+        # The first column will contain a cell for the record ID and record
+        # code.  The record ID will not be visible, but can be used for
         # program control.
         _id_cell = Gtk.CellRendererText()
-        treeview.do_set_cell_properties(_id_cell, bg_color='light gray',
+        treeview.do_set_cell_properties(_id_cell,
+                                        bg_color='light gray',
                                         visible=False)
 
         _code_cell = Gtk.CellRendererText()
@@ -201,49 +190,54 @@ class RAMSTKMatrixView(Gtk.HBox):
 
         _column = treeview.do_make_column([_id_cell, _code_cell])
         _column.set_attributes(_id_cell, text=0)
+        # noinspection PyArgumentList
         _column.set_attributes(_code_cell, markup=1)
-
-        self.matrixview.append_column(_column)
+        self.append_column(_column)
 
         # The remaining columns will be Gtk.CellRendererCombo()'s for
-        # displaying the interaction between Function and Hardware.
+        # displaying the interaction between the row module and the column
+        # module.
+        i = 0
         j = 2
-        for i in range(self._n_columns):  # pylint: disable=E0602
+        for i in range(self._n_columns - 2):
+            _heading = self.matrix.columns[i + 2]
+
             _cell = self._do_make_combo_cell()
             treeview.do_set_cell_properties(_cell, editable=True)
-            _cell.connect('changed', self.do_edit_cell, _model,
-                          position=i + j + 1,
-                          col_index=self.matrixview.columns[i])
+
+            _cell.connect('changed', self.do_edit_cell, i + j + 1, _heading)
 
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
-            _heading = column_headings[self.matrixview.columns[i]]
+
             _column = treeview.do_make_column([_pbcell, _cell],
                                               heading=_heading)
+            _label = _column.get_widget()
+            _label.set_angle(90.0)
+            _column.set_widget(_label)
+            # noinspection PyArgumentList
             _column.set_attributes(_pbcell, pixbuf=i + j)
-            self.matrixview.append_column(_column)
+            self.append_column(_column)
 
             j += 1
 
         # Add one more column so the last column will not be extra wide.
-        _column = treeview.do_make_column([Gtk.CellRendererText()])
-
-        try:
-            # pylint: disable=undefined-loop-variable
-            _column.set_attributes(_cell, text=i + j + 1)
-        except UnboundLocalError:
-            _column.set_visible(False)
-
-        self.matrixview.append_column(_column)
+        _cell = Gtk.CellRendererText()
+        _column = treeview.do_make_column([_cell])
+        _column.set_attributes(_cell, text=i + j + 2)
+        self.append_column(_column)
 
         # Now we load the data into the RAMSTK Matrix View.
-        for i in list(self.matrix.index):
-            _data = [i, "<span weight='bold'>" + row_headings[i] + "</span>"]
-            for j in list(self.matrix.loc[i]):
+        for i in list(self.matrix.index)[1:]:
+            _data = [
+                self.matrix.loc[i, 'id'], "<span weight='bold'>"
+                + self.matrix.loc[i, 'display_name'] + "</span>"
+            ]
+            for j in list(self.matrix.loc[i][2:]):
                 _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons[j], 22, 22)
+                    self.dic_icons[['none', 'partial', 'complete'][j]], 22, 22)
                 _data.append(_pixbuf)
-                _data.append(j)
+                _data.append(['', 'Partial', 'Complete'][j])
             _data.append('')
 
-            _model.append(None, _data)
+            _model.append(_data)

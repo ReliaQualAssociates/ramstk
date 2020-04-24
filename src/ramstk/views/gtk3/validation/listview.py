@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.function.listview.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.validation.listview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Failure Definition List View Module."""
-
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Validation List View Module."""
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
@@ -14,18 +13,18 @@ from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
-class FunctionHardware(RAMSTKListView):
+class ValidationRequirement(RAMSTKListView):
     """
-    Display all the Function-Hardware matrix for the selected Revision.
+    Display all the Validation-Requirement matrix for the selected Revision.
 
-    The attributes of the Function-Hardware Matrix View are:
+    The attributes of the Validation-Requirement Matrix View are:
     """
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
-                 module: str = 'fnctn_hrdwr') -> None:
+                 module: str = 'vldtn_rqrmnt') -> None:
         """
-        Initialize the List View for the Failure Definition package.
+        Initialize the List View for the Validation package.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
@@ -48,8 +47,8 @@ class FunctionHardware(RAMSTKListView):
         # Initialize public scalar attributes.
 
         super().make_ui(vtype='matrix',
-                        tab_label=_("Function-Hardware\nMatrix"),
-                        tooltip=_("Displays the Function-Hardware matrix for "
-                                  "the selected revision."))
+                        tab_label=_("Validation-Requirement\nMatrix"),
+                        tooltip=_("Displays the Validation-Requirement matrix "
+                                  "for the selected revision."))
 
         # Subscribe to PyPubSub messages.

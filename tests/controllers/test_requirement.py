@@ -16,124 +16,11 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
+from __mocks__ import MOCK_HRDWR_TREE, MOCK_REQUIREMENTS
 from ramstk.controllers import dmRequirement, mmRequirement
+from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKRequirement
-
-MOCK_REQUIREMENTS = {
-    1: {
-        'derived': 0,
-        'description': '',
-        'figure_number': '',
-        'owner': '',
-        'page_number': '',
-        'parent_id': 0,
-        'priority': 0,
-        'requirement_code': 'REL.1',
-        'specification': '',
-        'requirement_type': '',
-        'validated': 0,
-        'validated_date': date.today(),
-        'q_clarity_0': 0,
-        'q_clarity_1': 0,
-        'q_clarity_2': 0,
-        'q_clarity_3': 0,
-        'q_clarity_4': 0,
-        'q_clarity_5': 0,
-        'q_clarity_6': 0,
-        'q_clarity_7': 0,
-        'q_clarity_8': 0,
-        'q_complete_0': 0,
-        'q_complete_1': 0,
-        'q_complete_2': 0,
-        'q_complete_3': 0,
-        'q_complete_4': 0,
-        'q_complete_5': 0,
-        'q_complete_6': 0,
-        'q_complete_7': 0,
-        'q_complete_8': 0,
-        'q_complete_9': 0,
-        'q_consistent_0': 0,
-        'q_consistent_1': 0,
-        'q_consistent_2': 0,
-        'q_consistent_3': 0,
-        'q_consistent_4': 0,
-        'q_consistent_5': 0,
-        'q_consistent_6': 0,
-        'q_consistent_7': 0,
-        'q_consistent_8': 0,
-        'q_verifiable_0': 0,
-        'q_verifiable_1': 0,
-        'q_verifiable_2': 0,
-        'q_verifiable_3': 0,
-        'q_verifiable_4': 0,
-        'q_verifiable_5': 0
-    },
-    2: {
-        'derived': 1,
-        'description': 'Derived requirement #1 for base requirement #1.',
-        'figure_number': '',
-        'owner': '',
-        'page_number': '',
-        'parent_id': 1,
-        'priority': 0,
-        'requirement_code': 'REL.1.1',
-        'specification': '',
-        'requirement_type': '',
-        'validated': 0,
-        'validated_date': date.today(),
-        'q_clarity_0': 0,
-        'q_clarity_1': 0,
-        'q_clarity_2': 0,
-        'q_clarity_3': 0,
-        'q_clarity_4': 0,
-        'q_clarity_5': 0,
-        'q_clarity_6': 0,
-        'q_clarity_7': 0,
-        'q_clarity_8': 0,
-        'q_complete_0': 0,
-        'q_complete_1': 0,
-        'q_complete_2': 0,
-        'q_complete_3': 0,
-        'q_complete_4': 0,
-        'q_complete_5': 0,
-        'q_complete_6': 0,
-        'q_complete_7': 0,
-        'q_complete_8': 0,
-        'q_complete_9': 0,
-        'q_consistent_0': 0,
-        'q_consistent_1': 0,
-        'q_consistent_2': 0,
-        'q_consistent_3': 0,
-        'q_consistent_4': 0,
-        'q_consistent_5': 0,
-        'q_consistent_6': 0,
-        'q_consistent_7': 0,
-        'q_consistent_8': 0,
-        'q_verifiable_0': 0,
-        'q_verifiable_1': 0,
-        'q_verifiable_2': 0,
-        'q_verifiable_3': 0,
-        'q_verifiable_4': 0,
-        'q_verifiable_5': 0
-    }
-}
-MOCK_HRDWR_TREE = Tree()
-MOCK_HRDWR_TREE.create_node(tag='hardware',
-                            identifier=0,
-                            parent=None,
-                            data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1', identifier=1, parent=0, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1', identifier=2, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS2', identifier=3, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS3', identifier=4, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=5, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A1', identifier=6, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2', identifier=7, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
-                            identifier=8,
-                            parent=7,
-                            data=None)
 
 
 class MockDao:
@@ -208,7 +95,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmRequirement)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'requirement'
         assert DUT._root == 0
         assert DUT._revision_id == 0
@@ -242,7 +129,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, mmRequirement)
         assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._col_tree, dict)
         assert isinstance(DUT._row_tree, Tree)
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1
@@ -258,8 +145,8 @@ class TestCreateControllers():
                                 'succeed_insert_requirement')
         # assert pub.isSubscribed(DUT._on_insert_hardware,
         #              'succeed_insert_hardware')
-        assert pub.isSubscribed(DUT.do_update,
-                                'request_update_requirement_matrix')
+        #assert pub.isSubscribed(DUT.do_update,
+        #                        'request_update_requirement_matrix')
 
 
 class TestSelectMethods():
@@ -337,14 +224,14 @@ class TestSelectMethods():
 
         pub.unsubscribe(self.on_request_select_matrix, 'request_select_matrix')
 
-        assert DUT._col_tree == MOCK_HRDWR_TREE
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 1) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 2) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 3) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 4) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 5) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 6) == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 7) == 0
+        assert DUT._col_tree['rqrmnt_hrdwr'] == MOCK_HRDWR_TREE
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS2') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS3') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1:A1') == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1:A2') == 0
 
 
 class TestDeleteMethods():
@@ -386,6 +273,9 @@ class TestDeleteMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_requirement(300)
+
+        pub.unsubscribe(self.on_fail_delete_requirement,
+                        'fail_delete_requirement')
 
     # TODO: un-skip test_do_delete_matrix_column in test_requirement.py.
     @pytest.mark.skip
@@ -449,7 +339,7 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 7) == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4') == 0
 
         DATAMGR.tree.remove_node(1)
         pub.sendMessage('succeed_delete_requirement',
@@ -457,7 +347,7 @@ class TestDeleteMethods():
                         tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 1, 7)
+            DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4')
 
 
 class TestGetterSetter():
@@ -714,7 +604,7 @@ class TestInsertMethods():
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 4, 4)
+            DUT.do_select('rqrmnt_hrdwr', 4, 'S1:SS4')
 
         DATAMGR.tree.create_node(tag='Test Insert Requirement',
                                  identifier=4,
@@ -724,7 +614,7 @@ class TestInsertMethods():
                         node_id=4,
                         tree=DATAMGR.tree)
 
-        assert DUT.do_select('rqrmnt_hrdwr', 4, 4) == 0
+        assert DUT.do_select('rqrmnt_hrdwr', 4, 'S1:SS4') == 0
 
 
 class TestUpdateMethods():
@@ -827,7 +717,7 @@ class TestUpdateMethods():
         DUT.dic_matrices['rqrmnt_hrdwr'][2][2] = 2
         DUT.dic_matrices['rqrmnt_hrdwr'][3][5] = 1
 
-        pub.sendMessage('request_update_requirement_matrix',
+        pub.sendMessage('do_request_update_matrix',
                         revision_id=1,
                         matrix_type='rqrmnt_hrdwr')
 

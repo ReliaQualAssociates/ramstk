@@ -22,13 +22,8 @@ class MatrixManager(RAMSTKMatrixManager):
 
     This class manages the requirement matrices for Hardware and Validation.
     Attributes of the requirement Matrix Manager are:
-
-    :ivar dict _attributes: the dict used to hold the aggregate attributes for
-        the requirement item being analyzed.
     """
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def __init__(self, **kwargs):
+    def __init__(self) -> None:
         """Initialize an instance of the requirement matrix manager."""
         super().__init__(
             column_tables={
@@ -66,10 +61,9 @@ class MatrixManager(RAMSTKMatrixManager):
                       'succeed_insert_requirement')
         # pub.subscribe(self._on_insert_hardware,
         #              'succeed_insert_hardware')
-        pub.subscribe(self.do_update, 'request_update_requirement_matrix')
 
-    def _do_create_requirement_matrix_columns(self, tree: treelib.Tree) -> \
-            None:
+    def _do_create_requirement_matrix_columns(self,
+                                              tree: treelib.Tree) -> None:
         """
         Create the Requirement data matrix columns.
 
@@ -79,12 +73,14 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        self._col_tree = tree
-
+        # If the row tree has already been loaded, we can build the matrix.
+        # Otherwise the matrix will be built when the row tree is loaded.
         if tree.get_node(0).tag == 'hardware':
-            super().do_create_columns('rqrmnt_hrdwr')
-            pub.sendMessage('request_select_matrix',
-                            matrix_type='rqrmnt_hrdwr')
+            self._col_tree['rqrmnt_hrdwr'] = tree
+            if self._row_tree.all_nodes():
+                super().do_create_columns('rqrmnt_hrdwr')
+                pub.sendMessage('request_select_matrix',
+                                matrix_type='rqrmnt_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

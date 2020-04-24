@@ -20,6 +20,7 @@ from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.function import mvwFunction
 from ramstk.views.gtk3.requirement import mvwRequirement
 from ramstk.views.gtk3.revision import mvwRevision
+from ramstk.views.gtk3.validation import mvwValidation
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -52,7 +53,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
             'function': mvwFunction(configuration, logger),
             'requirement': mvwRequirement(configuration, logger),
             #    'hardware': mvwHardware(configuration, logger),
-            #    'validation': mvwValidation(configuration, logger),
+            'validation': mvwValidation(configuration, logger)
         }
 
         # Initialize private list attributes.
@@ -65,7 +66,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.icoStatus = Gtk.StatusIcon()
+        self.icoStatus: Gtk.StatusIcon = Gtk.StatusIcon()
 
         self._set_properties('modulebook')
         self.__make_ui()
@@ -118,7 +119,9 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         _model = self._dic_module_views['revision'].treeview.get_model()
         _model.clear()
 
-    def _on_open(self, tree: Tree) -> None:  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_open(self, tree: Tree) -> None:
         """
         Insert a page in the module book for each active work stream module.
 

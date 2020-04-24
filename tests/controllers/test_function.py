@@ -13,115 +13,12 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
+from __mocks__ import MOCK_FUNCTIONS, MOCK_HAZARDS, MOCK_HRDWR_TREE
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amFunction, dmFunction, mmFunction
+from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFunction, RAMSTKHazardAnalysis
-
-MOCK_FUNCTIONS = {
-    1: {
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'cost': 0.0,
-        'function_code': 'PRESS-001',
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'level': 0,
-        'mcmt': 0.0,
-        'mmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Function Name',
-        'parent_id': 0,
-        'remarks': '',
-        'safety_critical': 0,
-        'total_mode_count': 0,
-        'total_part_count': 0,
-        'type_id': 0
-    },
-    2: {
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'cost': 0.0,
-        'function_code': 'PRESS-001',
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'level': 0,
-        'mcmt': 0.0,
-        'mmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Function Name',
-        'parent_id': 0,
-        'remarks': '',
-        'safety_critical': 0,
-        'total_mode_count': 0,
-        'total_part_count': 0,
-        'type_id': 0
-    }
-}
-MOCK_HAZARDS = {
-    1: {
-        'assembly_effect': '',
-        'assembly_hri': 20,
-        'assembly_hri_f': 4,
-        'assembly_mitigation': '',
-        'assembly_probability': 'Level A - Frequent',
-        'assembly_probability_f': 'Level A - Frequent',
-        'assembly_severity': 'Medium',
-        'assembly_severity_f': 'Medium',
-        'function_1': '',
-        'function_2': '',
-        'function_3': '',
-        'function_4': '',
-        'function_5': '',
-        'potential_cause': '',
-        'potential_hazard': '',
-        'remarks': '',
-        'result_1': 0.0,
-        'result_2': 0.0,
-        'result_3': 0.0,
-        'result_4': 0.0,
-        'result_5': 0.0,
-        'system_effect': '',
-        'system_hri': 20,
-        'system_hri_f': 20,
-        'system_mitigation': '',
-        'system_probability': 'Level A - Frequent',
-        'system_probability_f': 'Level A - Frequent',
-        'system_severity': 'Medium',
-        'system_severity_f': 'Medium',
-        'user_blob_1': '',
-        'user_blob_2': '',
-        'user_blob_3': '',
-        'user_float_1': 0.0,
-        'user_float_2': 0.0,
-        'user_float_3': 0.0,
-        'user_int_1': 0,
-        'user_int_2': 0,
-        'user_int_3': 0
-    }
-}
-MOCK_HRDWR_TREE = Tree()
-MOCK_HRDWR_TREE.create_node(tag='hardware',
-                            identifier=0,
-                            parent=None,
-                            data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1', identifier=1, parent=0, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1', identifier=2, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS2', identifier=3, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS3', identifier=4, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=5, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A1', identifier=6, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2', identifier=7, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
-                            identifier=8,
-                            parent=7,
-                            data=None)
 
 
 class MockDao:
@@ -222,14 +119,15 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmFunction)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'function'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
         assert pub.isSubscribed(DUT._do_delete_hazard, 'request_delete_hazard')
-        assert pub.isSubscribed(DUT.do_insert, 'request_insert_function')
+        assert pub.isSubscribed(DUT.do_insert_function,
+                                'request_insert_function')
         assert pub.isSubscribed(DUT.do_insert_hazard, 'request_insert_hazard')
         assert pub.isSubscribed(DUT.do_update, 'request_update_function')
         assert pub.isSubscribed(DUT.do_update_all,
@@ -252,8 +150,8 @@ class TestCreateControllers():
         assert isinstance(DUT, amFunction)
         assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
+        assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
-        assert DUT._tree is None
         assert pub.isSubscribed(DUT.on_get_all_attributes,
                                 'succeed_get_all_function_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_function_tree')
@@ -267,7 +165,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, mmFunction)
         assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._col_tree, dict)
         assert isinstance(DUT._row_tree, Tree)
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1
@@ -283,8 +181,8 @@ class TestCreateControllers():
                                 'succeed_insert_function')
         # assert pub.isSubscribed(DUT._on_insert_hardware,
         #              'succeed_insert_hardware')
-        assert pub.isSubscribed(DUT.do_update,
-                                'request_update_function_matrix')
+        #assert pub.isSubscribed(DUT.do_update,
+        #                        'request_update_function_matrix')
 
 
 class TestSelectMethods():
@@ -375,14 +273,14 @@ class TestSelectMethods():
 
         pub.unsubscribe(self.on_request_select_matrix, 'request_select_matrix')
 
-        assert DUT._col_tree == MOCK_HRDWR_TREE
-        assert DUT.do_select('fnctn_hrdwr', 1, 1) == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 2) == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 3) == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 4) == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 5) == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 6) == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 7) == 0
+        assert DUT._col_tree['fnctn_hrdwr'] == MOCK_HRDWR_TREE
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1') == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1') == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2') == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS3') == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4') == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A1') == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A2') == 0
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
@@ -487,13 +385,13 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
-        assert DUT.do_select('fnctn_hrdwr', 1, 7) == 0
+        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4') == 0
 
         DATAMGR.tree.remove_node(1)
         pub.sendMessage('succeed_delete_function', node_id=1, tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 1, 7)
+            DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4')
 
     # TODO: un-skip test_do_delete_matrix_column in test_function.py.
     @pytest.mark.skip
@@ -540,14 +438,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_sibling_function(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a sibling function."""
+        """do_insert_function() should send the success message after successfully inserting a sibling function."""
         pub.subscribe(self.on_succeed_insert_function,
                       'succeed_insert_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert()
+        DUT.do_insert_function()
 
         assert isinstance(
             DUT.tree.get_node(3).data['function'], RAMSTKFunction)
@@ -560,11 +458,11 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_child_function(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a child function."""
+        """do_insert_function() should send the success message after successfully inserting a child function."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert(parent_id=2)
+        DUT.do_insert_function(parent_id=2)
 
         assert isinstance(
             DUT.tree.get_node(3).data['function'], RAMSTKFunction)
@@ -574,13 +472,13 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_function_no_parent(self, mock_program_dao):
-        """do_insert() should send the fail message if attempting to add a function to a non-existent parent ID."""
+        """do_insert_function() should send the fail message if attempting to add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_function, 'fail_insert_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert(parent_id=40)
+        DUT.do_insert_function(parent_id=40)
 
     @pytest.mark.unit
     def test_insert_hazard(self, mock_program_dao):
@@ -617,7 +515,7 @@ class TestInsertMethods():
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 4, 4)
+            DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4')
 
         DATAMGR.tree.create_node(tag='Test Insert Function',
                                  identifier=4,
@@ -627,7 +525,7 @@ class TestInsertMethods():
                         node_id=4,
                         tree=DATAMGR.tree)
 
-        assert DUT.do_select('fnctn_hrdwr', 4, 4) == 0
+        assert DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4') == 0
 
     # TODO: un-skip test_do_insert_matrix_column in test_function.py.
     @pytest.mark.skip
@@ -907,7 +805,7 @@ class TestUpdateMethods():
         DUT.dic_matrices['fnctn_hrdwr'][2][2] = 2
         DUT.dic_matrices['fnctn_hrdwr'][3][5] = 1
 
-        pub.sendMessage('request_update_function_matrix',
+        pub.sendMessage('do_request_update_matrix',
                         revision_id=1,
                         matrix_type='fnctn_hrdwr')
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')

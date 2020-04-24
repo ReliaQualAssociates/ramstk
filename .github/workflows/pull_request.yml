@@ -1,0 +1,45 @@
+name: Pull Request QA Workflow
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  checklist:
+    name: Add Pull Request Checklist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: wyozi/contextual-qa-checklist-action@master
+        with:
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          input-file: docs/CHECKLIST.yml
+
+  labeler:
+    name: Label the Pull Request Size
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: codelytv/pr-size-labeler@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_max_size: '10'
+          s_max_size: '100'
+          m_max_size: '500'
+          l_max_size: '1000'
+          fail_if_xl: 'false'
+
+  check_for_changelog:
+    name: Check for CHANGELOG
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: peterjgrainger/action-changelog-reminder@v1.2.0
+        with:
+          changelog_regex: 'CHANGELOG.md'
+          customPrMessage: 'Remember to add a CHANGELOG'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

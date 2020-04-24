@@ -40,6 +40,7 @@ script:
 after_success:
     - coveralls
     - java -jar codacy-coverage-reporter-assembly.jar report -l Java -r coverage.xml
+    - bash <(curl -s https://codecov.io/bash)
 
 # What's the environment look like if the build fails silently.
 after_failure:

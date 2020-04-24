@@ -5,7 +5,8 @@
 from ramstk.views.gtk3 import Gtk
 from typing import Any, List, Tuple
 
-def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int, y_pos: int, **kwargs: Any) -> Tuple[int, List[int]]: ...
+def do_make_label_group(text: List[str], container: Gtk.Fixed, x_pos: int,
+                        y_pos: int, **kwargs: Any) -> Tuple[int, List[int]]: ...
 
 class RAMSTKLabel(Gtk.Label):
     def __init__(self, text: str) -> None: ...

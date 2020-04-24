@@ -15,7 +15,7 @@ import psycopg2
 from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
-from sqlalchemy import and_, create_engine, exc
+from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -252,7 +252,7 @@ class BaseDatabase():
         for _record in records:
             self.do_insert(_record)
 
-    def do_select_all(self, table, **kwargs) -> None:
+    def do_select_all(self, table, **kwargs) -> List[object]:
         """
         Select all records from the RAMSTK database for table.
 
@@ -279,8 +279,24 @@ class BaseDatabase():
         _results = []
 
         if isinstance(_key, list):
-            _results = self.session.query(table).filter(
-                and_(_key[0] == _value[0], _key[1] == _value[1]))
+            # TODO: Refactor db.base.do_select_all()
+            #
+            # The approach for dealing with multiple field=value filters
+            # needs to be fixed to accomodate an arbitrary number of pairs.
+            # It also needs to be simplified (if possible) as it is
+            # difficult to follow the logic.
+            try:
+                _results = self.session.query(table).filter(
+                    _key[0] == _value[0]).filter(_key[1] == _value[1]).filter(
+                        _key[2] == _value[2]).filter(_key[3] == _value[3])
+            except IndexError:
+                try:
+                    _results = self.session.query(table).filter(
+                        _key[0] == _value[0]).filter(
+                            _key[1] == _value[1]).filter(_key[2] == _value[2])
+                except IndexError:
+                    _results = self.session.query(table).filter(
+                        _key[0] == _value[0]).filter(_key[1] == _value[1])
         elif _key is not None:
             _results = self.session.query(table).filter(_key == _value)
         else:
@@ -328,12 +344,9 @@ class BaseDatabase():
         if database['dialect'] == 'postgres':
             _query = self.sqlstatements['select'].format('datname') + \
                  self.sqlstatements['from'].format('pg_database;')
-            database = ('postgresql+psycopg2://'
-                        + database['user'] + ':'
-                        + database['password'] + '@'
-                        + database['host'] + ':'
-                        + database['port'] + '/'
-                        + database['database'])
+            database = ('postgresql+psycopg2://' + database['user'] + ':'
+                        + database['password'] + '@' + database['host'] + ':'
+                        + database['port'] + '/' + database['database'])
             __, _session = do_open_session(database)
 
             # Remove the databases not associated with RAMSTK.

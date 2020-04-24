@@ -26,8 +26,7 @@ class MatrixManager(RAMSTKMatrixManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the function item being analyzed.
     """
-
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self) -> None:
         """Initialize an instance of the function matrix manager."""
         super().__init__(
             column_tables={
@@ -63,7 +62,7 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._on_insert_function, 'succeed_insert_function')
         # pub.subscribe(self._on_insert_hardware,
         #              'succeed_insert_hardware')
-        pub.subscribe(self.do_update, 'request_update_function_matrix')
+        #pub.subscribe(self.do_update, 'request_update_function_matrix')
 
     def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
         """
@@ -75,13 +74,16 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
-        self._col_tree = tree
-
+        # If the row tree has already been loaded, we can build the matrix.
+        # Otherwise the matrix will be built when the row tree is loaded.
         if tree.get_node(0).tag == 'hardware':
-            super().do_create_columns('fnctn_hrdwr')
-            pub.sendMessage('request_select_matrix', matrix_type='fnctn_hrdwr')
+            self._col_tree['fnctn_hrdwr'] = tree
+            if self._row_tree.all_nodes():
+                super().do_create_columns('fnctn_hrdwr')
+                pub.sendMessage('request_select_matrix', matrix_type='fnctn_hrdwr')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Delete the matrix row associated with the deleted function.
@@ -96,6 +98,7 @@ class MatrixManager(RAMSTKMatrixManager):
         self.do_delete_row(node_id)
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
         """
 

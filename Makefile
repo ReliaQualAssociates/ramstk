@@ -5,7 +5,7 @@
 PREFIX		= /usr/local
 
 CHANGELOG	= CHANGELOG.md
-REPO		= ReliaQualAssociates/ramstk
+REPO		= ramstk
 REQFILE		= requirements.txt
 DEVREQFILE	= requirements-dev.txt
 TSTREQFILE	= requirements-test.txt
@@ -22,6 +22,7 @@ MKDIR 		= mkdir -pv
 SED			= sed
 COPY 		= cp -v
 RMDIR		= rm -fvr
+GIT			= $(shell which git)
 
 # Data files.
 LAYOUTS		= $(shell ls ./data/layouts)
@@ -39,7 +40,7 @@ help:
 	@echo "	lsvenv					list all the available virtual environments."
 	@echo "	usevenv VIRTENV=<name>			use the VIRTENV requested."
 	@echo "Targets related to use of pip-tools:"
-	@echo "	requirements				create/update the requirements_run.txt, requirements_dev.txt, and requirements_doc.txt files."
+	@echo "	requirements				create/update the requirements.txt, requirements-dev.txt, and requirements-test.txt files."
 	@echo "	upgrade					update the requirements (txt) files with the latest package versions available."
 	@echo "	depends					install the packages found in the requirements files into the current (virtual) environment."
 	@echo "Targets related to use of py.test/pytest/tox:"
@@ -65,10 +66,11 @@ help:
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
 	@echo "	bumpver					bump the minor or patch version of RAMSTK."
-	@echo "	tag					tag the current branch."
-	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install"
+	@echo "	tag					    tag the current branch."
+	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install."
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi. <FUTURE>"
+	@echo " sync					synchronize the local repository with the upstream repository."
 	@echo ""
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
 	@echo ""
@@ -195,6 +197,16 @@ reports: coverage
 	coverage html -d $(COVDIR)
 	python-codacy-coverage -r coverage.xml
 
+sync:
+	@echo "Execute the following to bring the local repo in sync with upstream:"
+	@echo ""
+	@echo "  ${GIT} checkout develop"
+	@echo "  ${GIT} pull upstream develop"
+	@echo "  ${GIT} push upstream develop"
+	@echo "  ${GIT} checkout master"
+	@echo "  ${GIT} pull upstream master"
+	@echo "  ${GIT} push origin master"
+
 # This target is for use with IDE integration.
 format:
 	$(info Autoformatting $(SRCFILE)...)
@@ -231,7 +243,7 @@ lint:
 	flake8 $(SRCFILE)
 
 changelog:
-	github_changelog_generator $(REPO)
+	github_changelog_generator --project $(REPO) --user $(GITHUB_USER) -t $(TOKEN)
 
 bumpver:
 	$(shell sh ./devtools/bump_version.sh -b)

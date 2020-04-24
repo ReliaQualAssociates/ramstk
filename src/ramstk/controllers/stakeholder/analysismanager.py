@@ -7,6 +7,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Controller Package analysis manager."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 from pubsub import pub
 
@@ -23,7 +26,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
     This class manages the functional analysis for functional hazards analysis
     (FHA).  Attributes of the function Analysis Manager are:
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration, **kwargs):
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 **kwargs: Dict[str, Any]) -> None:
         """
         Initialize an instance of the function analysis manager.
 

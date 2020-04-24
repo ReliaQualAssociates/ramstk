@@ -16,6 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amHardware, dmHardware, mmHardware
+from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
@@ -933,7 +934,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, dmHardware)
         assert isinstance(DUT.tree, Tree)
-        assert DUT.dao is None
+        assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'hardware'
         assert DUT._root == 0
 
@@ -945,8 +946,8 @@ class TestCreateControllers():
         assert isinstance(DUT, amHardware)
         assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
+        assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
-        assert DUT._tree is None
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -955,7 +956,7 @@ class TestCreateControllers():
 
         assert isinstance(DUT, mmHardware)
         assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, Tree)
+        assert isinstance(DUT._col_tree, dict)
         assert isinstance(DUT._row_tree, Tree)
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1

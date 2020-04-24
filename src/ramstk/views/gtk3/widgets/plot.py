@@ -167,7 +167,7 @@ class RAMSTKPlot():
         # Get the minimum and maximum y-values to set the axis bounds.  If the
         # maximum value is infinity, use the next largest value and so forth.
         _min = min(self._lst_min)
-        _max = self._lst_max[0]
+        _max = max(1.0, self._lst_max[0])
         for i in range(1, len(self._lst_max)):
             if _max < self._lst_max[i] and self._lst_max[i] != float('inf'):
                 _max = self._lst_max[i]
@@ -308,7 +308,7 @@ class RAMSTKPlot():
         return _label
 
     # pylint: disable=too-many-arguments
-    def do_make_legend(self, text: Tuple[str], **kwargs: Any) -> None:
+    def do_make_legend(self, text: Tuple[Any], **kwargs: Any) -> None:
         r"""
         Make a legend on the RAMSTKPlot.
 
