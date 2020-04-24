@@ -783,6 +783,11 @@ class RAMSTKListView(RAMSTKBaseView):
         """
         super().__init__(configuration, logger, module)
 
+        self.RAMSTK_LOGGER.do_create_logger(
+            module,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
+
         self._module: str = ''
         for __, char in enumerate(module):
             if char.isalpha():
@@ -804,6 +809,7 @@ class RAMSTKListView(RAMSTKBaseView):
 
         self.__set_properties()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_matrix, 'succeed_load_matrix')
 
     def __set_properties(self) -> None:
@@ -846,6 +852,23 @@ class RAMSTKListView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
+        try:
+            _tab_label = kwargs['tab_label']
+        except KeyError:
+            _tab_label = 'Tab'
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = _("Missing tooltip, please file a quality type issue "
+                         "to have one added.")
+
+        self.tab_label.set_markup("<span weight='bold'>"
+                                  + _tab_label + "</span>")
+        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.tab_label.set_justify(Gtk.Justification.CENTER)
+        self.tab_label.show_all()
+        self.tab_label.set_tooltip_text(_tooltip)
+
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
@@ -868,8 +891,10 @@ class RAMSTKListView(RAMSTKBaseView):
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + '/32x32/partial.png'
             }
+            self.matrixview.set_tooltip_text(_tooltip)
             _scrolledwindow.add(self.matrixview)
         else:
+            self.treeview.set_tooltip_text(_tooltip)
             _scrolledwindow.add(self.treeview)
 
         self.pack_end(_scrolledwindow, True, True, 0)

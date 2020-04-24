@@ -15,9 +15,6 @@ class FunctionHardware(RAMSTKListView):
         self._do_load_tree = None
         ...
 
-    def __make_ui(self):
-        pass
-
     def pack_start(self, param, param1, param2, param3):
         pass
 
