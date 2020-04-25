@@ -12,7 +12,6 @@ from typing import Any, Dict, List
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -74,7 +73,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            RAMSTKDataManager.do_delete(self, node_id, 'stakeholder')
+            super().do_delete(node_id, 'stakeholder')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
@@ -119,7 +118,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_stakeholder_tree', dmtree=self.tree)
 
-    def do_insert_stakeholder(self, parent_id: int = 0) -> None:
+    def do_insert_stakeholder(self) -> None:
         """
         Add a new stakeholder.
 
@@ -141,22 +140,14 @@ class DataManager(RAMSTKDataManager):
             self.last_id = _stakeholder.stakeholder_id
             self.tree.create_node(tag=_stakeholder.description,
                                   identifier=self.last_id,
-                                  parent=parent_id,
+                                  parent=0,
                                   data={'stakeholder': _stakeholder})
             pub.sendMessage('succeed_insert_stakeholder',
                             node_id=self.last_id,
                             tree=self.tree)
-        except NodeIDAbsentError:
-            pub.sendMessage(
-                "fail_insert_stakeholder",
-                error_message=("Attempting to add child stakeholder "
-                               "to non-existent stakeholder "
-                               "{0:d}.").format(parent_id))
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_stakeholder",
-                            error_message=("Failed to insert stakeholder into "
-                                           "program dabase."))
+                            error_message=_error.msg)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
@@ -222,11 +213,8 @@ class DataManager(RAMSTKDataManager):
             if _key in _attributes:
                 _attributes[_key] = _value
 
-                try:
-                    _attributes.pop('revision_id')
-                    _attributes.pop('stakeholder_id')
-                except KeyError:
-                    pass
+                _attributes.pop('revision_id')
+                _attributes.pop('stakeholder_id')
 
             self.do_select(node_id[0],
                            table=_table).set_attributes(_attributes)
@@ -249,7 +237,7 @@ class DataManager(RAMSTKDataManager):
                             error_message=('Attempted to save non-existent '
                                            'stakeholder with stakeholder ID '
                                            '{0:s}.').format(str(node_id)))
-        except TypeError:
+        except (KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_stakeholder',
                                 error_message=('No data package found for '

@@ -33,7 +33,12 @@ class MockDao:
                 raise DataAccessError('')
 
     def do_insert(self, record):
-        self._all.append(record)
+        if record.stakeholder_id not in MOCK_STAKEHOLDERS.keys():
+            self._all.append(record)
+        else:
+            raise DataAccessError(msg = (
+                "There was an database error when attempting to add a "
+                "record."))
 
     def do_select_all(self, table,
                       key=None,
@@ -226,6 +231,9 @@ class TestDeleteMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete_stakeholder(300)
 
+        pub.unsubscribe(self.on_fail_delete_stakeholder,
+                        'fail_delete_stakeholder')
+
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestGetterSetter():
@@ -339,12 +347,11 @@ class TestInsertMethods():
         print("\033[36m\nsucceed_insert_stakeholder topic was broadcast")
 
     def on_fail_insert_stakeholder(self, error_message):
-        assert error_message == ('Attempting to add child stakeholder to '
-                                 'non-existent stakeholder 32.')
+        assert error_message == 'There was an database error when attempting to add a record.'
         print("\033[35m\nfail_insert_stakeholder topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_insert_sibling_stakeholder(self, mock_program_dao):
+    def test_do_insert_stakeholder(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new top-level stakeholder."""
         pub.subscribe(self.on_succeed_insert_stakeholder,
                       'succeed_insert_stakeholder')
@@ -352,7 +359,7 @@ class TestInsertMethods():
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_stakeholder(parent_id=0)
+        DUT.do_insert_stakeholder()
 
         assert isinstance(
             DUT.tree.get_node(3).data['stakeholder'], RAMSTKStakeholder)
@@ -363,6 +370,21 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_stakeholder,
                         'succeed_insert_stakeholder')
 
+    @pytest.mark.unit
+    def test_do_insert_stakeholder_existing_id(self, mock_program_dao):
+        """do_insert() should send the success message after successfully inserting a new top-level stakeholder."""
+        pub.subscribe(self.on_fail_insert_stakeholder,
+                      'fail_insert_stakeholder')
+
+        DUT = dmStakeholder()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.last_id = DUT.last_id - 1
+
+        DUT.do_insert_stakeholder()
+
+        pub.unsubscribe(self.on_fail_insert_stakeholder,
+                        'fail_insert_stakeholder')
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestUpdateMethods():
@@ -374,6 +396,12 @@ class TestUpdateMethods():
     def on_fail_update_stakeholder(self, error_message):
         assert error_message == (
             'Attempted to save non-existent stakeholder with stakeholder ID 100.'
+        )
+        print("\033[35m\nfail_update_stakeholder topic was broadcast")
+
+    def on_fail_update_stakeholder_no_package(self, error_message):
+        assert error_message == (
+            'No data package found for stakeholder ID 1.'
         )
         print("\033[35m\nfail_update_stakeholder topic was broadcast")
 
@@ -412,6 +440,30 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_fail_update_stakeholder,
                         'fail_update_stakeholder')
+
+    @pytest.mark.unit
+    def test_do_update_node_zero(self, mock_program_dao):
+        """ do_update() should return None when passed Validation ID=0. """
+        DUT = dmStakeholder()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        assert DUT.do_update_stakeholder(0) is None
+
+    @pytest.mark.unit
+    def test_do_update_data_manager_no_data_package(self, mock_program_dao):
+        """ do_update() should send the fail_update_requirement message when there is no data package attached to the node. """
+        pub.subscribe(self.on_fail_update_stakeholder_no_package,
+                      'fail_update_requirement')
+
+        DUT = dmStakeholder()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.get_node(1).data.pop('stakeholder')
+        DUT.do_update_stakeholder(1)
+
+        pub.unsubscribe(self.on_fail_update_stakeholder_no_package,
+                        'fail_update_requirement')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')

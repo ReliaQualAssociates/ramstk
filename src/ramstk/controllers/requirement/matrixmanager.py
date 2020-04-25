@@ -4,8 +4,11 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007-2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Controller Package matrix manager."""
+
+# Standard Library Imports
+from typing import Any
 
 # Third Party Imports
 import treelib
@@ -56,11 +59,10 @@ class MatrixManager(RAMSTKMatrixManager):
                       'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_requirement,
                       'succeed_delete_requirement')
-        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self._on_insert_requirement,
                       'succeed_insert_requirement')
-        # pub.subscribe(self._on_insert_hardware,
-        #              'succeed_insert_hardware')
+        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
     def _do_create_requirement_matrix_columns(self,
                                               tree: treelib.Tree) -> None:
@@ -73,6 +75,7 @@ class MatrixManager(RAMSTKMatrixManager):
         :return: None
         :rtype: None
         """
+
         # If the row tree has already been loaded, we can build the matrix.
         # Otherwise the matrix will be built when the row tree is loaded.
         if tree.get_node(0).tag == 'hardware':
@@ -97,6 +100,30 @@ class MatrixManager(RAMSTKMatrixManager):
         :rtype: None
         """
         self.do_delete_row(node_id)
+
+    def _on_delete_hardware(self, node_id: int) -> Any:
+        """
+        Delete the node ID column from the Validation::Hardware matrix.
+
+        :param int node_id: the hardware treelib Node ID that was deleted.
+            Note that node ID = hardware ID = matrix row ID.
+        :return: None
+        :rtype: None
+        """
+        _tag = self._col_tree['rqrmnt_hrdwr'].get_node(node_id).tag
+        return super().do_delete_column(_tag, 'rqrmnt_hrdwr')
+
+    def _on_insert_hardware(self, node_id: int) -> Any:
+        """
+        Insert the node ID column to the Validation::Hardware matrix.
+
+        :param int node_id: the hardware treelib Node ID that is to be
+            inserted.  Note that node ID = hardware ID = matrix row ID.
+        :return: None
+        :rtype: None
+        """
+        _tag = self._col_tree['rqrmnt_hrdwr'].get_node(node_id).tag
+        return super().do_insert_column(_tag, 'rqrmnt_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

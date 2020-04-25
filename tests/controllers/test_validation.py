@@ -22,7 +22,9 @@ from __mocks__ import (
     MOCK_RQRMNT_TREE, MOCK_STATUS, MOCK_VALIDATIONS
 )
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amValidation, dmValidation, mmValidation
+from ramstk.controllers import (
+    amValidation, dmRequirement, dmValidation, mmValidation
+)
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
@@ -111,7 +113,8 @@ class MockDao:
     def get_last_id(self, table, id_column):
         if table == 'ramstk_validation':
             return max(MOCK_VALIDATIONS.keys())
-
+        elif table == 'ramstk_matrix':
+            return 52
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
@@ -284,7 +287,7 @@ class TestSelectMethods():
 
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
-        pub.unsubscribe(self.on_request_select_matrix, 'request_select_matrix')
+        pub.unsubAll('request_select_matrix')
 
         assert DUT._col_tree['vldtn_hrdwr'] == MOCK_HRDWR_TREE
         assert DUT.do_select('vldtn_hrdwr', 1, 'S1') == 0
@@ -484,16 +487,16 @@ class TestInsertMethods():
         pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
-            DUT.do_select('vldtn_hrdwr', 1, 'S1:SS9')
+            DUT.do_select('vldtn_hrdwr', 1, 'S1:SS20')
 
-        MOCK_HRDWR_TREE.create_node(tag='S1:SS9',
-                                    identifier=9,
+        MOCK_HRDWR_TREE.create_node(tag='S1:SS20',
+                                    identifier=20,
                                     parent=0,
                                     data=None)
 
-        pub.sendMessage('succeed_insert_hardware', node_id=9)
+        pub.sendMessage('succeed_insert_hardware', node_id=20)
 
-        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS9') == 0
+        assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS20') == 0
 
     @pytest.mark.unit
     def test_do_insert_matrix_requirement_column(self, mock_program_dao):
@@ -800,7 +803,7 @@ class TestUpdateMethods():
                         'fail_update_validation')
 
     @pytest.mark.unit
-    def test_do_update_missing_from_tree(self, mock_program_dao):
+    def test_do_update_no_data_package(self, mock_program_dao):
         """ do_update() should raise the 'fail_update_validation' message when passed a Validation ID that doesn't exist in the tree. """
         pub.subscribe(self.on_fail_update_validation2,
                       'fail_update_validation')
@@ -845,41 +848,25 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_succeed_update_status,
                         'succeed_update_program_status')
 
-    # TODO: un-skip test_do_update_matrix_manager in test_validation.py.
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should broadcast the 'succeed_update_matrix' on success."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-        DUT = mmValidation()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
-
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 
-        pub.sendMessage('selected_revision', revision_id=1)
+        DUT = mmValidation()
 
-        DUT.dic_matrices['vldtn_rqrmnt'][1][2] = 1
-        DUT.dic_matrices['vldtn_rqrmnt'][1][3] = 2
-        DUT.dic_matrices['vldtn_rqrmnt'][2][2] = 2
-        DUT.dic_matrices['vldtn_rqrmnt'][3][5] = 1
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(test_program_dao)
 
-        DUT.do_update(revision_id=1, matrix_type='vldtn_rqrmnt')
+        RQRMTMGR = dmRequirement()
+        RQRMTMGR.do_connect(test_program_dao)
+
+        pub.sendMessage('selected_revision', attributes={'revision_id': 1})
+
+        DUT.dic_matrices['vldtn_rqrmnt'].loc[1, 'REL-0001'] = 1
+
+        pub.sendMessage('do_request_update_matrix', revision_id=1,
+                        matrix_type='vldtn_rqrmnt')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
 

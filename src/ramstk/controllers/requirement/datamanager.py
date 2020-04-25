@@ -124,7 +124,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_create_requirement_code',
                             requirement_code=_requirement.get_attributes()[
                                 'requirement_code'])
-        except TypeError:
+        except (TypeError, AttributeError):
             if node_id != 0:
                 pub.sendMessage('fail_create_requirement_code',
                                 error_message=('No data package found for '
@@ -196,11 +196,6 @@ class DataManager(RAMSTKDataManager):
                 error_message=("Attempting to add child requirement "
                                "to non-existent requirement "
                                "{0:d}.").format(parent_id))
-        except DataAccessError as _error:
-            print(_error)
-            pub.sendMessage("fail_insert_requirement",
-                            error_message=("Failed to insert requirement into "
-                                           "program dabase."))
 
     # pylint: disable=arguments-differ
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -275,11 +270,8 @@ class DataManager(RAMSTKDataManager):
                 if _key == 'validated_date' and not _value:
                     _attributes[_key] = date.today()
 
-                try:
-                    _attributes.pop('revision_id')
-                    _attributes.pop('requirement_id')
-                except KeyError:
-                    pass
+                _attributes.pop('revision_id')
+                _attributes.pop('requirement_id')
 
                 self.do_select(node_id[0],
                                table=_table).set_attributes(_attributes)
@@ -302,7 +294,7 @@ class DataManager(RAMSTKDataManager):
                             error_message=('Attempted to save non-existent '
                                            'requirement with requirement ID '
                                            '{0:s}.').format(str(node_id)))
-        except TypeError:
+        except (KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_requirement',
                                 error_message=('No data package found for '

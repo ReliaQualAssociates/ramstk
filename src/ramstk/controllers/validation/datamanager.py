@@ -85,9 +85,6 @@ class DataManager(RAMSTKDataManager):
             condition shouldn't happen, so it should be dealt with using the
             logger and a user dialog.
         """
-        _error_msg = ("Attempted to delete non-existent validation ID "
-                      "{0:s}.").format(str(node_id))
-
         try:
             super().do_delete(node_id, 'validation')
 
@@ -98,7 +95,10 @@ class DataManager(RAMSTKDataManager):
                             node_id=node_id,
                             tree=self.tree)
         except DataAccessError:
-            pub.sendMessage('fail_delete_validation', error_message=_error_msg)
+            pub.sendMessage('fail_delete_validation',
+                            error_message=("Attempted to delete non-existent "
+                                           "validation ID {0:s}.").format(
+                                               str(node_id)))
 
     # pylint: disable=arguments-differ
     def _do_insert_status(self) -> RAMSTKProgramStatus:
@@ -218,7 +218,6 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_status_tree', stree=self.status_tree)
 
-    # pylint: disable=arguments-differ
     def do_insert_validation(self) -> None:
         """
         Add a new validation task.
@@ -345,7 +344,7 @@ class DataManager(RAMSTKDataManager):
                             error_msg=('Attempted to save non-existent '
                                        'validation task with validation ID '
                                        '{0:s}.').format(str(node_id)))
-        except TypeError:
+        except (KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_validation',
                                 error_msg=('No data package found for '

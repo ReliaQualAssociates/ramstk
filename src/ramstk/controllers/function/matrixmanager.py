@@ -7,6 +7,9 @@
 # Copyright 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Controller Package matrix manager."""
 
+# Standard Library Imports
+from typing import Any
+
 # Third Party Imports
 import treelib
 from pubsub import pub
@@ -48,21 +51,13 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        # // TODO: Update Function module matrixmanager to respond to hardware.
-        # //
-        # // The Function module matrixmanager is currently only responding to
-        # // Function module pubsub messages.  Ensure the Function module
-        # // matrix manager is updated to respond to Hardware module pubsub
-        # // messages when the Hardware module is refactored.
         pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
         pub.subscribe(self._do_create_function_matrix_columns,
                       'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
-        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self._on_insert_function, 'succeed_insert_function')
-        # pub.subscribe(self._on_insert_hardware,
-        #              'succeed_insert_hardware')
-        #pub.subscribe(self.do_update, 'request_update_function_matrix')
+        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
     def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
         """
@@ -97,6 +92,18 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_delete_row(node_id)
 
+    def _on_delete_hardware(self, node_id: int) -> Any:
+        """
+        Delete the node ID column from the Function::Hardware matrix.
+
+        :param int node_id: the hardware treelib Node ID that was deleted.
+            Note that node ID = hardware ID = matrix row ID.
+        :return: None
+        :rtype: None
+        """
+        _tag = self._col_tree['fnctn_hrdwr'].get_node(node_id).tag
+        return super().do_delete_column(_tag, 'fnctn_hrdwr')
+
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
@@ -110,3 +117,15 @@ class MatrixManager(RAMSTKMatrixManager):
         :rtype: None
         """
         self.do_insert_row(node_id)
+
+    def _on_insert_hardware(self, node_id: int) -> Any:
+        """
+        Insert the node ID column to the Function::Hardware matrix.
+
+        :param int node_id: the hardware treelib Node ID that is to be
+            inserted.  Note that node ID = hardware ID = matrix row ID.
+        :return: None
+        :rtype: None
+        """
+        _tag = self._col_tree['fnctn_hrdwr'].get_node(node_id).tag
+        return super().do_insert_column(_tag, 'fnctn_hrdwr')
