@@ -2,7 +2,7 @@
 
 Thank you for taking the time to contribute!
 
-The following is a set of guidelines for contributing to RAMSTK, which is hosted in the [RAMSTK repository](https://github.com/weibullguy/ramstk) on GitHub.  Feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to RAMSTK, which is hosted in the [RAMSTK repository](https://github.com/ReliaQualAssociates/ramstk) on GitHub.  Feel free to propose changes to this document in a pull request.
 
 [How Can I Contribute?](#how-can-i-contribute)
   * [For Everyone](#for-everyone)
@@ -31,9 +31,9 @@ The purpose of an issue (or bug, condition, corrective action, FRACA) tracking s
 
 #### How to Submit a Useful Issue Report
 
-issues are tracked as [GitHub issues](https://github.com/weibullguy/ramstk/issues/).
+Issues are tracked as [GitHub issues](https://github.com/ReliaQualAssociates/ramstk/issues/).
 
-**Use a clear and descriptive title** for the issue to identify the problem.  When you create a new issue, you will be presented with an [issue template](https://github.com/weibullguy/ramstk/docs/ISSUE_TEMPLATE.md).  Please use the template to report your issue.  If you choose not to, you may be asked to provide the information requested or your issue may simply be closed with no action taken.
+**Use a clear and descriptive title** for the issue to identify the problem.  When you create a new issue, you will be presented with an [issue template](https://github.com/ReliaQualAssociates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE.md).  Please use the template to report your issue.  If you choose not to, you may be asked to provide the information requested or your issue may simply be closed with no action taken.
 
 There are four sections in an issue report:
 
@@ -42,23 +42,46 @@ There are four sections in an issue report:
 * Steps to Reproduce the Problem
 * Operating Environment
 
-In the **Expected Behavior** section, the minimum information needed is to complete the user story:
+In the **Expected Behavior** section, the minimum information needed is to
+complete the user story:
 
     As a <type of RAMSTK stakeholder>, I want <goal> so that <need for goal>.
 
-RAMSTK has been a long time in the making and was originally created to bundle together several small (mostly) Excel-based tools and move data storage to a database rather than a spreadsheet.  As such, the design process was not very rigorous and no engineering specifications were ever created; I knew what I wanted my tool to do for me and didn't need to document that.  You're welcome to call me lazy, but your user story (stakeholder's input in RAMSTK vernacular) will be used to develop engineering specifications for RAMSTK.  In fact, you can submit an issure report as a quality type issue and provide nothing more than the completed user story (stakeholder input).  Not all users (stakeholders) are external users of RAMSTK.
+It is important that the voice of the customer (VOC) be captured up front.  The
+VOC statement(s) are converted to engineering requirements.  Engineering
+requirements can be tested to verify the code meets the requirement.  A simple
+way to capture the VOC is to fill in the following statement.  You may include
+multiple, related, user statements in a single issue.
 
-If submitting an enhancement type issue, provide a step-by-step description of the suggested enhancement in as many details as possible.  Explain why this enhancement would be useful to most RAMSTK users.
+RAMSTK has been a long time in the making and was originally created to bundle
+together several small (mostly) Excel-based tools and move data storage to a
+database rather than a spreadsheet.  As such, the design process was not very
+rigorous and no engineering specifications were ever created; I knew what I
+wanted my tool to do for me and didn't need to document that.  You're welcome
+to call me lazy, but your user story (stakeholder's input in RAMSTK vernacular)
+will be used to develop engineering specifications for RAMSTK.  In fact, you
+can submit an issure report as a quality type issue and provide nothing more
+than the completed user story (stakeholder input).  Not all users
+(stakeholders) are external users of RAMSTK.
 
-In the **Actual Behavior** section, **describe the behavior you observed** and point out what exactly is the problem with that behavior.  If the problem wasn't triggered by a specific action, describe what you were doing before the problem happened.
+If submitting an enhancement type issue, provide a step-by-step description of
+the suggested enhancement in as many details as possible.  Explain why this
+enhancement would be useful to most RAMSTK users.
 
-The **Steps to Reproduce the Problem** section only needs to be completed for an issue classified as a bug.  Quality, enhancement, and question type issues by their nature are not reproducible.  When completing this section:
+In the **Actual Behavior** section, **describe the behavior you observed** and
+point out what exactly is the problem with that behavior.  If the problem
+wasn't triggered by a specific action, describe what you were doing before the
+problem happened.
+
+The **Steps to Reproduce the Problem** section only needs to be completed for
+an issue classified as a bug.  Quality, enhancement, and question type issues
+by their nature are not reproducible.  When completing this section:
 
 * **Describe the exact steps which reproduce the problem** in as many details as possible; **don't just say what you did, but explain how you did it**. For example, if you moved the cursor to the end of a line, explain if you used the mouse, or a keyboard shortcut.
 * **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples.  If you're providing snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
 * **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem.  You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
 
-To gather the information required for the **Operating Environment** section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the [requirements_run.txt](https://github.com/weibullguy/ramstk/requirements_run.txt) file in the repository.
+To gather the information required for the **Operating Environment** section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the [requirements_run.txt](https://github.com/ReliaQualAssociates/ramstk/requirements_run.txt) file in the repository.
 
 ```
 for file in $(cat requirements_run.txt | cut -d '=' -f1 | cut -d '>' -f1);
@@ -74,7 +97,7 @@ As a RAMSTK developer, if you are working on something outside the RAMSTK issue 
 
 ### Style Guidelines
 
-Please refer to the RAMSTK [coding conventions](https://github.com/weibullguy/ramstk/blob/develop/docs/CODING_STDS.md).
+Please refer to the RAMSTK [coding conventions](https://github.com/ReliaQualAssociates/ramstk/blob/develop/docs/CODING_STDS.md).
 
 #### Pull Requests
 
@@ -100,6 +123,16 @@ In particular put all important information which can't be seen from the diff in
 Add the bug number to the log message. In order to keep the issue tracking system in sync with the git repositories, you should reference the issue report in your commits, and close the fixed issues in the issue tracking system.
 
 This doesn't mean that you don't need an understandable log message.  It should be clear from the log message what has been changed without looking at the issue report.
+
+#### TODO Comments
+
+When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add a TODO comment using the following format:
+
+    # // TODO: <One-line description of required work.
+    # //
+    # // Long and detailed description of work to be performed.
+
+The github action, dtinth/todo-actions will find these TODO comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
 
 ### Process Guidelines
 

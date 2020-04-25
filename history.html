@@ -47,197 +47,63 @@
 <div class="section" id="id1">
 <h3><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/tree/HEAD">Unreleased</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/compare/v1.0.1...HEAD">Full Changelog</a></p>
-<p><strong>Closed issues:</strong></p>
+<p><strong>Implemented enhancements:</strong></p>
 <ul class="simple">
 <li><p>Handle ValueError with an error code and error message in RAMSTKSimilarItem.set_attributes(). <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/252">#252</a></p></li>
-<li><p>Move Similar Item Work View _do_request_edit_function() method to a stand-alone assistant <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/212">#212</a></p></li>
-<li><p>Refactor _on_combo_changed() and _on_focus_out() methods in component workviews to eliminate duplicate code. <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/208">#208</a></p></li>
-<li><p>Refactor workviews to have __make_ui(), __set_properties(), __set_callbacks() methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/207">#207</a></p></li>
-<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/206">#206</a></p></li>
-<li><p>Refactor _on_combo_changed() and _on_focus_out() methods in component workviews to eliminate duplicate code. <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/205">#205</a></p></li>
-<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/203">#203</a></p></li>
-<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/202">#202</a></p></li>
-<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/201">#201</a></p></li>
-<li><p>Refactor _on_combo_changed() and _on_focus_out() methods to eliminate duplicate code <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/200">#200</a></p></li>
+<li><p>Add range check on input factors (1 - 10) in RAMSTKAllocation.foo_apportionment(). <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/247">#247</a></p></li>
+<li><p>Handle ValueError with an error code and error message in RAMSTKSimilarItem.set_attributes(). <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/226">#226</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem">module:similaritem</a>]</p></li>
+<li><p>Move Similar Item Work View _do_request_edit_function() method to a stand-alone assistant <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/212">#212</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem">module:similaritem</a>]</p></li>
+<li><p>Refactor _on_combo_changed() and _on_focus_out() methods in component workviews to eliminate duplicate code. <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/208">#208</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>]</p></li>
+<li><p>Refactor workviews to have __make_ui(), __set_properties(), __set_callbacks() methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/207">#207</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:fmea">module:fmea</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:pof">module:pof</a>]</p></li>
+<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/206">#206</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement">module:requirement</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:validation">module:validation</a>]</p></li>
+<li><p>Refactor _on_combo_changed() and _on_focus_out() methods in component workviews to eliminate duplicate code. <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/205">#205</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>]</p></li>
+<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/203">#203</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>]</p></li>
+<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/202">#202</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:validation">module:validation</a>]</p></li>
+<li><p>Refactor matrix views to move common code to meta-class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/201">#201</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement">module:requirement</a>]</p></li>
+<li><p>Refactor _on_combo_changed() and _on_focus_out() methods to eliminate duplicate code <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/200">#200</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>]</p></li>
 <li><p>PyGTK deprecation <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/58">#58</a></p></li>
 <li><p>Support Python 3 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/57">#57</a></p></li>
+<li><p>refactor(Val): add matrix manager <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/265">#265</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:validation">module:validation</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>refactor: add status to validation <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/264">#264</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:validation">module:validation</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>chore: The Great Renaming <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/263">#263</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>update validation to new API <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/262">#262</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:validation">module:validation</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>update stakeholder model/controller <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/261">#261</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement">module:requirement</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:stakeholder">module:stakeholder</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>update requirement module to new API <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/260">#260</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement">module:requirement</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Feature/update programdb models <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/259">#259</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>feature/refactor function <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/256">#256</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:function">module:function</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hazops">module:hazops</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>update documentation <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/255">#255</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>feature/revision refactor <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/254">#254</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:failuredefinition">module:failuredefinition</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:revision">module:revision</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:usage">module:usage</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Feature/make analyses mvc <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/253">#253</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:allocation">module:allocation</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem">module:similaritem</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Add target to docs/Makefile to auto publish gh-pages <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/223">#223</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Refactor MIL-HDBK-217F part stress methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/220">#220</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Move docs to GitHub Pages <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/217">#217</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Refactor piQ assignment for parts count analyses <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/216">#216</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Issue #204: Remove duplicate code in overstressed methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/214">#214</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Feature/similar item undup code <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/213">#213</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem">module:similaritem</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>Update to Python 3 and pygobject. <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/198">#198</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+</ul>
+<p><strong>Fixed bugs:</strong></p>
+<ul class="simple">
+<li><p>add method to delete usage profile elements <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/258">#258</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:function">module:function</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
+<li><p>add method to delete failure definition <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/257">#257</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:function">module:function</a>] (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
 </ul>
 <p><strong>Merged pull requests:</strong></p>
 <ul class="simple">
-<li><p>Add devtools dir and a few helper scripts <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/224">#224</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Add target to docs/Makefile to auto publish gh-pages <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/223">#223</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Refactor MIL-HDBK-217F part stress methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/220">#220</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
 <li><p>[ImgBot] Optimize images <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/219">#219</a> (<a class="reference external" href="https://github.com/apps/imgbot">imgbot[bot]</a>)</p></li>
-<li><p>Move docs to GitHub Pages <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/217">#217</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Refactor piQ assignment for parts count analyses <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/216">#216</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Issue #204: Remove duplicate code in overstressed methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/214">#214</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Feature/similar item undup code <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/213">#213</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Eliminate cyclic imports in DAO package <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/211">#211</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Decouple RAMSTK Data Controllers from Views <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/210">#210</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Validation Views Update <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/209">#209</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Update master branch with Python 3 and pygobject <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/199">#199</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Update to Python 3 and pygobject. <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/198">#198</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Merge pull request #1 from ReliaQualAssociates/develop <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/197">#197</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Develop <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/196">#196</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>build(deps): bump treelib from 1.5.3 to 1.5.5 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/195">#195</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sphinx from 2.0.0 to 2.0.1 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/194">#194</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sqlalchemy from 1.2.12 to 1.3.2 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/193">#193</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump xlsxwriter from 1.1.2 to 1.1.6 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/192">#192</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump lxml from 4.2.5 to 4.3.3 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/191">#191</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sphinx from 1.8.1 to 2.0.0 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/190">#190</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump openpyxl from 2.5.9 to 2.6.2 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/189">#189</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump pandas from 0.23.4 to 0.24.2 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/188">#188</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump pypubsub from 3.3.0 to 4.0.3 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/173">#173</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sqlalchemy-utils from 0.33.6 to 0.33.11 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/172">#172</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump xlrd from 1.1.0 to 1.2.0 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/166">#166</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sortedcontainers from 1.5.9 to 2.1.0 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/162">#162</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump openpyxl from 2.5.7 to 2.5.9 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/156">#156</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump xlsxwriter from 1.1.1 to 1.1.2 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/155">#155</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sqlalchemy-utils from 0.33.5 to 0.33.6 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/154">#154</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sphinx from 1.7.9 to 1.8.1 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/153">#153</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
 </ul>
 </div>
 <div class="section" id="v1-0-1-2018-10-09">
 <h3><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/tree/v1.0.1">v1.0.1</a> (2018-10-09)<a class="headerlink" href="#v1-0-1-2018-10-09" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/compare/v1.0.0...v1.0.1">Full Changelog</a></p>
-<p><strong>Merged pull requests:</strong></p>
-<ul class="simple">
-<li><p>Merge pull request #150 from weibullguy/develop <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/151">#151</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-</ul>
 </div>
 <div class="section" id="v1-0-0-2018-09-30">
 <h3><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/tree/v1.0.0">v1.0.0</a> (2018-09-30)<a class="headerlink" href="#v1-0-0-2018-09-30" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/compare/v1.0.0.rc1...v1.0.0">Full Changelog</a></p>
-<p><strong>Closed issues:</strong></p>
+<p><strong>Fixed bugs:</strong></p>
 <ul class="simple">
-<li><p>Import Hardware Does Not Create Similar Item Table Records <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/140">#140</a></p></li>
+<li><p>Import Hardware Does Not Create Similar Item Table Records <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/140">#140</a> [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:allocation">module:allocation</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware">module:hardware</a>] [<a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem">module:similaritem</a>]</p></li>
 <li><p>New RAMSTK Program Database Not Opening; Must Restart RAMSTK <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/139">#139</a></p></li>
-</ul>
-<p><strong>Merged pull requests:</strong></p>
-<ul class="simple">
-<li><p>Sync Master and Develop Branches <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/150">#150</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>Sync Develop and Master Branches <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/149">#149</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p>build(deps): bump sqlalchemy from 1.2.11 to 1.2.12 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/148">#148</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump xlsxwriter from 1.1.0 to 1.1.1 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/147">#147</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sqlalchemy-utils from 0.33.4 to 0.33.5 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/146">#146</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump openpyxl from 2.5.6 to 2.5.7 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/145">#145</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump lxml from 4.2.4 to 4.2.5 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/144">#144</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sqlalchemy-utils from 0.33.3 to 0.33.4 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/143">#143</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-</ul>
-</div>
-<div class="section" id="v1-0-0-rc1-2018-09-05">
-<h3><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/tree/v1.0.0.rc1">v1.0.0.rc1</a> (2018-09-05)<a class="headerlink" href="#v1-0-0-rc1-2018-09-05" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/compare/v0.4.0...v1.0.0.rc1">Full Changelog</a></p>
-<p><strong>Closed issues:</strong></p>
-<ul class="simple">
-<li><p>Dependabot can’t evaluate your Python dependency files <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/135">#135</a></p></li>
-<li><p>Dependabot can’t evaluate your Python dependency files <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/134">#134</a></p></li>
-<li><p>Refactor RTKTreeView <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/133">#133</a></p></li>
-<li><p>Revision Module View Has Inconsistent Method Definitions <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/122">#122</a></p></li>
-<li><p>Hardware Module View Has Inconsistent Method Definitions <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/121">#121</a></p></li>
-<li><p>Requirements Module View Has Inconsistent Method Definitions <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/120">#120</a></p></li>
-<li><p>Function Module View Has Inconsistent Method Definitions <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/119">#119</a></p></li>
-<li><p>Validation Module View Has Inconsistent Method Definitions <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/118">#118</a></p></li>
-<li><p>Revision Module View Has Inconsistent Method Definitions <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/117">#117</a></p></li>
-<li><p>Stakeholder List View Missing Methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/116">#116</a></p></li>
-<li><p>Failure Definition List View Missing Methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/115">#115</a></p></li>
-<li><p>RTK Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/114">#114</a></p></li>
-<li><p>Validation Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/113">#113</a></p></li>
-<li><p>Usage Profile Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/112">#112</a></p></li>
-<li><p>Stakeholder Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/111">#111</a></p></li>
-<li><p>Similar Item Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/110">#110</a></p></li>
-<li><p>Revision Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/109">#109</a></p></li>
-<li><p>Requirements Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/108">#108</a></p></li>
-<li><p>Physics of Failure Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/107">#107</a></p></li>
-<li><p>Hazard Analysis Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/106">#106</a></p></li>
-<li><p>Hardware BoM Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/105">#105</a></p></li>
-<li><p>Function Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/104">#104</a></p></li>
-<li><p>FMEA Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/103">#103</a></p></li>
-<li><p>Failure Definition Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/102">#102</a></p></li>
-<li><p>Allocation Data Controller Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/101">#101</a></p></li>
-<li><p>Validation Data Model Calculate Methods Not Consistently Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/100">#100</a></p></li>
-<li><p>Remove Unnecessary Methods from Function Class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/99">#99</a></p></li>
-<li><p>select_all() Method Definitions Are Not Identical <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/98">#98</a></p></li>
-<li><p>HardwareBoMDataModel.select() Method is Incorrectly Defined <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/97">#97</a></p></li>
-<li><p>Remove Unnecessary Methods from Revision Class <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/96">#96</a></p></li>
-<li><p>Inconsistent calculate() Method Definitions <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/95">#95</a></p></li>
-<li><p>Handle IndexError in the Requirements Analysis Work View _do_toggle_cell() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/94">#94</a></p></li>
-<li><p>Handle TypeError in FMEA Work View __init__() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/93">#93</a></p></li>
-<li><p>Add code to HazOps WorkView _on_button_press() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/92">#92</a></p></li>
-<li><p>Add code to FMEA WorkView _on_button_press() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/91">#91</a></p></li>
-<li><p>Add code to Allocation WorkView _on_button_press() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/90">#90</a></p></li>
-<li><p>Handle Errors in HazOps WorkView _do_load_tree() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/89">#89</a></p></li>
-<li><p>Handle Errors in FMEA WorkView _do_load_tree() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/88">#88</a></p></li>
-<li><p>Handle Errors in Allocation WorkView _do_load_tree() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/87">#87</a></p></li>
-<li><p>Handle TypeError in Usage Profile _do_load_tree() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/86">#86</a></p></li>
-<li><p>Handle AttributeError in Failure Definition _on_revision_select() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/85">#85</a></p></li>
-<li><p>Add Records to Hardware Associated Analysis When Successfully Adding Hardware <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/84">#84</a></p></li>
-<li><p>Handle Errors in Hardware BoM Data Model insert() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/83">#83</a></p></li>
-<li><p>Handle non-zero error codes in Similar Item module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/82">#82</a></p></li>
-<li><p>Handle non-zero error codes in PoF module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/81">#81</a></p></li>
-<li><p>Handle non-zero error codes in HazOps module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/80">#80</a></p></li>
-<li><p>Handle non-zero error codes in Hardware module update_all() methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/79">#79</a></p></li>
-<li><p>Handle Non-Zero Error Codes in FMEA update_all() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/78">#78</a></p></li>
-<li><p>Handle Non-Zero Error Codes in Allocation update_all() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/77">#77</a></p></li>
-<li><p>Handle non-zero error codes in Validation module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/75">#75</a></p></li>
-<li><p>Handle non-zero error codes in Failure Definition module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/74">#74</a></p></li>
-<li><p>Handle non-zero error codes in Usage Profile module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/73">#73</a></p></li>
-<li><p>Handle non-zero error codes in Stakeholder module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/72">#72</a></p></li>
-<li><p>Handle non-zero error codes in Requirement module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/71">#71</a></p></li>
-<li><p>Handle non-zero error codes in Function module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/70">#70</a></p></li>
-<li><p>Handle non-zero error codes in Revision module update_all() method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/69">#69</a></p></li>
-<li><p>Handle KeyError in Capacitor calculate_217f_part_stress() <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/68">#68</a></p></li>
-<li><p>Need Function to Add Entries to Global dicts <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/60">#60</a></p></li>
-<li><p>PyPI package <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/55">#55</a></p></li>
-<li><p>No Busy Cursor When Saving Hardware <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/37">#37</a></p></li>
-<li><p>Add All Reliability Information to the copy_hardware() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/36">#36</a></p></li>
-<li><p>Add Field to rtk_stress Table for Overstress Reason <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/33">#33</a></p></li>
-<li><p>No Mission Time Unit Selection <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/31">#31</a></p></li>
-<li><p>List View Not Updating When Editing Work View <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/30">#30</a></p></li>
-<li><p>Add Reliability Target Fields <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/25">#25</a></p></li>
-<li><p>No Error Handling for insert() Method <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/24">#24</a></p></li>
-<li><p>No set_attributes()/request_set_attributes() Methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/23">#23</a></p></li>
-<li><p>No get_attributes()/request_get_attributes() methods <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/22">#22</a></p></li>
-<li><p>No Way to “Close” an Open RTK Program Database w/o Closing RTK Application <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/21">#21</a></p></li>
-<li><p>No Method to Export RTK Data <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/19">#19</a></p></li>
-<li><p>Cannot Import Complete Project <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/13">#13</a></p></li>
-<li><p>No Availability Calculations for Revision <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/11">#11</a></p></li>
-<li><p>Revision Sprint 2.0.0 Coding Convention Updates <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/5">#5</a></p></li>
-<li><p>Work Book widgets not updated when Hardware Module Book is edited. <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/3">#3</a></p></li>
-</ul>
-<p><strong>Merged pull requests:</strong></p>
-<ul class="simple">
-<li><p>build(deps): bump openpyxl from 2.5.5 to 2.5.6 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/138">#138</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump xlsxwriter from 1.0.9 to 1.1.0 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/137">#137</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>build(deps): bump sqlalchemy from 1.2.2 to 1.2.11 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/136">#136</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>Bump pandas from 0.22.0 to 0.23.4 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/132">#132</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>Bump lxml from 4.1.1 to 4.2.4 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/131">#131</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>Bump statsmodels from 0.8.0 to 0.9.0 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/128">#128</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>Bump sqlalchemy-utils from 0.32.21 to 0.33.3 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/124">#124</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>Bump treelib from 1.5.1 to 1.5.3 <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/123">#123</a> (<a class="reference external" href="https://github.com/apps/dependabot-preview">dependabot-preview[bot]</a>)</p></li>
-<li><p>Apply yapf formatting <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/67">#67</a> (<a class="reference external" href="https://github.com/rakhimov">rakhimov</a>)</p></li>
-</ul>
-</div>
-<div class="section" id="v0-4-0-2017-12-09">
-<h3><a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/tree/v0.4.0">v0.4.0</a> (2017-12-09)<a class="headerlink" href="#v0-4-0-2017-12-09" title="Permalink to this headline">¶</a></h3>
-<p><strong>Closed issues:</strong></p>
-<ul class="simple">
-<li><p>Pre 1.0 releases <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/66">#66</a></p></li>
-<li><p>RTK prefix vs. rtk namespace <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/62">#62</a></p></li>
-<li><p>Consider setting ‘develop’ branch as git default <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/53">#53</a></p></li>
-<li><p>No Pop-Up Menu for Module View <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/40">#40</a></p></li>
-<li><p>No Pop-Up Menu for Revision Module View <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/12">#12</a></p></li>
-<li><p>No Availability Calculations for Function Module <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/8">#8</a></p></li>
-<li><p>No Pop Up Menu for ModuleView <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/7">#7</a></p></li>
-<li><p>Licence file <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/1">#1</a></p></li>
-</ul>
-<p><strong>Merged pull requests:</strong></p>
-<ul class="simple">
-<li><p>Keep a changelog <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/65">#65</a> (<a class="reference external" href="https://github.com/rakhimov">rakhimov</a>)</p></li>
-<li><p>Rename/reformat the licence file for GitHub to pickup <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/64">#64</a> (<a class="reference external" href="https://github.com/rakhimov">rakhimov</a>)</p></li>
-<li><p>Fix Windows carriage-return chars <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/54">#54</a> (<a class="reference external" href="https://github.com/rakhimov">rakhimov</a>)</p></li>
-<li><p>Create CODE_OF_CONDUCT.md <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/pull/2">#2</a> (<a class="reference external" href="https://github.com/weibullguy">weibullguy</a>)</p></li>
-<li><p><a href="#id203"><span class="problematic" id="id204">*</span></a>This Change Log was automatically generated by <a class="reference external" href="https://github.com/skywinder/Github-Changelog-Generator">github_changelog_generator</a>*</p></li>
+<li><p><a href="#id84"><span class="problematic" id="id85">*</span></a>This Change Log was automatically generated by <a class="reference external" href="https://github.com/skywinder/Github-Changelog-Generator">github_changelog_generator</a>*</p></li>
 </ul>
 </div>
 </div>
@@ -259,8 +125,6 @@
 <li><a class="reference internal" href="#id1">Unreleased</a></li>
 <li><a class="reference internal" href="#v1-0-1-2018-10-09">v1.0.1 (2018-10-09)</a></li>
 <li><a class="reference internal" href="#v1-0-0-2018-09-30">v1.0.0 (2018-09-30)</a></li>
-<li><a class="reference internal" href="#v1-0-0-rc1-2018-09-05">v1.0.0.rc1 (2018-09-05)</a></li>
-<li><a class="reference internal" href="#v0-4-0-2017-12-09">v0.4.0 (2017-12-09)</a></li>
 </ul>
 </li>
 </ul>
@@ -278,10 +142,10 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -298,9 +162,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="api/analyses/stress.html" title="Stress Analysis"
              accesskey="P">previous</a> |</li>
       </ul>
@@ -308,7 +169,7 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2007 - 2019, Doyle Rowland.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>

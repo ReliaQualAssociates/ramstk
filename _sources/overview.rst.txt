@@ -11,19 +11,19 @@ Requirements
 Currently RAMSTK supports Python 3.7+ and requires the following Python
 packages to be installed somewhere in your PYTHONPATH.
 
-.. literalinclude:: ../requirements_run.txt
+.. literalinclude:: ../requirements.txt
 
 If you're planning to help develop RAMSTK, the following Python packages will
 need to be installed. It is recommended you use a virtual environment for
 development, but you could install these in a user or system location if you
 choose.
 
-.. literalinclude:: ../requirements_dev.txt
+.. literalinclude:: ../requirements-dev.txt
 
 In order to build this documentation, you will need to install the following
 Python packages.
 
-.. literalinclude:: ../requirements_doc.txt
+.. literalinclude:: ../requirements-test.txt
 
 If you're building the documentation to host locally, you are free to use
 whatever Sphinx theme you'd like.  I happen to prefer the

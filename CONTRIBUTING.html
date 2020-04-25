@@ -42,7 +42,7 @@
   <div class="section" id="contributing-to-the-rams-toolkit-ramstk">
 <h1>Contributing to the RAMS ToolKit (RAMSTK)<a class="headerlink" href="#contributing-to-the-rams-toolkit-ramstk" title="Permalink to this headline">¶</a></h1>
 <p>Thank you for taking the time to contribute!</p>
-<p>The following is a set of guidelines for contributing to RAMSTK, which is hosted in the <a class="reference external" href="https://github.com/weibullguy/ramstk">RAMSTK repository</a> on GitHub.  Feel free to propose changes to this document in a pull request.</p>
+<p>The following is a set of guidelines for contributing to RAMSTK, which is hosted in the <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk">RAMSTK repository</a> on GitHub.  Feel free to propose changes to this document in a pull request.</p>
 <p><a class="reference external" href="#how-can-i-contribute">How Can I Contribute?</a></p>
 <ul class="simple">
 <li><p><a class="reference external" href="#for-everyone">For Everyone</a></p>
@@ -79,8 +79,8 @@
 </div>
 <div class="section" id="how-to-submit-a-useful-issue-report">
 <h3>How to Submit a Useful Issue Report<a class="headerlink" href="#how-to-submit-a-useful-issue-report" title="Permalink to this headline">¶</a></h3>
-<p>issues are tracked as <a class="reference external" href="https://github.com/weibullguy/ramstk/issues/">GitHub issues</a>.</p>
-<p><strong>Use a clear and descriptive title</strong> for the issue to identify the problem.  When you create a new issue, you will be presented with an <a class="reference external" href="https://github.com/weibullguy/ramstk/docs/ISSUE_TEMPLATE.md">issue template</a>.  Please use the template to report your issue.  If you choose not to, you may be asked to provide the information requested or your issue may simply be closed with no action taken.</p>
+<p>Issues are tracked as <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/">GitHub issues</a>.</p>
+<p><strong>Use a clear and descriptive title</strong> for the issue to identify the problem.  When you create a new issue, you will be presented with an <a class="reference external" href="https://github.com/ReliaQualAssociates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE.md">issue template</a>.  Please use the template to report your issue.  If you choose not to, you may be asked to provide the information requested or your issue may simply be closed with no action taken.</p>
 <p>There are four sections in an issue report:</p>
 <ul class="simple">
 <li><p>Expected Behavior</p></li>
@@ -88,25 +88,47 @@
 <li><p>Steps to Reproduce the Problem</p></li>
 <li><p>Operating Environment</p></li>
 </ul>
-<p>In the <strong>Expected Behavior</strong> section, the minimum information needed is to complete the user story:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>As a &lt;type of RAMSTK stakeholder&gt;, I want &lt;goal&gt; so that &lt;need for goal&gt;.
+<p>In the <strong>Expected Behavior</strong> section, the minimum information needed is to
+complete the user story:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="k">As</span> <span class="n">a</span> <span class="o">&lt;</span><span class="k">type</span> <span class="k">of</span> <span class="n">RAMSTK</span> <span class="n">stakeholder</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">I</span> <span class="n">want</span> <span class="o">&lt;</span><span class="n">goal</span><span class="o">&gt;</span> <span class="n">so</span> <span class="n">that</span> <span class="o">&lt;</span><span class="n">need</span> <span class="k">for</span> <span class="n">goal</span><span class="o">&gt;</span><span class="p">.</span>
 </pre></div>
 </div>
-<p>RAMSTK has been a long time in the making and was originally created to bundle together several small (mostly) Excel-based tools and move data storage to a database rather than a spreadsheet.  As such, the design process was not very rigorous and no engineering specifications were ever created; I knew what I wanted my tool to do for me and didn’t need to document that.  You’re welcome to call me lazy, but your user story (stakeholder’s input in RAMSTK vernacular) will be used to develop engineering specifications for RAMSTK.  In fact, you can submit an issure report as a quality type issue and provide nothing more than the completed user story (stakeholder input).  Not all users (stakeholders) are external users of RAMSTK.</p>
-<p>If submitting an enhancement type issue, provide a step-by-step description of the suggested enhancement in as many details as possible.  Explain why this enhancement would be useful to most RAMSTK users.</p>
-<p>In the <strong>Actual Behavior</strong> section, <strong>describe the behavior you observed</strong> and point out what exactly is the problem with that behavior.  If the problem wasn’t triggered by a specific action, describe what you were doing before the problem happened.</p>
-<p>The <strong>Steps to Reproduce the Problem</strong> section only needs to be completed for an issue classified as a bug.  Quality, enhancement, and question type issues by their nature are not reproducible.  When completing this section:</p>
+<p>It is important that the voice of the customer (VOC) be captured up front.  The
+VOC statement(s) are converted to engineering requirements.  Engineering
+requirements can be tested to verify the code meets the requirement.  A simple
+way to capture the VOC is to fill in the following statement.  You may include
+multiple, related, user statements in a single issue.</p>
+<p>RAMSTK has been a long time in the making and was originally created to bundle
+together several small (mostly) Excel-based tools and move data storage to a
+database rather than a spreadsheet.  As such, the design process was not very
+rigorous and no engineering specifications were ever created; I knew what I
+wanted my tool to do for me and didn’t need to document that.  You’re welcome
+to call me lazy, but your user story (stakeholder’s input in RAMSTK vernacular)
+will be used to develop engineering specifications for RAMSTK.  In fact, you
+can submit an issure report as a quality type issue and provide nothing more
+than the completed user story (stakeholder input).  Not all users
+(stakeholders) are external users of RAMSTK.</p>
+<p>If submitting an enhancement type issue, provide a step-by-step description of
+the suggested enhancement in as many details as possible.  Explain why this
+enhancement would be useful to most RAMSTK users.</p>
+<p>In the <strong>Actual Behavior</strong> section, <strong>describe the behavior you observed</strong> and
+point out what exactly is the problem with that behavior.  If the problem
+wasn’t triggered by a specific action, describe what you were doing before the
+problem happened.</p>
+<p>The <strong>Steps to Reproduce the Problem</strong> section only needs to be completed for
+an issue classified as a bug.  Quality, enhancement, and question type issues
+by their nature are not reproducible.  When completing this section:</p>
 <ul class="simple">
 <li><p><strong>Describe the exact steps which reproduce the problem</strong> in as many details as possible; <strong>don’t just say what you did, but explain how you did it</strong>. For example, if you moved the cursor to the end of a line, explain if you used the mouse, or a keyboard shortcut.</p></li>
 <li><p><strong>Provide specific examples to demonstrate the steps</strong>. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples.  If you’re providing snippets in the issue, use <a class="reference external" href="https://help.github.com/articles/markdown-basics/#multiple-lines">Markdown code blocks</a>.</p></li>
 <li><p><strong>Include screenshots and animated GIFs</strong> which show you following the described steps and clearly demonstrate the problem.  You can use <a class="reference external" href="https://www.cockos.com/licecap/">this tool</a> to record GIFs on Windows, and <a class="reference external" href="https://github.com/colinkeenan/silentcast">this tool</a> or <a class="reference external" href="https://github.com/GNOME/byzanz">this tool</a> on Linux.</p></li>
 </ul>
-<p>To gather the information required for the <strong>Operating Environment</strong> section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the <a class="reference external" href="https://github.com/weibullguy/ramstk/requirements_run.txt">requirements_run.txt</a> file in the repository.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="nt">for</span> <span class="nt">file</span> <span class="nt">in</span> <span class="o">$(</span><span class="nt">cat</span> <span class="nt">requirements_run</span><span class="p">.</span><span class="nc">txt</span> <span class="o">|</span> <span class="nt">cut</span> <span class="nt">-d</span> <span class="s1">&#39;=&#39;</span> <span class="nt">-f1</span> <span class="o">|</span> <span class="nt">cut</span> <span class="nt">-d</span> <span class="s1">&#39;&gt;&#39;</span> <span class="nt">-f1</span><span class="o">);</span>
-<span class="nt">do</span>
-    <span class="nt">version</span><span class="o">=$(</span><span class="nt">pip</span> <span class="nt">show</span> <span class="o">$</span><span class="nt">file</span> <span class="o">|</span> <span class="nt">grep</span> <span class="nt">Version</span><span class="o">:</span> <span class="o">|</span> <span class="nt">cut</span> <span class="nt">-d</span> <span class="s1">&#39;:&#39;</span> <span class="nt">-f2</span> <span class="o">|</span> <span class="nt">tr</span> <span class="nt">-d</span> <span class="s1">&#39;</span><span class="cp">[</span><span class="p">:</span><span class="nx">space</span><span class="p">:</span><span class="cp">]</span><span class="s1">&#39;</span><span class="o">);</span>
-    <span class="nt">echo</span> <span class="s2">&quot;  * &quot;</span><span class="o">$</span><span class="nt">file</span><span class="o">==$</span><span class="nt">version</span><span class="o">;</span>
-<span class="nt">done</span>
+<p>To gather the information required for the <strong>Operating Environment</strong> section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/requirements_run.txt">requirements_run.txt</a> file in the repository.</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>for file in $(cat requirements_run.txt | cut -d &#39;=&#39; -f1 | cut -d &#39;&gt;&#39; -f1);
+do
+    version=$(pip show $file | grep Version: | cut -d &#39;:&#39; -f2 | tr -d &#39;[:space:]&#39;);
+    echo &quot;  * &quot;$file==$version;
+done
 </pre></div>
 </div>
 </div>
@@ -114,7 +136,7 @@
 <div class="section" id="id6">
 <h2>For Developers’ Eyes Only<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>As a RAMSTK developer, if you are working on something outside the RAMSTK issue system, you are likely working on the wrong thing.  If an issue doesn’t exist, create it <em>before</em> you start writing.  The issue system is there to facilitate managing the development program and creating schedules.</p>
-<p>Please refer to the RAMSTK <a class="reference external" href="https://github.com/weibullguy/ramstk/blob/develop/docs/CODING_STDS.md">coding conventions</a>.</p>
+<p>Please refer to the RAMSTK <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/blob/develop/docs/CODING_STDS.md">coding conventions</a>.</p>
 <div class="section" id="pull-requests">
 <h3>Pull Requests<a class="headerlink" href="#pull-requests" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -139,6 +161,16 @@
 <h3>Use Issue System Numbers<a class="headerlink" href="#use-issue-system-numbers" title="Permalink to this headline">¶</a></h3>
 <p>Add the bug number to the log message. In order to keep the issue tracking system in sync with the git repositories, you should reference the issue report in your commits, and close the fixed issues in the issue tracking system.</p>
 <p>This doesn’t mean that you don’t need an understandable log message.  It should be clear from the log message what has been changed without looking at the issue report.</p>
+</div>
+<div class="section" id="todo-comments">
+<h3>TODO Comments<a class="headerlink" href="#todo-comments" title="Permalink to this headline">¶</a></h3>
+<p>When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add a TODO comment using the following format:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="o">#</span> <span class="o">//</span> <span class="n">TODO</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">One</span><span class="o">-</span><span class="n">line</span> <span class="n">description</span> <span class="k">of</span> <span class="n">required</span> <span class="k">work</span><span class="p">.</span>
+<span class="o">#</span> <span class="o">//</span>
+<span class="o">#</span> <span class="o">//</span> <span class="n">Long</span> <span class="k">and</span> <span class="n">detailed</span> <span class="n">description</span> <span class="k">of</span> <span class="k">work</span> <span class="k">to</span> <span class="n">be</span> <span class="n">performed</span><span class="p">.</span>
+</pre></div>
+</div>
+<p>The github action, dtinth/todo-actions will find these TODO comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.</p>
 <div class="section" id="id7">
 <h4>Process Guidelines<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
 <p>RAMSTK uses:</p>
@@ -220,7 +252,8 @@
 <li><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 <li><a class="reference internal" href="#git-commit-messages">Git Commit Messages</a></li>
 <li><a class="reference internal" href="#always-add-descriptive-log-messages">Always Add Descriptive Log Messages</a></li>
-<li><a class="reference internal" href="#use-issue-system-numbers">Use Issue System Numbers</a><ul>
+<li><a class="reference internal" href="#use-issue-system-numbers">Use Issue System Numbers</a></li>
+<li><a class="reference internal" href="#todo-comments">TODO Comments</a><ul>
 <li><a class="reference internal" href="#id7">Process Guidelines</a></li>
 </ul>
 </li>
@@ -246,10 +279,10 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -265,15 +298,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
       </ul>
     </div>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2007 - 2019, Doyle Rowland.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>
