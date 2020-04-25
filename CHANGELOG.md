@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.0.5+297](https://github.com/weibullguy/ramstk/tree/v1.0.5+297) (2020-04-24)
+
+[Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.5+296...v1.0.5+297)
+
 ## [v1.0.5+296](https://github.com/weibullguy/ramstk/tree/v1.0.5+296) (2020-04-17)
 
 [Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.5+293...v1.0.5+296)

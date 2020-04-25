@@ -107,7 +107,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            RAMSTKDataManager.do_delete(self, node_id, 'revision')
+            super().do_delete(node_id, 'revision')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
@@ -115,13 +115,9 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_delete_revision',
                             node_id=node_id,
                             tree=self.tree)
-        except DataAccessError:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ("Attempted to delete non-existent revision ID "
                           "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_revision', error_message=_error_msg)
-        except NodeIDAbsentError:
-            _error_msg = ("Revision ID {0:s} was not found as a node "
-                          "in the tree.").format(str(node_id))
             pub.sendMessage('fail_delete_revision', error_message=_error_msg)
 
     def _do_delete_failure_definition(self, revision_id: int,
@@ -410,14 +406,17 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update(
                 self.tree.get_node(revision_id).data['failure_definitions']
                 [node_id])
+
             pub.sendMessage('succeed_update_failure_definition',
                             node_id=node_id)
-        except (DataAccessError, KeyError):
+        except AttributeError:
             pub.sendMessage('fail_update_failure_definition',
-                            error_message=('Attempted to save non-existent '
+                            error_message=('No revision ID {0:s} '
+                                           'found when attempting to save '
                                            'failure definition with ID '
-                                           '{0:s}.').format(str(node_id)))
-        except TypeError:
+                                           '{1:s}.').format(str(revision_id),
+                                                            str(node_id)))
+        except (KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_failure_definition',
                                 error_message=('No data package found for '
@@ -453,13 +452,14 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update(
                 self.tree.get_node(revision_id).data['usage_profile'].get_node(
                     node_id).data)
+
             pub.sendMessage('succeed_update_usage_profile', node_id=node_id)
-        except (AttributeError, DataAccessError):
+        except AttributeError:
             pub.sendMessage('fail_update_usage_profile',
                             error_message=('Attempted to save non-existent '
                                            'usage profile element with ID '
                                            '{0:s}.').format(str(node_id)))
-        except TypeError:
+        except (KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_usage_profile',
                                 error_message=('No data package found for '
@@ -541,7 +541,6 @@ class DataManager(RAMSTKDataManager):
                             node_id=self.last_id,
                             tree=self.tree)
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_revision",
                             error_message=("Failed to insert revision into "
                                            "program database."))
@@ -579,7 +578,6 @@ class DataManager(RAMSTKDataManager):
                 self, revision_id, 'usage_profile')
             pub.sendMessage("succeed_insert_environment", tree=_profile_tree)
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_environment", error_message=_error)
 
     def do_insert_failure_definition(self, revision_id: int) -> None:
@@ -608,7 +606,6 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage("succeed_insert_failure_definition",
                             tree=_dic_definitions)
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_failure_definition",
                             error_message=_error)
 
@@ -638,7 +635,6 @@ class DataManager(RAMSTKDataManager):
             self._last_id['mission'] = _mission.mission_id
             pub.sendMessage("succeed_insert_mission", tree=_profile_tree)
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_mission", error_message=_error)
 
     def do_insert_mission_phase(self, revision_id: int,
@@ -671,7 +667,6 @@ class DataManager(RAMSTKDataManager):
                 self, revision_id, 'usage_profile')
             pub.sendMessage("succeed_insert_mission_phase", tree=_profile_tree)
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_mission_phase", error_message=_error)
 
     def do_select_all(self) -> None:
@@ -775,10 +770,7 @@ class DataManager(RAMSTKDataManager):
                 if _key in _attributes:
                     _attributes[_key] = _value
 
-                    try:
-                        _attributes.pop('revision_id')
-                    except KeyError:
-                        pass
+                    _attributes.pop('revision_id')
 
                     self.do_select(node_id[0],
                                    table=_table).set_attributes(_attributes)
@@ -794,12 +786,12 @@ class DataManager(RAMSTKDataManager):
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['revision'])
             pub.sendMessage('succeed_update_revision', node_id=node_id)
-        except (AttributeError, DataAccessError):
+        except AttributeError:
             pub.sendMessage('fail_update_revision',
                             error_message=('Attempted to save non-existent '
                                            'revision with revision ID '
                                            '{0:s}.').format(str(node_id)))
-        except TypeError:
+        except (KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_revision',
                                 error_message=('No data package found for '
