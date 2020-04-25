@@ -1,0 +1,51 @@
+<toolSet name="External Tools">
+  <tool name="isort" description="Format current file with isort" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="$PyInterpreterDirectory$/isort" />
+      <option name="PARAMETERS" value="--atomic --apply --use-parentheses --balanced --multi-line 5 &quot;$FilePath$&quot;" />
+      <option name="WORKING_DIRECTORY" value="$ContentRoot$" />
+    </exec>
+  </tool>
+  <tool name="stylecheck" description="Check code and docstring styling of current file" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="$PyInterpreterDirectory$/pycodestyle" />
+      <option name="PARAMETERS" value="--statistics --count &quot;$FilePath$&quot;" />
+      <option name="WORKING_DIRECTORY" value="$ContentRoot$" />
+    </exec>
+  </tool>
+  <tool name="typecheck" description="Typecheck the current file" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="$PyInterpreterDirectory$/mypy" />
+      <option name="PARAMETERS" value="&quot;$FilePath$&quot;" />
+      <option name="WORKING_DIRECTORY" value="$ContentRoot$" />
+    </exec>
+  </tool>
+  <tool name="maintainability" description="Check maintainability metrics of current file" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="$PyInterpreterDirectory$/radon" />
+      <option name="PARAMETERS" value="cc -s &quot;$FilePath$&quot;" />
+      <option name="WORKING_DIRECTORY" value="$ContentRoot$" />
+    </exec>
+  </tool>
+  <tool name="security" description="Check current file for potential security issues" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="make" />
+      <option name="PARAMETERS" value="security SRCFILE=&quot;$FilePath$&quot;" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/projects/ramstk.working" />
+    </exec>
+  </tool>
+  <tool name="lint" description="Lint the current file" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="pylint" />
+      <option name="PARAMETERS" value="-j0 --rcfile=./.pylintrc &quot;$FilePath$&quot;" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/.pyenv/shims" />
+    </exec>
+  </tool>
+  <tool name="yapf" description="Format file with yapf" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="$PyInterpreterDirectory$/yapf" />
+      <option name="PARAMETERS" value="-i $FilePath$" />
+      <option name="WORKING_DIRECTORY" value="$ContentRoot$" />
+    </exec>
+  </tool>
+</toolSet>

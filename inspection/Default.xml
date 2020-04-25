@@ -1,0 +1,40 @@
+<profile version="1.0">
+  <option name="myName" value="Default" />
+  <inspection_tool class="PyArgumentEqualDefaultInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+  <inspection_tool class="PyClassicStyleClassInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+  <inspection_tool class="PyMissingOrEmptyDocstringInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+  <inspection_tool class="PyMissingTypeHintsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+  <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+    <option name="ignoredPackages">
+      <value>
+        <list size="3">
+          <item index="0" class="java.lang.String" itemvalue="pubsub" />
+          <item index="1" class="java.lang.String" itemvalue="treelib" />
+          <item index="2" class="java.lang.String" itemvalue="sortedcontainers" />
+        </list>
+      </value>
+    </option>
+  </inspection_tool>
+  <inspection_tool class="PyProtectedMemberInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+    <option name="ignoreAnnotations" value="true" />
+  </inspection_tool>
+  <inspection_tool class="PyRedundantParenthesesInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+    <option name="myIgnoreTupleInReturn" value="true" />
+    <option name="myIgnoreEmptyBaseClasses" value="true" />
+  </inspection_tool>
+  <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+    <option name="ignoredIdentifiers">
+      <list>
+        <option value="gi.repository.GObject.*" />
+        <option value="ramstk.views.gtk3.Gdk" />
+        <option value="ramstk.views.gtk3.GdkPixbuf" />
+        <option value="ramstk.views.gtk3.GObject" />
+        <option value="ramstk.views.gtk3.Gtk" />
+        <option value="ramstk.views.gtk3.Pango" />
+        <option value="str.text" />
+        <option value="int.text" />
+        <option value="object.do_load_comboboxes" />
+      </list>
+    </option>
+  </inspection_tool>
+</profile>
