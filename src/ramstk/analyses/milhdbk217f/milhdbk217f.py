@@ -19,6 +19,7 @@ from .models import (
 )
 
 
+# noinspection PyTypeChecker
 def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the MIL-HDBK-217F parts count active hazard rate.
@@ -74,6 +75,7 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
+# noinspection PyTypeChecker
 def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the MIL-HDBK-217F parts stress active hazard rate.
@@ -259,13 +261,13 @@ def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
           and subcategory_id in [4, 5]) or (category_id == 7
                                             and subcategory_id == 5):
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif (category_id == 7 and subcategory_id != 5):
+    elif category_id == 7 and subcategory_id != 5:
         _pi_q = 0.0
-    elif (category_id == 8 and subcategory_id not in [4, 5]):
+    elif category_id == 8 and subcategory_id not in [4, 5]:
         _pi_q = 0.0
-    elif (category_id == 9 and subcategory_id == 1):
+    elif category_id == 9 and subcategory_id == 1:
         _pi_q = 0.0
-    elif (category_id == 10 and subcategory_id in [3, 4]):
+    elif category_id == 10 and subcategory_id in [3, 4]:
         _pi_q = 0.0
     else:
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
@@ -273,6 +275,7 @@ def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
     return _pi_q
 
 
+# noinspection PyTypeChecker
 def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> None:
     """
     Calculate the active hazard rate for a hardware item.
