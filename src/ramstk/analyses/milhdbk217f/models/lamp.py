@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Lamp MIL-HDBK-217F Calculations Module."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 PART_COUNT_LAMBDA_B = {
     1: [
         3.9, 7.8, 12.0, 12.0, 16.0, 16.0, 16.0, 19.0, 23.0, 19.0, 2.7, 16.0,
@@ -19,7 +22,7 @@ PART_COUNT_LAMBDA_B = {
 PI_E = [1.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 6.0, 5.0, 0.7, 4.0, 6.0, 27.0]
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -30,13 +33,11 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['application_id'],
-        attributes['environment_active_id'],
-    )
+    return get_part_count_lambda_b(attributes['application_id'],
+                                   attributes['environment_active_id'])
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a lamp.
 
@@ -67,7 +68,8 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def get_part_count_lambda_b(application_id, environment_active_id):
+def get_part_count_lambda_b(application_id: int,
+                            environment_active_id: int) -> float:
     """
     Retrieve the part count hazard rate for a lamp.
 

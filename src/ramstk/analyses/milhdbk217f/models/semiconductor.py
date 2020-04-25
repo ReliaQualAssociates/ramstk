@@ -10,6 +10,7 @@
 
 # Standard Library Imports
 from math import exp, log, sqrt
+from typing import Any, Dict, Tuple
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -281,7 +282,8 @@ PI_E = {
 PI_M = [1.0, 2.0, 4.0]
 
 
-def calculate_application_factor(subcategory_id, application_id, duty_cycle):
+def calculate_application_factor(subcategory_id: int, application_id: int,
+                                 duty_cycle: int) -> float:
     """
     Calculate the application factor (piA) for the semiconductor device.
 
@@ -312,7 +314,8 @@ def calculate_application_factor(subcategory_id, application_id, duty_cycle):
     return _pi_a
 
 
-def calculate_electrical_stress_factor(subcategory_id, type_id, voltage_ratio):
+def calculate_electrical_stress_factor(subcategory_id: int, type_id: int,
+                                       voltage_ratio: float) -> float:
     """
     Calculate the electrical stress factor for the semiconductor device.
 
@@ -343,8 +346,10 @@ def calculate_electrical_stress_factor(subcategory_id, type_id, voltage_ratio):
     return _pi_s
 
 
-def calculate_junction_temperature(temperature_case, environment_active_id,
-                                   theta_jc, package_id, power_operating):
+def calculate_junction_temperature(temperature_case: float,
+                                   environment_active_id: int, theta_jc: float,
+                                   package_id: int, power_operating: float
+                                   ) -> Tuple[float, float, float]:
     """
     Calculate the junction temperature of the semiconductor device.
 
@@ -375,7 +380,7 @@ def calculate_junction_temperature(temperature_case, environment_active_id,
     return temperature_case, theta_jc, temperature_junction
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the parts count hazard rate for a semiconductor.
 
@@ -390,7 +395,7 @@ def calculate_part_count(**attributes):
     return attributes
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress active hazard rate for a semiconductor.
 
@@ -474,9 +479,10 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def calculate_part_stress_lambda_b(subcategory_id, frequency_operating,
-                                   power_operating, application_id, n_elements,
-                                   type_id):
+def calculate_part_stress_lambda_b(subcategory_id: int,
+                                   frequency_operating: float,
+                                   power_operating: float, application_id: int,
+                                   n_elements: int, type_id: int) -> float:
     """
     Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.
 
@@ -533,8 +539,9 @@ def calculate_part_stress_lambda_b(subcategory_id, frequency_operating,
     return _lambda_b
 
 
-def calculate_power_rating_factor(subcategory_id, type_id, power_rated,
-                                  current_rated):
+def calculate_power_rating_factor(subcategory_id: int, type_id: int,
+                                  power_rated: float,
+                                  current_rated: float) -> float:
     """
     Calculate the power rating factor for the semiconductor device.
 
@@ -565,8 +572,9 @@ def calculate_power_rating_factor(subcategory_id, type_id, power_rated,
     return _pi_r
 
 
-def calculate_temperature_factor(subcategory_id, type_id, voltage_ratio,
-                                 temperature_junction):
+def calculate_temperature_factor(subcategory_id: int, type_id: int,
+                                 voltage_ratio: float,
+                                 temperature_junction: float) -> float:
     """
     Calculate the temperature factor for the semiconductor device.
 
@@ -593,19 +601,21 @@ def calculate_temperature_factor(subcategory_id, type_id, voltage_ratio,
         _f1 = _factors[1]
         _f2 = _factors[2]
         if voltage_ratio <= 0.4:
-            _pi_t = _f1 * exp(
-                -_f0 * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0), )
+            _pi_t = _f1 * exp(-_f0 *
+                              (1.0 /
+                               (temperature_junction + 273.0) - 1.0 / 298.0))
         else:
             _pi_t = _f2 * (voltage_ratio - 0.35) * exp(
-                -_f0 * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0), )
+                -_f0 * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0))
     else:
-        _pi_t = exp(
-            -_factors * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0), )
+        _pi_t = exp(-_factors * (1.0 /
+                                 (temperature_junction + 273.0) - 1.0 / 298.0))
 
     return _pi_t
 
 
-def get_part_count_lambda_b(subcategory_id, environment_active_id, type_id):
+def get_part_count_lambda_b(subcategory_id: int, environment_active_id: int,
+                            type_id: int) -> float:
     r"""
     Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.
 
@@ -676,7 +686,8 @@ def get_part_count_lambda_b(subcategory_id, environment_active_id, type_id):
     return _base_hr
 
 
-def get_part_count_quality_factor(subcategory_id, quality_id, type_id):
+def get_part_count_quality_factor(subcategory_id: int, quality_id: int,
+                                  type_id: int) -> float:
     """
     Retrieve the parts count quality factor for the semiconductor device.
 
@@ -699,7 +710,8 @@ def get_part_count_quality_factor(subcategory_id, quality_id, type_id):
     return _pi_q
 
 
-def get_part_stress_quality_factor(subcategory_id, quality_id, type_id):
+def get_part_stress_quality_factor(subcategory_id: int, quality_id: int,
+                                   type_id: int) -> float:
     """
     Select the part stress quality factor for the semiconductor device.
 

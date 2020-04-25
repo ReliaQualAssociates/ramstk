@@ -8,6 +8,7 @@
 
 # Standard Library Imports
 from math import exp
+from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = {
     1: [
@@ -34,8 +35,8 @@ PART_COUNT_LAMBDA_B = {
         2: [
             0.060, 0.12, 0.90, 0.48, 1.6, 0.42, 0.54, 0.66, 0.72, 2.8, 0.030,
             1.5, 4.0, 0.0
-        ],
-    },
+        ]
+    }
 }
 PART_COUNT_PI_Q = {
     1: [1.0, 20.0],
@@ -80,7 +81,8 @@ PI_E = {
 }
 
 
-def calculate_load_stress_factor(application_id, current_ratio):
+def calculate_load_stress_factor(application_id: int,
+                                 current_ratio: float) -> float:
     """
     Calculate the load stress factor (piL).
 
@@ -97,7 +99,7 @@ def calculate_load_stress_factor(application_id, current_ratio):
     return _pi_l
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -115,8 +117,9 @@ def calculate_part_count(**attributes):
     )
 
 
-def calculate_part_stress_lambda_b(subcategory_id, quality_id, construction_id,
-                                   application_id, n_elements):
+def calculate_part_stress_lambda_b(subcategory_id: int, quality_id: int,
+                                   construction_id: int, application_id: int,
+                                   n_elements: int) -> float:
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -136,7 +139,7 @@ def calculate_part_stress_lambda_b(subcategory_id, quality_id, construction_id,
     _dic_factors = {
         2: [[0.1, 0.00045, 0.0009], [0.1, 0.23, 0.63]],
         3: [[0.0067, 0.00003, 0.00003], [0.1, 0.02, 0.06]],
-        4: [[0.0067, 0.062], [0.086, 0.089]],
+        4: [[0.0067, 0.062], [0.086, 0.089]]
     }
 
     if subcategory_id == 1:
@@ -161,7 +164,7 @@ def calculate_part_stress_lambda_b(subcategory_id, quality_id, construction_id,
     return _lambda_b
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a switch.
 
@@ -213,8 +216,8 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def get_part_count_lambda_b(subcategory_id, environment_active_id,
-                            construction_id):
+def get_part_count_lambda_b(subcategory_id: int, environment_active_id: int,
+                            construction_id: int) -> float:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 

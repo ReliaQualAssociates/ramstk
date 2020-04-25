@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Fuse MIL-HDBK-217F Constants and Calculations Module."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 PART_COUNT_LAMBDA_B = [
     0.01, 0.02, 0.06, 0.05, 0.11, 0.09, 0.12, 0.15, 0.18, 0.18, 0.009, 0.1,
     0.21, 2.3
@@ -16,7 +19,7 @@ PI_E = [
 ]
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -27,10 +30,10 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['environment_active_id'], )
+    return get_part_count_lambda_b(attributes['environment_active_id'])
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a fuse.
 
@@ -46,7 +49,7 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def get_part_count_lambda_b(environment_active_id):
+def get_part_count_lambda_b(environment_active_id: int) -> float:
     """
     Retrieve the part count hazard rate for a fuse.
 

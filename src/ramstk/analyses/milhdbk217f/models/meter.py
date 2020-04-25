@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Meter MIL-HDBK-217F Calculations Module."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 PART_COUNT_LAMBDA_B = {
     1: {
         1: [
@@ -48,7 +51,7 @@ PI_E = {
 PI_F = [1.0, 1.0, 2.8]
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -59,14 +62,12 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['subcategory_id'],
-        attributes['type_id'],
-        attributes['environment_active_id'],
-    )
+    return get_part_count_lambda_b(attributes['subcategory_id'],
+                                   attributes['type_id'],
+                                   attributes['environment_active_id'])
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a meter.
 
@@ -101,7 +102,8 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def get_part_count_lambda_b(subcategory_id, type_id, environment_active_id):
+def get_part_count_lambda_b(subcategory_id: int, type_id: int,
+                            environment_active_id: int) -> float:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -140,7 +142,7 @@ def get_part_count_lambda_b(subcategory_id, type_id, environment_active_id):
                                                         - 1]
 
 
-def get_part_stress_lambda_b(subcategory_id, type_id):
+def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:
     """
     Retrieve the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -164,7 +166,8 @@ def get_part_stress_lambda_b(subcategory_id, type_id):
     return _lambda_b
 
 
-def get_temperature_stress_factor(temperature_active, temperature_rated_max):
+def get_temperature_stress_factor(temperature_active: float,
+                                  temperature_rated_max: float) -> float:
     """
     Retrieve the temperature stress factor (piT).
 
