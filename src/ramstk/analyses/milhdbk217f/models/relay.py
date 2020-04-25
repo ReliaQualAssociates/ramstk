@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from math import exp
+from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -140,7 +141,7 @@ PI_F = {
 }
 
 
-def calculate_cycling_factor(quality_id, n_cycles):
+def calculate_cycling_factor(quality_id: int, n_cycles: float) -> float:
     """
     Calculate the cycling factor (piCYC) for the relay.
 
@@ -161,7 +162,8 @@ def calculate_cycling_factor(quality_id, n_cycles):
     return _pi_cyc
 
 
-def calculate_load_stress_factor(technology_id, current_ratio):
+def calculate_load_stress_factor(technology_id: int,
+                                 current_ratio: float) -> float:
     """
     Calculate the load stress factor (piL).
 
@@ -184,7 +186,7 @@ def calculate_load_stress_factor(technology_id, current_ratio):
     return _pi_l
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -195,14 +197,12 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['subcategory_id'],
-        attributes['type_id'],
-        attributes['environment_active_id'],
-    )
+    return get_part_count_lambda_b(attributes['subcategory_id'],
+                                   attributes['type_id'],
+                                   attributes['environment_active_id'])
 
 
-def calculate_part_stress(**attributes):  # pylint: disable=R0912
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a relay.
 
@@ -244,8 +244,8 @@ def calculate_part_stress(**attributes):  # pylint: disable=R0912
     return attributes
 
 
-def calculate_part_stress_lambda_b(subcategory_id, type_id,
-                                   temperature_active):
+def calculate_part_stress_lambda_b(subcategory_id: int, type_id: int,
+                                   temperature_active: float) -> float:
     """
     Calculate the base hazard rate for the relay.
 
@@ -259,7 +259,7 @@ def calculate_part_stress_lambda_b(subcategory_id, type_id,
     """
     _dic_factors = {
         1: [[0.00555, 352.0, 15.7], [0.0054, 377.0, 10.4]],
-        2: [0.4, 0.5, 0.5],
+        2: [0.4, 0.5, 0.5]
     }
     _lambda_b = 0.0
 
@@ -267,15 +267,17 @@ def calculate_part_stress_lambda_b(subcategory_id, type_id,
         _f0 = _dic_factors[subcategory_id][type_id - 1][0]
         _f1 = _dic_factors[subcategory_id][type_id - 1][1]
         _f2 = _dic_factors[subcategory_id][type_id - 1][2]
-        _lambda_b = _f0 * exp(((temperature_active + 273.0) / _f1)**_f2, )
+        _lambda_b = _f0 * exp(((temperature_active + 273.0) / _f1)**_f2)
     elif subcategory_id == 2:
         _lambda_b = _dic_factors[subcategory_id][type_id - 1]
 
     return _lambda_b
 
 
-def get_application_construction_factor(quality_id, contact_rating_id,
-                                        construction_id, application_id):
+def get_application_construction_factor(quality_id: int,
+                                        contact_rating_id: int,
+                                        construction_id: int,
+                                        application_id: int) -> float:
     """
     Calculate the construction factor (piF) for the relay.
 
@@ -297,7 +299,8 @@ def get_application_construction_factor(quality_id, contact_rating_id,
                                                                     - 1]
 
 
-def get_environment_factor(subcategory_id, quality_id, environment_active_id):
+def get_environment_factor(subcategory_id: int, quality_id: int,
+                           environment_active_id: int) -> float:
     """
     Retrieve the environment factor (pi_E).
 
@@ -322,7 +325,8 @@ def get_environment_factor(subcategory_id, quality_id, environment_active_id):
     return _pi_e
 
 
-def get_part_count_lambda_b(subcategory_id, type_id, environment_active_id):
+def get_part_count_lambda_b(subcategory_id: int, type_id: int,
+                            environment_active_id: int) -> float:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 

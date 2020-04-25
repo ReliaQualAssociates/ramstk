@@ -5,17 +5,10 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Resistor Reliability Calculations Module."""
-# <requirement>
-#    <module>ramstk</module>
-#    <topic>Coding style</topic>
-#    <name>Trailing comma only for singletons</name>
-#    <description>Only singleton lists and tuples should include the trailing
-#    comma.</description>
-#    <rationale>This is a preference.</rationale>
-# </requirement>
 
 # Standard Library Imports
 from math import exp
+from typing import Any, Dict, Tuple
 
 PART_COUNT_LAMBDA_B = {
     1: [
@@ -38,7 +31,7 @@ PART_COUNT_LAMBDA_B = {
         4: [
             0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014, 0.021, 0.038,
             0.034, 0.00028, 0.016, 0.050, 0.78
-        ],
+        ]
     },
     3: [
         0.012, 0.025, 0.13, 0.062, 0.21, 0.078, 0.10, 0.19, 0.24, 0.32, 0.0060,
@@ -60,7 +53,7 @@ PART_COUNT_LAMBDA_B = {
         2: [
             0.013, 0.028, 0.15, 0.070, 0.24, 0.065, 0.13, 0.18, 0.35, 0.38,
             0.0038, 0.19, 0.56, 8.6
-        ],
+        ]
     },
     7: [
         0.008, 0.18, 0.096, 0.045, 0.15, 0.044, 0.088, 0.12, 0.24, 0.25, 0.004,
@@ -93,7 +86,7 @@ PART_COUNT_LAMBDA_B = {
     15: [
         0.048, 0.16, 0.76, 0.36, 1.3, 0.36, 0.72, 1.4, 2.2, 2.3, 0.024, 1.2,
         3.4, 52.0
-    ],
+    ]
 }
 PART_COUNT_PI_Q = [0.030, 0.10, 0.30, 1.0, 3.0, 10.0]
 PART_STRESS_PI_Q = {
@@ -248,7 +241,7 @@ REF_TEMPS = {
 }
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -262,11 +255,10 @@ def calculate_part_count(**attributes):
     return get_part_count_lambda_b(
         attributes['subcategory_id'],
         attributes['environment_active_id'],
-        specification_id=attributes['specification_id'],
-    )
+        specification_id=attributes['specification_id'])
 
 
-def calculate_part_stress(**attributes):  # pylint: disable=R0912, R0914
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a resistor.
 
@@ -327,8 +319,9 @@ def calculate_part_stress(**attributes):  # pylint: disable=R0912, R0914
     return attributes
 
 
-def calculate_part_stress_lambda_b(subcategory_id, specification_id, type_id,
-                                   temperature_active, power_ratio):
+def calculate_part_stress_lambda_b(subcategory_id: int, specification_id: int,
+                                   type_id: int, temperature_active: float,
+                                   power_ratio: float) -> float:
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -351,7 +344,7 @@ def calculate_part_stress_lambda_b(subcategory_id, specification_id, type_id,
             1: [3.25E-4, 1.0, 3.0, 1.0, 1.0, 1.0],
             2: [3.25E-4, 1.0, 3.0, 1.0, 1.0, 1.0],
             3: [5.0E-5, 3.5, 1.0, 1.0, 1.0, 1.0],
-            4: [5.0E-5, 3.5, 1.0, 1.0, 1.0, 1.0],
+            4: [5.0E-5, 3.5, 1.0, 1.0, 1.0, 1.0]
         },
         3: [7.33E-3, 0.202, 2.6, 1.45, 0.89, 1.3],
         5: [0.0031, 1.0, 10.0, 1.0, 1.0, 1.5],
@@ -364,7 +357,7 @@ def calculate_part_stress_lambda_b(subcategory_id, specification_id, type_id,
         12: [0.0481, 0.334, 4.66, 1.47, 2.83, 1.0],
         13: [0.019, 0.445, 7.3, 2.69, 2.46, 1.0],
         14: [0.0246, 0.459, 9.3, 2.32, 5.3, 1.0],
-        15: [0.018, 1.0, 7.4, 2.55, 3.6, 1.0],
+        15: [0.018, 1.0, 7.4, 2.55, 3.6, 1.0]
     }
 
     if subcategory_id == 2:
@@ -392,12 +385,13 @@ def calculate_part_stress_lambda_b(subcategory_id, specification_id, type_id,
         _lambda_b = _f0 * exp(_f1 * (
             (temperature_active + 273.0) / _ref_temp), )**_f2 * exp(
                 ((power_ratio / _f3) *
-                 ((temperature_active + 273.0) / 273.0)**_f4)**_f5, )
+                 ((temperature_active + 273.0) / 273.0)**_f4)**_f5)
 
     return _lambda_b
 
 
-def calculate_temperature_factor(temperature_active, power_ratio):
+def calculate_temperature_factor(temperature_active: float,
+                                 power_ratio: float) -> Tuple[float, float]:
     """
     Calculate the temperature factor (piT).
 
@@ -411,14 +405,14 @@ def calculate_temperature_factor(temperature_active, power_ratio):
     :raise: TypeError if passed a string for either input.
     """
     temperature_case = temperature_active + 55.0 * power_ratio
-    _pi_t = exp(-4056.0 * ((1.0 / (temperature_case + 273.0)) - 1.0 / 298.0), )
+    _pi_t = exp(-4056.0 * ((1.0 / (temperature_case + 273.0)) - 1.0 / 298.0))
 
     return temperature_case, _pi_t
 
 
-def get_part_count_lambda_b(subcategory_id,
-                            environment_active_id,
-                            specification_id=None):
+def get_part_count_lambda_b(subcategory_id: int,
+                            environment_active_id: int,
+                            specification_id: int = -1) -> float:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -485,7 +479,7 @@ def get_part_count_lambda_b(subcategory_id,
     "param int specification_id: the resistor spectification identifier.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
-    :raise: InsexError if passed an unknown active environment ID.
+    :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or specification ID:
     """
     if subcategory_id in [2, 6]:
@@ -498,8 +492,8 @@ def get_part_count_lambda_b(subcategory_id,
     return _base_hr
 
 
-def get_resistance_factor(subcategory_id, specification_id, family_id,
-                          resistance):
+def get_resistance_factor(subcategory_id: int, specification_id: int,
+                          family_id: int, resistance: int) -> float:
     """
     Retrieve the resistance factor (piR).
 
@@ -518,10 +512,8 @@ def get_resistance_factor(subcategory_id, specification_id, family_id,
         2: [1.0E5, 1.0E6, 1.0E7],
         3: [100.0, 1.0E5, 1.0E6],
         5: [1.0E4, 1.0E5, 1.0E6],
-        6: [
-            [500.0, 1.0E3, 5.0E3, 7.5E3, 1.0E4, 1.5E4, 2.0E4],
-            [100.0, 1.0E3, 1.0E4, 1.0E5, 1.5E5, 2.0E5],
-        ],
+        6: [[500.0, 1.0E3, 5.0E3, 7.5E3, 1.0E4, 1.5E4, 2.0E4],
+            [100.0, 1.0E3, 1.0E4, 1.0E5, 1.5E5, 2.0E5]],
         7: [500.0, 1.0E3, 5.0E3, 1.0E4, 2.0E4],
         9: [2.0E3, 5.0E3],
         10: [1.0E4, 2.0E4, 5.0E4, 1.0E5, 2.0E5],
@@ -529,7 +521,7 @@ def get_resistance_factor(subcategory_id, specification_id, family_id,
         12: [2.0E3, 5.0E3],
         13: [5.0E4, 1.0E5, 2.0E5, 5.0E5],
         14: [5.0E4, 1.0E5, 2.0E5, 5.0E5],
-        15: [1.0E4, 5.0E4, 2.0E5, 1.0E6],
+        15: [1.0E4, 5.0E4, 2.0E5, 1.0E6]
     }
     _pi_r = 0.0
 
@@ -562,7 +554,7 @@ def get_resistance_factor(subcategory_id, specification_id, family_id,
     return _pi_r
 
 
-def get_voltage_factor(subcategory_id, voltage_ratio):
+def get_voltage_factor(subcategory_id: int, voltage_ratio: float) -> float:
     """
     Retrieve the voltage factor (piV).
 

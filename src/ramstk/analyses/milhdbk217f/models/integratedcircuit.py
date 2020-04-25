@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from math import exp, log
+from typing import Any, Dict, Tuple
 
 ACTIVATION_ENERGY = {
     1:
@@ -336,7 +337,7 @@ PI_PT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
 PI_Q = [0.25, 1.0, 2.0]
 
 
-def calculate_die_complexity_factor(area, feature_size):
+def calculate_die_complexity_factor(area: float, feature_size: float) -> float:
     """
     Calculate the die complexity correction factor (piCD).
 
@@ -349,8 +350,9 @@ def calculate_die_complexity_factor(area, feature_size):
     return ((area / 0.21) * (2.0 / feature_size)**2.0 * 0.64) + 0.36
 
 
-def calculate_junction_temperature(temperature_case, power_operating,
-                                   theta_jc):
+def calculate_junction_temperature(temperature_case: float,
+                                   power_operating: float,
+                                   theta_jc: float) -> float:
     """
     Calculate the junction temperature (Tj).
 
@@ -363,8 +365,10 @@ def calculate_junction_temperature(temperature_case, power_operating,
     return temperature_case + power_operating * theta_jc
 
 
-def calculate_lambda_cyclic_factors(n_cycles, construction_id, n_elements,
-                                    temperature_junction):
+def calculate_lambda_cyclic_factors(n_cycles: int, construction_id: int,
+                                    n_elements: int,
+                                    temperature_junction: float
+                                    ) -> Tuple[float, float, float, float]:
     """
     Calculate the write cycle hazard rate A and B factors for EEPROMs.
 
@@ -404,8 +408,9 @@ def calculate_lambda_cyclic_factors(n_cycles, construction_id, n_elements,
     return _a_1, _a_2, _b_1, _b_2
 
 
-def calculate_temperature_factor(subcategory_id, family_id, type_id,
-                                 temperature_junction):
+def calculate_temperature_factor(subcategory_id: int, family_id: int,
+                                 type_id: int,
+                                 temperature_junction: float) -> float:
     """
     Calculate the temperature factor (piT).
 
@@ -433,7 +438,7 @@ def calculate_temperature_factor(subcategory_id, family_id, type_id,
                                           (1.0 / _ref_temp)))
 
 
-def calculate_eos_hazard_rate(voltage_esd):
+def calculate_eos_hazard_rate(voltage_esd: float) -> float:
     """
     Calculate the electrical overstress hazard rate (lambdaEOS).
 
@@ -444,7 +449,7 @@ def calculate_eos_hazard_rate(voltage_esd):
     return (-log(1.0 - 0.00057 * exp(-0.0002 * voltage_esd))) / 0.00876
 
 
-def calculate_package_base_hazard_rate(n_active_pins):
+def calculate_package_base_hazard_rate(n_active_pins: int) -> float:
     """
     Calculate the package base hazard rate (lambdaBP).
 
@@ -455,7 +460,7 @@ def calculate_package_base_hazard_rate(n_active_pins):
     return 0.0022 + (1.72E-5 * n_active_pins)
 
 
-def calculate_package_factor(package_id, n_active_pins):
+def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
     """
     Calculate the package factor (C2).
 
@@ -482,7 +487,7 @@ def calculate_package_factor(package_id, n_active_pins):
     return _f0 * (n_active_pins**_f1)
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -494,15 +499,13 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['subcategory_id'],
-        attributes['environment_active_id'],
-        attributes['n_elements'],
-        technology_id=attributes['technology_id'],
-    )
+    return get_part_count_lambda_b(attributes['subcategory_id'],
+                                   attributes['environment_active_id'],
+                                   attributes['n_elements'],
+                                   technology_id=attributes['technology_id'])
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress active hazard rate for a integrated circuit.
 
@@ -589,7 +592,7 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def get_application_factor(type_id, application_id):
+def get_application_factor(type_id: int, application_id: int) -> float:
     """
     Retrieve the application factor (piA).
 
@@ -603,8 +606,8 @@ def get_application_factor(type_id, application_id):
     return PI_A[type_id][application_id - 1]
 
 
-def get_die_complexity_factor(subcategory_id, technology_id, application_id,
-                              n_elements):
+def get_die_complexity_factor(subcategory_id: int, technology_id: int,
+                              application_id: int, n_elements: int) -> float:
     """
     Retrieve the die complexity hazard rate (C1).
 
@@ -633,15 +636,9 @@ def get_die_complexity_factor(subcategory_id, technology_id, application_id,
         7: [16000, 64000, 256000, 100000],
         8: [16000, 64000, 256000, 100000],
         9: {
-            1: [
-                10,
-                1000,
-            ],
-            2: [
-                1000,
-                10000,
-            ],
-        },
+            1: [10, 1000],
+            2: [1000, 10000]
+        }
     }
 
     if subcategory_id == 2 and technology_id == 11:
@@ -663,7 +660,7 @@ def get_die_complexity_factor(subcategory_id, technology_id, application_id,
     return C1[subcategory_id][_technology - 1][_index]
 
 
-def get_die_base_hazard_rate(type_id):
+def get_die_base_hazard_rate(type_id: int) -> float:
     """
     Retrieve the base hazard rate for a VHISC/VLSI die.
 
@@ -679,7 +676,7 @@ def get_die_base_hazard_rate(type_id):
     return _lambda_bd
 
 
-def get_error_correction_factor(type_id):
+def get_error_correction_factor(type_id: int) -> float:
     """
     Retrieve the error code correction factor (piECC).
 
@@ -691,7 +688,7 @@ def get_error_correction_factor(type_id):
     return {1: 1.0, 2: 0.72, 3: 0.68}[type_id]
 
 
-def get_manufacturing_process_factor(manufacturing_id):
+def get_manufacturing_process_factor(manufacturing_id: int) -> float:
     """
     Retrive teh the manufacturing process correction factor (piMFG).
 
@@ -707,7 +704,7 @@ def get_manufacturing_process_factor(manufacturing_id):
     return _pi_mfg
 
 
-def get_package_type_correction_factor(package_id):
+def get_package_type_correction_factor(package_id: int) -> float:
     """
     Retrieve the package type correction factor (piPT).
 
@@ -719,10 +716,10 @@ def get_package_type_correction_factor(package_id):
     return PI_PT[package_id]
 
 
-def get_part_count_lambda_b(subcategory_id,
-                            environment_active_id,
-                            n_elements,
-                            technology_id=None):
+def get_part_count_lambda_b(subcategory_id: int,
+                            environment_active_id: int,
+                            n_elements: int,
+                            technology_id: int = -1) -> float:
     r"""
     Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -786,7 +783,7 @@ def get_part_count_lambda_b(subcategory_id,
         2: [100, 1000, 3000, 10000, 30000, 60000],
         3: {
             1: [200, 1000, 5000],
-            2: [16000, 64000, 256000, 1000000],
+            2: [16000, 64000, 256000, 1000000]
         },
         4: [8, 16, 32],
         5: [16000, 64000, 256000, 100000],
@@ -794,15 +791,9 @@ def get_part_count_lambda_b(subcategory_id,
         7: [16000, 64000, 256000, 100000],
         8: [16000, 64000, 256000, 100000],
         9: {
-            1: [
-                10,
-                100,
-            ],
-            2: [
-                1000,
-                10000,
-            ],
-        },
+            1: [10, 100],
+            2: [1000, 10000]
+        }
     }
 
     if subcategory_id in [3, 9]:

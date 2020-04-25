@@ -8,6 +8,7 @@
 
 # Standard Library Imports
 from math import exp
+from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -110,7 +111,7 @@ PI_K = [1.0, 1.5, 2.0, 3.0, 4.0]
 REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
 
 
-def calculate_active_pins_factor(n_active_pins):
+def calculate_active_pins_factor(n_active_pins: int) -> float:
     """
     Calculate the active pins factor (piP).
 
@@ -121,7 +122,7 @@ def calculate_active_pins_factor(n_active_pins):
     return exp(((n_active_pins - 1) / 10.0)**0.51064)
 
 
-def calculate_complexity_factor(n_circuit_planes):
+def calculate_complexity_factor(n_circuit_planes: int) -> float:
     """
     Calculate the complexity factor (piC).
 
@@ -137,7 +138,8 @@ def calculate_complexity_factor(n_circuit_planes):
     return _pi_c
 
 
-def calculate_insert_temperature(contact_gauge, current_operating):
+def calculate_insert_temperature(contact_gauge: int,
+                                 current_operating: float) -> float:
     """
     Calculate the insert temperature.
 
@@ -168,13 +170,7 @@ def calculate_insert_temperature(contact_gauge, current_operating):
     :raise: KeyError when an unknown contact gauge is passed.
     :raise: TypeError when the operating current is passed as a string.
     """
-    _dic_factors = {
-        12: 0.1,
-        16: 0.274,
-        20: 0.64,
-        22: 0.989,
-        26: 2.1,
-    }
+    _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
 
     _fo = _dic_factors[contact_gauge]
     _temperature_rise = (_fo * current_operating**1.85)
@@ -182,7 +178,7 @@ def calculate_insert_temperature(contact_gauge, current_operating):
     return _temperature_rise
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -193,14 +189,12 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['subcategory_id'],
-        attributes['environment_active_id'],
-        type_id=attributes['type_id'],
-    )
+    return get_part_count_lambda_b(attributes['subcategory_id'],
+                                   attributes['environment_active_id'],
+                                   type_id=attributes['type_id'])
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress active hazard rate for a connection.
 
@@ -213,13 +207,11 @@ def calculate_part_stress(**attributes):
     :rtype: dict
     """
     attributes['temperature_rise'] = calculate_insert_temperature(
-        attributes['contact_gauge'],
-        attributes['current_operating'],
-    )
+        attributes['contact_gauge'], attributes['current_operating'])
     attributes['piC'] = calculate_complexity_factor(
-        attributes['n_circuit_planes'], )
+        attributes['n_circuit_planes'])
     attributes['piP'] = calculate_active_pins_factor(
-        attributes['n_active_pins'], )
+        attributes['n_active_pins'])
     attributes['piK'] = get_mate_unmate_factor(attributes['n_cycles'])
 
     if attributes['subcategory_id'] == 1:
@@ -242,10 +234,10 @@ def calculate_part_stress(**attributes):
                                             * attributes['piP'])
     elif attributes['subcategory_id'] == 4:
         attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active']
-            * (attributes['n_wave_soldered'] * attributes['piC']
-               + attributes['n_hand_soldered']
-               * (attributes['piC'] + 13.0)) * attributes['piQ'])
+            attributes['hazard_rate_active'] *
+            (attributes['n_wave_soldered'] * attributes['piC']
+             + attributes['n_hand_soldered'] *
+             (attributes['piC'] + 13.0)) * attributes['piQ'])
     elif attributes['subcategory_id'] == 5:
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piQ'])
@@ -257,8 +249,9 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def calculate_part_stress_lambda_b(subcategory_id, type_id,
-                                   contact_temperature, factor_key):
+def calculate_part_stress_lambda_b(subcategory_id: int, type_id: int,
+                                   contact_temperature: float,
+                                   factor_key: int) -> float:
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -304,7 +297,7 @@ def calculate_part_stress_lambda_b(subcategory_id, type_id,
     return _lambda_b
 
 
-def get_factor_key(type_id, specification_id, insert_id):
+def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
     """
     Retrieve the reference temperature key for the connection.
 
@@ -359,7 +352,7 @@ def get_factor_key(type_id, specification_id, insert_id):
     return _dic_keys[type_id][specification_id][insert_id - 1]
 
 
-def get_mate_unmate_factor(n_cycles):
+def get_mate_unmate_factor(n_cycles: float) -> float:
     """
     Retrieve the mating/unmating factor (piK).
 
@@ -382,11 +375,9 @@ def get_mate_unmate_factor(n_cycles):
     return _pi_k
 
 
-def get_part_count_lambda_b(
-        subcategory_id,
-        environment_active_id,
-        type_id=None,
-):
+def get_part_count_lambda_b(subcategory_id: int,
+                            environment_active_id: int,
+                            type_id: int = -1) -> float:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -419,7 +410,7 @@ def get_part_count_lambda_b(
 
     :param int subcategory_id: the connection subcategory identifier.
     :param int environment_active_id: the active environment identifier.
-    :keyword int type_id: the connection type identifier.  Default is None.
+    :keyword int type_id: the connection type identifier.  Default is -1.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or type ID.

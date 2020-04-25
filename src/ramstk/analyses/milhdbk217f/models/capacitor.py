@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from math import exp
+from typing import Any, Dict, List
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -135,7 +136,8 @@ REF_TEMPS = {
 }
 
 
-def calculate_capacitance_factor(subcategory_id, capacitance):
+def calculate_capacitance_factor(subcategory_id: int,
+                                 capacitance: float) -> float:
     """
     Calculate the capacitance factor (piCV).
 
@@ -173,7 +175,7 @@ def calculate_capacitance_factor(subcategory_id, capacitance):
     return _pi_cv
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrapper function for get_part_count_lambda_b_list.
 
@@ -192,7 +194,7 @@ def calculate_part_count(**attributes):
     )
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress active hazard rate for a capacitor.
 
@@ -203,23 +205,16 @@ def calculate_part_stress(**attributes):
     :raise: KeyError if the attribute dict is missing one or more keys.
     """
     attributes['lambda_b'] = calculate_part_stress_lambda_b(
-        attributes['subcategory_id'],
-        attributes['temperature_rated_max'],
-        attributes['temperature_active'],
-        attributes['voltage_ratio'],
-    )
+        attributes['subcategory_id'], attributes['temperature_rated_max'],
+        attributes['temperature_active'], attributes['voltage_ratio'])
     attributes['piC'] = get_construction_factor(attributes['construction_id'])
     attributes['piCF'] = get_configuration_factor(
-        attributes['configuration_id'], )
+        attributes['configuration_id'])
     attributes['piCV'] = calculate_capacitance_factor(
-        attributes['subcategory_id'],
-        attributes['capacitance'],
-    )
+        attributes['subcategory_id'], attributes['capacitance'])
     attributes['piSR'] = calculate_series_resistance_factor(
-        attributes['resistance'],
-        attributes['voltage_dc_operating'],
-        attributes['voltage_ac_operating'],
-    )
+        attributes['resistance'], attributes['voltage_dc_operating'],
+        attributes['voltage_ac_operating'])
 
     attributes['hazard_rate_active'] = (attributes['lambda_b']
                                         * attributes['piQ'] * attributes['piE']
@@ -238,12 +233,10 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def calculate_part_stress_lambda_b(
-        subcategory_id,
-        temperature_rated_max,
-        temperature_active,
-        voltage_ratio,
-):
+def calculate_part_stress_lambda_b(subcategory_id: int,
+                                   temperature_rated_max: float,
+                                   temperature_active: float,
+                                   voltage_ratio: float) -> float:
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -292,11 +285,9 @@ def calculate_part_stress_lambda_b(
     return _lambda_b
 
 
-def calculate_series_resistance_factor(
-        resistance,
-        voltage_dc_operating,
-        voltage_ac_operating,
-):
+def calculate_series_resistance_factor(resistance: float,
+                                       voltage_dc_operating: float,
+                                       voltage_ac_operating: float) -> float:
     """
     Calculate the series resistance factor (piSR).
 
@@ -329,7 +320,7 @@ def calculate_series_resistance_factor(
     return _pi_sr
 
 
-def get_configuration_factor(configuration_id):
+def get_configuration_factor(configuration_id: int) -> float:
     """
     Retrieves the configuration factor (piCF) for the capacitor.
 
@@ -341,7 +332,7 @@ def get_configuration_factor(configuration_id):
     return PI_CF[configuration_id]
 
 
-def get_construction_factor(construction_id):
+def get_construction_factor(construction_id: int) -> float:
     """
     Retrieves the configuration factor (piC) for the capacitor.
 
@@ -353,9 +344,9 @@ def get_construction_factor(construction_id):
     return PI_C[construction_id]
 
 
-def get_part_count_lambda_b(subcategory_id,
-                            environment_active_id,
-                            specification_id=None):
+def get_part_count_lambda_b(subcategory_id: int,
+                            environment_active_id: int,
+                            specification_id: int = -1) -> List[float]:
     r"""
     Retrieves the MIL-HDBK-217F parts count base hazard rate (lambda b).
 
@@ -365,7 +356,7 @@ def get_part_count_lambda_b(subcategory_id,
         #. subcategory_id
         #. environment_active_id
         #. specification id; if the capacitor subcategory is NOT specification
-            dependent, then pass None for the specification ID key.
+            dependent, then pass -1 for the specification ID key.
 
     Subcategory IDs are:
 
@@ -430,7 +421,7 @@ def get_part_count_lambda_b(subcategory_id,
 
     :param int subcategory_id: the capacitor subcategory identifier.
     :keyword int specification_id: the capacitor specification identifier.
-        Default is None.
+        Default is -1.
     :return: _lst_base_hr; the list of base hazard rates.
     :rtype: list
     :raise: KeyError if passed an unknown subcategory ID or specification ID.

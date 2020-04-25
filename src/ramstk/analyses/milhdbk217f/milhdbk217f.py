@@ -6,6 +6,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """milhdbk217f Calculations Class."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 from pubsub import pub
 
@@ -16,7 +19,8 @@ from .models import (
 )
 
 
-def _do_calculate_part_count(**attributes):
+# noinspection PyTypeChecker
+def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the MIL-HDBK-217F parts count active hazard rate.
 
@@ -71,7 +75,8 @@ def _do_calculate_part_count(**attributes):
     return attributes
 
 
-def _do_calculate_part_stress(**attributes):
+# noinspection PyTypeChecker
+def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the MIL-HDBK-217F parts stress active hazard rate.
 
@@ -97,7 +102,7 @@ def _do_calculate_part_stress(**attributes):
             2: efilter.calculate_part_stress,
             3: fuse.calculate_part_stress,
             4: lamp.calculate_part_stress
-        },
+        }
     }
 
     if attributes['category_id'] != 6:
@@ -105,15 +110,12 @@ def _do_calculate_part_stress(**attributes):
             attributes['category_id'],
             attributes['environment_active_id'],
             subcategory_id=attributes['subcategory_id'],
-            quality_id=attributes['quality_id'],
-        )
+            quality_id=attributes['quality_id'])
 
     if attributes['category_id'] not in [2, 5]:
         attributes['piQ'] = _get_part_stress_quality_factor(
-            attributes['category_id'],
-            attributes['subcategory_id'],
-            attributes['quality_id'],
-        )
+            attributes['category_id'], attributes['subcategory_id'],
+            attributes['quality_id'])
 
     if attributes['category_id'] == 10:
         _part_stress = _functions[attributes['category_id']][
@@ -124,12 +126,10 @@ def _do_calculate_part_stress(**attributes):
     return _part_stress(**attributes)
 
 
-def _get_environment_factor(
-        category_id,
-        environment_active_id,
-        subcategory_id=None,
-        quality_id=None,
-):
+def _get_environment_factor(category_id: int,
+                            environment_active_id: int,
+                            subcategory_id: int = -1,
+                            quality_id: int = -1) -> float:
     """
     Retrieve the MIL-HDBK-217F environment factor (piE) for the component.
 
@@ -162,7 +162,7 @@ def _get_environment_factor(
             2: efilter.PI_E,
             3: fuse.PI_E,
             4: lamp.PI_E
-        },
+        }
     }
 
     if category_id == 8 and subcategory_id in [1, 2]:
@@ -179,7 +179,8 @@ def _get_environment_factor(
     return _pi_e
 
 
-def _get_part_count_quality_factor(category_id, subcategory_id, quality_id):
+def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
+                                   quality_id: int) -> float:
     """
     Retrieve the MIL-HDBK-217F parts count quality factor (piQ).
 
@@ -210,7 +211,7 @@ def _get_part_count_quality_factor(category_id, subcategory_id, quality_id):
         10: {
             1: crystal.PART_COUNT_PI_Q,
             2: efilter.PI_Q
-        },
+        }
     }
 
     if category_id in [6, 7, 9]:
@@ -225,7 +226,8 @@ def _get_part_count_quality_factor(category_id, subcategory_id, quality_id):
     return _pi_q
 
 
-def _get_part_stress_quality_factor(category_id, subcategory_id, quality_id):
+def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
+                                    quality_id: int) -> float:
     """
     Retrieve the MIL-HDBK-217F part stress quality factor (piQ).
 
@@ -259,13 +261,13 @@ def _get_part_stress_quality_factor(category_id, subcategory_id, quality_id):
           and subcategory_id in [4, 5]) or (category_id == 7
                                             and subcategory_id == 5):
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif (category_id == 7 and subcategory_id != 5):
+    elif category_id == 7 and subcategory_id != 5:
         _pi_q = 0.0
-    elif (category_id == 8 and subcategory_id not in [4, 5]):
+    elif category_id == 8 and subcategory_id not in [4, 5]:
         _pi_q = 0.0
-    elif (category_id == 9 and subcategory_id == 1):
+    elif category_id == 9 and subcategory_id == 1:
         _pi_q = 0.0
-    elif (category_id == 10 and subcategory_id in [3, 4]):
+    elif category_id == 10 and subcategory_id in [3, 4]:
         _pi_q = 0.0
     else:
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
@@ -273,7 +275,8 @@ def _get_part_stress_quality_factor(category_id, subcategory_id, quality_id):
     return _pi_q
 
 
-def do_predict_active_hazard_rate(**attributes):
+# noinspection PyTypeChecker
+def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> None:
     """
     Calculate the active hazard rate for a hardware item.
 

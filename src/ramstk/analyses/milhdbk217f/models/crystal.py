@@ -7,6 +7,9 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Crystal MIL-HDBK-217F Constants and Calculations Module."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 PART_COUNT_LAMBDA_B = [
     0.032, 0.096, 0.32, 0.19, 0.51, 0.38, 0.54, 0.70, 0.90, 0.74, 0.016, 0.42,
     1.0, 16.0
@@ -19,7 +22,7 @@ PI_E = [
 ]
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -30,10 +33,10 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the list of base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['environment_active_id'], )
+    return get_part_count_lambda_b(attributes['environment_active_id'])
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a crystal.
 
@@ -54,7 +57,7 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def get_part_count_lambda_b(environment_active_id):
+def get_part_count_lambda_b(environment_active_id: int) -> float:
     """
     Retrieve the part count base hazard rate for a crystal.
 

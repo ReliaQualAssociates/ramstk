@@ -8,6 +8,7 @@
 
 # Standard Library Imports
 from math import exp
+from typing import Any, Dict, List
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -77,7 +78,8 @@ REF_TEMPS = {
 }
 
 
-def calculate_hot_spot_temperature(temperature_active, temperature_rise):
+def calculate_hot_spot_temperature(temperature_active: float,
+                                   temperature_rise: float) -> float:
     """
     Calculate the coil or transformer hot spot temperature.
 
@@ -87,7 +89,7 @@ def calculate_hot_spot_temperature(temperature_active, temperature_rise):
     return temperature_active + 1.1 * temperature_rise
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -105,7 +107,7 @@ def calculate_part_count(**attributes):
     )
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress hazard rate for a inductor.
 
@@ -157,8 +159,8 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def calculate_part_stress_lambda_b(subcategory_id, insulation_id,
-                                   temperature_hot_spot):
+def calculate_part_stress_lambda_b(subcategory_id: int, insulation_id: int,
+                                   temperature_hot_spot: float) -> float:
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -177,25 +179,26 @@ def calculate_part_stress_lambda_b(subcategory_id, insulation_id,
             3: [0.0018, 8.7],
             4: [0.002, 10.0],
             5: [0.00125, 3.8],
-            6: [0.00159, 8.4],
+            6: [0.00159, 8.4]
         },
         2: {
             1: [0.000335, 15.6],
             2: [0.000379, 14.0],
             3: [0.000319, 8.7],
-            4: [0.00035, 10.0],
-        },
+            4: [0.00035, 10.0]
+        }
     }
 
     _ref_temp = REF_TEMPS[subcategory_id][insulation_id]
     _f0 = _dic_factors[subcategory_id][insulation_id][0]
     _f1 = _dic_factors[subcategory_id][insulation_id][1]
-    _lambda_b = _f0 * exp(((temperature_hot_spot + 273.0) / _ref_temp)**_f1, )
+    _lambda_b = _f0 * exp(((temperature_hot_spot + 273.0) / _ref_temp)**_f1)
 
     return _lambda_b
 
 
-def calculate_temperature_rise_input_power_weight(power_input, weight):
+def calculate_temperature_rise_input_power_weight(power_input: float,
+                                                  weight: float) -> float:
     """
     Calculate the temperature rise based on input power and xfmr weight.
 
@@ -211,7 +214,8 @@ def calculate_temperature_rise_input_power_weight(power_input, weight):
     return 2.1 * (power_input / weight**0.6766)
 
 
-def calculate_temperature_rise_power_loss_surface(power_operating, area):
+def calculate_temperature_rise_power_loss_surface(power_operating: float,
+                                                  area: float) -> float:
     """
     Calculate the temperature rise based on the power loss and surface area.
 
@@ -224,7 +228,8 @@ def calculate_temperature_rise_power_loss_surface(power_operating, area):
     return 125.0 * power_operating / area
 
 
-def calculate_temperature_rise_power_loss_weight(power_operating, weight):
+def calculate_temperature_rise_power_loss_weight(power_operating: float,
+                                                 weight: float) -> float:
     """
     Calculate the temperature rise based on the power loss and xfmr weight.
 
@@ -237,7 +242,8 @@ def calculate_temperature_rise_power_loss_weight(power_operating, weight):
     return 11.5 * (power_operating / weight**0.6766)
 
 
-def get_part_count_lambda_b(subcategory_id, family_id, environment_active_id):
+def get_part_count_lambda_b(subcategory_id: int, family_id: int,
+                            environment_active_id: int) -> List[float]:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -273,14 +279,15 @@ def get_part_count_lambda_b(subcategory_id, family_id, environment_active_id):
     :param int family_id: the family identifier.
     :return: _base_hr; the list of part count base hazard rate.
     :rtype: list
-    :raise: KeyError if passed an unkown subcategory ID or family ID.
+    :raise: KeyError if passed an unknown subcategory ID or family ID.
     :raise: IndexError if passed an unknown active environment ID.
     """
     return PART_COUNT_LAMBDA_B[subcategory_id][family_id][environment_active_id
                                                           - 1]
 
 
-def get_part_stress_quality_factor(subcategory_id, quality_id, family_id):
+def get_part_stress_quality_factor(subcategory_id: int, quality_id: int,
+                                   family_id: int) -> float:
     """
     Select the MIL-HDBK-217F quality factor for the inductor device.
 
@@ -300,7 +307,7 @@ def get_part_stress_quality_factor(subcategory_id, quality_id, family_id):
     return _pi_q
 
 
-def get_temperature_rise_spec_sheet(page_number):
+def get_temperature_rise_spec_sheet(page_number: int) -> float:
     """
     Retrieve the temperature rise based on the spec sheet from MIL-C-39010.
 

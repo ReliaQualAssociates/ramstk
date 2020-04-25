@@ -6,8 +6,14 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Stakeholder Improvement Factor Analysis Module."""
 
+# Standard Library Imports
+from typing import Any, Dict, Tuple
 
-def calculate_improvement(planned_rank, customer_rank, priority, **kwargs):
+
+def calculate_improvement(planned_rank: int,
+                          customer_rank: int,
+                          priority: int,
+                          **kwargs: Dict[str, Any]) -> Tuple[float, float]:
     """
     Calculate the stakeholder improvement factor and overall weighting.
 

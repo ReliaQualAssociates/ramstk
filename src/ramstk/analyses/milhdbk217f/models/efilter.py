@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Filter MIL-HDBK-217F Constants and Calculations Module."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 PART_COUNT_LAMBDA_B = {
     1: [
         0.022, 0.044, 0.13, 0.088, 0.20, 0.15, 0.20, 0.24, 0.29, 0.24, 0.018,
@@ -25,7 +28,7 @@ PI_E = [
 PI_Q = [1.0, 2.9]
 
 
-def calculate_part_count(**attributes):
+def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     Wrap get_part_count_lambda_b().
 
@@ -36,13 +39,11 @@ def calculate_part_count(**attributes):
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['type_id'],
-        attributes['environment_active_id'],
-    )
+    return get_part_count_lambda_b(attributes['type_id'],
+                                   attributes['environment_active_id'])
 
 
-def calculate_part_stress(**attributes):
+def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress active hazard rate for a filter.
 
@@ -61,7 +62,7 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def get_part_count_lambda_b(type_id, environment_active_id):
+def get_part_count_lambda_b(type_id: int, environment_active_id: int) -> float:
     """
     Retrievee the part count base hazard rate for a filter.
 
