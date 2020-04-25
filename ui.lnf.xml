@@ -1,5 +1,6 @@
 <application>
   <component name="UISettings">
     <option name="OVERRIDE_NONIDEA_LAF_FONTS" value="true" />
+    <option name="CONTRAST_SCROLLBARS" value="true" />
   </component>
 </application>
