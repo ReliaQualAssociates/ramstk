@@ -34,8 +34,8 @@ class MockDao:
     _all_environments = []
 
     def _do_delete_revision(self, record):
-        for _idx, _record in enumerate(self._all_revisions):
-            if _record.revision_id == record.revision_id:
+        for _idx, _revision in enumerate(self._all_revisions):
+            if _revision.revision_id == record.revision_id:
                 self._all_revisions.pop(_idx)
 
     def _do_delete_failure_definition(self, record):
@@ -59,19 +59,19 @@ class MockDao:
                 self._all_environments.pop(_idx)
 
     def do_delete(self, record):
-        try:
-            if record == RAMSTKRevision:
+        if record == RAMSTKRevision:
+            try:
                 self._do_delete_revision(record)
-            elif record == RAMSTKFailureDefinition:
-                self._do_delete_failure_definition(record)
-            elif record == RAMSTKMission:
-                self._do_delete_mission(record)
-            elif record == RAMSTKMissionPhase:
-                self._do_delete_mission_phases(record)
-            elif record == RAMSTKEnvironment:
-                self._do_delete_environments(record)
-        except AttributeError:
-            raise DataAccessError('')
+            except AttributeError:
+                raise DataAccessError('')
+        elif record == RAMSTKFailureDefinition:
+            self._do_delete_failure_definition(record)
+        elif record == RAMSTKMission:
+            self._do_delete_mission(record)
+        elif record == RAMSTKMissionPhase:
+            self._do_delete_mission_phases(record)
+        elif record == RAMSTKEnvironment:
+            self._do_delete_environments(record)
 
     def do_insert(self, record):
         if record == RAMSTKRevision:
@@ -321,7 +321,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_revision(self, error_message):
         assert error_message == (
-            'Revision ID 300 was not found as a node in the tree.')
+            'Attempted to delete non-existent revision ID 300.')
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
     def on_succeed_delete_failure_definition(self, tree):
@@ -864,6 +864,11 @@ class TestUpdateMethods():
             'Attempted to save non-existent revision with revision ID 100.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
+    def on_fail_update_revision_no_data_package(self, error_message):
+        assert error_message == (
+            'No data package found for revision ID 1.')
+        print("\033[35m\nfail_update_revision topic was broadcast")
+
     def on_succeed_update_failure_definition(self, node_id):
         assert node_id == 1
         print(
@@ -871,7 +876,13 @@ class TestUpdateMethods():
 
     def on_fail_update_failure_definition(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent failure definition with ID 100.')
+            'No data package found for failure definition ID 100.')
+        print("\033[35m\nfail_update_failure_definition topic was broadcast")
+
+    def on_fail_update_failure_definition_no_revision(self, error_message):
+        assert error_message == (
+            'No revision ID 10 found when attempting to save failure '
+            'definition with ID 1.')
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     def on_succeed_update_usage_profile(self, node_id):
@@ -881,6 +892,12 @@ class TestUpdateMethods():
     def on_fail_update_usage_profile(self, error_message):
         assert error_message == (
             'Attempted to save non-existent usage profile element with ID 1.10.'
+        )
+        print("\033[35m\nfail_update_usage_profile topic was broadcast")
+
+    def on_fail_update_usage_profile_no_data_package(self, error_message):
+        assert error_message == (
+            'No data package found for usage profile ID 1.1.'
         )
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
@@ -926,6 +943,23 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_fail_update_revision, 'fail_update_revision')
 
+    @pytest.mark.unit
+    def test_do_update_no_data_package(self, mock_program_dao):
+        """ do_update() should raise the 'fail_update_validation' message when passed a Validation ID that doesn't exist in the tree. """
+        pub.subscribe(self.on_fail_update_revision_no_data_package,
+                      'fail_update_revision')
+
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+
+        DUT.tree.get_node(1).data.pop('revision')
+
+        DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_revision_no_data_package,
+                        'fail_update_revision')
+
     @pytest.mark.integration
     def test_do_update_failure_definition(self, test_program_dao):
         """do_update_failure_definition() should broadcast the succeed message on success."""
@@ -962,6 +996,21 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_failure_definition,
                         'fail_update_failure_definition')
 
+    @pytest.mark.unit
+    def test_do_update_failure_definition_non_existent_revision(
+            self, mock_program_dao):
+        """do_update_failure_definition() should broadcast the fail message when attempting to save a non-existent ID."""
+        pub.subscribe(self.on_fail_update_failure_definition_no_revision,
+                      'fail_update_failure_definition')
+
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+        DUT._do_update_failure_definition(10, 1)
+
+        pub.unsubscribe(self.on_fail_update_failure_definition_no_revision,
+                        'fail_update_failure_definition')
+
     @pytest.mark.integration
     def test_do_update_all_failure_definition(self, test_program_dao):
         """do_update_all failure_definition() should return None on success."""
@@ -992,12 +1041,12 @@ class TestUpdateMethods():
         DUT.do_select_all()
 
         _mission = DUT.do_select(1, table='usage_profile').get_node('1').data
-        _mission.description = 'Big ole failure mode'
+        _mission.description = 'Big ole mission'
 
         DUT._do_update_usage_profile(1, '1')
         _mission = DUT.do_select(1, table='usage_profile').get_node('1').data
 
-        assert _mission.description == 'Big ole failure mode'
+        assert _mission.description == 'Big ole mission'
 
         pub.unsubscribe(self.on_succeed_update_usage_profile,
                         'succeed_update_usage_profile')
@@ -1015,3 +1064,27 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_fail_update_usage_profile,
                         'fail_update_usage_profile')
+
+    @pytest.mark.unit
+    def test_do_update_usage_profile_no_data_package(self, mock_program_dao):
+        """do_update_usage_profile() should broadcast the fail message when attempting to save a non-existent ID."""
+        pub.subscribe(self.on_fail_update_usage_profile_no_data_package,
+                      'fail_update_usage_profile')
+
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+        DUT.tree.get_node(1).data.pop('usage_profile')
+        DUT._do_update_usage_profile(1, '1.1')
+
+        pub.unsubscribe(self.on_fail_update_usage_profile_no_data_package,
+                        'fail_update_usage_profile')
+
+    @pytest.mark.integration
+    def test_do_update_all_usage_profile(self, test_program_dao):
+        """do_update_usage_profile() should broadcast the succeed message on success."""
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+
+        pub.sendMessage('request_update_all_usage_profiles', revision_id=1)

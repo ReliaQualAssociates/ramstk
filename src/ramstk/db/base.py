@@ -231,7 +231,7 @@ class BaseDatabase():
             #   1. Primary key violations.
             #   2. Non-date data supplied to date type fields.
             #   3. Foreign key violations.
-            #   4. np.nan data suppled to any field type.
+            #   4. np.nan data supplied to any field type.
             self.session.rollback()
             _error_message = (
                 "There was an database error when attempting to add a "
