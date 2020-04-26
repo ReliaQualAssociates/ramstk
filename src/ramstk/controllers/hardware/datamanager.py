@@ -68,7 +68,7 @@ class DataManager(RAMSTKDataManager):
                       'request_set_hardware_attributes')
         pub.subscribe(self.do_set_all_attributes, 'succeed_calculate_hardware')
 
-    def _do_delete_hardware(self, node_id):
+    def _do_delete_hardware(self, node_id: int) -> None:
         """
         Remove a Hardware item.
 
@@ -120,7 +120,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_hardware_attributes',
                         attributes=_attributes)
 
-    def _do_get_hardware_tree(self):
+    def _do_get_hardware_tree(self) -> None:
         """
         Retrieve the hardware treelib Tree.
 
