@@ -252,7 +252,8 @@ tag:
 	$(shell sh ./devtools/bump_version.sh -t)
 
 docs:
-	$(info TODO: update documentation layout so we can use sphinx-apidoc here)
+	sphinx-apidoc -f -o docs/api src/ramstk
+	cd docs; make html -e
 
 servdocs:
 	WORKBRANCH=$(shell git rev-parse --abbrev-ref HEAD)

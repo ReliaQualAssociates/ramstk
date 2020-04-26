@@ -1,0 +1,16 @@
+name: On Push Workflow
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+  jobs:
+    build_documentation:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: ammaraskar/sphinx-action@master
+          with:
+            docs-folder: "docs/"
