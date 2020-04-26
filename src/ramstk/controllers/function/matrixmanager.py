@@ -75,7 +75,8 @@ class MatrixManager(RAMSTKMatrixManager):
             self._col_tree['fnctn_hrdwr'] = tree
             if self._row_tree.all_nodes():
                 super().do_create_columns('fnctn_hrdwr')
-                pub.sendMessage('request_select_matrix', matrix_type='fnctn_hrdwr')
+                pub.sendMessage('request_select_matrix',
+                                matrix_type='fnctn_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -92,7 +93,7 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_delete_row(node_id)
 
-    def _on_delete_hardware(self, node_id: int) -> Any:
+    def _on_delete_hardware(self, node_id: int, tree: treelib.Tree) -> Any:
         """
         Delete the node ID column from the Function::Hardware matrix.
 
@@ -118,7 +119,7 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_insert_row(node_id)
 
-    def _on_insert_hardware(self, node_id: int) -> Any:
+    def _on_insert_hardware(self, node_id: int, tree: treelib.Tree) -> Any:
         """
         Insert the node ID column to the Function::Hardware matrix.
 

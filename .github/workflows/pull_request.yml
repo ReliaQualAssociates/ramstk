@@ -15,7 +15,7 @@ jobs:
       - uses: wyozi/contextual-qa-checklist-action@master
         with:
           gh-token: ${{ secrets.GITHUB_TOKEN }}
-          input-file: docs/CHECKLIST.yml
+          input-file: devtools/CHECKLIST.yml
 
   labeler:
     name: Label the Pull Request Size

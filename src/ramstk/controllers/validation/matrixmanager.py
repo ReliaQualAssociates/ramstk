@@ -95,7 +95,9 @@ class MatrixManager(RAMSTKMatrixManager):
                 pub.sendMessage('request_select_matrix',
                                 matrix_type='vldtn_rqrmnt')
 
-    def _on_delete_hardware(self, node_id: int) -> Any:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_delete_hardware(self, node_id: int, tree: treelib.Tree) -> Any:
         """
         Delete the node ID column from the Validation::Hardware matrix.
 
@@ -137,7 +139,7 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_delete_row(node_id)
 
-    def _on_insert_hardware(self, node_id: int) -> Any:
+    def _on_insert_hardware(self, node_id: int, tree: treelib.Tree) -> Any:
         """
         Insert the node ID column to the Validation::Hardware matrix.
 

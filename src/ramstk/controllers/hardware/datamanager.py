@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Package Data Model."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 from pubsub import pub
 from treelib.exceptions import NodeIDAbsentError
@@ -48,24 +51,24 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'succeed_select_revision')
+        pub.subscribe(self._do_select_all_hardware, 'succeed_select_revision')
         pub.subscribe(self.do_set_tree, 'succeed_calculate_all_hardware')
-        pub.subscribe(self._do_delete, 'request_delete_hardware')
-        pub.subscribe(self.do_insert, 'request_insert_hardware')
+        pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
+        pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_hardware')
         pub.subscribe(self.do_update_all, 'request_update_all_hardware')
-        pub.subscribe(self.do_make_composite_ref_des,
+        pub.subscribe(self._do_make_composite_ref_des,
                       'request_make_comp_ref_des')
         pub.subscribe(self.do_get_attributes,
                       'request_get_hardware_attributes')
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_hardware_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_hardware_tree')
+        pub.subscribe(self._do_get_hardware_tree, 'request_get_hardware_tree')
         pub.subscribe(self.do_set_attributes,
                       'request_set_hardware_attributes')
         pub.subscribe(self.do_set_all_attributes, 'succeed_calculate_hardware')
 
-    def _do_delete(self, node_id):
+    def _do_delete_hardware(self, node_id: int) -> None:
         """
         Remove a Hardware item.
 
@@ -75,12 +78,14 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            RAMSTKDataManager.do_delete(self, node_id, 'hardware')
+            super().do_delete(node_id, 'hardware')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_hardware', node_id=node_id)
+            pub.sendMessage('succeed_delete_hardware',
+                            node_id=node_id,
+                            tree=self.tree)
         except (AttributeError, DataAccessError):
             _error_msg = ("Attempted to delete non-existent hardware ID "
                           "{0:s}.").format(str(node_id))
@@ -115,7 +120,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_hardware_attributes',
                         attributes=_attributes)
 
-    def do_get_tree(self):
+    def _do_get_hardware_tree(self) -> None:
         """
         Retrieve the hardware treelib Tree.
 
@@ -124,7 +129,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_hardware_tree', dmtree=self.tree)
 
-    def do_insert(self, parent_id, part):  # pylint: disable=arguments-differ
+    def _do_insert_hardware(self, parent_id: int, part: int) -> None:
         """
         Add a new hardware item.
 
@@ -143,26 +148,34 @@ class DataManager(RAMSTKDataManager):
                                "part."))
         else:
             try:
-                _hardware = RAMSTKHardware(revision_id=self._revision_id,
-                                           hardware_id=self.last_id + 1,
-                                           parent_id=parent_id,
-                                           part=part)
+                _hardware = RAMSTKHardware()
+                _hardware.revision_id = self._revision_id
+                _hardware.hardware_id = self.last_id + 1
+                _hardware.parent_id = parent_id
+                _hardware.part = part
 
                 self.dao.do_insert(_hardware)
 
                 self.last_id = _hardware.hardware_id
 
-                _design_e = RAMSTKDesignElectric(hardware_id=self.last_id)
-                _design_m = RAMSTKDesignMechanic(hardware_id=self.last_id)
-                _milhdbkf = RAMSTKMilHdbkF(hardware_id=self.last_id)
-                _nswc = RAMSTKNSWC(hardware_id=self.last_id)
-                _reliability = RAMSTKReliability(hardware_id=self.last_id)
-                _allocation = RAMSTKAllocation(revision_id=self._revision_id,
-                                               hardware_id=self.last_id,
-                                               parent_id=parent_id)
-                _similaritem = RAMSTKSimilarItem(revision_id=self._revision_id,
-                                                 hardware_id=self.last_id,
-                                                 parent_id=parent_id)
+                _design_e = RAMSTKDesignElectric()
+                _design_e.hardware_id = self.last_id
+                _design_m = RAMSTKDesignMechanic()
+                _design_m.hardware_id = self.last_id
+                _milhdbkf = RAMSTKMilHdbkF()
+                _milhdbkf.hardware_id = self.last_id
+                _nswc = RAMSTKNSWC()
+                _nswc.hardware_id = self.last_id
+                _reliability = RAMSTKReliability()
+                _reliability.hardware_id = self.last_id
+                _allocation = RAMSTKAllocation()
+                _allocation.revision_id = self._revision_id
+                _allocation.hardware_id = self.last_id
+                _allocation.parent_id = parent_id
+                _similaritem = RAMSTKSimilarItem()
+                _similaritem.revision_id = self._revision_id
+                _similaritem.hardware_id = self.last_id
+                _similaritem.parent_id = parent_id
 
                 self.dao.do_insert_many([
                     _design_e, _design_m, _milhdbkf, _nswc, _reliability,
@@ -185,12 +198,13 @@ class DataManager(RAMSTKDataManager):
 
                 pub.sendMessage('inserted_hardware', tree=self.tree)
                 pub.sendMessage('succeed_insert_hardware',
-                                node_id=self.last_id)
+                                node_id=self.last_id,
+                                tree=self.tree)
             except DataAccessError as _error:
                 print(_error)
                 pub.sendMessage("fail_insert_hardware", error_message=_error)
 
-    def do_make_composite_ref_des(self, node_id=1):
+    def _do_make_composite_ref_des(self, node_id: int = 1) -> None:
         """
         Make the composite reference designators.
 
@@ -219,37 +233,41 @@ class DataManager(RAMSTKDataManager):
 
         # Now make the composite reference designator for all the child nodes.
         for _child_node in self.tree.children(node_id):
-            self.do_make_composite_ref_des(node_id=_child_node.identifier)
+            self._do_make_composite_ref_des(node_id=_child_node.identifier)
 
-    def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
+    def _do_select_all_hardware(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
-        :param int revision_id: the Revision ID to select the Hardware BoM for.
+        :param dict revision_id: the Revision ID to select the Hardware BoM
+            for.
         :return: None
         :rtype: None
         """
-        self._revision_id = revision_id
+        self._revision_id = attributes['revision_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _hardware in self.dao.do_select_all(RAMSTKHardware,
-                                                key=RAMSTKHardware.revision_id,
-                                                value=self._revision_id,
-                                                order=RAMSTKHardware.parent_id):
+        for _hardware in self.dao.do_select_all(
+                RAMSTKHardware,
+                key=RAMSTKHardware.revision_id,
+                value=self._revision_id,
+                order=RAMSTKHardware.parent_id):
 
-            _design_e = self.dao.do_select_all(RAMSTKDesignElectric,
-                                               key=RAMSTKDesignElectric.hardware_id,
-                                               value=_hardware.hardware_id,
-                                               order=None,
-                                               _all=False)
+            _design_e = self.dao.do_select_all(
+                RAMSTKDesignElectric,
+                key=RAMSTKDesignElectric.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
 
-            _design_m = self.dao.do_select_all(RAMSTKDesignMechanic,
-                                               key=RAMSTKDesignMechanic.hardware_id,
-                                               value=_hardware.hardware_id,
-                                               order=None,
-                                               _all=False)
+            _design_m = self.dao.do_select_all(
+                RAMSTKDesignMechanic,
+                key=RAMSTKDesignMechanic.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
 
             _milhdbkf = self.dao.do_select_all(RAMSTKMilHdbkF,
                                                key=RAMSTKMilHdbkF.hardware_id,
@@ -263,23 +281,26 @@ class DataManager(RAMSTKDataManager):
                                            order=None,
                                            _all=False)
 
-            _reliability = self.dao.do_select_all(RAMSTKReliability,
-                                                  key=RAMSTKReliability.hardware_id,
-                                                  value=_hardware.hardware_id,
-                                                  order=None,
-                                                  _all=False)
+            _reliability = self.dao.do_select_all(
+                RAMSTKReliability,
+                key=RAMSTKReliability.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
 
-            _allocation = self.dao.do_select_all(RAMSTKAllocation,
-                                                 key=RAMSTKAllocation.hardware_id,
-                                                 value=_hardware.hardware_id,
-                                                 order=None,
-                                                 _all=False)
+            _allocation = self.dao.do_select_all(
+                RAMSTKAllocation,
+                key=RAMSTKAllocation.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
 
-            _similaritem = self.dao.do_select_all(RAMSTKSimilarItem,
-                                                  key=RAMSTKSimilarItem.hardware_id,
-                                                  value=_hardware.hardware_id,
-                                                  order=None,
-                                                  _all=False)
+            _similaritem = self.dao.do_select_all(
+                RAMSTKSimilarItem,
+                key=RAMSTKSimilarItem.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
 
             try:
                 self.tree.create_node(tag=_hardware.comp_ref_des,
@@ -299,7 +320,8 @@ class DataManager(RAMSTKDataManager):
                 print(_error)
                 _error_msg = ('Failed to build Hardware tree for Revision ID '
                               '{0:s}.').format(str(self._revision_id))
-                pub.sendMessage('fail_retrieve_hardware', error_message=_error_msg)
+                pub.sendMessage('fail_retrieve_hardware',
+                                error_message=_error_msg)
 
         self.last_id = max(self.tree.nodes.keys())
 
@@ -368,10 +390,8 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update(
                 self.tree.get_node(node_id).data['mil_hdbk_217f'])
             self.dao.do_update(self.tree.get_node(node_id).data['nswc'])
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['reliability'])
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['allocation'])
+            self.dao.do_update(self.tree.get_node(node_id).data['reliability'])
+            self.dao.do_update(self.tree.get_node(node_id).data['allocation'])
 
             pub.sendMessage('succeed_update_hardware', node_id=node_id)
         except (AttributeError, DataAccessError):

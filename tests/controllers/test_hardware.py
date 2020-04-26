@@ -7,6 +7,13 @@
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware BoM module algorithms and models. """
+# TODO: un-skip matrix tests in test_hardware.py.
+#
+# The Hardware work flow module currently has no other modules it
+# cross-references with and, thus, does not need to create matrices.  Future
+# RAMSTK work flow modules will be cross-referenced with the Hardware
+# module.  When these new modules exist, the matrix-related tests in
+# test_hardware.py should be un-skipped.
 
 # Third Party Imports
 import pytest
@@ -14,6 +21,11 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
+from __mocks__ import (
+    MOCK_217F, MOCK_ALLOCATION, MOCK_DESIGN_ELECTRIC,
+    MOCK_DESIGN_MECHANIC, MOCK_HARDWARE, MOCK_NSWC,
+    MOCK_RELIABILITY, MOCK_RQRMNT_TREE, MOCK_SIMILAR_ITEM
+)
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amHardware, dmHardware, mmHardware
 from ramstk.db.base import BaseDatabase
@@ -22,725 +34,6 @@ from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
 )
-
-MOCK_HARDWARE = {
-    1: {
-        'alt_part_number': '',
-        'attachments': '',
-        'cage_code': '',
-        'category_id': 0,
-        'comp_ref_des': 'S1',
-        'cost': 0.0,
-        'cost_failure': 0.0,
-        'cost_hour': 0.0,
-        'cost_type_id': 0,
-        'description': 'Test System',
-        'duty_cycle': 100.0,
-        'figure_number': '',
-        'lcn': '',
-        'level': 0,
-        'manufacturer_id': 0,
-        'mission_time': 100.0,
-        'name': '',
-        'nsn': '',
-        'page_number': '',
-        'parent_id': 0,
-        'part': 0,
-        'part_number': '',
-        'quantity': 1,
-        'ref_des': 'S1',
-        'remarks': '',
-        'repairable': 0,
-        'specification_number': '',
-        'subcategory_id': 0,
-        'tagged_part': 0,
-        'total_cost': 0.0,
-        'total_part_count': 0,
-        'total_power_dissipation': 0.0,
-        'year_of_manufacture': 2019
-    },
-    2: {
-        'alt_part_number': '',
-        'attachments': '',
-        'cage_code': '',
-        'category_id': 0,
-        'comp_ref_des': 'S1:SS1',
-        'cost': 0.0,
-        'cost_failure': 0.0,
-        'cost_hour': 0.0,
-        'cost_type_id': 0,
-        'description': 'Test Sub-System 1',
-        'duty_cycle': 100.0,
-        'figure_number': '',
-        'lcn': '',
-        'level': 0,
-        'manufacturer_id': 0,
-        'mission_time': 100.0,
-        'name': '',
-        'nsn': '',
-        'page_number': '',
-        'parent_id': 1,
-        'part': 0,
-        'part_number': '',
-        'quantity': 1,
-        'ref_des': 'SS1',
-        'remarks': '',
-        'repairable': 0,
-        'specification_number': '',
-        'subcategory_id': 0,
-        'tagged_part': 0,
-        'total_cost': 0.0,
-        'total_part_count': 0,
-        'total_power_dissipation': 0.0,
-        'year_of_manufacture': 2019
-    }
-}
-MOCK_DESIGN_ELECTRIC = {
-    1: {
-        'application_id': 0,
-        'area': 0.0,
-        'capacitance': 0.0,
-        'configuration_id': 0,
-        'construction_id': 0,
-        'contact_form_id': 0,
-        'contact_gauge': 0,
-        'contact_rating_id': 0,
-        'current_operating': 0.0,
-        'current_rated': 0.0,
-        'current_ratio': 0.0,
-        'environment_active_id': 0,
-        'environment_dormant_id': 0,
-        'family_id': 0,
-        'feature_size': 0.0,
-        'frequency_operating': 0.0,
-        'insert_id': 0,
-        'insulation_id': 0,
-        'manufacturing_id': 0,
-        'matching_id': 0,
-        'n_active_pins': 0,
-        'n_circuit_planes': 1,
-        'n_cycles': 0,
-        'n_elements': 0,
-        'n_hand_soldered': 0,
-        'n_wave_soldered': 0,
-        'operating_life': 0.0,
-        'overstress': 0,
-        'package_id': 0,
-        'power_operating': 0.0,
-        'power_rated': 0.0,
-        'power_ratio': 0.0,
-        'reason': '',
-        'resistance': 0.0,
-        'specification_id': 0,
-        'technology_id': 0,
-        'temperature_active': 35.0,
-        'temperature_case': 0.0,
-        'temperature_dormant': 25.0,
-        'temperature_hot_spot': 0.0,
-        'temperature_junction': 0.0,
-        'temperature_knee': 25.0,
-        'temperature_rated_max': 0.0,
-        'temperature_rated_min': 0.0,
-        'temperature_rise': 0.0,
-        'theta_jc': 0.0,
-        'type_id': 0,
-        'voltage_ac_operating': 0.0,
-        'voltage_dc_operating': 0.0,
-        'voltage_esd': 0.0,
-        'voltage_rated': 0.0,
-        'voltage_ratio': 0.0,
-        'weight': 0.0,
-        'years_in_production': 1
-    },
-    2: {
-        'application_id': 0,
-        'area': 0.0,
-        'capacitance': 0.0,
-        'configuration_id': 0,
-        'construction_id': 0,
-        'contact_form_id': 0,
-        'contact_gauge': 0,
-        'contact_rating_id': 0,
-        'current_operating': 0.0,
-        'current_rated': 0.0,
-        'current_ratio': 0.0,
-        'environment_active_id': 0,
-        'environment_dormant_id': 0,
-        'family_id': 0,
-        'feature_size': 0.0,
-        'frequency_operating': 0.0,
-        'insert_id': 0,
-        'insulation_id': 0,
-        'manufacturing_id': 0,
-        'matching_id': 0,
-        'n_active_pins': 0,
-        'n_circuit_planes': 1,
-        'n_cycles': 0,
-        'n_elements': 0,
-        'n_hand_soldered': 0,
-        'n_wave_soldered': 0,
-        'operating_life': 0.0,
-        'overstress': 0,
-        'package_id': 0,
-        'power_operating': 0.0,
-        'power_rated': 0.0,
-        'power_ratio': 0.0,
-        'reason': '',
-        'resistance': 0.0,
-        'specification_id': 0,
-        'technology_id': 0,
-        'temperature_active': 35.0,
-        'temperature_case': 0.0,
-        'temperature_dormant': 25.0,
-        'temperature_hot_spot': 0.0,
-        'temperature_junction': 0.0,
-        'temperature_knee': 25.0,
-        'temperature_rated_max': 0.0,
-        'temperature_rated_min': 0.0,
-        'temperature_rise': 0.0,
-        'theta_jc': 0.0,
-        'type_id': 0,
-        'voltage_ac_operating': 0.0,
-        'voltage_dc_operating': 0.0,
-        'voltage_esd': 0.0,
-        'voltage_rated': 0.0,
-        'voltage_ratio': 0.0,
-        'weight': 0.0,
-        'years_in_production': 1
-    }
-}
-MOCK_DESIGN_MECHANIC = {
-    1: {
-        'altitude_operating': 0.0,
-        'application_id': 0,
-        'balance_id': 0,
-        'clearance': 0.0,
-        'casing_id': 0,
-        'contact_pressure': 0.0,
-        'deflection': 0.0,
-        'diameter_coil': 0.0,
-        'diameter_inner': 0.0,
-        'diameter_outer': 0.0,
-        'diameter_wire': 0.0,
-        'filter_size': 0.0,
-        'flow_design': 0.0,
-        'flow_operating': 0.0,
-        'friction': 0.0,
-        'impact_id': 0,
-        'leakage_allowable': 0.0,
-        'length': 0.0,
-        'length_compressed': 0.0,
-        'length_relaxed': 0.0,
-        'load_design': 0.0,
-        'load_id': 0,
-        'load_operating': 0.0,
-        'lubrication_id': 0,
-        'material_id': 0,
-        'meyer_hardness': 0.0,
-        'misalignment_angle': 0.0,
-        'n_ten': 0,
-        'offset': 0.0,
-        'particle_size': 0.0,
-        'pressure_contact': 0.0,
-        'pressure_delta': 0.0,
-        'pressure_downstream': 0.0,
-        'pressure_rated': 0.0,
-        'pressure_upstream': 0.0,
-        'rpm_design': 0.0,
-        'rpm_operating': 0.0,
-        'service_id': 0,
-        'spring_index': 0.0,
-        'surface_finish': 0.0,
-        'thickness': 0.0,
-        'torque_id': 0,
-        'type_id': 0,
-        'viscosity_design': 0.0,
-        'viscosity_dynamic': 0.0,
-        'water_per_cent': 0.0,
-        'width_minimum': 0.0
-    },
-    2: {
-        'altitude_operating': 0.0,
-        'application_id': 0,
-        'balance_id': 0,
-        'clearance': 0.0,
-        'casing_id': 0,
-        'contact_pressure': 0.0,
-        'deflection': 0.0,
-        'diameter_coil': 0.0,
-        'diameter_inner': 0.0,
-        'diameter_outer': 0.0,
-        'diameter_wire': 0.0,
-        'filter_size': 0.0,
-        'flow_design': 0.0,
-        'flow_operating': 0.0,
-        'friction': 0.0,
-        'impact_id': 0,
-        'leakage_allowable': 0.0,
-        'length': 0.0,
-        'length_compressed': 0.0,
-        'length_relaxed': 0.0,
-        'load_design': 0.0,
-        'load_id': 0,
-        'load_operating': 0.0,
-        'lubrication_id': 0,
-        'material_id': 0,
-        'meyer_hardness': 0.0,
-        'misalignment_angle': 0.0,
-        'n_ten': 0,
-        'offset': 0.0,
-        'particle_size': 0.0,
-        'pressure_contact': 0.0,
-        'pressure_delta': 0.0,
-        'pressure_downstream': 0.0,
-        'pressure_rated': 0.0,
-        'pressure_upstream': 0.0,
-        'rpm_design': 0.0,
-        'rpm_operating': 0.0,
-        'service_id': 0,
-        'spring_index': 0.0,
-        'surface_finish': 0.0,
-        'thickness': 0.0,
-        'torque_id': 0,
-        'type_id': 0,
-        'viscosity_design': 0.0,
-        'viscosity_dynamic': 0.0,
-        'water_per_cent': 0.0,
-        'width_minimum': 0.0
-    }
-}
-MOCK_217F = {
-    1: {
-        'A1': 0.0,
-        'A2': 0.0,
-        'B1': 0.0,
-        'B2': 0.0,
-        'C1': 0.0,
-        'C2': 0.0,
-        'lambdaBD': 0.0,
-        'lambdaBP': 0.0,
-        'lambdaCYC': 0.0,
-        'lambdaEOS': 0.0,
-        'piA': 0.0,
-        'piC': 0.0,
-        'piCD': 0.0,
-        'piCF': 0.0,
-        'piCR': 0.0,
-        'piCV': 0.0,
-        'piCYC': 0.0,
-        'piE': 0.0,
-        'piF': 0.0,
-        'piI': 0.0,
-        'piK': 0.0,
-        'piL': 0.0,
-        'piM': 0.0,
-        'piMFG': 0.0,
-        'piN': 0.0,
-        'piNR': 0.0,
-        'piP': 0.0,
-        'piPT': 0.0,
-        'piQ': 0.0,
-        'piR': 0.0,
-        'piS': 0.0,
-        'piT': 0.0,
-        'piTAPS': 0.0,
-        'piU': 0.0,
-        'piV': 0.0
-    },
-    2: {
-        'A1': 0.0,
-        'A2': 0.0,
-        'B1': 0.0,
-        'B2': 0.0,
-        'C1': 0.0,
-        'C2': 0.0,
-        'lambdaBD': 0.0,
-        'lambdaBP': 0.0,
-        'lambdaCYC': 0.0,
-        'lambdaEOS': 0.0,
-        'piA': 0.0,
-        'piC': 0.0,
-        'piCD': 0.0,
-        'piCF': 0.0,
-        'piCR': 0.0,
-        'piCV': 0.0,
-        'piCYC': 0.0,
-        'piE': 0.0,
-        'piF': 0.0,
-        'piI': 0.0,
-        'piK': 0.0,
-        'piL': 0.0,
-        'piM': 0.0,
-        'piMFG': 0.0,
-        'piN': 0.0,
-        'piNR': 0.0,
-        'piP': 0.0,
-        'piPT': 0.0,
-        'piQ': 0.0,
-        'piR': 0.0,
-        'piS': 0.0,
-        'piT': 0.0,
-        'piTAPS': 0.0,
-        'piU': 0.0,
-        'piV': 0.0
-    }
-}
-MOCK_NSWC = {
-    1: {
-        'Cac': 0.0,
-        'Calt': 0.0,
-        'Cb': 0.0,
-        'Cbl': 0.0,
-        'Cbt': 0.0,
-        'Cbv': 0.0,
-        'Cc': 0.0,
-        'Ccf': 0.0,
-        'Ccp': 0.0,
-        'Ccs': 0.0,
-        'Ccv': 0.0,
-        'Ccw': 0.0,
-        'Cd': 0.0,
-        'Cdc': 0.0,
-        'Cdl': 0.0,
-        'Cdp': 0.0,
-        'Cds': 0.0,
-        'Cdt': 0.0,
-        'Cdw': 0.0,
-        'Cdy': 0.0,
-        'Ce': 0.0,
-        'Cf': 0.0,
-        'Cg': 0.0,
-        'Cga': 0.0,
-        'Cgl': 0.0,
-        'Cgp': 0.0,
-        'Cgs': 0.0,
-        'Cgt': 0.0,
-        'Cgv': 0.0,
-        'Ch': 0.0,
-        'Ci': 0.0,
-        'Ck': 0.0,
-        'Cl': 0.0,
-        'Clc': 0.0,
-        'Cm': 0.0,
-        'Cmu': 0.0,
-        'Cn': 0.0,
-        'Cnp': 0.0,
-        'Cnw': 0.0,
-        'Cp': 0.0,
-        'Cpd': 0.0,
-        'Cpf': 0.0,
-        'Cpv': 0.0,
-        'Cq': 0.0,
-        'Cr': 0.0,
-        'Crd': 0.0,
-        'Cs': 0.0,
-        'Csc': 0.0,
-        'Csf': 0.0,
-        'Cst': 0.0,
-        'Csv': 0.0,
-        'Csw': 0.0,
-        'Csz': 0.0,
-        'Ct': 0.0,
-        'Cv': 0.0,
-        'Cw': 0.0,
-        'Cy': 0.0
-    },
-    2: {
-        'Cac': 0.0,
-        'Calt': 0.0,
-        'Cb': 0.0,
-        'Cbl': 0.0,
-        'Cbt': 0.0,
-        'Cbv': 0.0,
-        'Cc': 0.0,
-        'Ccf': 0.0,
-        'Ccp': 0.0,
-        'Ccs': 0.0,
-        'Ccv': 0.0,
-        'Ccw': 0.0,
-        'Cd': 0.0,
-        'Cdc': 0.0,
-        'Cdl': 0.0,
-        'Cdp': 0.0,
-        'Cds': 0.0,
-        'Cdt': 0.0,
-        'Cdw': 0.0,
-        'Cdy': 0.0,
-        'Ce': 0.0,
-        'Cf': 0.0,
-        'Cg': 0.0,
-        'Cga': 0.0,
-        'Cgl': 0.0,
-        'Cgp': 0.0,
-        'Cgs': 0.0,
-        'Cgt': 0.0,
-        'Cgv': 0.0,
-        'Ch': 0.0,
-        'Ci': 0.0,
-        'Ck': 0.0,
-        'Cl': 0.0,
-        'Clc': 0.0,
-        'Cm': 0.0,
-        'Cmu': 0.0,
-        'Cn': 0.0,
-        'Cnp': 0.0,
-        'Cnw': 0.0,
-        'Cp': 0.0,
-        'Cpd': 0.0,
-        'Cpf': 0.0,
-        'Cpv': 0.0,
-        'Cq': 0.0,
-        'Cr': 0.0,
-        'Crd': 0.0,
-        'Cs': 0.0,
-        'Csc': 0.0,
-        'Csf': 0.0,
-        'Cst': 0.0,
-        'Csv': 0.0,
-        'Csw': 0.0,
-        'Csz': 0.0,
-        'Ct': 0.0,
-        'Cv': 0.0,
-        'Cw': 0.0,
-        'Cy': 0.0
-    }
-}
-MOCK_RELIABILITY = {
-    1: {
-        'add_adj_factor': 0.0,
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'avail_log_variance': 0.0,
-        'avail_mis_variance': 0.0,
-        'failure_distribution_id': 0,
-        'hazard_rate_active': 0.0,
-        'hazard_rate_dormant': 0.0,
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_method_id': 0,
-        'hazard_rate_mission': 0.0,
-        'hazard_rate_model': '',
-        'hazard_rate_percent': 0.0,
-        'hazard_rate_software': 0.0,
-        'hazard_rate_specified': 0.0,
-        'hazard_rate_type_id': 0,
-        'hr_active_variance': 0.0,
-        'hr_dormant_variance': 0.0,
-        'hr_logistics_variance': 0.0,
-        'hr_mission_variance': 0.0,
-        'hr_specified_variance': 0.0,
-        'lambda_b': 0.0,
-        'location_parameter': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mtbf_specified': 0.0,
-        'mtbf_logistics_variance': 0.0,
-        'mtbf_mission_variance': 0.0,
-        'mtbf_specified_variance': 0.0,
-        'mult_adj_factor': 1.0,
-        'quality_id': 0,
-        'reliability_goal': 1.0,
-        'reliability_goal_measure_id': 0,
-        'reliability_logistics': 1.0,
-        'reliability_mission': 1.0,
-        'reliability_log_variance': 0.0,
-        'reliability_miss_variance': 0.0,
-        'scale_parameter': 0.0,
-        'shape_parameter': 0.0,
-        'survival_analysis_id': 0
-    },
-    2: {
-        'add_adj_factor': 0.0,
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'avail_log_variance': 0.0,
-        'avail_mis_variance': 0.0,
-        'failure_distribution_id': 0,
-        'hazard_rate_active': 0.0,
-        'hazard_rate_dormant': 0.0,
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_method_id': 0,
-        'hazard_rate_mission': 0.0,
-        'hazard_rate_model': '',
-        'hazard_rate_percent': 0.0,
-        'hazard_rate_software': 0.0,
-        'hazard_rate_specified': 0.0,
-        'hazard_rate_type_id': 0,
-        'hr_active_variance': 0.0,
-        'hr_dormant_variance': 0.0,
-        'hr_logistics_variance': 0.0,
-        'hr_mission_variance': 0.0,
-        'hr_specified_variance': 0.0,
-        'lambda_b': 0.0,
-        'location_parameter': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mtbf_specified': 0.0,
-        'mtbf_logistics_variance': 0.0,
-        'mtbf_mission_variance': 0.0,
-        'mtbf_specified_variance': 0.0,
-        'mult_adj_factor': 1.0,
-        'quality_id': 0,
-        'reliability_goal': 1.0,
-        'reliability_goal_measure_id': 0,
-        'reliability_logistics': 1.0,
-        'reliability_mission': 1.0,
-        'reliability_log_variance': 0.0,
-        'reliability_miss_variance': 0.0,
-        'scale_parameter': 0.0,
-        'shape_parameter': 0.0,
-        'survival_analysis_id': 0
-    }
-}
-MOCK_ALLOCATION = {
-    1: {
-        'availability_alloc': 0.0,
-        'env_factor': 1,
-        'goal_measure_id': 1,
-        'hazard_rate_alloc': 0.0,
-        'hazard_rate_goal': 0.0,
-        'included': 1,
-        'int_factor': 1,
-        'allocation_method_id': 1,
-        'mtbf_alloc': 0.0,
-        'mtbf_goal': 0.0,
-        'n_sub_systems': 1,
-        'n_sub_elements': 1,
-        'percent_weight_factor': 0.0,
-        'reliability_alloc': 1.0,
-        'op_time_factor': 1,
-        'soa_factor': 1,
-        'weight_factor': 1
-    },
-    2: {
-        'availability_alloc': 0.0,
-        'env_factor': 1,
-        'goal_measure_id': 1,
-        'hazard_rate_alloc': 0.0,
-        'hazard_rate_goal': 0.0,
-        'included': 1,
-        'int_factor': 1,
-        'allocation_method_id': 1,
-        'mtbf_alloc': 0.0,
-        'mtbf_goal': 0.0,
-        'n_sub_systems': 1,
-        'n_sub_elements': 1,
-        'percent_weight_factor': 0.0,
-        'reliability_alloc': 1.0,
-        'op_time_factor': 1,
-        'soa_factor': 1,
-        'weight_factor': 1
-    }
-}
-MOCK_SIMILAR_ITEM = {
-    1: {
-        'change_description_1': '',
-        'change_description_2': '',
-        'change_description_3': '',
-        'change_description_4': '',
-        'change_description_5': '',
-        'change_description_6': '',
-        'change_description_7': '',
-        'change_description_8': '',
-        'change_description_9': '',
-        'change_description_10': '',
-        'change_factor_1': 1.0,
-        'change_factor_2': 1.0,
-        'change_factor_3': 1.0,
-        'change_factor_4': 1.0,
-        'change_factor_5': 1.0,
-        'change_factor_6': 1.0,
-        'change_factor_7': 1.0,
-        'change_factor_8': 1.0,
-        'change_factor_9': 1.0,
-        'change_factor_10': 1.0,
-        'environment_from_id': 0,
-        'environment_to_id': 0,
-        'function_1': '0',
-        'function_2': '0',
-        'function_3': '0',
-        'function_4': '0',
-        'function_5': '0',
-        'similar_item_method_id': 1,
-        'quality_from_id': 0,
-        'quality_to_id': 0,
-        'result_1': 0.0,
-        'result_2': 0.0,
-        'result_3': 0.0,
-        'result_4': 0.0,
-        'result_5': 0.0,
-        'temperature_from': 30.0,
-        'temperature_to': 30.0,
-        'user_blob_1': '',
-        'user_blob_2': '',
-        'user_blob_3': '',
-        'user_blob_4': '',
-        'user_blob_5': '',
-        'user_float_1': 0.0,
-        'user_float_2': 0.0,
-        'user_float_3': 0.0,
-        'user_float_4': 0.0,
-        'user_float_5': 0.0,
-        'user_int_1': 0,
-        'user_int_2': 0,
-        'user_int_3': 0,
-        'user_int_4': 0,
-        'user_int_5': 0
-    },
-    2: {
-        'change_description_1': '',
-        'change_description_2': '',
-        'change_description_3': '',
-        'change_description_4': '',
-        'change_description_5': '',
-        'change_description_6': '',
-        'change_description_7': '',
-        'change_description_8': '',
-        'change_description_9': '',
-        'change_description_10': '',
-        'change_factor_1': 1.0,
-        'change_factor_2': 1.0,
-        'change_factor_3': 1.0,
-        'change_factor_4': 1.0,
-        'change_factor_5': 1.0,
-        'change_factor_6': 1.0,
-        'change_factor_7': 1.0,
-        'change_factor_8': 1.0,
-        'change_factor_9': 1.0,
-        'change_factor_10': 1.0,
-        'environment_from_id': 0,
-        'environment_to_id': 0,
-        'function_1': '0',
-        'function_2': '0',
-        'function_3': '0',
-        'function_4': '0',
-        'function_5': '0',
-        'similar_item_method_id': 1,
-        'quality_from_id': 0,
-        'quality_to_id': 0,
-        'result_1': 0.0,
-        'result_2': 0.0,
-        'result_3': 0.0,
-        'result_4': 0.0,
-        'result_5': 0.0,
-        'temperature_from': 30.0,
-        'temperature_to': 30.0,
-        'user_blob_1': '',
-        'user_blob_2': '',
-        'user_blob_3': '',
-        'user_blob_4': '',
-        'user_blob_5': '',
-        'user_float_1': 0.0,
-        'user_float_2': 0.0,
-        'user_float_3': 0.0,
-        'user_float_4': 0.0,
-        'user_float_5': 0.0,
-        'user_int_1': 0,
-        'user_int_2': 0,
-        'user_int_3': 0,
-        'user_int_4': 0,
-        'user_int_5': 0
-    }
-}
 
 
 class MockDao:
@@ -937,6 +230,23 @@ class TestCreateControllers():
         assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'hardware'
         assert DUT._root == 0
+        assert pub.isSubscribed(DUT._do_select_all_hardware,
+                        'succeed_select_revision')
+        assert pub.isSubscribed(DUT.do_set_tree, 'succeed_calculate_all_hardware')
+        assert pub.isSubscribed(DUT._do_delete_hardware, 'request_delete_hardware')
+        assert pub.isSubscribed(DUT._do_insert_hardware, 'request_insert_hardware')
+        assert pub.isSubscribed(DUT.do_update, 'request_update_hardware')
+        assert pub.isSubscribed(DUT.do_update_all, 'request_update_all_hardware')
+        assert pub.isSubscribed(DUT._do_make_composite_ref_des,
+                      'request_make_comp_ref_des')
+        assert pub.isSubscribed(DUT.do_get_attributes,
+                      'request_get_hardware_attributes')
+        assert pub.isSubscribed(DUT.do_get_all_attributes,
+                      'request_get_all_hardware_attributes')
+        assert pub.isSubscribed(DUT._do_get_hardware_tree, 'request_get_hardware_tree')
+        assert pub.isSubscribed(DUT.do_set_attributes,
+                      'request_set_hardware_attributes')
+        assert pub.isSubscribed(DUT.do_set_all_attributes, 'succeed_calculate_hardware')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_toml_user_configuration):
@@ -961,6 +271,9 @@ class TestCreateControllers():
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1
         assert DUT.n_col == 1
+        assert pub.isSubscribed(DUT.do_create_rows, 'succeed_retrieve_hardware')
+        assert pub.isSubscribed(DUT._on_delete_hardware, 'succeed_delete_hardware')
+        assert pub.isSubscribed(DUT._on_insert_hardware, 'succeed_insert_hardware')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -984,13 +297,13 @@ class TestSelectMethods():
             tree.get_node(1).data['similar_item'], RAMSTKSimilarItem)
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
-        """do_select_all() should return a Tree() object populated with RAMSTKHardware instances on success."""
+    def test__do_select_all_hardware(self, mock_program_dao):
+        """_do_select_all_hardware() should return a Tree() object populated with RAMSTKHardware instances on success."""
         pub.subscribe(self.on_succeed_select_all, 'succeed_retrieve_hardware')
 
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         pub.unsubscribe(self.on_succeed_select_all,
                         'succeed_retrieve_hardware')
@@ -1000,7 +313,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKDesignElectric on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='design_electric')
 
@@ -1013,7 +326,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKDesignMechanic on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='design_mechanic')
 
@@ -1026,7 +339,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKHardware on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='hardware')
 
@@ -1039,7 +352,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMilHdbkF on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='mil_hdbk_217f')
 
@@ -1052,7 +365,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKNSWC on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='nswc')
 
@@ -1065,7 +378,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKReliability on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='reliability')
 
@@ -1074,11 +387,11 @@ class TestSelectMethods():
         assert _hardware.reliability_goal == 1.0
 
     @pytest.mark.unit
-    def test_do_select_allocation(self, mock_program_dao):
+    def test__do_select_all_hardwareocation(self, mock_program_dao):
         """do_select() should return an instance of the RAMSTKAllocation on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='allocation')
 
@@ -1091,7 +404,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKSimilarItem on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='similar_item')
 
@@ -1104,7 +417,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select(1, table='scibbidy-bibbidy-doo')
@@ -1114,17 +427,16 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent Hardware ID is requested."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         assert DUT.do_select(100, table='hardware') is None
 
-    # TODO: un-skip test_do_create_matrix in test_hardware.py.
     @pytest.mark.skip
     def test_do_create_matrix(self, test_program_dao):
         """_do_create() should create an instance of the hardware matrix manager."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -1154,8 +466,9 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_hardware(self, node_id):
+    def on_succeed_delete_hardware(self, node_id, tree):
         assert node_id == 2
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_hardware topic was broadcast.")
 
     @pytest.mark.unit
@@ -1166,8 +479,9 @@ class TestDeleteMethods():
 
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
-        DUT._do_delete(node_id=DUT.last_id)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+
+        pub.sendMessage('request_delete_hardware', node_id=DUT.last_id)
 
         assert DUT.last_id == 1
 
@@ -1179,7 +493,7 @@ class TestDeleteMethods():
         """_do_delete() should send the fail message."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         def on_message(error_message):
             assert error_message == ("Hardware ID 300 was not found as a "
@@ -1187,49 +501,36 @@ class TestDeleteMethods():
 
         pub.subscribe(on_message, 'fail_delete_hardware')
 
-        DUT._do_delete(300)
+        pub.sendMessage('request_delete_hardware', node_id=300)
 
-    # TODO: un-skip test_do_delete_matrix_row in test_hardware.py.
+        pub.unsubscribe(on_message, 'fail_delete_hardware')
+
     @pytest.mark.skip
-    def test_do_delete_matrix_row(self, test_program_dao):
+    def test_do_delete_matrix_row(self, mock_program_dao):
         """do_delete_row() should remove the appropriate row from the hardware matrices."""
-        DATAMGR = dmHardware()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
         DUT = mmHardware()
-        DUT._col_tree.create_node(tag='requirements',
-                                  identifier=0,
-                                  parent=None,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0001',
-                                  identifier=1,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='FUNC-0001',
-                                  identifier=2,
-                                  parent=0,
-                                  data=None)
-        DUT._col_tree.create_node(tag='REL-0002',
-                                  identifier=3,
-                                  parent=0,
-                                  data=None)
 
-        pub.sendMessage('succeed_select_revision', revision_id=1)
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
 
-        assert DUT.do_select('hrdwr_rqrmnt', 1, 7) == 0
+        pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
+        print(DUT.dic_matrices)
+        assert DUT.do_select('hrdwr_rqrmnt', 1, 'S1:SS4') == 0
 
-        pub.sendMessage('succeed_delete_hardware', node_id=7)
+        DATAMGR.tree.remove_node(1)
+        pub.sendMessage('succeed_delete_hardware', node_id=1,
+                        tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
-            DUT.do_select('hrdwr_rqrmnt', 1, 7)
+            DUT.do_select('hrdwr_rqrmnt', 1, 'S1:SS4')
 
-    # TODO: un-skip test_do_delete_matrix_column in test_hardware.py.
     @pytest.mark.skip
     def test_do_delete_matrix_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -1266,7 +567,7 @@ class TestGetterSetter():
         """do_get_attributes() should return a dict of hardware attributes on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -1286,7 +587,7 @@ class TestGetterSetter():
         """get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -1308,7 +609,7 @@ class TestGetterSetter():
         """_get_all_attributes() should update the attributes dict on success."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
@@ -1326,7 +627,7 @@ class TestGetterSetter():
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_hardware_tree message."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(dmtree):
@@ -1344,7 +645,7 @@ class TestGetterSetter():
         """do_set_attributes() should send the success message."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_hardware_attributes',
                         node_id=2,
@@ -1378,7 +679,7 @@ class TestGetterSetter():
         """do_calculate_goal() should return the proper allocation goal measure."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
@@ -1404,124 +705,133 @@ class TestInsertMethods():
         """do_insert() should send the success message after successfully inserting a new sibling hardware assembly."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
-        def on_message(node_id):
+        def on_message(node_id, tree):
             assert node_id == 3
+            assert isinstance(tree, Tree)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['hardware'], RAMSTKHardware)
+                tree.get_node(node_id).data['hardware'], RAMSTKHardware)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['design_electric'],
+                tree.get_node(node_id).data['design_electric'],
                 RAMSTKDesignElectric)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['design_mechanic'],
+                tree.get_node(node_id).data['design_mechanic'],
                 RAMSTKDesignMechanic)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['mil_hdbk_217f'],
+                tree.get_node(node_id).data['mil_hdbk_217f'],
                 RAMSTKMilHdbkF)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
+                tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['reliability'],
+                tree.get_node(node_id).data['reliability'],
                 RAMSTKReliability)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['allocation'],
+                tree.get_node(node_id).data['allocation'],
                 RAMSTKAllocation)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['similar_item'],
+                tree.get_node(node_id).data['similar_item'],
                 RAMSTKSimilarItem)
-            assert DUT.tree.get_node(node_id).data['hardware'].revision_id == 1
-            assert DUT.tree.get_node(node_id).data['hardware'].parent_id == 1
-            assert DUT.tree.get_node(node_id).data['hardware'].part == 0
+            assert tree.get_node(node_id).data['hardware'].revision_id == 1
+            assert tree.get_node(node_id).data['hardware'].parent_id == 1
+            assert tree.get_node(node_id).data['hardware'].part == 0
 
         pub.subscribe(on_message, 'succeed_insert_hardware')
 
         pub.sendMessage('request_insert_hardware', parent_id=1, part=0)
+
+        pub.unsubscribe(on_message, 'succeed_insert_hardware')
 
     @pytest.mark.unit
     def test_do_insert_child_assembly(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new child hardware assembly."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
-        def on_message(node_id):
+        def on_message(node_id, tree):
             assert node_id == 3
+            assert isinstance(tree, Tree)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['hardware'], RAMSTKHardware)
+                tree.get_node(node_id).data['hardware'], RAMSTKHardware)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['design_electric'],
+                tree.get_node(node_id).data['design_electric'],
                 RAMSTKDesignElectric)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['design_mechanic'],
+                tree.get_node(node_id).data['design_mechanic'],
                 RAMSTKDesignMechanic)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['mil_hdbk_217f'],
+                tree.get_node(node_id).data['mil_hdbk_217f'],
                 RAMSTKMilHdbkF)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
+                tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['reliability'],
+                tree.get_node(node_id).data['reliability'],
                 RAMSTKReliability)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['allocation'],
+                tree.get_node(node_id).data['allocation'],
                 RAMSTKAllocation)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['similar_item'],
+                tree.get_node(node_id).data['similar_item'],
                 RAMSTKSimilarItem)
-            assert DUT.tree.get_node(node_id).data['hardware'].revision_id == 1
-            assert DUT.tree.get_node(node_id).data['hardware'].parent_id == 2
-            assert DUT.tree.get_node(node_id).data['hardware'].part == 0
+            assert tree.get_node(node_id).data['hardware'].revision_id == 1
+            assert tree.get_node(node_id).data['hardware'].parent_id == 2
+            assert tree.get_node(node_id).data['hardware'].part == 0
 
         pub.subscribe(on_message, 'succeed_insert_hardware')
 
-        assert DUT.do_insert(parent_id=2, part=0) is None
+        assert DUT._do_insert_hardware(parent_id=2, part=0) is None
+
+        pub.unsubscribe(on_message, 'succeed_insert_hardware')
 
     @pytest.mark.unit
     def test_do_insert_part(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new hardware part."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
-        def on_message(node_id):
+        def on_message(node_id, tree):
             assert node_id == 3
+            assert isinstance(tree, Tree)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['hardware'], RAMSTKHardware)
+                tree.get_node(node_id).data['hardware'], RAMSTKHardware)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['design_electric'],
+                tree.get_node(node_id).data['design_electric'],
                 RAMSTKDesignElectric)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['design_mechanic'],
+                tree.get_node(node_id).data['design_mechanic'],
                 RAMSTKDesignMechanic)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['mil_hdbk_217f'],
+                tree.get_node(node_id).data['mil_hdbk_217f'],
                 RAMSTKMilHdbkF)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
+                tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['reliability'],
+                tree.get_node(node_id).data['reliability'],
                 RAMSTKReliability)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['allocation'],
+                tree.get_node(node_id).data['allocation'],
                 RAMSTKAllocation)
             assert isinstance(
-                DUT.tree.get_node(node_id).data['similar_item'],
+                tree.get_node(node_id).data['similar_item'],
                 RAMSTKSimilarItem)
-            assert DUT.tree.get_node(node_id).data['hardware'].revision_id == 1
-            assert DUT.tree.get_node(node_id).data['hardware'].parent_id == 2
-            assert DUT.tree.get_node(node_id).data['hardware'].part == 1
+            assert tree.get_node(node_id).data['hardware'].revision_id == 1
+            assert tree.get_node(node_id).data['hardware'].parent_id == 2
+            assert tree.get_node(node_id).data['hardware'].part == 1
 
         pub.subscribe(on_message, 'succeed_insert_hardware')
 
-        assert DUT.do_insert(parent_id=2, part=1) is None
+        assert DUT._do_insert_hardware(parent_id=2, part=1) is None
+
+        pub.unsubscribe(on_message, 'succeed_insert_hardware')
 
     @pytest.mark.integration
     def test_do_insert_part_to_part(self, test_program_dao):
         """do_insert() should send the fail message when attempting to add a child to a hardware part."""
         DUT = dmHardware()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         def on_message(error_message):
             assert error_message == (
@@ -1531,15 +841,16 @@ class TestInsertMethods():
 
         pub.subscribe(on_message, 'fail_insert_hardware')
 
-        assert DUT.do_insert(parent_id=8, part=1) is None
+        assert DUT._do_insert_hardware(parent_id=8, part=1) is None
 
-    # TODO: un-skip test_do_insert_matrix_row in test_hardware.py.
+        pub.unsubscribe(on_message, 'fail_insert_hardware')
+
     @pytest.mark.skip
     def test_do_insert_matrix_row(self, test_program_dao):
         """do_insert_row() should add a row to the end of each hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -1567,13 +878,12 @@ class TestInsertMethods():
 
         assert DUT.do_select('hrdwr_rqrmnt', 1, 12) == 0
 
-    # TODO: un-skip test_do_insert_matrix_column in test_hardware.py.
     @pytest.mark.skip
     def test_do_insert_matrix_column(self, test_program_dao):
         """do_insert_column() should add a column to the right of the requested hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -1606,7 +916,7 @@ class TestInsertMethods():
         """do_make_comp_ref_des() should return a zero error code on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='hardware')
         _hardware.ref_des = "SS8"
@@ -1631,10 +941,10 @@ class TestUpdateMethods():
         """ do_update() should return a zero error code on success. """
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         def on_message(node_id):
-            DUT.do_select_all(revision_id=1)
+            DUT._do_select_all_hardware(attributes={'revision_id': 1})
             _hardware = DUT.do_select(node_id, table='hardware')
             assert node_id == 2
             assert _hardware.parent_id == 1
@@ -1657,7 +967,7 @@ class TestUpdateMethods():
         """ do_update() should return a non-zero error code when passed a Hardware ID that doesn't exist. """
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         def on_message(error_message):
             assert error_message == (
@@ -1673,7 +983,7 @@ class TestUpdateMethods():
         """ do_update_all() should return a zero error code on success. """
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(revision_id=1)
+        DUT._do_select_all_hardware(attributes={'revision_id': 1})
 
         def on_message(node_id):
             assert DUT.do_select(node_id,
@@ -1683,13 +993,12 @@ class TestUpdateMethods():
 
         pub.sendMessage('request_update_all_hardware')
 
-    # TODO: un-skip test_do_update_matrix_manager in test_hardware.py.
     @pytest.mark.skip
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should ."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -1734,7 +1043,7 @@ class TestAnalysisMethods():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the h(t)."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1792,7 +1101,7 @@ class TestAnalysisMethods():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the MTBF."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1833,7 +1142,7 @@ class TestAnalysisMethods():
         """do_calculate() should send the fail message when all hazard rates=0.0."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -1859,7 +1168,7 @@ class TestAnalysisMethods():
         """do_calculate() should send the fail message when the specified MTBF=0.0."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -1885,7 +1194,7 @@ class TestAnalysisMethods():
         """do_calculate_all_hardware() should calculate the entire system and roll-up results from child to parent hardware items."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(module_tree):
@@ -1934,7 +1243,7 @@ class TestMilHdbk217FPredictions():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F parts count prediction."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1999,7 +1308,7 @@ class TestMilHdbk217FPredictions():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F part stress prediction."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2079,7 +1388,7 @@ class TestStressCalculations():
         """do_calculate() should send the stress ratio calculation fail message when rated current is zero."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -2101,7 +1410,7 @@ class TestStressCalculations():
         """do_calculate() should send the stress ratio calculation fail message when rated power is zero."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -2127,7 +1436,7 @@ class TestStressCalculations():
         """do_calculate() should send the stress ratio calculation fail message when rated voltage is zero."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -2153,7 +1462,7 @@ class TestStressCalculations():
         test_toml_user_configuration.get_user_configuration()
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2180,7 +1489,7 @@ class TestStressCalculations():
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is power overstressed."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2206,7 +1515,7 @@ class TestStressCalculations():
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is voltage overstressed."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2233,7 +1542,7 @@ class TestStressCalculations():
         """do_derating_analysis() should set overstress attribute False and the reason message should='' when a component is not overstressed."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2262,7 +1571,7 @@ class TestAllocation():
         """do_calculate_goal() should calculate the equivalent h(t) and MTBF goals from a specified reliability goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=1)
@@ -2281,7 +1590,7 @@ class TestAllocation():
         """do_calculate_goal() should calculate the equivalent MTBF and R(t) goals from a specified hazard rate goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
@@ -2300,7 +1609,7 @@ class TestAllocation():
         """do_calculate_goal() should calculate the equivalent h(t) and R(t) goals from a specified MTBF goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
@@ -2320,7 +1629,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the AGREE method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2367,7 +1676,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the ARINC method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2412,7 +1721,7 @@ class TestAllocation():
         """do_calculate_allocation() should send an error message when attempting to allocate an assembly with a zero hazard rate using the ARINC method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -2436,7 +1745,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the equal apportionment method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2463,7 +1772,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the feasibility of objectives method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2516,7 +1825,7 @@ class TestSimilarItem():
         """do_calculate_goal() should calculate the Topic 6.3.3 similar item."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
@@ -2548,7 +1857,7 @@ class TestSimilarItem():
         """do_calculate_goal() should calculate the Topic 644 similar item."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
@@ -2581,7 +1890,7 @@ class TestSimilarItem():
         """do_roll_up_change_descriptions() should combine all child change descriptions into a single change description for the parent."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(revision_id=1)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):

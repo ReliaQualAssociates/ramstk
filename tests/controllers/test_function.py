@@ -434,7 +434,8 @@ class TestDeleteMethods():
 
         assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2') == 0
 
-        pub.sendMessage('succeed_delete_hardware', node_id=3)
+        pub.sendMessage('succeed_delete_hardware', node_id=3,
+                        tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
             DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2')
@@ -572,7 +573,8 @@ class TestInsertMethods():
                                     parent=0,
                                     data=None)
 
-        pub.sendMessage('succeed_insert_hardware', node_id=15)
+        pub.sendMessage('succeed_insert_hardware', node_id=15,
+                        tree=MOCK_HRDWR_TREE)
 
         assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS15') == 0
 
@@ -813,7 +815,7 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_function_no_data,
                         'fail_update_function')
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should broadcast the 'succeed_update_matrix' on success."""
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
@@ -826,14 +828,19 @@ class TestUpdateMethods():
         HRDWRMGR = dmHardware()
         HRDWRMGR.do_connect(test_program_dao)
 
+        def on_succeed_retrieve_hardware(tree):
+            DUT.dic_matrices['fnctn_hrdwr'].loc[1, 'SS1:SS2'] = 1
+
+        pub.subscribe(on_succeed_retrieve_hardware,
+                      'succeed_retrieve_hardware')
+
         pub.sendMessage('selected_revision', attributes={'revision_id': 1})
-
-        DUT.dic_matrices['fnctn_hrdwr'].loc[1, 'SS1:SS2'] = 1
-
         pub.sendMessage('do_request_update_matrix', revision_id=1,
                         matrix_type='fnctn_hrdwr')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
+        pub.unsubscribe(on_succeed_retrieve_hardware,
+                        'succeed_retrieve_hardware')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')

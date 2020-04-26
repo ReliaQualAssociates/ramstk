@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.0](https://github.com/weibullguy/ramstk/tree/v1.1.0) (2020-04-25)
+
+[Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.5+297...v1.1.0)
+
 ## [v1.0.5+297](https://github.com/weibullguy/ramstk/tree/v1.0.5+297) (2020-04-24)
 
 [Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.5+296...v1.0.5+297)
@@ -38,7 +42,19 @@
 
 ## [v1.0.5](https://github.com/weibullguy/ramstk/tree/v1.0.5) (2019-08-18)
 
-[Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.1...v1.0.5)
+[Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.4...v1.0.5)
+
+## [v1.0.4](https://github.com/weibullguy/ramstk/tree/v1.0.4) (2019-05-21)
+
+[Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.2...v1.0.4)
+
+## [v1.0.2](https://github.com/weibullguy/ramstk/tree/v1.0.2) (2019-05-10)
+
+[Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.3...v1.0.2)
+
+## [v1.0.3](https://github.com/weibullguy/ramstk/tree/v1.0.3) (2019-04-20)
+
+[Full Changelog](https://github.com/weibullguy/ramstk/compare/v1.0.1...v1.0.3)
 
 ## [v1.0.1](https://github.com/weibullguy/ramstk/tree/v1.0.1) (2018-10-09)
 
