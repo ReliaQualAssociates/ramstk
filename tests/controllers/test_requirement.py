@@ -669,7 +669,7 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_requirement_no_package,
                         'fail_update_requirement')
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should send the success message when the matrix is updated successfully."""
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
@@ -679,13 +679,16 @@ class TestUpdateMethods():
         DATAMGR = dmRequirement()
         DATAMGR.do_connect(test_program_dao)
 
+        def on_succeed_retrieve_hardware(tree):
+            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS1'] = 1
+            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS2'] = 2
+            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS3'] = 2
+            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS4'] = 1
+
+        pub.subscribe(on_succeed_retrieve_hardware,
+                      'succeed_retrieve_hardware')
+
         pub.sendMessage('selected_revision', attributes={'revision_id': 1})
-
-        DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS1'] = 1
-        DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS2'] = 2
-        DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS3'] = 2
-        DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS4'] = 1
-
         pub.sendMessage('do_request_update_matrix', revision_id=1,
                         matrix_type='rqrmnt_hrdwr')
 

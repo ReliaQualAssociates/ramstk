@@ -75,7 +75,8 @@ class MatrixManager(RAMSTKMatrixManager):
             self._col_tree['fnctn_hrdwr'] = tree
             if self._row_tree.all_nodes():
                 super().do_create_columns('fnctn_hrdwr')
-                pub.sendMessage('request_select_matrix', matrix_type='fnctn_hrdwr')
+                pub.sendMessage('request_select_matrix',
+                                matrix_type='fnctn_hrdwr')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

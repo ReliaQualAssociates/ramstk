@@ -524,7 +524,8 @@ class RAMSTKMatrixManager():
         _row_ids = [self._row_tree.get_node(_node).identifier for _node in
                     self._row_tree.nodes][1:]
         _row_ids.insert(0, -1)
-        _display_names = [self._row_tree.get_node(_node).tag for _node in self._row_tree.nodes][1:]
+        _display_names = [self._row_tree.get_node(_node).tag for _node in
+                          self._row_tree.nodes][1:]
         _display_names.insert(0, 'column_id')
         self._dic_matrix = {
             'id': _row_ids,
