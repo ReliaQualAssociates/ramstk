@@ -1,6 +1,6 @@
 since-tag=v1.0.0.rc1
 bug-labels=type:bug
-enhancement-labels=enhancement,quality
+enhancement-labels=type:enhancement,type:quality
 include-labels=type:bug,type:enhancement,type:quality,status:closed,severity:blocker,severity:major,severity:normal
 exclude-labels=dependencies
 issue-line-labels=module:allocation,module:datamodels,module:failuredefinition,module:fmea,module:function,module:hazops,module:incident,module:pof,module:requirement,module:revision,module:similaritem,module:software,module:stakeholder,module:survival,module:testing,module:usage,module:validation,module:hardware

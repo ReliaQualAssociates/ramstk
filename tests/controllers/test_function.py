@@ -434,7 +434,8 @@ class TestDeleteMethods():
 
         assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2') == 0
 
-        pub.sendMessage('succeed_delete_hardware', node_id=3)
+        pub.sendMessage('succeed_delete_hardware', node_id=3,
+                        tree=MOCK_HRDWR_TREE)
 
         with pytest.raises(KeyError):
             DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2')
@@ -572,7 +573,8 @@ class TestInsertMethods():
                                     parent=0,
                                     data=None)
 
-        pub.sendMessage('succeed_insert_hardware', node_id=15)
+        pub.sendMessage('succeed_insert_hardware', node_id=15,
+                        tree=MOCK_HRDWR_TREE)
 
         assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS15') == 0
 

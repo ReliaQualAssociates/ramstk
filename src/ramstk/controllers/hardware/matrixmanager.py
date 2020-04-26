@@ -8,6 +8,7 @@
 """Hardware Controller Package matrix manager."""
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -52,98 +53,36 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_create, 'succeed_select_revision')
-        # pub.subscribe(self._do_delete_requirement,
-        #               'succeed_delete_requirement')
-        # pub.subscribe(self._do_delete_validation, 'succeed_delete_validation')
-        pub.subscribe(self.do_delete_row, 'succeed_delete_hardware')
-        pub.subscribe(self.do_insert_row, 'succeed_insert_hardware')
-        # pub.subscribe(self._do_insert_requirement,
-        #               'succeed_insert_requirement')
-        # pub.subscribe(self._do_insert_validation, 'succeed_insert_validation')
-        pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
-        pub.subscribe(self._on_get_tree, 'succeed_get_requirement_tree')
-        pub.subscribe(self._on_get_tree, 'succeed_get_validation_tree')
+        pub.subscribe(self.do_create_rows, 'succeed_retrieve_hardware')
+        pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
-    def _do_create(self, revision_id):  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_delete_hardware(self, node_id: int, tree: treelib.Tree) -> None:
         """
-        Create the Hardware data matrices.
+        Delete the matrix row associated with the deleted hardware.
 
-        :param int revision_id: the revision ID to gather the data that will be
-            used to create the matrices.
-        :return:
-        :rtype:
-        """
-        self.dic_matrices = {}
-
-        pub.sendMessage('request_get_hardware_tree')
-
-        # See ISSUE at https://github.com/ReliaQualAssociates/ramstk/issues/251
-        # pub.sendMessage('request_get_requirements_tree')
-        RAMSTKMatrixManager.do_create(self, 'hrdwr_rqrmnt')
-
-        # See ISSUE at https://github.com/ReliaQualAssociates/ramstk/issues/250
-        # pub.sendMessage('request_get_validation_tree')
-        # RAMSTKMatrixManager.do_create(self, 'hrdwr_vldtn')
-
-    def _do_delete_requirement(self, node_id):
-        """
-        Delete the node ID column from the Hardware::Requirements matrix.
-
-        :param int node_id: the requirement treelib Node ID that was deleted.
-            Note that node ID = requirement ID = matrix row ID.
+        :param int node_id: the treelib Tree() node ID associated with the
+            deleted hardware.
+        :param tree: the treelib Tree() containing the remaining hardware data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_delete_column(self, node_id,
-                                                    'hrdwr_rqrmnt')
+        self.do_delete_row(node_id)
 
-    def _do_delete_validation(self, node_id):
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_insert_hardware(self, node_id: int, tree: treelib.Tree) -> None:
         """
-        Delete the node ID column from the Hardware::Validation matrix.
+        Insert a matrix row associated with the inserted hardware.
 
-        :param int node_id: the validation treelib Node ID that was deleted.
-            Note that node ID = validation ID = matrix row ID.
+        :param int node_id: the treelib Tree() node ID associated with the
+            inserted hardware.
+        :param tree: the treelib Tree() containing the remaining hardware data.
+        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        return RAMSTKMatrixManager.do_delete_column(self, node_id,
-                                                    'hrdwr_vldtn')
-
-    def _do_insert_requirement(self, node_id):
-        """
-        Insert the node ID column to the Hardware::Requirements matrix.
-
-        :param int node_id: the requirement treelib Node ID that is to be
-            inserted.  Note that node ID = requirement ID = matrix row ID.
-        :return: None
-        :rtype: None
-        """
-        return RAMSTKMatrixManager.do_insert_column(self, node_id,
-                                                    'hrdwr_rqrmnt')
-
-    def _do_insert_validation(self, node_id):
-        """
-        Insert the node ID column to the Hardware::Validation matrix.
-
-        :param int node_id: the validation treelib Node ID that is to be
-            inserted.  Note that node ID = validation ID = matrix row ID.
-        :return: None
-        :rtype: None
-        """
-        return RAMSTKMatrixManager.do_insert_column(self, node_id,
-                                                    'hrdwr_vldtn')
-
-    def _on_get_tree(self, dmtree):
-        """
-        Request the hardware treelib Tree().
-
-        :param dmtree: the hardware treelib Tree().
-        :type dmtree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        if dmtree.get_node(0).tag == 'hardware':
-            self._row_tree = dmtree
-        else:
-            self._col_tree = dmtree
+        self.do_insert_row(node_id)

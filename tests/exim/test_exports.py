@@ -109,7 +109,7 @@ class TestExport():
         """do_load_output() should return None when loading Hardware for export."""
         _hardware = dmHardware()
         _hardware.do_connect(test_program_dao)
-        _hardware.do_select_all(1)
+        _hardware._do_select_all_hardware(attributes={'revision_id': 1})
 
         DUT = Export()
 
