@@ -4,12 +4,13 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package analysis manager."""
 
 # Standard Library Imports
 from collections import OrderedDict
 from math import exp
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -17,9 +18,11 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.analyses import allocation, derating, dormancy, similaritem, stress
 from ramstk.analyses.milhdbk217f import milhdbk217f
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
 
 
+# noinspection PyDeepBugsBinOperator,PyDeepBugsBinOperand
 class AnalysisManager(RAMSTKAnalysisManager):
     """
     Contain the attributes and methods of the Hardware analysis manager.
@@ -30,15 +33,19 @@ class AnalysisManager(RAMSTKAnalysisManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the hardware item being analyzed.
     """
-    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 **kwargs: Dict[Any, Any]) -> None:
         """
         Initialize an instance of the hardware analysis manager.
 
-        :param configuration: the Configuration instance associated with the
+        :param configuration: the RAMSTKUserConfiguration instance associated
+        with the
             current instance of the RAMSTK application.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :type configuration:
+        :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
-        super(AnalysisManager, self).__init__(configuration, **kwargs)
+        super().__init__(configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -73,7 +80,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(self.do_roll_up_change_descriptions,
                       'request_roll_up_change_descriptions')
 
-    def _do_calculate_cost_metrics(self):
+    def _do_calculate_cost_metrics(self) -> None:
         """
         Calculate the cost related metrics.
 
@@ -96,7 +103,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 self._attributes['total_part_count']
                 * self._attributes['quantity'])
 
-    def _do_calculate_current_ratio(self):
+    def _do_calculate_current_ratio(self) -> None:
         """
         Calculate the current ratio.
 
@@ -115,7 +122,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                                "zero.").format(
                                    str(self._attributes['hardware_id'])))
 
-    def _do_calculate_hazard_rate_metrics(self):
+    def _do_calculate_hazard_rate_metrics(self) -> None:
         """
         Calculate the hazard rate related metrics.
 
@@ -128,8 +135,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
         elif self._attributes['hazard_rate_type_id'] == 3:
             self._attributes['hazard_rate_active'] = (
                 1.0 / self._attributes['mtbf_specified'])
-        elif self._attributes['hazard_rate_type_id'] == 3:
-            print("See bug #248.")
 
         self._attributes['hazard_rate_active'] = (
             self._attributes['hazard_rate_active']
@@ -154,7 +159,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._attributes['hr_mission_variance'] = self._attributes[
                 'hazard_rate_mission']**2.0
 
-    def _do_calculate_mtbf_metrics(self):
+    def _do_calculate_mtbf_metrics(self) -> None:
         """
         Calculate the MTBF related metrics.
 
@@ -179,7 +184,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._attributes['mtbf_specified_variance'] = (
                 1.0 / (1.0 / self._attributes['mtbf_specified'])**2.0)
 
-    def _do_calculate_power_ratio(self):
+    def _do_calculate_power_ratio(self) -> None:
         """
         Calculate the power ratio.
 
@@ -198,7 +203,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                                "zero.").format(
                                    str(self._attributes['hardware_id'])))
 
-    def _do_calculate_reliability_metrics(self):
+    def _do_calculate_reliability_metrics(self) -> None:
         """
         Calculate the reliability related metrics.
 
@@ -208,6 +213,12 @@ class AnalysisManager(RAMSTKAnalysisManager):
         try:
             self._do_calculate_hazard_rate_metrics()
             self._do_calculate_mtbf_metrics()
+
+            self._attributes['reliability_logistics'] = exp(
+                -1.0 * (self._attributes['hazard_rate_logistics']) * 1000000.0)
+            self._attributes['reliability_mission'] = exp(
+                -1.0 * (self._attributes['hazard_rate_mission'])
+                * self._attributes['mission_time'])
         except ZeroDivisionError:
             pub.sendMessage(
                 'fail_calculate_hardware',
@@ -223,13 +234,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                         self._attributes['hazard_rate_dormant'],
                         self._attributes['hazard_rate_software']))
 
-        self._attributes['reliability_logistics'] = exp(
-            -1.0 * (self._attributes['hazard_rate_logistics']) * 1000000.0)
-        self._attributes['reliability_mission'] = exp(
-            -1.0 * (self._attributes['hazard_rate_mission'])
-            * self._attributes['mission_time'])
-
-    def _do_calculate_topic_633(self):
+    def _do_calculate_topic_633(self) -> None:
         """
         Calculate the similar item hazard rate per topic 6.3.3.
 
@@ -259,7 +264,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
              _environment, _quality, _temperature,
              self._attributes['hazard_rate_active'])
 
-    def _do_calculate_user_defined(self):
+    def _do_calculate_user_defined(self) -> None:
         """
         Calculate the user-defined similar item hazard rate.
 
@@ -325,7 +330,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes['result_4'] = _sia['res4']
         self._attributes['result_5'] = _sia['res5']
 
-    def _do_calculate_voltage_ratio(self):
+    def _do_calculate_voltage_ratio(self) -> None:
         """
         Calculate the voltage ratio.
 
@@ -346,7 +351,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                                "zero.").format(
                                    str(self._attributes['hardware_id'])))
 
-    def _on_allocate_reliability(self, attributes):
+    def _on_allocate_reliability(self, attributes: Dict[str, Any]) -> None:
         """
         Respond to a successful reliability allocation message.
 
@@ -368,7 +373,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             attributes['hardware_id']).data['allocation'].set_attributes(
                 _attributes)
 
-    def _on_predict_reliability(self, attributes):
+    def _on_predict_reliability(self, attributes: Dict[str, Any]) -> None:
         """
         Respond to a successful reliability prediction message.
 
@@ -379,7 +384,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         self._attributes = attributes
 
-    def _request_do_calculate_all_hardware(self):
+    def _request_do_calculate_all_hardware(self) -> None:
         """
         Request that the entire hardware system be calculated.
 
@@ -397,7 +402,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                             module_tree=self._tree)
             pub.sendMessage('request_update_all_hardware')
 
-    def _request_do_predict_active_hazard_rate(self):
+    def _request_do_predict_active_hazard_rate(self) -> None:
         """
         Request that the hazard rate prediction be performed.
 
@@ -407,7 +412,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         if self._attributes['hazard_rate_method_id'] in [1, 2]:
             milhdbk217f.do_predict_active_hazard_rate(**self._attributes)
 
-    def _request_do_stress_analysis(self):
+    def _request_do_stress_analysis(self) -> None:
         """
         Perform a stress analysis.
 
@@ -423,7 +428,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         if self._attributes['category_id'] in [4, 5, 8]:
             self._do_calculate_voltage_ratio()
 
-    def do_calculate_all_hardware(self, node_id):
+    def do_calculate_all_hardware(self, node_id: int) -> List[float]:
         """
         Calculate all items in the system.
 
@@ -480,7 +485,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _cum_results
 
-    def _do_calculate_agree_total_elements(self, node_id):
+    def _do_calculate_agree_total_elements(self, node_id: int) -> int:
         """
         Calculate the total number of elements for the AGREE method.
 
@@ -497,7 +502,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _n_elements
 
-    def _do_calculate_arinc_weight_factor(self, node_id):
+    def _do_calculate_arinc_weight_factor(self, node_id: int) -> float:
         """
         Calculate the weight factor for the hardware at node ID.
 
@@ -529,7 +534,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _weight_factor
 
-    def _do_calculate_foo_cumulative_weight(self, node_id):
+    def _do_calculate_foo_cumulative_weight(self, node_id: int) -> int:
         """
         Calculate the cumulative weight for the FOO method.
 
@@ -550,7 +555,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _cum_weight
 
-    def do_calculate_allocation(self, node_id):
+    def do_calculate_allocation(self, node_id: int) -> None:
         """
         Allocate a parent reliability goal to it's children.
 
@@ -559,6 +564,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
+        _parent_goal = 1.0
+        _cum_weight = 1.0
+
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hardware item.  We need to build a comprehensive dict of
         # attributes to pass to the various analysis methods/functions.
@@ -601,7 +609,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _attributes['allocation_method_id'] = _method_old
             _attributes['mission_time'] = _mission_time_old
 
-    def do_calculate_allocation_goals(self):
+    def do_calculate_allocation_goals(self) -> None:
         """
         Calculate the allocation goals.
 
@@ -610,7 +618,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         self._attributes = allocation.do_calculate_goals(**self._attributes)
 
-    def do_calculate_hardware(self, node_id, system=False):
+    # noinspection PyIncorrectDocstring
+    def do_calculate_hardware(self,
+                              node_id: int,
+                              system: bool = False) -> None:
         """
         Calculate all metrics for the hardware associated with node ID.
 
@@ -620,7 +631,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        _hr_multiplier = float(self.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER)
+        _hr_multiplier = float(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER)
 
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hardware item.  We need to build a comprehensive dict of
@@ -676,7 +688,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                             attributes=self._attributes)
             pub.sendMessage('request_update_hardware', node_id=node_id)
 
-    def do_calculate_similar_item(self, node_id):
+    def do_calculate_similar_item(self, node_id: int) -> None:
         """
         Perform a similar item calculates for currently selected item.
 
@@ -694,7 +706,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         elif self._attributes['similar_item_method_id'] == 2:
             self._do_calculate_user_defined()
 
-    def do_derating_analysis(self, node_id):
+    def do_derating_analysis(self, node_id: int) -> None:
         """
         Perform a derating analysis.
 
@@ -705,7 +717,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes['reason'] = ""
         self._attributes['overstress'] = False
 
-        def _do_check(overstress, stress_type):
+        def _do_check(overstress, stress_type) -> None:
             """
             Check the overstress condition and build a reason message.
 
@@ -745,7 +757,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # attributes to pass to the various analysis methods/functions.
         pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
 
-        _limits = self.RAMSTK_CONFIGURATION.RAMSTK_STRESS_LIMITS[
+        _limits = self.RAMSTK_USER_CONFIGURATION.RAMSTK_STRESS_LIMITS[
             self._attributes['category_id']]
         _current_limits = {
             'harsh': [0.0, _limits[0]],
@@ -783,7 +795,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         return allocation.get_allocation_goal(**self._attributes)
 
-    def do_roll_up_change_descriptions(self, node_id):
+    def do_roll_up_change_descriptions(self, node_id: int) -> None:
         """
         Concatenate all child change descriptions for the node ID hardware.
 

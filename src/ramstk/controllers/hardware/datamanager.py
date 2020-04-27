@@ -34,9 +34,9 @@ class DataManager(RAMSTKDataManager):
     _tag = 'hardware'
     _root = 0
 
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Hardware data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -86,16 +86,12 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_delete_hardware',
                             node_id=node_id,
                             tree=self.tree)
-        except (AttributeError, DataAccessError):
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
             _error_msg = ("Attempted to delete non-existent hardware ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
-        except NodeIDAbsentError:
-            _error_msg = ("Hardware ID {0:s} was not found as a node "
-                          "in the tree.").format(str(node_id))
-            pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
-    def do_get_all_attributes(self, node_id):
+    def do_get_all_attributes(self, node_id: int) -> None:
         """
         Retrieve all RAMSTK data tables' attributes for the hardware item.
 
@@ -301,31 +297,25 @@ class DataManager(RAMSTKDataManager):
                 order=None,
                 _all=False)
 
-            try:
-                self.tree.create_node(tag=_hardware.comp_ref_des,
-                                      identifier=_hardware.hardware_id,
-                                      parent=_hardware.parent_id,
-                                      data={
-                                          'hardware': _hardware,
-                                          'design_electric': _design_e,
-                                          'design_mechanic': _design_m,
-                                          'mil_hdbk_217f': _milhdbkf,
-                                          'nswc': _nswc,
-                                          'reliability': _reliability,
-                                          'allocation': _allocation,
-                                          'similar_item': _similaritem
-                                      })
-            except NodeIDAbsentError as _error:
-                _error_msg = ('Failed to build Hardware tree for Revision ID '
-                              '{0:s}.').format(str(self._revision_id))
-                pub.sendMessage('fail_retrieve_hardware',
-                                error_message=_error_msg)
+            self.tree.create_node(tag=_hardware.comp_ref_des,
+                                  identifier=_hardware.hardware_id,
+                                  parent=_hardware.parent_id,
+                                  data={
+                                      'hardware': _hardware,
+                                      'design_electric': _design_e,
+                                      'design_mechanic': _design_m,
+                                      'mil_hdbk_217f': _milhdbkf,
+                                      'nswc': _nswc,
+                                      'reliability': _reliability,
+                                      'allocation': _allocation,
+                                      'similar_item': _similaritem
+                                  })
 
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
 
-    def do_set_all_attributes(self, attributes):
+    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
         """
         Set all the attributes of the record associated with the Module ID.
 
@@ -341,7 +331,7 @@ class DataManager(RAMSTKDataManager):
             self.do_set_attributes(attributes['hardware_id'], _key,
                                    attributes[_key])
 
-    def do_set_attributes(self, node_id, key, value):
+    def do_set_attributes(self, node_id: int, key: str, value: Any) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -371,7 +361,7 @@ class DataManager(RAMSTKDataManager):
                 self.do_select(node_id,
                                table=_table).set_attributes(_attributes)
 
-    def do_update(self, node_id):
+    def do_update(self, node_id: int) -> None:
         """
         Update the record associated with node ID in RAMSTK Program database.
 

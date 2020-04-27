@@ -66,6 +66,8 @@ class RAMSTKAnalysisManager():
 
         # Initialize public scalar attributes.
         self.RAMSTK_USER_CONFIGURATION = configuration
+        # TODO: Remove the following statement when all the controllers are
+        #  updated to use RAMSTK
         self.RAMSTK_CONFIGURATION = self.RAMSTK_USER_CONFIGURATION
 
     def on_get_all_attributes(self, attributes: Dict[str, Any]) -> None:

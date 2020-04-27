@@ -405,7 +405,8 @@ class DataManager(RAMSTKDataManager):
                                            'function with function ID '
                                            '{0:s}.').format(str(node_id)))
         except TypeError:
-            pub.sendMessage('fail_update_function',
-                            error_message=('No data package found for '
-                                           'function ID {0:s}.').format(
-                                               str(node_id)))
+            if node_id != 0:
+                pub.sendMessage('fail_update_function',
+                                error_message=('No data package found for '
+                                               'function ID {0:s}.').format(
+                                                   str(node_id)))
