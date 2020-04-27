@@ -828,19 +828,18 @@ class TestUpdateMethods():
         HRDWRMGR = dmHardware()
         HRDWRMGR.do_connect(test_program_dao)
 
-        def on_succeed_retrieve_hardware(tree):
-            DUT.dic_matrices['fnctn_hrdwr'].loc[1, 'SS1:SS2'] = 1
+        def on_succeed_load_matrix(matrix_type, matrix):
+            DUT.dic_matrices['fnctn_hrdwr'].loc[1, 'S1:SS2'] = 1
 
-        pub.subscribe(on_succeed_retrieve_hardware,
-                      'succeed_retrieve_hardware')
+        pub.subscribe(on_succeed_load_matrix,
+                      'succeed_load_matrix')
 
         pub.sendMessage('selected_revision', attributes={'revision_id': 1})
         pub.sendMessage('do_request_update_matrix', revision_id=1,
                         matrix_type='fnctn_hrdwr')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
-        pub.unsubscribe(on_succeed_retrieve_hardware,
-                        'succeed_retrieve_hardware')
+        pub.unsubscribe(on_succeed_load_matrix, 'succeed_load_matrix')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')

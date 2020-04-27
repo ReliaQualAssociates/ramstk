@@ -423,7 +423,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         if self._attributes['category_id'] in [4, 5, 8]:
             self._do_calculate_voltage_ratio()
 
-    def do_calculate_all_hardware(self, **kwargs):
+    def do_calculate_all_hardware(self, node_id):
         """
         Calculate all items in the system.
 
@@ -437,13 +437,12 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 * 5 - power dissipation
         :rtype: list
         """
-        _node_id = kwargs['node_id']
         _cum_results = [0.0, 0.0, 0.0, 0.0, 0, 0.0]
 
         # Check if there are children nodes of the node passed.
-        if self._tree.get_node(_node_id).fpointer:
+        if self._tree.get_node(node_id).fpointer:
             # If there are children, calculate each of them first.
-            for _subnode_id in self._tree.get_node(_node_id).fpointer:
+            for _subnode_id in self._tree.get_node(node_id).fpointer:
                 _results = self.do_calculate_all_hardware(node_id=_subnode_id)
                 _cum_results[0] += _results[0]
                 _cum_results[1] += _results[1]
@@ -452,7 +451,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _cum_results[4] += int(_results[4])
                 _cum_results[5] += _results[5]
             # Then calculate the parent node.
-            self.do_calculate_hardware(_node_id, system=True)
+            self.do_calculate_hardware(node_id, system=True)
             if self._attributes is not None:
                 _cum_results[0] += self._attributes['hazard_rate_active']
                 _cum_results[1] += self._attributes['hazard_rate_dormant']
@@ -461,8 +460,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _cum_results[4] += int(self._attributes['total_part_count'])
                 _cum_results[5] += self._attributes['total_power_dissipation']
         else:
-            if self._tree.get_node(_node_id).data is not None:
-                self.do_calculate_hardware(_node_id, system=True)
+            if self._tree.get_node(node_id).data is not None:
+                self.do_calculate_hardware(node_id, system=True)
                 _cum_results[0] += self._attributes['hazard_rate_active']
                 _cum_results[1] += self._attributes['hazard_rate_dormant']
                 _cum_results[2] += self._attributes['hazard_rate_software']
@@ -470,7 +469,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _cum_results[4] += int(self._attributes['total_part_count'])
                 _cum_results[5] += self._attributes['total_power_dissipation']
 
-        if (self._tree.get_node(_node_id).data is not None
+        if (self._tree.get_node(node_id).data is not None
                 and self._attributes['part'] == 0):
             self._attributes['hazard_rate_active'] = _cum_results[0]
             self._attributes['hazard_rate_dormant'] = _cum_results[1]

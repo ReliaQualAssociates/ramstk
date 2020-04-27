@@ -18,6 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.function import mvwFunction
+from ramstk.views.gtk3.hardware import mvwHardware
 from ramstk.views.gtk3.requirement import mvwRequirement
 from ramstk.views.gtk3.revision import mvwRevision
 from ramstk.views.gtk3.validation import mvwValidation
@@ -52,7 +53,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
             'revision': mvwRevision(configuration, logger),
             'function': mvwFunction(configuration, logger),
             'requirement': mvwRequirement(configuration, logger),
-            #    'hardware': mvwHardware(configuration, logger),
+            'hardware': mvwHardware(configuration, logger),
             'validation': mvwValidation(configuration, logger)
         }
 

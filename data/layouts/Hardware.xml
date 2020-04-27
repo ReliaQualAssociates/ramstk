@@ -44,7 +44,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-            <key>alt_part_num</key>
+            <key>alt_part_number</key>
         </column>
         <column>
             <defaulttitle>CAGE Code</defaulttitle>

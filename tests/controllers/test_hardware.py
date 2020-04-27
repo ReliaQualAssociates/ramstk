@@ -231,7 +231,7 @@ class TestCreateControllers():
         assert DUT._tag == 'hardware'
         assert DUT._root == 0
         assert pub.isSubscribed(DUT._do_select_all_hardware,
-                        'succeed_select_revision')
+                        'selected_revision')
         assert pub.isSubscribed(DUT.do_set_tree, 'succeed_calculate_all_hardware')
         assert pub.isSubscribed(DUT._do_delete_hardware, 'request_delete_hardware')
         assert pub.isSubscribed(DUT._do_insert_hardware, 'request_insert_hardware')

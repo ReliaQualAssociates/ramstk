@@ -27,7 +27,7 @@ COLUMN_HEADERS = {
         'validated_date'
     ],
     'Hardware': [
-        'revision_id', 'hardware_id', 'alt_part_num', 'cage_code',
+        'revision_id', 'hardware_id', 'alt_part_number', 'cage_code',
         'category_id', 'comp_ref_des', 'cost', 'cost_type_id', 'description',
         'duty_cycle', 'figure_number', 'lcn', 'level', 'manufacturer_id',
         'mission_time', 'name', 'nsn', 'page_number', 'parent_id', 'part',

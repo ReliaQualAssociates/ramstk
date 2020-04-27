@@ -51,7 +51,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_select_all_hardware, 'succeed_select_revision')
+        pub.subscribe(self._do_select_all_hardware, 'selected_revision')
         pub.subscribe(self.do_set_tree, 'succeed_calculate_all_hardware')
         pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
         pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
@@ -201,7 +201,6 @@ class DataManager(RAMSTKDataManager):
                                 node_id=self.last_id,
                                 tree=self.tree)
             except DataAccessError as _error:
-                print(_error)
                 pub.sendMessage("fail_insert_hardware", error_message=_error)
 
     def _do_make_composite_ref_des(self, node_id: int = 1) -> None:
@@ -317,7 +316,6 @@ class DataManager(RAMSTKDataManager):
                                           'similar_item': _similaritem
                                       })
             except NodeIDAbsentError as _error:
-                print(_error)
                 _error_msg = ('Failed to build Hardware tree for Revision ID '
                               '{0:s}.').format(str(self._revision_id))
                 pub.sendMessage('fail_retrieve_hardware',
