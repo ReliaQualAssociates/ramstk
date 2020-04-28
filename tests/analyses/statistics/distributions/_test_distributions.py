@@ -43,12 +43,12 @@ from os.path import dirname
 
 # Third Party Imports
 import numpy as np
-from nose.plugins.attrib import attr
 
 # RAMSTK Package Imports
 from analyses.statistics.Distributions import (
     Exponential, Gaussian, LogNormal, Weibull, time_between_failures
 )
+from nose.plugins.attrib import attr
 from survival.Record import Model as Record
 
 sys.path.insert(

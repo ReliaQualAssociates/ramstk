@@ -48,11 +48,11 @@ from os.path import dirname
 
 # Third Party Imports
 import numpy as np
-from nose.plugins.attrib import attr
 
 # RAMSTK Package Imports
 import dao.DAO as _dao
 from analyses.statistics.NHPP import *
+from nose.plugins.attrib import attr
 
 sys.path.insert(
     0,

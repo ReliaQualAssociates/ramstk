@@ -42,13 +42,13 @@ from os.path import dirname
 
 # Third Party Imports
 import numpy as np
-from nose.plugins.attrib import attr
 
 # RAMSTK Package Imports
 from analyses.statistics.growth.SPLAN import (
     calculate_fef, calculate_growth_potential,
     calculate_management_strategy, calculate_probability
 )
+from nose.plugins.attrib import attr
 
 sys.path.insert(
     0,

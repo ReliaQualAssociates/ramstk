@@ -17,12 +17,12 @@ import unittest
 from os.path import dirname
 
 # Third Party Imports
-from nose.plugins.attrib import attr
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 # RAMSTK Package Imports
 from dao.RAMSTKSoftwareDevelopment import RAMSTKSoftwareDevelopment
+from nose.plugins.attrib import attr
 
 sys.path.insert(
     0,

@@ -47,10 +47,11 @@ Invocation:
 
 
 
-import os
-import sys
-import subprocess
+# Standard Library Imports
 import glob
+import os
+import subprocess
+import sys
 from optparse import OptionParser
 
 # We prefer to use the tools in the virtual environment.

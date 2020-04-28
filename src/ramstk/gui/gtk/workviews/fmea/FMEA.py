@@ -12,11 +12,11 @@ from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
 from ramstk.Configuration import (
-    RAMSTK_CONTROL_TYPES, RAMSTK_FAILURE_PROBABILITY,
+    RAMSTK_CONTROL_TYPES, RAMSTK_FAILURE_PROBABILITY
 )
 from ramstk.gui.gtk.assistants import AddControlAction
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKLabel, RAMSTKMessageDialog, RAMSTKTreeView,
+    RAMSTKLabel, RAMSTKMessageDialog, RAMSTKTreeView
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, GdkPixbuf, Gtk, _
 from ramstk.gui.gtk.workviews.WorkView import RAMSTKWorkView

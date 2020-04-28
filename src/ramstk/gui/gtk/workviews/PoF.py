@@ -13,7 +13,7 @@ from sortedcontainers import SortedDict
 # RAMSTK Package Imports
 from ramstk.gui.gtk.assistants import AddStressMethod
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog, RAMSTKTreeView,
+    RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog, RAMSTKTreeView
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, GdkPixbuf, Gtk, _
 

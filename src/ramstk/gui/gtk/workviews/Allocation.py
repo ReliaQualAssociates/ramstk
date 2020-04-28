@@ -11,7 +11,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
+    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 

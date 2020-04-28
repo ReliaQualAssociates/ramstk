@@ -12,7 +12,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.gui.gtk.assistants.SimilarItem import EditFunction
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKComboBox, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
+    RAMSTKComboBox, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
