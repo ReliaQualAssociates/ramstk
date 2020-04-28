@@ -59,16 +59,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   semver_release:
-    name: Find Next Release Number
-    runs-on: ubuntu-latest
-
+    name: Semantic Versioned Release
+    runs-on: ubunu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: zwaldowski/semver-release-action@v1
-        id: next_version
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      name: Release
+      uses: ridedott/release-me-action@master
         with:
-          dry_run: true
-          bump: ${{ … }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-    run: echo "${{ steps.next_version.outputs.version }}"
+          dry-run: true

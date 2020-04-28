@@ -38,6 +38,12 @@ class TestRAMSTKBook():
             test_toml_site_configuration.RAMSTK_VALIDATION_TYPE
         test_toml_user_configuration.RAMSTK_MEASUREMENT_UNITS = \
             test_toml_site_configuration.RAMSTK_MEASUREMENT_UNITS
+        test_toml_user_configuration.RAMSTK_CATEGORIES = \
+            test_toml_site_configuration.RAMSTK_CATEGORIES
+        test_toml_user_configuration.RAMSTK_SUBCATEGORIES = \
+            test_toml_site_configuration.RAMSTK_SUBCATEGORIES
+        test_toml_user_configuration.RAMSTK_MANUFACTURERS = \
+            test_toml_site_configuration.RAMSTK_MANUFACTURERS
 
         DUT = RAMSTKDesktop(
             [test_toml_user_configuration, test_toml_site_configuration],

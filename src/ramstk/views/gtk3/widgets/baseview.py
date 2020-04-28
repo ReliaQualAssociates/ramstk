@@ -26,8 +26,9 @@ from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 # RAMSTK Local Imports
 from .button import RAMSTKCheckButton, do_make_buttonbox
 from .dialog import RAMSTKMessageDialog
+from .entry import RAMSTKTextView
 from .frame import RAMSTKFrame
-from .label import RAMSTKLabel, do_make_label_group
+from .label import RAMSTKLabel, do_make_label_group, do_make_label_group2
 from .matrixview import RAMSTKMatrixView
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
@@ -187,8 +188,8 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/complete.png',
             'chart':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + '/32x32/charts.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/charts.png',
             'error':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/error.png',
@@ -864,8 +865,8 @@ class RAMSTKListView(RAMSTKBaseView):
             _tooltip = _("Missing tooltip, please file a quality type issue "
                          "to have one added.")
 
-        self.tab_label.set_markup("<span weight='bold'>"
-                                  + _tab_label + "</span>")
+        self.tab_label.set_markup("<span weight='bold'>" + _tab_label
+                                  + "</span>")
         self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
@@ -1104,6 +1105,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_widgets = []
 
         # Initialize private scalar attributes.
 
@@ -1116,6 +1118,19 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
 
+    def make_toolbuttons(self, **kwargs: Any) -> None:
+        """
+        Common method to create the WorkView tool buttons.
+
+        :return: None
+        """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(do_make_buttonbox(
+            self, **kwargs))
+        self.pack_start(_scrolledwindow, False, False, 0)
+
     def make_ui(self, **kwargs: Any) -> Tuple[int, List[int], Gtk.Fixed]:
         """
         Common method to create work view Gtk.Notebook() general data pages.
@@ -1126,40 +1141,70 @@ class RAMSTKWorkView(RAMSTKBaseView):
         :rtype: (int, list, :class:`Gtk.Fixed`)
         """
         try:
+            _index_end = kwargs['end']
+        except KeyError:
+            _index_end = len(self._lst_labels)
+        try:
+            _index_start = kwargs['start']
+        except KeyError:
+            _index_start = 0
+        try:
             _y_inc = kwargs['y_inc']
         except KeyError:
             _y_inc = 25
 
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
-        self.pack_start(_scrolledwindow, False, False, 0)
+        # TODO: See issue #304.
+        if self._lst_widgets:
+            _fixed = Gtk.Fixed()
 
-        _fixed = Gtk.Fixed()
+            _y_pos = 5
+            (_x_pos, _lst_labels) = do_make_label_group2(
+                self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
+            for _idx, _label in enumerate(_lst_labels):
+                _minimum = self._lst_widgets[
+                    _idx + _index_start].get_preferred_size()[0]
+                if _minimum.height == 0:
+                    _minimum.height = self._lst_widgets[_idx
+                                                        + _index_start].height
 
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("General Information"))
-        _frame.add(_scrollwindow)
+                _fixed.put(_label, 5, _y_pos)
+                # RAMSTKTextViews are placed inside a scrollwindow so that's
+                # what needs to be placed on the container.
+                if isinstance(self._lst_widgets[_idx + _index_start],
+                              RAMSTKTextView):
+                    _fixed.put(
+                        self._lst_widgets[_idx + _index_start].scrollwindow,
+                        _x_pos + 5, _y_pos)
+                    _y_pos += _minimum.height + 30
+                else:
+                    _fixed.put(self._lst_widgets[_idx + _index_start],
+                               _x_pos + 5, _y_pos)
+                    _y_pos += _minimum.height + 5
+        else:
+            self.make_toolbuttons(**kwargs)
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels,
-                                             _fixed,
-                                             5,
-                                             5,
-                                             y_inc=_y_inc)
-        _x_pos += 50
+            _fixed = Gtk.Fixed()
 
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
+            _scrollwindow = RAMSTKScrolledWindow(_fixed)
+            _frame = RAMSTKFrame()
+            _frame.do_set_properties(title=_("General Information"))
+            _frame.add(_scrollwindow)
 
-        self.pack_start(_frame, True, True, 0)
+            self.pack_start(_frame, True, True, 0)
+
+            _x_pos, _y_pos = do_make_label_group(self._lst_labels,
+                                                 _fixed,
+                                                 5,
+                                                 5,
+                                                 y_inc=_y_inc)
+            _x_pos += 50
+
+            _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+            _fixed.put(self.txtName, _x_pos, _y_pos[1])
 
         return _x_pos, _y_pos, _fixed
 
-    def on_toggled(self,
-                   checkbutton: RAMSTKCheckButton,
-                   index: int,
+    def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    **kwargs) -> None:
         """
         Common method to respond to work view checkbutton 'toggles'.

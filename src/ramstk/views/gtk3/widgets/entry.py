@@ -162,11 +162,14 @@ class RAMSTKTextView(Gtk.TextView):
         self.scrollwindow = Gtk.ScrolledWindow()
         self.scrollwindow.set_policy(
             Gtk.PolicyType.AUTOMATIC,
-            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC
         )
         self.scrollwindow.add_with_viewport(self)
 
         self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
+
+        self.height = -1
+        self.width = -1
 
     def do_get_buffer(self) -> Gtk.TextBuffer:
         """
@@ -206,6 +209,8 @@ class RAMSTKTextView(Gtk.TextView):
         """
         _height, _tooltip, _width = do_set_common_properties(**kwargs)
 
+        self.height = _height
+        self.width = _width
         self.scrollwindow.set_property('height-request', _height)
         self.set_property('tooltip-markup', _tooltip)
         self.scrollwindow.set_property('width-request', _width)

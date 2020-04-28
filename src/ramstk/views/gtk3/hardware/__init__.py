@@ -10,6 +10,6 @@
 # RAMSTK Local Imports
 # from .listview import FunctionHardware as mtxFunctionHardware
 from .moduleview import ModuleView as mvwHardware
+from .workview import GeneralData as wvwHardwareGD
 
-# from .workview import GeneralData as wvwFunctionGD
 # from .workview import HazOps as wvwHazOps

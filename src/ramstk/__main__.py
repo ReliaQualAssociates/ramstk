@@ -134,6 +134,12 @@ def the_one_ring() -> None:
         site_configuration.RAMSTK_VALIDATION_TYPE
     user_configuration.RAMSTK_MEASUREMENT_UNITS = \
         site_configuration.RAMSTK_MEASUREMENT_UNITS
+    user_configuration.RAMSTK_CATEGORIES = \
+        site_configuration.RAMSTK_CATEGORIES
+    user_configuration.RAMSTK_SUBCATEGORIES = \
+        site_configuration.RAMSTK_SUBCATEGORIES
+    user_configuration.RAMSTK_MANUFACTURERS = \
+        site_configuration.RAMSTK_MANUFACTURERS
 
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()
