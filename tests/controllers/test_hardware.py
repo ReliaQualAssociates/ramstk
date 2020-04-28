@@ -265,19 +265,20 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_hardware_tree')
         assert pub.isSubscribed(DUT._on_predict_reliability,
                   'succeed_predict_reliability')
-        assert pub.isSubscribed(DUT.do_calculate_hardware, 'request_calculate_hardware')
+        assert pub.isSubscribed(DUT._do_calculate_hardware,
+                                'request_calculate_hardware')
         assert pub.isSubscribed(DUT._request_do_calculate_all_hardware,
                   'request_calculate_all_hardware')
-        assert pub.isSubscribed(DUT.do_derating_analysis, 'request_derate_hardware')
-        assert pub.isSubscribed(DUT.do_calculate_allocation_goals,
+        assert pub.isSubscribed(DUT._do_derating_analysis, 'request_derate_hardware')
+        assert pub.isSubscribed(DUT._do_calculate_allocation_goals,
                   'request_calculate_goals')
-        assert pub.isSubscribed(DUT.do_calculate_allocation,
+        assert pub.isSubscribed(DUT._do_calculate_allocation,
                   'request_allocate_reliability')
         assert pub.isSubscribed(DUT._on_allocate_reliability,
                   'succeed_allocate_reliability')
-        assert pub.isSubscribed(DUT.do_calculate_similar_item,
+        assert pub.isSubscribed(DUT._do_calculate_similar_item,
                   'request_calculate_similar_item')
-        assert pub.isSubscribed(DUT.do_roll_up_change_descriptions,
+        assert pub.isSubscribed(DUT._do_roll_up_change_descriptions,
                   'request_roll_up_change_descriptions')
 
     @pytest.mark.unit
@@ -710,7 +711,7 @@ class TestGetterSetter():
         DUT._attributes['hazard_rate_goal'] = 0.00002681
         DUT._attributes['reliability_goal'] = 0.9995
 
-        _goal = DUT.do_get_allocation_goal()
+        _goal = DUT._do_get_allocation_goal()
 
         if method_id in [2, 4]:
             assert _goal == 0.00002681
