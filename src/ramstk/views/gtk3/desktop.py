@@ -88,7 +88,8 @@ class RAMSTKDesktop(Gtk.Window):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
+        # pylint: disable=non-parent-init-called
+        GObject.GObject.__init__(self)
         self.RAMSTK_USER_CONFIGURATION = configuration[0]
 
         # Initialize private dictionary attributes.

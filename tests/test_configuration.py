@@ -137,8 +137,8 @@ def test_static_variables():
                 "day, loss exceeding $2K but less than $10K, or minimal "
                 "environmental damage not violating law or regulation.", ),
             "IV",
-            1,
-        ],
+            1
+        ]
     ]
     assert RAMSTK_FAILURE_PROBABILITY == [
         [_("Level E - Extremely Unlikely"), 1],
@@ -326,7 +326,8 @@ class TestCreateConfiguration():
             0: 'revision',
             1: 'function',
             2: 'requirement',
-            3: 'validation'
+            3: 'hardware',
+            4: 'validation'
         }
         assert DUT.RAMSTK_PROG_INFO == {}
         assert DUT.RAMSTK_STRESS_LIMITS == {}

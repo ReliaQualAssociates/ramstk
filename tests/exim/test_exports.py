@@ -33,7 +33,7 @@ def test_header_lists():
         'validated_date'
     ]
     assert COLUMN_HEADERS['Hardware'] == [
-        'revision_id', 'hardware_id', 'alt_part_num', 'cage_code',
+        'revision_id', 'hardware_id', 'alt_part_number', 'cage_code',
         'category_id', 'comp_ref_des', 'cost', 'cost_type_id', 'description',
         'duty_cycle', 'figure_number', 'lcn', 'level', 'manufacturer_id',
         'mission_time', 'name', 'nsn', 'page_number', 'parent_id', 'part',

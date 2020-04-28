@@ -552,7 +552,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             0: 'revision',
             1: 'function',
             2: 'requirement',
-            3: 'validation'
+            3: 'hardware',
+            4: 'validation'
         }
         self.RAMSTK_PROG_INFO: Dict[int, str] = {}
         self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}

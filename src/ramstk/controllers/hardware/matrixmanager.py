@@ -7,6 +7,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package matrix manager."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 import treelib
 from pubsub import pub
@@ -28,8 +31,9 @@ class MatrixManager(RAMSTKMatrixManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the hardware item being analyzed.
     """
-
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize an instance of the hardware matrix manager."""
         RAMSTKMatrixManager.__init__(
             self,

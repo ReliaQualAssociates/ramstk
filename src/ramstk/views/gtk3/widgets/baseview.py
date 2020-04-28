@@ -732,7 +732,6 @@ class RAMSTKBaseView(Gtk.HBox):
         selection.handler_block(self._lst_handler_id[0])
 
         _model, _row = selection.get_selected()
-
         if _row is not None:
             for _key in self._dic_key_index:
                 _attributes[_key] = _model.get_value(
@@ -1027,7 +1026,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self.hbx_tab_label.pack_start(self._img_tab, True, True, 0)
         self.hbx_tab_label.show_all()
 
-        _label = RAMSTKLabel(_("{0:s}s").format(self._module.capitalize()))
+        _label = RAMSTKLabel(_("{0:s}").format(self._module.capitalize()))
         _label.do_set_properties(width=-1,
                                  height=-1,
                                  tooltip=_("Displays the program "
