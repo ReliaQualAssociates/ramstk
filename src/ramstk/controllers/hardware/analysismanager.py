@@ -717,7 +717,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes['reason'] = ""
         self._attributes['overstress'] = False
 
-        def _do_check(overstress, stress_type) -> None:
+        def _do_check(overstress: Dict[str, float],
+                      stress_type: str) -> None:
             """
             Check the overstress condition and build a reason message.
 

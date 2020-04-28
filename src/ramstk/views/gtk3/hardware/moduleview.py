@@ -101,8 +101,9 @@ class ModuleView(RAMSTKModuleView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_delete, 'succeed_delete_hardware')
-        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_hardware')
+
+        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
         pub.subscribe(self._do_refresh_hardware_tree, 'wvw_editing_hardware')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
@@ -170,7 +171,7 @@ class ModuleView(RAMSTKModuleView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_calculate_hardware',
-                        node_id=self._hardware_id)
+                        node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_calculate_all_hardware(self, __button: Gtk.ToolButton) -> None:
@@ -183,7 +184,7 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_calculate_all_hardware', node_id=0)
+        pub.sendMessage('request_calculate_all_hardware')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -318,9 +319,9 @@ class ModuleView(RAMSTKModuleView):
                                         _("Add Piece Part"),
                                         _("Calculate the Selected Hardware"),
                                         _("Calculate the System"),
-                                        _("Remove Selected Validation"),
-                                        _("Save Selected Validation"),
-                                        _("Save All Validations")
+                                        _("Remove Selected Hardware Item"),
+                                        _("Save Selected Hardware Item"),
+                                        _("Save All Hardware Items")
                                     ],
                                     callbacks=[
                                         self._do_request_insert_sibling,

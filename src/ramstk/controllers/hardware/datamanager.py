@@ -51,22 +51,24 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_select_all_hardware, 'selected_revision')
         pub.subscribe(self.do_set_tree, 'succeed_calculate_all_hardware')
-        pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
-        pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_hardware')
         pub.subscribe(self.do_update_all, 'request_update_all_hardware')
-        pub.subscribe(self._do_make_composite_ref_des,
-                      'request_make_comp_ref_des')
         pub.subscribe(self.do_get_attributes,
                       'request_get_hardware_attributes')
-        pub.subscribe(self.do_get_all_attributes,
+
+        pub.subscribe(self._do_select_all_hardware, 'selected_revision')
+        pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
+        pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
+        pub.subscribe(self._do_set_hardware_attributes,
+                      'request_set_hardware_attributes')
+        pub.subscribe(self._do_set_all_hardware_attributes,
+                      'succeed_calculate_hardware')
+        pub.subscribe(self._do_get_all_hardware_attributes,
                       'request_get_all_hardware_attributes')
         pub.subscribe(self._do_get_hardware_tree, 'request_get_hardware_tree')
-        pub.subscribe(self.do_set_attributes,
-                      'request_set_hardware_attributes')
-        pub.subscribe(self.do_set_all_attributes, 'succeed_calculate_hardware')
+        pub.subscribe(self._do_make_composite_ref_des,
+                      'request_make_comp_ref_des')
 
     def _do_delete_hardware(self, node_id: int) -> None:
         """
@@ -91,7 +93,7 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
-    def do_get_all_attributes(self, node_id: int) -> None:
+    def _do_get_all_hardware_attributes(self, node_id: int) -> None:
         """
         Retrieve all RAMSTK data tables' attributes for the hardware item.
 
@@ -315,7 +317,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
 
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_all_hardware_attributes(self,
+                                        attributes: Dict[str, Any]) -> None:
         """
         Set all the attributes of the record associated with the Module ID.
 
@@ -328,10 +331,13 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(attributes['hardware_id'], _key,
-                                   attributes[_key])
+            self._do_set_hardware_attributes(attributes['hardware_id'], _key,
+                                             attributes[_key])
 
-    def do_set_attributes(self, node_id: int, key: str, value: Any) -> None:
+    def _do_set_hardware_attributes(self,
+                                    node_id: int,
+                                    key: str,
+                                    value: Any) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
