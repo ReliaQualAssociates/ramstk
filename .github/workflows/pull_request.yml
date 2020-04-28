@@ -57,3 +57,18 @@ jobs:
         env:
           GITHUB_PR_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  semver_release:
+    name: Find Next Release Number
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: zwaldowski/semver-release-action@v1
+        id: next_version
+        with:
+          dry_run: true
+          bump: ${{ … }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    run: echo "${{ steps.next_version.outputs.version }}"
