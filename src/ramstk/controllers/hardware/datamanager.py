@@ -7,7 +7,7 @@
 """Hardware Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -62,6 +62,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(self._do_set_hardware_attributes,
                       'request_set_hardware_attributes')
+        pub.subscribe(self._do_set_hardware_attributes, 'wvw_editing_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
                       'succeed_calculate_hardware')
         pub.subscribe(self._do_get_all_hardware_attributes,
@@ -331,13 +332,13 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self._do_set_hardware_attributes(attributes['hardware_id'], _key,
-                                             attributes[_key])
+            self._do_set_hardware_attributes(
+                node_id=[attributes['hardware_id'], -1],
+                package={_key: attributes[_key]})
 
     def _do_set_hardware_attributes(self,
-                                    node_id: int,
-                                    key: str,
-                                    value: Any) -> None:
+                                    node_id: List,
+                                    package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -348,23 +349,28 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        [[_key, _value]] = package.items()
+
         for _table in [
                 'hardware', 'design_electric', 'design_mechanic',
                 'mil_hdbk_217f', 'nswc', 'reliability', 'allocation',
                 'similar_item'
         ]:
-            _attributes = self.do_select(node_id,
+            _attributes = self.do_select(node_id[0],
                                          table=_table).get_attributes()
-            if key in _attributes:
-                _attributes[key] = value
 
+            if _key in _attributes:
+                _attributes[_key] = _value
+
+                # Only the ramstk_hardware table contains the revision_id
+                # column.
                 try:
                     _attributes.pop('revision_id')
                 except KeyError:
                     pass
                 _attributes.pop('hardware_id')
 
-                self.do_select(node_id,
+                self.do_select(node_id[0],
                                table=_table).set_attributes(_attributes)
 
     def do_update(self, node_id: int) -> None:

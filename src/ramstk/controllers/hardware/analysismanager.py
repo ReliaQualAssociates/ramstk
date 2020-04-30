@@ -789,7 +789,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         pub.sendMessage('succeed_derate_hardware', attributes=self._attributes)
 
-    def _do_get_allocation_goal(self):
+    def _do_get_allocation_goal(self) -> float:
         """
         Retrieve the proper allocation goal.
 

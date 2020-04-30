@@ -84,7 +84,11 @@ class ModuleView(RAMSTKModuleView):
             'tagged_part': 26,
             'total_part_count': 27,
             'total_power_dissipation': 28,
-            'year_of_manufacture': 29
+            'year_of_manufacture': 29,
+            'cost_type_id': 30,
+            'attachments': 31,
+            'category_id': 32,
+            'subcategory_id': 33
         }
 
         # Initialize private list attributes.
@@ -153,7 +157,8 @@ class ModuleView(RAMSTKModuleView):
         This method is called by other views when the Hardware data model
         attributes are edited via their gtk.Widgets().
 
-        :param list node_id: unused in this method.
+        :param list node_id: list of record IDs for the database tables
+            being displayed.
         :param dict package: the key:value for the data being updated.
         :return: None
         :rtype: None
@@ -237,7 +242,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_insert_hardware',
                         parent_id=self._record_id, part=1)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         """
