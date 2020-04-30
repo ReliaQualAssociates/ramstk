@@ -62,9 +62,12 @@ jobs:
     name: Semantic Versioned Release
     runs-on: ubunu-latest
     steps:
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       name: Release
       uses: ridedott/release-me-action@master
+        id: next_version
         with:
           dry-run: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    run: echo "${{ steps.next_version.outputs.version }}"
+    run: echo "${{ steps.next_version.outputs.level }}"

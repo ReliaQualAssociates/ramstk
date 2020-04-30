@@ -984,13 +984,13 @@ CREATE TABLE ramstk_requirement (
     fld_derived INTEGER,
     fld_description VARCHAR,
     fld_figure_number VARCHAR(256),
-    fld_owner VARCHAR(256),
+    fld_owner INTEGER,
     fld_page_number VARCHAR(256),
     fld_parent_id INTEGER,
     fld_priority INTEGER,
     fld_requirement_code VARCHAR(256),
     fld_specification VARCHAR(256),
-    fld_requirement_type VARCHAR(256),
+    fld_requirement_type INTEGER,
     fld_validated INTEGER,
     fld_validated_date DATE,
     fld_clarity_0 INTEGER,
@@ -1030,9 +1030,9 @@ CREATE TABLE ramstk_requirement (
     PRIMARY KEY (fld_requirement_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_requirement" VALUES(1,1,0,'','','','',0,0,'REL-0001','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-INSERT INTO "ramstk_requirement" VALUES(1,2,0,'','','','',0,0,'FUN-0002','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-INSERT INTO "ramstk_requirement" VALUES(1,3,0,'','','','',0,0,'PRF-0003','','',0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "ramstk_requirement" VALUES(1,1,0,'','',0,'',0,0,'REL-0001','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "ramstk_requirement" VALUES(1,2,0,'','',0,'',0,0,'FUN-0002','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "ramstk_requirement" VALUES(1,3,0,'','',0,'',0,0,'PRF-0003','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
 CREATE TABLE ramstk_software (
     fld_revision_id INTEGER NOT NULL,

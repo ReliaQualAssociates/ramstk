@@ -325,7 +325,7 @@ class GeneralData(RAMSTKWorkView):
                                self._lst_handler_id[1])
         self.chkDerived.do_update(int(attributes['derived']),
                                   self._lst_handler_id[3])
-        self.cmbRequirementType.do_update(attributes['requirement_type'],
+        self.cmbRequirementType.do_update(int(attributes['requirement_type']),
                                           self._lst_handler_id[2])
         self.txtSpecification.do_update(str(attributes['specification']),
                                         self._lst_handler_id[4])
@@ -333,9 +333,9 @@ class GeneralData(RAMSTKWorkView):
                                   self._lst_handler_id[5])
         self.txtFigNum.do_update(str(attributes['figure_number']),
                                  self._lst_handler_id[6])
-        self.cmbPriority.do_update(str(attributes['priority']),
+        self.cmbPriority.do_update(int(attributes['priority']),
                                    self._lst_handler_id[7])
-        self.cmbOwner.do_update(str(attributes['owner']),
+        self.cmbOwner.do_update(int(attributes['owner']),
                                 self._lst_handler_id[8])
         self.chkValidated.do_update(int(attributes['validated']),
                                     self._lst_handler_id[9])
@@ -453,17 +453,10 @@ class GeneralData(RAMSTKWorkView):
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _model = combo.get_model()
-        _row = combo.get_active_iter()
-
-        if _key == 'requirement_type':
-            _new_text = _model.get_value(_row, 1)
-        elif _key == 'priority':
-            _new_text = int(_model.get_value(_row, 0))
-        elif _key == 'owner':
-            _new_text = _model.get_value(_row, 0)
-        else:
-            _new_text = ''
+        try:
+            _new_text = int(combo.get_active())
+        except ValueError:
+            _new_text = 0
 
         pub.sendMessage('wvw_editing_requirement',
                         node_id=[self._record_id, -1],
