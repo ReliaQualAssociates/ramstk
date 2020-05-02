@@ -107,18 +107,28 @@ class GeneralData(RAMSTKWorkView):
         self.txtSpecification = RAMSTKEntry()
         self.txtValidatedDate: RAMSTKEntry = RAMSTKEntry()
 
+        self._dic_switch = {
+            'derived': [self.chkDerived.do_update, 2],
+            'description': [self.txtName.do_update, 3],
+            'figure_number': [self.txtFigNum.do_update, 4],
+            'page_number': [self.txtPageNum.do_update, 6],
+            'specification': [self.txtSpecification.do_update, 10],
+            'validated': [self.chkValidated.do_update, 12],
+            'validated_date': [self.txtValidatedDate.do_update, 13]
+        }
+
         self.__set_properties()
         self.__load_combobox()
         self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.on_edit, 'mvw_editing_requirement')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
+
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_requirement')
         pub.subscribe(self._do_load_code, 'succeed_create_requirement_code')
-        pub.subscribe(self._on_edit, 'mvw_editing_requirement')
-
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
         pub.subscribe(self._do_set_cursor_active, 'fail_update_requirement')
 
     def __load_combobox(self):
@@ -463,48 +473,6 @@ class GeneralData(RAMSTKWorkView):
                         package={_key: _new_text})
 
         combo.handler_unblock(self._lst_handler_id[index])
-
-    def _on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
-        """
-        Update the Requirement Work View Gtk.Widgets().
-
-        This method updates the Requirement Work View Gtk.Widgets() with
-        changes to the Requirement data model attributes.  The moduleview sends
-        a dict that relates the database field and the new data for that field.
-
-            `package` key: `package` value
-
-        corresponds to:
-
-            database field name: new value
-
-        This method uses the key to determine which widget needs to be
-        updated with the new data.
-
-        :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list
-            is:
-
-                0 - Requirement ID
-
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        """
-        _module_id = node_id[0]
-        [[_key, _value]] = package.items()
-        _dic_switch = {
-            'derived': [self.chkDerived.do_update, 2],
-            'description': [self.txtName.do_update, 3],
-            'figure_number': [self.txtFigNum.do_update, 4],
-            'page_number': [self.txtPageNum.do_update, 6],
-            'specification': [self.txtSpecification.do_update, 10],
-            'validated': [self.chkValidated.do_update, 12],
-            'validated_date': [self.txtValidatedDate.do_update, 13],
-        }
-
-        (_function, _id) = _dic_switch.get(_key)
-        _function(_value, self._lst_handler_id[_id])
 
     def _on_focus_out(
             self,

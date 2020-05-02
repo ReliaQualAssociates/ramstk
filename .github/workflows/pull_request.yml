@@ -69,5 +69,8 @@ jobs:
           dry-run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: results
+        id: semver
         run: echo "${{ steps.next_version.outputs.version }}"
         run: echo "${{ steps.next_version.outputs.level }}"

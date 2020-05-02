@@ -1208,6 +1208,29 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         return _x_pos, _y_pos, _fixed
 
+    def on_edit(self, node_id: List, package: Dict[str, Any]) -> None:
+        """
+        Update the Work View Gtk.Widgets() when attributes change.
+
+        This method is called whenever an attribute is edited in a different
+        view.
+
+        :param int module_id: the ID of the Hardware being edited.  This
+            parameter is required to allow the PyPubSub signals to call this
+            method and the request_set_attributes() method in the
+            RAMSTKDataController.
+        :param int index: the index in the Hardware attributes list of the
+            attribute that was edited.
+        :param str value: the new text to update the Gtk.Widget() with.
+        :return: None
+        :rtype: None
+        """
+        _module_id = node_id[0]
+        [[_key, _value]] = package.items()
+
+        (_function, _id) = self._dic_switch.get(_key)
+        _function(_value, self._lst_handler_id[_id])
+
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    **kwargs) -> None:
         """

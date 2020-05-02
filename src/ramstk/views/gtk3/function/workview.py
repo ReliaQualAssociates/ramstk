@@ -78,14 +78,22 @@ class GeneralData(RAMSTKWorkView):
         self.txtName = RAMSTKEntry()
         self.txtRemarks = RAMSTKTextView(Gtk.TextBuffer())
 
+        self._dic_switch = {
+            'function_code': [self.txtCode.do_update, 0],
+            'name': [self.txtName.do_update, 1],
+            'remarks': [self.txtRemarks.do_update, 2],
+            'safety_critical': [self.chkSafetyCritical.do_update, 3]
+        }
+
         self.__set_properties()
         self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.on_edit, 'mvw_editing_function')
+
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_function')
-        pub.subscribe(self._on_edit, 'mvw_editing_function')
 
     def __make_ui(self) -> None:
         """
@@ -217,45 +225,6 @@ class GeneralData(RAMSTKWorkView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_functions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-    def _on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
-        """
-        Update the Function Work View Gtk.Widgets().
-
-        This method updates the Function Work View Gtk.Widgets() with changes
-        to the Function data model attributes.  The moduleview sends a dict
-        that relates the database field and the new data for that field.
-
-            `package` key: `package` value
-
-        corresponds to:
-
-            database field name: new value
-
-        This method uses the key to determine which widget needs to be
-        updated with the new data.
-
-        :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list
-            is:
-
-                0 - Function ID
-                1 - Hazard ID
-
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        """
-        _module_id = node_id[0]
-        [[_key, _value]] = package.items()
-        _dic_switch = {
-            'function_code': [self.txtCode.do_update, 0],
-            'name': [self.txtName.do_update, 1],
-            'remarks': [self.txtRemarks.do_update, 2],
-            'safety_critical': [self.chkSafetyCritical.do_update, 3]
-        }
-        _function, _id = _dic_switch.get(_key)
-        _function(_value, self._lst_handler_id[_id])
 
     def _on_focus_out(
             self,

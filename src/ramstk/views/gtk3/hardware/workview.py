@@ -202,10 +202,29 @@ class GeneralData(RAMSTKWorkView):
         self.txtYearMade: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_switch: Dict[str, List[Callable, int]] = {
-            'description': [self.txtDescription.do_update, 5],
-            'name': [self.txtName.do_update, 15],
-            'remarks': [self.txtRemarks.do_update, 17]
+            'category_id': [self.cmbCategory.do_update, 2],
+            'cost_type_id': [self.cmbCostType.do_update, 3],
+            'manufacturer_id': [self.cmbManufacturer.do_update, 4],
+            'subcategory_id': [self.cmbSubcategory.do_update, 5],
+            'alt_part_number': [self.txtAltPartNum.do_update, 6],
+            'attachments': [self.txtAttachments.do_update, 7],
+            'cage_code': [self.txtCAGECode.do_update, 8],
+            'comp_ref_des': [self.txtCompRefDes.do_update, 9],
+            'cost': [self.txtCost.do_update, 10],
+            'description': [self.txtDescription.do_update, 11],
+            'figure_number': [self.txtFigureNumber.do_update, 12],
+            'lcn': [self.txtLCN.do_update, 13],
+            'name': [self.txtName.do_update, 14],
+            'nsn': [self.txtNSN.do_update, 15],
+            'page_number': [self.txtPageNumber.do_update, 16],
+            'part_number': [self.txtPartNumber.do_update, 17],
+            'quantity': [self.txtQuantity.do_update, 18],
+            'ref_des': [self.txtRefDes.do_update, 19],
+            'remarks': [self.txtRemarks.do_update, 20],
+            'specification_number': [self.txtSpecification.do_update, 21],
+            'year_of_manufacture': [self.txtYearMade.do_update, 22]
         }
+
         self._lst_widgets = [
             self.txtRefDes, self.txtCompRefDes, self.txtName,
             self.txtDescription, self.txtPartNumber, self.txtAltPartNum,
@@ -223,9 +242,10 @@ class GeneralData(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_hardware')
-        pub.subscribe(self._on_edit, 'mvw_editing_hardware')
         pub.subscribe(self._do_load_subcategory, 'changed_category')
 
     def __load_combobox(self) -> None:
@@ -273,10 +293,6 @@ class GeneralData(RAMSTKWorkView):
         # RAMSTKFrame ---+-->Gtk.VPaned ---+
         #                |
         # RAMSTKFrame ---+
-
-        _hpaned = Gtk.HPaned()
-        self.pack_start(_hpaned, True, True, 0)
-
         # Make the buttons.
         super().make_toolbuttons(
             icons=['comp_ref_des'],
@@ -285,6 +301,9 @@ class GeneralData(RAMSTKWorkView):
                   "selected hardware item.")
             ],
             callbacks=[self._do_request_make_comp_ref_des])
+
+        _hpaned = Gtk.HPaned()
+        self.pack_start(_hpaned, True, True, 0)
 
         # Make the left side of the page.
         (__, __, _fixed) = super().make_ui(start=0, end=13)
@@ -690,29 +709,6 @@ class GeneralData(RAMSTKWorkView):
                         package={_key: _new_text})
 
         combo.handler_unblock(self._lst_handler_id[index])
-
-    def _on_edit(self, node_id: List, package: Dict[str, Any]) -> None:
-        """
-        Update the Work View Gtk.Widgets() when Hardware attributes change.
-
-        This method is called whenever an attribute is edited in a different
-        view.
-
-        :param int module_id: the ID of the Hardware being edited.  This
-            parameter is required to allow the PyPubSub signals to call this
-            method and the request_set_attributes() method in the
-            RAMSTKDataController.
-        :param int index: the index in the Hardware attributes list of the
-            attribute that was edited.
-        :param str value: the new text to update the Gtk.Widget() with.
-        :return: None
-        :rtype: None
-        """
-        _module_id = node_id[0]
-        [[_key, _value]] = package.items()
-
-        (_function, _id) = self._dic_switch.get(_key)
-        _function(_value, self._lst_handler_id[_id])
 
     def _on_focus_out(
             self,
@@ -1308,19 +1304,19 @@ class AssessmentInputs(RAMSTKWorkView):
             _child = self.scwDesignRatings.get_child().get_children()[0]
             _child.remove(_child.get_child())
         except (AttributeError, TypeError):
-            pass
+            _child = None
 
         # Load the component-specific widgets.
-        if _component_ai is not None:
+        if _component_ai is not None and _child is not None:
             _child.add(_component_ai)
 
         try:
             _child = self.scwOperatingStress.get_child().get_children()[0]
             _child.remove(_child.get_child())
         except (AttributeError, TypeError):
-            pass
+            _child = None
 
-        if _component_si is not None:
+        if _component_si is not None and _child is not None:
             _component_si.do_load_page(attributes)
             _child.add(_component_si)
 

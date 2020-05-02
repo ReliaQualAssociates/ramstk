@@ -30,7 +30,6 @@ class ModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  All attributes of a Hardware
     Module View are inherited.
     """
-
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
@@ -118,24 +117,21 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        super().make_ui(icons=['insert_sibling', 'insert_child',
-                               'insert_part', 'remove', 'calculate',
-                               'calculate_all'],
+        super().make_ui(icons=[
+            'insert_sibling', 'insert_child', 'insert_part', 'remove',
+            'calculate', 'calculate_all'
+        ],
                         tooltips=[
                             _("Adds a new Hardware assembly at the same "
                               "hierarchy level as the selected Hardware "
-                              "(i.e., a sibling hardware item)."
-                              ),
+                              "(i.e., a sibling hardware item)."),
                             _("Adds a new Hardware assembly one level "
                               "subordinate to the selected Hardware (i.e., a "
-                              "child hardware item)."
-                              ),
+                              "child hardware item)."),
                             _("Adds a new hardware component/piece-part "
-                              "to the the selected hardware assembly."
-                              ),
+                              "to the the selected hardware assembly."),
                             _("Remove the currently selected hardware item "
-                              "and any children."
-                              ),
+                              "and any children."),
                             _("Calculate the selected hardware item."),
                             _("Calculate the entire system.")
                         ],
@@ -175,11 +171,11 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_calculate_hardware',
-                        node_id=self._record_id)
+        pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _do_request_calculate_all_hardware(self, __button: Gtk.ToolButton) -> None:
+    def _do_request_calculate_all_hardware(self,
+                                           __button: Gtk.ToolButton) -> None:
         """
         Send request to iteratively calculate all hardware items.
 
@@ -227,7 +223,8 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         pub.sendMessage('request_insert_hardware',
-                        parent_id=self._record_id, part=0)
+                        parent_id=self._record_id,
+                        part=0)
 
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None:
         """
@@ -240,7 +237,8 @@ class ModuleView(RAMSTKModuleView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_insert_hardware',
-                        parent_id=self._record_id, part=1)
+                        parent_id=self._record_id,
+                        part=1)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
@@ -254,7 +252,8 @@ class ModuleView(RAMSTKModuleView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_insert_hardware',
-                        parent_id=self._parent_id, part=0)
+                        parent_id=self._parent_id,
+                        part=0)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -311,32 +310,31 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            super().on_button_press(event,
-                                    icons=[
-                                        'insert_sibling', 'insert_child',
-                                        'insert_part', 'calculate',
-                                        'calculate_all'
-                                    ],
-                                    labels=[
-                                        _("Add Sibling Assembly"),
-                                        _("Add Child Assembly"),
-                                        _("Add Piece Part"),
-                                        _("Calculate the Selected Hardware"),
-                                        _("Calculate the System"),
-                                        _("Remove Selected Hardware Item"),
-                                        _("Save Selected Hardware Item"),
-                                        _("Save All Hardware Items")
-                                    ],
-                                    callbacks=[
-                                        self._do_request_insert_sibling,
-                                        self._do_request_insert_child,
-                                        self._do_request_insert_part,
-                                        self._do_request_calculate_hardware,
-                                        self._do_request_calculate_all_hardware,
-                                        self._do_request_delete,
-                                        self._do_request_update,
-                                        self._do_request_update_all
-                                    ])
+            super().on_button_press(
+                event,
+                icons=[
+                    'insert_sibling', 'insert_child', 'insert_part',
+                    'calculate', 'calculate_all'
+                ],
+                labels=[
+                    _("Add Sibling Assembly"),
+                    _("Add Child Assembly"),
+                    _("Add Piece Part"),
+                    _("Calculate the Selected Hardware"),
+                    _("Calculate the System"),
+                    _("Remove Selected Hardware Item"),
+                    _("Save Selected Hardware Item"),
+                    _("Save All Hardware Items")
+                ],
+                callbacks=[
+                    self._do_request_insert_sibling,
+                    self._do_request_insert_child,
+                    self._do_request_insert_part,
+                    self._do_request_calculate_hardware,
+                    self._do_request_calculate_all_hardware,
+                    self._do_request_delete, self._do_request_update,
+                    self._do_request_update_all
+                ])
         treeview.handler_unblock(self._lst_handler_id[1])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
@@ -367,7 +365,27 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {5: 'hardware_code', 15: 'name', 17: 'remarks'}
+        _dic_keys = {
+            2: 'alt_part_number',
+            3: 'cage_code',
+            4: 'comp_ref_des',
+            5: 'cost',
+            8: 'description',
+            9: 'duty_cycle',
+            10: 'figure_number',
+            11: 'lcn',
+            14: 'mission_time',
+            15: 'name',
+            16: 'nsn',
+            17: 'page_number',
+            20: 'part_number',
+            21: 'quantity',
+            22: 'ref_des',
+            23: 'remarks',
+            25: 'specification_number',
+            29: 'year_of_manufacture'
+        }
+
         try:
             _key = _dic_keys[self._lst_col_order[position]]
         except KeyError:

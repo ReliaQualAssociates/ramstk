@@ -181,6 +181,25 @@ class GeneralData(RAMSTKWorkView):
         self.txtProjectCost: RAMSTKEntry = RAMSTKEntry()
         self.txtProjectCostUL: RAMSTKEntry = RAMSTKEntry()
 
+        self._dic_switch = {
+            'description': [self.txtTask.do_update, 0],
+            'task_type': [self.cmbTaskType.do_update, 1],
+            'task_specification': [self.txtSpecification.do_update, 2],
+            'measurement_unit': [self.cmbMeasurementUnit.do_update, 3],
+            'acceptable_minimum': [self.txtMinAcceptable, 4],
+            'acceptable_mean': [self.txtMeanAcceptable, 5],
+            'acceptable_maximum': [self.txtMaxAcceptable, 6],
+            'acceptable_variance': [self.txtVarAcceptable.do_update, 7],
+            'date_start': [self.txtStartDate.do_update, 8],
+            'date_end': [self.txtEndDate.do_update, 9],
+            'time_minimum': [self.txtMinTime.do_update, 11],
+            'time_average': [self.txtExpTime.do_update, 12],
+            'time_maximum': [self.txtMaxTime.do_update, 13],
+            'cost_minimum': [self.txtMinCost.do_update, 14],
+            'cost_average': [self.txtExpCost.do_update, 15],
+            'cost_maximum': [self.txtMaxCost.do_update, 16]
+        }
+
         self.__set_properties()
         self.__load_combobox()
         self.__make_ui()
@@ -854,31 +873,13 @@ class GeneralData(RAMSTKWorkView):
         """
         _module_id = node_id[0]
         [[_key, _value]] = package.items()
-        _dic_switch = {
-            'description': [self.txtTask.do_update, 0],
-            'task_type': [self.cmbTaskType.do_update, 1],
-            'task_specification': [self.txtSpecification.do_update, 2],
-            'measurement_unit': [self.cmbMeasurementUnit.do_update, 3],
-            'acceptable_minimum': [self.txtMinAcceptable, 4],
-            'acceptable_mean': [self.txtMeanAcceptable, 5],
-            'acceptable_maximum': [self.txtMaxAcceptable, 6],
-            'acceptable_variance': [self.txtVarAcceptable.do_update, 7],
-            'date_start': [self.txtStartDate.do_update, 8],
-            'date_end': [self.txtEndDate.do_update, 9],
-            'time_minimum': [self.txtMinTime.do_update, 11],
-            'time_average': [self.txtExpTime.do_update, 12],
-            'time_maximum': [self.txtMaxTime.do_update, 13],
-            'cost_minimum': [self.txtMinCost.do_update, 14],
-            'cost_average': [self.txtExpCost.do_update, 15],
-            'cost_maximum': [self.txtMaxCost.do_update, 16]
-        }
 
         if _key == 'status':
             self.spnStatus.handler_block(self._lst_handler_id[10])
             self.spnStatus.set_value(_value)
             self.spnStatus.handler_unblock(self._lst_handler_id[10])
         else:
-            (_function, _id) = _dic_switch.get(_key)
+            (_function, _id) = self._dic_switch.get(_key)
             _function(_value, self._lst_handler_id[_id])
 
     def _on_focus_out(
