@@ -324,6 +324,10 @@ class RAMSTKBaseView(Gtk.HBox):
             if module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
+        _treeview.set_grid_lines(3)
+        _treeview.set_enable_tree_lines(True)
+        _treeview.set_level_indentation(2)
+
         return _treeview
 
     def do_expand_tree(self) -> None:

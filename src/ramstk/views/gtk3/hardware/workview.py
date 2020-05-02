@@ -11,11 +11,16 @@ import locale
 from typing import Any, Callable, Dict, List
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_DORMANT_ENVIRONMENTS,
+    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,
+    RAMSTK_HR_TYPES, RAMSTKUserConfiguration
+)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
@@ -261,6 +266,18 @@ class GeneralData(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
+        #                                      buttons -----+--> Gtk.HBox
+        #                                                   |
+        #                   RAMSTKFrame ---+-->Gtk.HPaned --+
+        #                                  |
+        # RAMSTKFrame ---+-->Gtk.VPaned ---+
+        #                |
+        # RAMSTKFrame ---+
+
+        _hpaned = Gtk.HPaned()
+        self.pack_start(_hpaned, True, True, 0)
+
+        # Make the buttons.
         super().make_toolbuttons(
             icons=['comp_ref_des'],
             tooltips=[
@@ -268,18 +285,17 @@ class GeneralData(RAMSTKWorkView):
                   "selected hardware item.")
             ],
             callbacks=[self._do_request_make_comp_ref_des])
-        (__, __, _fixed) = super().make_ui(start=0, end=13)
 
-        _hpaned = Gtk.HPaned()
-        self.pack_start(_hpaned, True, True, 0)
+        # Make the left side of the page.
+        (__, __, _fixed) = super().make_ui(start=0, end=13)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("General Information"))
         _frame.add(_scrollwindow)
-
         _hpaned.pack1(_frame, True, True)
 
+        # Make the top right side of the page.
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
         (__, __, _fixed) = super().make_ui(start=13, end=20)
@@ -290,6 +306,7 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
         _vpaned.pack1(_frame, True)
 
+        # Make the bottom right side of the page.
         (__, __, _fixed) = super().make_ui(start=20)
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -297,6 +314,7 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
         _vpaned.pack2(_frame, True, True)
 
+        # Set the tab label.
         _label = RAMSTKLabel(_("General\nData"))
         _label.do_set_properties(
             height=30,
@@ -490,7 +508,8 @@ class GeneralData(RAMSTKWorkView):
             self.cmbCategory.set_button_sensitivity(Gtk.SensitivityType.ON)
             self.cmbSubcategory.set_button_sensitivity(Gtk.SensitivityType.ON)
 
-            self.cmbCategory.set_active(int(attributes['category_id']))
+            self.cmbCategory.do_update(int(attributes['category_id']),
+                                       self._lst_handler_id[2])
 
             self._do_load_subcategory(int(attributes['category_id']))
             self.cmbSubcategory.do_update(int(attributes['subcategory_id']),
@@ -500,10 +519,11 @@ class GeneralData(RAMSTKWorkView):
             self.cmbCategory.set_button_sensitivity(Gtk.SensitivityType.OFF)
             self.cmbSubcategory.set_button_sensitivity(Gtk.SensitivityType.OFF)
 
-            # Clear the subcategory RAMSTKComboBox() always so it is empty
-            # whenever an assembly is selected.
-            _model = self.cmbSubcategory.get_model()
-            _model.clear()
+            self.cmbCategory.do_update(int(attributes['category_id']),
+                                       self._lst_handler_id[2])
+
+            self.cmbSubcategory.do_update(int(attributes['subcategory_id']),
+                                          self._lst_handler_id[5])
 
         self.chkRepairable.do_update(int(attributes['repairable']),
                                      self._lst_handler_id[0])
@@ -757,3 +777,844 @@ class GeneralData(RAMSTKWorkView):
                            keys=self._dic_keys)
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
+
+
+class AssessmentInputs(RAMSTKWorkView):
+    """
+    Display Hardware assessment input attribute data in the RAMSTK Work Book.
+
+    The Hardware assessment input view displays all the assessment inputs for
+    the selected Hardware item.  This includes, currently, inputs for
+    MIL-HDBK-217FN2 and NSWC-11.  The attributes of a Hardware assessment
+    input view are:
+
+    :cvar list _lst_labels: the text to use for the assessment input widget
+        labels.
+
+    :ivar dict _dic_assessment_input: dictionary of component-specific
+        AssessmentInputs classes.
+    :ivar int _hardware_id: the ID of the Hardware item currently being
+        displayed.
+    :ivar int _hazard_rate_method_id: the ID of the hazard rate method used for
+        Hardware item.
+
+    :ivar cmbActiveEnviron: the operating environment for the hardware item.
+    :ivar cmbDormantEnviron: the storage environment for the hardware item.
+    :ivar cmbFailureDist: the statistical failure distribution of the hardware
+        item.
+    :ivar cmbHRType: the type of reliability assessment for the selected
+        hardware item.
+    :ivar cmbHRMethod: the assessment method to use for the selected hardware
+        item.
+    :ivar fraDesignRatings: the container to embed the piece part design
+        attributes Gtk.Fised().
+    :ivar fraOperatingStress: the container to embed the piece part operating
+        stresses Gtk.Fixed().
+    :ivar txtActiveTemp: the ambient temperature in the operating environment.
+    :ivar txtAddAdjFactor: an adjustment factor to add to the assessed hazard
+        rate or MTBF.
+    :ivar txtDormantTemp: the ambient temperature in the storage environment.
+    :ivar txtFailScale: the scale parameter of the statistical failure
+        distribution.
+    :ivar txtFailShape: the shape parameter of the statistical failure
+        distribution.
+    :ivar txtFailLocation: the location parameter of the statistical failure
+        distribution.
+    :ivar txtMultAdjFactor: an adjustment factor to multiply the assessed
+        hazard rate or MTBF by.
+    :ivar txtSpecifiedHt: the stated hazard rate.
+    :ivar txtSpecifiedHtVar: the variance of the stated hazard rate.
+    :ivar txtSpecifiedMTBF: the stated mean time between failure (MTBF).
+    :ivar txtSpecifiedMTBFVar: the variance of the stated mean time between
+        failure (MTBF).
+
+    Callbacks signals in RAMSTKBaseView._lst_handler_id:
+
+    +----------+-------------------------------------------+
+    | Position | Widget - Signal                           |
+    +==========+===========================================+
+    |     0    | cmbActiveEnviron - `changed`              |
+    +----------+-------------------------------------------+
+    |     1    | cmbDormantEnviron - `changed`             |
+    +----------+-------------------------------------------+
+    |     2    | cmbFailureDist - `changed`                |
+    +----------+-------------------------------------------+
+    |     3    | cmbHRType - `changed`                     |
+    +----------+-------------------------------------------+
+    |     4    | cmbHRMethod - `changed`                   |
+    +----------+-------------------------------------------+
+    |     5    | txtActiveTemp - `changed`                 |
+    +----------+-------------------------------------------+
+    |     6    | txtAddAdjFactor - `changed`               |
+    +----------+-------------------------------------------+
+    |     7    | txtDormantTemp - `changed`                |
+    +----------+-------------------------------------------+
+    |     8    | txtFailScale - `changed`                  |
+    +----------+-------------------------------------------+
+    |     9    | txtFailShape - `changed`                  |
+    +----------+-------------------------------------------+
+    |    10    | txtFailLocation - `changed`               |
+    +----------+-------------------------------------------+
+    |    11    | txtMultAdjFactor - `changed`              |
+    +----------+-------------------------------------------+
+    |    12    | txtSpecifiedHt - `changed`                |
+    +----------+-------------------------------------------+
+    |    13    | txtSpecifiedHtVar - `changed`             |
+    +----------+-------------------------------------------+
+    |    14    | txtSpecifiedMTBF - `changed`              |
+    +----------+-------------------------------------------+
+    |    15    | txtSpecifiedMTBFVar - `changed`           |
+    +----------+-------------------------------------------+
+    """
+    # Define private dict attributes.
+    _dic_keys = {
+        0: 'environment_active_id',
+        1: 'environment_dormant_id',
+        2: 'failure_distribution_id',
+        3: 'hazard_rate_type_id',
+        4: 'hazard_rate_method_id',
+        5: 'temperature_active',
+        6: 'add_adj_factor',
+        7: 'temperature_dormant',
+        8: 'scale_parameter',
+        9: 'shape_parameter',
+        10: 'location_parameter',
+        11: 'mult_adj_factor',
+        12: 'hazard_rate_specified',
+        13: 'hr_specified_variance',
+        14: 'mtbf_specified',
+        15: 'mtbf_specified_variance',
+        16: 'duty_cycle',
+        17: 'mission_time'
+    }
+
+    # Define private list attributes.
+    _lst_labels = [
+        _("Assessment Type:"),
+        _("Assessment Method:"),
+        _("Stated Hazard Rate [h(t)]:"),
+        _("Stated h(t) Variance:"),
+        _("Stated MTBF:"),
+        _("Stated MTBF Variance:"),
+        _("Failure Distribution:"),
+        _("Scale Parameter:"),
+        _("Shape Parameter:"),
+        _("Location Parameter:"),
+        _("Additive Adjustment Factor:"),
+        _("Multiplicative Adjustment Factor:"),
+        _("Active Environment:"),
+        _("Active Temperature (\u00B0C):"),
+        _("Dormant Environment:"),
+        _("Dormant Temperature (\u00B0C):"),
+        _("Mission Time:"),
+        _("Duty Cycle:")
+    ]
+
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'hardware') -> None:
+        """
+        Initialize an instance of the Hardware assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
+        """
+        super().__init__(configuration, logger, module)
+
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
+
+        # Initialize private dictionary attributes.
+        self._dic_assessment_input = {
+            # 1: wvwIntegratedCircuitAI(self.RAMSTK_CONFIGURATION),
+            # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
+            # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
+            # 4: wvwCapacitorAI(self.RAMSTK_CONFIGURATION),
+            # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
+            # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
+            # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
+            # 8: wvwConnectionAI(self.RAMSTK_CONFIGURATION),
+            # 9: wvwMeterAI(self.RAMSTK_CONFIGURATION),
+            # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION),
+        }
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = 0
+        self._subcategory_id: int = 0
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.cmbActiveEnviron = RAMSTKComboBox()
+        self.cmbDormantEnviron = RAMSTKComboBox()
+        self.cmbFailureDist = RAMSTKComboBox()
+        self.cmbHRType = RAMSTKComboBox()
+        self.cmbHRMethod = RAMSTKComboBox()
+
+        self.scwDesignRatings = RAMSTKScrolledWindow(None)
+        self.scwOperatingStress = RAMSTKScrolledWindow(None)
+
+        self.txtActiveTemp = RAMSTKEntry()
+        self.txtAddAdjFactor = RAMSTKEntry()
+        self.txtDormantTemp = RAMSTKEntry()
+        self.txtDutyCycle = RAMSTKEntry()
+        self.txtFailScale = RAMSTKEntry()
+        self.txtFailShape = RAMSTKEntry()
+        self.txtFailLocation = RAMSTKEntry()
+        self.txtMissionTime = RAMSTKEntry()
+        self.txtMultAdjFactor = RAMSTKEntry()
+        self.txtSpecifiedHt = RAMSTKEntry()
+        self.txtSpecifiedHtVar = RAMSTKEntry()
+        self.txtSpecifiedMTBF = RAMSTKEntry()
+        self.txtSpecifiedMTBFVar = RAMSTKEntry()
+
+        self._lst_widgets = [
+            self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
+            self.txtSpecifiedHtVar, self.txtSpecifiedMTBF,
+            self.txtSpecifiedMTBFVar, self.cmbFailureDist, self.txtFailScale,
+            self.txtFailShape, self.txtFailLocation, self.txtAddAdjFactor,
+            self.txtMultAdjFactor, self.cmbActiveEnviron, self.txtActiveTemp,
+            self.cmbDormantEnviron, self.txtDormantTemp, self.txtMissionTime,
+            self.txtDutyCycle
+        ]
+
+        self._dic_switch = {
+            'add_adj_factor': [self.txtAddAdjFactor.do_update, 6],
+            'scale_parameter': [self.txtFailScale.do_update, 8],
+            'shape_parameter': [self.txtFailShape.do_update, 9],
+            'location_parameter': [self.txtFailLocation.do_update, 10],
+            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 11],
+            'hazard_rate_specified': [self.txtSpecifiedHt.do_update, 12],
+            'hr_specified_variance': [self.txtSpecifiedHtVar.do_update, 13],
+            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 14],
+            'mtbf_spec_variance': [self.txtSpecifiedMTBFVar.do_update, 15],
+            'duty_cycle': [self.txtDutyCycle.do_update, 16],
+            'mission_time': [self.txtMissionTime.do_update, 17]
+        }
+
+        self.__set_properties()
+        self.__load_combobox()
+        self.__make_ui()
+        self.__set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
+        pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
+
+    def __load_combobox(self):
+        """
+        Load the RAMSTK ComboBox widgets with lists of information.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbActiveEnviron.do_load_combo(RAMSTK_ACTIVE_ENVIRONMENTS)
+        self.cmbDormantEnviron.do_load_combo(RAMSTK_DORMANT_ENVIRONMENTS)
+        self.cmbHRType.do_load_combo(RAMSTK_HR_TYPES)
+        self.cmbHRMethod.do_load_combo(RAMSTK_HR_MODELS)
+        self.cmbFailureDist.do_load_combo(RAMSTK_HR_DISTRIBUTIONS)
+
+    def __make_ui(self) -> None:
+        """
+        Make the Hardware class Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # This page has the following layout:
+        # +-----+-------------------+-------------------+
+        # |  B  |      L. TOP       |      R. TOP       |
+        # |  U  |                   |                   |
+        # |  T  |                   |                   |
+        # |  T  +-------------------+-------------------+
+        # |  O  |     L. BOTTOM     |     R. BOTTOM     |
+        # |  N  |                   |                   |
+        # |  S  |                   |                   |
+        # +-----+-------------------+-------------------+
+        #                                        buttons -----+--> Gtk.HBox
+        #                                                     |
+        # RAMSTKFrame ---+--> Gtk.VPaned ---+--> Gtk.HPaned --+
+        #                |                  |
+        # RAMSTKFrame ---+                  |
+        #                                   |
+        # RAMSTKFrame ---+--> Gtk.VPaned ---+
+        #                |
+        # RAMSTKFrame ---+
+
+        # Make the buttons.
+        super().make_toolbuttons(
+            icons=['calculate'],
+            tooltips=[
+                _("Calculate the currently selected Hardware item."),
+            ],
+            callbacks=[self._do_request_calculate_hardware])
+
+        _hpaned = Gtk.HPaned()
+        self.pack_start(_hpaned, True, True, 0)
+
+        # Make the left side of the page.
+        _vpn_left = Gtk.VPaned()
+        _hpaned.pack1(_vpn_left, True, True)
+
+        # Top left quadrant.
+        (__, __, _fixed) = super().make_ui(start=0, end=12)
+
+        _scrollwindow = RAMSTKScrolledWindow(_fixed)
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("Assessment Inputs"))
+        _frame.add(_scrollwindow)
+        _vpn_left.pack1(_frame, True, True)
+
+        # Bottom left quadrant.  This is just an RAMSTKFrame() and will be the
+        # container for component-specific design attributes.
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("Design Ratings"))
+        _frame.add(self.scwDesignRatings)
+        _vpn_left.pack2(_frame, True, True)
+
+        # Make the right side of the page.
+        _vpn_right = Gtk.VPaned()
+        _hpaned.pack2(_vpn_right, True, True)
+
+        # Top right quadrant.
+        (__, __, _fixed) = super().make_ui(start=12)
+
+        _scrollwindow = RAMSTKScrolledWindow(_fixed)
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("Environmental Inputs"))
+        _frame.add(_scrollwindow)
+        _vpn_right.pack1(_frame, True, True)
+
+        # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
+        # container for component-specific design attributes.
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("Operating Stresses"))
+        _frame.add(self.scwOperatingStress)
+        _vpn_right.pack2(_frame, True, True)
+
+        # Set the tab label.
+        _label = RAMSTKLabel(_("Assessment\nInputs"))
+        _label.do_set_properties(
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_("Displays reliability assessment inputs for the "
+                      "selected hardware item."))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set the callback methods and functions.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbActiveEnviron.connect('changed', self._on_combo_changed,
+                                          0))
+        self._lst_handler_id.append(
+            self.cmbDormantEnviron.connect('changed', self._on_combo_changed,
+                                           1))
+        self._lst_handler_id.append(
+            self.cmbFailureDist.connect('changed', self._on_combo_changed, 2))
+        self._lst_handler_id.append(
+            self.cmbHRType.connect('changed', self._on_combo_changed, 3))
+        self._lst_handler_id.append(
+            self.cmbHRMethod.connect('changed', self._on_combo_changed, 4))
+
+        self._lst_handler_id.append(
+            self.txtActiveTemp.connect('focus-out-event', self._on_focus_out,
+                                       5))
+        self._lst_handler_id.append(
+            self.txtAddAdjFactor.connect('focus-out-event', self._on_focus_out, 6))
+        self._lst_handler_id.append(
+            self.txtDormantTemp.connect('focus-out-event', self._on_focus_out, 7))
+        self._lst_handler_id.append(
+            self.txtFailScale.connect('focus-out-event', self._on_focus_out, 8))
+        self._lst_handler_id.append(
+            self.txtFailShape.connect('focus-out-event', self._on_focus_out, 9))
+        self._lst_handler_id.append(
+            self.txtFailLocation.connect('focus-out-event', self._on_focus_out, 10))
+        self._lst_handler_id.append(
+            self.txtMultAdjFactor.connect('focus-out-event', self._on_focus_out, 11))
+        self._lst_handler_id.append(
+            self.txtSpecifiedHt.connect('focus-out-event', self._on_focus_out, 12))
+        self._lst_handler_id.append(
+            self.txtSpecifiedHtVar.connect('focus-out-event', self._on_focus_out, 13))
+        self._lst_handler_id.append(
+            self.txtSpecifiedMTBF.connect('focus-out-event', self._on_focus_out, 14))
+        self._lst_handler_id.append(
+            self.txtSpecifiedMTBFVar.connect('focus-out-event', self._on_focus_out, 15))
+        self._lst_handler_id.append(
+            self.txtDutyCycle.connect('focus-out-event', self._on_focus_out, 16))
+        self._lst_handler_id.append(
+            self.txtMissionTime.connect('focus-out-event', self._on_focus_out, 17))
+
+    def __set_properties(self):
+        """
+        Set the properties of the General Data Work View and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        # ----- COMBOBOXES
+        self.cmbActiveEnviron.do_set_properties(
+            tooltip=_("The operating environment for the hardware item."))
+        self.cmbDormantEnviron.do_set_properties(
+            tooltip=_("The storage environment for the hardware item."))
+        self.cmbFailureDist.do_set_properties(tooltip=_(
+            "The statistical failure distribution of the hardware item."))
+        self.cmbHRType.do_set_properties(
+            tooltip=_("The type of reliability assessment for the selected "
+                      "hardware item."))
+        self.cmbHRMethod.do_set_properties(tooltip=_(
+            "The assessment method to use for the selected hardware item."))
+
+        # ----- ENTRIES
+        self.txtActiveTemp.do_set_properties(
+            width=125,
+            tooltip=_("The ambient temperature in the operating environment."))
+        self.txtAddAdjFactor.do_set_properties(
+            width=125,
+            tooltip=_(
+                "An adjustment factor to add to the assessed hazard rate or "
+                "MTBF."))
+        self.txtDormantTemp.do_set_properties(
+            width=125,
+            tooltip=_("The ambient temperature in the storage environment."))
+        self.txtDutyCycle.do_set_properties(
+            width=125,
+            tooltip=_("The duty cycle of the selected hardware item."))
+        self.txtFailScale.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The scale parameter of the statistical failure distribution.")
+        )
+        self.txtFailShape.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The shape parameter of the statistical failure distribution.")
+        )
+        self.txtFailLocation.do_set_properties(
+            width=125,
+            tooltip=_("The location parameter of the statistical failure "
+                      "distribution."))
+        self.txtMissionTime.do_set_properties(
+            width=125,
+            tooltip=_("The mission time of the selected hardware item."))
+        self.txtMultAdjFactor.do_set_properties(
+            width=125,
+            tooltip=_(
+                "An adjustment factor to multiply the assessed hazard rate "
+                "or MTBF by."))
+        self.txtSpecifiedHt.do_set_properties(
+            width=125, tooltip=_("The stated hazard rate."))
+        self.txtSpecifiedHtVar.do_set_properties(
+            width=125, tooltip=_("The variance of the stated hazard rate."))
+        self.txtSpecifiedMTBF.do_set_properties(
+            width=125,
+            tooltip=_("The stated mean time between failure (MTBF)."))
+        self.txtSpecifiedMTBFVar.do_set_properties(
+            width=125,
+            tooltip=_("The variance of the stated mean time between failure "
+                      "(MTBF)."))
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        # Clear the component-specific Gtk.ScrolledWindow()s.
+        for _child in self.scwDesignRatings.get_children():
+            self.scwDesignRatings.remove(_child)
+
+        for _child in self.scwOperatingStress.get_children():
+            self.scwOperatingStress.remove(_child)
+
+        self.cmbActiveEnviron.do_update(0, self._lst_handler_id[0])
+        self.cmbDormantEnviron.do_update(0, self._lst_handler_id[1])
+        self.cmbFailureDist.do_update(0, self._lst_handler_id[2])
+        self.cmbHRType.do_update(0, self._lst_handler_id[3])
+        self.cmbHRMethod.do_update(0, self._lst_handler_id[4])
+        self.txtActiveTemp.do_update('', self._lst_handler_id[5])
+        self.txtAddAdjFactor.do_update('', self._lst_handler_id[6])
+        self.txtDormantTemp.do_update('', self._lst_handler_id[7])
+        self.txtFailScale.do_update('', self._lst_handler_id[8])
+        self.txtFailShape.do_update('', self._lst_handler_id[9])
+        self.txtFailLocation.do_update('', self._lst_handler_id[10])
+        self.txtMultAdjFactor.do_update('', self._lst_handler_id[11])
+        self.txtSpecifiedHt.do_update('', self._lst_handler_id[12])
+        self.txtSpecifiedHtVar.do_update('', self._lst_handler_id[13])
+        self.txtSpecifiedMTBF.do_update('', self._lst_handler_id[14])
+        self.txtSpecifiedMTBFVar.do_update('', self._lst_handler_id[15])
+        self.txtDutyCycle.do_update('', self._lst_handler_id[16])
+        self.txtMissionTime.do_update('', self._lst_handler_id[17])
+
+    # noinspection PyUnusedLocal
+    def _do_request_hardware_tree(self, attributes: Dict[str, Any]) -> None:
+        """
+        Request the Hardware module treelib Tree().
+
+        :param attributes:
+        :return:
+        """
+        self._record_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+
+        pub.sendMessage('request_get_hardware_tree')
+
+    def _do_load_page(self, dmtree: treelib.Tree) -> None:
+        """
+        Load the Hardware Assessment Inputs page.
+
+        :param dict attributes: a dict of attribute key:value pairs for the
+            selected Hardware.
+        :return: None
+        :rtype: None
+        """
+        attributes = dmtree.get_node(self._record_id).data[
+            'design_electric'].get_attributes()
+        attributes = {**attributes, **dmtree.get_node(self._record_id).data[
+            'reliability'].get_attributes()}
+        attributes = {**attributes, **dmtree.get_node(self._record_id).data[
+            'hardware'].get_attributes()}
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
+
+        # Retrieve the appropriate component-specific work views.
+        #try:
+        #    _component_ai = self._dic_assessment_input[
+        #        attributes['category_id']]
+        #except KeyError:
+        _component_ai = None
+
+        #_component_si = Component.StressInputs(self.RAMSTK_CONFIGURATION)
+        _component_si = None
+
+        # Clear the component-specific Gtk.ScrolledWindow()s if there are
+        # already a component-specific work view objects.
+        try:
+            _child = self.scwDesignRatings.get_child().get_children()[0]
+            _child.remove(_child.get_child())
+        except (AttributeError, TypeError):
+            pass
+
+        # Load the component-specific widgets.
+        if _component_ai is not None:
+            _child.add(_component_ai)
+
+        try:
+            _child = self.scwOperatingStress.get_child().get_children()[0]
+            _child.remove(_child.get_child())
+        except (AttributeError, TypeError):
+            pass
+
+        if _component_si is not None:
+            _component_si.do_load_page(attributes)
+            _child.add(_component_si)
+
+        self.cmbActiveEnviron.do_update(
+            int(attributes['environment_active_id']),
+            self._lst_handler_id[0]
+        )
+        self.cmbDormantEnviron.do_update(
+            int(attributes['environment_dormant_id']),
+            self._lst_handler_id[1]
+        )
+        self.cmbFailureDist.do_update(
+            int(attributes['failure_distribution_id']),
+            self._lst_handler_id[2]
+        )
+        self.cmbHRType.do_update(
+            int(attributes['hazard_rate_type_id']),
+            self._lst_handler_id[3]
+        )
+        self.cmbHRMethod.do_update(
+            int(attributes['hazard_rate_method_id']),
+            self._lst_handler_id[4]
+        )
+        self.txtActiveTemp.do_update(
+            self.fmt.format(attributes['temperature_active']),
+            self._lst_handler_id[5]
+        )
+        self.txtAddAdjFactor.do_update(
+            self.fmt.format(attributes['add_adj_factor']),
+            self._lst_handler_id[6]
+        )
+        self.txtDormantTemp.do_update(
+            self.fmt.format(attributes['temperature_dormant']),
+            self._lst_handler_id[7]
+        )
+        self.txtFailScale.do_update(
+            self.fmt.format(attributes['scale_parameter']),
+            self._lst_handler_id[8]
+        )
+        self.txtFailShape.do_update(
+            self.fmt.format(attributes['shape_parameter']),
+            self._lst_handler_id[9]
+        )
+        self.txtFailLocation.do_update(
+            self.fmt.format(attributes['location_parameter']),
+            self._lst_handler_id[10]
+        )
+        self.txtMultAdjFactor.do_update(
+            self.fmt.format(attributes['mult_adj_factor']),
+            self._lst_handler_id[11]
+        )
+        self.txtSpecifiedHt.do_update(
+            self.fmt.format(attributes['hazard_rate_specified']),
+            self._lst_handler_id[12]
+        )
+        self.txtSpecifiedHtVar.do_update(
+            self.fmt.format(attributes['hr_specified_variance']),
+            self._lst_handler_id[13]
+        )
+        self.txtSpecifiedMTBF.do_update(
+            self.fmt.format(attributes['mtbf_specified']),
+            self._lst_handler_id[14]
+        )
+        self.txtSpecifiedMTBFVar.do_update(
+            self.fmt.format(attributes['mtbf_specified_variance']),
+            self._lst_handler_id[15]
+        )
+        self.txtDutyCycle.do_update(
+            self.fmt.format(attributes['duty_cycle']),
+            self._lst_handler_id[16]
+        )
+        self.txtMissionTime.do_update(
+            self.fmt.format(attributes['mission_time']),
+            self._lst_handler_id[17]
+        )
+
+        self._do_set_sensitive(type_id=attributes['hazard_rate_type_id'])
+
+        # Set the calculate button sensitive only if the selected hardware
+        # item is a part.
+        #if attributes['part'] == 1:
+        #    self.get_children()[0].get_children()[0].set_sensitive(True)
+        #else:
+        #    self.get_children()[0].get_children()[0].set_sensitive(False)
+
+        self.scwDesignRatings.show_all()
+        self.scwOperatingStress.show_all()
+
+        # Send the PyPubSub message to let the component-specific widgets know
+        # they can load.
+        pub.sendMessage('loaded_hardware_inputs', attributes=attributes)
+
+    def _do_request_calculate_hardware(self, __button):
+        """
+        Send request to calculate the selected hardware.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage(
+            'request_calculate_hardware',
+            node_id=self._record_id)
+
+    # TODO: Make this public per convention 303.3.  Do this for all workviews.
+    def _do_request_update(self, __button):
+        """
+        Send request to save the currently selected Hardware item.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_hardware', node_id=self._record_id)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    # TODO: Make this public per convention 303.3.  Do this for all workviews.
+    def _do_request_update_all(self, __button):
+        """
+        Send request to save all Hardware items.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_all_hardware')
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_set_sensitive(self, **kwargs):
+        """
+        Set certain widgets sensitive or insensitive.
+
+        This method will set the sensitivity of various widgets depending on
+        the hazard rate assessment type selected.
+
+        :return: None
+        :rtype: None
+        """
+        _type_id = kwargs['type_id']
+
+        if _type_id == 1:  # Assessed hazard rate using handbook models.
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(True)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+        elif _type_id == 2:  # User specified hazard rate.
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(True)
+            self.txtSpecifiedHtVar.set_sensitive(True)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+        elif _type_id == 3:  # User specified MTBF.
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(True)
+            self.txtSpecifiedMTBFVar.set_sensitive(True)
+        elif _type_id == 4:  # User specified failure distribution.
+            self.cmbFailureDist.set_sensitive(True)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(True)
+            self.txtFailScale.set_sensitive(True)
+            self.txtFailShape.set_sensitive(True)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+
+    def _on_combo_changed(self, combo, index):
+        """
+        Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
+
+        This method is called by:
+
+            * Gtk.Combo() 'changed' signal
+
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
+        :param int index: the position in the Hardware class Gtk.TreeModel()
+                          associated with the data from the calling
+                          Gtk.Entry().  Indices are:
+
+            +---------+------------------+---------+------------------+
+            |  Index  | Widget           |  Index  | Widget           |
+            +=========+==================+=========+==================+
+            |    0    | cmbActiveEnviron |    3    | cmbHRType        |
+            +---------+------------------+---------+------------------+
+            |    1    | cmbDormantEnviron|    4    | cmbHRMethod      |
+            +---------+------------------+---------+------------------+
+            |    2    | cmbFailureDist   |         |                  |
+            +---------+------------------+---------+------------------+
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _key = self._dic_keys[index]
+        except KeyError:
+            _key = ''
+
+        combo.handler_block(self._lst_handler_id[index])
+
+        try:
+            _new_text = int(combo.get_active())
+        except ValueError:
+            _new_text = 0
+
+        # Hazard rate types are:
+        #     1 = Assessed
+        #     2 = Defined, Hazard Rate
+        #     3 = Defined, MTBF
+        #     4 = Defined, Distribution
+        if index == 3:
+            self._do_set_sensitive(type_id=_new_text)
+        # Hazard rate methods are:
+        #     1 = MIL-HDBK-217F Parts Count
+        #     2 = MIL-HDNK-217F Parts Stress
+        #     3 = NSWC (not yet implemented)
+        elif index == 4:
+            pub.sendMessage('changed_hazard_rate_method', method_id=_new_text)
+            self._hazard_rate_method_id = _new_text
+
+        # Only publish the message if something is selected in the ComboBox.
+        if _new_text != -1:
+            try:
+                pub.sendMessage('wvw_editing_hardware',
+                                node_id=[self._record_id, -1],
+                                package={_key: _new_text})
+            except KeyError:
+                pass
+
+        combo.handler_unblock(self._lst_handler_id[index])
+
+    def _on_focus_out(
+            self,
+            entry: Gtk.Entry,
+            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            index: int) -> None:
+        """
+        Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
+
+        This method is called by:
+
+            * RAMSTKEntry() 'focus-out-event' signal
+            * RAMSTKTextView() 'changed' signal
+
+        This method sends the 'wvw_editing_hardware' message.
+
+        :param entry: the Gtk.Entry() that called the method.
+        :type entry: :class:`Gtk.Entry`
+        :param __event: the Gdk.EventFocus that triggered the signal.
+        :type __event: :class:`Gdk.EventFocus`
+        :param int index: the position in the Hardware class Gtk.TreeModel()
+            associated with the data from the calling Gtk.Entry().
+        :return: None
+        :rtype: None
+        """
+        try:
+            _key = self._dic_keys[index]
+        except KeyError as _error:
+            _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        entry.handler_block(self._lst_handler_id[index])
+
+        try:
+            _new_text = float(entry.get_text())
+        except ValueError as _error:
+            _new_text = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        try:
+            pub.sendMessage('wvw_editing_hardware',
+                            node_id=[self._record_id, -1],
+                            package={_key: _new_text})
+        except KeyError:
+            pass
+
+        entry.handler_unblock(self._lst_handler_id[index])

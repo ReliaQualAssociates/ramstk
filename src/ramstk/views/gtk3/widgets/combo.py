@@ -150,8 +150,6 @@ class RAMSTKComboBox(Gtk.ComboBox):
         :return: None
         :rtype: None
         """
-        _options = self.do_get_options()
-
         self.handler_block(handler_id)
         self.set_active(value)
         self.handler_unblock(handler_id)
