@@ -16,7 +16,9 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import wvwFunctionGD, wvwHazOps
-from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareGD
+from ramstk.views.gtk3.hardware import (
+    wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
+)
 from ramstk.views.gtk3.requirement import (
     wvwRequirementAnalysis, wvwRequirementGD
 )
@@ -61,10 +63,9 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             'hardware': [
                 wvwHardwareGD(configuration, logger),
                 # wvwAllocation(configuration, logger),
-                # wvwHazOps(configuration, logger),
                 # wvwSimilarItem(configuration, logger),
                 wvwHardwareAI(configuration, logger),
-                # wvwHardwareAR(configuration, logger),
+                wvwHardwareAR(configuration, logger),
                 # wvwDFMECA(configuration, logger),
                 # wvwPoF(configuration, logger)
             ],

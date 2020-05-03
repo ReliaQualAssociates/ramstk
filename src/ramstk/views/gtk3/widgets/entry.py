@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Any, Tuple
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango
+from ramstk.views.gtk3 import GObject, Gtk, Pango
 
 
 def do_set_common_properties(**kwargs) -> Tuple[int, str, int]:
@@ -81,10 +81,6 @@ class RAMSTKEntry(Gtk.Entry):
         except KeyError:
             _bold = False
         try:
-            _color = kwargs['color']
-        except KeyError:
-            _color = '#BBDDFF'
-        try:
             _editable = kwargs['editable']
         except KeyError:
             _editable = True
@@ -96,23 +92,6 @@ class RAMSTKEntry(Gtk.Entry):
         self.set_property('width-request', _width)
 
         if _bold:
-            self.modify_font(Pango.FontDescription('bold'))
-
-        if not _editable:
-            _bg_color = Gdk.RGBA(
-                red=float(int(_color[1:3], 16)),
-                green=float(int(_color[3:5], 16)),
-                blue=float(int(_color[5:7], 16)),
-                alpha=1.0,
-            )
-            self.override_background_color(Gtk.StateFlags.NORMAL, _bg_color)
-            self.override_background_color(Gtk.StateFlags.ACTIVE, _bg_color)
-            self.override_background_color(Gtk.StateFlags.PRELIGHT, _bg_color)
-            self.override_background_color(Gtk.StateFlags.SELECTED, _bg_color)
-            self.override_background_color(
-                Gtk.StateFlags.INSENSITIVE,
-                Gdk.RGBA(191.0, 191.0, 191.0, 1.0),
-            )
             self.modify_font(Pango.FontDescription('bold'))
 
         self.set_tooltip_markup(_tooltip)
