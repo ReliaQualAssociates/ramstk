@@ -743,8 +743,14 @@ class GeneralData(RAMSTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         try:
-            if index in [7, 11, 20]:
-                _new_text: str = str(entry.get_text(*entry.get_bounds(), True))
+            if index == 10:
+                # Removes the currency symbol from the beginning of the
+                # string.
+                _new_text: Any = float(str(entry.get_text())[1:])
+            elif index in [7, 11, 20]:
+                _new_text = str(entry.get_text(*entry.get_bounds(), True))
+            elif index in [18, 22]:
+                _new_text = int(entry.get_text())
             else:
                 _new_text = str(entry.get_text())
         except ValueError as _error:
@@ -2233,11 +2239,7 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        pub.sendMessage(
-            'request_calculate_hardware',
-            node_id=self._record_id,
-            hr_multiplier=self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER,
-            limits=self.RAMSTK_USER_CONFIGURATION.RAMSTK_STRESS_LIMITS)
+        pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
 
     # noinspection PyUnusedLocal
     def _do_request_hardware_tree(self, attributes: Dict[str, Any]) -> None:

@@ -151,6 +151,27 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._attributes['hazard_rate_active']
             + self._attributes['hazard_rate_software'])
 
+        #// TODO: Add s-Distribution Support for R(t) Predictions
+        #//
+        #// As an analyst, I want to be able to use s-distributions for
+        #// hardware reliability analysis so that I can use field data results
+        #// when modeling systems.
+        #//
+        #// I'd like to be able to select a distribution, enter it's
+        #// parameter(s), and have the reliability at time (t) calculated and
+        #// used in a system prediction.  The hazard rate will also have to be
+        #// calculated to be used in a prediction with other methods such as
+        #// MIL-HDBK-217.
+        #//
+        #// The following, minimum, s-distributions should be available:
+        #//
+        #// * 1-parameter Exponential
+        #// * 2-parameter Exponential
+        #// * 2-parameter Weibull
+        #// * 3-parameter Weibull
+        #// * Lognormal
+        #// * Normal
+
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
         if self._attributes['hazard_rate_type_id'] != 4:
@@ -175,6 +196,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes['mtbf_mission'] = (
             1.0 / self._attributes['hazard_rate_mission'])
 
+        if self._attributes['hazard_rate_type_id'] == 3:
+            self._attributes['mtbf_specified_variance'] = (
+                1.0 / (1.0 / self._attributes['mtbf_specified'])**2.0)
+
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
         if self._attributes['hazard_rate_type_id'] != 4:
@@ -182,9 +207,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 1.0 / self._attributes['hr_logistics_variance'])
             self._attributes['mtbf_mission_variance'] = (
                 1.0 / self._attributes['hr_mission_variance'])
-        if self._attributes['hazard_rate_type_id'] == 3:
-            self._attributes['mtbf_specified_variance'] = (
-                1.0 / (1.0 / self._attributes['mtbf_specified'])**2.0)
 
     def _do_calculate_power_ratio(self) -> None:
         """

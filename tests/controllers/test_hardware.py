@@ -1175,6 +1175,48 @@ class TestAnalysisMethods():
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
     @pytest.mark.unit
+    @pytest.mark.requirement
+    def test_do_calculate_assembly_hr_s_distribution(self, mock_program_dao,
+                                                     test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the _attributes dict with results when using an s-distribution."""
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT = amHardware(test_toml_user_configuration)
+
+        def on_message(attributes):
+            assert float(
+                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+
+        pub.subscribe(on_message, 'succeed_calculate_hardware')
+
+        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
+                                                          4})
+
+        pub.sendMessage('request_calculate_hardware', node_id=1)
+
+    @pytest.mark.unit
+    @pytest.mark.requirement
+    def test_do_calculate_assembly_mtbf_s_distribution(self, mock_program_dao,
+                                                       test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the _attributes dict with results when using an s-distribution."""
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT = amHardware(test_toml_user_configuration)
+
+        def on_message(attributes):
+            assert float(
+                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+
+        pub.subscribe(on_message, 'succeed_calculate_hardware')
+
+        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
+                                                          4})
+
+        pub.sendMessage('request_calculate_hardware', node_id=1)
+
+    @pytest.mark.unit
     def test_do_calculate_assembly_zero_hazard_rates(
             self, mock_program_dao, test_toml_user_configuration):
         """do_calculate() should send the fail message when all hazard rates=0.0."""
