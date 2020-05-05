@@ -40,15 +40,16 @@ _templates/
 # RAMSTK specific directories and files to ignore
 .gtm/
 .reports/
+node_modules/
 out/
 *.csv
 *.glade
 *.html
+*.json
 *.log
 *.txt
 *.xls*
 *coverage*
-.dmypy.json
 .python-version
 _temp/
 devtools/update_docs.txt
