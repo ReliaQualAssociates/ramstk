@@ -46,11 +46,11 @@ from os.path import dirname
 
 # Third Party Imports
 import numpy as np
-from nose.plugins.attrib import attr
 
 # RAMSTK Package Imports
 import dao.DAO as _dao
 from analyses.survival.MCF import *
+from nose.plugins.attrib import attr
 from survival.Record import Model as Record
 
 sys.path.insert(

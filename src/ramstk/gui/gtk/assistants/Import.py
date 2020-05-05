@@ -10,7 +10,7 @@
 
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKComboBox, RAMSTKLabel, RAMSTKMessageDialog,
+    RAMSTKComboBox, RAMSTKLabel, RAMSTKMessageDialog
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, _
 

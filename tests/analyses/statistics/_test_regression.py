@@ -43,12 +43,12 @@ from os.path import dirname
 
 # Third Party Imports
 import numpy as np
-from nose.plugins.attrib import attr
 
 # RAMSTK Package Imports
 from analyses.statistics.Regression import (
     adjusted_rank, bernard_ranks, regression
 )
+from nose.plugins.attrib import attr
 
 sys.path.insert(
     0,

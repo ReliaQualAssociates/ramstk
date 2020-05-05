@@ -63,21 +63,23 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(self.on_get_all_attributes,
                       'succeed_get_all_hardware_attributes')
         pub.subscribe(self.on_get_tree, 'succeed_get_hardware_tree')
+
         pub.subscribe(self._on_predict_reliability,
                       'succeed_predict_reliability')
-        pub.subscribe(self.do_calculate_hardware, 'request_calculate_hardware')
+        pub.subscribe(self._do_calculate_hardware,
+                      'request_calculate_hardware')
         pub.subscribe(self._request_do_calculate_all_hardware,
                       'request_calculate_all_hardware')
-        pub.subscribe(self.do_derating_analysis, 'request_derate_hardware')
-        pub.subscribe(self.do_calculate_allocation_goals,
+        pub.subscribe(self._do_derating_analysis, 'request_derate_hardware')
+        pub.subscribe(self._do_calculate_allocation_goals,
                       'request_calculate_goals')
-        pub.subscribe(self.do_calculate_allocation,
+        pub.subscribe(self._do_calculate_allocation,
                       'request_allocate_reliability')
         pub.subscribe(self._on_allocate_reliability,
                       'succeed_allocate_reliability')
-        pub.subscribe(self.do_calculate_similar_item,
+        pub.subscribe(self._do_calculate_similar_item,
                       'request_calculate_similar_item')
-        pub.subscribe(self.do_roll_up_change_descriptions,
+        pub.subscribe(self._do_roll_up_change_descriptions,
                       'request_roll_up_change_descriptions')
 
     def _do_calculate_cost_metrics(self) -> None:
@@ -149,6 +151,27 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._attributes['hazard_rate_active']
             + self._attributes['hazard_rate_software'])
 
+        #// TODO: Add s-Distribution Support for R(t) Predictions
+        #//
+        #// As an analyst, I want to be able to use s-distributions for
+        #// hardware reliability analysis so that I can use field data results
+        #// when modeling systems.
+        #//
+        #// I'd like to be able to select a distribution, enter it's
+        #// parameter(s), and have the reliability at time (t) calculated and
+        #// used in a system prediction.  The hazard rate will also have to be
+        #// calculated to be used in a prediction with other methods such as
+        #// MIL-HDBK-217.
+        #//
+        #// The following, minimum, s-distributions should be available:
+        #//
+        #// * 1-parameter Exponential
+        #// * 2-parameter Exponential
+        #// * 2-parameter Weibull
+        #// * 3-parameter Weibull
+        #// * Lognormal
+        #// * Normal
+
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
         if self._attributes['hazard_rate_type_id'] != 4:
@@ -173,6 +196,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes['mtbf_mission'] = (
             1.0 / self._attributes['hazard_rate_mission'])
 
+        if self._attributes['hazard_rate_type_id'] == 3:
+            self._attributes['mtbf_specified_variance'] = (
+                1.0 / (1.0 / self._attributes['mtbf_specified'])**2.0)
+
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
         if self._attributes['hazard_rate_type_id'] != 4:
@@ -180,9 +207,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 1.0 / self._attributes['hr_logistics_variance'])
             self._attributes['mtbf_mission_variance'] = (
                 1.0 / self._attributes['hr_mission_variance'])
-        if self._attributes['hazard_rate_type_id'] == 3:
-            self._attributes['mtbf_specified_variance'] = (
-                1.0 / (1.0 / self._attributes['mtbf_specified'])**2.0)
 
     def _do_calculate_power_ratio(self) -> None:
         """
@@ -393,7 +417,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         pub.sendMessage('request_get_hardware_tree')
 
-        _cum_results = self.do_calculate_all_hardware(node_id=1)
+        _cum_results = self._do_calculate_all_hardware(node_id=1)
 
         # If the sum of the results is greater than zero, SOMETHING got
         # calculated.  We'll assume that was a success and send the message.
@@ -428,7 +452,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         if self._attributes['category_id'] in [4, 5, 8]:
             self._do_calculate_voltage_ratio()
 
-    def do_calculate_all_hardware(self, node_id: int) -> List[float]:
+    def _do_calculate_all_hardware(self, node_id: int) -> List[float]:
         """
         Calculate all items in the system.
 
@@ -448,7 +472,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         if self._tree.get_node(node_id).fpointer:
             # If there are children, calculate each of them first.
             for _subnode_id in self._tree.get_node(node_id).fpointer:
-                _results = self.do_calculate_all_hardware(node_id=_subnode_id)
+                _results = self._do_calculate_all_hardware(node_id=_subnode_id)
                 _cum_results[0] += _results[0]
                 _cum_results[1] += _results[1]
                 _cum_results[2] += _results[2]
@@ -456,7 +480,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _cum_results[4] += int(_results[4])
                 _cum_results[5] += _results[5]
             # Then calculate the parent node.
-            self.do_calculate_hardware(node_id, system=True)
+            self._do_calculate_hardware(node_id, system=True)
             if self._attributes is not None:
                 _cum_results[0] += self._attributes['hazard_rate_active']
                 _cum_results[1] += self._attributes['hazard_rate_dormant']
@@ -466,7 +490,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _cum_results[5] += self._attributes['total_power_dissipation']
         else:
             if self._tree.get_node(node_id).data is not None:
-                self.do_calculate_hardware(node_id, system=True)
+                self._do_calculate_hardware(node_id, system=True)
                 _cum_results[0] += self._attributes['hazard_rate_active']
                 _cum_results[1] += self._attributes['hazard_rate_dormant']
                 _cum_results[2] += self._attributes['hazard_rate_software']
@@ -555,7 +579,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _cum_weight
 
-    def do_calculate_allocation(self, node_id: int) -> None:
+    def _do_calculate_allocation(self, node_id: int) -> None:
         """
         Allocate a parent reliability goal to it's children.
 
@@ -609,7 +633,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _attributes['allocation_method_id'] = _method_old
             _attributes['mission_time'] = _mission_time_old
 
-    def do_calculate_allocation_goals(self) -> None:
+    def _do_calculate_allocation_goals(self) -> None:
         """
         Calculate the allocation goals.
 
@@ -619,9 +643,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes = allocation.do_calculate_goals(**self._attributes)
 
     # noinspection PyIncorrectDocstring
-    def do_calculate_hardware(self,
-                              node_id: int,
-                              system: bool = False) -> None:
+    def _do_calculate_hardware(self,
+                               node_id: int,
+                               system: bool = False) -> None:
         """
         Calculate all metrics for the hardware associated with node ID.
 
@@ -688,7 +712,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                             attributes=self._attributes)
             pub.sendMessage('request_update_hardware', node_id=node_id)
 
-    def do_calculate_similar_item(self, node_id: int) -> None:
+    def _do_calculate_similar_item(self, node_id: int) -> None:
         """
         Perform a similar item calculates for currently selected item.
 
@@ -706,7 +730,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         elif self._attributes['similar_item_method_id'] == 2:
             self._do_calculate_user_defined()
 
-    def do_derating_analysis(self, node_id: int) -> None:
+    def _do_derating_analysis(self, node_id: int) -> None:
         """
         Perform a derating analysis.
 
@@ -787,7 +811,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         pub.sendMessage('succeed_derate_hardware', attributes=self._attributes)
 
-    def do_get_allocation_goal(self):
+    def _do_get_allocation_goal(self) -> float:
         """
         Retrieve the proper allocation goal.
 
@@ -796,7 +820,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         return allocation.get_allocation_goal(**self._attributes)
 
-    def do_roll_up_change_descriptions(self, node_id: int) -> None:
+    def _do_roll_up_change_descriptions(self, node_id: int) -> None:
         """
         Concatenate all child change descriptions for the node ID hardware.
 

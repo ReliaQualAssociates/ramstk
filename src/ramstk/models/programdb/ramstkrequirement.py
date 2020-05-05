@@ -31,13 +31,13 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
         'derived': 0,
         'description': '',
         'figure_number': '',
-        'owner': '',
+        'owner': 0,
         'page_number': '',
         'parent_id': 0,
         'priority': 0,
         'requirement_code': '',
         'specification': '',
-        'requirement_type': '',
+        'requirement_type': 0,
         'validated': 0,
         'validated_date': date.today(),
         'q_clarity_0': 0,
@@ -99,7 +99,7 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
     figure_number = Column('fld_figure_number',
                            String(256),
                            default=__defaults__['figure_number'])
-    owner = Column('fld_owner', String(256), default=__defaults__['owner'])
+    owner = Column('fld_owner', Integer, default=__defaults__['owner'])
     page_number = Column('fld_page_number',
                          String(256),
                          default=__defaults__['page_number'])
@@ -116,7 +116,7 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
                            String(256),
                            default=__defaults__['specification'])
     requirement_type = Column('fld_requirement_type',
-                              String(256),
+                              Integer,
                               default=__defaults__['requirement_type'])
     validated = Column('fld_validated',
                        Integer,

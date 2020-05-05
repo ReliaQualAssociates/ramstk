@@ -6520,4 +6520,3 @@ msgstr ""
 #: src/ramstk/gui/gtk/workviews/components/Switch.py:475
 msgid "The use factor for the breaker."
 msgstr ""
-

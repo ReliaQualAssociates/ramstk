@@ -139,7 +139,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
         self.set_property('tooltip-markup', _tooltip)
         self.set_property('width-request', _width)
 
-    def do_update(self, value: str, handler_id: int) -> None:
+    def do_update(self, value: int, handler_id: int) -> None:
         """
         Update the RAMSTK Combo with a new value.
 
@@ -150,13 +150,8 @@ class RAMSTKComboBox(Gtk.ComboBox):
         :return: None
         :rtype: None
         """
-        _options = self.do_get_options()
-
         self.handler_block(handler_id)
-        self.set_active(0)
-        for _key, _value in _options.items():
-            if _value == value:
-                self.set_active(int(_key))
+        self.set_active(value)
         self.handler_unblock(handler_id)
 
     def get_value(self, index: int = 0) -> str:

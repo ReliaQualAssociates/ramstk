@@ -316,5 +316,45 @@ experience. -->
             <visible>0</visible>
             <key>year_of_manufacture</key>
         </column>
+        <column>
+            <defaulttitle>Cost Type</defaulttitle>
+            <usertitle>Cost Type</usertitle>
+            <datatype>gint</datatype>
+            <position>30</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>cost_type_id</key>
+        </column>
+        <column>
+            <defaulttitle>Attachments</defaulttitle>
+            <usertitle>Attachments</usertitle>
+            <datatype>gchararray</datatype>
+            <position>31</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>attachments</key>
+        </column>
+        <column>
+            <defaulttitle>Category ID</defaulttitle>
+            <usertitle>Category ID</usertitle>
+            <datatype>gint</datatype>
+            <position>32</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>category_id</key>
+        </column>
+        <column>
+            <defaulttitle>Subcategory ID</defaulttitle>
+            <usertitle>Subcategory ID</usertitle>
+            <datatype>gint</datatype>
+            <position>33</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>subcategory_id</key>
+        </column>
     </tree>
 </root>

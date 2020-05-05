@@ -20,7 +20,7 @@ ATTRIBUTES = {
     'derived': 0,
     'description': '',
     'figure_number': '',
-    'owner': '',
+    'owner': 0,
     'page_number': '',
     'parent_id': 0,
     'priority': 0,
@@ -59,7 +59,7 @@ ATTRIBUTES = {
     'q_verifiable_4': 0,
     'q_verifiable_5': 0,
     'requirement_code': 'REL-0001',
-    'requirement_type': '',
+    'requirement_type': 0,
     'specification': '',
     'validated': 0,
     'validated_date': date(2019, 7, 21)
@@ -83,13 +83,13 @@ class TestRAMSTKRequirement():
         assert DUT.derived == 0
         assert DUT.description == ''
         assert DUT.figure_number == ''
-        assert DUT.owner == ''
+        assert DUT.owner == 0
         assert DUT.page_number == ''
         assert DUT.parent_id == 0
         assert DUT.priority == 0
         assert DUT.requirement_code == 'REL-0001'
         assert DUT.specification == ''
-        assert DUT.requirement_type == ''
+        assert DUT.requirement_type == 0
         assert DUT.validated == 0
         assert DUT.validated_date == date(2019, 7, 21)
         assert DUT.q_clarity_0 == 0
@@ -138,13 +138,13 @@ class TestRAMSTKRequirement():
         assert _attributes['derived'] == 0
         assert _attributes['description'] == ''
         assert _attributes['figure_number'] == ''
-        assert _attributes['owner'] == ''
+        assert _attributes['owner'] == 0
         assert _attributes['page_number'] == ''
         assert _attributes['parent_id'] == 0
         assert _attributes['priority'] == 0
         assert _attributes['requirement_code'] == 'REL-0001'
         assert _attributes['specification'] == ''
-        assert _attributes['requirement_type'] == ''
+        assert _attributes['requirement_type'] == 0
         assert _attributes['validated'] == 0
         assert _attributes['validated_date'] == date(2019, 7, 21)
         assert _attributes['q_clarity_0'] == 0

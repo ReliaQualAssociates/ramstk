@@ -11,7 +11,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKCheckButton, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView,
+    RAMSTKCheckButton, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 

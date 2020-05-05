@@ -491,7 +491,7 @@ class Import:
                                                       1)
         _hardware.hardware_id = self._get_input_value(_map, row, 'Hardware ID',
                                                       1)
-        _hardware.alt_part_num = self._get_input_value(
+        _hardware.alt_part_number = self._get_input_value(
             _map, row, 'Alternate Part Number', '')
         _hardware.cage_code = self._get_input_value(_map, row, 'CAGE Code', '')
         _hardware.category_id = self._get_input_value(_map, row, 'Category ID',

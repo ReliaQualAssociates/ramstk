@@ -24,7 +24,7 @@ def do_set_common_properties(**kwargs: Any) -> Tuple[int, str, int]:
     try:
         _height = kwargs['height']
     except KeyError:
-        _height = 40
+        _height = 30
     try:
         _tooltip = kwargs['tooltip']
     except KeyError:
@@ -224,6 +224,9 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         """
         GObject.GObject.__init__(self, label=label, use_underline=True)
 
+        self.height = -1
+        self.width = -1
+
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
         Set the properties of the RAMSTK button.
@@ -242,6 +245,8 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         """
         _height, _tooltip, _width = do_set_common_properties(**kwargs)
 
+        self.height = _height
+        self.width = _width
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)
         self.get_child().set_property('height-request', _height)

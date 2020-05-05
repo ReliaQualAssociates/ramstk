@@ -31,4 +31,4 @@ repos:
       rev: v2.3.1
       hooks:
           - id: pylint
-            args: [-d, E0401, -f, colorized]
+            args: [-d, E0401, -f, colorized, --ignore-patterns, 'test_*?.py']

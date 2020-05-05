@@ -33,9 +33,9 @@ class TestRAMSTKButton():
     def test_set_properties(self):
         """do_set_properties() should set the properties of a RAMSTKButton."""
         DUT = RAMSTKButton(label="Test Button")
-        DUT.do_set_properties(height=30, width=150, tooltip="Test tooltip")
+        DUT.do_set_properties(height=20, width=150, tooltip="Test tooltip")
 
-        assert DUT.get_property('height-request') == 30
+        assert DUT.get_property('height-request') == 20
         assert DUT.get_property('tooltip-markup') == "Test tooltip"
         assert DUT.get_property('width-request') == 150
 
@@ -45,7 +45,7 @@ class TestRAMSTKButton():
         DUT = RAMSTKButton(label="Test Button")
         DUT.do_set_properties()
 
-        assert DUT.get_property('height-request') == 40
+        assert DUT.get_property('height-request') == 30
         assert DUT.get_property('image') is None
         assert DUT.get_property('tooltip-markup') == (
             "Missing tooltip, please file a quality type issue to have one "
@@ -87,9 +87,9 @@ class TestRAMSTKCheckButton():
     def test_set_properties(self):
         """do_set_properties() should set the properties of a RAMSTKCheckButton."""
         DUT = RAMSTKCheckButton(label="Test Check Button")
-        DUT.do_set_properties(height=30, width=150, tooltip="Test tooltip")
+        DUT.do_set_properties(height=20, width=150, tooltip="Test tooltip")
 
-        assert DUT.get_child().get_property('height-request') == 30
+        assert DUT.get_child().get_property('height-request') == 20
         assert DUT.get_property('tooltip-markup') == "Test tooltip"
         assert DUT.get_child().get_property('width-request') == 150
 
@@ -99,7 +99,7 @@ class TestRAMSTKCheckButton():
         DUT = RAMSTKCheckButton(label="Test Check Button")
         DUT.do_set_properties()
 
-        assert DUT.get_child().get_property('height-request') == 40
+        assert DUT.get_child().get_property('height-request') == 30
         assert DUT.get_property('tooltip-markup') == (
             "Missing tooltip, please file a quality type issue to have one "
             "added.")

@@ -41,9 +41,6 @@ import sys
 import unittest
 from os.path import dirname
 
-# Third Party Imports
-from nose.plugins.attrib import attr
-
 # RAMSTK Package Imports
 from analyses.statistics.growth.CrowAMSAA import (
     calculate_average_mtbf, calculate_cramer_vonmises,
@@ -52,6 +49,7 @@ from analyses.statistics.growth.CrowAMSAA import (
     calculate_growth_rate, calculate_initial_mtbf, calculate_n_failures,
     calculate_t1, calculate_total_time, cramer_vonmises_critical_value
 )
+from nose.plugins.attrib import attr
 
 sys.path.insert(
     0,

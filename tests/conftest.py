@@ -124,8 +124,8 @@ ROW_DATA = [
         0, 0
     ],
     [
-        1, 10, 0, 'Gotta do something', "Fig. 1", "You", "3.2-1", 0, 4,
-        'GEN-001', "Spec. 12", "Hard One to Meet", 0, '2019-08-18'
+        1, 10, 0, 'Gotta do something', "Fig. 1", 2, "3.2-1", 0, 4,
+        'GEN-001', "Spec. 12", 4, 0, '2019-08-18'
     ],
     [
         1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported',

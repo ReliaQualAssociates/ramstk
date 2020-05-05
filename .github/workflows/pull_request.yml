@@ -7,37 +7,15 @@ on:
       - master
 
 jobs:
-  checklist:
-    name: Add Pull Request Checklist
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: wyozi/contextual-qa-checklist-action@master
-        with:
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
-          input-file: devtools/CHECKLIST.yml
-
-  labeler:
-    name: Label the Pull Request Size
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: codelytv/pr-size-labeler@master
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          xs_max_size: '10'
-          s_max_size: '100'
-          m_max_size: '500'
-          l_max_size: '1000'
-          fail_if_xl: 'false'
-
   check_for_changelog:
-    name: Check for CHANGELOG
+    name: Ensure CHANGELOG Exists
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-      - uses: peterjgrainger/action-changelog-reminder@v1.2.0
+        with:
+          ref: develop
+      - name: CHANGELOG Reminder
+        uses: peterjgrainger/action-changelog-reminder@v1.2.0
         with:
           changelog_regex: 'CHANGELOG.md'
           customPrMessage: 'Remember to add a CHANGELOG'
@@ -47,13 +25,60 @@ jobs:
   release_notes_preview:
     name: Preview Release Notes
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-      - run: git fetch --prune --unshallow --tags
-      - uses: snyk/release-notes-preview@v1.6.1
+        with:
+          ref: develop
+      - run: git fetch --prune --tags
+      - name: Release Notes Preview
+        uses: snyk/release-notes-preview@v1.6.1
         with:
           releaseBranch: develop
         env:
           GITHUB_PR_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  todo_issue:
+    name: Create Issues from Todos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: TODO to Issue
+        id: todo
+        uses: alstr/todo-to-issue-action@master
+        with:
+          REPO: ${{ github.repository }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LABEL: "#// TODO:"
+          COMMENT_MARKER: "#//"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Bump Version and Push Tag
+        id: bumpver
+        uses: mathieudutour/github-tag-action@v4
+        env:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: minor
+          release_branches: release
+          create_annotated_tag: true
+      - name: Get Next Minor Version
+        id: semvers
+        uses: WyriHaximus/github-action-next-semvers@master
+        with:
+          version: ${{ steps.bumpver.outputs.new_tag }}
+      - name: Create New Milestone
+        id: newmilestone
+        uses: WyriHaximus/github-action-create-milestone@master
+        with:
+          title: ${{ steps.semvers.outputs.tag }}
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
