@@ -7,7 +7,7 @@
 """RAMSTK GTK3 Plot Module."""
 
 # Standard Library Imports
-from typing import Any, List, Tuple
+from typing import Any, List, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk, Gtk, _
@@ -308,7 +308,7 @@ class RAMSTKPlot():
         return _label
 
     # pylint: disable=too-many-arguments
-    def do_make_legend(self, text: Tuple[Any], **kwargs: Any) -> None:
+    def do_make_legend(self, text: Union[Any], **kwargs: Any) -> None:
         r"""
         Make a legend on the RAMSTKPlot.
 

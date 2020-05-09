@@ -920,7 +920,7 @@ class AssessmentInputs(RAMSTKWorkView):
         Initialize an instance of the Hardware assessment input view.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :type configuration: :class:`ramstk.Configuration.RAMSTKUserConfiguration`
         """
         super().__init__(configuration, logger, module)
 
@@ -934,13 +934,13 @@ class AssessmentInputs(RAMSTKWorkView):
             # 1: wvwIntegratedCircuitAI(self.RAMSTK_CONFIGURATION),
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
-            # 4: wvwCapacitorAI(self.RAMSTK_CONFIGURATION),
+            # 4: wvwCapacitorAI(self.RAMSTK_USER_CONFIGURATION),
             # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
             # 8: wvwConnectionAI(self.RAMSTK_CONFIGURATION),
             # 9: wvwMeterAI(self.RAMSTK_CONFIGURATION),
-            # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION),
+            # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION)
         }
 
         # Initialize private list attributes.
