@@ -354,7 +354,7 @@ def get_part_count_lambda_b(subcategory_id: int,
         #. subcategory_id
         #. environment_active_id
         #. specification id; if the capacitor subcategory is NOT specification
-            dependent, then pass -1 for the specification ID key.
+           dependent, then pass -1 for the specification ID key.
 
     Subcategory IDs are:
 

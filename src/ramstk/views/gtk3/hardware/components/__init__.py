@@ -1,15 +1,15 @@
 # pylint: disable=unused-import, missing-docstring
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.component.__init__.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.hardware.components.__init__.py is part of the
+#       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 # RAMSTK Local Imports
+from . import capacitor
 from .workview import AssessmentInputs as wvwComponentAI
 
-#from .Capacitor import CapacitorAssessmentInputs as wvwCapacitorAI
-#from .Capacitor import CapacitorAssessmentResults as wvwCapacitorAR
 #from .Connection import ConnectionAssessmentInputs as wvwConnectionAI
 #from .Connection import ConnectionAssessmentResults as wvwConnectionAR
 #from .Inductor import InductorAssessmentInputs as wvwInductorAI

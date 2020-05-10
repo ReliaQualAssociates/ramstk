@@ -258,30 +258,17 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         self.txtCapacitance: RAMSTKEntry = RAMSTKEntry()
         self.txtESR: RAMSTKEntry = RAMSTKEntry()
 
+        self._lst_widgets = [self.cmbQuality, self.txtCapacitance,
+                             self.cmbSpecification, self.cmbStyle,
+                             self.cmbConfiguration, self.cmbConstruction,
+                             self.txtESR]
+
         self.__set_properties()
-        self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
-
-    def __make_ui(self) -> None:
-        """
-        Make the Capacitor class Gtk.Notebook() assessment input page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
-
-        self.put(self.txtCapacitance, _x_pos, _y_pos[1])
-        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
-        self.put(self.cmbStyle, _x_pos, _y_pos[3])
-        self.put(self.cmbConfiguration, _x_pos, _y_pos[4])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[5])
-        self.put(self.txtESR, _x_pos, _y_pos[6])
+        pub.subscribe(self.do_load_comboboxes, 'changed_subcategory')
 
     def __set_callbacks(self) -> None:
         """
@@ -303,9 +290,10 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
         self._lst_handler_id.append(
-            self.txtCapacitance.connect('changed', self.on_focus_out, 5))
+            self.txtCapacitance.connect('focus-out-event', self.on_focus_out,
+                                        5))
         self._lst_handler_id.append(
-            self.txtESR.connect('changed', self.on_focus_out, 6))
+            self.txtESR.connect('focus-out-event', self.on_focus_out, 6))
 
     def __set_properties(self) -> None:
         """
@@ -329,46 +317,12 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             width=125,
             tooltip=_("The equivalent series resistance of the capacitor."))
 
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """
-        Load the specification RKTComboBox().
-
-        :param int subcategory_id: the newly selected capacitor subcategory ID.
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
-            _data = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
-        else:
-            try:
-                _data = self._dic_quality[subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data)
-
-        try:
-            _data = self._dic_specifications[subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbSpecification.do_load_combo(_data)
-
-        self.cmbConstruction.do_load_combo([[_("Slug, All Tantalum")],
-                                            [_("Foil, Hermetic")],
-                                            [_("Slug, Hermetic")],
-                                            [_("Foil, Non-Hermetic")],
-                                            [_("Slug, Non-Hermetic")]])
-
-        self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]])
-
-        _model = self.cmbStyle.get_model()
-        _model.clear()
-
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the Capacitor Assessment Inputs page.
 
         :param dict attributes: the attributes dictionary for the selected
-        Capacitor.
+            Capacitor.
         :return: None
         :rtype: None
         """
@@ -379,27 +333,19 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         self.cmbSpecification.set_active(attributes['specification_id'])
 
         if self._hazard_rate_method_id != 1:
-            self.cmbStyle.handler_block(self._lst_handler_id[2])
-            self.cmbStyle.set_active(attributes['type_id'])
-            self.cmbStyle.handler_unblock(self._lst_handler_id[2])
+            self.cmbStyle.do_update(attributes['type_id'],
+                                    self._lst_handler_id[2])
+            self.cmbConfiguration.do_update(attributes['configuration_id'],
+                                            self._lst_handler_id[3])
+            self.cmbConstruction.do_update(attributes['construction_id'],
+                                           self._lst_handler_id[4])
 
-            self.cmbConfiguration.handler_block(self._lst_handler_id[3])
-            self.cmbConfiguration.set_active(attributes['configuration_id'])
-            self.cmbConfiguration.handler_unblock(self._lst_handler_id[3])
-
-            self.cmbConstruction.handler_block(self._lst_handler_id[4])
-            self.cmbConstruction.set_active(attributes['construction_id'])
-            self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
-
-            self.txtCapacitance.handler_block(self._lst_handler_id[5])
-            self.txtCapacitance.set_text(
-                str(self.fmt.format(attributes['capacitance'])))
-            self.txtCapacitance.handler_unblock(self._lst_handler_id[5])
-
-            self.txtESR.handler_block(self._lst_handler_id[6])
-            self.txtESR.set_text(str(self.fmt.format(
-                attributes['resistance'])))
-            self.txtESR.handler_unblock(self._lst_handler_id[6])
+            self.txtCapacitance.do_update(
+                str(self.fmt.format(attributes['capacitance'])),
+                self._lst_handler_id[5])
+            self.txtESR.do_update(
+                str(self.fmt.format(attributes['resistance'])),
+                self._lst_handler_id[6])
 
         self._do_set_sensitive()
 
@@ -453,7 +399,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RAMSTKComboBox().  Indices are:
+            with the calling RAMSTKComboBox().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -470,6 +416,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         super().on_combo_changed(combo, index)
 
+        combo.handler_block(self._lst_handler_id[index])
         # If the capacitor specification changed, load the capacitor style
         # RAMSTKComboBox().
         if index == 1:
@@ -482,6 +429,53 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             except KeyError:
                 _data = []
             self.cmbStyle.do_load_combo(_data)
+
+        combo.handler_unblock(self._lst_handler_id[index])
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """
+        Load the specification RKTComboBox().
+
+        Per requirement 304.3, this method is public.
+
+        :param int subcategory_id: the newly selected capacitor subcategory ID.
+        :return: None
+        :rtype: None
+        """
+        self._subcategory_id = subcategory_id
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
+            _data = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
+        else:
+            try:
+                _data = self._dic_quality[self._subcategory_id]
+            except KeyError:
+                _data = []
+        self.cmbQuality.handler_block(self._lst_handler_id[0])
+        self.cmbQuality.do_load_combo(_data)
+        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+
+        try:
+            _data = self._dic_specifications[self._subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbSpecification.handler_block(self._lst_handler_id[1])
+        self.cmbSpecification.do_load_combo(_data)
+        self.cmbSpecification.handler_unblock(self._lst_handler_id[1])
+
+        self.cmbConstruction.handler_block(self._lst_handler_id[4])
+        self.cmbConstruction.do_load_combo([[_("Slug, All Tantalum")],
+                                            [_("Foil, Hermetic")],
+                                            [_("Slug, Hermetic")],
+                                            [_("Foil, Non-Hermetic")],
+                                            [_("Slug, Non-Hermetic")]])
+        self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
+
+        self.cmbConfiguration.handler_block(self._lst_handler_id[3])
+        self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]])
+        self.cmbConfiguration.handler_unblock(self._lst_handler_id[3])
+
+        _model = self.cmbStyle.get_model()
+        _model.clear()
 
 
 class CapacitorAssessmentResults(AssessmentResults):

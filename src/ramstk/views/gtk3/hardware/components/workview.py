@@ -18,8 +18,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKPlot, RAMSTKTextView, do_make_label_group
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
+    RAMSTKPlot, RAMSTKTextView, do_make_label_group, do_make_label_group2
 )
 
 
@@ -61,9 +61,11 @@ class AssessmentInputs(Gtk.Fixed):
         self.RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = configuration
 
         # Initialize private dictionary attributes.
+        self._dic_switch: Dict[str, List[object, int]] = {}
 
         # Initialize private list attributes.
         self._lst_handler_id: List[int] = []
+        self._lst_widgets: List[object] = []
 
         # Initialize private scalar attributes.
         self._record_id: int = -1
@@ -75,9 +77,9 @@ class AssessmentInputs(Gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = '{0:0.' + \
-                   str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + \
-                   'G}'
+        self.fmt: str = (
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
         self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
 
@@ -108,24 +110,61 @@ class AssessmentInputs(Gtk.Fixed):
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        self.do_load_comboboxes(self._subcategory_id)
+        self.do_load_comboboxes(attributes['subcategory_id'])
 
         self.cmbQuality.do_update(attributes['quality_id'],
                                   self._lst_handler_id[0])
 
-    def make_ui(self) -> Tuple[int, List[int]]:
+    def make_ui(self, **kwargs) -> None:
         """
-        Make the Hardware class Gtk.Notebook() assessment input page.
+        Make the Hardware class component Assessment Input container.
 
-        :return: _x_pos, _y_pos
-        :rtype: tuple
+        This method lays out the Assessment Input Gtk.Fixed() with labels and
+        input widgets for components.  Label text (_lst_labels) and widgets
+        (_lst_widgets) are defined in each child class.
+
+        :return: None
+        :rtype: None
         """
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
+        # This hardware WorkView assessment input page has the following
+        # layout.  This meta-class is placed in the lower left quadrant.
+        # +-----+-------------------+-------------------+
+        # |  B  |      L. TOP       |      R. TOP       |
+        # |  U  |                   |                   |
+        # |  T  |                   |                   |
+        # |  T  +-------------------+-------------------+
+        # |  O  |     L. BOTTOM     |     R. BOTTOM     |
+        # |  N  |                   |                   |
+        # |  S  |                   |                   |
+        # +-----+-------------------+-------------------+
+        try:
+            _index_end = kwargs['end']
+        except KeyError:
+            _index_end = len(self._lst_labels)
+        try:
+            _index_start = kwargs['start']
+        except KeyError:
+            _index_start = 0
 
-        self.put(self.cmbQuality, _x_pos, _y_pos[0])
+        # TODO: See issue #304.
+        if self._lst_widgets:
+            _y_pos = 5
+            (_x_pos, _lst_labels) = do_make_label_group2(
+                self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
 
-        return _x_pos, _y_pos
+            for _idx, _label in enumerate(_lst_labels):
+                _minimum = self._lst_widgets[
+                    _idx + _index_start].get_preferred_size()[0]
+                if _minimum.height == 0:
+                    _minimum.height = self._lst_widgets[_idx
+                                                        + _index_start].height
+
+                self.put(_label, 5, _y_pos)
+                self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
+                         _y_pos)
+                _y_pos += _minimum.height + 5
+
+        self.show_all()
 
     def on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
@@ -138,7 +177,7 @@ class AssessmentInputs(Gtk.Fixed):
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-        with the calling RAMSTKComboBox().
+            with the calling RAMSTKComboBox().
         :return: None
         :rtype: None
         """
@@ -156,14 +195,20 @@ class AssessmentInputs(Gtk.Fixed):
 
         # Only publish the message if something is selected in the ComboBox.
         if _new_text != -1:
-            pub.sendMessage('wvw_editing_hardware',
-                            module_id=self._record_id,
-                            key=_key,
-                            value=_new_text)
+            try:
+                pub.sendMessage('wvw_editing_component',
+                                node_id=[self._record_id, -1],
+                                package={_key: _new_text})
+            except KeyError:
+                pass
 
         combo.handler_unblock(self._lst_handler_id[index])
 
-    def on_focus_out(self, entry: object, index: int) -> None:
+    def on_focus_out(
+            self,
+            entry: Gtk.Entry,
+            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            index: int) -> None:
         """
         Retrieve changes made in RAMSTKEntry() widgets.
 
@@ -176,6 +221,8 @@ class AssessmentInputs(Gtk.Fixed):
             method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
             :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
+        :param __event: the Gdk.EventFocus that triggered the signal.
+        :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Hardware class Gtk.TreeModel()
             associated with the data from the calling Gtk.Widget().
         :return: None
@@ -201,10 +248,9 @@ class AssessmentInputs(Gtk.Fixed):
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        pub.sendMessage('wvw_editing_hardware',
-                        module_id=self._record_id,
-                        key=_key,
-                        value=_new_text)
+        pub.sendMessage('wvw_editing_component',
+                        node_id=[self._record_id, -1],
+                        package={_key: _new_text})
 
 
 class StressInputs(Gtk.Fixed):
@@ -924,11 +970,9 @@ class StressResults(Gtk.HPaned):
             ),
             fontsize=12)
 
-        self.pltDerate.do_make_legend((
-            _("Harsh Environment"),
-            _("Mild Environment"),
-            _("Voltage Operating Point")
-        ))
+        self.pltDerate.do_make_legend(
+            (_("Harsh Environment"), _("Mild Environment"),
+             _("Voltage Operating Point")))
 
         self.pltDerate.do_make_labels(_("Temperature (\u2070C)"),
                                       0,

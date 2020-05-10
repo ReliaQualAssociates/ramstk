@@ -28,6 +28,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKLabel, RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView
 )
 
+# RAMSTK Local Imports
+from .components import capacitor
+
 
 class GeneralData(RAMSTKWorkView):
     """
@@ -598,6 +601,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self.cmbSubcategory.handler_block(self._lst_handler_id[5])
         _model = self.cmbSubcategory.get_model()
         _model.clear()
 
@@ -607,8 +611,9 @@ class GeneralData(RAMSTKWorkView):
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
-
             self.cmbSubcategory.do_load_combo(_data)
+
+        self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """
@@ -930,11 +935,11 @@ class AssessmentInputs(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_assessment_input = {
+        self._dic_assessment_input: Dict[int, object] = {
             # 1: wvwIntegratedCircuitAI(self.RAMSTK_CONFIGURATION),
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
-            # 4: wvwCapacitorAI(self.RAMSTK_USER_CONFIGURATION),
+            4: capacitor.CapacitorAssessmentInputs(self.RAMSTK_USER_CONFIGURATION),
             # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
@@ -954,28 +959,30 @@ class AssessmentInputs(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbActiveEnviron = RAMSTKComboBox()
-        self.cmbDormantEnviron = RAMSTKComboBox()
-        self.cmbFailureDist = RAMSTKComboBox()
-        self.cmbHRType = RAMSTKComboBox()
-        self.cmbHRMethod = RAMSTKComboBox()
+        self.cmbActiveEnviron: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbDormantEnviron: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbFailureDist: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbHRType: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbHRMethod: RAMSTKComboBox = RAMSTKComboBox()
 
-        self.scwDesignRatings = RAMSTKScrolledWindow(None)
-        self.scwOperatingStress = RAMSTKScrolledWindow(None)
+        self.scwDesignRatings: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
+            None)
+        self.scwOperatingStress: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
+            None)
 
-        self.txtActiveTemp = RAMSTKEntry()
-        self.txtAddAdjFactor = RAMSTKEntry()
-        self.txtDormantTemp = RAMSTKEntry()
-        self.txtDutyCycle = RAMSTKEntry()
-        self.txtFailScale = RAMSTKEntry()
-        self.txtFailShape = RAMSTKEntry()
-        self.txtFailLocation = RAMSTKEntry()
-        self.txtMissionTime = RAMSTKEntry()
-        self.txtMultAdjFactor = RAMSTKEntry()
-        self.txtSpecifiedHt = RAMSTKEntry()
-        self.txtSpecifiedHtVar = RAMSTKEntry()
-        self.txtSpecifiedMTBF = RAMSTKEntry()
-        self.txtSpecifiedMTBFVar = RAMSTKEntry()
+        self.txtActiveTemp: RAMSTKEntry = RAMSTKEntry()
+        self.txtAddAdjFactor: RAMSTKEntry = RAMSTKEntry()
+        self.txtDormantTemp: RAMSTKEntry = RAMSTKEntry()
+        self.txtDutyCycle: RAMSTKEntry = RAMSTKEntry()
+        self.txtFailScale: RAMSTKEntry = RAMSTKEntry()
+        self.txtFailShape: RAMSTKEntry = RAMSTKEntry()
+        self.txtFailLocation: RAMSTKEntry = RAMSTKEntry()
+        self.txtMissionTime: RAMSTKEntry = RAMSTKEntry()
+        self.txtMultAdjFactor: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedHt: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedHtVar: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedMTBF: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedMTBFVar: RAMSTKEntry = RAMSTKEntry()
 
         self._lst_widgets = [
             self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
@@ -1101,6 +1108,9 @@ class AssessmentInputs(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Operating Stresses"))
         _frame.add(self.scwOperatingStress)
         _vpn_right.pack2(_frame, True, True)
+
+        for _workview in self._dic_assessment_input:
+            self._dic_assessment_input[_workview].make_ui()
 
         # Set the tab label.
         _label = RAMSTKLabel(_("Assessment\nInputs"))
@@ -1300,36 +1310,34 @@ class AssessmentInputs(RAMSTKWorkView):
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
         # Retrieve the appropriate component-specific work views.
-        # try:
-        #     _component_ai = self._dic_assessment_input[
-        #         attributes['category_id']]
-        # except KeyError:
-        _component_ai = None
+        try:
+            _component_ai = self._dic_assessment_input[
+                attributes['category_id']]
+        except KeyError:
+            _component_ai = None
 
         # _component_si = Component.StressInputs(self.RAMSTK_CONFIGURATION)
         _component_si = None
 
-        # Clear the component-specific Gtk.ScrolledWindow()s if there are
-        # already a component-specific work view objects.
+        # If there are already a component-specific work view object,
+        # remove them.  Otherwise move along; these aren't the droids we're
+        # looking for.
         try:
-            _child = self.scwDesignRatings.get_child().get_children()[0]
-            _child.remove(_child.get_child())
-        except (AttributeError, TypeError):
-            _child = None
-
-        # Load the component-specific widgets.
-        if _component_ai is not None and _child is not None:
-            _child.add(_component_ai)
+            self.scwDesignRatings.remove(self.scwDesignRatings.get_child())
+        except TypeError:
+            pass
 
         try:
-            _child = self.scwOperatingStress.get_child().get_children()[0]
-            _child.remove(_child.get_child())
-        except (AttributeError, TypeError):
-            _child = None
+            self.scwOperatingStress.remove(self.scwOperatingStress.get_child())
+        except TypeError:
+            pass
 
-        if _component_si is not None and _child is not None:
+        if _component_ai is not None:
+            self.scwDesignRatings.add(_component_ai)
+
+        if _component_si is not None:
             _component_si.do_load_page(attributes)
-            _child.add(_component_si)
+            self.scwOperatingStress.add(_component_si)
 
         self.cmbActiveEnviron.do_update(
             int(attributes['environment_active_id']), self._lst_handler_id[0])
@@ -1506,8 +1514,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
         :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Entry().  Indices are:
+            associated with the data from the calling Gtk.Entry().  Indices
+            are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
