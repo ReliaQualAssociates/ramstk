@@ -70,6 +70,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
+    name: Tag and Create New Milestone
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

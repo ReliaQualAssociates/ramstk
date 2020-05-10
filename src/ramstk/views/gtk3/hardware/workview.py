@@ -939,7 +939,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 1: wvwIntegratedCircuitAI(self.RAMSTK_CONFIGURATION),
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
-            4: capacitor.AssessmentInputs(self.RAMSTK_USER_CONFIGURATION),
+            4: capacitor.AssessmentInputs(configuration),
             # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
@@ -1713,7 +1713,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 1: wvwIntegratedCircuitAR(self.RAMSTK_CONFIGURATION),
             # 2: wvwSemiconductorAR(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
-            # 4: wvwCapacitorAR(self.RAMSTK_CONFIGURATION),
+            4: capacitor.AssessmentResults(configuration),
             # 5: wvwInductorAR(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
@@ -1866,6 +1866,9 @@ class AssessmentResults(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Stress Results"))
         _frame.add(self.scwStress)
         _vpn_right.pack2(_frame, True, True)
+
+        for _workview in self._dic_assessment_results:
+            self._dic_assessment_results[_workview].make_ui()
 
         # Set the tab label.
         _label = RAMSTKLabel(_("Assessment\nResults"))
@@ -2130,15 +2133,31 @@ class AssessmentResults(RAMSTKWorkView):
             **dmtree.get_node(self._record_id).data['hardware'].get_attributes(
             )
         }
+        attributes = {
+            **attributes,
+            **dmtree.get_node(self._record_id).data['mil_hdbk_217f'].get_attributes(
+            )
+        }
+
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        # Retrieve the appropriate component-specific work views and add them
-        # to the Gtk.ScrolledWindow()s.
-        # try:
-        #    _component_ar = self._dic_assessment_results[
-        #        attributes['category_id']]
-        # except KeyError:
-        _component_ar = None
+        # Retrieve the appropriate component-specific work views.
+        try:
+            _component_ar = self._dic_assessment_results[
+                attributes['category_id']]
+        except KeyError:
+            _component_ar = None
+
+        # If there are already a component-specific work view object,
+        # remove them.  Otherwise move along; these aren't the droids we're
+        # looking for.
+        try:
+            self.scwReliability.remove(self.scwReliability.get_child())
+        except TypeError:
+            pass
+
+        if _component_ar is not None:
+            self.scwReliability.add(_component_ar)
 
         # _component_sr = Component.StressResults(self.RAMSTK_USER_CONFIGURATION)
         _component_sr = None
@@ -2201,18 +2220,6 @@ class AssessmentResults(RAMSTKWorkView):
             str(self.fmt.format(attributes['reliability_mission'])))
         self.txtMissionRtVar.set_text(
             str(self.fmt.format(attributes['reliability_miss_variance'])))
-
-        # Clear the component-specific Gtk.ScrolledWindow()s if it already
-        # contains a component-specific work view objects.  Then load the new
-        # component-specific work view object.
-        try:
-            _child = self.scwReliability.get_child().get_children()[0]
-            _child.remove(_child.get_child())
-        except (AttributeError, TypeError):
-            _child = None
-
-        if _component_ar is not None and _child is not None:
-            _child.add(_component_ar)
 
         try:
             _child = self.scwStress.get_child().get_children()[0]

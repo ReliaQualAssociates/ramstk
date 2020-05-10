@@ -9,7 +9,7 @@
 """The RAMSTK Component Base Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -414,7 +414,7 @@ class RAMSTKStressInputs(Gtk.Fixed):
         :return: None
         :rtype: None
         """
-        # This hardware WorkView assessment input page has the following
+        # The hardware WorkView assessment input page has the following
         # layout.  This meta-class is placed in the lower right quadrant.
         # +-----+-------------------+-------------------+
         # |  B  |      L. TOP       |      R. TOP       |
@@ -667,7 +667,8 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
 
         # Initialize private list attributes.
         self._lst_labels: List[str] = [
-            "\u03BB<sub>b</sub>:", "\u03C0<sub>Q</sub>:", "\u03C0<sub>E</sub>:"
+            "", "\u03BB<sub>b</sub>:", "\u03C0<sub>Q</sub>:",
+            "\u03C0<sub>E</sub>:"
         ]
 
         # Initialize private scalar attributes.
@@ -682,12 +683,18 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt: str = '{0:0.{0}G}'.format(
-            str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES))
+        self.fmt: str = (
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
         self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiE: RAMSTKEntry = RAMSTKEntry()
+
+        self._lst_widgets = [self._lblModel, self.txtLambdaB, self.txtPiQ,
+                             self.txtPiE]
+
+        self.__set_properties()
 
         # Subscribe to PyPubSub messages.
 
@@ -758,13 +765,37 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
         self.txtPiQ.set_sensitive(True)
         self.txtPiE.set_sensitive(False)
 
-    def make_ui(self) -> Tuple[int, List[int]]:
+    def make_ui(self, **kwargs) -> None:
         """
-        Make the Hardware Gtk.Notebook() assessment results page.
+        Make the Hardware class component Assessment Results container.
 
-        :return: _x_pos, _y_pos
-        :rtype: tuple
+        This method lays out the Assessment Results Gtk.Fixed() with labels and
+        input widgets for components.  Label text (_lst_labels) and widgets
+        (_lst_widgets) are defined in each child class.
+
+        :return: None
+        :rtype: None
         """
+        # The hardware WorkView assessment input page has the following
+        # layout.  This meta-class is placed in the lower left quadrant.
+        # +-----+-------------------+-------------------+
+        # |  B  |      L. TOP       |      R. TOP       |
+        # |  U  |                   |                   |
+        # |  T  |                   |                   |
+        # |  T  +-------------------+-------------------+
+        # |  O  |     L. BOTTOM     |     R. BOTTOM     |
+        # |  N  |                   |                   |
+        # |  S  |                   |                   |
+        # +-----+-------------------+-------------------+
+        try:
+            _index_end = kwargs['end']
+        except KeyError:
+            _index_end = len(self._lst_labels)
+        try:
+            _index_start = kwargs['start']
+        except KeyError:
+            _index_start = 0
+
         if self._hazard_rate_method_id == 1:
             self._lblModel.set_markup(
                 "<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
@@ -776,17 +807,25 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
                     self._dic_part_stress[self._subcategory_id])
             except KeyError:
                 self._lblModel.set_markup(_("Missing Model"))
-            self._lst_labels[0] = "\u03BB<sub>b</sub>:"
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels, self, 5, 35)
-        _x_pos += 50
+        # TODO: See issue #304.
+        if self._lst_widgets:
+            _y_pos = 5
+            (_x_pos, _lst_labels) = do_make_label_group2(
+                self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
+            for _idx, _label in enumerate(_lst_labels):
+                _minimum = self._lst_widgets[
+                    _idx + _index_start].get_preferred_size()[0]
+                if _minimum.height == 0:
+                    _minimum.height = self._lst_widgets[_idx
+                                                        + _index_start].height
 
-        self.put(self._lblModel, _x_pos, 5)
-        self.put(self.txtLambdaB, _x_pos, _y_pos[0])
-        self.put(self.txtPiQ, _x_pos, _y_pos[1])
-        self.put(self.txtPiE, _x_pos, _y_pos[2])
+                self.put(_label, 5, _y_pos)
+                self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
+                         _y_pos)
+                _y_pos += _minimum.height + 5
 
-        return _x_pos, _y_pos
+        self.show_all()
 
 
 class RAMSTKStressResults(Gtk.HPaned):

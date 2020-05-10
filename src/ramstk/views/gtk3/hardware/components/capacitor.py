@@ -350,9 +350,52 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
         self._do_set_sensitive()
 
+    def _do_set_parts_count_sensitive(self) -> None:
+        """
+        Set widget sensitivity as needed when using MIL-HDBK-217F, Parts Count.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 1:
+            self.cmbSpecification.set_sensitive(True)
+        else:
+            self.cmbSpecification.set_sensitive(False)
+            self.cmbStyle.set_sensitive(False)
+            self.cmbConfiguration.set_sensitive(False)
+            self.cmbConstruction.set_sensitive(False)
+            self.txtCapacitance.set_sensitive(False)
+            self.txtESR.set_sensitive(False)
+
+    def _do_set_part_stress_sensitive(self) -> None:
+        """
+        Set widget sensitivity as needed when using MIL-HDBK-217F, Part Stress.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbSpecification.set_sensitive(True)
+        self.cmbStyle.set_sensitive(True)
+        self.txtCapacitance.set_sensitive(True)
+
+        if self._subcategory_id == 12:
+            self.txtESR.set_sensitive(True)
+        else:
+            self.txtESR.set_sensitive(False)
+
+        if self._subcategory_id == 13:
+            self.cmbConstruction.set_sensitive(True)
+        else:
+            self.cmbConstruction.set_sensitive(False)
+
+        if self._subcategory_id == 19:
+            self.cmbConfiguration.set_sensitive(True)
+        else:
+            self.cmbConfiguration.set_sensitive(False)
+
     def _do_set_sensitive(self) -> None:
         """
-        Set widget sensitivity as needed for the selected capacitor.
+        Set widget sensitivity as needed for the selected capacitor type.
 
         :return: None
         :rtype: None
@@ -360,34 +403,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.cmbQuality.set_sensitive(True)
 
         if self._hazard_rate_method_id == 1:
-            if self._subcategory_id == 1:
-                self.cmbSpecification.set_sensitive(True)
-            else:
-                self.cmbSpecification.set_sensitive(False)
-            self.cmbStyle.set_sensitive(False)
-            self.cmbConfiguration.set_sensitive(False)
-            self.cmbConstruction.set_sensitive(False)
-            self.txtCapacitance.set_sensitive(False)
-            self.txtESR.set_sensitive(False)
+            self._do_set_parts_count_sensitive()
         else:
-            self.cmbSpecification.set_sensitive(True)
-            self.cmbStyle.set_sensitive(True)
-            self.txtCapacitance.set_sensitive(True)
-
-            if self._subcategory_id == 12:
-                self.txtESR.set_sensitive(True)
-            else:
-                self.txtESR.set_sensitive(False)
-
-            if self._subcategory_id == 13:
-                self.cmbConstruction.set_sensitive(True)
-            else:
-                self.cmbConstruction.set_sensitive(False)
-
-            if self._subcategory_id == 19:
-                self.cmbConfiguration.set_sensitive(True)
-            else:
-                self.cmbConfiguration.set_sensitive(False)
+            self._do_set_part_stress_sensitive()
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
@@ -498,7 +516,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         super().__init__(configuration)
 
         # Initialize private dictionary attributes.
-        self._dic_part_stress = {
+        self._dic_part_stress: Dict[int, str] = {
             1:
             "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             2:
@@ -555,27 +573,14 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self.txtPiCF: RAMSTKEntry = RAMSTKEntry()
         self.txtPiC: RAMSTKEntry = RAMSTKEntry()
 
+        self._lst_widgets.append(self.txtPiCV)
+        self._lst_widgets.append(self.txtPiCF)
+        self._lst_widgets.append(self.txtPiC)
+
         self.__set_properties()
-        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
-
-    def __make_ui(self) -> None:
-        """
-        Make the capacitor Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = super().make_ui()
-
-        self.put(self.txtPiCV, _x_pos, _y_pos[3])
-        self.put(self.txtPiCF, _x_pos, _y_pos[4])
-        self.put(self.txtPiC, _x_pos, _y_pos[5])
-
-        self.show_all()
 
     def __set_properties(self) -> None:
         """
@@ -619,6 +624,8 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
+        # TODO: Update all read-only widgets once the widget class has been
+        #  updated to comply with requirement 305.9.  See issue #305.
         self.txtPiCV.set_text(str(self.fmt.format(attributes['piCV'])))
         self.txtPiCF.set_text(str(self.fmt.format(attributes['piCF'])))
         self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
@@ -634,7 +641,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_set_sensitive()
 
-        if self._hazard_rate_method_id == 1:
+        if self._hazard_rate_method_id == 1:    # MIL-HDBK-217F, Parts Count
             self.txtPiCV.set_sensitive(False)
             self.txtPiCF.set_sensitive(False)
             self.txtPiC.set_sensitive(False)
