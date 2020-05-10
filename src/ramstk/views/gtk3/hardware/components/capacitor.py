@@ -20,10 +20,10 @@ from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
 
 # RAMSTK Local Imports
-from .workview import AssessmentInputs, AssessmentResults
+from .workview import RAMSTKAssessmentInputs, RAMSTKAssessmentResults
 
 
-class CapacitorAssessmentInputs(AssessmentInputs):
+class AssessmentInputs(RAMSTKAssessmentInputs):
     """
     Display Capacitor assessment input attribute data in the RAMSTK Work Book.
 
@@ -258,10 +258,11 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         self.txtCapacitance: RAMSTKEntry = RAMSTKEntry()
         self.txtESR: RAMSTKEntry = RAMSTKEntry()
 
-        self._lst_widgets = [self.cmbQuality, self.txtCapacitance,
-                             self.cmbSpecification, self.cmbStyle,
-                             self.cmbConfiguration, self.cmbConstruction,
-                             self.txtESR]
+        self._lst_widgets = [
+            self.cmbQuality, self.txtCapacitance, self.cmbSpecification,
+            self.cmbStyle, self.cmbConfiguration, self.cmbConstruction,
+            self.txtESR
+        ]
 
         self.__set_properties()
         self.__set_callbacks()
@@ -416,7 +417,6 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         super().on_combo_changed(combo, index)
 
-        combo.handler_block(self._lst_handler_id[index])
         # If the capacitor specification changed, load the capacitor style
         # RAMSTKComboBox().
         if index == 1:
@@ -428,9 +428,8 @@ class CapacitorAssessmentInputs(AssessmentInputs):
                     _data = self._dic_styles[self._subcategory_id]
             except KeyError:
                 _data = []
-            self.cmbStyle.do_load_combo(_data)
-
-        combo.handler_unblock(self._lst_handler_id[index])
+            self.cmbStyle.do_load_combo(_data,
+                                        handler_id=self._lst_handler_id[2])
 
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """
@@ -450,35 +449,30 @@ class CapacitorAssessmentInputs(AssessmentInputs):
                 _data = self._dic_quality[self._subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.do_load_combo(_data)
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        self.cmbQuality.do_load_combo(_data,
+                                      handler_id=self._lst_handler_id[0])
 
         try:
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbSpecification.handler_block(self._lst_handler_id[1])
-        self.cmbSpecification.do_load_combo(_data)
-        self.cmbSpecification.handler_unblock(self._lst_handler_id[1])
+        self.cmbSpecification.do_load_combo(_data,
+                                            handler_id=self._lst_handler_id[1])
 
-        self.cmbConstruction.handler_block(self._lst_handler_id[4])
-        self.cmbConstruction.do_load_combo([[_("Slug, All Tantalum")],
-                                            [_("Foil, Hermetic")],
-                                            [_("Slug, Hermetic")],
-                                            [_("Foil, Non-Hermetic")],
-                                            [_("Slug, Non-Hermetic")]])
-        self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
+        self.cmbConstruction.do_load_combo(
+            [[_("Slug, All Tantalum")], [_("Foil, Hermetic")],
+             [_("Slug, Hermetic")], [_("Foil, Non-Hermetic")],
+             [_("Slug, Non-Hermetic")]],
+            handler_id=self._lst_handler_id[4])
 
-        self.cmbConfiguration.handler_block(self._lst_handler_id[3])
-        self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]])
-        self.cmbConfiguration.handler_unblock(self._lst_handler_id[3])
+        self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]],
+                                            handler_id=self._lst_handler_id[3])
 
         _model = self.cmbStyle.get_model()
         _model.clear()
 
 
-class CapacitorAssessmentResults(AssessmentResults):
+class AssessmentResults(RAMSTKAssessmentResults):
     """
     Display capacitor assessment results attribute data in the RAMSTK WorkBook.
 

@@ -29,7 +29,7 @@ from ramstk.views.gtk3.widgets import (
 )
 
 # RAMSTK Local Imports
-from .components import capacitor
+from .components import RAMSTKStressInputs, capacitor
 
 
 class GeneralData(RAMSTKWorkView):
@@ -939,7 +939,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 1: wvwIntegratedCircuitAI(self.RAMSTK_CONFIGURATION),
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
-            4: capacitor.CapacitorAssessmentInputs(self.RAMSTK_USER_CONFIGURATION),
+            4: capacitor.AssessmentInputs(self.RAMSTK_USER_CONFIGURATION),
             # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
@@ -965,9 +965,9 @@ class AssessmentInputs(RAMSTKWorkView):
         self.cmbHRType: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbHRMethod: RAMSTKComboBox = RAMSTKComboBox()
 
+        self.fxdOperatingStress: RAMSTKStressInputs = RAMSTKStressInputs(configuration)
+
         self.scwDesignRatings: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
-            None)
-        self.scwOperatingStress: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
             None)
 
         self.txtActiveTemp: RAMSTKEntry = RAMSTKEntry()
@@ -1104,9 +1104,10 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
         # container for component-specific design attributes.
+        _scrollwindow = RAMSTKScrolledWindow(self.fxdOperatingStress)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Operating Stresses"))
-        _frame.add(self.scwOperatingStress)
+        _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
 
         for _workview in self._dic_assessment_input:
@@ -1264,9 +1265,6 @@ class AssessmentInputs(RAMSTKWorkView):
         for _child in self.scwDesignRatings.get_children():
             self.scwDesignRatings.remove(_child)
 
-        for _child in self.scwOperatingStress.get_children():
-            self.scwOperatingStress.remove(_child)
-
         self.cmbActiveEnviron.do_update(0, self._lst_handler_id[0])
         self.cmbDormantEnviron.do_update(0, self._lst_handler_id[1])
         self.cmbFailureDist.do_update(0, self._lst_handler_id[2])
@@ -1316,9 +1314,6 @@ class AssessmentInputs(RAMSTKWorkView):
         except KeyError:
             _component_ai = None
 
-        # _component_si = Component.StressInputs(self.RAMSTK_CONFIGURATION)
-        _component_si = None
-
         # If there are already a component-specific work view object,
         # remove them.  Otherwise move along; these aren't the droids we're
         # looking for.
@@ -1327,17 +1322,15 @@ class AssessmentInputs(RAMSTKWorkView):
         except TypeError:
             pass
 
-        try:
-            self.scwOperatingStress.remove(self.scwOperatingStress.get_child())
-        except TypeError:
-            pass
-
         if _component_ai is not None:
             self.scwDesignRatings.add(_component_ai)
 
-        if _component_si is not None:
-            _component_si.do_load_page(attributes)
-            self.scwOperatingStress.add(_component_si)
+        # Operating stress information is only applicable to components,
+        # not assemblies so we only show the information for components.
+        if attributes['category_id'] > 0:
+            self.fxdOperatingStress.show_all()
+        else:
+            self.fxdOperatingStress.hide()
 
         self.cmbActiveEnviron.do_update(
             int(attributes['environment_active_id']), self._lst_handler_id[0])
@@ -1392,7 +1385,6 @@ class AssessmentInputs(RAMSTKWorkView):
         self._do_set_sensitive(type_id=attributes['hazard_rate_type_id'])
 
         self.scwDesignRatings.show_all()
-        self.scwOperatingStress.show_all()
 
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.
@@ -1400,7 +1392,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
     def _do_request_calculate_hardware(self, __button):
         """
-        Send request to calculate the selected hardware.
+        Send request to calculate the selected hardware item.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`

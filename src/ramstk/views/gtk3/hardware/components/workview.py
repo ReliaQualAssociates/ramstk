@@ -23,7 +23,7 @@ from ramstk.views.gtk3.widgets import (
 )
 
 
-class AssessmentInputs(Gtk.Fixed):
+class RAMSTKAssessmentInputs(Gtk.Fixed):
     """
     Display Hardware assessment input attribute data in the RAMSTK Work Book.
 
@@ -253,7 +253,7 @@ class AssessmentInputs(Gtk.Fixed):
                         package={_key: _new_text})
 
 
-class StressInputs(Gtk.Fixed):
+class RAMSTKStressInputs(Gtk.Fixed):
     """
     Display hardware item stress input attribute data in the RAMSTK Work Book.
 
@@ -324,6 +324,20 @@ class StressInputs(Gtk.Fixed):
 
     RAMSTK_USER_CONFIGURATION = None
 
+    # Define private dict class attributes.
+    _dic_keys = {
+        0: 'temperature_rated_min',
+        1: 'temperature_knee',
+        2: 'temperature_rated_max',
+        3: 'current_rated',
+        4: 'current_operating',
+        5: 'power_rated',
+        6: 'power_operating',
+        7: 'voltage_rated',
+        8: 'voltage_ac_operating',
+        9: 'voltage_dc_operating'
+    }
+
     # Define private list attributes.
     _lst_labels = [
         _("Minimum Rated Temperature (\u00B0C):"),
@@ -363,9 +377,9 @@ class StressInputs(Gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = '{0:0.' + \
-                   str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + \
-                   'G}'
+        self.fmt: str = (
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
         self.txtTemperatureRatedMin: RAMSTKEntry = RAMSTKEntry()
         self.txtTemperatureKnee: RAMSTKEntry = RAMSTKEntry()
@@ -378,11 +392,20 @@ class StressInputs(Gtk.Fixed):
         self.txtVoltageAC: RAMSTKEntry = RAMSTKEntry()
         self.txtVoltageDC: RAMSTKEntry = RAMSTKEntry()
 
+        self._lst_widgets = [
+            self.txtTemperatureRatedMin, self.txtTemperatureKnee,
+            self.txtTemperatureRatedMax, self.txtCurrentRated,
+            self.txtCurrentOperating, self.txtPowerRated,
+            self.txtPowerOperating, self.txtVoltageRated, self.txtVoltageAC,
+            self.txtVoltageDC
+        ]
+
         self.__set_properties()
         self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
 
     def __make_ui(self) -> None:
         """
@@ -391,19 +414,32 @@ class StressInputs(Gtk.Fixed):
         :return: None
         :rtype: None
         """
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
+        # This hardware WorkView assessment input page has the following
+        # layout.  This meta-class is placed in the lower right quadrant.
+        # +-----+-------------------+-------------------+
+        # |  B  |      L. TOP       |      R. TOP       |
+        # |  U  |                   |                   |
+        # |  T  |                   |                   |
+        # |  T  +-------------------+-------------------+
+        # |  O  |     L. BOTTOM     |     R. BOTTOM     |
+        # |  N  |                   |                   |
+        # |  S  |                   |                   |
+        # +-----+-------------------+-------------------+
+        # TODO: See issue #304.
+        if self._lst_widgets:
+            _y_pos = 5
+            (_x_pos, _lst_labels) = do_make_label_group2(
+                self._lst_labels[0:], x_pos=5, y_pos=5)
 
-        self.put(self.txtTemperatureRatedMin, _x_pos, _y_pos[0])
-        self.put(self.txtTemperatureKnee, _x_pos, _y_pos[1])
-        self.put(self.txtTemperatureRatedMax, _x_pos, _y_pos[2])
-        self.put(self.txtCurrentRated, _x_pos, _y_pos[3])
-        self.put(self.txtCurrentOperating, _x_pos, _y_pos[4])
-        self.put(self.txtPowerRated, _x_pos, _y_pos[5])
-        self.put(self.txtPowerOperating, _x_pos, _y_pos[6])
-        self.put(self.txtVoltageRated, _x_pos, _y_pos[7])
-        self.put(self.txtVoltageAC, _x_pos, _y_pos[8])
-        self.put(self.txtVoltageDC, _x_pos, _y_pos[9])
+            for _idx, _label in enumerate(_lst_labels):
+                _minimum = self._lst_widgets[_idx].get_preferred_size()[0]
+                if _minimum.height == 0:
+                    _minimum.height = self._lst_widgets[_idx].height
+
+                self.put(_label, 5, _y_pos)
+                self.put(self._lst_widgets[_idx], _x_pos + 5,
+                         _y_pos)
+                _y_pos += _minimum.height + 5
 
         self.show_all()
 
@@ -415,27 +451,35 @@ class StressInputs(Gtk.Fixed):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.txtTemperatureRatedMin.connect('changed', self._on_focus_out,
-                                                0))
+            self.txtTemperatureRatedMin.connect('focus-out-event',
+                                                self._on_focus_out, 0))
         self._lst_handler_id.append(
-            self.txtTemperatureKnee.connect('changed', self._on_focus_out, 1))
+            self.txtTemperatureKnee.connect('focus-out-event',
+                                            self._on_focus_out, 1))
         self._lst_handler_id.append(
-            self.txtTemperatureRatedMax.connect('changed', self._on_focus_out,
-                                                2))
+            self.txtTemperatureRatedMax.connect('focus-out-event',
+                                                self._on_focus_out, 2))
         self._lst_handler_id.append(
-            self.txtCurrentRated.connect('changed', self._on_focus_out, 3))
+            self.txtCurrentRated.connect('focus-out-event', self._on_focus_out,
+                                         3))
         self._lst_handler_id.append(
-            self.txtCurrentOperating.connect('changed', self._on_focus_out, 4))
+            self.txtCurrentOperating.connect('focus-out-event',
+                                             self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtPowerRated.connect('changed', self._on_focus_out, 5))
+            self.txtPowerRated.connect('focus-out-event', self._on_focus_out,
+                                       5))
         self._lst_handler_id.append(
-            self.txtPowerOperating.connect('changed', self._on_focus_out, 6))
+            self.txtPowerOperating.connect('focus-out-event',
+                                           self._on_focus_out, 6))
         self._lst_handler_id.append(
-            self.txtVoltageRated.connect('changed', self._on_focus_out, 7))
+            self.txtVoltageRated.connect('focus-out-event', self._on_focus_out,
+                                         7))
         self._lst_handler_id.append(
-            self.txtVoltageAC.connect('changed', self._on_focus_out, 8))
+            self.txtVoltageAC.connect('focus-out-event', self._on_focus_out,
+                                      8))
         self._lst_handler_id.append(
-            self.txtVoltageDC.connect('changed', self._on_focus_out, 9))
+            self.txtVoltageDC.connect('focus-out-event', self._on_focus_out,
+                                      9))
 
     def __set_properties(self) -> None:
         """
@@ -481,7 +525,7 @@ class StressInputs(Gtk.Fixed):
             tooltip=_("The operating DC voltage (in V) of the hardware "
                       "item."))
 
-    def do_load_page(self, attributes: Dict[str, Any]) -> None:
+    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the Component stress input widgets.
 
@@ -492,57 +536,42 @@ class StressInputs(Gtk.Fixed):
         self._record_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
 
-        self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[0])
-        self.txtTemperatureRatedMin.set_text(
-            str(self.fmt.format(attributes['temperature_rated_min'])))
-        self.txtTemperatureRatedMin.handler_unblock(self._lst_handler_id[0])
+        self.txtTemperatureRatedMin.do_update(
+            str(self.fmt.format(attributes['temperature_rated_min'])),
+            self._lst_handler_id[0])
+        self.txtTemperatureKnee.do_update(
+            str(self.fmt.format(attributes['temperature_knee'])),
+            self._lst_handler_id[1])
+        self.txtTemperatureRatedMax.do_update(
+            str(self.fmt.format(attributes['temperature_rated_max'])),
+            self._lst_handler_id[2])
+        self.txtCurrentRated.do_update(
+            str(self.fmt.format(attributes['current_rated'])),
+            self._lst_handler_id[3])
+        self.txtCurrentOperating.do_update(
+            str(self.fmt.format(attributes['current_operating'])),
+            self._lst_handler_id[4])
+        self.txtPowerRated.do_update(
+            str(self.fmt.format(attributes['power_rated'])),
+            self._lst_handler_id[5])
+        self.txtPowerOperating.do_update(
+            str(self.fmt.format(
+                attributes['power_operating'])), self._lst_handler_id[6])
+        self.txtVoltageRated.do_update(
+            str(self.fmt.format(attributes['voltage_rated'])),
+            self._lst_handler_id[7])
+        self.txtVoltageAC.do_update(
+            str(self.fmt.format(attributes['voltage_ac_operating'])),
+            self._lst_handler_id[8])
+        self.txtVoltageDC.do_update(
+            str(self.fmt.format(attributes['voltage_dc_operating'])),
+            self._lst_handler_id[9])
 
-        self.txtTemperatureKnee.handler_block(self._lst_handler_id[1])
-        self.txtTemperatureKnee.set_text(
-            str(self.fmt.format(attributes['temperature_knee'])))
-        self.txtTemperatureKnee.handler_unblock(self._lst_handler_id[1])
-
-        self.txtTemperatureRatedMax.handler_block(self._lst_handler_id[2])
-        self.txtTemperatureRatedMax.set_text(
-            str(self.fmt.format(attributes['temperature_rated_max'])))
-        self.txtTemperatureRatedMax.handler_unblock(self._lst_handler_id[2])
-
-        self.txtCurrentRated.handler_block(self._lst_handler_id[3])
-        self.txtCurrentRated.set_text(
-            str(self.fmt.format(attributes['current_rated'])))
-        self.txtCurrentRated.handler_unblock(self._lst_handler_id[3])
-
-        self.txtCurrentOperating.handler_block(self._lst_handler_id[4])
-        self.txtCurrentOperating.set_text(
-            str(self.fmt.format(attributes['current_operating'])))
-        self.txtCurrentOperating.handler_unblock(self._lst_handler_id[4])
-
-        self.txtPowerRated.handler_block(self._lst_handler_id[5])
-        self.txtPowerRated.set_text(
-            str(self.fmt.format(attributes['power_rated'])))
-        self.txtPowerRated.handler_unblock(self._lst_handler_id[5])
-
-        self.txtPowerOperating.handler_block(self._lst_handler_id[6])
-        self.txtPowerOperating.set_text(
-            str(self.fmt.format(attributes['power_operating'])))
-        self.txtPowerOperating.handler_unblock(self._lst_handler_id[6])
-
-        self.txtVoltageRated.handler_block(self._lst_handler_id[7])
-        self.txtVoltageRated.set_text(
-            str(self.fmt.format(attributes['voltage_rated'])))
-        self.txtVoltageRated.handler_unblock(self._lst_handler_id[7])
-
-        self.txtVoltageAC.handler_block(self._lst_handler_id[8])
-        self.txtVoltageAC.set_text(
-            str(self.fmt.format(attributes['voltage_ac_operating'])))
-        self.txtVoltageAC.handler_unblock(self._lst_handler_id[8])
-
-        self.txtVoltageDC.handler_block(self._lst_handler_id[9])
-        self.txtVoltageDC.set_text(
-            str(self.fmt.format(attributes['voltage_dc_operating'])))
-        self.txtVoltageDC.handler_unblock(self._lst_handler_id[9])
-
-    def _on_focus_out(self, entry: object, index: int) -> None:
+    def _on_focus_out(
+            self,
+            entry: Gtk.Entry,
+            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            index: int) -> None:
         """
         Retrieve changes made in RAMSTKEntry() widgets..
 
@@ -555,6 +584,8 @@ class StressInputs(Gtk.Fixed):
             method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
             :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
+        :param __event: the Gdk.EventFocus that triggered the signal.
+        :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Hardware class Gtk.TreeModel()
             associated with the data from the calling Gtk.Widget().  Indices
             are:
@@ -576,20 +607,8 @@ class StressInputs(Gtk.Fixed):
         :return: None
         :rtype: None
         """
-        _dic_keys = {
-            0: 'temperature_rated_min',
-            1: 'temperature_knee',
-            2: 'temperature_rated_max',
-            3: 'current_rated',
-            4: 'current_operating',
-            5: 'power_rated',
-            6: 'power_operating',
-            7: 'voltage_rated',
-            8: 'voltage_ac_operating',
-            9: 'voltage_dc_operating'
-        }
         try:
-            _key = _dic_keys[index]
+            _key = self._dic_keys[index]
         except KeyError:
             _key = ''
 
@@ -602,13 +621,12 @@ class StressInputs(Gtk.Fixed):
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        pub.sendMessage('wvw_editing_hardware',
-                        module_id=self._record_id,
-                        key=_key,
-                        value=_new_text)
+        pub.sendMessage('wvw_editing_component',
+                        node_id=[self._record_id, -1],
+                        package={_key: _new_text})
 
 
-class AssessmentResults(Gtk.Fixed):
+class RAMSTKAssessmentResults(Gtk.Fixed):
     """
     Display Hardware assessment results attribute data in the RAMSTK Work Book.
 
@@ -771,7 +789,7 @@ class AssessmentResults(Gtk.Fixed):
         return _x_pos, _y_pos
 
 
-class StressResults(Gtk.HPaned):
+class RAMSTKStressResults(Gtk.HPaned):
     """
     Display Hardware stress results attribute data in the RAMSTK Work Book.
 

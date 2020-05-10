@@ -8,7 +8,10 @@
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 # RAMSTK Local Imports
 from . import capacitor
-from .workview import AssessmentInputs as wvwComponentAI
+from .workview import (
+    RAMSTKAssessmentInputs, RAMSTKAssessmentResults,
+    RAMSTKStressInputs, RAMSTKStressResults
+)
 
 #from .Connection import ConnectionAssessmentInputs as wvwConnectionAI
 #from .Connection import ConnectionAssessmentResults as wvwConnectionAR
