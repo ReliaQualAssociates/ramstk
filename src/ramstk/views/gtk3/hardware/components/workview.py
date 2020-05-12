@@ -9,7 +9,7 @@
 """The RAMSTK Component Base Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -18,8 +18,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-    RAMSTKPlot, RAMSTKTextView, do_make_label_group, do_make_label_group2
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel,
+    RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group2
 )
 
 
@@ -44,10 +44,8 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
         item.
     """
 
-    RAMSTK_USER_CONFIGURATION = None
-
     # Define private list attributes.
-    _lst_labels = []
+    _lst_labels: List[str] = []
 
     def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
         """
@@ -58,10 +56,10 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
         """
         GObject.GObject.__init__(self)
 
-        self.RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = configuration
+        self.RAMSTK_USER_CONFIGURATION = configuration
 
         # Initialize private dictionary attributes.
-        self._dic_switch: Dict[str, List[object, int]] = {}
+        self._dic_switch: Dict[str, Union[object, int]] = {}
 
         # Initialize private list attributes.
         self._lst_handler_id: List[int] = []
@@ -115,7 +113,7 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
         self.cmbQuality.do_update(attributes['quality_id'],
                                   self._lst_handler_id[0])
 
-    def make_ui(self, **kwargs) -> None:
+    def make_ui(self, **kwargs: Dict[str, Any]) -> None:
         """
         Make the Hardware class component Assessment Input container.
 
@@ -147,22 +145,20 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
             _index_start = 0
 
         # TODO: See issue #304.
-        if self._lst_widgets:
-            _y_pos = 5
-            (_x_pos, _lst_labels) = do_make_label_group2(
-                self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
+        _y_pos = 5
+        (_x_pos, _lst_labels) = do_make_label_group2(
+            self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
 
-            for _idx, _label in enumerate(_lst_labels):
-                _minimum = self._lst_widgets[
-                    _idx + _index_start].get_preferred_size()[0]
-                if _minimum.height == 0:
-                    _minimum.height = self._lst_widgets[_idx
-                                                        + _index_start].height
+        for _idx, _label in enumerate(_lst_labels):
+            _minimum: Gtk.Requisition = self._lst_widgets[
+                _idx + _index_start].get_preferred_size()[0]
+            if _minimum.height == 0:
+                _minimum.height = self._lst_widgets[_idx + _index_start].height
 
-                self.put(_label, 5, _y_pos)
-                self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
-                         _y_pos)
-                _y_pos += _minimum.height + 5
+            self.put(_label, 5, _y_pos)
+            self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
+                     _y_pos)
+            _y_pos += _minimum.height + 5
 
         self.show_all()
 
@@ -236,7 +232,7 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
         entry.handler_block(self._lst_handler_id[index])
 
         try:
-            _new_text = int(entry.get_text())
+            _new_text: Any = int(entry.get_text())
         except ValueError:
             try:
                 _new_text = float(entry.get_text())
@@ -426,20 +422,19 @@ class RAMSTKStressInputs(Gtk.Fixed):
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
         # TODO: See issue #304.
-        if self._lst_widgets:
-            _y_pos = 5
-            (_x_pos, _lst_labels) = do_make_label_group2(
-                self._lst_labels[0:], x_pos=5, y_pos=5)
+        _y_pos = 5
+        (_x_pos, _lst_labels) = do_make_label_group2(self._lst_labels[0:],
+                                                     x_pos=5,
+                                                     y_pos=5)
 
-            for _idx, _label in enumerate(_lst_labels):
-                _minimum = self._lst_widgets[_idx].get_preferred_size()[0]
-                if _minimum.height == 0:
-                    _minimum.height = self._lst_widgets[_idx].height
+        for _idx, _label in enumerate(_lst_labels):
+            _minimum = self._lst_widgets[_idx].get_preferred_size()[0]
+            if _minimum.height == 0:
+                _minimum.height = self._lst_widgets[_idx].height
 
-                self.put(_label, 5, _y_pos)
-                self.put(self._lst_widgets[_idx], _x_pos + 5,
-                         _y_pos)
-                _y_pos += _minimum.height + 5
+            self.put(_label, 5, _y_pos)
+            self.put(self._lst_widgets[_idx], _x_pos + 5, _y_pos)
+            _y_pos += _minimum.height + 5
 
         self.show_all()
 
@@ -555,8 +550,8 @@ class RAMSTKStressInputs(Gtk.Fixed):
             str(self.fmt.format(attributes['power_rated'])),
             self._lst_handler_id[5])
         self.txtPowerOperating.do_update(
-            str(self.fmt.format(
-                attributes['power_operating'])), self._lst_handler_id[6])
+            str(self.fmt.format(attributes['power_operating'])),
+            self._lst_handler_id[6])
         self.txtVoltageRated.do_update(
             str(self.fmt.format(attributes['voltage_rated'])),
             self._lst_handler_id[7])
@@ -691,8 +686,9 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
         self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiE: RAMSTKEntry = RAMSTKEntry()
 
-        self._lst_widgets = [self._lblModel, self.txtLambdaB, self.txtPiQ,
-                             self.txtPiE]
+        self._lst_widgets = [
+            self._lblModel, self.txtLambdaB, self.txtPiQ, self.txtPiE
+        ]
 
         self.__set_properties()
 
@@ -724,6 +720,25 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
             editable=False,
             bold=True,
             tooltip=_("The environment factor for the hardware item."))
+
+    def _do_set_model_label(self) -> None:
+        """
+        Sets the text displayed in the hazard rate model RAMSTKLabel().
+
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:
+            self._lblModel.set_markup(
+                "<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
+                "\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
+            self._lst_labels[0] = "\u03BB<sub>g</sub>:"
+        else:
+            try:
+                self._lblModel.set_markup(
+                    self._dic_part_stress[self._subcategory_id])
+            except KeyError:
+                self._lblModel.set_markup(_("Missing Model"))
 
     def do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -765,7 +780,7 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
         self.txtPiQ.set_sensitive(True)
         self.txtPiE.set_sensitive(False)
 
-    def make_ui(self, **kwargs) -> None:
+    def make_ui(self, **kwargs: Dict[str, Any]) -> None:
         """
         Make the Hardware class component Assessment Results container.
 
@@ -796,34 +811,22 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
         except KeyError:
             _index_start = 0
 
-        if self._hazard_rate_method_id == 1:
-            self._lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                "\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
-            self._lst_labels[0] = "\u03BB<sub>g</sub>:"
-        else:
-            try:
-                self._lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self._lblModel.set_markup(_("Missing Model"))
+        self._do_set_model_label()
 
         # TODO: See issue #304.
-        if self._lst_widgets:
-            _y_pos = 5
-            (_x_pos, _lst_labels) = do_make_label_group2(
-                self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
-            for _idx, _label in enumerate(_lst_labels):
-                _minimum = self._lst_widgets[
-                    _idx + _index_start].get_preferred_size()[0]
-                if _minimum.height == 0:
-                    _minimum.height = self._lst_widgets[_idx
-                                                        + _index_start].height
+        _y_pos = 5
+        (_x_pos, _lst_labels) = do_make_label_group2(
+            self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
+        for _idx, _label in enumerate(_lst_labels):
+            _minimum = self._lst_widgets[
+                _idx + _index_start].get_preferred_size()[0]
+            if _minimum.height == 0:
+                _minimum.height = self._lst_widgets[_idx + _index_start].height
 
-                self.put(_label, 5, _y_pos)
-                self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
-                         _y_pos)
-                _y_pos += _minimum.height + 5
+            self.put(_label, 5, _y_pos)
+            self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
+                     _y_pos)
+            _y_pos += _minimum.height + 5
 
         self.show_all()
 
@@ -837,7 +840,7 @@ class RAMSTKStressResults(Gtk.HPaned):
     MIL-HDBK-217FN2 parts count and part stress methods.  The attributes of a
     Hardware stress result view are:
 
-    :cvar list _lst_labels: the text to use for the sress results widget
+    :cvar list _lst_labels: the text to use for the stress results widget
         labels.
 
     :ivar int _hardware_id: the ID of the Hardware item currently being
@@ -861,7 +864,7 @@ class RAMSTKStressResults(Gtk.HPaned):
 
     RAMSTK_USER_CONFIGURATION = None
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Current Ratio:"),
         _("Power Ratio:"),
@@ -895,11 +898,11 @@ class RAMSTKStressResults(Gtk.HPaned):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = '{0:0.' + \
-                   str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + \
-                   'G}'
+        self.fmt: str = (
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
-        self.pltDerate = RAMSTKPlot()
+        self.pltDerate: RAMSTKPlot = RAMSTKPlot()
 
         self.chkOverstress: RAMSTKCheckButton = RAMSTKCheckButton(
             label=_("Overstressed"))
@@ -907,6 +910,11 @@ class RAMSTKStressResults(Gtk.HPaned):
         self.txtPowerRatio: RAMSTKEntry = RAMSTKEntry()
         self.txtVoltageRatio: RAMSTKEntry = RAMSTKEntry()
         self.txtReason: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+
+        self._lst_widgets = [
+            self.txtCurrentRatio, self.txtPowerRatio, self.txtVoltageRatio,
+            self.chkOverstress, self.txtReason
+        ]
 
         self.__set_properties()
         self.__make_ui()
@@ -921,27 +929,40 @@ class RAMSTKStressResults(Gtk.HPaned):
         :return: None
         :rtype: None
         """
+        # The hardware WorkView assessment input page has the following
+        # layout.  This meta-class is placed in the lower right quadrant.
+        # +-----+-------------------+-------------------+
+        # |  B  |      L. TOP       |      R. TOP       |
+        # |  U  |                   |                   |
+        # |  T  |                   |                   |
+        # |  T  +-------------------+-------------------+
+        # |  O  |     L. BOTTOM     |     R. BOTTOM     |
+        # |  N  |                   |                   |
+        # |  S  |                   |                   |
+        # +-----+-------------------+-------------------+
         _fixed = Gtk.Fixed()
+        # TODO: See issue #304.
+        _y_pos = 5
+        (_x_pos, _lst_labels) = do_make_label_group2(self._lst_labels[0:],
+                                                     x_pos=5,
+                                                     y_pos=5)
+
+        for _idx, _label in enumerate(_lst_labels):
+            _minimum = self._lst_widgets[_idx].get_preferred_size()[0]
+            if _minimum.height == 0:
+                _minimum.height = self._lst_widgets[_idx].height
+
+            _fixed.put(_label, 5, _y_pos)
+            _fixed.put(self._lst_widgets[_idx], _x_pos + 5, _y_pos)
+            _y_pos += _minimum.height + 5
+
         self.pack1(_fixed, True, True)
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 35)
-        _x_pos += 50
-
-        _fixed.put(self.txtCurrentRatio, _x_pos, _y_pos[0])
-        _fixed.put(self.txtPowerRatio, _x_pos, _y_pos[1])
-        _fixed.put(self.txtVoltageRatio, _x_pos, _y_pos[2])
-        _fixed.put(self.chkOverstress, _x_pos, _y_pos[3])
-        _fixed.put(self.txtReason.scrollwindow, _x_pos, _y_pos[4])
-
-        _fixed.show_all()
-
         # Create the derating plot.
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(label=_("Derating Curve and Operating Point"))
-        _frame.add(self.pltDerate.plot)
-        _frame.show_all()
+        _scrollwindow = RAMSTKScrolledWindow(self.pltDerate.plot)
+        self.pack2(_scrollwindow, False, False)
 
-        self.pack2(_frame, True, True)
+        self.show_all()
 
     def __set_properties(self) -> None:
         """
@@ -978,7 +999,11 @@ class RAMSTKStressResults(Gtk.HPaned):
 
         self.chkOverstress.set_sensitive(False)
         self.txtReason.set_editable(False)
-        _bg_color = Gdk.RGBA(red=173.0, green=216.0, blue=230.0, alpha=1.0)
+        _bg_color = Gdk.RGBA()
+        _bg_color.red = 173.0
+        _bg_color.green = 216.0
+        _bg_color.blue = 230.0
+        _bg_color.alpha = 1.0
         self.txtReason.override_background_color(Gtk.StateFlags.NORMAL,
                                                  _bg_color)
         self.txtReason.override_background_color(Gtk.StateFlags.ACTIVE,
@@ -1022,9 +1047,7 @@ class RAMSTKStressResults(Gtk.HPaned):
 
         self.pltDerate.do_make_title(
             _("Voltage Derating Curve for {0:s} at {1:s}").format(
-                attributes['part_number'],
-                attributes['ref_des'],
-            ),
+                attributes['part_number'], attributes['ref_des']),
             fontsize=12)
 
         self.pltDerate.do_make_legend(

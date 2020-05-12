@@ -34,7 +34,7 @@ class DataManager(RAMSTKDataManager):
     _tag = 'hardware'
     _root = 0
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
+    def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Hardware data manager instance."""
         super().__init__(**kwargs)
 
@@ -109,7 +109,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _attributes = {}
+        _attributes: Dict[str, Any] = {}
         for _table in [
                 'hardware', 'design_electric', 'design_mechanic',
                 'mil_hdbk_217f', 'nswc', 'reliability', 'allocation',
@@ -339,7 +339,7 @@ class DataManager(RAMSTKDataManager):
                 package={_key: attributes[_key]})
 
     def _do_set_hardware_attributes(self,
-                                    node_id: List,
+                                    node_id: List[int],
                                     package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
