@@ -16,14 +16,15 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
+from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel,
-    RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group2
+    RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView
 )
 
 
-class RAMSTKAssessmentInputs(Gtk.Fixed):
+class RAMSTKAssessmentInputs(RAMSTKWorkView):
     """
     Display Hardware assessment input attribute data in the RAMSTK Work Book.
 
@@ -47,16 +48,17 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
     # Define private list attributes.
     _lst_labels: List[str] = []
 
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'component') -> None:
         """
         Initialize an instance of the Hardware assessment input view.
 
         :param configuration: the RAMSTK User Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.RAMSTKUserConfiguration`
         """
-        GObject.GObject.__init__(self)
-
-        self.RAMSTK_USER_CONFIGURATION = configuration
+        super().__init__(configuration, logger, module=module)
 
         # Initialize private dictionary attributes.
         self._dic_switch: Dict[str, Union[object, int]] = {}
@@ -95,6 +97,19 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
         self.cmbQuality.do_set_properties(
             tooltip=_("The quality level of the hardware item."))
 
+    def _do_clear_page(self) -> None:
+        """
+        Clear the contents of the page.
+
+        This method is only required to satisfy the RAMSTKWorkView base
+        class message listener requirement.  When we close a RAMSTK program
+        database, any component-specific workviews will be removed from
+        their containers which effectively clears their contents.
+
+        :return: None
+        :rtype: None
+        """
+
     def do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the component common widgets.
@@ -113,7 +128,9 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
         self.cmbQuality.do_update(attributes['quality_id'],
                                   self._lst_handler_id[0])
 
-    def make_ui(self, **kwargs: Dict[str, Any]) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def make_ui(self, **kwargs: Any) -> None:
         """
         Make the Hardware class component Assessment Input container.
 
@@ -135,30 +152,8 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        try:
-            _index_end = kwargs['end']
-        except KeyError:
-            _index_end = len(self._lst_labels)
-        try:
-            _index_start = kwargs['start']
-        except KeyError:
-            _index_start = 0
-
-        # TODO: See issue #304.
-        _y_pos = 5
-        (_x_pos, _lst_labels) = do_make_label_group2(
-            self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
-
-        for _idx, _label in enumerate(_lst_labels):
-            _minimum: Gtk.Requisition = self._lst_widgets[
-                _idx + _index_start].get_preferred_size()[0]
-            if _minimum.height == 0:
-                _minimum.height = self._lst_widgets[_idx + _index_start].height
-
-            self.put(_label, 5, _y_pos)
-            self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
-                     _y_pos)
-            _y_pos += _minimum.height + 5
+        (__, __, _fixed) = super().make_ui(start=0)
+        self.pack_start(_fixed, True, True, 0)
 
         self.show_all()
 
@@ -200,10 +195,12 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
 
         combo.handler_unblock(self._lst_handler_id[index])
 
+    # pylint: disable=unused-argument
+    # pylint: disable=arguments-differ
     def on_focus_out(
             self,
             entry: Gtk.Entry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            __event: Gdk.EventFocus,
             index: int) -> None:
         """
         Retrieve changes made in RAMSTKEntry() widgets.
@@ -249,7 +246,7 @@ class RAMSTKAssessmentInputs(Gtk.Fixed):
                         package={_key: _new_text})
 
 
-class RAMSTKStressInputs(Gtk.Fixed):
+class RAMSTKStressInputs(RAMSTKWorkView):
     """
     Display hardware item stress input attribute data in the RAMSTK Work Book.
 
@@ -348,16 +345,17 @@ class RAMSTKStressInputs(Gtk.Fixed):
         _("Operating DC Voltage (V):")
     ]
 
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'component') -> None:
         """
         Initialize an instance of the Hardware stress input view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        GObject.GObject.__init__(self)
-
-        self.RAMSTK_USER_CONFIGURATION = configuration
+        super().__init__(configuration, logger, module=module)
 
         # Initialize private dictionary attributes.
 
@@ -397,8 +395,8 @@ class RAMSTKStressInputs(Gtk.Fixed):
         ]
 
         self.__set_properties()
-        self.__make_ui()
         self.__set_callbacks()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
@@ -421,20 +419,8 @@ class RAMSTKStressInputs(Gtk.Fixed):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        # TODO: See issue #304.
-        _y_pos = 5
-        (_x_pos, _lst_labels) = do_make_label_group2(self._lst_labels[0:],
-                                                     x_pos=5,
-                                                     y_pos=5)
-
-        for _idx, _label in enumerate(_lst_labels):
-            _minimum = self._lst_widgets[_idx].get_preferred_size()[0]
-            if _minimum.height == 0:
-                _minimum.height = self._lst_widgets[_idx].height
-
-            self.put(_label, 5, _y_pos)
-            self.put(self._lst_widgets[_idx], _x_pos + 5, _y_pos)
-            _y_pos += _minimum.height + 5
+        (__, __, _fixed) = super().make_ui(start=0)
+        self.pack_start(_fixed, True, True, 0)
 
         self.show_all()
 
@@ -519,6 +505,19 @@ class RAMSTKStressInputs(Gtk.Fixed):
             width=125,
             tooltip=_("The operating DC voltage (in V) of the hardware "
                       "item."))
+
+    def _do_clear_page(self) -> None:
+        """
+        Clear the contents of the page.
+
+        This method is only required to satisfy the RAMSTKWorkView base
+        class message listener requirement.  When we close a RAMSTK program
+        database, any component-specific workviews will be removed from
+        their containers which effectively clears their contents.
+
+        :return: None
+        :rtype: None
+        """
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -621,7 +620,7 @@ class RAMSTKStressInputs(Gtk.Fixed):
                         package={_key: _new_text})
 
 
-class RAMSTKAssessmentResults(Gtk.Fixed):
+class RAMSTKAssessmentResults(RAMSTKWorkView):
     """
     Display Hardware assessment results attribute data in the RAMSTK Work Book.
 
@@ -645,18 +644,17 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
     :ivar txtPiE: displays the environment factor for the hardware item.
     """
 
-    RAMSTK_USER_CONFIGURATION = None
-
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'component') -> None:
         """
         Initialize an instance of the Hardware assessment result view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        GObject.GObject.__init__(self)
-
-        self.RAMSTK_USER_CONFIGURATION = configuration
+        super().__init__(configuration, logger, module=module)
 
         # Initialize private dictionary attributes.
 
@@ -721,6 +719,19 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
             bold=True,
             tooltip=_("The environment factor for the hardware item."))
 
+    def _do_clear_page(self) -> None:
+        """
+        Clear the contents of the page.
+
+        This method is only required to satisfy the RAMSTKWorkView base
+        class message listener requirement.  When we close a RAMSTK program
+        database, any component-specific workviews will be removed from
+        their containers which effectively clears their contents.
+
+        :return: None
+        :rtype: None
+        """
+
     def _do_set_model_label(self) -> None:
         """
         Sets the text displayed in the hazard rate model RAMSTKLabel().
@@ -780,7 +791,9 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
         self.txtPiQ.set_sensitive(True)
         self.txtPiE.set_sensitive(False)
 
-    def make_ui(self, **kwargs: Dict[str, Any]) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def make_ui(self, **kwargs: Any) -> None:
         """
         Make the Hardware class component Assessment Results container.
 
@@ -802,36 +815,13 @@ class RAMSTKAssessmentResults(Gtk.Fixed):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        try:
-            _index_end = kwargs['end']
-        except KeyError:
-            _index_end = len(self._lst_labels)
-        try:
-            _index_start = kwargs['start']
-        except KeyError:
-            _index_start = 0
-
-        self._do_set_model_label()
-
-        # TODO: See issue #304.
-        _y_pos = 5
-        (_x_pos, _lst_labels) = do_make_label_group2(
-            self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
-        for _idx, _label in enumerate(_lst_labels):
-            _minimum = self._lst_widgets[
-                _idx + _index_start].get_preferred_size()[0]
-            if _minimum.height == 0:
-                _minimum.height = self._lst_widgets[_idx + _index_start].height
-
-            self.put(_label, 5, _y_pos)
-            self.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
-                     _y_pos)
-            _y_pos += _minimum.height + 5
+        (__, __, _fixed) = super().make_ui(start=0)
+        self.pack_start(_fixed, True, True, 0)
 
         self.show_all()
 
 
-class RAMSTKStressResults(Gtk.HPaned):
+class RAMSTKStressResults(RAMSTKWorkView):
     """
     Display Hardware stress results attribute data in the RAMSTK Work Book.
 
@@ -872,16 +862,17 @@ class RAMSTKStressResults(Gtk.HPaned):
         _("Overstress Reason:")
     ]
 
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'component') -> None:
         """
         Initialize an instance of the Hardware stress result view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        GObject.GObject.__init__(self)
-
-        self.RAMSTK_USER_CONFIGURATION = configuration
+        super().__init__(configuration, logger, module=module)
 
         # Initialize private dictionary attributes.
 
@@ -940,27 +931,15 @@ class RAMSTKStressResults(Gtk.HPaned):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        _fixed = Gtk.Fixed()
-        # TODO: See issue #304.
-        _y_pos = 5
-        (_x_pos, _lst_labels) = do_make_label_group2(self._lst_labels[0:],
-                                                     x_pos=5,
-                                                     y_pos=5)
+        _hpaned = Gtk.HPaned()
+        self.pack_start(_hpaned, True, True, 0)
 
-        for _idx, _label in enumerate(_lst_labels):
-            _minimum = self._lst_widgets[_idx].get_preferred_size()[0]
-            if _minimum.height == 0:
-                _minimum.height = self._lst_widgets[_idx].height
-
-            _fixed.put(_label, 5, _y_pos)
-            _fixed.put(self._lst_widgets[_idx], _x_pos + 5, _y_pos)
-            _y_pos += _minimum.height + 5
-
-        self.pack1(_fixed, True, True)
+        (__, __, _fixed) = super().make_ui(start=0)
+        _hpaned.pack1(_fixed, False, False)
 
         # Create the derating plot.
         _scrollwindow = RAMSTKScrolledWindow(self.pltDerate.plot)
-        self.pack2(_scrollwindow, False, False)
+        _hpaned.pack2(_scrollwindow, False, False)
 
         self.show_all()
 
@@ -993,27 +972,26 @@ class RAMSTKStressResults(Gtk.HPaned):
             tooltip=_("The ratio of operating voltage to rated voltage for "
                       "the hardware item."))
         self.txtReason.do_set_properties(
-            width=250,
+            height=100,
+            width=350,
             tooltip=_("The reason(s) the selected hardware item is "
                       "overstressed."))
 
         self.chkOverstress.set_sensitive(False)
         self.txtReason.set_editable(False)
-        _bg_color = Gdk.RGBA()
-        _bg_color.red = 173.0
-        _bg_color.green = 216.0
-        _bg_color.blue = 230.0
-        _bg_color.alpha = 1.0
-        self.txtReason.override_background_color(Gtk.StateFlags.NORMAL,
-                                                 _bg_color)
-        self.txtReason.override_background_color(Gtk.StateFlags.ACTIVE,
-                                                 _bg_color)
-        self.txtReason.override_background_color(Gtk.StateFlags.PRELIGHT,
-                                                 _bg_color)
-        self.txtReason.override_background_color(Gtk.StateFlags.SELECTED,
-                                                 _bg_color)
-        self.txtReason.override_background_color(Gtk.StateFlags.INSENSITIVE,
-                                                 _bg_color)
+
+    def _do_clear_page(self) -> None:
+        """
+        Clear the contents of the page.
+
+        This method is only required to satisfy the RAMSTKWorkView base
+        class message listener requirement.  When we close a RAMSTK program
+        database, any component-specific workviews will be removed from
+        their containers which effectively clears their contents.
+
+        :return: None
+        :rtype: None
+        """
 
     def _do_load_derating_curve(self, attributes: Dict[str, Any]) -> None:
         """

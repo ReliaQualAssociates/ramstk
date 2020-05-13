@@ -16,6 +16,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
 
@@ -230,14 +231,17 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Equivalent Series Resistance (\u03A9):")
     ]
 
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'capacitor') -> None:
         """
         Initialize an instance of the Capacitor assessment input view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super().__init__(configuration)
+        super().__init__(configuration, logger, module=module)
 
         # Initialize private dictionary attributes.
 
@@ -266,6 +270,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
         self.__set_properties()
         self.__set_callbacks()
+        self.make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
@@ -451,7 +456,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """
-        Load the specification RKTComboBox().
+        Load the capacitor assessment input RAMSTKComboBox()s.
 
         Per requirement 304.3, this method is public.
 
@@ -506,14 +511,17 @@ class AssessmentResults(RAMSTKAssessmentResults):
     :ivar txtPiCF: displays the configuration factor for the capacitor.
     :ivar txtPiC: displays the construction factor for the capacitor.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'capacitor') -> None:
         """
         Initialize an instance of the Capacitor assessment result view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super().__init__(configuration)
+        super().__init__(configuration, logger, module=module)
 
         # Initialize private dictionary attributes.
         self._dic_part_stress: Dict[int, str] = {
@@ -578,6 +586,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._lst_widgets.append(self.txtPiC)
 
         self.__set_properties()
+        self.make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')

@@ -683,9 +683,8 @@ class RAMSTKBaseView(Gtk.HBox):
         entry.handler_unblock(self._lst_handler_id[index])
 
         pub.sendMessage(message,
-                        module_id=module_id,
-                        key=_key,
-                        value=_new_text)
+                        node_id=module_id,
+                        package={_key: _new_text})
 
     def on_insert(self, data: Any) -> None:
         """
@@ -1165,7 +1164,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
             (_x_pos, _lst_labels) = do_make_label_group2(
                 self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
             for _idx, _label in enumerate(_lst_labels):
-                _minimum = self._lst_widgets[
+                _minimum: Gtk.Requisition = self._lst_widgets[
                     _idx + _index_start].get_preferred_size()[0]
                 if _minimum.height == 0:
                     _minimum.height = self._lst_widgets[_idx

@@ -12,6 +12,7 @@ class RAMSTKEntry(Gtk.Entry):
     def do_set_properties(self, **kwargs: Any) -> None: ...
     def do_update(self, value: str, handler_id: int) -> None: ...
 
+    # The following methods are inherited from the Gtk.Entry() base class.
     def set_text(self, param):
         pass
 
@@ -43,6 +44,7 @@ class RAMSTKTextView(Gtk.TextView):
     def do_set_properties(self, **kwargs: Any) -> None: ...
     def do_update(self, value: str, handler_id: int) -> None: ...
 
+    # The following methods are inherited from the Gtk.Entry() base class.
     def set_property(self, param, _tooltip):
         pass
 
