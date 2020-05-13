@@ -684,19 +684,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError as _error:
-            _new_text = 0
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        _package = super().on_combo_changed(combo, index)
+        _new_text = list(_package.values())[0]
 
         if index == 2:
             pub.sendMessage('changed_category', category_id=_new_text)
@@ -713,14 +702,15 @@ class GeneralData(RAMSTKWorkView):
 
         pub.sendMessage('wvw_editing_hardware',
                         node_id=[self._record_id, -1],
-                        package={_key: _new_text})
+                        package=_package)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
+    # pylint: disable=unused-argument
     def _on_focus_out(
             self,
             entry: Gtk.Entry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            __event: Gdk.EventFocus,
             index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
@@ -1527,26 +1517,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError as _error:
-            # TODO: Raise warning dialogs per convention 308.1.
-            #
-            #  Do this for all workviews.
-            #
-            #  Warning dialogs for exceptions potentially resulting from user
-            #  error per convention 308.1 need to be implemented in all views.
-            #  See issue #308.
-            _new_text = 0
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        _package = super().on_combo_changed(combo, index)
+        _new_text = list(_package.values())[0]
 
         # Hazard rate types are:
         #     1 = Assessed
@@ -1568,7 +1540,7 @@ class AssessmentInputs(RAMSTKWorkView):
             try:
                 pub.sendMessage('wvw_editing_hardware',
                                 node_id=[self._record_id, -1],
-                                package={_key: _new_text})
+                                package=_package)
             except KeyError as _error:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 

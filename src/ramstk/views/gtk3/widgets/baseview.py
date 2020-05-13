@@ -25,6 +25,7 @@ from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 
 # RAMSTK Local Imports
 from .button import RAMSTKCheckButton, do_make_buttonbox
+from .combo import RAMSTKComboBox
 from .dialog import RAMSTKMessageDialog
 from .entry import RAMSTKTextView
 from .frame import RAMSTKFrame
@@ -1206,6 +1207,46 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _fixed.put(self.txtName, _x_pos, _y_pos[1])
 
         return _x_pos, _y_pos, _fixed
+
+    def on_combo_changed(self,
+                         combo: RAMSTKComboBox,
+                         index: int) -> Dict[str, int]:
+        """
+        Retrieve RAMSTKCombo() changes and return to the child class.
+
+        This method is called by the child class instance _on_combo_changed()
+        methods.
+
+        :param combo: the RAMSTKComboBox() that called the child method.
+        :type combo: :class:`ramstk.views.widgets.RAMSTKComboBox`
+        :param int index: the position in the child class Gtk.TreeModel()
+            associated with the data from the calling RAMSTKComboBox().
+        :return: {_key: _new_text}; the child module attribute name and the
+        index of the newly selected RAMSTKComboBox() item.
+        :rtype: dict
+        """
+        try:
+            _key: str = self._dic_keys[index]
+        except KeyError as _error:
+            # TODO: Raise warning dialogs per convention 308.1.
+            #
+            #  Do this for all workviews.
+            #
+            #  Warning dialogs for exceptions potentially resulting from user
+            #  error per convention 308.1 need to be implemented in all views.
+            #  See issue #308.
+            _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        combo.handler_block(self._lst_handler_id[index])
+
+        try:
+            _new_text: int = int(combo.get_active())
+        except ValueError as _error:
+            _new_text = 0
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        return {_key: _new_text}
 
     def on_edit(self, node_id: List, package: Dict[str, Any]) -> None:
         """
