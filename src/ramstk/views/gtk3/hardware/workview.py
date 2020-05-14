@@ -29,7 +29,9 @@ from ramstk.views.gtk3.widgets import (
 )
 
 # RAMSTK Local Imports
-from .components import RAMSTKStressInputs, RAMSTKStressResults, capacitor
+from .components import (
+    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection
+)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -925,7 +927,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
-            # 8: wvwConnectionAI(self.RAMSTK_CONFIGURATION),
+            8: connection.AssessmentInputs(configuration, logger),
             # 9: wvwMeterAI(self.RAMSTK_CONFIGURATION),
             # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION)
         }
@@ -1552,10 +1554,7 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        #// TODO: Use parent RAMSTKBaseView on_focus_out() for all workviews.
-        #//
-        #// The on_focus_out() method in the RAMSTKBaseView() should be
-        #// utilized whenever possible for all RAMSTK workflow modules.
+        # See issue #309.
         super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -1669,7 +1668,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 5: wvwInductorAR(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
-            # 8: wvwConnectionAR(self.RAMSTK_CONFIGURATION),
+            8: connection.AssessmentResults(configuration, logger),
             # 9: wvwMeterAR(self.RAMSTK_CONFIGURATION),
             # 10: wvwMiscellaneousAR(self.RAMSTK_CONFIGURATION)
         }

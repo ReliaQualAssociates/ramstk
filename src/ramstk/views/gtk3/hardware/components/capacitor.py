@@ -669,8 +669,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        # TODO: Update all read-only widgets once the widget class has been
-        #  updated to comply with requirement 305.9.  See issue #305.
+        # TODO: See issue #305.
         self.txtPiCV.set_text(str(self.fmt.format(attributes['piCV'])))
         self.txtPiCF.set_text(str(self.fmt.format(attributes['piCF'])))
         self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
