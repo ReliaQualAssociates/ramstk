@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 from math import exp
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -187,11 +187,9 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
     """
-    return get_part_count_lambda_b(
-        attributes['subcategory_id'],
-        attributes['environment_active_id'],
-        attributes['specification_id'],
-    )
+    return get_part_count_lambda_b(attributes['subcategory_id'],
+                                   attributes['environment_active_id'],
+                                   attributes['specification_id'])
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -207,25 +205,25 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     attributes['lambda_b'] = calculate_part_stress_lambda_b(
         attributes['subcategory_id'], attributes['temperature_rated_max'],
         attributes['temperature_active'], attributes['voltage_ratio'])
-    attributes['piC'] = get_construction_factor(attributes['construction_id'])
-    attributes['piCF'] = get_configuration_factor(
-        attributes['configuration_id'])
     attributes['piCV'] = calculate_capacitance_factor(
         attributes['subcategory_id'], attributes['capacitance'])
-    attributes['piSR'] = calculate_series_resistance_factor(
-        attributes['resistance'], attributes['voltage_dc_operating'],
-        attributes['voltage_ac_operating'])
 
     attributes['hazard_rate_active'] = (attributes['lambda_b']
                                         * attributes['piQ'] * attributes['piE']
                                         * attributes['piCV'])
     if attributes['subcategory_id'] == 12:
+        attributes['piSR'] = calculate_series_resistance_factor(
+            attributes['resistance'], attributes['voltage_dc_operating'],
+            attributes['voltage_ac_operating'])
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piSR'])
     elif attributes['subcategory_id'] == 13:
+        attributes['piC'] = get_construction_factor(attributes['construction_id'])
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piC'])
     elif attributes['subcategory_id'] == 19:
+        attributes['piCF'] = get_configuration_factor(
+            attributes['configuration_id'])
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piCF']
                                             / attributes['piCV'])
@@ -270,7 +268,7 @@ def calculate_part_stress_lambda_b(subcategory_id: int,
         16: [0.00224, 0.17, 3.0, 1.59, 10.1],
         17: [7.3E-7, 0.33, 3.0, 12.1, 1.0],
         18: [1.92E-6, 0.33, 3.0, 10.8, 1.0],
-        19: [0.0112, 0.17, 3.0, 1.59, 10.1],
+        19: [0.0112, 0.17, 3.0, 1.59, 10.1]
     }
 
     _ref_temp = REF_TEMPS[temperature_rated_max]
@@ -279,8 +277,8 @@ def calculate_part_stress_lambda_b(subcategory_id: int,
     _f2 = _dic_factors[subcategory_id][2]
     _f3 = _dic_factors[subcategory_id][3]
     _f4 = _dic_factors[subcategory_id][4]
-    _lambda_b = _f0 * ((voltage_ratio / _f1)**_f2 + 1.0) * exp(
-        _f3 * ((temperature_active + 273.0) / _ref_temp)**_f4, )
+    _lambda_b = _f0 * ((voltage_ratio / _f1)**_f2 + 1.0) * exp(_f3 * (
+        (temperature_active + 273.0) / _ref_temp)**_f4)
 
     return _lambda_b
 
@@ -346,7 +344,7 @@ def get_construction_factor(construction_id: int) -> float:
 
 def get_part_count_lambda_b(subcategory_id: int,
                             environment_active_id: int,
-                            specification_id: int = -1) -> List[float]:
+                            specification_id: int = -1) -> float:
     r"""
     Retrieves the MIL-HDBK-217F parts count base hazard rate (lambda b).
 
@@ -356,29 +354,29 @@ def get_part_count_lambda_b(subcategory_id: int,
         #. subcategory_id
         #. environment_active_id
         #. specification id; if the capacitor subcategory is NOT specification
-            dependent, then pass -1 for the specification ID key.
+           dependent, then pass -1 for the specification ID key.
 
     Subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |           Capacitor \         | MIL-HDBK-217F \ |
-    |       ID       |             Style             |    Section      |
+    | Subcategory ID |         Capacitor Style       | MIL-HDBK-217F   |
+    |                |                               | Section         |
     +================+===============================+=================+
     |        1       | Fixed, Paper, Bypass (CA, CP) |       10.1      |
     +----------------+-------------------------------+-----------------+
     |        2       | Fixed, Feed-Through (CZ, CZR) |       10.2      |
     +----------------+-------------------------------+-----------------+
-    |        3       | Fixed, Paper and Plastic \    |       10.3      |
+    |        3       | Fixed, Paper and Plastic      |       10.3      |
     |                | Film (CPV, CQ, CQR)           |                 |
     +----------------+-------------------------------+-----------------+
-    |        4       | Fixed, Metallized Paper, \    |       10.4      |
-    |                | Paper-Plastic and Plastic \   |                 |
+    |        4       | Fixed, Metallized Paper,      |       10.4      |
+    |                | Paper-Plastic and Plastic     |                 |
     |                | (CH, CHR)                     |                 |
     +----------------+-------------------------------+-----------------+
-    |        5       | Fixed, Plastic and \          |       10.5      |
+    |        5       | Fixed, Plastic and            |       10.5      |
     |                | Metallized Plastic (CFR)      |                 |
     +----------------+-------------------------------+-----------------+
-    |        6       | Fixed, Super-Metallized \     |       10.6      |
+    |        6       | Fixed, Super-Metallized       |       10.6      |
     |                | Plastic (CRH)                 |                 |
     +----------------+-------------------------------+-----------------+
     |        7       | Fixed, Mica (CM, CMR)         |       10.7      |
@@ -387,23 +385,23 @@ def get_part_count_lambda_b(subcategory_id: int,
     +----------------+-------------------------------+-----------------+
     |        9       | Fixed, Glass (CY, CYR)        |       10.9      |
     +----------------+-------------------------------+-----------------+
-    |       10       | Fixed, Ceramic, General \     |      10.10      |
+    |       10       | Fixed, Ceramic, General       |      10.10      |
     |                | Purpose (CK, CKR)             |                 |
     +----------------+-------------------------------+-----------------+
-    |       11       | Fixed, Ceramic, Temperature \ |      10.11      |
-    |                | Compensating and Chip \       |                 |
+    |       11       | Fixed, Ceramic, Temperature   |      10.11      |
+    |                | Compensating and Chip         |                 |
     |                | (CC, CCR, CDR)                |                 |
     +----------------+-------------------------------+-----------------+
-    |       12       | Fixed, Electrolytic, \        |      10.12      |
+    |       12       | Fixed, Electrolytic,          |      10.12      |
     |                | Tantalum, Solid (CSR)         |                 |
     +----------------+-------------------------------+-----------------+
-    |       13       | Fixed, Electrolytic, \        |      10.13      |
+    |       13       | Fixed, Electrolytic,          |      10.13      |
     |                | Tantalum, Non-Solid (CL, CLR) |                 |
     +----------------+-------------------------------+-----------------+
-    |       14       | Fixed, Electrolytic, \        |      10.14      |
+    |       14       | Fixed, Electrolytic,          |      10.14      |
     |                | Aluminum (CU, CUR)            |                 |
     +----------------+-------------------------------+-----------------+
-    |       15       | Fixed, Electrolytic (Dry), \  |      10.15      |
+    |       15       | Fixed, Electrolytic (Dry),    |      10.15      |
     |                | Aluminum (CE)                 |                 |
     +----------------+-------------------------------+-----------------+
     |       16       | Variable, Ceramic (CV)        |      10.16      |
@@ -412,7 +410,7 @@ def get_part_count_lambda_b(subcategory_id: int,
     +----------------+-------------------------------+-----------------+
     |       18       | Variable, Air Trimmer (CT)    |      10.18      |
     +----------------+-------------------------------+-----------------+
-    |       19       | Variable and Fixed, Gas or \  |      10.19      |
+    |       19       | Variable and Fixed, Gas or    |      10.19      |
     |                | Vacuum (CG)                   |                 |
     +----------------+-------------------------------+-----------------+
 
@@ -420,17 +418,19 @@ def get_part_count_lambda_b(subcategory_id: int,
     selected from the list depending on the active environment.
 
     :param int subcategory_id: the capacitor subcategory identifier.
-    :keyword int specification_id: the capacitor specification identifier.
+    :param int environment_active_id: the ID of the active (operating)
+        environment.
+    :param int specification_id: the capacitor specification identifier.
         Default is -1.
-    :return: _lst_base_hr; the list of base hazard rates.
-    :rtype: list
+    :return: _base_hr; the MIL-HDBK-217F part count base hazard rate.
+    :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
     """
     if subcategory_id == 1:
         _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][specification_id][
             environment_active_id - 1]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id
-                                                       - 1]
+        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][
+            environment_active_id - 1]
 
     return _base_hr
