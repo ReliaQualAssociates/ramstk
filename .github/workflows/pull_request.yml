@@ -7,17 +7,6 @@ on:
       - master
 
 jobs:
-  generate_changelog:
-    name: Generate a Changelog
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: develop
-      - uses: etcdigital/pull-request-changelog@1.2.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   generate_change_log:
     name: Generate CHANGELOG.md
     runs-on: ubuntu-latest

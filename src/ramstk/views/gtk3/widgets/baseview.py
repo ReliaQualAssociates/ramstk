@@ -10,7 +10,7 @@
 # Standard Library Imports
 import datetime
 import locale
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -612,9 +612,60 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.set_label(_labels[_idx])
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', _callbacks[_idx])
+            _menu_item.connect('activate', _callbacks[_idx],
+                               self.RAMSTK_USER_CONFIGURATION)
             _menu_item.show()
             _menu.append(_menu_item)
+
+    def on_combo_changed(self, combo: RAMSTKComboBox, index: int,
+                         message: str) -> Dict[Union[str, Any], Any]:
+        """
+        Retrieve RAMSTKCombo() changes and return to the child class.
+
+        This method is called by the child class instance _on_combo_changed()
+        methods.  The child class should unblock the RAMSTKComboBox()'s
+        handler.  This is to allow the child class to perform other
+        manipulations of the RAMSTKComboBox that may be needed besides
+        simply reading it's contents (which is the most likely user-case).
+
+        :param combo: the RAMSTKComboBox() that called the child method.
+        :type combo: :class:`ramstk.views.widgets.RAMSTKComboBox`
+        :param int index: the position in the child class Gtk.TreeModel()
+            associated with the data from the calling RAMSTKComboBox().
+        :param str message: the PyPubSub message to broadcast.
+        :return: {_key: _new_text}; the child module attribute name and the
+        index of the newly selected RAMSTKComboBox() item.
+        :rtype: dict
+        """
+        try:
+            _key: str = self._dic_keys[index]
+        except KeyError as _error:
+            # TODO: Raise warning dialogs per convention 308.1.
+            #
+            #  Do this for all workviews.
+            #
+            #  Warning dialogs for exceptions potentially resulting from user
+            #  error per convention 308.1 need to be implemented in all views.
+            #  See issue #308.
+            _key = ''
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        combo.handler_block(self._lst_handler_id[index])
+
+        try:
+            _new_text: int = int(combo.get_active())
+        except ValueError as _error:
+            _new_text = 0
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        try:
+            pub.sendMessage(message,
+                            node_id=[self._record_id, -1],
+                            package={_key: _new_text})
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        return {_key: _new_text}
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -637,8 +688,8 @@ class RAMSTKBaseView(Gtk.HBox):
             self.show_all()
 
     # noinspection PyUnboundLocalVariable
-    def on_focus_out(self, entry: Any, index: int, module_id: int,
-                     message: str) -> None:
+    def on_focus_out(self, entry: object, index: int,
+                     message: str) -> Dict[Union[str, Any], Any]:
         """
         Retrieve changes made in RAMSTKEntry() widgets.
 
@@ -647,17 +698,20 @@ class RAMSTKBaseView(Gtk.HBox):
             * RAMSTKEntry() 'changed' signal
             * RAMSTKTextView() 'changed' signal
 
+        The child class calling this method should unblock the signal in
+        case there is anything else the child class needs to do with the
+        RAMSTKEntry() or RAMSTKTextView() that called this method.
+
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
             method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
         :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
         :param int index: the position in the Hardware class Gtk.TreeModel()
             associated with the data from the calling Gtk.Widget().
-        :param int module_id: the ID of the RAMSTK<MODULE> whose entry is being
-            changed.
         :param str message: the PyPubSub message to publish.
-        :return: None
-        :rtype: None
+        :return: {_key: _new_text}; the child module attribute name and the
+        index of the newly changed RAMSTKEntry() or RAMSTKTextView().
+        :rtype: dict
         """
         try:
             _key = self._dic_keys[index]
@@ -681,11 +735,11 @@ class RAMSTKBaseView(Gtk.HBox):
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        entry.handler_unblock(self._lst_handler_id[index])
-
         pub.sendMessage(message,
-                        node_id=module_id,
+                        node_id=[self._record_id, -1],
                         package={_key: _new_text})
+
+        return {_key: _new_text}
 
     def on_insert(self, data: Any) -> None:
         """
@@ -1131,8 +1185,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(do_make_buttonbox(
-            self, **kwargs))
+        _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
     def make_ui(self, **kwargs: Any) -> Tuple[int, List[int], Gtk.Fixed]:
@@ -1208,60 +1261,20 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         return _x_pos, _y_pos, _fixed
 
-    def on_combo_changed(self,
-                         combo: RAMSTKComboBox,
-                         index: int) -> Dict[str, int]:
-        """
-        Retrieve RAMSTKCombo() changes and return to the child class.
-
-        This method is called by the child class instance _on_combo_changed()
-        methods.
-
-        :param combo: the RAMSTKComboBox() that called the child method.
-        :type combo: :class:`ramstk.views.widgets.RAMSTKComboBox`
-        :param int index: the position in the child class Gtk.TreeModel()
-            associated with the data from the calling RAMSTKComboBox().
-        :return: {_key: _new_text}; the child module attribute name and the
-        index of the newly selected RAMSTKComboBox() item.
-        :rtype: dict
-        """
-        try:
-            _key: str = self._dic_keys[index]
-        except KeyError as _error:
-            # TODO: Raise warning dialogs per convention 308.1.
-            #
-            #  Do this for all workviews.
-            #
-            #  Warning dialogs for exceptions potentially resulting from user
-            #  error per convention 308.1 need to be implemented in all views.
-            #  See issue #308.
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text: int = int(combo.get_active())
-        except ValueError as _error:
-            _new_text = 0
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        return {_key: _new_text}
-
-    def on_edit(self, node_id: List, package: Dict[str, Any]) -> None:
+    def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
         """
         Update the Work View Gtk.Widgets() when attributes change.
 
         This method is called whenever an attribute is edited in a different
         view.
 
-        :param int module_id: the ID of the Hardware being edited.  This
+        :param list node_id: the list of IDs of the item being edited.  This
             parameter is required to allow the PyPubSub signals to call this
             method and the request_set_attributes() method in the
             RAMSTKDataController.
-        :param int index: the index in the Hardware attributes list of the
-            attribute that was edited.
-        :param str value: the new text to update the Gtk.Widget() with.
+        :param dict package: the index in the module attributes list of the
+            attribute that was edited and the new text to update the
+            Gtk.Widget() with.
         :return: None
         :rtype: None
         """
@@ -1272,19 +1285,19 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _function(_value, self._lst_handler_id[_id])
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
-                   **kwargs) -> None:
+                   message: str) -> None:
         """
         Common method to respond to work view checkbutton 'toggles'.
 
         :param checkbutton: the Gtk.CheckButton() that was toggled.
-        :param index: the index of the Gtk.CheckButton() in the list handler
-            list.
+        :type checkbutton: :class:`Gtk.CheckButton`
+        :param int index: the index of the Gtk.CheckButton() in the list
+        handler list.
+        :param str message: the PyPubSub message to broadcast.
         :return: None
         """
-        _message = kwargs['message']
-        _keys = kwargs['keys']
         try:
-            _key = _keys[index]
+            _key = self._dic_keys[index]
         except KeyError as _error:
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -1293,6 +1306,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         _new_text = int(checkbutton.get_active())
 
-        pub.sendMessage(_message,
+        pub.sendMessage(message,
                         node_id=[self._record_id, -1, ''],
                         package={_key: _new_text})

@@ -17,7 +17,7 @@ from pubsub import pub
 # noinspection PyPackageRequirements
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import _
+from ramstk.views.gtk3 import Gdk, _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
 
 # RAMSTK Local Imports
@@ -297,10 +297,10 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self._lst_handler_id.append(
             self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
         self._lst_handler_id.append(
-            self.txtCapacitance.connect('focus-out-event', self.on_focus_out,
+            self.txtCapacitance.connect('focus-out-event', self._on_focus_out,
                                         5))
         self._lst_handler_id.append(
-            self.txtESR.connect('focus-out-event', self.on_focus_out, 6))
+            self.txtESR.connect('focus-out-event', self._on_focus_out, 6))
 
     def __set_properties(self) -> None:
         """
@@ -439,21 +439,55 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        super().on_combo_changed(combo, index)
+        super().on_combo_changed(combo, index, 'wvw_editing_component')
 
         # If the capacitor specification changed, load the capacitor style
         # RAMSTKComboBox().
         if index == 1:
             try:
                 if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
-                    _index = int(combo.get_active()) - 1
-                    _data = self._dic_styles[self._subcategory_id][_index]
+                    _idx = int(combo.get_active()) - 1
+                    _data = self._dic_styles[self._subcategory_id][_idx]
                 else:
                     _data = self._dic_styles[self._subcategory_id]
             except KeyError:
                 _data = []
             self.cmbStyle.do_load_combo(_data,
                                         handler_id=self._lst_handler_id[2])
+
+        combo.handler_unblock(self._lst_handler_id[index])
+
+    def _on_focus_out(
+            self,
+            entry: object,
+            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
+            index: int) -> None:
+        """
+        Retrieve changes made in RAMSTKEntry() widgets.
+
+        This method is called by:
+
+            * RAMSTKEntry() 'on-focus-out' signal
+            * RAMSTKTextView() 'changed' signal
+
+        :param object entry: the RAMSTKEntry() or RAMSTKTextView() that
+            called this method.
+        :param __event: the Gdk.EventFocus that triggered the signal.
+        :type __event: :class:`Gdk.EventFocus`
+        :param int index: the position in the Hardware class Gtk.TreeModel()
+            associated with the data from the calling Gtk.Widget().  Indices
+            are:
+
+            +-------+------------------------+-------+-------------------+
+            | Index | Widget                 | Index | Widget            |
+            +=======+========================+=======+===================+
+            |   5   | txtCapacitance         |   6   | txtESR            |
+            +-------+------------------------+-------+-------------------+
+
+        :return: None
+        :rtype: None
+        """
+        super().on_focus_out(entry, index, 'wvw_editing_component')
 
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """
@@ -652,7 +686,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_set_sensitive()
 
-        if self._hazard_rate_method_id == 1:    # MIL-HDBK-217F, Parts Count
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
             self.txtPiCV.set_sensitive(False)
             self.txtPiCF.set_sensitive(False)
             self.txtPiC.set_sensitive(False)

@@ -684,7 +684,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = super().on_combo_changed(combo, index)
+        _package = super().on_combo_changed(combo, index,
+                                            'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
         if index == 2:
@@ -700,18 +701,11 @@ class GeneralData(RAMSTKWorkView):
         elif index == 5:
             pub.sendMessage('changed_subcategory', subcategory_id=_new_text)
 
-        pub.sendMessage('wvw_editing_hardware',
-                        node_id=[self._record_id, -1],
-                        package=_package)
-
         combo.handler_unblock(self._lst_handler_id[index])
 
     # pylint: disable=unused-argument
-    def _on_focus_out(
-            self,
-            entry: Gtk.Entry,
-            __event: Gdk.EventFocus,
-            index: int) -> None:
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -731,31 +725,24 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        entry.handler_block(self._lst_handler_id[index])
+        _package = super().on_focus_out(entry, index, 'wvw_editing_hardware')
+        [[_key, _new_text]] = _package.items()
 
         try:
             if index == 7:
-                _new_text = self.txtAttachments.do_get_text()
+                _package[_key] = self.txtAttachments.do_get_text()
             elif index == 10:
                 # Removes the currency symbol from the beginning of the
                 # string.
-                _new_text: Any = float(str(entry.get_text())[1:])
+                _package[_key] = float(str(entry.get_text())[1:])
             elif index == 11:
-                _new_text = self.txtDescription.do_get_text()
+                _package[_key] = self.txtDescription.do_get_text()
             elif index == 20:
-                _new_text = self.txtRemarks.do_get_text()
+                _package[_key] = self.txtRemarks.do_get_text()
             elif index in [18, 22]:
-                _new_text = int(entry.get_text())
-            else:
-                _new_text = str(entry.get_text())
+                _package[_key] = int(entry.get_text())
         except ValueError as _error:
-            _new_text = ''
+            _package[_key] = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage('wvw_editing_hardware',
@@ -776,8 +763,7 @@ class GeneralData(RAMSTKWorkView):
         """
         super().on_toggled(checkbutton,
                            index,
-                           message='wvw_editing_hardware',
-                           keys=self._dic_keys)
+                           'wvw_editing_hardware')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 
@@ -1521,7 +1507,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = super().on_combo_changed(combo, index)
+        _package = super().on_combo_changed(combo, index,
+                                            'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
         # Hazard rate types are:
@@ -1538,15 +1525,6 @@ class AssessmentInputs(RAMSTKWorkView):
         elif index == 4:
             pub.sendMessage('changed_hazard_rate_method', method_id=_new_text)
             self._hazard_rate_method_id = _new_text
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            try:
-                pub.sendMessage('wvw_editing_hardware',
-                                node_id=[self._record_id, -1],
-                                package=_package)
-            except KeyError as _error:
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -1574,26 +1552,11 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text: Any = float(entry.get_text())
-        except ValueError as _error:
-            _new_text = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        try:
-            pub.sendMessage('wvw_editing_hardware',
-                            node_id=[self._record_id, -1],
-                            package={_key: _new_text})
-        except KeyError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        #// TODO: Use parent RAMSTKBaseView on_focus_out() for all workviews.
+        #//
+        #// The on_focus_out() method in the RAMSTKBaseView() should be
+        #// utilized whenever possible for all RAMSTK workflow modules.
+        super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
         entry.handler_unblock(self._lst_handler_id[index])
 

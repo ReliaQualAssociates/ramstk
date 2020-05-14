@@ -157,94 +157,6 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
 
         self.show_all()
 
-    def on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
-        """
-        Retrieve RAMSTKCombo() changes and assign to Component attribute.
-
-        This method is called by:
-
-            * RAMSTKComboBox() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-            with the calling RAMSTKComboBox().
-        :return: None
-        :rtype: None
-        """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            try:
-                pub.sendMessage('wvw_editing_component',
-                                node_id=[self._record_id, -1],
-                                package={_key: _new_text})
-            except KeyError:
-                pass
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-    # pylint: disable=unused-argument
-    # pylint: disable=arguments-differ
-    def on_focus_out(
-            self,
-            entry: Gtk.Entry,
-            __event: Gdk.EventFocus,
-            index: int) -> None:
-        """
-        Retrieve changes made in RAMSTKEntry() widgets.
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-            method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-            :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param __event: the Gdk.EventFocus that triggered the signal.
-        :type __event: :class:`Gdk.EventFocus`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-            associated with the data from the calling Gtk.Widget().
-        :return: None
-        :rtype: None
-        """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text: Any = int(entry.get_text())
-        except ValueError:
-            try:
-                _new_text = float(entry.get_text())
-            except ValueError:
-                try:
-                    _new_text = str(entry.get_text())
-                except ValueError:
-                    _new_text = None
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        pub.sendMessage('wvw_editing_component',
-                        node_id=[self._record_id, -1],
-                        package={_key: _new_text})
-
 
 class RAMSTKStressInputs(RAMSTKWorkView):
     """
@@ -567,7 +479,7 @@ class RAMSTKStressInputs(RAMSTKWorkView):
             __event: Gdk.EventFocus,  # pylint: disable=unused-argument
             index: int) -> None:
         """
-        Retrieve changes made in RAMSTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets.
 
         This method is called by:
 
@@ -601,23 +513,7 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        pub.sendMessage('wvw_editing_component',
-                        node_id=[self._record_id, -1],
-                        package={_key: _new_text})
+        super().on_focus_out(entry, index, 'wvw_editing_component')
 
 
 class RAMSTKAssessmentResults(RAMSTKWorkView):
