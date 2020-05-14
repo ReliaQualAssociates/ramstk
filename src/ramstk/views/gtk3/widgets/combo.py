@@ -27,7 +27,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
         """
         GObject.GObject.__init__(self)
 
-        self._index = index
+        self._index: int = index
 
         if not simple:
             _list = Gtk.ListStore()
@@ -66,7 +66,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
     # noinspection PyIncorrectDocstring
     def do_load_combo(self, entries: List[List[str]],
-                      simple: bool = True) -> None:
+                      simple: bool = True, **kwargs) -> None:
         """
         Load RAMSTK ComboBox widgets.
 
@@ -87,6 +87,14 @@ class RAMSTKComboBox(Gtk.ComboBox):
         :rtype: None
         :raise: TypeError if attempting to load other than string values.
         """
+        # TODO: Remove this try block when requirements 305.7 and 305.8 are
+        #  implemented in the RAMSTKComboBox.
+        try:
+            _handler_id = kwargs['handler_id']
+            self.handler_block(_handler_id)
+        except KeyError:
+            _handler_id = -1
+
         _model = self.get_model()
         _model.clear()
 
@@ -99,7 +107,19 @@ class RAMSTKComboBox(Gtk.ComboBox):
             for __, _entry in enumerate(entries):
                 _model.append([_entry[self._index]])
 
+        if _handler_id > -1:
+            self.handler_unblock(_handler_id)
+
     # noinspection PyIncorrectDocstring
+    #// TODO: add handler_id as an editable widget attribute
+    #//
+    #// Add an attribute to hold the value of the signal handler ID
+    #// associated with RAMSTK widgets that are editable.  This attribute would
+    #// be set in the __set_callbacks() methods in each class.  Use the
+    #// attribute in the RAMSTK widget methods that make changes to the
+    #// contents of the widget.
+    #//
+    #// See requirements 305.7 and 305.8.
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
         Set the properties of the RAMSTK combobox.

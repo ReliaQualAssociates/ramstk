@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import locale
-from typing import Any, Callable, Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -27,6 +27,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
     RAMSTKLabel, RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView
 )
+
+# RAMSTK Local Imports
+from .components import RAMSTKStressInputs, RAMSTKStressResults, capacitor
 
 
 class GeneralData(RAMSTKWorkView):
@@ -201,7 +204,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
         self.txtYearMade: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_switch: Dict[str, List[Callable, int]] = {
+        self._dic_switch: Dict[str, List[Any]] = {
             'category_id': [self.cmbCategory.do_update, 2],
             'cost_type_id': [self.cmbCostType.do_update, 3],
             'manufacturer_id': [self.cmbManufacturer.do_update, 4],
@@ -323,7 +326,7 @@ class GeneralData(RAMSTKWorkView):
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Purchasing Information"))
         _frame.add(_scrollwindow)
-        _vpaned.pack1(_frame, True)
+        _vpaned.pack1(_frame, True, True)
 
         # Make the bottom right side of the page.
         (__, __, _fixed) = super().make_ui(start=20)
@@ -598,6 +601,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self.cmbSubcategory.handler_block(self._lst_handler_id[5])
         _model = self.cmbSubcategory.get_model()
         _model.clear()
 
@@ -607,8 +611,9 @@ class GeneralData(RAMSTKWorkView):
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
-
             self.cmbSubcategory.do_load_combo(_data)
+
+        self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """
@@ -679,17 +684,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
+        _package = super().on_combo_changed(combo, index,
+                                            'wvw_editing_hardware')
+        _new_text = list(_package.values())[0]
 
         if index == 2:
             pub.sendMessage('changed_category', category_id=_new_text)
@@ -704,17 +701,11 @@ class GeneralData(RAMSTKWorkView):
         elif index == 5:
             pub.sendMessage('changed_subcategory', subcategory_id=_new_text)
 
-        pub.sendMessage('wvw_editing_hardware',
-                        node_id=[self._record_id, -1],
-                        package={_key: _new_text})
-
         combo.handler_unblock(self._lst_handler_id[index])
 
-    def _on_focus_out(
-            self,
-            entry: Gtk.Entry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
+    # pylint: disable=unused-argument
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -734,27 +725,24 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        entry.handler_block(self._lst_handler_id[index])
+        _package = super().on_focus_out(entry, index, 'wvw_editing_hardware')
+        [[_key, _new_text]] = _package.items()
 
         try:
-            if index == 10:
+            if index == 7:
+                _package[_key] = self.txtAttachments.do_get_text()
+            elif index == 10:
                 # Removes the currency symbol from the beginning of the
                 # string.
-                _new_text: Any = float(str(entry.get_text())[1:])
-            elif index in [7, 11, 20]:
-                _new_text = str(entry.get_text(*entry.get_bounds(), True))
+                _package[_key] = float(str(entry.get_text())[1:])
+            elif index == 11:
+                _package[_key] = self.txtDescription.do_get_text()
+            elif index == 20:
+                _package[_key] = self.txtRemarks.do_get_text()
             elif index in [18, 22]:
-                _new_text = int(entry.get_text())
-            else:
-                _new_text = str(entry.get_text())
+                _package[_key] = int(entry.get_text())
         except ValueError as _error:
-            _new_text = ''
+            _package[_key] = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage('wvw_editing_hardware',
@@ -775,8 +763,7 @@ class GeneralData(RAMSTKWorkView):
         """
         super().on_toggled(checkbutton,
                            index,
-                           message='wvw_editing_hardware',
-                           keys=self._dic_keys)
+                           'wvw_editing_hardware')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 
@@ -920,7 +907,7 @@ class AssessmentInputs(RAMSTKWorkView):
         Initialize an instance of the Hardware assessment input view.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :type configuration: :class:`ramstk.Configuration.RAMSTKUserConfiguration`
         """
         super().__init__(configuration, logger, module)
 
@@ -930,17 +917,17 @@ class AssessmentInputs(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_assessment_input = {
+        self._dic_assessment_input: Dict[int, object] = {
             # 1: wvwIntegratedCircuitAI(self.RAMSTK_CONFIGURATION),
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
-            # 4: wvwCapacitorAI(self.RAMSTK_CONFIGURATION),
+            4: capacitor.AssessmentInputs(configuration, logger),
             # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
             # 8: wvwConnectionAI(self.RAMSTK_CONFIGURATION),
             # 9: wvwMeterAI(self.RAMSTK_CONFIGURATION),
-            # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION),
+            # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION)
         }
 
         # Initialize private list attributes.
@@ -954,28 +941,31 @@ class AssessmentInputs(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbActiveEnviron = RAMSTKComboBox()
-        self.cmbDormantEnviron = RAMSTKComboBox()
-        self.cmbFailureDist = RAMSTKComboBox()
-        self.cmbHRType = RAMSTKComboBox()
-        self.cmbHRMethod = RAMSTKComboBox()
+        self.cmbActiveEnviron: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbDormantEnviron: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbFailureDist: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbHRType: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbHRMethod: RAMSTKComboBox = RAMSTKComboBox()
 
-        self.scwDesignRatings = RAMSTKScrolledWindow(None)
-        self.scwOperatingStress = RAMSTKScrolledWindow(None)
+        self.scwDesignRatings: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
+            None)
 
-        self.txtActiveTemp = RAMSTKEntry()
-        self.txtAddAdjFactor = RAMSTKEntry()
-        self.txtDormantTemp = RAMSTKEntry()
-        self.txtDutyCycle = RAMSTKEntry()
-        self.txtFailScale = RAMSTKEntry()
-        self.txtFailShape = RAMSTKEntry()
-        self.txtFailLocation = RAMSTKEntry()
-        self.txtMissionTime = RAMSTKEntry()
-        self.txtMultAdjFactor = RAMSTKEntry()
-        self.txtSpecifiedHt = RAMSTKEntry()
-        self.txtSpecifiedHtVar = RAMSTKEntry()
-        self.txtSpecifiedMTBF = RAMSTKEntry()
-        self.txtSpecifiedMTBFVar = RAMSTKEntry()
+        self.txtActiveTemp: RAMSTKEntry = RAMSTKEntry()
+        self.txtAddAdjFactor: RAMSTKEntry = RAMSTKEntry()
+        self.txtDormantTemp: RAMSTKEntry = RAMSTKEntry()
+        self.txtDutyCycle: RAMSTKEntry = RAMSTKEntry()
+        self.txtFailScale: RAMSTKEntry = RAMSTKEntry()
+        self.txtFailShape: RAMSTKEntry = RAMSTKEntry()
+        self.txtFailLocation: RAMSTKEntry = RAMSTKEntry()
+        self.txtMissionTime: RAMSTKEntry = RAMSTKEntry()
+        self.txtMultAdjFactor: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedHt: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedHtVar: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedMTBF: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecifiedMTBFVar: RAMSTKEntry = RAMSTKEntry()
+
+        self.wvwOperatingStress: RAMSTKStressInputs = RAMSTKStressInputs(
+            configuration, logger)
 
         self._lst_widgets = [
             self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
@@ -1011,7 +1001,7 @@ class AssessmentInputs(RAMSTKWorkView):
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
 
-    def __load_combobox(self):
+    def __load_combobox(self) -> None:
         """
         Load the RAMSTK ComboBox widgets with lists of information.
 
@@ -1097,9 +1087,10 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
         # container for component-specific design attributes.
+        _scrollwindow = RAMSTKScrolledWindow(self.wvwOperatingStress)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Operating Stresses"))
-        _frame.add(self.scwOperatingStress)
+        _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
 
         # Set the tab label.
@@ -1114,7 +1105,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         self.show_all()
 
-    def __set_callbacks(self):
+    def __set_callbacks(self) -> None:
         """
         Set the callback methods and functions.
 
@@ -1174,7 +1165,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtMissionTime.connect('focus-out-event', self._on_focus_out,
                                         17))
 
-    def __set_properties(self):
+    def __set_properties(self) -> None:
         """
         Set the properties of the General Data Work View and widgets.
 
@@ -1243,7 +1234,7 @@ class AssessmentInputs(RAMSTKWorkView):
             tooltip=_("The variance of the stated mean time between failure "
                       "(MTBF)."))
 
-    def _do_clear_page(self):
+    def _do_clear_page(self) -> None:
         """
         Clear the contents of the page.
 
@@ -1253,9 +1244,6 @@ class AssessmentInputs(RAMSTKWorkView):
         # Clear the component-specific Gtk.ScrolledWindow()s.
         for _child in self.scwDesignRatings.get_children():
             self.scwDesignRatings.remove(_child)
-
-        for _child in self.scwOperatingStress.get_children():
-            self.scwOperatingStress.remove(_child)
 
         self.cmbActiveEnviron.do_update(0, self._lst_handler_id[0])
         self.cmbDormantEnviron.do_update(0, self._lst_handler_id[1])
@@ -1300,36 +1288,30 @@ class AssessmentInputs(RAMSTKWorkView):
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
         # Retrieve the appropriate component-specific work views.
-        # try:
-        #     _component_ai = self._dic_assessment_input[
-        #         attributes['category_id']]
-        # except KeyError:
-        _component_ai = None
-
-        # _component_si = Component.StressInputs(self.RAMSTK_CONFIGURATION)
-        _component_si = None
-
-        # Clear the component-specific Gtk.ScrolledWindow()s if there are
-        # already a component-specific work view objects.
         try:
-            _child = self.scwDesignRatings.get_child().get_children()[0]
-            _child.remove(_child.get_child())
-        except (AttributeError, TypeError):
-            _child = None
+            _component_ai = self._dic_assessment_input[
+                attributes['category_id']]
+        except KeyError as _error:
+            _component_ai = None
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        # Load the component-specific widgets.
-        if _component_ai is not None and _child is not None:
-            _child.add(_component_ai)
-
+        # If there are already a component-specific work view object,
+        # remove them.  Otherwise move along; these aren't the droids we're
+        # looking for.
         try:
-            _child = self.scwOperatingStress.get_child().get_children()[0]
-            _child.remove(_child.get_child())
-        except (AttributeError, TypeError):
-            _child = None
+            self.scwDesignRatings.remove(self.scwDesignRatings.get_child())
+        except TypeError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        if _component_si is not None and _child is not None:
-            _component_si.do_load_page(attributes)
-            _child.add(_component_si)
+        if _component_ai is not None:
+            self.scwDesignRatings.add(_component_ai)
+
+        # Operating stress information is only applicable to components,
+        # not assemblies so we only show the information for components.
+        if attributes['category_id'] > 0:
+            self.wvwOperatingStress.show_all()
+        else:
+            self.wvwOperatingStress.hide()
 
         self.cmbActiveEnviron.do_update(
             int(attributes['environment_active_id']), self._lst_handler_id[0])
@@ -1384,22 +1366,25 @@ class AssessmentInputs(RAMSTKWorkView):
         self._do_set_sensitive(type_id=attributes['hazard_rate_type_id'])
 
         self.scwDesignRatings.show_all()
-        self.scwOperatingStress.show_all()
 
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.
         pub.sendMessage('loaded_hardware_inputs', attributes=attributes)
 
-    def _do_request_calculate_hardware(self, __button):
+    def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """
-        Send request to calculate the selected hardware.
+        Send request to calculate the selected hardware item.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
+        try:
+            pub.sendMessage('request_calculate_hardware',
+                            node_id=self._record_id)
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     # noinspection PyUnusedLocal
     def _do_request_hardware_tree(self, attributes: Dict[str, Any]) -> None:
@@ -1415,7 +1400,7 @@ class AssessmentInputs(RAMSTKWorkView):
         pub.sendMessage('request_get_hardware_tree')
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update(self, __button):
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
         Send request to save the currently selected Hardware item.
 
@@ -1429,7 +1414,7 @@ class AssessmentInputs(RAMSTKWorkView):
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update_all(self, __button):
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
         Send request to save all Hardware items.
 
@@ -1442,7 +1427,7 @@ class AssessmentInputs(RAMSTKWorkView):
         pub.sendMessage('request_update_all_hardware')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _do_set_sensitive(self, **kwargs):
+    def _do_set_sensitive(self, **kwargs: Any) -> None:
         """
         Set certain widgets sensitive or insensitive.
 
@@ -1495,7 +1480,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
 
-    def _on_combo_changed(self, combo, index):
+    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
         Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
 
@@ -1506,8 +1491,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
         :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Entry().  Indices are:
+            associated with the data from the calling Gtk.Entry().  Indices
+            are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -1522,17 +1507,9 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
+        _package = super().on_combo_changed(combo, index,
+                                            'wvw_editing_hardware')
+        _new_text = list(_package.values())[0]
 
         # Hazard rate types are:
         #     1 = Assessed
@@ -1548,15 +1525,6 @@ class AssessmentInputs(RAMSTKWorkView):
         elif index == 4:
             pub.sendMessage('changed_hazard_rate_method', method_id=_new_text)
             self._hazard_rate_method_id = _new_text
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            try:
-                pub.sendMessage('wvw_editing_hardware',
-                                node_id=[self._record_id, -1],
-                                package={_key: _new_text})
-            except KeyError:
-                pass
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -1584,26 +1552,11 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError as _error:
-            _new_text = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        try:
-            pub.sendMessage('wvw_editing_hardware',
-                            node_id=[self._record_id, -1],
-                            package={_key: _new_text})
-        except KeyError:
-            pass
+        #// TODO: Use parent RAMSTKBaseView on_focus_out() for all workviews.
+        #//
+        #// The on_focus_out() method in the RAMSTKBaseView() should be
+        #// utilized whenever possible for all RAMSTK workflow modules.
+        super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -1617,63 +1570,62 @@ class AssessmentResults(RAMSTKWorkView):
     View are:
 
     :cvar list _lst_labels: the text to use for the reliability assessment
-                            results widget labels.
+        results widget labels.
 
     :ivar dict _dic_assessment_results: dictionary of component-specific
-                                        AssessmentResults classes.
+        AssessmentResults classes.
     :ivar int _hardware_id: the ID of the Hardware currently being displayed.
 
     :ivar txtActiveHt: displays the active failure intensity for the selected
-                       hardware item.
+        hardware item.
     :ivar txtActiveHtVar: displays the active failure intensity variance.
     :ivar txtDormantHt: displays the dormant failure intensity for the selected
-                        hardware item.
+        hardware item.
     :ivar txtDormantHtVar: displays the dormant failure intensity variance.
     :ivar txtSoftwareHt: displays the software failure intensity for the
-                         selected hardware item."))
+        selected hardware item."))
     :ivar txtLogisticsHt: displays the logistics failure intensity for the
-                          selected hardware item.  This is the sum of the
-                          active, dormant, and software hazard rates.
+        selected hardware item.  This is the sum of the active, dormant, and
+        software hazard rates.
     :ivar txtLogisticsHtVar: displays the logistics failure intensity variance.
     :ivar txtMissionHt: displays the mission failure intensity for the selected
-                        hardware item.
+        hardware item.
     :ivar txtMissionHtVar: displays the mission failure intensity variance.
     :ivar txtLogisticsMTBF: displays the logistics mean time between failure
-                            (MTBF) for the selected hardware item.
+        (MTBF) for the selected hardware item.
     :ivar txtLogisticsMTBFVar: displays the logistics MTBF variance.
     :ivar txtMissionMTBF: displays the mission mean time between failure (MTBF)
-                          for the selected hardware item.
+        for the selected hardware item.
     :ivar txtMissionMTBFVar: displays the mission MTBF variance.
     :ivar txtLogisticsRt: displays the logistics reliability for the selected
-                          hardware item.
+        hardware item.
     :ivar txtLogisticsRtVar: displays the logistics reliability variance.
     :ivar txtMissionRt: displays the mission reliability for the selected
-                        hardware item.
+        hardware item.
     :ivar txtMissionRtVar: displays the mission reliability variance.
     :ivar txtMPMT: displays the mean preventive maintenance time (MPMT) for the
-                   selected hardware item.
+        selected hardware item.
     :ivar txtMCMT: displays the mean corrective maintenance time (MCMT) for the
-                   selected hardware item.
+        selected hardware item.
     :ivar txtMTTR: displays the mean time to repair (MTTR) for the selected
-                   hardware item.
+        hardware item.
     :ivar txtMMT: displays the mean maintenance time (MMT) for the selected
-                  hardware item.  This includes preventive and corrective
-                  maintenance.
+        hardware item.  This includes preventive and corrective maintenance.
     :ivar txtLogisticsAt: displays the logistics availability for the selected
-                          hardware item.
+        hardware item.
     :ivar txtLogisticsAtVar: displays the logistics availability variance.
     :ivar txtMissionAt: displays the mission availability for the selected
-                        hardware item.
+        hardware item.
     :ivar txtMissionAtVar: displays the mission availability variance.
     :ivar txtPartCount: displays the total part count for the selected hardware
-                        item.
+        item.
     :ivar txtPercentHt: the percentage of the system failure intensity the
-                        selected hardware item represents.
+        selected hardware item represents.
     :ivar txtTotalCost: displays the total cost of the selected hardware item.
     :ivar txtCostFailure: displays the cost per failure of the selected
-                          hardware item.
+        hardware item.
     :ivar txtCostHour: displays the failure cost per mission hour for the
-                       selected hardware item.
+        selected hardware item.
     """
 
     # Define private list attributes.
@@ -1713,7 +1665,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 1: wvwIntegratedCircuitAR(self.RAMSTK_CONFIGURATION),
             # 2: wvwSemiconductorAR(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
-            # 4: wvwCapacitorAR(self.RAMSTK_CONFIGURATION),
+            4: capacitor.AssessmentResults(configuration, logger),
             # 5: wvwInductorAR(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
@@ -1734,7 +1686,6 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.scwReliability: RAMSTKScrolledWindow = RAMSTKScrolledWindow(None)
-        self.scwStress: RAMSTKScrolledWindow = RAMSTKScrolledWindow(None)
 
         self.txtActiveHt: RAMSTKEntry = RAMSTKEntry()
         self.txtActiveHtVar: RAMSTKEntry = RAMSTKEntry()
@@ -1767,19 +1718,17 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtSoftwareHt: RAMSTKEntry = RAMSTKEntry()
         self.txtTotalCost: RAMSTKEntry = RAMSTKEntry()
 
-        self._lst_widgets = [
-            self.txtActiveHt, self.txtActiveHtVar, self.txtDormantHt,
-            self.txtDormantHtVar, self.txtSoftwareHt, self.txtLogisticsHt,
-            self.txtLogisticsHtVar, self.txtMissionHt, self.txtMissionHtVar,
-            self.txtPercentHt, self.txtLogisticsMTBF, self.txtLogisticsMTBFVar,
-            self.txtMissionMTBF, self.txtMissionMTBFVar, self.txtLogisticsRt,
-            self.txtLogisticsRtVar, self.txtMissionRt, self.txtMissionRtVar,
-            self.txtLogisticsAt, self.txtLogisticsAtVar, self.txtMissionAt,
-            self.txtMissionAtVar, self.txtTotalCost, self.txtCostFailure,
-            self.txtCostHour, self.txtPartCount
-        ]
+        self.wvwOperatingStress: RAMSTKStressResults = RAMSTKStressResults(
+            configuration, logger)
 
-        self._dic_switch = {}
+        self._lst_widgets = [
+            self.txtActiveHt, self.txtDormantHt, self.txtSoftwareHt,
+            self.txtLogisticsHt, self.txtMissionHt, self.txtPercentHt,
+            self.txtLogisticsMTBF, self.txtMissionMTBF, self.txtLogisticsRt,
+            self.txtMissionRt, self.txtLogisticsAt, self.txtMissionAt,
+            self.txtTotalCost, self.txtCostFailure, self.txtCostHour,
+            self.txtPartCount
+        ]
 
         self.__set_properties()
         self.__make_ui()
@@ -1788,6 +1737,8 @@ class AssessmentResults(RAMSTKWorkView):
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
+        pub.subscribe(self._do_request_hardware_tree,
+                      'succeed_calculate_hardware')
 
     def __make_ui(self) -> None:
         """
@@ -1832,7 +1783,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        (__, __, _fixed) = super().make_ui(start=0, end=12)
+        (__, __, _fixed) = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1852,7 +1803,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        (__, __, _fixed) = super().make_ui(start=12)
+        (__, __, _fixed) = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1862,9 +1813,10 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
         # container for component-specific design attributes.
+        _scrollwindow = RAMSTKScrolledWindow(self.wvwOperatingStress)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Stress Results"))
-        _frame.add(self.scwStress)
+        _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
 
         # Set the tab label.
@@ -1880,7 +1832,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         self.show_all()
 
-    def __set_properties(self):
+    def __set_properties(self) -> None:
         """
         Set the properties of the General Data Work View and widgets.
 
@@ -2065,7 +2017,7 @@ class AssessmentResults(RAMSTKWorkView):
             tooltip=_("Displays the total cost of the selected hardware "
                       "item."))
 
-    def _do_clear_page(self):
+    def _do_clear_page(self) -> None:
         """
         Clear the contents of the page.
 
@@ -2130,18 +2082,40 @@ class AssessmentResults(RAMSTKWorkView):
             **dmtree.get_node(self._record_id).data['hardware'].get_attributes(
             )
         }
+        attributes = {
+            **attributes,
+            **dmtree.get_node(self._record_id).data['mil_hdbk_217f'].get_attributes(
+            )
+        }
+
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        # Retrieve the appropriate component-specific work views and add them
-        # to the Gtk.ScrolledWindow()s.
-        # try:
-        #    _component_ar = self._dic_assessment_results[
-        #        attributes['category_id']]
-        # except KeyError:
-        _component_ar = None
+        # Retrieve the appropriate component-specific work views.
+        try:
+            _component_ar = self._dic_assessment_results[
+                attributes['category_id']]
+        except KeyError as _error:
+            _component_ar = None
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        # _component_sr = Component.StressResults(self.RAMSTK_USER_CONFIGURATION)
-        _component_sr = None
+        # If there are already a component-specific work view object,
+        # remove them.  Otherwise move along; these aren't the droids we're
+        # looking for.
+        try:
+            self.scwReliability.remove(self.scwReliability.get_child())
+        except TypeError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        if _component_ar is not None:
+            self.scwReliability.add(_component_ar)
+            self.scwReliability.show_all()
+
+        # Operating stress information is only applicable to components,
+        # not assemblies so we only show the information for components.
+        if attributes['category_id'] > 0:
+            self.wvwOperatingStress.show_all()
+        else:
+            self.wvwOperatingStress.hide()
 
         self.txtTotalCost.set_text(
             str(locale.currency(attributes['total_cost'])))
@@ -2201,30 +2175,6 @@ class AssessmentResults(RAMSTKWorkView):
             str(self.fmt.format(attributes['reliability_mission'])))
         self.txtMissionRtVar.set_text(
             str(self.fmt.format(attributes['reliability_miss_variance'])))
-
-        # Clear the component-specific Gtk.ScrolledWindow()s if it already
-        # contains a component-specific work view objects.  Then load the new
-        # component-specific work view object.
-        try:
-            _child = self.scwReliability.get_child().get_children()[0]
-            _child.remove(_child.get_child())
-        except (AttributeError, TypeError):
-            _child = None
-
-        if _component_ar is not None and _child is not None:
-            _child.add(_component_ar)
-
-        try:
-            _child = self.scwStress.get_child().get_children()[0]
-            _child.remove(_child.get_child())
-        except (AttributeError, TypeError):
-            _child = None
-
-        if _component_sr is not None and _child is not None:
-            _child.add(_component_sr)
-
-        self.scwReliability.show_all()
-        self.scwStress.show_all()
 
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.

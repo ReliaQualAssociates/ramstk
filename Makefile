@@ -4,6 +4,8 @@
 # These variables can be passed from the command line when invoking make.
 PREFIX		= /usr/local
 
+GITHUB_USER = ReliaQualAssociates
+TOKEN		=
 CHANGELOG	= CHANGELOG.md
 REPO		= ramstk
 REQFILE		= requirements.txt
@@ -66,14 +68,16 @@ help:
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
 	@echo "	bumpver					bump the minor or patch version of RAMSTK."
-	@echo "	tag					    tag the current branch."
+	@echo "	tag					tag the current branch."
 	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install."
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi. <FUTURE>"
-	@echo " sync					synchronize the local repository with the upstream repository."
+	@echo " sync						synchronize the local repository with the upstream repository."
 	@echo ""
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
 	@echo ""
+	@echo "	GITHUB_USER				set the name of the Github user.  Defaults to $(GITHUB_USER)"
+	@echo "	TOKEN					set the Github API token to use.  Defaults to $(TOKEN)"
 	@echo "	CHANGELOG				set the name of the file for the change log.  Defaults to $(CHANGELOG)"
 	@echo "	REPO					set the name of the GitHub repository to generate the change log from.  Defaults to $(REPO)"
 	@echo "	REQFILE					set the name of the requirements file to write required runtime packages.  Defaults to $(REQFILE)"
