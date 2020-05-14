@@ -490,7 +490,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_specification[_type_id]
             except KeyError:
                 _data = []
-            self.cmbSpecification.do_load_combo(_data)
+            self.cmbSpecification.do_load_combo(
+                _data, handler_id=self._lst_handler_id[2])
 
         # If the connection specification changed, load the insert material
         # RAMSTKComboBox().
@@ -501,7 +502,10 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_insert[_type_id][_spec_id]
             except KeyError:
                 _data = []
-            self.cmbInsert.do_load_combo(_data)
+            self.cmbInsert.do_load_combo(_data,
+                                         handler_id=self._lst_handler_id[3])
+
+        combo.handler_unblock(self._lst_handler_id[index])
 
     def _on_focus_out(
             self,

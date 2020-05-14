@@ -455,10 +455,16 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         [[_key, _value]] = package.items()
 
-        _position = self._lst_col_order[keys[_key]]
+        try:
+            _position = self._lst_col_order[keys[_key]]
 
-        _model, _row = self.treeview.get_selection().get_selected()
-        _model.set(_row, _position, _value)
+            _model, _row = self.treeview.get_selection().get_selected()
+            _model.set(_row, _position, _value)
+        except KeyError as _error:
+            # Not all attributes available on the workview are stored in the
+            # moduleview tree.  We log the error in case the offending
+            # attribute is supposed to be there and then continue.
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def do_request_insert(self, **kwargs: Any) -> None:
         """
@@ -724,16 +730,16 @@ class RAMSTKBaseView(Gtk.HBox):
         try:
             _new_text: Any = int(entry.get_text())
         except ValueError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
             try:
                 _new_text = float(entry.get_text())
             except ValueError as _error:
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
                 try:
                     _new_text = str(entry.get_text())
                 except ValueError as _error:
                     _new_text = None
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage(message,
                         node_id=[self._record_id, -1],
