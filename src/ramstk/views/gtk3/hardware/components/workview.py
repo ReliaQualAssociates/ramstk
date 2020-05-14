@@ -912,6 +912,7 @@ class RAMSTKStressResults(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+        pub.subscribe(self._do_load_page, 'succeed_calculate_hardware')
 
     def __make_ui(self) -> None:
         """
@@ -1052,6 +1053,7 @@ class RAMSTKStressResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+
         self._record_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
 

@@ -273,8 +273,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
         pub.subscribe(self.do_load_comboboxes, 'changed_subcategory')
+
+        pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
 
     def __set_callbacks(self) -> None:
         """
@@ -590,6 +591,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+        pub.subscribe(self._do_load_page, 'succeed_calculate_hardware')
 
     def __set_properties(self) -> None:
         """

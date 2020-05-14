@@ -205,25 +205,25 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     attributes['lambda_b'] = calculate_part_stress_lambda_b(
         attributes['subcategory_id'], attributes['temperature_rated_max'],
         attributes['temperature_active'], attributes['voltage_ratio'])
-    attributes['piC'] = get_construction_factor(attributes['construction_id'])
-    attributes['piCF'] = get_configuration_factor(
-        attributes['configuration_id'])
     attributes['piCV'] = calculate_capacitance_factor(
         attributes['subcategory_id'], attributes['capacitance'])
-    attributes['piSR'] = calculate_series_resistance_factor(
-        attributes['resistance'], attributes['voltage_dc_operating'],
-        attributes['voltage_ac_operating'])
 
     attributes['hazard_rate_active'] = (attributes['lambda_b']
                                         * attributes['piQ'] * attributes['piE']
                                         * attributes['piCV'])
     if attributes['subcategory_id'] == 12:
+        attributes['piSR'] = calculate_series_resistance_factor(
+            attributes['resistance'], attributes['voltage_dc_operating'],
+            attributes['voltage_ac_operating'])
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piSR'])
     elif attributes['subcategory_id'] == 13:
+        attributes['piC'] = get_construction_factor(attributes['construction_id'])
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piC'])
     elif attributes['subcategory_id'] == 19:
+        attributes['piCF'] = get_configuration_factor(
+            attributes['configuration_id'])
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piCF']
                                             / attributes['piCV'])

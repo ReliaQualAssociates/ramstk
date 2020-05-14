@@ -1394,7 +1394,11 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
+        try:
+            pub.sendMessage('request_calculate_hardware',
+                            node_id=self._record_id)
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     # noinspection PyUnusedLocal
     def _do_request_hardware_tree(self, attributes: Dict[str, Any]) -> None:
@@ -1755,15 +1759,12 @@ class AssessmentResults(RAMSTKWorkView):
             configuration, logger)
 
         self._lst_widgets = [
-            self.txtActiveHt, self.txtActiveHtVar, self.txtDormantHt,
-            self.txtDormantHtVar, self.txtSoftwareHt, self.txtLogisticsHt,
-            self.txtLogisticsHtVar, self.txtMissionHt, self.txtMissionHtVar,
-            self.txtPercentHt, self.txtLogisticsMTBF, self.txtLogisticsMTBFVar,
-            self.txtMissionMTBF, self.txtMissionMTBFVar, self.txtLogisticsRt,
-            self.txtLogisticsRtVar, self.txtMissionRt, self.txtMissionRtVar,
-            self.txtLogisticsAt, self.txtLogisticsAtVar, self.txtMissionAt,
-            self.txtMissionAtVar, self.txtTotalCost, self.txtCostFailure,
-            self.txtCostHour, self.txtPartCount
+            self.txtActiveHt, self.txtDormantHt, self.txtSoftwareHt,
+            self.txtLogisticsHt, self.txtMissionHt, self.txtPercentHt,
+            self.txtLogisticsMTBF, self.txtMissionMTBF, self.txtLogisticsRt,
+            self.txtMissionRt, self.txtLogisticsAt, self.txtMissionAt,
+            self.txtTotalCost, self.txtCostFailure, self.txtCostHour,
+            self.txtPartCount
         ]
 
         self.__set_properties()
@@ -1773,6 +1774,8 @@ class AssessmentResults(RAMSTKWorkView):
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
+        pub.subscribe(self._do_request_hardware_tree,
+                      'succeed_calculate_hardware')
 
     def __make_ui(self) -> None:
         """
@@ -1817,7 +1820,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        (__, __, _fixed) = super().make_ui(start=0, end=12)
+        (__, __, _fixed) = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1837,7 +1840,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        (__, __, _fixed) = super().make_ui(start=12)
+        (__, __, _fixed) = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()

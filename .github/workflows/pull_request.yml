@@ -18,6 +18,15 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  generate_change_log:
+    name: Generate CHANGELOG.md
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: charmixer/auto-changelog-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   check_for_changelog:
     name: Ensure CHANGELOG Exists
     runs-on: ubuntu-latest
