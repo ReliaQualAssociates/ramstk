@@ -7,13 +7,40 @@ on:
       - master
 
 jobs:
-  codacy_coverage_reporter:
-    name: Report Coverage to Codacy
+  bandit:
+    name: Check for Security Vulnerabilities
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@master
+      - name: Run bandit against repository
+        uses: jpetrucciani/bandit-check@master
         with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: cobertura.xml
+          path: 'src/ramstk'
+
+  isort-it:
+    name: Lint Code and Style Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Lint files using pylint, pycodestyle, mypy, and isort
+        uses: ricardchaves/python-lint@v1.1.0
+        with:
+          python-root-list: "src/ramstk"
+          use-pylint: true
+          use-pycodestyle: true
+          use-mypy: true
+          use-isort: true
+          extra-pylint-options: "-j0 --rcfile=./.pylintrc"
+          extra-pycodestyle-options: "--statistics --count"
+          extra-mypy-options: ""
+          extra-isort-options: "--use-parentheses --balanced --multi-line 5"
+
+  yapf-it:
+    name: Check Code Formatting with YAPF
+    runs-on: ununtu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run YAPF against changed files
+        uses: AlexanderMelde/yapf-action@master
+        with:
+          args: --exclude '**/tests/**'
