@@ -88,7 +88,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
         :raise: TypeError if attempting to load other than string values.
         """
         # TODO: Remove this try block when requirements 305.7 and 305.8 are
-        #  implemented in the RAMSTKComboBox.
+        #  implemented in the RAMSTKComboBox.  See issue #310.
         try:
             _handler_id = kwargs['handler_id']
             self.handler_block(_handler_id)
@@ -111,15 +111,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
             self.handler_unblock(_handler_id)
 
     # noinspection PyIncorrectDocstring
-    #// TODO: add handler_id as an editable widget attribute
-    #//
-    #// Add an attribute to hold the value of the signal handler ID
-    #// associated with RAMSTK widgets that are editable.  This attribute would
-    #// be set in the __set_callbacks() methods in each class.  Use the
-    #// attribute in the RAMSTK widget methods that make changes to the
-    #// contents of the widget.
-    #//
-    #// See requirements 305.7 and 305.8.
+    # TODO: See issue #310.
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
         Set the properties of the RAMSTK combobox.

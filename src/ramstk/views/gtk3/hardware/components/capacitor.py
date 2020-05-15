@@ -507,6 +507,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[self._subcategory_id]
             except KeyError:
                 _data = []
+
         self.cmbQuality.do_load_combo(_data,
                                       handler_id=self._lst_handler_id[0])
 
@@ -514,20 +515,20 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
             _data = []
+
         self.cmbSpecification.do_load_combo(_data,
                                             handler_id=self._lst_handler_id[1])
+
+        self.cmbStyle.do_load_combo([], handler_id=self._lst_handler_id[2])
+
+        self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]],
+                                            handler_id=self._lst_handler_id[3])
 
         self.cmbConstruction.do_load_combo(
             [[_("Slug, All Tantalum")], [_("Foil, Hermetic")],
              [_("Slug, Hermetic")], [_("Foil, Non-Hermetic")],
              [_("Slug, Non-Hermetic")]],
             handler_id=self._lst_handler_id[4])
-
-        self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]],
-                                            handler_id=self._lst_handler_id[3])
-
-        _model = self.cmbStyle.get_model()
-        _model.clear()
 
 
 class AssessmentResults(RAMSTKAssessmentResults):
@@ -669,8 +670,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        # TODO: Update all read-only widgets once the widget class has been
-        #  updated to comply with requirement 305.9.  See issue #305.
+        # TODO: See issue #305.
         self.txtPiCV.set_text(str(self.fmt.format(attributes['piCV'])))
         self.txtPiCF.set_text(str(self.fmt.format(attributes['piCF'])))
         self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))

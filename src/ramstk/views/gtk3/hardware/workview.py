@@ -29,7 +29,9 @@ from ramstk.views.gtk3.widgets import (
 )
 
 # RAMSTK Local Imports
-from .components import RAMSTKStressInputs, RAMSTKStressResults, capacitor
+from .components import (
+    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection
+)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -601,9 +603,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.cmbSubcategory.handler_block(self._lst_handler_id[5])
-        _model = self.cmbSubcategory.get_model()
-        _model.clear()
+        self.cmbSubcategory.do_load_combo([], handler_id=self._lst_handler_id[5])
 
         if category_id > 0:
             _subcategory = SortedDict(self.RAMSTK_USER_CONFIGURATION.
@@ -611,9 +611,7 @@ class GeneralData(RAMSTKWorkView):
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
-            self.cmbSubcategory.do_load_combo(_data)
-
-        self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
+            self.cmbSubcategory.do_load_combo(_data, handler_id=self._lst_handler_id[5])
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """
@@ -747,7 +745,7 @@ class GeneralData(RAMSTKWorkView):
 
         pub.sendMessage('wvw_editing_hardware',
                         node_id=[self._record_id, -1],
-                        package={_key: _new_text})
+                        package=_package)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -761,9 +759,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().on_toggled(checkbutton,
-                           index,
-                           'wvw_editing_hardware')
+        super().on_toggled(checkbutton, index, 'wvw_editing_hardware')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 
@@ -925,7 +921,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
-            # 8: wvwConnectionAI(self.RAMSTK_CONFIGURATION),
+            8: connection.AssessmentInputs(configuration, logger),
             # 9: wvwMeterAI(self.RAMSTK_CONFIGURATION),
             # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION)
         }
@@ -1287,29 +1283,10 @@ class AssessmentInputs(RAMSTKWorkView):
         }
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        # Retrieve the appropriate component-specific work views.
-        try:
-            _component_ai = self._dic_assessment_input[
-                attributes['category_id']]
-        except KeyError as _error:
-            _component_ai = None
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        # If there are already a component-specific work view object,
-        # remove them.  Otherwise move along; these aren't the droids we're
-        # looking for.
-        try:
-            self.scwDesignRatings.remove(self.scwDesignRatings.get_child())
-        except TypeError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        if _component_ai is not None:
-            self.scwDesignRatings.add(_component_ai)
-
         # Operating stress information is only applicable to components,
         # not assemblies so we only show the information for components.
         if attributes['category_id'] > 0:
-            self.wvwOperatingStress.show_all()
+            self._do_load_component_inputs(attributes)
         else:
             self.wvwOperatingStress.hide()
 
@@ -1371,6 +1348,36 @@ class AssessmentInputs(RAMSTKWorkView):
         # they can load.
         pub.sendMessage('loaded_hardware_inputs', attributes=attributes)
 
+    def _do_load_component_inputs(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets used to display component-specific input attributes.
+
+        :param attributes: dict containing the attributes of the hardware
+            item being loaded.
+        :return: None
+        :rtype: None
+        """
+        # Retrieve the appropriate component-specific work views.
+        try:
+            _component_ai = self._dic_assessment_input[
+                attributes['category_id']]
+        except KeyError as _error:
+            _component_ai = None
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        # If there are already a component-specific work view object,
+        # remove them.  Otherwise move along; these aren't the droids we're
+        # looking for.
+        try:
+            self.scwDesignRatings.remove(self.scwDesignRatings.get_child())
+        except TypeError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        if _component_ai is not None:
+            self.scwDesignRatings.add(_component_ai)
+
+        self.wvwOperatingStress.show_all()
+
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """
         Send request to calculate the selected hardware item.
@@ -1427,6 +1434,82 @@ class AssessmentInputs(RAMSTKWorkView):
         pub.sendMessage('request_update_all_hardware')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
+    def _do_set_assessed_sensitive(self, type_id: int) -> None:
+        """
+        Set the widgets used in handbook assessments sensitive.
+
+        :param int type_id: the hazard rate type (source).
+        :return: None
+        :rtype: None
+        """
+        if type_id == 1:  # Assessed hazard rate using handbook models.
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(True)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+
+    def _do_set_specified_ht_sensitive(self, type_id: int) -> None:
+        """
+        Set the widgets used for specifying a hazard rate sensitive.
+
+        :param int type_id: the hazard rate type (source).
+        :return: None
+        :rtype: None
+        """
+        if type_id == 2:  # User specified hazard rate.
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(True)
+            self.txtSpecifiedHtVar.set_sensitive(True)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+
+    def _do_set_specified_mtbf_sensitive(self, type_id: int) -> None:
+        """
+        Set the widgets used for specifying an MTBF sensitive.
+
+        :param int type_id: the hazard rate type (source).
+        :return: None
+        :rtype: None
+        """
+        if type_id == 3:  # User specified MTBF.
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(True)
+            self.txtSpecifiedMTBFVar.set_sensitive(True)
+
+    def _do_set_specified_distribution_sensitive(self, type_id: int) -> None:
+        """
+        Set the widgets used for specifying a failure distribution sensitive.
+
+        :param int type_id: the hazard rate type (source).
+        :return: None
+        :rtype: None
+        """
+        if type_id == 4:
+            self.cmbFailureDist.set_sensitive(True)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(True)
+            self.txtFailScale.set_sensitive(True)
+            self.txtFailShape.set_sensitive(True)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+
     def _do_set_sensitive(self, **kwargs: Any) -> None:
         """
         Set certain widgets sensitive or insensitive.
@@ -1439,46 +1522,10 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         _type_id = kwargs['type_id']
 
-        if _type_id == 1:  # Assessed hazard rate using handbook models.
-            self.cmbFailureDist.set_sensitive(False)
-            self.cmbHRMethod.set_sensitive(True)
-            self.txtFailLocation.set_sensitive(False)
-            self.txtFailScale.set_sensitive(False)
-            self.txtFailShape.set_sensitive(False)
-            self.txtSpecifiedHt.set_sensitive(False)
-            self.txtSpecifiedHtVar.set_sensitive(False)
-            self.txtSpecifiedMTBF.set_sensitive(False)
-            self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif _type_id == 2:  # User specified hazard rate.
-            self.cmbFailureDist.set_sensitive(False)
-            self.cmbHRMethod.set_sensitive(False)
-            self.txtFailLocation.set_sensitive(False)
-            self.txtFailScale.set_sensitive(False)
-            self.txtFailShape.set_sensitive(False)
-            self.txtSpecifiedHt.set_sensitive(True)
-            self.txtSpecifiedHtVar.set_sensitive(True)
-            self.txtSpecifiedMTBF.set_sensitive(False)
-            self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif _type_id == 3:  # User specified MTBF.
-            self.cmbFailureDist.set_sensitive(False)
-            self.cmbHRMethod.set_sensitive(False)
-            self.txtFailLocation.set_sensitive(False)
-            self.txtFailScale.set_sensitive(False)
-            self.txtFailShape.set_sensitive(False)
-            self.txtSpecifiedHt.set_sensitive(False)
-            self.txtSpecifiedHtVar.set_sensitive(False)
-            self.txtSpecifiedMTBF.set_sensitive(True)
-            self.txtSpecifiedMTBFVar.set_sensitive(True)
-        elif _type_id == 4:  # User specified failure distribution.
-            self.cmbFailureDist.set_sensitive(True)
-            self.cmbHRMethod.set_sensitive(False)
-            self.txtFailLocation.set_sensitive(True)
-            self.txtFailScale.set_sensitive(True)
-            self.txtFailShape.set_sensitive(True)
-            self.txtSpecifiedHt.set_sensitive(False)
-            self.txtSpecifiedHtVar.set_sensitive(False)
-            self.txtSpecifiedMTBF.set_sensitive(False)
-            self.txtSpecifiedMTBFVar.set_sensitive(False)
+        self._do_set_assessed_sensitive(_type_id)
+        self._do_set_specified_ht_sensitive(_type_id)
+        self._do_set_specified_mtbf_sensitive(_type_id)
+        self._do_set_specified_distribution_sensitive(_type_id)
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
@@ -1552,10 +1599,7 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        #// TODO: Use parent RAMSTKBaseView on_focus_out() for all workviews.
-        #//
-        #// The on_focus_out() method in the RAMSTKBaseView() should be
-        #// utilized whenever possible for all RAMSTK workflow modules.
+        # See issue #309.
         super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -1669,7 +1713,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 5: wvwInductorAR(self.RAMSTK_CONFIGURATION),
             # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
-            # 8: wvwConnectionAR(self.RAMSTK_CONFIGURATION),
+            8: connection.AssessmentResults(configuration, logger),
             # 9: wvwMeterAR(self.RAMSTK_CONFIGURATION),
             # 10: wvwMiscellaneousAR(self.RAMSTK_CONFIGURATION)
         }
@@ -1834,188 +1878,126 @@ class AssessmentResults(RAMSTKWorkView):
 
     def __set_properties(self) -> None:
         """
-        Set the properties of the General Data Work View and widgets.
+        Set the properties of the Assessment Results Work View and widgets.
 
         :return: None
         :rtype: None
         """
-        self.txtActiveHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the active failure intensity for the "
-                      "selected hardware item."))
-        self.txtActiveHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the active failure intensity "
-                      "for the selected hardware item."))
-        self.txtCostFailure.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the cost per failure of the selected "
-                      "hardware item."))
-        self.txtCostHour.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the failure cost per operating hour for the "
-                      "selected hardware item."))
-        self.txtDormantHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the dormant failure intensity for the "
-                      "selected hardware item."))
-        self.txtDormantHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the dormant failure intensity "
-                      "for the selected hardware item."))
-        self.txtLogisticsAt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics availability for the selected "
-                      "hardware item."))
-        self.txtLogisticsAtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics availability "
-                      "for the selected hardware item."))
-        self.txtLogisticsHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics failure intensity for the "
-                      "selected hardware item.  This is the sum of the "
-                      "active, dormant, and software hazard rates."))
-        self.txtLogisticsHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics failure "
-                      "intensity for the selected hardware item."))
-        self.txtLogisticsMTBF.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics mean time between failure "
-                      "(MTBF) for the selected hardware item."))
-        self.txtLogisticsMTBFVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics MTBF for the "
-                      "selected hardware item."))
-        self.txtLogisticsRt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics reliability for the selected "
-                      "hardware item."))
-        self.txtLogisticsRtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics reliability "
-                      "for the selected hardware item."))
-        self.txtMCMT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean corrective maintenance time (MCMT) "
-                      "for the selected hardware item."))
-        self.txtMissionAt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission availability for the selected "
-                      "hardware item."))
-        self.txtMissionAtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission availability for "
-                      "the selected hardware item."))
-        self.txtMissionHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission failure intensity for the "
-                      "selected hardware item."))
-        self.txtMissionHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission failure "
-                      "intensity for the selected hardware item."))
-        self.txtMissionMTBF.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission mean time between failure (MTBF) "
-                      "for the selected hardware item."))
-        self.txtMissionMTBFVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission MTBF for the "
-                      "selected hardware item."))
-        self.txtMissionRt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission reliability for the selected "
-                      "hardware item."))
-        self.txtMissionRtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission reliability for "
-                      "the selected hardware item."))
-        self.txtMMT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean maintenance time (MMT) for the "
+        self.__set_availability_properties()
+        self.__set_miscellaneous_properties()
+        self.__set_reliability_properties()
+    def __set_availability_properties(self) -> None:
+        """
+        Set the properties of widgets displaying availability results.
+
+        :return: None
+        :rtype: None
+        """
+        _idx = 0
+        for _widget in self._lst_widgets[10:12]:
+            _widget.do_set_properties(
+                width=125,
+                editable=False,
+                bold=True,
+                tooltip=[
+                    _("Displays the logistics availability for the selected "
+                      "hardware item."),
+                    _("Displays the mission availability for the selected "
+                      "hardware item."),
+                    _("Displays the variance on the logistics availability "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the mission availability for "
+                      "the selected hardware item."),
+                    _("Displays the mean time to repair (MTTR) for the "
+                      "selected hardware item."),
+                    _("Displays the mean corrective maintenance time (MCMT) "
+                      "for the selected hardware item."),
+                    _("Displays the mean preventive maintenance time (MPMT) "
+                      "for the selected hardware item."),
+                    _("Displays the mean maintenance time (MMT) for the "
                       "selected hardware item.  This includes preventive and "
-                      "corrective maintenance."))
-        self.txtMPMT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean preventive maintenance time (MPMT) "
-                      "for the selected hardware item."))
-        self.txtMTTR.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean time to repair (MTTR) for the "
-                      "selected hardware item."))
-        self.txtPartCount.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the total part count for the selected "
-                      "hardware item."))
-        self.txtPercentHt.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the percentage of the system failure "
-                      "intensity the selected hardware item represents."))
-        self.txtSoftwareHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the software failure intensity for the "
-                      "selected hardware item."))
-        self.txtTotalCost.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the total cost of the selected hardware "
-                      "item."))
+                      "corrective maintenance.")
+                ][_idx])
+            _idx += 1
+
+    def __set_miscellaneous_properties(self) -> None:
+        """
+        Set the properties of widgets displaying miscellaneous results.
+
+        :return: None
+        :rtype: None
+        """
+        _idx = 0
+        for _widget in self._lst_widgets[12:]:
+            _widget.do_set_properties(
+                width=125,
+                editable=False,
+                bold=True,
+                tooltip=[
+                    _("Displays the total cost of the selected hardware "
+                      "item."),
+                    _("Displays the cost per failure of the selected "
+                      "hardware item."),
+                    _("Displays the failure cost per operating hour for the "
+                      "selected hardware item."),
+                    _("Displays the total part count for the selected "
+                      "hardware item.")
+                ][_idx])
+            _idx += 1
+
+    def __set_reliability_properties(self) -> None:
+        """
+        Set the properties of widgets displaying reliability results.
+
+        :return: None
+        :rtype: None
+        """
+        _idx = 0
+        for _widget in self._lst_widgets[0:10]:
+            _widget.do_set_properties(
+                width=125,
+                editable=False,
+                bold=True,
+                tooltip=[
+                    _("Displays the active failure intensity for the selected "
+                      "hardware item."),
+                    _("Displays the dormant failure intensity for the "
+                      "selected hardware item."),
+                    _("Displays the software failure intensity for the "
+                      "selected hardware item."),
+                    _("Displays the logistics failure intensity for the "
+                      "selected hardware item.  This is the sum of the "
+                      "active, dormant, and software hazard rates."),
+                    _("Displays the mission failure intensity for the "
+                      "selected hardware item."),
+                    _("Displays the percentage of the system failure "
+                      "intensity the selected hardware item represents."),
+                    _("Displays the logistics mean time between failure "
+                      "(MTBF) for the selected hardware item."),
+                    _("Displays the mission mean time between failure (MTBF) "
+                      "for the selected hardware item."),
+                    _("Displays the logistics reliability for the selected "
+                      "hardware item."),
+                    _("Displays the mission reliability for the selected "
+                      "hardware item."),
+                    _("Displays the variance on the active failure intensity "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the dormant failure intensity "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the logistics failure "
+                      "intensity for the selected hardware item."),
+                    _("Displays the variance on the mission failure "
+                      "intensity for the selected hardware item."),
+                    _("Displays the variance on the logistics MTBF for the "
+                      "selected hardware item."),
+                    _("Displays the variance on the mission MTBF for the "
+                      "selected hardware item."),
+                    _("Displays the variance on the logistics reliability "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the mission reliability for "
+                      "the selected hardware item.")
+                ][_idx])
+            _idx += 1
 
     def _do_clear_page(self) -> None:
         """
@@ -2024,6 +2006,7 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
         self.txtTotalCost.set_text('')
         self.txtCostFailure.set_text('')
         self.txtCostHour.set_text('')
@@ -2090,6 +2073,31 @@ class AssessmentResults(RAMSTKWorkView):
 
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
+        # Operating stress information is only applicable to components,
+        # not assemblies so we only show the information for components.
+        if attributes['category_id'] > 0:
+            self._do_load_component_results(attributes)
+        else:
+            self.wvwOperatingStress.hide()
+
+        self._do_load_availability_results(attributes)
+        self._do_load_hazard_rate_results(attributes)
+        self._do_load_miscellaneous_results(attributes)
+        self._do_load_mtbf_results(attributes)
+        self._do_load_reliability_results(attributes)
+
+        # Send the PyPubSub message to let the component-specific widgets know
+        # they can load.
+        pub.sendMessage('loaded_hardware_results', attributes=attributes)
+
+    def _do_load_component_results(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the results specific to hardware components.
+
+        :param dict attributes:
+        :return: None
+        :rtype: None
+        """
         # Retrieve the appropriate component-specific work views.
         try:
             _component_ar = self._dic_assessment_results[
@@ -2110,13 +2118,73 @@ class AssessmentResults(RAMSTKWorkView):
             self.scwReliability.add(_component_ar)
             self.scwReliability.show_all()
 
-        # Operating stress information is only applicable to components,
-        # not assemblies so we only show the information for components.
-        if attributes['category_id'] > 0:
-            self.wvwOperatingStress.show_all()
-        else:
-            self.wvwOperatingStress.hide()
+        self.wvwOperatingStress.show_all()
 
+    def _do_load_availability_results(self,
+                                      attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets used to display availability results attributes.
+
+        :param dict attributes: the dict of attributes for the hardware item
+            being loaded.
+        :return: None
+        :rtype: None
+        """
+        # TODO: See issue #310.
+        self.txtLogisticsAt.set_text(
+            str(self.fmt.format(attributes['availability_logistics'])))
+        self.txtLogisticsAtVar.set_text(
+            str(self.fmt.format(attributes['avail_log_variance'])))
+        self.txtMissionAt.set_text(
+            str(self.fmt.format(attributes['availability_mission'])))
+        self.txtMissionAtVar.set_text(
+            str(self.fmt.format(attributes['avail_mis_variance'])))
+
+    def _do_load_hazard_rate_results(self,
+                                     attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets used to display hazard rate results attributes.
+
+        :param dict attributes: the dict of attributes for the hardware item
+            being loaded.
+        :return: None
+        :rtype: None
+        """
+        # TODO: See issue #310.
+        self.txtActiveHt.set_text(
+            str(self.fmt.format(attributes['hazard_rate_active'])))
+        self.txtActiveHtVar.set_text(
+            str(self.fmt.format(attributes['hr_active_variance'])))
+        self.txtDormantHt.set_text(
+            str(self.fmt.format(attributes['hazard_rate_dormant'])))
+        self.txtDormantHtVar.set_text(
+            str(self.fmt.format(attributes['hr_dormant_variance'])))
+        self.txtSoftwareHt.set_text(
+            str(self.fmt.format(attributes['hazard_rate_software'])))
+
+        self.txtPercentHt.set_text(
+            str(self.fmt.format(attributes['hazard_rate_percent'])))
+
+        self.txtLogisticsHt.set_text(
+            str(self.fmt.format(attributes['hazard_rate_logistics'])))
+        self.txtLogisticsHtVar.set_text(
+            str(self.fmt.format(attributes['hr_logistics_variance'])))
+        self.txtMissionHt.set_text(
+            str(self.fmt.format(attributes['hazard_rate_mission'])))
+        self.txtMissionHtVar.set_text(
+            str(self.fmt.format(attributes['hr_mission_variance'])))
+
+    def _do_load_miscellaneous_results(self,
+                                       attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets used to display miscellaneous results attributes.
+
+        :param dict attributes: the dict of attributes for the hardware item
+            being loaded.
+        :return: None
+        :rtype: None
+        """
+        # TODO: See issue #310.
         self.txtTotalCost.set_text(
             str(locale.currency(attributes['total_cost'])))
         self.txtCostFailure.set_text(
@@ -2126,59 +2194,44 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtPartCount.set_text(
             str('{0:d}'.format(attributes['total_part_count'])))
 
-        self.txtActiveHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_active'])))
-        self.txtActiveHtVar.set_text(
-            str(self.fmt.format(attributes['hr_active_variance'])))
+    def _do_load_mtbf_results(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load widgets used to display MTBF results attributes.
 
-        self.txtDormantHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_dormant'])))
-        self.txtDormantHtVar.set_text(
-            str(self.fmt.format(attributes['hr_dormant_variance'])))
-
-        self.txtSoftwareHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_software'])))
-
-        self.txtPercentHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_percent'])))
-
-        self.txtLogisticsAt.set_text(
-            str(self.fmt.format(attributes['availability_logistics'])))
-        self.txtLogisticsAtVar.set_text(
-            str(self.fmt.format(attributes['avail_log_variance'])))
-        self.txtLogisticsHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_logistics'])))
-        self.txtLogisticsHtVar.set_text(
-            str(self.fmt.format(attributes['hr_logistics_variance'])))
+        :param dict attributes: the dict of attributes for the hardware item
+            being loaded.
+        :return: None
+        :rtype: None
+        """
+        # TODO: See issue #310.
         self.txtLogisticsMTBF.set_text(
             str(self.fmt.format(attributes['mtbf_logistics'])))
         self.txtLogisticsMTBFVar.set_text(
             str(self.fmt.format(attributes['mtbf_logistics_variance'])))
-        self.txtLogisticsRt.set_text(
-            str(self.fmt.format(attributes['reliability_logistics'])))
-        self.txtLogisticsRtVar.set_text(
-            str(self.fmt.format(attributes['reliability_log_variance'])))
-
-        self.txtMissionAt.set_text(
-            str(self.fmt.format(attributes['availability_mission'])))
-        self.txtMissionAtVar.set_text(
-            str(self.fmt.format(attributes['avail_mis_variance'])))
-        self.txtMissionHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_mission'])))
-        self.txtMissionHtVar.set_text(
-            str(self.fmt.format(attributes['hr_mission_variance'])))
         self.txtMissionMTBF.set_text(
             str(self.fmt.format(attributes['mtbf_mission'])))
         self.txtMissionMTBFVar.set_text(
             str(self.fmt.format(attributes['mtbf_mission_variance'])))
+
+    def _do_load_reliability_results(self,
+                                     attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets used to display reliability results attributes.
+
+        :param dict attributes: the dict of attributes for the hardware item
+            being loaded.
+        :return: None
+        :rtype: None
+        """
+        # TODO: See issue #310.
+        self.txtLogisticsRt.set_text(
+            str(self.fmt.format(attributes['reliability_logistics'])))
+        self.txtLogisticsRtVar.set_text(
+            str(self.fmt.format(attributes['reliability_log_variance'])))
         self.txtMissionRt.set_text(
             str(self.fmt.format(attributes['reliability_mission'])))
         self.txtMissionRtVar.set_text(
             str(self.fmt.format(attributes['reliability_miss_variance'])))
-
-        # Send the PyPubSub message to let the component-specific widgets know
-        # they can load.
-        pub.sendMessage('loaded_hardware_results', attributes=attributes)
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """
@@ -2191,13 +2244,13 @@ class AssessmentResults(RAMSTKWorkView):
         """
         pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
 
-    # noinspection PyUnusedLocal
     def _do_request_hardware_tree(self, attributes: Dict[str, Any]) -> None:
         """
         Request the Hardware module treelib Tree().
 
         :param attributes:
-        :return:
+        :return: None
+        :rtype: None
         """
         self._record_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']

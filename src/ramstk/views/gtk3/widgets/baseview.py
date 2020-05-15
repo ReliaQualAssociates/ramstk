@@ -455,10 +455,16 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         [[_key, _value]] = package.items()
 
-        _position = self._lst_col_order[keys[_key]]
+        try:
+            _position = self._lst_col_order[keys[_key]]
 
-        _model, _row = self.treeview.get_selection().get_selected()
-        _model.set(_row, _position, _value)
+            _model, _row = self.treeview.get_selection().get_selected()
+            _model.set(_row, _position, _value)
+        except KeyError as _error:
+            # Not all attributes available on the workview are stored in the
+            # moduleview tree.  We log the error in case the offending
+            # attribute is supposed to be there and then continue.
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def do_request_insert(self, **kwargs: Any) -> None:
         """
@@ -659,9 +665,15 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         try:
-            pub.sendMessage(message,
-                            node_id=[self._record_id, -1],
-                            package={_key: _new_text})
+            # Only if something is selected should we send the message.
+            # Otherwise attributes get updated to a value of -1 which isn't
+            # correct.  And it sucks trying to figure out why, so leave the
+            # conditional unless you have a more elegant (and there prolly
+            # is) solution.
+            if _new_text > -1:
+                pub.sendMessage(message,
+                                node_id=[self._record_id, -1],
+                                package={_key: _new_text})
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
@@ -724,16 +736,16 @@ class RAMSTKBaseView(Gtk.HBox):
         try:
             _new_text: Any = int(entry.get_text())
         except ValueError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
             try:
                 _new_text = float(entry.get_text())
             except ValueError as _error:
+                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
                 try:
                     _new_text = str(entry.get_text())
                 except ValueError as _error:
                     _new_text = None
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         pub.sendMessage(message,
                         node_id=[self._record_id, -1],
@@ -925,7 +937,8 @@ class RAMSTKListView(RAMSTKBaseView):
 
         self.tab_label.set_markup("<span weight='bold'>" + _tab_label
                                   + "</span>")
-        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.tab_label.set_xalign(0.5)
+        self.tab_label.set_yalign(0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
         self.tab_label.set_tooltip_text(_tooltip)
@@ -933,7 +946,7 @@ class RAMSTKListView(RAMSTKBaseView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
+        _scrolledwindow.add(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
         self.hbx_tab_label.pack_end(self.tab_label, True, True, 0)
