@@ -30,7 +30,7 @@ from ramstk.views.gtk3.widgets import (
 
 # RAMSTK Local Imports
 from .components import (
-    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection
+    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection, inductor
 )
 
 
@@ -166,8 +166,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['comp_ref_des'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/rollup.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/rollup.png')
 
         # Initialize private list attributes.
 
@@ -603,7 +603,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.cmbSubcategory.do_load_combo([], handler_id=self._lst_handler_id[5])
+        self.cmbSubcategory.do_load_combo([],
+                                          handler_id=self._lst_handler_id[5])
 
         if category_id > 0:
             _subcategory = SortedDict(self.RAMSTK_USER_CONFIGURATION.
@@ -611,7 +612,8 @@ class GeneralData(RAMSTKWorkView):
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
-            self.cmbSubcategory.do_load_combo(_data, handler_id=self._lst_handler_id[5])
+            self.cmbSubcategory.do_load_combo(
+                _data, handler_id=self._lst_handler_id[5])
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """
@@ -918,7 +920,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentInputs(configuration, logger),
-            # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
+            5: inductor.AssessmentInputs(configuration, logger),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentInputs(configuration, logger),
@@ -1710,7 +1712,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 2: wvwSemiconductorAR(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentResults(configuration, logger),
-            # 5: wvwInductorAR(self.RAMSTK_CONFIGURATION),
+            5: inductor.AssessmentResults(configuration, logger),
             # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentResults(configuration, logger),
@@ -1886,6 +1888,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.__set_availability_properties()
         self.__set_miscellaneous_properties()
         self.__set_reliability_properties()
+
     def __set_availability_properties(self) -> None:
         """
         Set the properties of widgets displaying availability results.
@@ -2140,8 +2143,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionAtVar.set_text(
             str(self.fmt.format(attributes['avail_mis_variance'])))
 
-    def _do_load_hazard_rate_results(self,
-                                     attributes: Dict[str, Any]) -> None:
+    def _do_load_hazard_rate_results(self, attributes: Dict[str, Any]) -> None:
         """
         Load the widgets used to display hazard rate results attributes.
 
@@ -2213,8 +2215,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionMTBFVar.set_text(
             str(self.fmt.format(attributes['mtbf_mission_variance'])))
 
-    def _do_load_reliability_results(self,
-                                     attributes: Dict[str, Any]) -> None:
+    def _do_load_reliability_results(self, attributes: Dict[str, Any]) -> None:
         """
         Load the widgets used to display reliability results attributes.
 
