@@ -537,8 +537,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         super().on_toggled(checkbutton, index,
-                           message='wvw_editing_requirement',
-                           keys={3: 'derived', 9: 'validated'})
+                           message='wvw_editing_requirement')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 

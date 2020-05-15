@@ -285,8 +285,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         super().on_toggled(checkbutton, index,
-                           message='wvw_editing_function',
-                           keys={3: 'safety_critical'})
+                           message='wvw_editing_function')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 
