@@ -562,14 +562,14 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data)
+        self.cmbQuality.do_load_combo(_data, handler_id=self._lst_handler_id[0])
 
         # Load the connector type RAMSTKComboBox().
         try:
             _data = self._dic_type[subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data)
+        self.cmbType.do_load_combo(_data, handler_id=self._lst_handler_id[1])
 
         # Clear the remaining ComboBox()s.  These are loaded dynamically
         # based on the selection made in other ComboBox()s.

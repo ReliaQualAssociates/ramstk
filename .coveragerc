@@ -36,3 +36,6 @@ show_missing = True
 [html]
 directory = .reports/coverage/html
 title = "RAMSTK Test Coverage Report"
+
+[xml]
+output = cobertura.xml

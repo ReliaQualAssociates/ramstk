@@ -603,9 +603,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.cmbSubcategory.handler_block(self._lst_handler_id[5])
-        _model = self.cmbSubcategory.get_model()
-        _model.clear()
+        self.cmbSubcategory.do_load_combo([], handler_id=self._lst_handler_id[5])
 
         if category_id > 0:
             _subcategory = SortedDict(self.RAMSTK_USER_CONFIGURATION.
@@ -613,9 +611,7 @@ class GeneralData(RAMSTKWorkView):
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
-            self.cmbSubcategory.do_load_combo(_data)
-
-        self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
+            self.cmbSubcategory.do_load_combo(_data, handler_id=self._lst_handler_id[5])
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """
@@ -763,9 +759,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().on_toggled(checkbutton,
-                           index,
-                           'wvw_editing_hardware')
+        super().on_toggled(checkbutton, index, 'wvw_editing_hardware')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 
@@ -1833,188 +1827,126 @@ class AssessmentResults(RAMSTKWorkView):
 
     def __set_properties(self) -> None:
         """
-        Set the properties of the General Data Work View and widgets.
+        Set the properties of the Assessment Results Work View and widgets.
 
         :return: None
         :rtype: None
         """
-        self.txtActiveHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the active failure intensity for the "
-                      "selected hardware item."))
-        self.txtActiveHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the active failure intensity "
-                      "for the selected hardware item."))
-        self.txtCostFailure.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the cost per failure of the selected "
-                      "hardware item."))
-        self.txtCostHour.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the failure cost per operating hour for the "
-                      "selected hardware item."))
-        self.txtDormantHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the dormant failure intensity for the "
-                      "selected hardware item."))
-        self.txtDormantHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the dormant failure intensity "
-                      "for the selected hardware item."))
-        self.txtLogisticsAt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics availability for the selected "
-                      "hardware item."))
-        self.txtLogisticsAtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics availability "
-                      "for the selected hardware item."))
-        self.txtLogisticsHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics failure intensity for the "
-                      "selected hardware item.  This is the sum of the "
-                      "active, dormant, and software hazard rates."))
-        self.txtLogisticsHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics failure "
-                      "intensity for the selected hardware item."))
-        self.txtLogisticsMTBF.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics mean time between failure "
-                      "(MTBF) for the selected hardware item."))
-        self.txtLogisticsMTBFVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics MTBF for the "
-                      "selected hardware item."))
-        self.txtLogisticsRt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the logistics reliability for the selected "
-                      "hardware item."))
-        self.txtLogisticsRtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the logistics reliability "
-                      "for the selected hardware item."))
-        self.txtMCMT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean corrective maintenance time (MCMT) "
-                      "for the selected hardware item."))
-        self.txtMissionAt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission availability for the selected "
-                      "hardware item."))
-        self.txtMissionAtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission availability for "
-                      "the selected hardware item."))
-        self.txtMissionHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission failure intensity for the "
-                      "selected hardware item."))
-        self.txtMissionHtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission failure "
-                      "intensity for the selected hardware item."))
-        self.txtMissionMTBF.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission mean time between failure (MTBF) "
-                      "for the selected hardware item."))
-        self.txtMissionMTBFVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission MTBF for the "
-                      "selected hardware item."))
-        self.txtMissionRt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mission reliability for the selected "
-                      "hardware item."))
-        self.txtMissionRtVar.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the variance on the mission reliability for "
-                      "the selected hardware item."))
-        self.txtMMT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean maintenance time (MMT) for the "
+        self.__set_availability_properties()
+        self.__set_miscellaneous_properties()
+        self.__set_reliability_properties()
+    def __set_availability_properties(self) -> None:
+        """
+        Set the properties of widgets displaying availability results.
+
+        :return: None
+        :rtype: None
+        """
+        _idx = 0
+        for _widget in self._lst_widgets[10:12]:
+            _widget.do_set_properties(
+                width=125,
+                editable=False,
+                bold=True,
+                tooltip=[
+                    _("Displays the logistics availability for the selected "
+                      "hardware item."),
+                    _("Displays the mission availability for the selected "
+                      "hardware item."),
+                    _("Displays the variance on the logistics availability "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the mission availability for "
+                      "the selected hardware item."),
+                    _("Displays the mean time to repair (MTTR) for the "
+                      "selected hardware item."),
+                    _("Displays the mean corrective maintenance time (MCMT) "
+                      "for the selected hardware item."),
+                    _("Displays the mean preventive maintenance time (MPMT) "
+                      "for the selected hardware item."),
+                    _("Displays the mean maintenance time (MMT) for the "
                       "selected hardware item.  This includes preventive and "
-                      "corrective maintenance."))
-        self.txtMPMT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean preventive maintenance time (MPMT) "
-                      "for the selected hardware item."))
-        self.txtMTTR.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the mean time to repair (MTTR) for the "
-                      "selected hardware item."))
-        self.txtPartCount.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the total part count for the selected "
-                      "hardware item."))
-        self.txtPercentHt.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the percentage of the system failure "
-                      "intensity the selected hardware item represents."))
-        self.txtSoftwareHt.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("Displays the software failure intensity for the "
-                      "selected hardware item."))
-        self.txtTotalCost.do_set_properties(
-            width=125,
-            editable=False,
-            tooltip=_("Displays the total cost of the selected hardware "
-                      "item."))
+                      "corrective maintenance.")
+                ][_idx])
+            _idx += 1
+
+    def __set_miscellaneous_properties(self) -> None:
+        """
+        Set the properties of widgets displaying miscellaneous results.
+
+        :return: None
+        :rtype: None
+        """
+        _idx = 0
+        for _widget in self._lst_widgets[12:]:
+            _widget.do_set_properties(
+                width=125,
+                editable=False,
+                bold=True,
+                tooltip=[
+                    _("Displays the total cost of the selected hardware "
+                      "item."),
+                    _("Displays the cost per failure of the selected "
+                      "hardware item."),
+                    _("Displays the failure cost per operating hour for the "
+                      "selected hardware item."),
+                    _("Displays the total part count for the selected "
+                      "hardware item.")
+                ][_idx])
+            _idx += 1
+
+    def __set_reliability_properties(self) -> None:
+        """
+        Set the properties of widgets displaying reliability results.
+
+        :return: None
+        :rtype: None
+        """
+        _idx = 0
+        for _widget in self._lst_widgets[0:10]:
+            _widget.do_set_properties(
+                width=125,
+                editable=False,
+                bold=True,
+                tooltip=[
+                    _("Displays the active failure intensity for the selected "
+                      "hardware item."),
+                    _("Displays the dormant failure intensity for the "
+                      "selected hardware item."),
+                    _("Displays the software failure intensity for the "
+                      "selected hardware item."),
+                    _("Displays the logistics failure intensity for the "
+                      "selected hardware item.  This is the sum of the "
+                      "active, dormant, and software hazard rates."),
+                    _("Displays the mission failure intensity for the "
+                      "selected hardware item."),
+                    _("Displays the percentage of the system failure "
+                      "intensity the selected hardware item represents."),
+                    _("Displays the logistics mean time between failure "
+                      "(MTBF) for the selected hardware item."),
+                    _("Displays the mission mean time between failure (MTBF) "
+                      "for the selected hardware item."),
+                    _("Displays the logistics reliability for the selected "
+                      "hardware item."),
+                    _("Displays the mission reliability for the selected "
+                      "hardware item."),
+                    _("Displays the variance on the active failure intensity "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the dormant failure intensity "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the logistics failure "
+                      "intensity for the selected hardware item."),
+                    _("Displays the variance on the mission failure "
+                      "intensity for the selected hardware item."),
+                    _("Displays the variance on the logistics MTBF for the "
+                      "selected hardware item."),
+                    _("Displays the variance on the mission MTBF for the "
+                      "selected hardware item."),
+                    _("Displays the variance on the logistics reliability "
+                      "for the selected hardware item."),
+                    _("Displays the variance on the mission reliability for "
+                      "the selected hardware item.")
+                ][_idx])
+            _idx += 1
 
     def _do_clear_page(self) -> None:
         """
@@ -2023,6 +1955,7 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
         self.txtTotalCost.set_text('')
         self.txtCostFailure.set_text('')
         self.txtCostHour.set_text('')
@@ -2116,6 +2049,7 @@ class AssessmentResults(RAMSTKWorkView):
         else:
             self.wvwOperatingStress.hide()
 
+        # TODO: See issue #310.
         self.txtTotalCost.set_text(
             str(locale.currency(attributes['total_cost'])))
         self.txtCostFailure.set_text(
@@ -2190,13 +2124,13 @@ class AssessmentResults(RAMSTKWorkView):
         """
         pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
 
-    # noinspection PyUnusedLocal
     def _do_request_hardware_tree(self, attributes: Dict[str, Any]) -> None:
         """
         Request the Hardware module treelib Tree().
 
         :param attributes:
-        :return:
+        :return: None
+        :rtype: None
         """
         self._record_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
