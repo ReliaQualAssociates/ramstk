@@ -8,39 +8,13 @@
 """RAMSTK Button Module."""
 
 # Standard Library Imports
-from typing import Any, Tuple
+from typing import Any
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, _
+from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 
-
-def do_set_common_properties(**kwargs: Any) -> Tuple[int, str, int]:
-    """
-    Set common button properties.
-
-    :return: _height, _tooltip, _width
-    :rtype: tuple
-    """
-    try:
-        _height = kwargs['height']
-    except KeyError:
-        _height = 30
-    try:
-        _tooltip = kwargs['tooltip']
-    except KeyError:
-        _tooltip = ("Missing tooltip, please file a quality type issue to "
-                    "have one added.")
-    try:
-        _width = kwargs['width']
-    except KeyError:
-        _width = 200
-
-    if _height == 0:
-        _height = 40
-    if _width == 0:
-        _width = 200
-
-    return _height, _tooltip, _width
+# RAMSTK Local Imports
+from .widget import RAMSTKWidget
 
 
 def do_make_buttonbox(view: Any, **kwargs: Any) -> Gtk.ButtonBox:
@@ -152,23 +126,25 @@ def do_make_buttonbox(view: Any, **kwargs: Any) -> Gtk.ButtonBox:
     return _buttonbox
 
 
-class RAMSTKButton(Gtk.Button):
+class RAMSTKButton(Gtk.Button, RAMSTKWidget):
     """This is the RAMSTK Button class."""
-    def __init__(self, label: str = "...", **kwargs: Any) -> None:  # pylint: disable=unused-argument
-        """
-        Initialize an instance of the RAMSTK Button.
 
-        :keyword int height: the height of the Gtk.Button().
-            Default is 40.
-        :keyword int  width: the width of the Gtk.Button().
-            Default is 200.
-        :keyword str label: the text to display on the Gtk.Button().
+    # Define private class scalar attributes.
+    _default_height = 30
+    _default_width = 200
+
+    def __init__(self, label: str = "...") -> None:
+        """
+        Initialize an instance of the RAMSTKButton().
+
+        :keyword str label: the text to display on the RAMSTKButton().
             Default is an ellipsis (...).
-        :keyword str icon: the image to display on the Gtk.Button().
         :return: None
         :rtype: None
         """
-        GObject.GObject.__init__(self, label=label)
+        RAMSTKWidget.__init__(self)
+
+        self.set_label(label)
         self.show_all()
 
     def do_set_properties(self, **kwargs: Any) -> None:
@@ -178,41 +154,42 @@ class RAMSTKButton(Gtk.Button):
         :param \**kwargs: See below
 
         :Keyword Arguments:
-            * *height* (int) -- height of the Gtk.Button() widget.
+            * *height* (int) -- height of the RAMSTKButton() widget.
                 Default is 30.
             * *icon* (str) -- the icon to display on the button.  Default is
                 None.
             * *tooltip* (str) -- the tooltip, if any, for the button.
-                Default is an empty string.
-            * *width* (int) -- width of the Gtk.Button() widget.
+                Default is a message to file a QA-type issue to have one added.
+            * *width* (int) -- width of the RAMSTKButton() widget.
                 Default is 200.
         :return: None
         :rtype: None
         """
+        super().do_set_properties(**kwargs)
+
         try:
             _icon = kwargs['icon']
         except KeyError:
             _icon = None
 
-        _height, _tooltip, _width = do_set_common_properties(**kwargs)
-
         if _icon is not None:
             _image = Gtk.Image()
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 _icon,
-                _height,
-                _width,
+                self.height,
+                self.width,
             )
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
 
-        self.set_property('height-request', _height)
-        self.set_property('tooltip-markup', _tooltip)
-        self.set_property('width-request', _width)
 
-
-class RAMSTKCheckButton(Gtk.CheckButton):
+class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
     """This is the RAMSTK Check Button class."""
+
+    # Define private class scalar attributes.
+    _default_height = 20
+    _default_width = 200
+
     def __init__(self, label: str = "") -> None:
         """
         Initialize an instance of the RAMSTK CheckButton.
@@ -222,10 +199,9 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         :return: None
         :rtype: None
         """
-        GObject.GObject.__init__(self, label=label, use_underline=True)
+        RAMSTKWidget.__init__(self)
 
-        self.height = -1
-        self.width = -1
+        self.set_label(label)
 
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
@@ -234,26 +210,24 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         :param \**kwargs: See below
 
         :Keyword Arguments:
-            * *height* (int) -- height of the Gtk.Button() widget.
+            * *height* (int) -- height of the RAMSTKCheckButton() widget.
                 Default is 40.
             * *tooltip* (str) -- the tooltip, if any, for the button.
-                Default is an empty string.
-            * *width* (int) -- width of the Gtk.Button() widget.
+                Default is a message to file a QA-type issue to have one added.
+            * *width* (int) -- width of the RAMSTKCheckButton() widget.
                 Default is 200.
         :return: None
         :rtype: None
         """
-        _height, _tooltip, _width = do_set_common_properties(**kwargs)
+        super().do_set_properties(**kwargs)
 
-        self.height = _height
-        self.width = _width
+        self.set_use_underline(True)
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)
-        self.get_child().set_property('height-request', _height)
-        self.set_property('tooltip-markup', _tooltip)
-        self.get_child().set_property('width-request', _width)
+        self.get_child().set_property('height-request', self.height)
+        self.get_child().set_property('width-request', self.width)
 
-    def do_update(self, value: int, handler_id: int) -> None:
+    def do_update(self, value: int, handler_id: int, signal: str = '') -> None:
         """
         Update the RAMSTK CheckButton with a new value.
 
@@ -261,15 +235,25 @@ class RAMSTKCheckButton(Gtk.CheckButton):
             display.
         :param int handler_id: the handler ID associated with the
             RAMSTKCheckButton().
+        :keyword str signal: the name of the signal whose handler ID the
+            RAMSTKCheckButton() needs to block.
         :return: None
         :rtype: None
         """
-        self.handler_block(handler_id)
+        # TODO: Remove this try construct after all views calling this
+        #  method have been updated to account for the widget attribute
+        #  containing the signal handler IDs.
+        try:
+            _handler_id = self.dic_handler_id[signal]
+        except KeyError:
+            _handler_id = handler_id
+
+        self.handler_block(_handler_id)
         self.set_active(int(value))
-        self.handler_unblock(handler_id)
+        self.handler_unblock(_handler_id)
 
 
-class RAMSTKOptionButton(Gtk.RadioButton):
+class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
     """This is the RAMSTK Option Button class."""
     def __init__(self, group: Gtk.RadioButton = None,
                  label: str = _("")) -> None:
@@ -284,4 +268,7 @@ class RAMSTKOptionButton(Gtk.RadioButton):
         :return: None
         :rtype: None
         """
-        GObject.GObject.__init__(self, group=group, label=label)
+        RAMSTKWidget.__init__(self)
+
+        self.set_group(group)
+        self.set_label(label)

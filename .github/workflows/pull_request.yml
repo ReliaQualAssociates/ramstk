@@ -17,7 +17,7 @@ jobs:
         with:
           path: 'src/ramstk'
 
-  isort-it:
+  lint-it:
     name: Lint Code and Style Checks
     runs-on: ubuntu-latest
     steps:
