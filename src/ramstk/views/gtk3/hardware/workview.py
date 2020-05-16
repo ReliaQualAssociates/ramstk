@@ -1290,6 +1290,7 @@ class AssessmentInputs(RAMSTKWorkView):
         if attributes['category_id'] > 0:
             self._do_load_component_inputs(attributes)
         else:
+            self.scwDesignRatings.hide()
             self.wvwOperatingStress.hide()
 
         self.cmbActiveEnviron.do_update(
@@ -1344,8 +1345,6 @@ class AssessmentInputs(RAMSTKWorkView):
 
         self._do_set_sensitive(type_id=attributes['hazard_rate_type_id'])
 
-        self.scwDesignRatings.show_all()
-
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.
         pub.sendMessage('loaded_hardware_inputs', attributes=attributes)
@@ -1378,6 +1377,7 @@ class AssessmentInputs(RAMSTKWorkView):
         if _component_ai is not None:
             self.scwDesignRatings.add(_component_ai)
 
+        self.scwDesignRatings.show_all()
         self.wvwOperatingStress.show_all()
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
