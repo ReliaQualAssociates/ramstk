@@ -63,6 +63,7 @@ def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int,
 
     _char_width = max([len(_label_text) for _label_text in text])
 
+    # pylint: disable=unused-variable
     for __, _label_text in enumerate(text):
         _label = RAMSTKLabel(_label_text)
         _label.do_set_properties(width=-1,
@@ -120,6 +121,7 @@ def do_make_label_group2(text: List[str],
 
     _char_width = max([len(_label_text) for _label_text in text])
 
+    # pylint: disable=unused-variable
     for __, _label_text in enumerate(text):
         _label = RAMSTKLabel(_label_text)
         _label.do_set_properties(width=-1,

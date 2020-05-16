@@ -131,10 +131,12 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
         if not simple:
             _model.append(["", "", ""])
+            # pylint: disable=unused-variable
             for __, _entry in enumerate(entries):
                 _model.append(list(_entry))
         else:
             _model.append([""])
+            # pylint: disable=unused-variable
             for __, _entry in enumerate(entries):
                 _model.append([_entry[self._index]])
 
