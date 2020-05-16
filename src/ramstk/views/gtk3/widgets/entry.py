@@ -172,30 +172,10 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         :return: None
         :rtype: None
         """
-        try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = self._default_height
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = self._default_width
+        super().do_set_properties(**kwargs)
 
-        if _height == 0:
-            _height = self._default_height
-        if _width == 0:
-            _width = self._default_width
-
-        self.height = _height
-        self.width = _width
-        self.scrollwindow.set_property('height-request', _height)
-        self.set_property('tooltip-markup', _tooltip)
-        self.scrollwindow.set_property('width-request', _width)
+        self.scrollwindow.set_property('height-request', self.height)
+        self.scrollwindow.set_property('width-request', self.width)
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
     def do_update(self, value: str, handler_id: int, signal: str = '') -> None:
