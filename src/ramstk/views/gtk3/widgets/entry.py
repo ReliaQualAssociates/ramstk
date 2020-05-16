@@ -72,14 +72,16 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         if _bold:
             self.modify_font(Pango.FontDescription('bold'))
 
-    def do_update(self, value: str, handler_id: int, signal: str = '') -> None:
+    def do_update(self, value: str, handler_id: int = 0,
+                  signal: str = '') -> None:
         """
         Update the RAMSTK Entry with a new value.
 
         :param str value: the information to update the RAMSTKEntry() to
             display.
-        :param int handler_id: the handler ID associated with the
-            RAMSTKEntry().
+        :keyword int handler_id: the handler ID associated with the
+            RAMSTKComboBox().  This input will be removed in a future
+            version in preference for using the signal ID dict.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKEntry() needs to block.
         :return: None

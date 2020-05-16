@@ -659,8 +659,6 @@ class RAMSTKBaseView(Gtk.HBox):
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        combo.handler_block(self._lst_handler_id[index])
-
         try:
             _new_text: int = int(combo.get_active())
         except ValueError as _error:
@@ -733,8 +731,6 @@ class RAMSTKBaseView(Gtk.HBox):
         except KeyError as _error:
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        entry.handler_block(self._lst_handler_id[index])
 
         try:
             _new_text: Any = int(entry.get_text())

@@ -44,8 +44,10 @@ class GeneralData(RAMSTKWorkView):
     # Define private list attributes.
     _lst_labels = [_("Function Code:"), _("Function Name:"), _("Remarks:")]
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str = 'function') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'function') -> None:
         """
         Initialize the Function Work View general data page.
 
@@ -257,6 +259,7 @@ class GeneralData(RAMSTKWorkView):
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
+        # TODO: See issue #310.
         entry.handler_block(self._lst_handler_id[index])
 
         try:
@@ -284,8 +287,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().on_toggled(checkbutton, index,
-                           message='wvw_editing_function')
+        super().on_toggled(checkbutton, index, message='wvw_editing_function')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
 
@@ -308,8 +310,10 @@ class HazOps(RAMSTKWorkView):
     |   1   | treeview `button_press_event`             |
     +-------+-------------------------------------------+
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module: str = 'hazard') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'hazard') -> None:
         """
         Initialize the Work View for the HazOps.
 
@@ -369,7 +373,8 @@ class HazOps(RAMSTKWorkView):
         :rtype: None
         """
         pub.sendMessage('request_get_function_attributes',
-                        node_id=self._parent_id, table='hazards')
+                        node_id=self._parent_id,
+                        table='hazards')
 
     def __do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """
@@ -600,7 +605,8 @@ class HazOps(RAMSTKWorkView):
         """
         self.do_set_cursor_busy()
         pub.sendMessage('request_delete_hazard',
-                        function_id=self._parent_id, node_id=self._record_id)
+                        function_id=self._parent_id,
+                        node_id=self._record_id)
 
     def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """

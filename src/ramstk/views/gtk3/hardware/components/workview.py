@@ -125,7 +125,8 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         self.do_load_comboboxes(attributes['subcategory_id'])
 
         self.cmbQuality.do_update(attributes['quality_id'],
-                                  self._lst_handler_id[0])
+                                  handler_id=self._lst_handler_id[0],
+                                  signal='changed')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

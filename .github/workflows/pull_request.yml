@@ -5,8 +5,20 @@ on:
     branches:
       - develop
       - master
+    types:
+      - opened
+      - edited
+      - synchronize
 
 jobs:
+  good_pr_title:
+    name: Ensure Sematic PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amann/action-semantic-pull-request@v1.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   bandit:
     name: Check for Security Vulnerabilities
     runs-on: ubuntu-latest

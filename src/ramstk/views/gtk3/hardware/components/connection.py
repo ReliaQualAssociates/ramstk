@@ -480,6 +480,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
+        combo.handler_block(self._lst_handler_id[index])
+
         super().on_combo_changed(combo, index, 'wvw_editing_component')
 
         # If the connection type changed, load the specification
@@ -562,7 +565,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data, handler_id=self._lst_handler_id[0])
+        self.cmbQuality.do_load_combo(_data,
+                                      handler_id=self._lst_handler_id[0])
 
         # Load the connector type RAMSTKComboBox().
         try:

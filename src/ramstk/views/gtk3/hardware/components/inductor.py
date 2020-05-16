@@ -285,6 +285,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
+        combo.handler_block(self._lst_handler_id[index])
+
         super().on_combo_changed(combo, index, 'wvw_editing_component')
 
         combo.handler_unblock(self._lst_handler_id[index])
