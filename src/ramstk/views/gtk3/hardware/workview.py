@@ -311,6 +311,7 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Make the left side of the page.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0, end=13)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -322,6 +323,7 @@ class GeneralData(RAMSTKWorkView):
         # Make the top right side of the page.
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=13, end=20)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -331,6 +333,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(_frame, True, True)
 
         # Make the bottom right side of the page.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=20)
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1055,6 +1058,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0, end=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1075,6 +1079,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1601,7 +1606,7 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # See issue #309.
+        # TODO: See issue #309.
         super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -1829,6 +1834,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1849,6 +1855,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)

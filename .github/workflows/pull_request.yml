@@ -30,7 +30,7 @@ jobs:
           use-pycodestyle: true
           use-mypy: true
           use-isort: true
-          extra-pylint-options: "-j0 --rcfile=./.pylintrc"
+          extra-pylint-options: "-j0 --rcfile=./.pylintrc --dummy-variables-rgx='__'"
           extra-pycodestyle-options: "--statistics --count"
           extra-mypy-options: ""
           extra-isort-options: "--use-parentheses --balanced --multi-line 5"

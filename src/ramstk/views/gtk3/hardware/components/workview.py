@@ -78,8 +78,8 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
-            + 'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
+            'G}')
 
         self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
 
@@ -109,7 +109,6 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-
     def do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the component common widgets.
@@ -152,6 +151,7 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
@@ -284,8 +284,8 @@ class RAMSTKStressInputs(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
-            + 'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
+            'G}')
 
         self.txtTemperatureRatedMin: RAMSTKEntry = RAMSTKEntry()
         self.txtTemperatureKnee: RAMSTKEntry = RAMSTKEntry()
@@ -331,6 +331,7 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
@@ -430,7 +431,6 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the Component stress input widgets.
@@ -539,7 +539,6 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
     :ivar txtPiQ: displays the quality factor for the hardware item.
     :ivar txtPiE: displays the environment factor for the hardware item.
     """
-
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
@@ -573,8 +572,8 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
-            + 'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
+            'G}')
 
         self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
@@ -627,7 +626,6 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-
     def _do_set_model_label(self) -> None:
         """
         Sets the text displayed in the hazard rate model RAMSTKLabel().
@@ -711,6 +709,7 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
@@ -786,8 +785,8 @@ class RAMSTKStressResults(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
-            + 'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
+            'G}')
 
         self.pltDerate: RAMSTKPlot = RAMSTKPlot()
 
@@ -831,6 +830,7 @@ class RAMSTKStressResults(RAMSTKWorkView):
         _hpaned = Gtk.HPaned()
         self.pack_start(_hpaned, True, True, 0)
 
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0)
         _hpaned.pack1(_fixed, False, False)
 
@@ -889,7 +889,6 @@ class RAMSTKStressResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-
     def _do_load_derating_curve(self, attributes: Dict[str, Any]) -> None:
         """
         Load the benign and harsh environment derating curves.

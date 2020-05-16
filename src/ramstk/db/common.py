@@ -908,17 +908,17 @@ def do_add_administrator(session: scoped_session) -> None:
     """Add a new administrator to the RAMSTK pool."""
     _user = RAMSTKUser()
 
-    _yn = input(
+    _yn = input(  # nosec
         _("Would you like to add a RAMSTK Administrator? ([y]/n): ")) or 'y'
 
     if _yn.lower() == 'y':
-        _user.user_lname = input(
+        _user.user_lname = input(  # nosec
             _("Enter the RAMSTK Administrator's last name (surname): "))
-        _user.user_fname = input(
+        _user.user_fname = input(  # nosec
             _("Enter the RAMSTK Administrator's first name (given name): "))
-        _user.user_email = input(
+        _user.user_email = input(  # nosec
             _("Enter the RAMSTK Administrator's e-mail address: "))
-        _user.user_phone = input(
+        _user.user_phone = input(  # nosec
             _("Enter the RAMSTK Administrator's phone number: "))
         _user.user_group_id = 1
 
