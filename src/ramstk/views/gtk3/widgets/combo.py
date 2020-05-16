@@ -13,9 +13,17 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GObject, Gtk
 
+# RAMSTK Local Imports
+from .widget import RAMSTKWidget
 
-class RAMSTKComboBox(Gtk.ComboBox):
+
+class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     """This is the RAMSTK ComboBox class."""
+
+    # Define private class scalar attributes.
+    _default_height = 30
+    _default_width = 200
+
     def __init__(self, index: int = 0, simple: bool = True) -> None:
         r"""
         Create RAMSTK ComboBox widgets.
@@ -25,14 +33,26 @@ class RAMSTKComboBox(Gtk.ComboBox):
         :keyword bool simple: indicates whether to make a simple (one item) or
             complex (three item) RAMSTKComboBox.  Default is True.
         """
-        GObject.GObject.__init__(self)
+        RAMSTKWidget.__init__(self)
 
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
         self._index: int = index
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
 
         if not simple:
             _list = Gtk.ListStore()
-            _list.set_column_types([GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                    GObject.TYPE_STRING])
+            _list.set_column_types([
+                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING
+            ])
         else:
             _list = Gtk.ListStore()
             _list.set_column_types([GObject.TYPE_STRING])
@@ -65,8 +85,11 @@ class RAMSTKComboBox(Gtk.ComboBox):
         return _options
 
     # noinspection PyIncorrectDocstring
-    def do_load_combo(self, entries: List[List[str]],
-                      simple: bool = True, **kwargs) -> None:
+    def do_load_combo(self,
+                      entries: List[List[str]],
+                      signal: str = '',
+                      simple: bool = True,
+                      **kwargs) -> None:
         """
         Load RAMSTK ComboBox widgets.
 
@@ -74,6 +97,8 @@ class RAMSTKComboBox(Gtk.ComboBox):
             This is always a list of lists where each internal list contains
             the information to be displayed and there is one internal list for
             each RAMSTKComboBox line.
+        :keyword str signal: the name of the signal whose handler ID the
+            RAMSTKComboBox() needs to block.
         :keyword bool simple: indicates whether this is a simple (one item) or
             complex (three item) RAMSTKComboBox.  A simple (default)
             RAMSTKComboBox contains and displays one field only.  A 'complex'
@@ -87,71 +112,38 @@ class RAMSTKComboBox(Gtk.ComboBox):
         :rtype: None
         :raise: TypeError if attempting to load other than string values.
         """
-        # TODO: Remove this try block when requirements 305.7 and 305.8 are
-        #  implemented in the RAMSTKComboBox.  See issue #310.
+        # TODO: Remove this try construct after all views calling this
+        #  method have been updated to account for the widget attribute
+        #  containing the signal handler IDs.
         try:
-            _handler_id = kwargs['handler_id']
-            self.handler_block(_handler_id)
+            _handler_id = self.dic_handler_id[signal]
         except KeyError:
-            _handler_id = -1
+            # TODO: Remove this try block when requirements 305.7 and 305.8 are
+            #  implemented in the RAMSTKComboBox.  See issue #310.
+            try:
+                _handler_id = kwargs['handler_id']
+                self.handler_block(_handler_id)
+            except KeyError:
+                _handler_id = -1
 
         _model = self.get_model()
         _model.clear()
 
         if not simple:
             _model.append(["", "", ""])
+            # pylint: disable=unused-variable
             for __, _entry in enumerate(entries):
                 _model.append(list(_entry))
         else:
             _model.append([""])
+            # pylint: disable=unused-variable
             for __, _entry in enumerate(entries):
                 _model.append([_entry[self._index]])
 
         if _handler_id > -1:
             self.handler_unblock(_handler_id)
 
-    # noinspection PyIncorrectDocstring
-    # TODO: See issue #310.
-    def do_set_properties(self, **kwargs: Any) -> None:
-        r"""
-        Set the properties of the RAMSTK combobox.
-
-        :param \**kwargs: See below
-
-        :Keyword Arguments:
-            * *height* (int) -- height of the Gtk.ComboBox() widget.
-                Default is 30.
-            * *tooltip* (str) -- the tooltip, if any, for the combobox.
-                Default is an empty string.
-            * *width* (int) -- width of the Gtk.ComboBox() widget.  Default is
-                200.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = 30
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = 200
-
-        if _height == 0:
-            _height = 30
-        if _width == 0:
-            _width = 200
-
-        self.set_property('height-request', _height)
-        self.set_property('tooltip-markup', _tooltip)
-        self.set_property('width-request', _width)
-
-    def do_update(self, value: int, handler_id: int) -> None:
+    def do_update(self, value: int, handler_id: int, signal: str = '') -> None:
         """
         Update the RAMSTK Combo with a new value.
 
@@ -159,12 +151,22 @@ class RAMSTKComboBox(Gtk.ComboBox):
             display.
         :param int handler_id: the handler ID associated with the
             RAMSTKComboBox().
+        :keyword str signal: the name of the signal whose handler ID the
+            RAMSTKComboBox() needs to block.
         :return: None
         :rtype: None
         """
-        self.handler_block(handler_id)
+        # TODO: Remove this try construct after all views calling this
+        #  method have been updated to account for the widget attribute
+        #  containing the signal handler IDs.
+        try:
+            _handler_id = self.dic_handler_id[signal]
+        except KeyError:
+            _handler_id = handler_id
+
+        self.handler_block(_handler_id)
         self.set_active(value)
-        self.handler_unblock(handler_id)
+        self.handler_unblock(_handler_id)
 
     def get_value(self, index: int = 0) -> str:
         """

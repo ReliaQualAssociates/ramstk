@@ -9,48 +9,28 @@
 
 # Standard Library Imports
 from datetime import datetime
-from typing import Any, Tuple
+from typing import Any
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GObject, Gtk, Pango
+from ramstk.views.gtk3 import Gtk, Pango
+
+# RAMSTK Local Imports
+from .widget import RAMSTKWidget
 
 
-def do_set_common_properties(**kwargs) -> Tuple[int, str, int]:
-    """
-    Set common button properties.
-
-    :return: _height, _tooltip, _width
-    :rtype: tuple
-    """
-    try:
-        _height = kwargs['height']
-    except KeyError:
-        _height = 25
-    try:
-        _tooltip = kwargs['tooltip']
-    except KeyError:
-        _tooltip = ("Missing tooltip, please file a quality type issue to "
-                    "have one added.")
-    try:
-        _width = kwargs['width']
-    except KeyError:
-        _width = 200
-
-    if _height == 0:
-        _height = 25
-    if _width == 0:
-        _width = 200
-
-    return _height, _tooltip, _width
-
-
-class RAMSTKEntry(Gtk.Entry):
+class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
     """This is the RAMSTK Entry class."""
+
+    # Define private class scalar attributes.
+    _default_height = 25
+    _default_width = 200
+
     def __init__(self) -> None:
         r"""
         Create a RAMSTK Entry widget.
         """
-        GObject.GObject.__init__(self)
+        RAMSTKWidget.__init__(self)
+
         self.show()
 
     def do_set_properties(self, **kwargs: Any) -> None:
@@ -76,6 +56,8 @@ class RAMSTKEntry(Gtk.Entry):
         :return: None
         :rtype: None
         """
+        super().do_set_properties(**kwargs)
+
         try:
             _bold = kwargs['bold']
         except KeyError:
@@ -85,18 +67,12 @@ class RAMSTKEntry(Gtk.Entry):
         except KeyError:
             _editable = True
 
-        _height, _tooltip, _width = do_set_common_properties(**kwargs)
-
         self.set_property('editable', _editable)
-        self.set_property('height-request', _height)
-        self.set_property('width-request', _width)
 
         if _bold:
             self.modify_font(Pango.FontDescription('bold'))
 
-        self.set_tooltip_markup(_tooltip)
-
-    def do_update(self, value: str, handler_id: int) -> None:
+    def do_update(self, value: str, handler_id: int, signal: str = '') -> None:
         """
         Update the RAMSTK Entry with a new value.
 
@@ -104,19 +80,34 @@ class RAMSTKEntry(Gtk.Entry):
             display.
         :param int handler_id: the handler ID associated with the
             RAMSTKEntry().
+        :keyword str signal: the name of the signal whose handler ID the
+            RAMSTKEntry() needs to block.
         :return: None
         :rtype: None
         """
-        self.handler_block(handler_id)
+        # TODO: Remove this try construct after all views calling this
+        #  method have been updated to account for the widget attribute
+        #  containing the signal handler IDs.
+        try:
+            _handler_id = self.dic_handler_id[signal]
+        except KeyError:
+            _handler_id = handler_id
+
+        self.handler_block(_handler_id)
         try:
             self.set_text(datetime.strftime(value, '%Y-%m-%d'))
         except TypeError:
             self.set_text(str(value))
-        self.handler_unblock(handler_id)
+        self.handler_unblock(_handler_id)
 
 
-class RAMSTKTextView(Gtk.TextView):
+class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
     """This is the RAMSTK TextView class."""
+
+    # Define private class scalar attributes.
+    _default_height = 100
+    _default_width = 200
+
     def __init__(self, txvbuffer: Gtk.TextBuffer = None) -> None:
         """
         Create RAMSTK TextView() widgets.
@@ -124,31 +115,26 @@ class RAMSTKTextView(Gtk.TextView):
         Returns a Gtk.TextView() embedded in a Gtk.ScrolledWindow().
 
         :keyword txvbuffer: the Gtk.TextBuffer() to associate with the
-            RAMSTK TextView().  Default is None.
+            RAMSTKTextView().  Default is None.
         :type txvbuffer: :class:`Gtk.TextBuffer`
-        :keyword int width: width of the  RAMSTK TextView() widget.  Default is
+        :keyword int width: width of the  RAMSTKTextView() widget.  Default is
             200.
-        :keyword int height: height of the RAMSTK TextView() widget.  Default
+        :keyword int height: height of the RAMSTKTextView() widget.  Default
             is 100.
         :return: None
         :rtype: None
         """
-        GObject.GObject.__init__(self)
+        RAMSTKWidget.__init__(self)
 
         self.set_buffer(txvbuffer)
         self.set_wrap_mode(Gtk.WrapMode.WORD)
 
         self.scrollwindow = Gtk.ScrolledWindow()
-        self.scrollwindow.set_policy(
-            Gtk.PolicyType.AUTOMATIC,
-            Gtk.PolicyType.AUTOMATIC
-        )
+        self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                     Gtk.PolicyType.AUTOMATIC)
         self.scrollwindow.add_with_viewport(self)
 
         self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
-
-        self.height = -1
-        self.width = -1
 
     def do_get_buffer(self) -> Gtk.TextBuffer:
         """
@@ -178,24 +164,21 @@ class RAMSTKTextView(Gtk.TextView):
 
         :Keyword Arguments:
             * *height* (int) -- height of the Gtk.TextView() widget.
-                                Default is 25.
+                    Default is 25.
             * *tooltip* (str) -- the tooltip, if any, for the entry.
-                                 Default is an empty string.
+                    Default is an empty string.
             * *width* (int) -- width of the Gtk.TextView() widget.
-                               Default is 200.
+                    Default is 200.
         :return: None
         :rtype: None
         """
-        _height, _tooltip, _width = do_set_common_properties(**kwargs)
+        super().do_set_properties(**kwargs)
 
-        self.height = _height
-        self.width = _width
-        self.scrollwindow.set_property('height-request', _height)
-        self.set_property('tooltip-markup', _tooltip)
-        self.scrollwindow.set_property('width-request', _width)
+        self.scrollwindow.set_property('height-request', self.height)
+        self.scrollwindow.set_property('width-request', self.width)
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
-    def do_update(self, value: str, handler_id: int) -> None:
+    def do_update(self, value: str, handler_id: int, signal: str = '') -> None:
         """
         Update the RAMSTK TextView with a new value.
 
@@ -203,11 +186,21 @@ class RAMSTKTextView(Gtk.TextView):
             display.
         :param int handler_id: the handler ID associated with the
             RAMSTKTextView().
+        :keyword str signal: the name of the signal whose handler ID the
+            RAMSTKTextView() needs to block.
         :return: None
         :rtype: None
         """
+        # TODO: Remove this try construct after all views calling this
+        #  method have been updated to account for the widget attribute
+        #  containing the signal handler IDs.
+        try:
+            _handler_id = self.dic_handler_id[signal]
+        except KeyError:
+            _handler_id = handler_id
+
         _buffer = self.do_get_buffer()
 
-        _buffer.handler_block(handler_id)
+        _buffer.handler_block(_handler_id)
         _buffer.set_text(str(value))
-        _buffer.handler_unblock(handler_id)
+        _buffer.handler_unblock(_handler_id)

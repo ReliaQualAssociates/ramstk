@@ -85,7 +85,7 @@ class TestRAMSTKTextView():
         DUT = RAMSTKTextView(Gtk.TextBuffer())
         DUT.do_set_properties()
 
-        assert DUT.scrollwindow.get_property('height-request') == 25
+        assert DUT.scrollwindow.get_property('height-request') == 100
         assert DUT.get_property('tooltip-markup') == (
             "Missing tooltip, please file a quality type issue to have one "
             "added.")
@@ -97,7 +97,7 @@ class TestRAMSTKTextView():
         DUT = RAMSTKTextView(Gtk.TextBuffer())
         DUT.do_set_properties(height=0)
 
-        assert DUT.scrollwindow.get_property('height-request') == 25
+        assert DUT.scrollwindow.get_property('height-request') == 100
 
     @pytest.mark.gui
     def test_set_properties_zero_width(self):

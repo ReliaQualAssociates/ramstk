@@ -11,7 +11,10 @@
 from typing import Any, List, Tuple
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GObject, Gtk
+from ramstk.views.gtk3 import Gtk
+
+# RAMSTK Local Imports
+from .widget import RAMSTKWidget
 
 
 def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int,
@@ -60,6 +63,7 @@ def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int,
 
     _char_width = max([len(_label_text) for _label_text in text])
 
+    # pylint: disable=unused-variable
     for __, _label_text in enumerate(text):
         _label = RAMSTKLabel(_label_text)
         _label.do_set_properties(width=-1,
@@ -74,7 +78,9 @@ def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int,
 
     return _max_x, _lst_y_pos
 
-def do_make_label_group2(text: List[str], **kwargs: Any) -> Tuple[int, List[int]]:
+
+def do_make_label_group2(text: List[str],
+                         **kwargs: Any) -> Tuple[int, List[int]]:
     r"""
     Make and place a group of labels.
 
@@ -115,6 +121,7 @@ def do_make_label_group2(text: List[str], **kwargs: Any) -> Tuple[int, List[int]
 
     _char_width = max([len(_label_text) for _label_text in text])
 
+    # pylint: disable=unused-variable
     for __, _label_text in enumerate(text):
         _label = RAMSTKLabel(_label_text)
         _label.do_set_properties(width=-1,
@@ -128,15 +135,20 @@ def do_make_label_group2(text: List[str], **kwargs: Any) -> Tuple[int, List[int]
     return _max_x, _lst_labels
 
 
-class RAMSTKLabel(Gtk.Label):
+class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
     """This is the RAMSTK Label class."""
+
+    # Define private class scalar attributes.
+    _default_height = 25
+    _default_width = 190
+
     def __init__(self, text: str) -> None:
         """
         Create RAMSTKLabel widget.
 
         :param str text: the text to display in the label.
         """
-        GObject.GObject.__init__(self)
+        RAMSTKWidget.__init__(self)
 
         self.set_markup("<span>" + text + "</span>")
         self.show_all()
@@ -176,40 +188,23 @@ class RAMSTKLabel(Gtk.Label):
         :return: None
         :rtype: None
         """
+        super().do_set_properties(**kwargs)
+
         try:
             _bold = kwargs['bold']
         except KeyError:
             _bold = True
         try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = 25
-        try:
             _justify = kwargs['justify']
         except KeyError:
             _justify = Gtk.Justification.LEFT
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = 190
         try:
             _wrap = kwargs['wrap']
         except KeyError:
             _wrap = False
 
-        if _height == 0:
-            _height = 25
-        if _width == 0:
-            _width = 190
-
         self.set_property('wrap', _wrap)
         self.set_property('justify', _justify)
-        self.set_tooltip_markup(_tooltip)
         if _justify == Gtk.Justification.CENTER:
             self.set_xalign(0.5)
             self.set_yalign(0.5)
@@ -219,8 +214,6 @@ class RAMSTKLabel(Gtk.Label):
         else:
             self.set_xalign(0.99)
             self.set_yalign(0.5)
-        self.props.width_request = _width
-        self.props.height_request = _height
 
         if _bold:
             _text = self.get_property('label')
