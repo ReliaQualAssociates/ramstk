@@ -534,9 +534,7 @@ def get_resistance_factor(subcategory_id: int, specification_id: int,
 
         for _index, _value in enumerate(_breaks):
             _diff = _value - resistance
-            if len(_breaks) == 1 and _diff < 0:
-                break
-            elif _diff >= 0:
+            if (len(_breaks) == 1 and _diff < 0) or _diff >= 0:
                 break
 
         # Resistance factor (piR) dictionary of values.  The key is the
@@ -574,11 +572,9 @@ def get_voltage_factor(subcategory_id: int, voltage_ratio: float) -> float:
 
     for _index, _value in enumerate(_breaks):
         _diff = _value - voltage_ratio
-        if len(_breaks) == 1 and _diff < 0.0:
-            break
-        elif _index == 0 and _diff >= 0.0:
-            break
-        elif _diff >= 0:
+        if (len(_breaks) == 1
+                and _diff < 0.0) or (_index == 0
+                                     and _diff >= 0.0) or _diff >= 0:
             break
 
     return PI_V[subcategory_id][_index]

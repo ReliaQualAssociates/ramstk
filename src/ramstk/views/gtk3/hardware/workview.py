@@ -30,7 +30,7 @@ from ramstk.views.gtk3.widgets import (
 
 # RAMSTK Local Imports
 from .components import (
-    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection
+    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection, inductor
 )
 
 
@@ -166,8 +166,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['comp_ref_des'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/rollup.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/rollup.png')
 
         # Initialize private list attributes.
 
@@ -311,6 +311,7 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Make the left side of the page.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0, end=13)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -322,6 +323,7 @@ class GeneralData(RAMSTKWorkView):
         # Make the top right side of the page.
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=13, end=20)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -331,6 +333,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(_frame, True, True)
 
         # Make the bottom right side of the page.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=20)
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -603,7 +606,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.cmbSubcategory.do_load_combo([], handler_id=self._lst_handler_id[5])
+        self.cmbSubcategory.do_load_combo([],
+                                          handler_id=self._lst_handler_id[5])
 
         if category_id > 0:
             _subcategory = SortedDict(self.RAMSTK_USER_CONFIGURATION.
@@ -611,7 +615,8 @@ class GeneralData(RAMSTKWorkView):
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
-            self.cmbSubcategory.do_load_combo(_data, handler_id=self._lst_handler_id[5])
+            self.cmbSubcategory.do_load_combo(
+                _data, handler_id=self._lst_handler_id[5])
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """
@@ -918,7 +923,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentInputs(configuration, logger),
-            # 5: wvwInductorAI(self.RAMSTK_CONFIGURATION),
+            5: inductor.AssessmentInputs(configuration, logger),
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentInputs(configuration, logger),
@@ -1053,6 +1058,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0, end=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1073,6 +1079,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1288,6 +1295,7 @@ class AssessmentInputs(RAMSTKWorkView):
         if attributes['category_id'] > 0:
             self._do_load_component_inputs(attributes)
         else:
+            self.scwDesignRatings.hide()
             self.wvwOperatingStress.hide()
 
         self.cmbActiveEnviron.do_update(
@@ -1342,8 +1350,6 @@ class AssessmentInputs(RAMSTKWorkView):
 
         self._do_set_sensitive(type_id=attributes['hazard_rate_type_id'])
 
-        self.scwDesignRatings.show_all()
-
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.
         pub.sendMessage('loaded_hardware_inputs', attributes=attributes)
@@ -1376,6 +1382,7 @@ class AssessmentInputs(RAMSTKWorkView):
         if _component_ai is not None:
             self.scwDesignRatings.add(_component_ai)
 
+        self.scwDesignRatings.show_all()
         self.wvwOperatingStress.show_all()
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
@@ -1599,7 +1606,7 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # See issue #309.
+        # TODO: See issue #309.
         super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -1710,7 +1717,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 2: wvwSemiconductorAR(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentResults(configuration, logger),
-            # 5: wvwInductorAR(self.RAMSTK_CONFIGURATION),
+            5: inductor.AssessmentResults(configuration, logger),
             # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentResults(configuration, logger),
@@ -1827,6 +1834,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1847,6 +1855,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
         (__, __, _fixed) = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1886,6 +1895,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.__set_availability_properties()
         self.__set_miscellaneous_properties()
         self.__set_reliability_properties()
+
     def __set_availability_properties(self) -> None:
         """
         Set the properties of widgets displaying availability results.
@@ -2140,8 +2150,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionAtVar.set_text(
             str(self.fmt.format(attributes['avail_mis_variance'])))
 
-    def _do_load_hazard_rate_results(self,
-                                     attributes: Dict[str, Any]) -> None:
+    def _do_load_hazard_rate_results(self, attributes: Dict[str, Any]) -> None:
         """
         Load the widgets used to display hazard rate results attributes.
 
@@ -2213,8 +2222,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionMTBFVar.set_text(
             str(self.fmt.format(attributes['mtbf_mission_variance'])))
 
-    def _do_load_reliability_results(self,
-                                     attributes: Dict[str, Any]) -> None:
+    def _do_load_reliability_results(self, attributes: Dict[str, Any]) -> None:
         """
         Load the widgets used to display reliability results attributes.
 

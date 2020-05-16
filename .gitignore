@@ -50,7 +50,6 @@ out/
 *.txt
 *.xls*
 *coverage*
-*cobertura*
 .python-version
 _temp/
 devtools/update_docs.txt
