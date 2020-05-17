@@ -433,9 +433,9 @@ def calculate_temperature_factor(subcategory_id: int, family_id: int,
         _ref_temp = 296.0
         _ea = ACTIVATION_ENERGY[subcategory_id]
 
-    return 0.1 * exp((-_ea / 8.617E-5) * ((1.0 /
-                                           (temperature_junction + 273)) -
-                                          (1.0 / _ref_temp)))
+    return 0.1 * exp(
+        (-_ea / 8.617E-5) * ((1.0 / (temperature_junction + 273)) -
+                             (1.0 / _ref_temp)))
 
 
 def calculate_eos_hazard_rate(voltage_esd: float) -> float:
@@ -522,8 +522,8 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     attributes['piT'] = calculate_temperature_factor(
         attributes['subcategory_id'], attributes['family_id'],
         attributes['type_id'], attributes['temperature_junction'])
-    attributes['piL'] = 0.01 * exp(5.35
-                                   - 0.35 * attributes['years_in_production'])
+    attributes['piL'] = 0.01 * exp(5.35 -
+                                   0.35 * attributes['years_in_production'])
     attributes['piA'] = get_application_factor(attributes['type_id'],
                                                attributes['application_id'])
 
@@ -534,9 +534,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes['C2'] = calculate_package_factor(
             attributes['package_id'], attributes['n_active_pins'])
         attributes['hazard_rate_active'] = (
-            (attributes['C1'] * attributes['piT']
-             + attributes['C2'] * attributes['piE']) * attributes['piQ']
-            * attributes['piL'])
+            (attributes['C1'] * attributes['piT'] +
+             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
+            attributes['piL'])
     elif attributes['subcategory_id'] in [5, 6, 7, 8]:
         attributes['C1'] = get_die_complexity_factor(
             attributes['subcategory_id'], attributes['technology_id'],
@@ -550,15 +550,15 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
                 attributes['n_cycles'], attributes['construction_id'],
                 attributes['n_elements'], attributes['temperature_junction'])
             attributes['lambda_cyc'] = ((_a_1 * _b_1 +
-                                         (_a_2 * _b_2 / attributes['piQ']))
-                                        * attributes['piECC'])
+                                         (_a_2 * _b_2 / attributes['piQ'])) *
+                                        attributes['piECC'])
         else:
             attributes['lambda_cyc'] = 0.0
 
         attributes['hazard_rate_active'] = (
-            (attributes['C1'] * attributes['piT']
-             + attributes['C2'] * attributes['piE'] + attributes['lambda_cyc'])
-            * attributes['piQ'] * attributes['piL'])
+            (attributes['C1'] * attributes['piT'] +
+             attributes['C2'] * attributes['piE'] + attributes['lambda_cyc']) *
+            attributes['piQ'] * attributes['piL'])
 
     elif attributes['subcategory_id'] == 9:
         attributes['C1'] = get_die_complexity_factor(
@@ -567,9 +567,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes['C2'] = calculate_package_factor(
             attributes['package_id'], attributes['n_active_pins'])
         attributes['hazard_rate_active'] = (
-            (attributes['C1'] * attributes['piT'] * attributes['piA']
-             + attributes['C2'] * attributes['piE']) * attributes['piQ']
-            * attributes['piL'])
+            (attributes['C1'] * attributes['piT'] * attributes['piA'] +
+             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
+            attributes['piL'])
     elif attributes['subcategory_id'] == 10:
         attributes['lambdaBD'] = get_die_base_hazard_rate(
             attributes['type_id'])
@@ -585,9 +585,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes['package_id'])
 
         attributes['hazard_rate_active'] = (
-            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT']
-            * attributes['piCD'] + attributes['lambdaBP'] * attributes['piE']
-            * attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS'])
+            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT'] *
+            attributes['piCD'] + attributes['lambdaBP'] * attributes['piE'] *
+            attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS'])
 
     return attributes
 

@@ -345,17 +345,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 "The number of years the generic device type has been in "
                 "production."))
 
-    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
+    def __do_load_application_combo(self, attributes: Dict[str, Any]) -> None:
         """
-        Load the Integrated Circuit assesment input widgets.
+        Load the IC application RAMSTKComboBox().
 
-        :param dict attributes: the attributes dictionary for the selected
-        Integrated Circuit.
+        :param dict attributes: the attributes dict for the selected
+            integrated circuit.
         :return: None
-        :rtype: None
+        :rtype: Nont
         """
-        super().do_load_page(attributes)
-
         if attributes['construction_id'] == 1:
             self.cmbApplication.do_load_combo(
                 [[_("Low Noise and Low Power (\u2264 100mW)")],
@@ -365,6 +363,152 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             self.cmbApplication.do_load_combo([[_("All digital devices")]],
                                               signal='changed')
 
+    def __do_load_dram(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display DRAM information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbTechnology.do_update(attributes['technology_id'])
+
+    def __do_load_eeprom(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display EEPROM information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbConstruction.do_update(attributes['construction_id'])
+            self.cmbTechnology.do_update(attributes['technology_id'])
+            self.cmbType.do_update(attributes['type_id'])  # Use for ECC.
+            self.txtNCycles.do_update(str(attributes['n_cycles']))
+            self.txtOperatingLife.do_update(
+                str(self.fmt.format(attributes['operating_life'])))
+
+    def __do_load_gaas(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display GaAs IC information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbApplication.do_update(attributes['application_id'])
+            self.cmbType.do_update(attributes['type_id'])
+            self.txtYearsInProduction.do_update(
+                str(attributes['years_in_production']))
+
+    def __do_load_linear(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display linear (analog) information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.cmbTechnology.do_update(attributes['technology_id'])
+
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbTechnology.do_update(attributes['technology_id'])
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
+            self.txtYearsInProduction.do_update(
+                str(attributes['years_in_production']))
+
+    def __do_load_logic(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display digital IC information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.cmbTechnology.do_update(attributes['technology_id'])
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbTechnology.do_update(attributes['technology_id'])
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
+            self.txtYearsInProduction.do_update(
+                str(attributes['years_in_production']))
+
+    def __do_load_microprocessor_microcontroller(self,
+                                                 attributes: Dict[str, Any]
+                                                 ) -> None:
+        """
+        Load the widgets that display microprocessor information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.cmbTechnology.do_update(attributes['technology_id'])
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbTechnology.do_update(attributes['technology_id'])
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
+            self.txtYearsInProduction.do_update(
+                str(attributes['years_in_production']))
+
+    def __do_load_pal_pla(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display DRAM information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.cmbTechnology.do_update(attributes['technology_id'])
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbTechnology.do_update(attributes['technology_id'])
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
+            self.txtYearsInProduction.do_update(
+                str(attributes['years_in_production']))
+
+    def __do_load_rom(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display ROM information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.do_update(attributes['technology_id'])
+
+    def __do_load_sram(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display SRAM information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.do_update(attributes['technology_id'])
+
+    def __do_load_vhsic_vlsi(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the widgets that display VHSIC/VLSI information.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
         if self._subcategory_id == 10:
             self.cmbManufacturing.do_update(attributes['manufacturing_id'])
             self.cmbType.do_update(attributes['type_id'])
@@ -374,39 +518,205 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             self.txtVoltageESD.do_update(
                 str(self.fmt.format(attributes['voltage_esd'])))
 
+    def __do_set_dram_sensitive(self) -> None:
+        """
+        Set the widgets that display DRAM information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            pub.sendMessage('wvw_editing_hardware',
+                            module_id=self._record_id,
+                            key='technology_id',
+                            value=2)
+            self.txtNElements.set_sensitive(True)
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbTechnology.set_sensitive(True)
+
+    def __do_set_eeprom_sensitive(self) -> None:
+        """
+        Set the widgets that display EEPROM information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            pub.sendMessage('wvw_editing_hardware',
+                            module_id=self._record_id,
+                            key='technology_id',
+                            value=2)
+            self.txtNElements.set_sensitive(True)
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbConstruction.set_sensitive(True)
+            self.cmbECC.set_sensitive(True)
+            self.cmbTechnology.set_sensitive(True)
+            self.txtNActivePins.set_sensitive(True)
+            self.txtNCycles.set_sensitive(True)
+            self.txtOperatingLife.set_sensitive(True)
+
+    def __do_set_gaas_sensitive(self) -> None:
+        """
+        Set the widgets that display GaAs IC information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.cmbTechnology.set_sensitive(True)
+            self.txtNElements.set_sensitive(True)
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.cmbApplication.set_sensitive(True)
+            self.cmbType.set_sensitive(True)
+            self.txtNActivePins.set_sensitive(True)
+            self.txtYearsInProduction.set_sensitive(True)
+
+    def __do_set_linear_sensitive(self) -> None:
+        """
+        Set the widgets that display linear (analog) information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.txtNElements.set_sensitive(True)
+
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.txtNActivePins.set_sensitive(True)
+            self.txtYearsInProduction.set_sensitive(True)
+
+    def __do_set_logic_sensitive(self) -> None:
+        """
+        Set the widgets that display digital IC information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.txtNElements.set_sensitive(True)
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.txtNActivePins.set_sensitive(True)
+            self.txtYearsInProduction.set_sensitive(True)
+
+    def __do_set_microprocessor_microcontroller_sensitive(self) -> None:
+        """
+        Set the widgets that display microprocessor information sensitive.
+        Set the widgets that display microprocessor information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.txtNElements.set_sensitive(True)
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.txtNActivePins.set_sensitive(True)
+            self.txtYearsInProduction.set_sensitive(True)
+
+    def __do_set_pal_pla_sensitive(self) -> None:
+        """
+        Set the widgets that display DRAM information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.txtNElements.set_sensitive(True)
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            self.txtNActivePins.set_sensitive(True)
+            self.txtYearsInProduction.set_sensitive(True)
+
+    def __do_set_rom_sensitive(self) -> None:
+        """
+        Set the widgets that display ROM information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.txtNElements.set_sensitive(True)
+
+    def __do_set_sram_sensitive(self) -> None:
+        """
+        Set the widgets that display SRAM information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        self.cmbTechnology.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
+            self.txtNElements.set_sensitive(True)
+
+    def __do_set_vhsic_vlsi_sensitive(self) -> None:
+        """
+        Set the widgets that display VHSIC/VLSI information sensitive.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 10:
+            self.cmbManufacturing.set_sensitive(True)
+            self.cmbType.set_sensitive(True)
+            self.txtArea.set_sensitive(True)
+            self.txtFeatureSize.set_sensitive(True)
+            self.txtNActivePins.set_sensitive(False)
+            self.txtVoltageESD.set_sensitive(True)
+
+    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the Integrated Circuit assesment input widgets.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Integrated Circuit.
+        :return: None
+        :rtype: None
+        """
+        super().do_load_page(attributes)
+
+        self.__do_load_application_combo(attributes)
+        self.__do_load_vhsic_vlsi(attributes)
+        self.__do_load_linear(attributes)
+        self.__do_load_logic(attributes)
+        self.__do_load_pal_pla(attributes)
+        self.__do_load_microprocessor_microcontroller(attributes)
+        self.__do_load_rom(attributes)
+        self.__do_load_eeprom(attributes)
+        self.__do_load_dram(attributes)
+        self.__do_load_sram(attributes)
+        self.__do_load_gaas(attributes)
+
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
             self.txtNElements.do_update(str(attributes['n_elements']))
-
-            if self._subcategory_id in [1, 2, 3, 4, 5, 8]:
-                self.cmbTechnology.do_update(attributes['technology_id'])
-
         elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbPackage.do_update(attributes['package_id'])
             self.txtArea.do_update(str(self.fmt.format(attributes['area'])))
             self.txtNElements.do_update(str(attributes['n_elements']))
             self.txtThetaJC.do_update(
                 str(self.fmt.format(attributes['theta_jc'])))
-
-            if self._subcategory_id in [1, 2, 3, 4]:
-                self.cmbTechnology.do_update(attributes['technology_id'])
-                self.txtNActivePins.do_update(str(attributes['n_active_pins']))
-                self.txtYearsInProduction.do_update(
-                    str(attributes['years_in_production']))
-
-            elif self._subcategory_id in [5, 7, 8]:
-                self.cmbTechnology.do_update(attributes['technology_id'])
-            elif self._subcategory_id == 6:
-                self.cmbConstruction.do_update(attributes['construction_id'])
-                self.cmbTechnology.do_update(attributes['technology_id'])
-                self.cmbType.do_update(attributes['type_id'])  # Use for ECC.
-                self.txtNCycles.do_update(str(attributes['n_cycles']))
-                self.txtOperatingLife.do_update(
-                    str(self.fmt.format(attributes['operating_life'])))
-            elif self._subcategory_id == 9:
-                self.cmbApplication.do_update(attributes['application_id'])
-                self.cmbType.do_update(attributes['type_id'])
-                self.txtYearsInProduction.do_update(
-                    str(attributes['years_in_production']))
 
         self._do_set_sensitive()
 
@@ -434,48 +744,22 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.txtVoltageESD.set_sensitive(False)
         self.txtYearsInProduction.set_sensitive(False)
 
-        if self._subcategory_id == 10:
-            self.cmbManufacturing.set_sensitive(True)
-            self.cmbType.set_sensitive(True)
-            self.txtArea.set_sensitive(True)
-            self.txtFeatureSize.set_sensitive(True)
-            self.txtNActivePins.set_sensitive(False)
-            self.txtVoltageESD.set_sensitive(True)
+        self.__do_set_dram_sensitive()
+        self.__do_set_eeprom_sensitive()
+        self.__do_set_gaas_sensitive()
+        self.__do_set_linear_sensitive()
+        self.__do_set_logic_sensitive()
+        self.__do_set_microprocessor_microcontroller_sensitive()
+        self.__do_set_pal_pla_sensitive()
+        self.__do_set_rom_sensitive()
+        self.__do_set_sram_sensitive()
+        self.__do_set_vhsic_vlsi_sensitive()
 
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            if self._subcategory_id in [1, 2, 3, 4, 5, 8, 9]:
-                self.cmbTechnology.set_sensitive(True)
-                self.txtNElements.set_sensitive(True)
-            if self._subcategory_id in [6, 7]:
-                pub.sendMessage('wvw_editing_hardware',
-                                module_id=self._record_id,
-                                key='technology_id',
-                                value=2)
-                self.txtNElements.set_sensitive(True)
-        else:
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbPackage.set_sensitive(True)
             self.txtArea.set_sensitive(True)
             self.txtNElements.set_sensitive(True)
             self.txtThetaJC.set_sensitive(True)
-
-            if self._subcategory_id in [1, 2, 3, 4]:
-                self.cmbTechnology.set_sensitive(True)
-                self.txtNActivePins.set_sensitive(True)
-                self.txtYearsInProduction.set_sensitive(True)
-            elif self._subcategory_id in [5, 7, 8]:
-                self.cmbTechnology.set_sensitive(True)
-            elif self._subcategory_id == 6:
-                self.cmbConstruction.set_sensitive(True)
-                self.cmbECC.set_sensitive(True)
-                self.cmbTechnology.set_sensitive(True)
-                self.txtNActivePins.set_sensitive(True)
-                self.txtNCycles.set_sensitive(True)
-                self.txtOperatingLife.set_sensitive(True)
-            elif self._subcategory_id == 9:
-                self.cmbApplication.set_sensitive(True)
-                self.cmbType.set_sensitive(True)
-                self.txtNActivePins.set_sensitive(True)
-                self.txtYearsInProduction.set_sensitive(True)
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
@@ -733,6 +1017,28 @@ class AssessmentResults(RAMSTKAssessmentResults):
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
         pub.subscribe(self._do_load_page, 'succeed_calculate_hardware')
 
+    def __do_set_part_stress_sensitive(self) -> None:
+        """
+        Sets the widgets displaying MIL-HDBK-217F part stress info sensitive.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtPiT.set_sensitive(True)
+        self.txtPiE.set_sensitive(True)
+        self.txtPiQ.set_sensitive(True)
+
+        if self._subcategory_id in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+            self.txtC1.set_sensitive(True)
+            self.txtC2.set_sensitive(True)
+            self.txtPiL.set_sensitive(True)
+
+        if self._subcategory_id in [5, 6, 7, 8]:
+            self.txtLambdaCYC.set_sensitive(True)
+
+        if self._subcategory_id == 9:
+            self.txtPiA.set_sensitive(True)
+
     def __set_properties(self) -> None:
         """
         Set properties for Integrated Circuit assessment result widgets.
@@ -881,18 +1187,5 @@ class AssessmentResults(RAMSTKAssessmentResults):
 
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
             self.txtLambdaB.set_sensitive(True)
-        else:
-            self.txtPiT.set_sensitive(True)
-            self.txtPiE.set_sensitive(True)
-            self.txtPiQ.set_sensitive(True)
-
-            if self._subcategory_id in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
-                self.txtC1.set_sensitive(True)
-                self.txtC2.set_sensitive(True)
-                self.txtPiL.set_sensitive(True)
-
-            if self._subcategory_id in [5, 6, 7, 8]:
-                self.txtLambdaCYC.set_sensitive(True)
-
-            if self._subcategory_id == 9:
-                self.txtPiA.set_sensitive(True)
+        elif self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Part Stress
+            self.__do_set_part_stress_sensitive()
