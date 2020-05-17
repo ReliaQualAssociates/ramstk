@@ -549,8 +549,11 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         """
         Initialize an instance of the Hardware assessment result view.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module=module)
 

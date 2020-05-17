@@ -173,12 +173,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
-                 module: str = 'capacitor') -> None:
+                 module: str = 'integrated_circuit') -> None:
         """
         Initialize an instance of the IC assessment input view.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`Configuration.Configuration`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module=module)
 
@@ -764,7 +767,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
-        Retrieve RAMSTKCombo() changes and assign to Capacitor attribute.
+        Retrieve RAMSTKCombo() changes and assign to IC attribute.
 
         This method is called by:
 
@@ -950,13 +953,15 @@ class AssessmentResults(RAMSTKAssessmentResults):
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
-                 module: str = 'capacitor') -> None:
+                 module: str = 'integrated_circuit') -> None:
         """
         Initialize an instance of the IC assessment result view.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-        :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module=module)
 
@@ -1048,7 +1053,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :return: None
         :rtype: None
         """
-        _tooltips = [
+        _lst_tooltips = [
             _("The die complexity hazard rate of the integrated circuit."),
             _("The temperature factor for the integrated circuit."),
             _("The package hazard rate for the integrated circuit."),
@@ -1074,7 +1079,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
             _widget.do_set_properties(width=125,
                                       editable=False,
                                       bold=True,
-                                      tooltip=_tooltips[_idx])
+                                      tooltip=_lst_tooltips[_idx])
             _idx += 1
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
@@ -1082,7 +1087,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         Load the integrated circuit assessment results page.
 
         :param dict attributes: the attributes dictionary for the selected
-        Integrated Circuit.
+            Integrated Circuit.
         :return: None
         :rtype: None
         """
