@@ -125,7 +125,8 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         self.do_load_comboboxes(attributes['subcategory_id'])
 
         self.cmbQuality.do_update(attributes['quality_id'],
-                                  self._lst_handler_id[0])
+                                  handler_id=self._lst_handler_id[0],
+                                  signal='changed')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -152,6 +153,7 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
@@ -332,6 +334,7 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
@@ -710,6 +713,7 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
@@ -831,6 +835,7 @@ class RAMSTKStressResults(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0)
         _hpaned.pack1(_fixed, False, False)
 

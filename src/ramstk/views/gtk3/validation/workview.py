@@ -437,11 +437,13 @@ class GeneralData(RAMSTKWorkView):
                                   self.txtStartDate)
 
         # noinspection PyArgumentList
-        self._lst_handler_id.append(self.txtTask.do_get_buffer().connect('changed', self._on_focus_out, None, 0))
+        self._lst_handler_id.append(self.txtTask.do_get_buffer().connect(
+            'changed', self._on_focus_out, None, 0))
         self._lst_handler_id.append(
             self.cmbTaskType.connect('changed', self._on_combo_changed, 1))
         self._lst_handler_id.append(
-            self.txtSpecification.connect('focus-out-event', self._on_focus_out, 2))
+            self.txtSpecification.connect('focus-out-event',
+                                          self._on_focus_out, 2))
         self._lst_handler_id.append(
             self.cmbMeasurementUnit.connect('changed', self._on_combo_changed,
                                             3))
@@ -458,8 +460,7 @@ class GeneralData(RAMSTKWorkView):
             self.txtVarAcceptable.connect('focus-out-event',
                                           self._on_focus_out, 7))
         self._lst_handler_id.append(
-            self.txtStartDate.connect('changed', self._on_focus_out, None,
-                                      8))
+            self.txtStartDate.connect('changed', self._on_focus_out, None, 8))
         self._lst_handler_id.append(
             self.txtEndDate.connect('changed', self._on_focus_out, None, 9))
         self._lst_handler_id.append(
@@ -822,6 +823,7 @@ class GeneralData(RAMSTKWorkView):
         except KeyError:
             _key = None
 
+        # TODO: See issue #310.
         combo.handler_block(self._lst_handler_id[index])
 
         _model = combo.get_model()
@@ -928,6 +930,7 @@ class GeneralData(RAMSTKWorkView):
         except KeyError:
             _key = ''
 
+        # TODO: See issue #310.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:
@@ -942,7 +945,7 @@ class GeneralData(RAMSTKWorkView):
                 _new_text = float(entry.get_text())
             except ValueError:
                 _new_text = 0.0
-        print({_key: _new_text})
+
         pub.sendMessage('wvw_editing_validation',
                         node_id=[self._record_id, -1, ''],
                         package={_key: _new_text})
@@ -1062,8 +1065,8 @@ class BurndownCurve(RAMSTKWorkView):
 
         # Insert the tab.
         _label = RAMSTKLabel(
-            _("<span weight='bold'>" + _("Program\nValidation\nProgress")
-              + "</span>"))
+            _("<span weight='bold'>" + _("Program\nValidation\nProgress") +
+              "</span>"))
         _label.do_set_properties(height=30,
                                  width=-1,
                                  justify=Gtk.Justification.CENTER,
@@ -1100,11 +1103,11 @@ class BurndownCurve(RAMSTKWorkView):
             self.burndown.axis.annotate(
                 str(
                     self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), 'upper'])) + "\n"
-                + str(
+                        assessed.loc[pd.to_datetime(_date), 'upper'])) + "\n" +
+                str(
                     self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), 'mean'])) + "\n"
-                + str(
+                        assessed.loc[pd.to_datetime(_date), 'mean'])) + "\n" +
+                str(
                     self.fmt.format(
                         assessed.loc[pd.to_datetime(_date), 'lower'])),
                 xy=(_date, 0.9 * _y_max),

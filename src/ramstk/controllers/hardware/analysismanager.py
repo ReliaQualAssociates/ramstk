@@ -33,8 +33,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the hardware item being analyzed.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
+    def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[Any, Any]) -> None:
         """
         Initialize an instance of the hardware analysis manager.
@@ -89,21 +88,21 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        self._attributes['total_cost'] = (self._attributes['cost']
-                                          * self._attributes['quantity'])
+        self._attributes['total_cost'] = (self._attributes['cost'] *
+                                          self._attributes['quantity'])
         self._attributes['cost_hour'] = (
-            self._attributes['total_cost']
-            * self._attributes['hazard_rate_mission'])
+            self._attributes['total_cost'] *
+            self._attributes['hazard_rate_mission'])
 
         if self._attributes['part'] == 1:
             self._attributes['total_part_count'] = self._attributes['quantity']
             self._attributes['total_power_dissipation'] = (
-                self._attributes['power_operating']
-                * self._attributes['quantity'])
+                self._attributes['power_operating'] *
+                self._attributes['quantity'])
         else:
             self._attributes['total_part_count'] = (
-                self._attributes['total_part_count']
-                * self._attributes['quantity'])
+                self._attributes['total_part_count'] *
+                self._attributes['quantity'])
 
     def _do_calculate_current_ratio(self) -> None:
         """
@@ -139,17 +138,17 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 1.0 / self._attributes['mtbf_specified'])
 
         self._attributes['hazard_rate_active'] = (
-            self._attributes['hazard_rate_active']
-            + self._attributes['add_adj_factor']
+            self._attributes['hazard_rate_active'] +
+            self._attributes['add_adj_factor']
         ) * self._attributes['mult_adj_factor']
 
         self._attributes['hazard_rate_logistics'] = (
-            self._attributes['hazard_rate_active']
-            + self._attributes['hazard_rate_dormant']
-            + self._attributes['hazard_rate_software'])
+            self._attributes['hazard_rate_active'] +
+            self._attributes['hazard_rate_dormant'] +
+            self._attributes['hazard_rate_software'])
         self._attributes['hazard_rate_mission'] = (
-            self._attributes['hazard_rate_active']
-            + self._attributes['hazard_rate_software'])
+            self._attributes['hazard_rate_active'] +
+            self._attributes['hazard_rate_software'])
 
         #// TODO: Add s-Distribution Support for R(t) Predictions
         #//
@@ -241,8 +240,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._attributes['reliability_logistics'] = exp(
                 -1.0 * (self._attributes['hazard_rate_logistics']) * 1000000.0)
             self._attributes['reliability_mission'] = exp(
-                -1.0 * (self._attributes['hazard_rate_mission'])
-                * self._attributes['mission_time'])
+                -1.0 * (self._attributes['hazard_rate_mission']) *
+                self._attributes['mission_time'])
         except ZeroDivisionError:
             pub.sendMessage(
                 'fail_calculate_hardware',
@@ -361,8 +360,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        _voltage_operating = (self._attributes['voltage_ac_operating']
-                              + self._attributes['voltage_dc_operating'])
+        _voltage_operating = (self._attributes['voltage_ac_operating'] +
+                              self._attributes['voltage_dc_operating'])
 
         try:
             self._attributes['voltage_ratio'] = stress.calculate_stress_ratio(
@@ -545,9 +544,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _parent_node = self._tree.parent(node_id)
         try:
             _weight_factor = (_node.data['reliability'].get_attributes()
-                              ['hazard_rate_active']
-                              / _parent_node.data['reliability'].
-                              get_attributes()['hazard_rate_active'])
+                              ['hazard_rate_active'] /
+                              _parent_node.data['reliability'].get_attributes(
+                              )['hazard_rate_active'])
         except ZeroDivisionError:
             _weight_factor = 0.0
             pub.sendMessage(
@@ -571,10 +570,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _cum_weight = 0
         for _node in self._tree.children(node_id):
             _attributes = _node.data['allocation'].get_attributes()
-            _attributes['weight_factor'] = (_attributes['int_factor']
-                                            * _attributes['soa_factor']
-                                            * _attributes['op_time_factor']
-                                            * _attributes['env_factor'])
+            _attributes['weight_factor'] = (_attributes['int_factor'] *
+                                            _attributes['soa_factor'] *
+                                            _attributes['op_time_factor'] *
+                                            _attributes['env_factor'])
             _cum_weight += _attributes['weight_factor']
 
         return _cum_weight
@@ -643,8 +642,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes = allocation.do_calculate_goals(**self._attributes)
 
     # noinspection PyIncorrectDocstring
-    def _do_calculate_hardware(self,
-                               node_id: int,
+    def _do_calculate_hardware(self, node_id: int,
                                system: bool = False) -> None:
         """
         Calculate all metrics for the hardware associated with node ID.
@@ -741,8 +739,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes['reason'] = ""
         self._attributes['overstress'] = False
 
-        def _do_check(overstress: Dict[str, float],
-                      stress_type: str) -> None:
+        def _do_check(overstress: Dict[str, float], stress_type: str) -> None:
             """
             Check the overstress condition and build a reason message.
 
@@ -756,26 +753,22 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 self._attributes['overstress'] = True
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is less than limit in a "
-                    "harsh environment.\n".format(
-                        str(stress_type)))
+                    "harsh environment.\n".format(str(stress_type)))
             if overstress['harsh'][1]:
                 self._attributes['overstress'] = True
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is greater than limit "
-                    "in a harsh environment.\n".format(
-                        str(stress_type)))
+                    "in a harsh environment.\n".format(str(stress_type)))
             if overstress['mild'][0]:
                 self._attributes['overstress'] = True
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is less than limit in a "
-                    "mild environment.\n".format(
-                        str(stress_type)))
+                    "mild environment.\n".format(str(stress_type)))
             if overstress['mild'][1]:
                 self._attributes['overstress'] = True
                 self._attributes['reason'] = self._attributes['reason'] + (
                     "Operating {0:s} is greater than limit "
-                    "in a mild environment.\n".format(
-                        str(stress_type)))
+                    "in a mild environment.\n".format(str(stress_type)))
 
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hardware item.  We need to build a comprehensive dict of
@@ -793,11 +786,19 @@ class AnalysisManager(RAMSTKAnalysisManager):
             'harsh': [0.0, _limits[4]],
             'mild': [0.0, _limits[5]]
         }
-        _deltat_limits = {
-            'harsh': [0.0, _limits[6]],
-            'mild': [0.0, _limits[7]]
-        }
-        _maxt_limits = {'harsh': [0.0, _limits[8]], 'mild': [0.0, _limits[9]]}
+        #// TODO: Implement temperture stress limits in _do_check().
+        #//
+        #// In the method _do_check() and _do_derating_analysis() in the
+        #// Hardware module analysis manager, there is no check for excessive
+        #// delta temperature or high temperature limits.  These either need
+        #// to be removed because no hardware item has temperature limits or
+        #// the checks need to be implemented.  This will require new tests.
+        # _deltat_limits = {
+        #    'harsh': [0.0, _limits[6]],
+        #    'mild': [0.0, _limits[7]]
+        # }
+        # _maxt_limits = {'harsh': [0.0, _limits[8]], 'mild': [0.0, _limits[
+        # 9]]}
 
         _overstress = derating.check_overstress(
             self._attributes['current_ratio'], _current_limits)
@@ -864,26 +865,16 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _change_description_10 += _name + ':\n' + _attributes[
                 'change_description_10'] + '\n\n'
 
-        self._attributes[
-            'change_description_1'] = _change_description_1
-        self._attributes[
-            'change_description_2'] = _change_description_2
-        self._attributes[
-            'change_description_3'] = _change_description_3
-        self._attributes[
-            'change_description_4'] = _change_description_4
-        self._attributes[
-            'change_description_5'] = _change_description_5
-        self._attributes[
-            'change_description_6'] = _change_description_6
-        self._attributes[
-            'change_description_7'] = _change_description_7
-        self._attributes[
-            'change_description_8'] = _change_description_8
-        self._attributes[
-            'change_description_9'] = _change_description_9
-        self._attributes[
-            'change_description_10'] = _change_description_10
+        self._attributes['change_description_1'] = _change_description_1
+        self._attributes['change_description_2'] = _change_description_2
+        self._attributes['change_description_3'] = _change_description_3
+        self._attributes['change_description_4'] = _change_description_4
+        self._attributes['change_description_5'] = _change_description_5
+        self._attributes['change_description_6'] = _change_description_6
+        self._attributes['change_description_7'] = _change_description_7
+        self._attributes['change_description_8'] = _change_description_8
+        self._attributes['change_description_9'] = _change_description_9
+        self._attributes['change_description_10'] = _change_description_10
 
         pub.sendMessage('succeed_roll_up_change_descriptions',
                         attributes=self._attributes)

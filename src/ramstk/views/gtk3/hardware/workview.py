@@ -30,8 +30,43 @@ from ramstk.views.gtk3.widgets import (
 
 # RAMSTK Local Imports
 from .components import (
-    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection, inductor
+    RAMSTKStressInputs, RAMSTKStressResults, capacitor,
+    connection, inductor, integrated_circuit
 )
+
+
+def _do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
+    """
+    Converts the treelib.Tree() holding hardware info into the standrd dict.
+
+    The Hardware datamanager is a complex conglomerate of data.  The data is
+    carried as data packages in the treelib.Tree() rather than a dict of
+    attributes because it's easier to build the tree.  This function simply
+    packs the tree data into a dict for consumption.
+
+    :param dmtree: the hardware item treelib.Tree().
+    :type dmtree: :class:`treelib.Tree`
+    :param record_id: the hardware ID of the currently selected record.
+    :return: _attributes; the attributes dict of the currently selected
+        hardware item.
+    :rtype: dict
+    """
+    _attributes = dmtree.get_node(
+        record_id).data['design_electric'].get_attributes()
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['reliability'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['hardware'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['mil_hdbk_217f'].get_attributes()
+    }
+
+    return _attributes
 
 
 class GeneralData(RAMSTKWorkView):
@@ -248,6 +283,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
 
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_hardware')
@@ -312,6 +348,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Make the left side of the page.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0, end=13)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -324,6 +361,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=13, end=20)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -334,6 +372,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Make the bottom right side of the page.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=20)
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -641,9 +680,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -655,9 +693,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
@@ -687,6 +724,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
+        combo.handler_block(self._lst_handler_id[index])
+
         _package = super().on_combo_changed(combo, index,
                                             'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
@@ -728,6 +768,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
+        entry.handler_block(self._lst_handler_id[index])
+
         _package = super().on_focus_out(entry, index, 'wvw_editing_hardware')
         [[_key, _new_text]] = _package.items()
 
@@ -919,7 +962,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_assessment_input: Dict[int, object] = {
-            # 1: wvwIntegratedCircuitAI(self.RAMSTK_CONFIGURATION),
+            1: integrated_circuit.AssessmentInputs(configuration, logger),
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentInputs(configuration, logger),
@@ -998,6 +1041,8 @@ class AssessmentInputs(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
@@ -1059,6 +1104,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Top left quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0, end=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1080,6 +1126,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Top right quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1175,67 +1222,58 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # ----- COMBOBOXES
-        self.cmbActiveEnviron.do_set_properties(
-            tooltip=_("The operating environment for the hardware item."))
-        self.cmbDormantEnviron.do_set_properties(
-            tooltip=_("The storage environment for the hardware item."))
-        self.cmbFailureDist.do_set_properties(tooltip=_(
-            "The statistical failure distribution of the hardware item."))
-        self.cmbHRType.do_set_properties(
-            tooltip=_("The type of reliability assessment for the selected "
-                      "hardware item."))
-        self.cmbHRMethod.do_set_properties(tooltip=_(
-            "The assessment method to use for the selected hardware item."))
 
-        # ----- ENTRIES
-        self.txtActiveTemp.do_set_properties(
-            width=125,
-            tooltip=_("The ambient temperature in the operating environment."))
-        self.txtAddAdjFactor.do_set_properties(
-            width=125,
-            tooltip=_(
-                "An adjustment factor to add to the assessed hazard rate or "
-                "MTBF."))
-        self.txtDormantTemp.do_set_properties(
-            width=125,
-            tooltip=_("The ambient temperature in the storage environment."))
-        self.txtDutyCycle.do_set_properties(
-            width=125,
-            tooltip=_("The duty cycle of the selected hardware item."))
-        self.txtFailScale.do_set_properties(
-            width=125,
-            tooltip=_(
-                "The scale parameter of the statistical failure distribution.")
-        )
-        self.txtFailShape.do_set_properties(
-            width=125,
-            tooltip=_(
-                "The shape parameter of the statistical failure distribution.")
-        )
-        self.txtFailLocation.do_set_properties(
-            width=125,
-            tooltip=_("The location parameter of the statistical failure "
-                      "distribution."))
-        self.txtMissionTime.do_set_properties(
-            width=125,
-            tooltip=_("The mission time of the selected hardware item."))
-        self.txtMultAdjFactor.do_set_properties(
-            width=125,
-            tooltip=_(
-                "An adjustment factor to multiply the assessed hazard rate "
-                "or MTBF by."))
-        self.txtSpecifiedHt.do_set_properties(
-            width=125, tooltip=_("The stated hazard rate."))
-        self.txtSpecifiedHtVar.do_set_properties(
-            width=125, tooltip=_("The variance of the stated hazard rate."))
-        self.txtSpecifiedMTBF.do_set_properties(
-            width=125,
-            tooltip=_("The stated mean time between failure (MTBF)."))
-        self.txtSpecifiedMTBFVar.do_set_properties(
-            width=125,
-            tooltip=_("The variance of the stated mean time between failure "
-                      "(MTBF)."))
+        self._lst_widgets = [
+            self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
+            self.txtSpecifiedHtVar, self.txtSpecifiedMTBF,
+            self.txtSpecifiedMTBFVar, self.cmbFailureDist, self.txtFailScale,
+            self.txtFailShape, self.txtFailLocation, self.txtAddAdjFactor,
+            self.txtMultAdjFactor, self.cmbActiveEnviron, self.txtActiveTemp,
+            self.cmbDormantEnviron, self.txtDormantTemp, self.txtMissionTime,
+            self.txtDutyCycle
+        ]
+        _lst_width = [
+            200, 200, 125, 125, 125, 125, 200, 125, 125, 125, 125, 125, 200,
+            125, 200, 125, 125, 125
+        ]
+        _lst_tooltips = [
+            _("The type of reliability assessment for the "
+              "selected hardware item."),
+            _("The assessment method to use for the selected "
+              "hardware item."),
+            _("The stated hazard rate."),
+            _("The variance of the stated hazard rate."),
+            _("The stated mean time between failure (MTBF)."),
+            _("The variance of the stated mean time between "
+              "failure (MTBF)."),
+            _("The statistical failure distribution of the "
+              "hardware item."),
+            _("The scale parameter of the statistical failure "
+              "distribution."),
+            _("The shape parameter of the statistical failure "
+              "distribution."),
+            _("The location parameter of the statistical failure "
+              "distribution."),
+            _("An adjustment factor to add to the assessed "
+              "hazard rate or MTBF."),
+            _("An adjustment factor to multiply the assessed "
+              "hazard rate or MTBF by."),
+            _("The operating environment for the hardware "
+              "item."),
+            _("The ambient temperature in the operating "
+              "environment."),
+            _("The storage environment for the hardware item."),
+            _("The ambient temperature in the storage "
+              "environment."),
+            _("The mission time of the selected hardware item."),
+            _("The duty cycle of the selected hardware item.")
+        ]
+
+        _idx = 0
+        for _widget in self._lst_widgets:
+            _widget.do_set_properties(width=_lst_width[_idx],
+                                      tooltip=_lst_tooltips[_idx])
+            _idx += 1
 
     def _do_clear_page(self) -> None:
         """
@@ -1276,18 +1314,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        attributes = dmtree.get_node(
-            self._record_id).data['design_electric'].get_attributes()
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['reliability'].get_attributes(
-            )
-        }
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['hardware'].get_attributes(
-            )
-        }
+        attributes = _do_get_attributes(dmtree, self._record_id)
+
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
         # Operating stress information is only applicable to components,
@@ -1423,9 +1451,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -1437,9 +1464,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_set_assessed_sensitive(self, type_id: int) -> None:
         """
@@ -1561,6 +1587,9 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
+        combo.handler_block(self._lst_handler_id[index])
+
         _package = super().on_combo_changed(combo, index,
                                             'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
@@ -1606,6 +1635,9 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # TODO: See issue #310.
+        entry.handler_block(self._lst_handler_id[index])
+
         # TODO: See issue #309.
         super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
@@ -1713,7 +1745,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_assessment_results = {
-            # 1: wvwIntegratedCircuitAR(self.RAMSTK_CONFIGURATION),
+            1: integrated_circuit.AssessmentResults(configuration, logger),
             # 2: wvwSemiconductorAR(self.RAMSTK_CONFIGURATION),
             # 3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentResults(configuration, logger),
@@ -1785,6 +1817,8 @@ class AssessmentResults(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
@@ -1835,6 +1869,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Top left quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1856,6 +1891,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Top right quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -2063,23 +2099,7 @@ class AssessmentResults(RAMSTKWorkView):
         if self._record_id == -1:
             return
 
-        attributes = dmtree.get_node(
-            self._record_id).data['design_electric'].get_attributes()
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['reliability'].get_attributes(
-            )
-        }
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['hardware'].get_attributes(
-            )
-        }
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['mil_hdbk_217f'].get_attributes(
-            )
-        }
+        attributes = _do_get_attributes(dmtree, self._record_id)
 
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
@@ -2275,9 +2295,8 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -2289,6 +2308,5 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)

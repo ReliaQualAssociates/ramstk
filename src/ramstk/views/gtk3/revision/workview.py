@@ -240,6 +240,7 @@ class GeneralData(RAMSTKWorkView):
         except KeyError:
             _key = ''
 
+        # TODO: See issue #310.
         entry.handler_block(self._lst_handler_id[index])
 
         try:

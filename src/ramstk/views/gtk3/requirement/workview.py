@@ -78,8 +78,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['create_code'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/create_code.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/create_code.png')
 
         # Initialize private list attributes.
 
@@ -169,12 +169,13 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         _lst_adjust = [0, 0, 75, 75, 85, 85, 85, 95, 95, 95, 105, 105]
-        (_x_pos,
-         _y_pos,
+        (_x_pos, _y_pos,
          _fixed) = super().make_ui(icons=['create_code'],
-                                   tooltips=[_('Automatically create code '
-                                               'for the selected '
-                                               'requirement.')],
+                                   tooltips=[
+                                       _('Automatically create code '
+                                         'for the selected '
+                                         'requirement.')
+                                   ],
                                    callbacks=[self._do_request_create_code])
 
         # self.txtName has a height of 100 so the labels need adjusted.
@@ -382,8 +383,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_requirement',
-                        node_id=self._record_id)
+        pub.sendMessage('request_update_requirement', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -461,6 +461,7 @@ class GeneralData(RAMSTKWorkView):
         except KeyError:
             _key = ''
 
+        # TODO: See issue #310.
         combo.handler_block(self._lst_handler_id[index])
 
         try:
@@ -513,6 +514,7 @@ class GeneralData(RAMSTKWorkView):
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
+        # TODO: See issue #310.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 1:
@@ -536,7 +538,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().on_toggled(checkbutton, index,
+        super().on_toggled(checkbutton,
+                           index,
                            message='wvw_editing_requirement')
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
@@ -709,8 +712,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         :rtype: tuple
         """
         _model = Gtk.ListStore()
-        _model.set_column_types([GObject.TYPE_INT, GObject.TYPE_STRING,
-                                 GObject.TYPE_INT])
+        _model.set_column_types(
+            [GObject.TYPE_INT, GObject.TYPE_STRING, GObject.TYPE_INT])
 
         _column = Gtk.TreeViewColumn()
 
@@ -990,8 +993,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_requirement',
-                        node_id=self._record_id)
+        pub.sendMessage('request_update_requirement', node_id=self._record_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """

@@ -5,8 +5,21 @@ on:
     branches:
       - develop
       - master
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
 
 jobs:
+  good_pr_title:
+    name: Ensure Sematic PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aslafy-z/conventional-pr-title-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   bandit:
     name: Check for Security Vulnerabilities
     runs-on: ubuntu-latest

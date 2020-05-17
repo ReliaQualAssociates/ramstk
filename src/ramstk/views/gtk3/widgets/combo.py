@@ -143,14 +143,16 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         if _handler_id > -1:
             self.handler_unblock(_handler_id)
 
-    def do_update(self, value: int, handler_id: int, signal: str = '') -> None:
+    def do_update(self, value: int, handler_id: int = 0,
+                  signal: str = '') -> None:
         """
         Update the RAMSTK Combo with a new value.
 
         :param str value: the information to update the RAMSTKCombo() to
             display.
-        :param int handler_id: the handler ID associated with the
-            RAMSTKComboBox().
+        :keyword int handler_id: the handler ID associated with the
+            RAMSTKComboBox().  This input will be removed in a future
+            version in preference for using the signal ID dict.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKComboBox() needs to block.
         :return: None
