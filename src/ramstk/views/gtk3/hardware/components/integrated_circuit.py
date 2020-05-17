@@ -966,6 +966,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._lst_labels.append("C1:")
         self._lst_labels.append("\u03C0<sub>T</sub>:")
         self._lst_labels.append("C2:")
+        self._lst_labels.append("\u03C0<sub>C</sub>")
         self._lst_labels.append("\u03C0<sub>L</sub>:")
         self._lst_labels.append("\u03BB<sub>CYC</sub>:")
         self._lst_labels.append("\u03BB<sub>BD</sub>")
@@ -1047,81 +1048,35 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :return: None
         :rtype: None
         """
+        _tooltips = [
+            _("The die complexity hazard rate of the integrated circuit."),
+            _("The temperature factor for the integrated circuit."),
+            _("The package hazard rate for the integrated circuit."),
+            _("The construction factor for the integrated circuit."),
+            _("The learning factor for the integrated circuit."),
+            _("The read/write cycling induced hazard rate for the EEPROM."),
+            _("The die base hazard rate for the VLSI device."),
+            _("The manufacturing process correction factor for the VLSI "
+              "device."),
+            _("The die complexity correction factor for the VLSI device."),
+            _("The package base hazard rate for the VLSI device."),
+            _("The package type correction factor for the VLSI device."),
+            _("The electrical overstress hazard rate for the VLSI device."),
+            _("The application correction factor for the GaAs device.")
+        ]
+
         self._lblModel.set_tooltip_markup(
             _("The assessment model used to calculate the integrated circuit "
               "failure rate."))
-        self.txtC1.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The die complexity hazard rate of the integrated "
-                      "circuit."))
-        self.txtPiT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The temperature factor for the integrated circuit."))
-        self.txtC2.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The package hazard rate for the integrated circuit."))
-        self.txtPiC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The construction factor for the integrated circuit."))
-        self.txtPiL.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The learning factor for the integrated circuit."))
-        self.txtLambdaCYC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The read/write cycling induced hazard rate for the "
-                      "EEPROM."))
-        self.txtLambdaBD.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The die base hazard rate for the VLSI device."))
-        self.txtPiMFG.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The manufacturing process correction factor for the "
-                      "VLSI device."))
-        self.txtPiCD.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(
-                "The die complexity correction factor for the VLSI device."))
-        self.txtLambdaBP.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The package base hazard rate for the VLSI device."))
-        self.txtPiPT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(
-                "The package type correction factor for the VLSI device."))
-        self.txtLambdaEOS.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(
-                "The electrical overstress hazard rate for the VLSI device."))
-        self.txtPiA.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(
-                "The application correction factor for the GaAs device."))
+
+        _idx = 0
+        for _widget in self._lst_widgets[4:]:
+            _widget.do_set_properties(width=125,
+                                      editable=False,
+                                      bold=True,
+                                      tooltip=_tooltips[_idx])
+            print(_idx)
+            _idx += 1
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """

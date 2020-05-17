@@ -324,43 +324,13 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         super().on_focus_out(entry, index, 'wvw_editing_component')
 
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
+    def __do_load_family_combobox(self) -> None:
         """
-        Load the Inductor RAMSTKComboBox()s.
+        Load the family RAMSTKComboBox()
 
-        :param int subcategory_id: the newly selected inductor subcategory ID.
         :return: None
         :rtype: None
         """
-        # Load the quality level RAMSTKComboBox().
-        if self._hazard_rate_method_id == 1:
-            _data = [[_("Established Reliability")], ["MIL-SPEC"],
-                     [_("Lower")]]
-        else:
-            try:
-                _data = self._dic_quality[subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data,
-                                      handler_id=self._lst_handler_id[0])
-
-        # Load the specification RAMSTKComboBox().
-        try:
-            _data = self._dic_specifications[subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbSpecification.do_load_combo(_data,
-                                            handler_id=self._lst_handler_id[1])
-
-        # Load the insulation class RAMSTKComboBox().
-        try:
-            _data = self._dic_insulation[subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbInsulation.do_load_combo(_data,
-                                         handler_id=self._lst_handler_id[2])
-
-        # Load the transformer family RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
             if self._subcategory_id == 1:
                 _data = [[_("Low Power Pulse Transformer")],
@@ -375,7 +345,67 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                      [_("Power Transformer or Filter")], [_("RF Transformer")]]
         self.cmbFamily.do_load_combo(_data, handler_id=self._lst_handler_id[3])
 
-        # load the coil construction RAMSTKComboBox().
+    def __do_load_insulation_combobox(self) -> None:
+        """
+        Load the insulation RAMSTKComboBox()
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _data = self._dic_insulation[self._subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbInsulation.do_load_combo(_data,
+                                         handler_id=self._lst_handler_id[2])
+
+    def __do_load_quality_combobox(self) -> None:
+        """
+        Load the quality RAMSTKComboBox()
+
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 1:
+            _data = [[_("Established Reliability")], ["MIL-SPEC"],
+                     [_("Lower")]]
+        else:
+            try:
+                _data = self._dic_quality[self._subcategory_id]
+            except KeyError:
+                _data = []
+        self.cmbQuality.do_load_combo(_data,
+                                      handler_id=self._lst_handler_id[0])
+
+    def __do_load_specification_combobox(self) -> None:
+        """
+        Load the specification RAMSTKComboBox()
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _data = self._dic_specifications[self._subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbSpecification.do_load_combo(_data,
+                                            handler_id=self._lst_handler_id[1])
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """
+        Load the Inductor RAMSTKComboBox()s.
+
+        :param int subcategory_id: the newly selected inductor subcategory ID.
+        :return: None
+        :rtype: None
+        """
+        self.__do_load_family_combobox()
+        self.__do_load_insulation_combobox()
+        self.__do_load_quality_combobox()
+        self.__do_load_specification_combobox()
+
         self.cmbConstruction.do_load_combo([[_("Fixed")], [_("Variable")]],
                                            handler_id=self._lst_handler_id[4])
 
