@@ -549,8 +549,11 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         """
         Initialize an instance of the Hardware assessment result view.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module=module)
 
@@ -616,6 +619,23 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
             editable=False,
             bold=True,
             tooltip=_("The environment factor for the hardware item."))
+
+    def set_properties(self) -> None:
+        """
+        Set properties for Meter assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lblModel.set_tooltip_markup(self._lst_tooltips[0])
+
+        _idx = 1
+        for _widget in self._lst_widgets[1:]:
+            _widget.do_set_properties(width=125,
+                                      editable=False,
+                                      bold=True,
+                                      tooltip=self._lst_tooltips[_idx])
+            _idx += 1
 
     def _do_clear_page(self) -> None:
         """

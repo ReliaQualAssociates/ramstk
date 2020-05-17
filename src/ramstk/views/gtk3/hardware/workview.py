@@ -31,7 +31,7 @@ from ramstk.views.gtk3.widgets import (
 # RAMSTK Local Imports
 from .components import (
     RAMSTKStressInputs, RAMSTKStressResults, capacitor,
-    connection, inductor, integrated_circuit
+    connection, inductor, integrated_circuit, meter
 )
 
 
@@ -950,8 +950,11 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         Initialize an instance of the Hardware assessment input view.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.RAMSTKUserConfiguration`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module)
 
@@ -970,7 +973,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentInputs(configuration, logger),
-            # 9: wvwMeterAI(self.RAMSTK_CONFIGURATION),
+            9: meter.AssessmentInputs(configuration, logger),
             # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION)
         }
 
@@ -1753,7 +1756,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentResults(configuration, logger),
-            # 9: wvwMeterAR(self.RAMSTK_CONFIGURATION),
+            9: meter.AssessmentResults(configuration, logger),
             # 10: wvwMiscellaneousAR(self.RAMSTK_CONFIGURATION)
         }
 

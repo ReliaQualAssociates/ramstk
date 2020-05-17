@@ -173,12 +173,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
-                 module: str = 'capacitor') -> None:
+                 module: str = 'integrated_circuit') -> None:
         """
         Initialize an instance of the IC assessment input view.
 
-        :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`Configuration.Configuration`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module=module)
 
@@ -764,7 +767,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
-        Retrieve RAMSTKCombo() changes and assign to Capacitor attribute.
+        Retrieve RAMSTKCombo() changes and assign to IC attribute.
 
         This method is called by:
 
@@ -923,7 +926,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
     :ivar txtPiA: displays the application factor for the integrated circuit.
     """
 
-    # Define private dict attributes.
+    # Define private class dict attributes.
     _dic_part_stress: Dict[int, str] = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = (C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
@@ -947,16 +950,41 @@ class AssessmentResults(RAMSTKAssessmentResults):
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub>CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub>\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span>"
     }
 
+    # Define private class list attributes.
+    _lst_tooltips = [
+        _("The assessment model used to calculate the integrated circuit "
+          "failure rate."),
+        _("The base hazard rate of the integrated circuit."),
+        _("The quality factor for the integrated circuit."),
+        _("The environment factor for the integrated circuit."),
+        _("The die complexity hazard rate of the integrated circuit."),
+        _("The temperature factor for the integrated circuit."),
+        _("The package hazard rate for the integrated circuit."),
+        _("The construction factor for the integrated circuit."),
+        _("The learning factor for the integrated circuit."),
+        _("The read/write cycling induced hazard rate for the EEPROM."),
+        _("The die base hazard rate for the VLSI device."),
+        _("The manufacturing process correction factor for the VLSI "
+          "device."),
+        _("The die complexity correction factor for the VLSI device."),
+        _("The package base hazard rate for the VLSI device."),
+        _("The package type correction factor for the VLSI device."),
+        _("The electrical overstress hazard rate for the VLSI device."),
+        _("The application correction factor for the GaAs device.")
+    ]
+
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
-                 module: str = 'capacitor') -> None:
+                 module: str = 'integrated_circuit') -> None:
         """
         Initialize an instance of the IC assessment result view.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-        :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger, module=module)
 
@@ -1012,7 +1040,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._lst_widgets.append(self.txtLambdaEOS)
         self._lst_widgets.append(self.txtPiA)
 
-        self.__set_properties()
+        self.set_properties()
         self.make_ui()
 
         # Subscribe to PyPubSub messages.
@@ -1041,48 +1069,12 @@ class AssessmentResults(RAMSTKAssessmentResults):
         if self._subcategory_id == 9:
             self.txtPiA.set_sensitive(True)
 
-    def __set_properties(self) -> None:
-        """
-        Set properties for Integrated Circuit assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        _tooltips = [
-            _("The die complexity hazard rate of the integrated circuit."),
-            _("The temperature factor for the integrated circuit."),
-            _("The package hazard rate for the integrated circuit."),
-            _("The construction factor for the integrated circuit."),
-            _("The learning factor for the integrated circuit."),
-            _("The read/write cycling induced hazard rate for the EEPROM."),
-            _("The die base hazard rate for the VLSI device."),
-            _("The manufacturing process correction factor for the VLSI "
-              "device."),
-            _("The die complexity correction factor for the VLSI device."),
-            _("The package base hazard rate for the VLSI device."),
-            _("The package type correction factor for the VLSI device."),
-            _("The electrical overstress hazard rate for the VLSI device."),
-            _("The application correction factor for the GaAs device.")
-        ]
-
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the integrated circuit "
-              "failure rate."))
-
-        _idx = 0
-        for _widget in self._lst_widgets[4:]:
-            _widget.do_set_properties(width=125,
-                                      editable=False,
-                                      bold=True,
-                                      tooltip=_tooltips[_idx])
-            _idx += 1
-
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the integrated circuit assessment results page.
 
         :param dict attributes: the attributes dictionary for the selected
-        Integrated Circuit.
+            Integrated Circuit.
         :return: None
         :rtype: None
         """
