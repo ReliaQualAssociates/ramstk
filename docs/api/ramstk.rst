@@ -10,7 +10,6 @@ Subpackages
    ramstk.controllers
    ramstk.db
    ramstk.exim
-   ramstk.gui
    ramstk.models
    ramstk.views
 

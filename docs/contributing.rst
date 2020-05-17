@@ -2,33 +2,33 @@
 Contributing
 ************
 
-Code of Conduct
-===============
-
-The fundamental rules are:
-
-* **DON'T be a Gavin Belson.**  You probably are smarter and more successful than everone else, but be humble and helpful.
-* **DON'T be a Jian Yang.**  Stealing other people's IP is lower than a snake's belly.
-* You *CAN* be a Bertram Gilfoyle, that's fundamentally just being an engineer.
-* You *CAN* be a Big Head, but only if you invite me to all your house parties.
-* You *CAN* be an Erlich Bachman because the world needs dreamers.
-* You *CAN* be a Richard Hendricks, because ethical software is a good thing.
-* You *CAN* be a Dinesh Chugtai because every team needs someone to good-heartedly pick on.
-
-See the Code of Conduct file in the root `RAMSTK` directory.
-
 How to Contribute
 =================
 
-See CONTRIBUTING.md in the docs directory.  This is likely out of date, so ask
-if you have any questions.
+.. toctree::
+
+    CONTRIBUTING.md
 
 Coding Standards
 ================
 
-See CODING_STDS.md in the docs directory.  This is probably out of date so you
-might review some of the existing code base to see how badly I haven't followed
-my own standards.
+The coding standards below are probably out of date so you might review some of the existing code base to see how
+badly I haven't followed my own standards.  I also open issues to document conventions and standards.  That'd be another
+good place to look.
+
+.. toctree::
+
+    CODING_STDS.md
+
+Development Environment
+=======================
+
+Another document that is likely out of date, but might be helpful if you're interested in hacking on RAMSTK and opening
+pull requests.
+
+.. toctree::
+
+    DEVELOPMENT_ENV.md
 
 API Documentation
 =================
