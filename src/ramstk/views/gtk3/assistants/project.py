@@ -163,8 +163,8 @@ class OpenProject():
                         "be open at a time in RAMSTK.  You must close the "
                         "currently open RAMSTK database before a new "
                         "database can be opened.")
-            _icon = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                     + '/32x32/information.png')
+            _icon = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+                     '/32x32/information.png')
             _dialog = RAMSTKMessageDialog(_prompt,
                                           _icon,
                                           'information',
@@ -189,9 +189,9 @@ class OpenProject():
             _dialog = RAMSTKDatabaseSelect(
                 dlgtitle=("Select RAMSTK Program "
                           "Database on the {0:s} Server".format(
-                              self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
-                                  'dialect'])),
-                dlgparent=None,
+                              self.RAMSTK_USER_CONFIGURATION.
+                              RAMSTK_PROG_INFO['dialect'])),
+                dlgparent=self._parent,
                 dao=BaseDatabase(),
                 database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[

@@ -1075,7 +1075,6 @@ class AssessmentResults(RAMSTKAssessmentResults):
                                       editable=False,
                                       bold=True,
                                       tooltip=_tooltips[_idx])
-            print(_idx)
             _idx += 1
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:

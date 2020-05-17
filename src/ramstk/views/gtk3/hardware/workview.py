@@ -1222,67 +1222,58 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # ----- COMBOBOXES
-        self.cmbActiveEnviron.do_set_properties(
-            tooltip=_("The operating environment for the hardware item."))
-        self.cmbDormantEnviron.do_set_properties(
-            tooltip=_("The storage environment for the hardware item."))
-        self.cmbFailureDist.do_set_properties(tooltip=_(
-            "The statistical failure distribution of the hardware item."))
-        self.cmbHRType.do_set_properties(
-            tooltip=_("The type of reliability assessment for the selected "
-                      "hardware item."))
-        self.cmbHRMethod.do_set_properties(tooltip=_(
-            "The assessment method to use for the selected hardware item."))
 
-        # ----- ENTRIES
-        self.txtActiveTemp.do_set_properties(
-            width=125,
-            tooltip=_("The ambient temperature in the operating environment."))
-        self.txtAddAdjFactor.do_set_properties(
-            width=125,
-            tooltip=_(
-                "An adjustment factor to add to the assessed hazard rate or "
-                "MTBF."))
-        self.txtDormantTemp.do_set_properties(
-            width=125,
-            tooltip=_("The ambient temperature in the storage environment."))
-        self.txtDutyCycle.do_set_properties(
-            width=125,
-            tooltip=_("The duty cycle of the selected hardware item."))
-        self.txtFailScale.do_set_properties(
-            width=125,
-            tooltip=_(
-                "The scale parameter of the statistical failure distribution.")
-        )
-        self.txtFailShape.do_set_properties(
-            width=125,
-            tooltip=_(
-                "The shape parameter of the statistical failure distribution.")
-        )
-        self.txtFailLocation.do_set_properties(
-            width=125,
-            tooltip=_("The location parameter of the statistical failure "
-                      "distribution."))
-        self.txtMissionTime.do_set_properties(
-            width=125,
-            tooltip=_("The mission time of the selected hardware item."))
-        self.txtMultAdjFactor.do_set_properties(
-            width=125,
-            tooltip=_(
-                "An adjustment factor to multiply the assessed hazard rate "
-                "or MTBF by."))
-        self.txtSpecifiedHt.do_set_properties(
-            width=125, tooltip=_("The stated hazard rate."))
-        self.txtSpecifiedHtVar.do_set_properties(
-            width=125, tooltip=_("The variance of the stated hazard rate."))
-        self.txtSpecifiedMTBF.do_set_properties(
-            width=125,
-            tooltip=_("The stated mean time between failure (MTBF)."))
-        self.txtSpecifiedMTBFVar.do_set_properties(
-            width=125,
-            tooltip=_("The variance of the stated mean time between failure "
-                      "(MTBF)."))
+        self._lst_widgets = [
+            self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
+            self.txtSpecifiedHtVar, self.txtSpecifiedMTBF,
+            self.txtSpecifiedMTBFVar, self.cmbFailureDist, self.txtFailScale,
+            self.txtFailShape, self.txtFailLocation, self.txtAddAdjFactor,
+            self.txtMultAdjFactor, self.cmbActiveEnviron, self.txtActiveTemp,
+            self.cmbDormantEnviron, self.txtDormantTemp, self.txtMissionTime,
+            self.txtDutyCycle
+        ]
+        _lst_width = [
+            200, 200, 125, 125, 125, 125, 200, 125, 125, 125, 125, 125, 200,
+            125, 200, 125, 125, 125
+        ]
+        _lst_tooltips = [
+            _("The type of reliability assessment for the "
+              "selected hardware item."),
+            _("The assessment method to use for the selected "
+              "hardware item."),
+            _("The stated hazard rate."),
+            _("The variance of the stated hazard rate."),
+            _("The stated mean time between failure (MTBF)."),
+            _("The variance of the stated mean time between "
+              "failure (MTBF)."),
+            _("The statistical failure distribution of the "
+              "hardware item."),
+            _("The scale parameter of the statistical failure "
+              "distribution."),
+            _("The shape parameter of the statistical failure "
+              "distribution."),
+            _("The location parameter of the statistical failure "
+              "distribution."),
+            _("An adjustment factor to add to the assessed "
+              "hazard rate or MTBF."),
+            _("An adjustment factor to multiply the assessed "
+              "hazard rate or MTBF by."),
+            _("The operating environment for the hardware "
+              "item."),
+            _("The ambient temperature in the operating "
+              "environment."),
+            _("The storage environment for the hardware item."),
+            _("The ambient temperature in the storage "
+              "environment."),
+            _("The mission time of the selected hardware item."),
+            _("The duty cycle of the selected hardware item.")
+        ]
+
+        _idx = 0
+        for _widget in self._lst_widgets:
+            _widget.do_set_properties(width=_lst_width[_idx],
+                                      tooltip=_lst_tooltips[_idx])
+            _idx += 1
 
     def _do_clear_page(self) -> None:
         """
