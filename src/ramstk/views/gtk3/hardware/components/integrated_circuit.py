@@ -416,11 +416,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.cmbTechnology.do_update(attributes['technology_id'])
-
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'])
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.txtNActivePins.do_update(str(attributes['n_active_pins']))
             self.txtYearsInProduction.do_update(
                 str(attributes['years_in_production']))
@@ -434,10 +431,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.cmbTechnology.do_update(attributes['technology_id'])
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'])
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.txtNActivePins.do_update(str(attributes['n_active_pins']))
             self.txtYearsInProduction.do_update(
                 str(attributes['years_in_production']))
@@ -453,10 +448,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.cmbTechnology.do_update(attributes['technology_id'])
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'])
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.txtNActivePins.do_update(str(attributes['n_active_pins']))
             self.txtYearsInProduction.do_update(
                 str(attributes['years_in_production']))
@@ -470,10 +463,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.cmbTechnology.do_update(attributes['technology_id'])
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'])
+        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.txtNActivePins.do_update(str(attributes['n_active_pins']))
             self.txtYearsInProduction.do_update(
                 str(attributes['years_in_production']))
@@ -529,9 +520,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
             pub.sendMessage('wvw_editing_hardware',
-                            module_id=self._record_id,
-                            key='technology_id',
-                            value=2)
+                            node_id=self._record_id,
+                            package={'technology_id': 2})
             self.txtNElements.set_sensitive(True)
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbTechnology.set_sensitive(True)
@@ -547,9 +537,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
             pub.sendMessage('wvw_editing_hardware',
-                            module_id=self._record_id,
-                            key='technology_id',
-                            value=2)
+                            node_id=self._record_id,
+                            package={'technology_id': 2})
             self.txtNElements.set_sensitive(True)
         elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbConstruction.set_sensitive(True)
@@ -698,16 +687,22 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         super().do_load_page(attributes)
 
         self.__do_load_application_combo(attributes)
-        self.__do_load_vhsic_vlsi(attributes)
-        self.__do_load_linear(attributes)
-        self.__do_load_logic(attributes)
-        self.__do_load_pal_pla(attributes)
-        self.__do_load_microprocessor_microcontroller(attributes)
-        self.__do_load_rom(attributes)
-        self.__do_load_eeprom(attributes)
-        self.__do_load_dram(attributes)
-        self.__do_load_sram(attributes)
-        self.__do_load_gaas(attributes)
+        _method = {
+            1: self.__do_load_linear,
+            2: self.__do_load_logic,
+            3: self.__do_load_pal_pla,
+            4: self.__do_load_microprocessor_microcontroller,
+            5: self.__do_load_rom,
+            6: self.__do_load_eeprom,
+            7: self.__do_load_dram,
+            8: self.__do_load_sram,
+            9: self.__do_load_gaas,
+            10: self.__do_load_vhsic_vlsi
+        }
+        try:
+            _method[self._subcategory_id](attributes)
+        except KeyError:
+            pass
 
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
             self.txtNElements.do_update(str(attributes['n_elements']))
@@ -744,16 +739,22 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.txtVoltageESD.set_sensitive(False)
         self.txtYearsInProduction.set_sensitive(False)
 
-        self.__do_set_dram_sensitive()
-        self.__do_set_eeprom_sensitive()
-        self.__do_set_gaas_sensitive()
-        self.__do_set_linear_sensitive()
-        self.__do_set_logic_sensitive()
-        self.__do_set_microprocessor_microcontroller_sensitive()
-        self.__do_set_pal_pla_sensitive()
-        self.__do_set_rom_sensitive()
-        self.__do_set_sram_sensitive()
-        self.__do_set_vhsic_vlsi_sensitive()
+        _method = {
+            1: self.__do_set_linear_sensitive,
+            2: self.__do_set_logic_sensitive,
+            3: self.__do_set_pal_pla_sensitive,
+            4: self.__do_set_microprocessor_microcontroller_sensitive,
+            5: self.__do_set_rom_sensitive,
+            6: self.__do_set_eeprom_sensitive,
+            7: self.__do_set_dram_sensitive,
+            8: self.__do_set_sram_sensitive,
+            9: self.__do_set_gaas_sensitive,
+            10: self.__do_set_vhsic_vlsi_sensitive
+        }
+        try:
+            _method[self._subcategory_id]()
+        except KeyError:
+            pass
 
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbPackage.set_sensitive(True)

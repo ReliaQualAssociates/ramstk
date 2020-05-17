@@ -524,8 +524,6 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes['type_id'], attributes['temperature_junction'])
     attributes['piL'] = 0.01 * exp(5.35 -
                                    0.35 * attributes['years_in_production'])
-    attributes['piA'] = get_application_factor(attributes['type_id'],
-                                               attributes['application_id'])
 
     if attributes['subcategory_id'] in [1, 2, 3, 4]:
         attributes['C1'] = get_die_complexity_factor(
@@ -566,6 +564,8 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes['application_id'], attributes['n_elements'])
         attributes['C2'] = calculate_package_factor(
             attributes['package_id'], attributes['n_active_pins'])
+        attributes['piA'] = get_application_factor(
+            attributes['type_id'], attributes['application_id'])
         attributes['hazard_rate_active'] = (
             (attributes['C1'] * attributes['piT'] * attributes['piA'] +
              attributes['C2'] * attributes['piE']) * attributes['piQ'] *
