@@ -144,7 +144,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :rtype: None
         """
         self.cmbApplication.do_set_properties(
-            tooltip=_("The appliction of the panel meter."))
+            tooltip=_("The application of the panel meter."))
         self.cmbType.do_set_properties(tooltip=_("The type of meter."))
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
@@ -192,13 +192,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
             +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    4    | cmbManufacturing |
+            |    0    | cmbQuality       |    3    | cmbType          |
             +---------+------------------+---------+------------------+
-            |    1    | cmbApplication   |    5    | cmbPackage       |
-            +---------+------------------+---------+------------------+
-            |    2    | cmbContruction   |    6    | cmbTechnology    |
-            +---------+------------------+---------+------------------+
-            |    3    | cmbECC           |    7    | cmbType          |
+            |    1    | cmbApplication   |         |                  |
             +---------+------------------+---------+------------------+
 
         :return: None
@@ -227,12 +223,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the meter appliction RAMSTKComboBox().
-        self.cmbApplication.do_load_combo([
-            [_("Ammeter")],
-            [_("Voltmeter")],
-            [_("Other")],
-        ])
+        # Load the meter application RAMSTKComboBox().
+        self.cmbApplication.do_load_combo([[_("Ammeter")], [_("Voltmeter")],
+                                           [_("Other")]])
 
         # Load the meter type RAMSTKComboBox().
         try:
@@ -257,13 +250,24 @@ class AssessmentResults(RAMSTKAssessmentResults):
         meter.
     """
 
-    # Define private dict attributes.
+    # Define private class dict attributes.
     _dic_part_stress = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
     }
+
+    # Define private class list attributes.
+    _lst_tooltips = [
+        _("The assessment model used to calculate the meter failure rate."),
+        _("The base hazard rate of the meter."),
+        _("The quality factor for the meter."),
+        _("The environment factor for the meter."),
+        _("The application factor for the meter."),
+        _("The function factor for the meter."),
+        _("The temperature stress factor for the meter.")
+    ]
 
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -302,7 +306,12 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._lst_widgets.append(self.txtPiF)
         self._lst_widgets.append(self.txtPiT)
 
-        self.__set_properties()
+        #// TODO: update all component workviews to use the public set_properties() method.
+        #//
+        #// The capacitor, connection, and inductor assessment results
+        #// workviws need to be updated to use the public set_properties()
+        #// method in the parent RAMSTKAssessmentResults() class.
+        self.set_properties()
         self.make_ui()
 
         # Subscribe to PyPubSub messages.
@@ -324,31 +333,6 @@ class AssessmentResults(RAMSTKAssessmentResults):
             elif self._subcategory_id == 2:
                 self.txtPiA.set_sensitive(True)
                 self.txtPiF.set_sensitive(True)
-
-    def __set_properties(self) -> None:
-        """
-        Set properties for Meter assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        _lst_tooltips = [
-            _("The application factor for the meter."),
-            _("The function factor for the meter."),
-            _("The temperature stress factor for the meter.")
-        ]
-
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the meter failure "
-              "rate."))
-
-        _idx = 0
-        for _widget in self._lst_widgets[4:]:
-            _widget.do_set_properties(width=125,
-                                      editable=False,
-                                      bold=True,
-                                      tooltip=_lst_tooltips[_idx])
-            _idx += 1
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
