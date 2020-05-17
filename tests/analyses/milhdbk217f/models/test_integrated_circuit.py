@@ -547,7 +547,6 @@ def test_calculate_part_stress():
     assert _attributes['C2'] == pytest.approx(0.011822791)
     assert _attributes['temperature_junction'] == 53.05
     assert _attributes['piT'] == pytest.approx(1.04718497)
-    assert _attributes['piA'] == 3.0
     assert _attributes['hazard_rate_active'] == pytest.approx(0.032862208)
 
 
