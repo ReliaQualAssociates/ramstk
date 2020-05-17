@@ -35,6 +35,40 @@ from .components import (
 )
 
 
+def _do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
+    """
+    Converts the treelib.Tree() holding hardware info into the standrd dict.
+
+    The Hardware datamanager is a complex conglomerate of data.  The data is
+    carried as data packages in the treelib.Tree() rather than a dict of
+    attributes because it's easier to build the tree.  This function simply
+    packs the tree data into a dict for consumption.
+
+    :param dmtree: the hardware item treelib.Tree().
+    :type dmtree: :class:`treelib.Tree`
+    :param record_id: the hardware ID of the currently selected record.
+    :return: _attributes; the attributes dict of the currently selected
+        hardware item.
+    :rtype: dict
+    """
+    _attributes = dmtree.get_node(
+        record_id).data['design_electric'].get_attributes()
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['reliability'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['hardware'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['mil_hdbk_217f'].get_attributes()
+    }
+
+    return _attributes
+
+
 class GeneralData(RAMSTKWorkView):
     """
     Display general Hardware attribute data in the RAMSTK Work Book.
@@ -249,6 +283,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
 
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_hardware')
@@ -313,6 +348,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Make the left side of the page.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0, end=13)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -325,6 +361,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=13, end=20)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -335,6 +372,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Make the bottom right side of the page.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=20)
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -642,9 +680,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -656,9 +693,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
@@ -1005,6 +1041,8 @@ class AssessmentInputs(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
@@ -1066,6 +1104,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Top left quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0, end=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1087,6 +1126,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Top right quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1283,18 +1323,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        attributes = dmtree.get_node(
-            self._record_id).data['design_electric'].get_attributes()
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['reliability'].get_attributes(
-            )
-        }
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['hardware'].get_attributes(
-            )
-        }
+        attributes = _do_get_attributes(dmtree, self._record_id)
+
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
         # Operating stress information is only applicable to components,
@@ -1430,9 +1460,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -1444,9 +1473,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_set_assessed_sensitive(self, type_id: int) -> None:
         """
@@ -1798,6 +1826,8 @@ class AssessmentResults(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         pub.subscribe(self._do_load_page, 'succeed_get_hardware_tree')
@@ -1848,6 +1878,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Top left quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -1869,6 +1900,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Top right quadrant.
         # TODO: See issue #304.  Only _fixed will be returned in the future.
+        # pylint: disable=unused-variable
         (__, __, _fixed) = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
@@ -2076,23 +2108,7 @@ class AssessmentResults(RAMSTKWorkView):
         if self._record_id == -1:
             return
 
-        attributes = dmtree.get_node(
-            self._record_id).data['design_electric'].get_attributes()
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['reliability'].get_attributes(
-            )
-        }
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['hardware'].get_attributes(
-            )
-        }
-        attributes = {
-            **attributes,
-            **dmtree.get_node(self._record_id).data['mil_hdbk_217f'].get_attributes(
-            )
-        }
+        attributes = _do_get_attributes(dmtree, self._record_id)
 
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
@@ -2288,9 +2304,8 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -2302,6 +2317,5 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)

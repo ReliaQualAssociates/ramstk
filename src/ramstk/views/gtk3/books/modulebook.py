@@ -113,6 +113,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         """
         # Remove all the non-Revision pages.
         _n_pages = self.get_n_pages()
+        # pylint: disable=unused-variable
         for _page in range(_n_pages - 1):
             self.remove_page(-1)
 

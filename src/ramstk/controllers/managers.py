@@ -42,8 +42,7 @@ class RAMSTKAnalysisManager():
     RAMSTK_USER_CONFIGURATION = None
 
     # pylint: disable=unused-argument
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
+    def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[str, Any]) -> None:
         """
         Initialize an instance of the hardware analysis manager.
@@ -437,8 +436,7 @@ class RAMSTKMatrixManager():
 
     _tag = 'matrix'
 
-    def __init__(self,
-                 column_tables: Dict[str, List[Any]],
+    def __init__(self, column_tables: Dict[str, List[Any]],
                  row_table: object) -> None:
         """
         Initialize a Matrix data model instance.
@@ -487,12 +485,16 @@ class RAMSTKMatrixManager():
         :return: None
         :rtype: None
         """
-        self._dic_matrix = {'id': self._dic_matrix['id'],
-                            'display_name': self._dic_matrix['display_name']}
+        self._dic_matrix = {
+            'id': self._dic_matrix['id'],
+            'display_name': self._dic_matrix['display_name']
+        }
 
         try:
-            _lst_columns = [self._col_tree[matrix_type].get_node(_node).tag
-                            for _node in self._col_tree[matrix_type].nodes][1:]
+            _lst_columns = [
+                self._col_tree[matrix_type].get_node(_node).tag
+                for _node in self._col_tree[matrix_type].nodes
+            ][1:]
         except KeyError:
             _lst_columns = []
 
@@ -502,6 +504,7 @@ class RAMSTKMatrixManager():
             self._dic_matrix[_column] = _values
 
         self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)
+        # pylint: disable=unused-variable
         (__, self.n_col) = self.dic_matrices[matrix_type].shape
 
     def do_create_rows(self, tree: treelib.Tree) -> None:
@@ -523,19 +526,21 @@ class RAMSTKMatrixManager():
         # and the name to display in the RAMSTKMatrixView() for the rows.
         # We do not want the ID/tag of the root node in the tree as this is
         # simply the name of the work flow module.
-        _row_ids = [self._row_tree.get_node(_node).identifier for _node in
-                    self._row_tree.nodes][1:]
+        _row_ids = [
+            self._row_tree.get_node(_node).identifier
+            for _node in self._row_tree.nodes
+        ][1:]
         _row_ids.insert(0, -1)
-        _display_names = [self._row_tree.get_node(_node).tag for _node in
-                          self._row_tree.nodes][1:]
+        _display_names = [
+            self._row_tree.get_node(_node).tag
+            for _node in self._row_tree.nodes
+        ][1:]
         _display_names.insert(0, 'column_id')
-        self._dic_matrix = {
-            'id': _row_ids,
-            'display_name': _display_names
-        }
+        self._dic_matrix = {'id': _row_ids, 'display_name': _display_names}
 
         for _matrix_type in self._column_tables.keys():
             self.dic_matrices[_matrix_type] = pd.DataFrame(self._dic_matrix)
+            # pylint: disable=unused-variable
             (self.n_row, __) = self.dic_matrices[_matrix_type].shape
 
             # If the column tree has already been loaded, we can build the
@@ -606,7 +611,8 @@ class RAMSTKMatrixManager():
         :rtype: None
         """
         for _matrix in self.dic_matrices:
-            __, _n_col = self.dic_matrices[_matrix].shape
+            # pylint: disable=unused-variable
+            (__, _n_col) = self.dic_matrices[_matrix].shape
             _lst_values = [0] * _n_col
 
             _new_row = pd.DataFrame([_lst_values],
