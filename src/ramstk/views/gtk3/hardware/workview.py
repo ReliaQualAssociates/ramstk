@@ -18,21 +18,18 @@ from sortedcontainers import SortedDict
 # RAMSTK Package Imports
 from ramstk.configuration import (
     RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_DORMANT_ENVIRONMENTS,
-    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,
-    RAMSTK_HR_TYPES, RAMSTKUserConfiguration
-)
+    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS, RAMSTK_HR_TYPES,
+    RAMSTKUserConfiguration)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView
-)
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
+    RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView)
 
 # RAMSTK Local Imports
 from .components import (
-    RAMSTKStressInputs, RAMSTKStressResults, capacitor,
-    connection, inductor, integrated_circuit, meter
-)
+    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection, inductor,
+    integrated_circuit, meter, miscellaneous)
 
 
 def _do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
@@ -974,7 +971,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentInputs(configuration, logger),
             9: meter.AssessmentInputs(configuration, logger),
-            # 10: wvwMiscellaneousAI(self.RAMSTK_CONFIGURATION)
+            10: miscellaneous.AssessmentInputs(configuration, logger),
         }
 
         # Initialize private list attributes.
@@ -1757,7 +1754,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentResults(configuration, logger),
             9: meter.AssessmentResults(configuration, logger),
-            # 10: wvwMiscellaneousAR(self.RAMSTK_CONFIGURATION)
+            10: miscellaneous.AssessmentResults(configuration, logger)
         }
 
         # Initialize private list attributes.
