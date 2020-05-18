@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       gui.gtk.workviews.components.IntegratedCircuit.py is part of the
+#       views.gtk3.hardware.components.integrated_circuit.py is part of the
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit Work View."""
 
 # Standard Library Imports

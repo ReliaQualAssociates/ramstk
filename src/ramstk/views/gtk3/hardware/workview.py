@@ -29,7 +29,7 @@ from ramstk.views.gtk3.widgets import (
 # RAMSTK Local Imports
 from .components import (
     RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection, inductor,
-    integrated_circuit, meter, miscellaneous)
+    integrated_circuit, meter, miscellaneous, relay)
 
 
 def _do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
@@ -968,7 +968,7 @@ class AssessmentInputs(RAMSTKWorkView):
             # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentInputs(configuration, logger),
             5: inductor.AssessmentInputs(configuration, logger),
-            # 6: wvwRelayAI(self.RAMSTK_CONFIGURATION),
+            6: relay.AssessmentInputs(configuration, logger),
             # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentInputs(configuration, logger),
             9: meter.AssessmentInputs(configuration, logger),
@@ -1751,7 +1751,7 @@ class AssessmentResults(RAMSTKWorkView):
             # 3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
             4: capacitor.AssessmentResults(configuration, logger),
             5: inductor.AssessmentResults(configuration, logger),
-            # 6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
+            6: relay.AssessmentResults(configuration, logger),
             # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
             8: connection.AssessmentResults(configuration, logger),
             9: meter.AssessmentResults(configuration, logger),

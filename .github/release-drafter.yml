@@ -1,5 +1,9 @@
 name-template: 'v$NEXT_PATCH_VERSION'
 tag-template: 'v$NEXT_PATCH_VERSION'
+template: |
+  ## Changes
+
+  $CHANGES
 categories:
   - title: 'Features'
     labels:
@@ -14,7 +18,3 @@ categories:
       - 'chore'
       - 'refactor'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
-template: |
-  ## Changes
-
-  $CHANGES
