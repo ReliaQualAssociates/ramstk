@@ -769,7 +769,8 @@ class GeneralData(RAMSTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         _package = super().on_focus_out(entry, index, 'wvw_editing_hardware')
-        [[_key, _new_text]] = _package.items()
+        # pylint: disable=unused-variable
+        [[_key, __]] = _package.items()
 
         try:
             if index == 7:

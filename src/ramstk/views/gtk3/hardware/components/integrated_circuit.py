@@ -786,7 +786,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             +---------+------------------+---------+------------------+
             |    1    | cmbApplication   |    5    | cmbPackage       |
             +---------+------------------+---------+------------------+
-            |    2    | cmbContruction   |    6    | cmbTechnology    |
+            |    2    | cmbConstruction  |    6    | cmbTechnology    |
             +---------+------------------+---------+------------------+
             |    3    | cmbECC           |    7    | cmbType          |
             +---------+------------------+---------+------------------+

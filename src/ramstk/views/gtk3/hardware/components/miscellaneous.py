@@ -217,7 +217,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.txtFrequency.dic_handler_id[
             'changed'] = self.txtFrequency.connect('focus-out-event',
                                                    self._on_focus_out, 3)
-        self.txtFrequency.dic_handler_id[
+        self.txtUtilization.dic_handler_id[
             'changed'] = self.txtUtilization.connect('focus-out-event',
                                                      self._on_focus_out, 4)
 
@@ -287,7 +287,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
-        Retrieve RAMSTKCombo() changes and assign to IC attribute.
+        Retrieve RAMSTKCombo() changes and assign to Miscellaneous attribute.
 
         This method is called by:
 
@@ -301,13 +301,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
             +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    4    | cmbManufacturing |
+            |    0    | cmbQuality       |    2    | cmbType          |
             +---------+------------------+---------+------------------+
-            |    1    | cmbApplication   |    5    | cmbPackage       |
-            +---------+------------------+---------+------------------+
-            |    2    | cmbContruction   |    6    | cmbTechnology    |
-            +---------+------------------+---------+------------------+
-            |    3    | cmbECC           |    7    | cmbType          |
+            |    1    | cmbApplication   |         |                  |
             +---------+------------------+---------+------------------+
 
         :return: None
@@ -339,15 +335,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             +-------+----------------------+-------+----------------------+
             | Index | Widget               | Index | Widget               |
             +=======+======================+=======+======================+
-            |   8   | txtArea              |   13  | txtOperatingLife     |
-            +-------+----------------------+-------+----------------------+
-            |   9   | txtFeatureSize       |   14  | txtThetaJC           |
-            +-------+----------------------+-------+----------------------+
-            |  10   | txtNActivePins       |   15  | txtVoltageESD        |
-            +-------+----------------------+-------+----------------------+
-            |  11   | txtNCycles           |   16  | txtYearsProduction   |
-            +-------+----------------------+-------+----------------------+
-            |  12   | txtNElements         |       |                      |
+            |   3   | txtFrequency         |   4   | txtUtilization       |
             +-------+----------------------+-------+----------------------+
 
         :return: None
