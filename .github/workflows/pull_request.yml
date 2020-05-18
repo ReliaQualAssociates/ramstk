@@ -50,7 +50,7 @@ jobs:
 
   yapf-it:
     name: Check Code Formatting with YAPF
-    runs-on: ununtu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Run YAPF against changed files
