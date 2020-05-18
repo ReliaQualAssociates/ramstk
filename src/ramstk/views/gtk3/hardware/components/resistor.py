@@ -457,13 +457,11 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
             +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    4    | cmbManufacturing |
+            |    0    | cmbQuality       |    3    | cmbStyle         |
             +---------+------------------+---------+------------------+
-            |    1    | cmbApplication   |    5    | cmbPackage       |
+            |    1    | cmbSpecification |    4    | cmbConstruction  |
             +---------+------------------+---------+------------------+
-            |    2    | cmbConstruction  |    6    | cmbTechnology    |
-            +---------+------------------+---------+------------------+
-            |    3    | cmbECC           |    7    | cmbType          |
+            |    2    | cmbType          |         |                  |
             +---------+------------------+---------+------------------+
 
         :return: None
@@ -495,15 +493,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             +-------+----------------------+-------+----------------------+
             | Index | Widget               | Index | Widget               |
             +=======+======================+=======+======================+
-            |   8   | txtArea              |   13  | txtOperatingLife     |
-            +-------+----------------------+-------+----------------------+
-            |   9   | txtFeatureSize       |   14  | txtThetaJC           |
-            +-------+----------------------+-------+----------------------+
-            |  10   | txtNActivePins       |   15  | txtVoltageESD        |
-            +-------+----------------------+-------+----------------------+
-            |  11   | txtNCycles           |   16  | txtYearsProduction   |
-            +-------+----------------------+-------+----------------------+
-            |  12   | txtNElements         |       |                      |
+            |   5   | txtResistance        |   6   | txtNElements         |
             +-------+----------------------+-------+----------------------+
 
         :return: None

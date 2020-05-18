@@ -25,10 +25,9 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry,
-    RAMSTKFrame, RAMSTKLabel, RAMSTKPlot, RAMSTKScrolledWindow,
-    RAMSTKTextView, RAMSTKWorkView, do_make_buttonbox
-)
+    RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
+    RAMSTKLabel, RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKTextView,
+    RAMSTKWorkView, do_make_buttonbox)
 
 register_matplotlib_converters()
 
@@ -226,7 +225,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Update the Validation task name for the selected Validation task.
         _types = self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
-        for _key, _type in _types.items():
+        # pylint: disable=unused-argument
+        for __, _type in _types.items():
             if _type[1] == task_type:
                 _code = '{0:s}-{1:04d}'.format(_type[0], int(self._record_id))
 
@@ -844,6 +844,8 @@ class GeneralData(RAMSTKWorkView):
 
         combo.handler_unblock(self._lst_handler_id[index])
 
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_edit(self, node_id: List, package: Dict) -> None:
         """
         Update the Validation Work View Gtk.Widgets().
@@ -873,7 +875,6 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _module_id = node_id[0]
         [[_key, _value]] = package.items()
 
         if _key == 'status':

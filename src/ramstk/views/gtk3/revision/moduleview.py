@@ -18,8 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView
-)
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView)
 
 
 class ModuleView(RAMSTKModuleView):
@@ -30,8 +29,10 @@ class ModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  All attributes of a Revision
     Module View are inherited.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager, module='revision') -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module='revision') -> None:
         """
         Initialize the Revision Module View.
 
@@ -46,27 +47,40 @@ class ModuleView(RAMSTKModuleView):
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
             to_tty=False)
-        self._dic_key_index = {'revision_id': 0,
-                               'availability_logistics': 1,
-                               'availability_mission': 2,
-                               'cost': 3, 'cost_per_failure': 4,
-                               'cost_per_hour': 5, 'hazard_rate_active': 6,
-                               'hazard_rate_dormant': 7,
-                               'hazard_rate_logistics': 8,
-                               'hazard_rate_mission': 9,
-                               'hazard_rate_software': 10, 'mmt': 11,
-                               'mcmt': 12, 'mpmt': 13, 'mtbf_logistics': 14,
-                               'mtbf_mission': 15, 'mttr': 16, 'name': 17,
-                               'reliability_logistics': 18,
-                               'reliability_mission': 19, 'remarks': 20,
-                               'n_parts': 21, 'revision_code': 22,
-                               'program_time': 23, 'program_time_sd': 24,
-                               'program_cost': 25, 'program_cost_sd': 26}
+        self._dic_key_index = {
+            'revision_id': 0,
+            'availability_logistics': 1,
+            'availability_mission': 2,
+            'cost': 3,
+            'cost_per_failure': 4,
+            'cost_per_hour': 5,
+            'hazard_rate_active': 6,
+            'hazard_rate_dormant': 7,
+            'hazard_rate_logistics': 8,
+            'hazard_rate_mission': 9,
+            'hazard_rate_software': 10,
+            'mmt': 11,
+            'mcmt': 12,
+            'mpmt': 13,
+            'mtbf_logistics': 14,
+            'mtbf_mission': 15,
+            'mttr': 16,
+            'name': 17,
+            'reliability_logistics': 18,
+            'reliability_mission': 19,
+            'remarks': 20,
+            'n_parts': 21,
+            'revision_code': 22,
+            'program_time': 23,
+            'program_time_sd': 24,
+            'program_cost': 25,
+            'program_cost_sd': 26
+        }
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/revision.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/revision.png')
 
         # Initialize private list attributes.
 
@@ -311,7 +325,6 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _model, _row = selection.get_selected()
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
         if _attributes:

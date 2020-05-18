@@ -12,7 +12,6 @@ from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
@@ -122,8 +121,8 @@ class DataManager(RAMSTKDataManager):
             _requirement.create_code(prefix=prefix)
 
             pub.sendMessage('succeed_create_requirement_code',
-                            requirement_code=_requirement.get_attributes()[
-                                'requirement_code'])
+                            requirement_code=_requirement.get_attributes()
+                            ['requirement_code'])
         except (TypeError, AttributeError):
             if node_id != 0:
                 pub.sendMessage('fail_create_requirement_code',
@@ -171,8 +170,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _tree = Tree()
-
         try:
             _requirement = RAMSTKRequirement()
             _requirement.revision_id = self._revision_id
@@ -240,9 +237,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(
-                node_id=[attributes['requirement_id'], -1],
-                package={_key: attributes[_key]})
+            self.do_set_attributes(node_id=[attributes['requirement_id'], -1],
+                                   package={_key: attributes[_key]})
 
     def do_set_attributes(self, node_id: List,
                           package: Dict[str, Any]) -> None:

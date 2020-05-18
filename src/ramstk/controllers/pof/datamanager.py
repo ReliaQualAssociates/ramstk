@@ -14,9 +14,8 @@ from treelib.exceptions import NodeIDAbsentError
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
-    RAMSTKOpStress, RAMSTKTestMethod
-)
+    RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad, RAMSTKOpStress,
+    RAMSTKTestMethod)
 
 
 class DataManager(RAMSTKDataManager):
@@ -111,7 +110,7 @@ class DataManager(RAMSTKDataManager):
                                   data={'opload': _opload})
 
             pub.sendMessage('succeed_insert_opload', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _error:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = (
                 'Attempting to add an operating load to unknown failure '
                 'mechanism ID {0:d}.'.format(mechanism_id))
@@ -142,7 +141,7 @@ class DataManager(RAMSTKDataManager):
                                   data={'opstress': _opstress})
 
             pub.sendMessage('succeed_insert_opstress', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _error:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add an operating stress to unknown '
                           'operating load ID {0:d}.'.format(load_id))
             pub.sendMessage("fail_insert_opstress", error_message=_error_msg)
@@ -170,7 +169,7 @@ class DataManager(RAMSTKDataManager):
                                   data={'testmethod': _method})
 
             pub.sendMessage('succeed_insert_test_method', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _error:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a test method to unknown '
                           'operating load ID {0:d}.'.format(load_id))
             pub.sendMessage("fail_insert_test_method",

@@ -14,8 +14,7 @@ from treelib.exceptions import NodeIDAbsentError
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
-)
+    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode)
 
 
 class DataManager(RAMSTKDataManager):
@@ -162,7 +161,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_action', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _error:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add an action to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_action", error_message=_error_msg)
@@ -193,7 +192,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_cause', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _error:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = (
                 'Attempting to add a failure cause to unknown '
                 'failure mode ID {0:d} or mechanism ID {1:d}.'.format(
@@ -226,7 +225,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_control', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _error:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a control to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_control", error_message=_error_msg)
@@ -255,7 +254,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_mechanism', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _error:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a failure mechanism to unknown '
                           'failure mode ID {0:s}.'.format(mode_id))
             pub.sendMessage("fail_insert_mechanism", error_message=_error_msg)

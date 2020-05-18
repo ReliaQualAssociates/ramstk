@@ -11,7 +11,6 @@ from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -127,8 +126,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _tree = Tree()
-
         try:
             _stakeholder = RAMSTKStakeholder()
             _stakeholder.revision_id = self._revision_id

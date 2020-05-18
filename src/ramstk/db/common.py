@@ -25,8 +25,7 @@ from ramstk.models.commondb import (
     RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode, RAMSTKGroup,
     RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
     RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
-    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
-)
+    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser)
 
 _ = gettext.gettext
 
@@ -733,6 +732,7 @@ def _load_fmea_tables(session: scoped_session) -> None:
                 _record.source = RAMSTK_FAILURE_MODES[_cat_key][_subcat_key][
                     _mode_key][2]
                 session.add(_record)
+    # pylint: disable=unused-variable
     for __, _rpn in list(RAMSTK_RPNS.items()):
         _record = RAMSTKRPN()
         _record.name = _rpn[0]
@@ -740,6 +740,7 @@ def _load_fmea_tables(session: scoped_session) -> None:
         _record.rpn_type = _rpn[2]
         _record.value = _rpn[3]
         session.add(_record)
+    # pylint: disable=unused-variable
     for __, _method in list(RAMSTK_METHODS.items()):
         _record = RAMSTKMethod()
         _record.name = _method[0]
@@ -771,12 +772,14 @@ def _load_incident_report_tables(session: scoped_session) -> None:
     _status = Tuple[str, str, str]
     _type = Tuple[str, str, str]
 
+    # pylint: disable=unused-variable
     for __, _status in list(RAMSTK_STATUSES.items()):
         _record = RAMSTKStatus()
         _record.name = _status[0]
         _record.description = _status[1]
         _record.status_type = _status[2]
         session.add(_record)
+    # pylint: disable=unused-variable
     for __, _type in list(RAMSTK_TYPES.items()):
         _record = RAMSTKType()
         _record.code = _type[0]
@@ -795,6 +798,7 @@ def _load_miscellaneous_tables(session: scoped_session) -> None:
     _manufacturer = Tuple[str, str, str]
     _measurement = Tuple[str, str, str]
 
+    # pylint: disable=unused-variable
     for __, _category in list(RAMSTK_CATEGORIES.items()):
         _record = RAMSTKCategory()
         _record.name = _category[0]
@@ -813,6 +817,7 @@ def _load_miscellaneous_tables(session: scoped_session) -> None:
         _record.mild_maxt_limit = _category[13]
         session.add(_record)
 
+    # pylint: disable=unused-variable
     for __, _subcategory in enumerate(RAMSTK_SUBCATEGORIES):
         _record = RAMSTKSubCategory()
         _record.category_id = _subcategory[0]
@@ -820,6 +825,7 @@ def _load_miscellaneous_tables(session: scoped_session) -> None:
         _record.description = _subcategory[2]
         session.add(_record)
 
+    # pylint: disable=unused-variable
     for __, _manufacturer in list(RAMSTK_MANUFACTURERS.items()):
         _record = RAMSTKManufacturer()
         _record.description = _manufacturer[0]
@@ -827,6 +833,7 @@ def _load_miscellaneous_tables(session: scoped_session) -> None:
         _record.cage_code = _manufacturer[2]
         session.add(_record)
 
+    # pylint: disable=unused-variable
     for __, _measurement in list(RAMSTK_MEASUREMENTS.items()):
         _record = RAMSTKMeasurement()
         _record.code = _measurement[0]
@@ -843,15 +850,20 @@ def _load_pof_tables(session: scoped_session) -> None:
     _history: str = ''
     _model = Tuple[str, int]
 
+    # pylint: disable=unused-variable
     for __, _condition in list(RAMSTK_CONDITIONS.items()):
         _record = RAMSTKCondition()
         _record.description = _condition[0]
         _record.cond_type = _condition[1]
         session.add(_record)
+
+    # pylint: disable=unused-variable
     for __, _history in list(RAMSTK_HISTORIES.items()):
         _record = RAMSTKLoadHistory()
         _record.description = _history
         session.add(_record)
+
+    # pylint: disable=unused-variable
     for __, _model in list(RAMSTK_MODELS.items()):
         _record = RAMSTKModel()
         _record.description = _model[0]
@@ -866,11 +878,14 @@ def _load_requirements_analysis_tables(session: scoped_session) -> None:
     _group = Tuple[str, str]
     _stakeholder: str = ''
 
+    # pylint: disable=unused-variable
     for __, _group in list(RAMSTK_GROUPS.items()):
         _record = RAMSTKGroup()
         _record.description = _group[0]
         _record.group_type = _group[1]
         session.add(_record)
+
+    # pylint: disable=unused-variable
     for __, _stakeholder in list(RAMSTK_STAKEHOLDERS.items()):
         _record = RAMSTKStakeholders()
         _record.stakeholder = _stakeholder
