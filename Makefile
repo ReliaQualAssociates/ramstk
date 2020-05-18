@@ -202,14 +202,12 @@ reports: coverage
 	python-codacy-coverage -r coverage.xml
 
 sync:
-	@echo "Execute the following to bring the local repo in sync with upstream:"
-	@echo ""
-	@echo "  ${GIT} checkout develop"
-	@echo "  ${GIT} pull upstream develop"
-	@echo "  ${GIT} push upstream develop"
-	@echo "  ${GIT} checkout master"
-	@echo "  ${GIT} pull upstream master"
-	@echo "  ${GIT} push origin master"
+	${GIT} checkout develop
+	${GIT} pull upstream develop
+	${GIT} push origin develop
+#	@echo "  ${GIT} checkout master"
+#	@echo "  ${GIT} pull upstream master"
+#	@echo "  ${GIT} push origin master"
 
 # This target is for use with IDE integration.
 format:

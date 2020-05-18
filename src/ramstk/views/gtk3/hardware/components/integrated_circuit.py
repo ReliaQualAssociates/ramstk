@@ -690,7 +690,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         super().do_load_page(attributes)
 
         self.__do_load_application_combo(attributes)
-        _method = {
+
+        _dic_method = {
             1: self.__do_load_linear,
             2: self.__do_load_logic,
             3: self.__do_load_pal_pla,
@@ -703,7 +704,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             10: self.__do_load_vhsic_vlsi
         }
         try:
-            _method[self._subcategory_id](attributes)
+            _dic_method[self._subcategory_id](attributes)
         except KeyError:
             pass
 
@@ -742,7 +743,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.txtVoltageESD.set_sensitive(False)
         self.txtYearsInProduction.set_sensitive(False)
 
-        _method = {
+        _dic_method = {
             1: self.__do_set_linear_sensitive,
             2: self.__do_set_logic_sensitive,
             3: self.__do_set_pal_pla_sensitive,
@@ -755,7 +756,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             10: self.__do_set_vhsic_vlsi_sensitive
         }
         try:
-            _method[self._subcategory_id]()
+            _dic_method[self._subcategory_id]()
         except KeyError:
             pass
 
@@ -785,7 +786,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             +---------+------------------+---------+------------------+
             |    1    | cmbApplication   |    5    | cmbPackage       |
             +---------+------------------+---------+------------------+
-            |    2    | cmbContruction   |    6    | cmbTechnology    |
+            |    2    | cmbConstruction  |    6    | cmbTechnology    |
             +---------+------------------+---------+------------------+
             |    3    | cmbECC           |    7    | cmbType          |
             +---------+------------------+---------+------------------+

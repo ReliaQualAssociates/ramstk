@@ -19,9 +19,8 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel,
-    RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView
-)
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPlot,
+    RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView)
 
 
 class RAMSTKAssessmentInputs(RAMSTKWorkView):
@@ -78,8 +77,8 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
-            'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
         self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
 
@@ -286,8 +285,8 @@ class RAMSTKStressInputs(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
-            'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
         self.txtTemperatureRatedMin: RAMSTKEntry = RAMSTKEntry()
         self.txtTemperatureKnee: RAMSTKEntry = RAMSTKEntry()
@@ -578,8 +577,8 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
-            'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
         self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
@@ -809,8 +808,8 @@ class RAMSTKStressResults(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
-            'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
 
         self.pltDerate: RAMSTKPlot = RAMSTKPlot()
 
