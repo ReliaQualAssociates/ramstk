@@ -185,6 +185,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     _n_cycles: Any = attributes['n_cycles']
     _pi_e: Any = attributes['piE']
     _pi_q: Any = attributes['piQ']
+    _pi_c: Any = 1.0
     _pi_cyc: Any = 1.0
 
     attributes = calculate_part_stress_lambda_b(attributes)
