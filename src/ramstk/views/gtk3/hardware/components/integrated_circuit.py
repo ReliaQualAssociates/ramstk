@@ -796,11 +796,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         super().on_combo_changed(combo, index, 'wvw_editing_component')
 
-    def _on_focus_out(
-            self,
-            entry: object,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
+    # pylint: disable=unused-argument
+    def _on_focus_out(self, entry: object, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Retrieve changes made in RAMSTKEntry() widgets.
 
