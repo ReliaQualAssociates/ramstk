@@ -14,9 +14,8 @@ from pubsub import pub
 
 # RAMSTK Local Imports
 from .models import (
-    capacitor, connection, crystal, efilter, fuse, inductor,
-    integratedcircuit, lamp, meter, relay, resistor, semiconductor, switch
-)
+    capacitor, connection, crystal, efilter, fuse, inductor, integratedcircuit,
+    lamp, meter, relay, resistor, semiconductor, switch)
 
 
 # noinspection PyTypeChecker
@@ -69,8 +68,8 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes['subcategory_id'], attributes['quality_id'],
             attributes['type_id'])
 
-    attributes['hazard_rate_active'] = (attributes['lambda_b']
-                                        * attributes['piQ'])
+    attributes['hazard_rate_active'] = (attributes['lambda_b'] *
+                                        attributes['piQ'])
 
     return attributes
 
@@ -298,10 +297,10 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> None:
             attributes = _do_calculate_part_stress(**attributes)
 
         attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active']
-            + attributes['add_adj_factor']) * (
-                (attributes['duty_cycle'] / 100.0)
-                * attributes['mult_adj_factor'] * attributes['quantity'])
+            attributes['hazard_rate_active'] +
+            attributes['add_adj_factor']) * (
+                (attributes['duty_cycle'] / 100.0) *
+                attributes['mult_adj_factor'] * attributes['quantity'])
 
         pub.sendMessage('succeed_predict_reliability', attributes=attributes)
     except ValueError:

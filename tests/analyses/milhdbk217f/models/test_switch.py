@@ -35,7 +35,10 @@ ATTRIBUTES = {
 @pytest.mark.parametrize("subcategory_id", [1, 5])
 def test_get_part_count_lambda_b(subcategory_id):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = switch.get_part_count_lambda_b(subcategory_id, 3, 1)
+    ATTRIBUTES['subcategory_id'] = subcategory_id
+    ATTRIBUTES['environment_active_id'] = 3
+    ATTRIBUTES['construction_id'] = 1
+    _lambda_b = switch.get_part_count_lambda_b(ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == {1: 0.018, 5: 1.7}[subcategory_id]
@@ -45,30 +48,39 @@ def test_get_part_count_lambda_b(subcategory_id):
 @pytest.mark.calculation
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError if passed an unknown subcategory ID."""
+    ATTRIBUTES['subcategory_id'] = 27
     with pytest.raises(KeyError):
-        _lambda_b = switch.get_part_count_lambda_b(27, 3, 1)
+        _lambda_b = switch.get_part_count_lambda_b(ATTRIBUTES)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_count_lambda_b_no_construction():
     """get_part_count_lambda_b() should raise a KeyError if passed an unknown construction ID."""
+    ATTRIBUTES['subcategory_id'] = 5
+    ATTRIBUTES['environment_active_id'] = 3
+    ATTRIBUTES['construction_id'] = -1
     with pytest.raises(KeyError):
-        _lambda_b = switch.get_part_count_lambda_b(5, 3, 41)
+        _lambda_b = switch.get_part_count_lambda_b(ATTRIBUTES)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError if passed an unknown active environment ID."""
+    ATTRIBUTES['subcategory_id'] = 2
+    ATTRIBUTES['environment_active_id'] = 33
+    ATTRIBUTES['construction_id'] = 1
     with pytest.raises(IndexError):
-        _lambda_b = switch.get_part_count_lambda_b(2, 32, 1)
+        _lambda_b = switch.get_part_count_lambda_b(ATTRIBUTES)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_count():
     """calculate_part_count() should return a float value for the base hazard rate on success."""
+    ATTRIBUTES['subcategory_id'] = 1
+    ATTRIBUTES['environment_active_id'] = 3
     _lambda_b = switch.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
@@ -81,48 +93,67 @@ def test_calculate_part_count():
 @pytest.mark.parametrize("construction_id", [1, 2])
 def test_calculate_part_stress_lambda_b(subcategory_id, construction_id):
     """calculate_part_stress_lambda_b() should return a float value for the part stress base hazard rate on success."""
-    _lambda_b = switch.calculate_part_stress_lambda_b(subcategory_id, 1,
-                                                      construction_id, 1, 8)
+    ATTRIBUTES['subcategory_id'] = subcategory_id
+    ATTRIBUTES['quality_id'] = 1
+    ATTRIBUTES['construction_id'] = construction_id
+    ATTRIBUTES['application_id'] = 1
+    ATTRIBUTES['n_elements'] = 8
+    _attributes = switch.calculate_part_stress_lambda_b(ATTRIBUTES)
 
-    assert isinstance(_lambda_b, float)
+    assert isinstance(_attributes['lambda_b'], float)
     if subcategory_id == 1 and construction_id == 1:
-        assert _lambda_b == 0.00045
+        assert _attributes['lambda_b'] == 0.00045
     elif subcategory_id == 1 and construction_id == 2:
-        assert _lambda_b == 0.0027
+        assert _attributes['lambda_b'] == 0.0027
     elif subcategory_id == 2 and construction_id == 1:
-        assert _lambda_b == pytest.approx(0.1036)
+        assert _attributes['lambda_b'] == pytest.approx(0.1036)
     elif subcategory_id == 2 and construction_id == 2:
-        assert _lambda_b == 0.1072
+        assert _attributes['lambda_b'] == 0.1072
     elif subcategory_id == 4:
-        assert _lambda_b == 0.5027
+        assert _attributes['lambda_b'] == 0.5027
     elif subcategory_id == 5:
-        assert _lambda_b == 0.02
+        assert _attributes['lambda_b'] == 0.02
     elif subcategory_id == 31:
-        assert _lambda_b == 0.0
+        assert _attributes['lambda_b'] == 0.0
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_no_quality():
     """calculate_part_stress_lambda_b() should raise an IndexError if passed an unknown quality ID."""
+    ATTRIBUTES['subcategory_id'] = 1
+    ATTRIBUTES['quality_id'] = 21
+    ATTRIBUTES['construction_id'] = 1
+    ATTRIBUTES['application_id'] = 1
+    ATTRIBUTES['n_elements'] = 8
     with pytest.raises(IndexError):
-        _lambda_b = switch.calculate_part_stress_lambda_b(1, 21, 1, 1, 8)
+        _lambda_b = switch.calculate_part_stress_lambda_b(ATTRIBUTES)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_no_application():
     """calculate_part_stress_lambda_b() should raise an IndexError if passed an unknown application ID."""
+    ATTRIBUTES['subcategory_id'] = 5
+    ATTRIBUTES['quality_id'] = 1
+    ATTRIBUTES['construction_id'] = 1
+    ATTRIBUTES['application_id'] = 21
+    ATTRIBUTES['n_elements'] = 8
     with pytest.raises(IndexError):
-        _lambda_b = switch.calculate_part_stress_lambda_b(5, 1, 1, 21, 8)
+        _lambda_b = switch.calculate_part_stress_lambda_b(ATTRIBUTES)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_no_construction():
     """calculate_part_stress_lambda_b() should raise a KeyError if passed an unknown construction ID."""
+    ATTRIBUTES['subcategory_id'] = 1
+    ATTRIBUTES['quality_id'] = 1
+    ATTRIBUTES['construction_id'] = 41
+    ATTRIBUTES['application_id'] = 1
+    ATTRIBUTES['n_elements'] = 8
     with pytest.raises(KeyError):
-        _lambda_b = switch.calculate_part_stress_lambda_b(1, 1, 41, 1, 8)
+        _lambda_b = switch.calculate_part_stress_lambda_b(ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -131,6 +162,7 @@ def test_calculate_part_stress_lambda_b_no_construction():
 def test_calculate_part_stress(subcategory_id):
     """calculate_part_stress() should return the switch attributes dict with updated values."""
     ATTRIBUTES['subcategory_id'] = subcategory_id
+    ATTRIBUTES['construction_id'] = 1
     _attributes = switch.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
@@ -138,8 +170,8 @@ def test_calculate_part_stress(subcategory_id):
         assert _attributes['lambda_b'] == 0.00045
         assert _attributes['piCYC'] == 2.3
         assert _attributes['piL'] == pytest.approx(1.372187594)
-        assert _attributes['piC'] == 1.5
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.0042606425)
+        assert _attributes['piC'] == 1.7
+        assert _attributes['hazard_rate_active'] == pytest.approx(0.004828728)
     elif subcategory_id == 2:
         assert _attributes['lambda_b'] == pytest.approx(0.10360)
         assert _attributes['piCYC'] == 2.3
@@ -147,51 +179,60 @@ def test_calculate_part_stress(subcategory_id):
         assert _attributes['hazard_rate_active'] == pytest.approx(0.65392972)
     elif subcategory_id == 5:
         assert _attributes['lambda_b'] == 0.02
-        assert _attributes['piC'] == 2.0
+        assert _attributes['piC'] == 3.0
         assert _attributes['piU'] == 1.0
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.104)
+        assert _attributes['hazard_rate_active'] == pytest.approx(0.156)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_load_stress_resistive():
     """calculate_load_stress() should return a float when calculating resistive load stress."""
-    _pi_l = switch.calculate_load_stress_factor(1, 0.2)
+    ATTRIBUTES['application_id'] = 1
+    ATTRIBUTES['current_ratio'] = 0.2
+    _attributes = switch.calculate_load_stress_factor(ATTRIBUTES)
 
-    assert _pi_l == pytest.approx(1.064494459)
+    assert _attributes['piL'] == pytest.approx(1.064494459)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_load_stress_inductive():
     """calculate_load_stress() should return a float when calculating inductive load stress."""
-    _pi_l = switch.calculate_load_stress_factor(2, 0.2)
+    ATTRIBUTES['application_id'] = 2
+    ATTRIBUTES['current_ratio'] = 0.2
+    _attributes = switch.calculate_load_stress_factor(ATTRIBUTES)
 
-    assert _pi_l == pytest.approx(1.284025417)
+    assert _attributes['piL'] == pytest.approx(1.284025417)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_load_stress_capacitive():
     """calculate_load_stress() should return a float when calculating capacitive load stress."""
-    _pi_l = switch.calculate_load_stress_factor(3, 0.2)
+    ATTRIBUTES['application_id'] = 3
+    ATTRIBUTES['current_ratio'] = 0.2
+    _attributes = switch.calculate_load_stress_factor(ATTRIBUTES)
 
-    assert _pi_l == pytest.approx(2.718281828)
+    assert _attributes['piL'] == pytest.approx(2.718281828)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_load_stress_nothing():
     """calculate_load_stress() should return 0.0 when calculating load stress for unknown load type."""
-    _pi_l = switch.calculate_load_stress_factor(13, 0.2)
+    ATTRIBUTES['application_id'] = 13
+    ATTRIBUTES['current_ratio'] = 0.2
+    _attributes = switch.calculate_load_stress_factor(ATTRIBUTES)
 
-    assert _pi_l == 0.0
+    assert _attributes['piL'] == 0.0
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_picyc_one():
     """calculate_part_stress() should set piCYC=1.0 when n_cycles < 1.0."""
+    ATTRIBUTES['application_id'] = 1
     ATTRIBUTES['n_cycles'] = 0.05
     _attributes = switch.calculate_part_stress(**ATTRIBUTES)
 
