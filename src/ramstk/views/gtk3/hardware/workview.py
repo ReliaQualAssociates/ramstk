@@ -29,7 +29,7 @@ from ramstk.views.gtk3.widgets import (
 # RAMSTK Local Imports
 from .components import (
     RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection, inductor,
-    integrated_circuit, meter, miscellaneous, relay)
+    integrated_circuit, meter, miscellaneous, relay, resistor, switch)
 
 
 def _do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
@@ -965,14 +965,14 @@ class AssessmentInputs(RAMSTKWorkView):
         self._dic_assessment_input: Dict[int, object] = {
             1: integrated_circuit.AssessmentInputs(configuration, logger),
             # 2: wvwSemiconductorAI(self.RAMSTK_CONFIGURATION),
-            # 3: wvwResistorAI(self.RAMSTK_CONFIGURATION),
+            3: resistor.AssessmentInputs(configuration, logger),
             4: capacitor.AssessmentInputs(configuration, logger),
             5: inductor.AssessmentInputs(configuration, logger),
             6: relay.AssessmentInputs(configuration, logger),
-            # 7: wvwSwitchAI(self.RAMSTK_CONFIGURATION),
+            7: switch.AssessmentInputs(configuration, logger),
             8: connection.AssessmentInputs(configuration, logger),
             9: meter.AssessmentInputs(configuration, logger),
-            10: miscellaneous.AssessmentInputs(configuration, logger),
+            10: miscellaneous.AssessmentInputs(configuration, logger)
         }
 
         # Initialize private list attributes.
@@ -1748,11 +1748,11 @@ class AssessmentResults(RAMSTKWorkView):
         self._dic_assessment_results = {
             1: integrated_circuit.AssessmentResults(configuration, logger),
             # 2: wvwSemiconductorAR(self.RAMSTK_CONFIGURATION),
-            # 3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
+            3: resistor.AssessmentResults(configuration, logger),
             4: capacitor.AssessmentResults(configuration, logger),
             5: inductor.AssessmentResults(configuration, logger),
             6: relay.AssessmentResults(configuration, logger),
-            # 7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
+            7: switch.AssessmentResults(configuration, logger),
             8: connection.AssessmentResults(configuration, logger),
             9: meter.AssessmentResults(configuration, logger),
             10: miscellaneous.AssessmentResults(configuration, logger)

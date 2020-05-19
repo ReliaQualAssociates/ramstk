@@ -18,9 +18,8 @@ from treelib.exceptions import NodeIDAbsentError
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKEnvironment, RAMSTKFailureDefinition,
-    RAMSTKMission, RAMSTKMissionPhase, RAMSTKRevision
-)
+    RAMSTKEnvironment, RAMSTKFailureDefinition, RAMSTKMission,
+    RAMSTKMissionPhase, RAMSTKRevision)
 
 
 class DataManager(RAMSTKDataManager):
@@ -414,8 +413,8 @@ class DataManager(RAMSTKDataManager):
                             error_message=('No revision ID {0:s} '
                                            'found when attempting to save '
                                            'failure definition with ID '
-                                           '{1:s}.').format(str(revision_id),
-                                                            str(node_id)))
+                                           '{1:s}.').format(
+                                               str(revision_id), str(node_id)))
         except (KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_failure_definition',
@@ -540,7 +539,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_insert_revision',
                             node_id=self.last_id,
                             tree=self.tree)
-        except DataAccessError as _error:
+        except DataAccessError:
             pub.sendMessage("fail_insert_revision",
                             error_message=("Failed to insert revision into "
                                            "program database."))

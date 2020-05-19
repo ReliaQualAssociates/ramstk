@@ -18,8 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKListView, RAMSTKMessageDialog, RAMSTKTreeView
-)
+    RAMSTKListView, RAMSTKMessageDialog, RAMSTKTreeView)
 
 
 class Stakeholders(RAMSTKListView):
@@ -107,12 +106,11 @@ class Stakeholders(RAMSTKListView):
                         ],
                         callbacks=[
                             self.do_request_insert_sibling,
-                            self._do_request_delete,
-                            self._do_request_calculate
+                            self._do_request_delete, self._do_request_calculate
                         ])
 
-        self.tab_label.set_markup("<span weight='bold'>"
-                                  + _("Stakeholder\nInputs") + "</span>")
+        self.tab_label.set_markup("<span weight='bold'>" +
+                                  _("Stakeholder\nInputs") + "</span>")
         self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
@@ -133,7 +131,8 @@ class Stakeholders(RAMSTKListView):
         _cellmodel.clear()
         _cellmodel.append([""])
         # Each _group is (Description, Group Type).
-        for _index, _key in enumerate(
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS):
             _group = self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
                 _key]
@@ -282,8 +281,7 @@ class Stakeholders(RAMSTKListView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_stakeholder',
-                        node_id=self._record_id)
+        pub.sendMessage('request_update_stakeholder', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -380,7 +378,7 @@ class Stakeholders(RAMSTKListView):
             14: 'user_float_4',
             15: 'user_float_5'
         }
-        _model = self.treeview.get_model()
+
         try:
             _key = _dic_keys[self._lst_col_order[position]]
         except KeyError:

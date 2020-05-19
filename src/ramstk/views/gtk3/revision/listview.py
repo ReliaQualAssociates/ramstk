@@ -15,13 +15,11 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.programdb import (
-    RAMSTKEnvironment, RAMSTKFailureDefinition,
-    RAMSTKMission, RAMSTKMissionPhase
-)
+    RAMSTKEnvironment, RAMSTKFailureDefinition, RAMSTKMission,
+    RAMSTKMissionPhase)
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKListView, RAMSTKMessageDialog, RAMSTKTreeView
-)
+    RAMSTKListView, RAMSTKMessageDialog, RAMSTKTreeView)
 
 
 def _do_make_column(header: str, index: int,
@@ -133,8 +131,9 @@ class FailureDefinition(RAMSTKListView):
                                GObject.TYPE_STRING)
         self.treeview.set_model(_model)
 
+        # pylint: disable=bad-continuation
         for _header in enumerate(
-                ["Revision ID", "Definition\nNumber", "Failure Definition"]):
+            ["Revision ID", "Definition\nNumber", "Failure Definition"]):
             _column = _do_make_column(_header[1], _header[0], _header[0])
             self.treeview.append_column(_column)
 
@@ -150,8 +149,8 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.tab_label.set_markup("<span weight='bold'>"
-                                  + _("Failure\nDefinitions") + "</span>")
+        self.tab_label.set_markup("<span weight='bold'>" +
+                                  _("Failure\nDefinitions") + "</span>")
         self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
@@ -198,9 +197,14 @@ class FailureDefinition(RAMSTKListView):
                 _attributes = (_entity.revision_id, _entity.definition_id,
                                _entity.definition)
             try:
-                _row = _model.append(_attributes)
+                _model.append(_attributes)
+            #// TODO: Handle exceptions in Revision module views.
+            #//
+            #// Exceptions in the Revision module views are not being
+            #// handled.  They need to be logged and, when appropriate,
+            #// provide an informational dialog to the user.  See issue #308.
             except ValueError:
-                _row = None
+                pass
 
         self.do_expand_tree()
 
@@ -391,14 +395,14 @@ class UsageProfile(RAMSTKListView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['mission'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/mission.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/mission.png')
         self._dic_icons['phase'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/phase.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/phase.png')
         self._dic_icons['environment'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/environment.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/environment.png')
 
         # Initialize private list attributes.
 
@@ -629,8 +633,8 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
-                                  + "</span>")
+        self.tab_label.set_markup("<span weight='bold'>" +
+                                  _("Usage\nProfiles") + "</span>")
         self.tab_label.set_xalign(xalign=0.5)
         self.tab_label.set_yalign(yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
@@ -1111,7 +1115,6 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _attributes: Dict[str, Any] = {}
         _headings: List[str] = []
         _level: str = ''
 
@@ -1134,8 +1137,8 @@ class UsageProfile(RAMSTKListView):
                 _label.set_line_wrap(True)
                 _label.set_alignment(xalign=0.5, yalign=0.5)
                 _label.set_justify(Gtk.Justification.CENTER)
-                _label.set_markup("<span weight='bold'>" + _heading
-                                  + "</span>")
+                _label.set_markup("<span weight='bold'>" + _heading +
+                                  "</span>")
                 _label.set_use_markup(True)
                 _label.show_all()
                 _columns[i].set_widget(_label)

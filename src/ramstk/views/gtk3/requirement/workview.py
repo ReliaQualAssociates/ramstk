@@ -18,10 +18,9 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox,
-    RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-    RAMSTKTextView, RAMSTKWorkView, do_make_buttonbox
-)
+    RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox, RAMSTKDateSelect,
+    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView,
+    RAMSTKWorkView, do_make_buttonbox)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -141,7 +140,8 @@ class GeneralData(RAMSTKWorkView):
         # Load the requirement type Gtk.ComboBox(); each _type is
         # (Code, Description, Type).
         _types = []
-        for _index, _key in enumerate(
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE):
             _types.append(
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key])

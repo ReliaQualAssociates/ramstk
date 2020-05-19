@@ -95,12 +95,12 @@ class BaseDatabase():
             if self.cxnargs['dialect'] == 'sqlite':
                 self.database = 'sqlite:///' + self.cxnargs['dbname']
             elif self.cxnargs['dialect'] == 'postgres':
-                self.database = ('postgresql+psycopg2://'
-                                 + self.cxnargs['user'] + ':'
-                                 + self.cxnargs['password'] + '@'
-                                 + self.cxnargs['host'] + ':'
-                                 + self.cxnargs['port'] + '/'
-                                 + self.cxnargs['dbname'])
+                self.database = ('postgresql+psycopg2://' +
+                                 self.cxnargs['user'] + ':' +
+                                 self.cxnargs['password'] + '@' +
+                                 self.cxnargs['host'] + ':' +
+                                 self.cxnargs['port'] + '/' +
+                                 self.cxnargs['dbname'])
             else:
                 raise DataAccessError('Unknown database dialect in database '
                                       'connection dict.')
@@ -344,9 +344,10 @@ class BaseDatabase():
         if database['dialect'] == 'postgres':
             _query = self.sqlstatements['select'].format('datname') + \
                  self.sqlstatements['from'].format('pg_database;')
-            database = ('postgresql+psycopg2://' + database['user'] + ':'
-                        + database['password'] + '@' + database['host'] + ':'
-                        + database['port'] + '/' + database['database'])
+            database = ('postgresql+psycopg2://' + database['user'] + ':' +
+                        database['password'] + '@' + database['host'] + ':' +
+                        database['port'] + '/' + database['database'])
+            # pylint: disable=unused-variable
             __, _session = do_open_session(database)
 
             # Remove the databases not associated with RAMSTK.
