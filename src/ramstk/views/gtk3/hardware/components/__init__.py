@@ -9,7 +9,7 @@
 # RAMSTK Local Imports
 from . import (
     capacitor, connection, inductor, integrated_circuit, meter, miscellaneous,
-    relay, resistor, switch)
+    relay, resistor, semiconductor, switch)
 from .workview import (
     RAMSTKAssessmentInputs, RAMSTKAssessmentResults, RAMSTKStressInputs,
     RAMSTKStressResults)
