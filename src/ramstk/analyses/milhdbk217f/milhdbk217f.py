@@ -66,9 +66,7 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes['quality_id'],
         )
     else:
-        attributes['piQ'] = semiconductor.get_part_count_quality_factor(
-            attributes['subcategory_id'], attributes['quality_id'],
-            attributes['type_id'])
+        attributes = semiconductor.get_part_count_quality_factor(attributes)
 
     attributes['hazard_rate_active'] = (attributes['lambda_b'] *
                                         attributes['piQ'])
