@@ -31,7 +31,7 @@ jobs:
           path: 'src/ramstk'
 
   lint-it:
-    name: Lint Code and Style Checks
+    name: Lint Code and Style Check Repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -47,13 +47,3 @@ jobs:
           extra-pycodestyle-options: "--statistics --count"
           extra-mypy-options: ""
           extra-isort-options: "--use-parentheses --balanced --multi-line 5"
-
-  yapf-it:
-    name: Check Code Formatting with YAPF
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run YAPF against changed files
-        uses: AlexanderMelde/yapf-action@master
-        with:
-          args: --exclude '**/tests/**'

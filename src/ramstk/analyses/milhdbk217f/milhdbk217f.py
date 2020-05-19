@@ -1,3 +1,5 @@
+# TODO: Remove the type ignore after refactoring.  See issue #324
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.milhdbk217f.py is part of the RAMSTK Project
