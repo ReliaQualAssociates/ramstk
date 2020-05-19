@@ -87,8 +87,12 @@ def calculate_load_stress_factor(application_id: int,
     Calculate the load stress factor (piL).
 
     :param int application_id: the load application identifier of the switch.
-    :param float current_ratio: the ratio of operting current to rated current.
+    :param float current_ratio: the ratio of operating current to rated
+        current.
+    :return: _pi_l; the load stress factor.
+    :rtype: float
     """
+    _pi_l = 0.0
     if application_id == 1:  # Resistive
         _pi_l = exp((current_ratio / 0.8)**2.0)
     elif application_id == 2:  # Inductive
@@ -110,11 +114,9 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['subcategory_id'],
-        attributes['environment_active_id'],
-        attributes['construction_id'],
-    )
+    return get_part_count_lambda_b(attributes['subcategory_id'],
+                                   attributes['environment_active_id'],
+                                   attributes['construction_id'])
 
 
 def calculate_part_stress_lambda_b(subcategory_id: int, quality_id: int,
@@ -172,7 +174,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     stress method.
 
     :return: attributes; the keyword argument (hardware attribute)
-             dictionary with updated values.
+        dictionary with updated values.
     :rtype: dict
     """
     attributes['lambda_b'] = calculate_part_stress_lambda_b(
@@ -196,22 +198,22 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     # Determine the use factor (piU).
     attributes['piU'] = (10.0 if (attributes['application_id']) - (1) else 1.0)
 
-    attributes['hazard_rate_active'] = (attributes['lambda_b']
-                                        * attributes['piE'])
+    attributes['hazard_rate_active'] = (attributes['lambda_b'] *
+                                        attributes['piE'])
     if attributes['subcategory_id'] == 1:
-        attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
-                                            * attributes['piCYC']
-                                            * attributes['piL']
-                                            * attributes['piC'])
+        attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] *
+                                            attributes['piCYC'] *
+                                            attributes['piL'] *
+                                            attributes['piC'])
     elif attributes['subcategory_id'] in [2, 3, 4]:
-        attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
-                                            * attributes['piCYC']
-                                            * attributes['piL'])
+        attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] *
+                                            attributes['piCYC'] *
+                                            attributes['piL'])
     elif attributes['subcategory_id'] == 5:
-        attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
-                                            * attributes['piC']
-                                            * attributes['piU']
-                                            * attributes['piQ'])
+        attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] *
+                                            attributes['piC'] *
+                                            attributes['piU'] *
+                                            attributes['piQ'])
 
     return attributes
 
@@ -263,7 +265,7 @@ def get_part_count_lambda_b(subcategory_id: int, environment_active_id: int,
         _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][construction_id][
             environment_active_id - 1]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id
-                                                       - 1]
+        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id -
+                                                       1]
 
     return _base_hr

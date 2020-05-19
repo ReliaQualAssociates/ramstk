@@ -150,3 +150,62 @@ def test_calculate_part_stress(subcategory_id):
         assert _attributes['piC'] == 2.0
         assert _attributes['piU'] == 1.0
         assert _attributes['hazard_rate_active'] == pytest.approx(0.104)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_load_stress_resistive():
+    """calculate_load_stress() should return a float when calculating resistive load stress."""
+    _pi_l = switch.calculate_load_stress_factor(1, 0.2)
+
+    assert _pi_l == pytest.approx(1.064494459)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_load_stress_inductive():
+    """calculate_load_stress() should return a float when calculating inductive load stress."""
+    _pi_l = switch.calculate_load_stress_factor(2, 0.2)
+
+    assert _pi_l == pytest.approx(1.284025417)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_load_stress_capacitive():
+    """calculate_load_stress() should return a float when calculating capacitive load stress."""
+    _pi_l = switch.calculate_load_stress_factor(3, 0.2)
+
+    assert _pi_l == pytest.approx(2.718281828)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_load_stress_nothing():
+    """calculate_load_stress() should return 0.0 when calculating load stress for unknown load type."""
+    _pi_l = switch.calculate_load_stress_factor(13, 0.2)
+
+    assert _pi_l == 0.0
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_part_stress_picyc_one():
+    """calculate_part_stress() should set piCYC=1.0 when n_cycles < 1.0."""
+    ATTRIBUTES['n_cycles'] = 0.05
+    _attributes = switch.calculate_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['piCYC'] == 1.0
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_part_stress_base():
+    """calculate_part_stress() should return an active h(t)=0.0 for subcategories>5."""
+    ATTRIBUTES['piE'] = 6
+    ATTRIBUTES['subcategory_id'] = 6
+    _attributes = switch.calculate_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['hazard_rate_active'] == 0.0
