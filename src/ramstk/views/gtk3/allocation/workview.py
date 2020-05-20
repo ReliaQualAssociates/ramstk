@@ -18,8 +18,8 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-    RAMSTKTreeView, RAMSTKWorkView)
+    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
+    RAMSTKWorkView)
 
 
 class Allocation(RAMSTKWorkView):
