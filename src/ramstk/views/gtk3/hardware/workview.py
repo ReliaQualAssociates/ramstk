@@ -33,7 +33,7 @@ from .components import (
     switch)
 
 
-def _do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
+def do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
     """
     Converts the treelib.Tree() holding hardware info into the standrd dict.
 
@@ -62,6 +62,10 @@ def _do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
     _attributes = {
         **_attributes,
         **dmtree.get_node(record_id).data['mil_hdbk_217f'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['allocation'].get_attributes()
     }
 
     return _attributes
@@ -1311,12 +1315,12 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         Load the Hardware Assessment Inputs page.
 
-        :param dict attributes: a dict of attribute key:value pairs for the
-            selected Hardware.
+        :param dmtree: the Hardware datamanager treelib.Tree().
+        :type dmtree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        attributes = _do_get_attributes(dmtree, self._record_id)
+        attributes = do_get_attributes(dmtree, self._record_id)
 
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
@@ -2101,7 +2105,7 @@ class AssessmentResults(RAMSTKWorkView):
         if self._record_id == -1:
             return
 
-        attributes = _do_get_attributes(dmtree, self._record_id)
+        attributes = do_get_attributes(dmtree, self._record_id)
 
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
