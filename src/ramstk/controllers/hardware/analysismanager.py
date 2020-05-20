@@ -71,7 +71,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_all_hardware')
         pub.subscribe(self._do_derating_analysis, 'request_derate_hardware')
         pub.subscribe(self._do_calculate_allocation_goals,
-                      'request_calculate_goals')
+                      'request_calculate_allocation_goals')
         pub.subscribe(self._do_calculate_allocation,
                       'request_allocate_reliability')
         pub.subscribe(self._on_allocate_reliability,

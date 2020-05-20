@@ -49,23 +49,22 @@ def do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
         hardware item.
     :rtype: dict
     """
-    _attributes = dmtree.get_node(
-        record_id).data['design_electric'].get_attributes()
+    _attributes = dmtree.get_node(record_id).data['hardware'].get_attributes()
     _attributes = {
         **_attributes,
         **dmtree.get_node(record_id).data['reliability'].get_attributes()
     }
     _attributes = {
         **_attributes,
-        **dmtree.get_node(record_id).data['hardware'].get_attributes()
+        **dmtree.get_node(record_id).data['allocation'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['design_electric'].get_attributes()
     }
     _attributes = {
         **_attributes,
         **dmtree.get_node(record_id).data['mil_hdbk_217f'].get_attributes()
-    }
-    _attributes = {
-        **_attributes,
-        **dmtree.get_node(record_id).data['allocation'].get_attributes()
     }
 
     return _attributes

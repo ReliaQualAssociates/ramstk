@@ -715,6 +715,11 @@ class RAMSTKBaseView(Gtk.HBox):
         case there is anything else the child class needs to do with the
         RAMSTKEntry() or RAMSTKTextView() that called this method.
 
+        This method publishes the PyPubSub message that it is passed.  This
+        is usually sufficient to ensure the attributes are updated by the
+        datamanager.  This method also return a dict with {_key: _new_text}
+        if this information is needed by the child class.
+
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
             method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
@@ -723,7 +728,7 @@ class RAMSTKBaseView(Gtk.HBox):
             associated with the data from the calling Gtk.Widget().
         :param str message: the PyPubSub message to publish.
         :return: {_key: _new_text}; the child module attribute name and the
-        index of the newly changed RAMSTKEntry() or RAMSTKTextView().
+            index of the newly changed RAMSTKEntry() or RAMSTKTextView().
         :rtype: dict
         """
         try:

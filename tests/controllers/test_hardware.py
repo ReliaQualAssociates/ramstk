@@ -22,18 +22,16 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from __mocks__ import (
-    MOCK_217F, MOCK_ALLOCATION, MOCK_DESIGN_ELECTRIC,
-    MOCK_DESIGN_MECHANIC, MOCK_HARDWARE, MOCK_NSWC,
-    MOCK_RELIABILITY, MOCK_RQRMNT_TREE, MOCK_SIMILAR_ITEM
-)
+    MOCK_217F, MOCK_ALLOCATION, MOCK_DESIGN_ELECTRIC, MOCK_DESIGN_MECHANIC,
+    MOCK_HARDWARE, MOCK_NSWC, MOCK_RELIABILITY, MOCK_RQRMNT_TREE,
+    MOCK_SIMILAR_ITEM)
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amHardware, dmHardware, mmHardware
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
-)
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem)
 
 
 class MockDao:
@@ -182,7 +180,11 @@ class MockDao:
 
         return self._all_similar_item[0]
 
-    def do_select_all(self, table, key=None, value=None, order=None,
+    def do_select_all(self,
+                      table,
+                      key=None,
+                      value=None,
+                      order=None,
                       _all=False):
         if table == RAMSTKHardware:
             _records = self._do_select_all_hardware(table, value)
@@ -230,22 +232,27 @@ class TestCreateControllers():
         assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._tag == 'hardware'
         assert DUT._root == 0
-        assert pub.isSubscribed(DUT.do_set_tree, 'succeed_calculate_all_hardware')
+        assert pub.isSubscribed(DUT.do_set_tree,
+                                'succeed_calculate_all_hardware')
         assert pub.isSubscribed(DUT.do_update, 'request_update_hardware')
-        assert pub.isSubscribed(DUT.do_update_all, 'request_update_all_hardware')
+        assert pub.isSubscribed(DUT.do_update_all,
+                                'request_update_all_hardware')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_hardware_attributes')
         assert pub.isSubscribed(DUT._do_select_all_hardware,
-                        'selected_revision')
-        assert pub.isSubscribed(DUT._do_delete_hardware, 'request_delete_hardware')
-        assert pub.isSubscribed(DUT._do_insert_hardware, 'request_insert_hardware')
+                                'selected_revision')
+        assert pub.isSubscribed(DUT._do_delete_hardware,
+                                'request_delete_hardware')
+        assert pub.isSubscribed(DUT._do_insert_hardware,
+                                'request_insert_hardware')
         assert pub.isSubscribed(DUT._do_make_composite_ref_des,
-                      'request_make_comp_ref_des')
+                                'request_make_comp_ref_des')
         assert pub.isSubscribed(DUT._do_get_all_hardware_attributes,
-                      'request_get_all_hardware_attributes')
-        assert pub.isSubscribed(DUT._do_get_hardware_tree, 'request_get_hardware_tree')
+                                'request_get_all_hardware_attributes')
+        assert pub.isSubscribed(DUT._do_get_hardware_tree,
+                                'request_get_hardware_tree')
         assert pub.isSubscribed(DUT._do_set_hardware_attributes,
-                      'request_set_hardware_attributes')
+                                'request_set_hardware_attributes')
         assert pub.isSubscribed(DUT._do_set_all_hardware_attributes,
                                 'succeed_calculate_hardware')
 
@@ -261,25 +268,26 @@ class TestCreateControllers():
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
         assert pub.isSubscribed(DUT.on_get_all_attributes,
-                      'succeed_get_all_hardware_attributes')
+                                'succeed_get_all_hardware_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_hardware_tree')
         assert pub.isSubscribed(DUT._on_predict_reliability,
-                  'succeed_predict_reliability')
+                                'succeed_predict_reliability')
         assert pub.isSubscribed(DUT._do_calculate_hardware,
                                 'request_calculate_hardware')
         assert pub.isSubscribed(DUT._request_do_calculate_all_hardware,
-                  'request_calculate_all_hardware')
-        assert pub.isSubscribed(DUT._do_derating_analysis, 'request_derate_hardware')
+                                'request_calculate_all_hardware')
+        assert pub.isSubscribed(DUT._do_derating_analysis,
+                                'request_derate_hardware')
         assert pub.isSubscribed(DUT._do_calculate_allocation_goals,
-                  'request_calculate_goals')
+                                'request_calculate_allocation_goals')
         assert pub.isSubscribed(DUT._do_calculate_allocation,
-                  'request_allocate_reliability')
+                                'request_allocate_reliability')
         assert pub.isSubscribed(DUT._on_allocate_reliability,
-                  'succeed_allocate_reliability')
+                                'succeed_allocate_reliability')
         assert pub.isSubscribed(DUT._do_calculate_similar_item,
-                  'request_calculate_similar_item')
+                                'request_calculate_similar_item')
         assert pub.isSubscribed(DUT._do_roll_up_change_descriptions,
-                  'request_roll_up_change_descriptions')
+                                'request_roll_up_change_descriptions')
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -293,9 +301,12 @@ class TestCreateControllers():
         assert DUT.dic_matrices == {}
         assert DUT.n_row == 1
         assert DUT.n_col == 1
-        assert pub.isSubscribed(DUT.do_create_rows, 'succeed_retrieve_hardware')
-        assert pub.isSubscribed(DUT._on_delete_hardware, 'succeed_delete_hardware')
-        assert pub.isSubscribed(DUT._on_insert_hardware, 'succeed_insert_hardware')
+        assert pub.isSubscribed(DUT.do_create_rows,
+                                'succeed_retrieve_hardware')
+        assert pub.isSubscribed(DUT._on_delete_hardware,
+                                'succeed_delete_hardware')
+        assert pub.isSubscribed(DUT._on_insert_hardware,
+                                'succeed_insert_hardware')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
@@ -541,7 +552,8 @@ class TestDeleteMethods():
         assert DUT.do_select('hrdwr_rqrmnt', 1, 'S1:SS4') == 0
 
         DATAMGR.tree.remove_node(1)
-        pub.sendMessage('succeed_delete_hardware', node_id=1,
+        pub.sendMessage('succeed_delete_hardware',
+                        node_id=1,
                         tree=DATAMGR.tree)
 
         with pytest.raises(KeyError):
@@ -677,7 +689,7 @@ class TestGetterSetter():
 
         pub.sendMessage('request_set_hardware_attributes',
                         node_id=[2, -1],
-                        package= {'lambdaBD': 0.003862})
+                        package={'lambdaBD': 0.003862})
         assert DUT.do_select(2, table='mil_hdbk_217f').lambdaBD == 0.003862
 
         pub.sendMessage('request_set_hardware_attributes',
@@ -737,19 +749,14 @@ class TestInsertMethods():
                 tree.get_node(node_id).data['design_mechanic'],
                 RAMSTKDesignMechanic)
             assert isinstance(
-                tree.get_node(node_id).data['mil_hdbk_217f'],
-                RAMSTKMilHdbkF)
+                tree.get_node(node_id).data['mil_hdbk_217f'], RAMSTKMilHdbkF)
+            assert isinstance(tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
             assert isinstance(
-                tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
+                tree.get_node(node_id).data['reliability'], RAMSTKReliability)
             assert isinstance(
-                tree.get_node(node_id).data['reliability'],
-                RAMSTKReliability)
+                tree.get_node(node_id).data['allocation'], RAMSTKAllocation)
             assert isinstance(
-                tree.get_node(node_id).data['allocation'],
-                RAMSTKAllocation)
-            assert isinstance(
-                tree.get_node(node_id).data['similar_item'],
-                RAMSTKSimilarItem)
+                tree.get_node(node_id).data['similar_item'], RAMSTKSimilarItem)
             assert tree.get_node(node_id).data['hardware'].revision_id == 1
             assert tree.get_node(node_id).data['hardware'].parent_id == 1
             assert tree.get_node(node_id).data['hardware'].part == 0
@@ -779,19 +786,14 @@ class TestInsertMethods():
                 tree.get_node(node_id).data['design_mechanic'],
                 RAMSTKDesignMechanic)
             assert isinstance(
-                tree.get_node(node_id).data['mil_hdbk_217f'],
-                RAMSTKMilHdbkF)
+                tree.get_node(node_id).data['mil_hdbk_217f'], RAMSTKMilHdbkF)
+            assert isinstance(tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
             assert isinstance(
-                tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
+                tree.get_node(node_id).data['reliability'], RAMSTKReliability)
             assert isinstance(
-                tree.get_node(node_id).data['reliability'],
-                RAMSTKReliability)
+                tree.get_node(node_id).data['allocation'], RAMSTKAllocation)
             assert isinstance(
-                tree.get_node(node_id).data['allocation'],
-                RAMSTKAllocation)
-            assert isinstance(
-                tree.get_node(node_id).data['similar_item'],
-                RAMSTKSimilarItem)
+                tree.get_node(node_id).data['similar_item'], RAMSTKSimilarItem)
             assert tree.get_node(node_id).data['hardware'].revision_id == 1
             assert tree.get_node(node_id).data['hardware'].parent_id == 2
             assert tree.get_node(node_id).data['hardware'].part == 0
@@ -821,19 +823,14 @@ class TestInsertMethods():
                 tree.get_node(node_id).data['design_mechanic'],
                 RAMSTKDesignMechanic)
             assert isinstance(
-                tree.get_node(node_id).data['mil_hdbk_217f'],
-                RAMSTKMilHdbkF)
+                tree.get_node(node_id).data['mil_hdbk_217f'], RAMSTKMilHdbkF)
+            assert isinstance(tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
             assert isinstance(
-                tree.get_node(node_id).data['nswc'], RAMSTKNSWC)
+                tree.get_node(node_id).data['reliability'], RAMSTKReliability)
             assert isinstance(
-                tree.get_node(node_id).data['reliability'],
-                RAMSTKReliability)
+                tree.get_node(node_id).data['allocation'], RAMSTKAllocation)
             assert isinstance(
-                tree.get_node(node_id).data['allocation'],
-                RAMSTKAllocation)
-            assert isinstance(
-                tree.get_node(node_id).data['similar_item'],
-                RAMSTKSimilarItem)
+                tree.get_node(node_id).data['similar_item'], RAMSTKSimilarItem)
             assert tree.get_node(node_id).data['hardware'].revision_id == 1
             assert tree.get_node(node_id).data['hardware'].parent_id == 2
             assert tree.get_node(node_id).data['hardware'].part == 1
@@ -1060,11 +1057,12 @@ class TestAnalysisMethods():
         print("\033[36m\nsucceed_calculate_all_hardware topic was broadcast")
 
     def on_fail_calculate_hardware(self, error_message):
-        assert error_message==("Failed to calculate hazard rate and/or MTBF "
-                               "metrics for hardware ID 1; too many inputs "
-                               "equal to zero.  Specified MTBF=0.000000, "
-                               "active h(t)=0.000000, dormant h(t)=0.000100, "
-                               "and software h(t)=0.003000.")
+        assert error_message == (
+            "Failed to calculate hazard rate and/or MTBF "
+            "metrics for hardware ID 1; too many inputs "
+            "equal to zero.  Specified MTBF=0.000000, "
+            "active h(t)=0.000000, dormant h(t)=0.000100, "
+            "and software h(t)=0.003000.")
         print("\033[35m\nfail_calculate_hardware topic was broadcast")
 
     @pytest.mark.unit
@@ -1077,8 +1075,8 @@ class TestAnalysisMethods():
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
-            assert float(
-                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+            assert float(DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+                         ) == 1000000.0
             assert attributes['hazard_rate_type_id'] == 2
             assert attributes['hazard_rate_active'] == pytest.approx(
                 3.1095e-06)
@@ -1111,12 +1109,12 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          2})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 2})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_specified': 2.3876})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_dormant':
-                                                          0.023876})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_dormant': 0.023876})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_software': 0.3876})
         DATAMGR._do_set_hardware_attributes([1, -1], {'add_adj_factor': 0.1})
@@ -1139,8 +1137,8 @@ class TestAnalysisMethods():
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
-            assert float(
-                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+            assert float(DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+                         ) == 1000000.0
             assert attributes['hazard_rate_type_id'] == 3
             assert attributes['hazard_rate_active'] == pytest.approx(
                 3.50877193e-06)
@@ -1160,12 +1158,12 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          3})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mtbf_specified':
-                                                          285000.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_dormant':
-                                                          0.0})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 3})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'mtbf_specified': 285000.0})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_dormant': 0.0})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
         DATAMGR._do_set_hardware_attributes([1, -1], {'add_adj_factor': 0.0})
@@ -1176,8 +1174,8 @@ class TestAnalysisMethods():
 
     @pytest.mark.unit
     @pytest.mark.requirement
-    def test_do_calculate_assembly_hr_s_distribution(self, mock_program_dao,
-                                                     test_toml_user_configuration):
+    def test_do_calculate_assembly_hr_s_distribution(
+            self, mock_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when using an s-distribution."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
@@ -1185,20 +1183,20 @@ class TestAnalysisMethods():
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
-            assert float(
-                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+            assert float(DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+                         ) == 1000000.0
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          4})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 4})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
     @pytest.mark.unit
     @pytest.mark.requirement
-    def test_do_calculate_assembly_mtbf_s_distribution(self, mock_program_dao,
-                                                       test_toml_user_configuration):
+    def test_do_calculate_assembly_mtbf_s_distribution(
+            self, mock_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when using an s-distribution."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
@@ -1206,13 +1204,13 @@ class TestAnalysisMethods():
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
-            assert float(
-                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+            assert float(DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+                         ) == 1000000.0
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          4})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 4})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
@@ -1239,8 +1237,8 @@ class TestAnalysisMethods():
                                             {'hazard_rate_type_id': 2})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_specified': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_dormant':
-                                                          0.0})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_dormant': 0.0})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
 
@@ -1265,11 +1263,11 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'fail_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          3})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 3})
         DATAMGR._do_set_hardware_attributes([1, -1], {'mtbf_specified': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_dormant':
-                                                          0.0})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_dormant': 0.0})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
 
@@ -1288,23 +1286,22 @@ class TestAnalysisMethods():
         DUT = amHardware(test_toml_user_configuration)
 
         # Do a couple of assemblies with a specified h(t)
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          1})
         DATAMGR._do_set_hardware_attributes([1, -1],
-                                            { 'hazard_rate_specified': 0.15})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_dormant':
-                                                          0.0035})
+                                            {'hazard_rate_type_id': 1})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_specified': 0.15})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_dormant': 0.0035})
         DATAMGR._do_set_hardware_attributes([1, -1], {'total_part_count': 89})
         DATAMGR._do_set_hardware_attributes([1, -1],
-                                            { 'total_power_dissipation':
-                                                  45.89})
+                                            {'total_power_dissipation': 45.89})
         DATAMGR._do_set_hardware_attributes([1, -1], {'cost': 438.19})
         DATAMGR._do_set_hardware_attributes([1, -1], {'mission_time': 10.0})
         DATAMGR.do_update(1)
 
         # Do a couple of assemblies with a specified MTBF
-        DATAMGR._do_set_hardware_attributes([2, -1], {'hazard_rate_type_id':
-                                                          3})
+        DATAMGR._do_set_hardware_attributes([2, -1],
+                                            {'hazard_rate_type_id': 3})
         DATAMGR._do_set_hardware_attributes([2, -1], {'mtbf_specified': 38292})
         DATAMGR._do_set_hardware_attributes([2, -1],
                                             {'hazard_rate_software': 0.045})
@@ -1330,9 +1327,8 @@ class TestAnalysisMethods():
                         'succeed_calculate_all_hardware')
 
     @pytest.mark.unit
-    def test_do_calculate_reliability_metrics_zero_mtbf(self,
-                                                        mock_program_dao,
-                                                        test_toml_user_configuration):
+    def test_do_calculate_reliability_metrics_zero_mtbf(
+            self, mock_program_dao, test_toml_user_configuration):
         """_do_calculate_reliability_metrics() should send the failure message when too many inputs are equal to zero."""
         pub.subscribe(self.on_fail_calculate_hardware,
                       'fail_calculate_hardware')
@@ -1354,7 +1350,7 @@ class TestAnalysisMethods():
         DUT._do_calculate_reliability_metrics()
 
         pub.unsubscribe(self.on_fail_calculate_hardware,
-        'fail_calculate_hardware')
+                        'fail_calculate_hardware')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -1370,8 +1366,8 @@ class TestMilHdbk217FPredictions():
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
-            assert float(
-                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+            assert float(DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+                         ) == 1000000.0
             assert attributes['hazard_rate_type_id'] == 1
             assert attributes['hazard_rate_method_id'] == 1
             assert attributes['hazard_rate_active'] == pytest.approx(9.75e-09)
@@ -1440,8 +1436,8 @@ class TestMilHdbk217FPredictions():
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
-            assert float(
-                DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
+            assert float(DUT.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+                         ) == 1000000.0
             assert attributes['hazard_rate_type_id'] == 1
             assert attributes['hazard_rate_method_id'] == 2
             assert attributes['voltage_ratio'] == 0.5344
@@ -1477,7 +1473,8 @@ class TestMilHdbk217FPredictions():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id': 1})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 1})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
         DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
@@ -1487,7 +1484,8 @@ class TestMilHdbk217FPredictions():
                                             {'environment_active_id': 3})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'environment_dormant_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'capacitance': 0.0000033})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'capacitance': 0.0000033})
         DATAMGR._do_set_hardware_attributes([1, -1], {'construction_id': 1})
         DATAMGR._do_set_hardware_attributes([1, -1], {'configuration_id': 1})
         DATAMGR._do_set_hardware_attributes([1, -1], {'resistance': 0.05})
@@ -1498,8 +1496,8 @@ class TestMilHdbk217FPredictions():
         DATAMGR._do_set_hardware_attributes([1, -1], {'voltage_rated': 6.25})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'temperature_rated_max': 105.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'temperature_active':
-                                                          45.0})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'temperature_active': 45.0})
         DATAMGR._do_set_hardware_attributes([1, -1], {'power_operating': 0.05})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
@@ -1519,31 +1517,30 @@ class TestMilHdbk217FPredictions():
 class TestStressCalculations():
     """Class for stress-related calculations test suite."""
     def on_fail_stress_analysis_zero_power(self, error_message):
-        assert error_message==("Failed to calculate power ratio for hardware "
-                               "ID 1; rated power is zero.")
+        assert error_message == (
+            "Failed to calculate power ratio for hardware "
+            "ID 1; rated power is zero.")
         print("\033[35m\nfail_stress_analysis topic was broadcast")
 
     def on_fail_stress_analysis_zero_voltage(self, error_message):
-        assert error_message==("Failed to calculate voltage ratio for "
-                               "hardware ID 1; rated voltage is zero.")
+        assert error_message == ("Failed to calculate voltage ratio for "
+                                 "hardware ID 1; rated voltage is zero.")
         print("\033[35m\nfail_stress_analysis topic was broadcast")
 
     def on_succeed_derate_hardware_above_limit(self, attributes):
         assert attributes['overstress']
-        assert attributes['reason'] == (
-            'Operating voltage is greater than '
-            'limit in a harsh environment.\n'
-            'Operating voltage is greater than '
-            'limit in a mild environment.\n')
+        assert attributes['reason'] == ('Operating voltage is greater than '
+                                        'limit in a harsh environment.\n'
+                                        'Operating voltage is greater than '
+                                        'limit in a mild environment.\n')
         print("\033[35m\nsucceed_derate_hardware topic was broadcast")
 
     def on_succeed_derate_hardware_below_limit(self, attributes):
         assert attributes['overstress']
-        assert attributes['reason'] == (
-            'Operating voltage is less than '
-            'limit in a harsh environment.\n'
-            'Operating voltage is less than '
-            'limit in a mild environment.\n')
+        assert attributes['reason'] == ('Operating voltage is less than '
+                                        'limit in a harsh environment.\n'
+                                        'Operating voltage is less than '
+                                        'limit in a mild environment.\n')
         print("\033[35m\nsucceed_derate_hardware topic was broadcast")
 
     @pytest.mark.unit
@@ -1562,13 +1559,13 @@ class TestStressCalculations():
 
         pub.subscribe(on_message, 'fail_stress_analysis')
 
-        DATAMGR._do_set_hardware_attributes([2, -1], {'hazard_rate_type_id':
-                                                          1})
+        DATAMGR._do_set_hardware_attributes([2, -1],
+                                            {'hazard_rate_type_id': 1})
         DATAMGR._do_set_hardware_attributes([2, -1],
                                             {'hazard_rate_method_id': 2})
         DATAMGR._do_set_hardware_attributes([2, -1], {'category_id': 1})
-        DATAMGR._do_set_hardware_attributes([2, -1], {'current_operating':
-                                            0.005})
+        DATAMGR._do_set_hardware_attributes([2, -1],
+                                            {'current_operating': 0.005})
         DATAMGR._do_set_hardware_attributes([2, -1], {'current_rated': 0.0})
 
     @pytest.mark.unit
@@ -1590,7 +1587,8 @@ class TestStressCalculations():
     def test_do_calculate_power_ratio_zero_rated(self, mock_program_dao,
                                                  test_toml_user_configuration):
         """_do_calculate_power() should raise the failure message when rated power is zero."""
-        pub.subscribe(self.on_fail_stress_analysis_zero_power, 'fail_stress_analysis')
+        pub.subscribe(self.on_fail_stress_analysis_zero_power,
+                      'fail_stress_analysis')
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
@@ -1664,8 +1662,8 @@ class TestStressCalculations():
 
         pub.subscribe(on_message, 'succeed_derate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          1})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 1})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
         DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 8})
@@ -1703,8 +1701,8 @@ class TestStressCalculations():
         pub.sendMessage('request_derate_hardware', node_id=1)
 
     @pytest.mark.unit
-    def test_do_derating_analysis_voltage_stress_under(self, mock_program_dao,
-                                                      test_toml_user_configuration):
+    def test_do_derating_analysis_voltage_stress_under(
+            self, mock_program_dao, test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is voltage overstressed."""
         pub.subscribe(self.on_succeed_derate_hardware_below_limit,
                       'succeed_derate_hardware')
@@ -1714,8 +1712,8 @@ class TestStressCalculations():
         DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          1})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 1})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
         DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
@@ -1728,8 +1726,8 @@ class TestStressCalculations():
                         'succeed_derate_hardware')
 
     @pytest.mark.unit
-    def test_do_derating_analysis_voltage_stress_over(self, mock_program_dao,
-                                                      test_toml_user_configuration):
+    def test_do_derating_analysis_voltage_stress_over(
+            self, mock_program_dao, test_toml_user_configuration):
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is voltage overstressed."""
         pub.subscribe(self.on_succeed_derate_hardware_above_limit,
                       'succeed_derate_hardware')
@@ -1739,8 +1737,8 @@ class TestStressCalculations():
         DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          1})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 1})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
         DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
@@ -1767,8 +1765,8 @@ class TestStressCalculations():
 
         pub.subscribe(on_message, 'succeed_derate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1], {'hazard_rate_type_id':
-                                                          1})
+        DATAMGR._do_set_hardware_attributes([1, -1],
+                                            {'hazard_rate_type_id': 1})
         DATAMGR._do_set_hardware_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
         DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
@@ -1803,7 +1801,7 @@ class TestAllocation():
         DUT._attributes['mission_time'] = 100.0
         DUT._attributes['reliability_goal'] = 0.99732259
 
-        pub.sendMessage('request_calculate_goals')
+        pub.sendMessage('request_calculate_allocation_goals')
 
         assert DUT._attributes['hazard_rate_goal'] == pytest.approx(0.00002681)
         assert DUT._attributes['mtbf_goal'] == pytest.approx(37299.5151063)
@@ -1822,7 +1820,7 @@ class TestAllocation():
         DUT._attributes['mission_time'] = 100.0
         DUT._attributes['hazard_rate_goal'] = 0.00002681
 
-        pub.sendMessage('request_calculate_goals')
+        pub.sendMessage('request_calculate_allocation_goals')
 
         assert DUT._attributes['mtbf_goal'] == pytest.approx(37299.5151063)
         assert DUT._attributes['reliability_goal'] == pytest.approx(0.99732259)
@@ -1841,7 +1839,7 @@ class TestAllocation():
         DUT._attributes['mission_time'] = 100.0
         DUT._attributes['mtbf_goal'] = 37300.0
 
-        pub.sendMessage('request_calculate_goals')
+        pub.sendMessage('request_calculate_allocation_goals')
 
         assert DUT._attributes['hazard_rate_goal'] == pytest.approx(
             2.68096515e-05)

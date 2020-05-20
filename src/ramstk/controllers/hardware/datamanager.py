@@ -18,8 +18,7 @@ from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
-)
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem)
 
 
 class DataManager(RAMSTKDataManager):
@@ -338,8 +337,7 @@ class DataManager(RAMSTKDataManager):
                 node_id=[attributes['hardware_id'], -1],
                 package={_key: attributes[_key]})
 
-    def _do_set_hardware_attributes(self,
-                                    node_id: List[int],
+    def _do_set_hardware_attributes(self, node_id: List[int],
                                     package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
