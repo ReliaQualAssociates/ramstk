@@ -8,39 +8,41 @@
 
 # Standard Library Imports
 from math import exp, log
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
 
 
-def _calculate_agree_apportionment(time_i, weight_factor, n_sub_systems,
-                                   n_sub_elements, parent_goal):
+def _calculate_agree_apportionment(parent_goal: float,
+                                   attributes: Dict[str, Any]
+                                   ) -> Dict[str, Any]:
     """
     Perform an AGREE apportionment of a reliability requirement.
 
     .. note:: the AGREE method uses MTBF as the parent goal.
 
-    :param float time_i: the mission time for the subsystem being calculated.
-    :param float weight_factor: the importance factor for the sub-system
-        currently being allocated.
-    :param int n_sub_systems: the total number of sub-elements in all the
-        sub-systems comprising the hardware item to be allocated.
-    :param int n_sub_elements: the number of sub-elements in the sub-system
-        currently being allocated.
     :param float parent_goal: the reliability goal of the parent hardware
         item.
-    :return: (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc); the
-        allocated values for each reliability measure.
-    :rtype: tuple
-    :raise: TypeError if passed a string for any argument.
+    :param dict attributes: the Allocation attributes dict.
+    :return: attributes; the Allocation attributes dict with updated
+    values.
+    :rtype: dict
     """
+    _time_i: Any = float(attributes['mission_time']) * float(
+        attributes['duty_cycle']) / 100.0
+    _weight_factor: Any = float(attributes['weight_factor'])
+    _n_sub_systems: Any = int(attributes['n_sub_systems'])
+    _n_sub_elements: Any = int(attributes['n_sub_elements'])
     try:
-        _mtbf_alloc = ((n_sub_systems * weight_factor * time_i) /
-                       (n_sub_elements * (-log(parent_goal))))
-        _hazard_rate_alloc = 1.0 / _mtbf_alloc
-        _reliability_alloc = exp(-1.0 * _hazard_rate_alloc * time_i)
+        _mtbf_alloc: Any = ((_n_sub_systems * _weight_factor * _time_i) /
+                            (_n_sub_elements * (-log(float(parent_goal)))))
+        _hazard_rate_alloc: Any = 1.0 / _mtbf_alloc
+        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _time_i)
 
-        return _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc
+        attributes['mtbf_alloc'] = _mtbf_alloc
+        attributes['hazard_rate_alloc'] = _hazard_rate_alloc
+        attributes['reliability_alloc'] = _reliability_alloc
     except ValueError:
         pub.sendMessage(
             'fail_allocate_reliability',
@@ -56,28 +58,31 @@ def _calculate_agree_apportionment(time_i, weight_factor, n_sub_systems,
                                        "mission time={0:f}, weight "
                                        "factor={1:f}, # of subsystems={2:d}, "
                                        "# of subelements={3:d}.").format(
-                                           time_i, weight_factor,
-                                           n_sub_systems, n_sub_elements))
+                                           _time_i, _weight_factor,
+                                           _n_sub_systems, _n_sub_elements))
+
+    return attributes
 
 
-def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
+def _calculate_arinc_apportionment(parent_goal: float,
+                                   attributes: Dict[str, Any]
+                                   ) -> Dict[str, Any]:
     """
     Perform an ARINC apportionment of the reliability requirement.
 
-    :param float mission_time: the mission time of the system.
-    :param float weight_factor: the ratio of the hardware item's current hazard
-        rate and the current system hazard rate.
-    :param float parent_goal: the goal hazard rate of the parent hardware
+    :param float parent_goal: the reliability goal of the parent hardware
         item.
-    :return: (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc); the
-        allocated values for each reliability measure.
-    :rtype: tuple
-    :raise: TypeError if passed a string for any argument.
+    :param dict attributes: the Allocation attributes dict.
+    :return: attributes; the Allocation attributes dict with updated
+        values.
     """
+    _mission_time: Any = float(attributes['mission_time'])
+    _weight_factor: Any = float(attributes['weight_factor'])
     try:
-        _hazard_rate_alloc = weight_factor * parent_goal
-        _mtbf_alloc = 1.0 / _hazard_rate_alloc
-        _reliability_alloc = exp(-1.0 * _hazard_rate_alloc * mission_time)
+        _hazard_rate_alloc: Any = _weight_factor * float(parent_goal)
+        _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
+        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc
+                                      * _mission_time)
     except ZeroDivisionError:
         _mtbf_alloc = _hazard_rate_alloc = _reliability_alloc = 0.0
         pub.sendMessage('fail_allocate_reliability',
@@ -86,30 +91,38 @@ def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
                                        "had a value of 0.0. Weight "
                                        "factor={0:f} and parent "
                                        "goal={1:f}.").format(
-                                           weight_factor, parent_goal))
+                                           _weight_factor, parent_goal))
 
-    return _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc
+    attributes['mtbf_alloc'] = _mtbf_alloc
+    attributes['hazard_rate_alloc'] = _hazard_rate_alloc
+    attributes['reliability_alloc'] = _reliability_alloc
+
+    return attributes
 
 
-def _calculate_equal_apportionment(mission_time, weight_factor, parent_goal):
+def _calculate_equal_apportionment(parent_goal: float,
+                                   attributes: Dict[str, Any]
+                                   ) -> Dict[str, Any]:
     """
     Perform an equal apportionment of the reliability goal.
 
-    :param float weight_factor: the inverse of the number of child hardware
-        items to allocate the goal.
     :param float parent_goal: the reliability goal of the parent hardware
         item.
-    :return: (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc); the
-        allocated values for each reliability measure.
-    :rtype: tuple
-    :raise: TypeError if passed a string for any argument.
+    :param dict attributes: the Allocation attributes dict.
+    :return: attributes; the Allocation attributes dict with updated
+        values.
     """
+    _mission_time: Any = float(attributes['mission_time'])
+    _weight_factor: Any = float(attributes['weight_factor'])
     try:
-        _reliability_alloc = parent_goal**weight_factor
-        _hazard_rate_alloc = (-1.0 * log(_reliability_alloc) / mission_time)
-        _mtbf_alloc = 1.0 / _hazard_rate_alloc
+        _reliability_alloc: Any = float(parent_goal)**_weight_factor
+        _hazard_rate_alloc: Any = (-1.0 * log(_reliability_alloc)
+                                   / _mission_time)
+        _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
 
-        return _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc
+        attributes['hazard_rate_alloc'] = _hazard_rate_alloc
+        attributes['mtbf_alloc'] = _mtbf_alloc
+        attributes['reliability_alloc'] = _reliability_alloc
     except TypeError:
         if parent_goal < 0.0:
             pub.sendMessage(
@@ -135,34 +148,45 @@ def _calculate_equal_apportionment(mission_time, weight_factor, parent_goal):
                            "equal method; one or more inputs had a "
                            "value of 0.0. Mission time={0:f} and "
                            "weight factor={1:f}.").format(
-                               mission_time, weight_factor))
+                               _mission_time, _weight_factor))
+
+    return attributes
 
 
-def _calculate_foo_apportionment(factors, mission_time, cum_weight,
-                                 parent_goal):
+def _calculate_foo_apportionment(parent_goal: float, cum_weight: int,
+                                 attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Perform a feasibility of objectives (FOO) apportionment.
 
+    :param float parent_goal: the failure rate requirement to allocate.
     :param int cum_weight: the cumulative weight factor for all subordinate
         assemblies.
-    :param float parent_goal: the failure rate requirement to allocate.
-    :return: (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc,
-        _weight_factor, _percent_weight_factor); the allocated values for each
-        reliability measure and the weighting factors.
-    :rtype: tuple
-    :raise: TypeError if passed a string for any argument.
+    :param dict attributes: the Allocation attributes dict.
+    :return: attributes; the Allocation attributes dict with updated
+        values.
+    :rtype: dict
     """
+    _intricacy: Any = int(attributes['int_factor'])
+    _state_of_art: Any = int(attributes['soa_factor'])
+    _operating_time: Any = int(attributes['op_time_factor'])
+    _environment: Any = int(attributes['env_factor'])
+    _mission_time: Any = float(attributes['mission_time'])
+
     try:
-        _weight_factor = (factors['intricacy'] * factors['state_of_art']
-                          * factors['operating_time'] * factors['environment'])
-        _percent_weight_factor = (float(_weight_factor) / float(cum_weight))
+        _weight_factor: Any = (_intricacy * _state_of_art * _operating_time
+                               * _environment)
+        _percent_weight_factor: Any = (_weight_factor / int(cum_weight))
 
-        _hazard_rate_alloc = _percent_weight_factor * parent_goal
-        _mtbf_alloc = 1.0 / _hazard_rate_alloc
-        _reliability_alloc = exp(-1.0 * _hazard_rate_alloc * mission_time)
+        _hazard_rate_alloc: Any = _percent_weight_factor * parent_goal
+        _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
+        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc
+                                      * _mission_time)
 
-        return (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc,
-                _weight_factor, _percent_weight_factor)
+        attributes['weight_factor'] = _weight_factor
+        attributes['percent_weight_factor'] = _percent_weight_factor
+        attributes['hazard_rate_alloc'] = _hazard_rate_alloc
+        attributes['mtbf_alloc'] = _mtbf_alloc
+        attributes['reliability_alloc'] = _reliability_alloc
     except ZeroDivisionError:
         pub.sendMessage(
             'fail_allocate_reliability',
@@ -173,26 +197,27 @@ def _calculate_foo_apportionment(factors, mission_time, cum_weight,
                            "factor={1:d}, operating time "
                            "factor={2:d}, environment factor={3:d}, "
                            "cumulative weight={4:d}, parent "
-                           "goal={5:f}.").format(factors['intricacy'],
-                                                 factors['state_of_art'],
-                                                 factors['operating_time'],
-                                                 factors['environment'],
+                           "goal={5:f}.").format(_intricacy, _state_of_art,
+                                                 _operating_time, _environment,
                                                  cum_weight, parent_goal))
 
+    return attributes
 
-def _from_hazard_rate_goal(mission_time, hazard_rate_goal):
+
+def _from_hazard_rate_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the MTBF and reliability goals given the hazard rate goal.
 
-    :param float mission_time: the mission time of the hardware item.
-    :param float hazard_rate_goal: the hazard rate goal for the hardware item.
-    :return: _mtbf_goal, _reliability_goal; the calculate dMTBF and reliability
-        goals.
-    :rtype: tuple
+    :param dict attributes: the Allocation attributes dict.
+    :return: attributes; the Allocation attributes dict with updated
+        values.
+    :rtype: dict
     """
+    _mission_time: Any = float(attributes['mission_time'])
+    _hazard_rate_goal: Any = float(attributes['hazard_rate_goal'])
     try:
-        _mtbf_goal = 1.0 / hazard_rate_goal
-        _reliability_goal = exp(-1.0 * mission_time / _mtbf_goal)
+        _mtbf_goal: Any = 1.0 / _hazard_rate_goal
+        _reliability_goal: Any = exp(-1.0 * _mission_time / _mtbf_goal)
     except ZeroDivisionError:
         _mtbf_goal = 0.0
         _reliability_goal = 0.0
@@ -201,24 +226,28 @@ def _from_hazard_rate_goal(mission_time, hazard_rate_goal):
             error_message=(
                 "Failed to calculate the MTBF and "
                 "reliability goals given the hazard rate "
-                "goal.  Hazard rate goal={0:f}.").format(hazard_rate_goal))
+                "goal.  Hazard rate goal={0:f}.").format(_hazard_rate_goal))
 
-    return _mtbf_goal, _reliability_goal
+    attributes['mtbf_goal'] = _mtbf_goal
+    attributes['reliability_goal'] = _reliability_goal
+
+    return attributes
 
 
-def _from_mtbf_goal(mission_time, mtbf_goal):
+def _from_mtbf_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the hazard rate and reliability goals given the MTBF goal.
 
-    :param float mission_time: the mission time of the hardware item.
-    :param float mtbf_goal: the MTBF goal for the hardware item.
-    :return: _hazard_rate_goal, _reliability_goal; the calculated hazard rate
-        and reliability goals.
-    :rtype: tuple
+    :param dict attributes: the Allocation attributes dict.
+    :return: attributes; the Allocation attributes dict with updated
+        values.
+    :rtype: dict
     """
+    _mission_time: Any = float(attributes['mission_time'])
+    _mtbf_goal: Any = float(attributes['mtbf_goal'])
     try:
-        _hazard_rate_goal = 1.0 / mtbf_goal
-        _reliability_goal = exp(-1.0 * mission_time / mtbf_goal)
+        _hazard_rate_goal: Any = 1.0 / _mtbf_goal
+        _reliability_goal: Any = exp(-1.0 * _mission_time / _mtbf_goal)
     except ZeroDivisionError:
         _hazard_rate_goal = 0.0
         _reliability_goal = 0.0
@@ -226,24 +255,28 @@ def _from_mtbf_goal(mission_time, mtbf_goal):
             'fail_calculate_allocation_goal',
             error_message=("Failed to calculate the hazard rate and "
                            "reliability goals given the MTBF goal.  "
-                           "MTBF goal={0:f}.").format(mtbf_goal))
+                           "MTBF goal={0:f}.").format(_mtbf_goal))
 
-    return _hazard_rate_goal, _reliability_goal
+    attributes['hazard_rate_goal'] = _hazard_rate_goal
+    attributes['reliability_goal'] = _reliability_goal
+
+    return attributes
 
 
-def _from_reliability_goal(mission_time, reliability_goal):
+def _from_reliability_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the MTBF and hazard rate goals given the reliability goal.
 
-    :param float mission_time: the mission time of the hardware item.
-    :param float reliability_goal: the reliability goal for the hardware item.
-    :return: _mtbf_goal, _hazard_rate_goal; the calculated MTBF and hazard rate
-        goals.
-    :rtype: tuple
+    :param dict attributes: the Allocation attributes dict.
+    :return: attributes; the Allocation attributes dict with updated
+        values.
+    :rtype: dict
     """
+    _mission_time: Any = float(attributes['mission_time'])
+    _reliability_goal: Any = float(attributes['reliability_goal'])
     try:
-        _mtbf_goal = (-1.0 * mission_time / log(reliability_goal))
-        _hazard_rate_goal = 1.0 / _mtbf_goal
+        _mtbf_goal: Any = (-1.0 * _mission_time / log(_reliability_goal))
+        _hazard_rate_goal: Any = 1.0 / _mtbf_goal
     except ValueError:
         _mtbf_goal = 0.0
         _hazard_rate_goal = 0.0
@@ -252,58 +285,48 @@ def _from_reliability_goal(mission_time, reliability_goal):
             error_message=(
                 "Failed to calculate the MTBF and "
                 "hazard rate goals given the reliability "
-                "goal.  Reliability goal={0:f}.").format(reliability_goal))
+                "goal.  Reliability goal={0:f}.").format(_reliability_goal))
 
-    return _mtbf_goal, _hazard_rate_goal
+    attributes['hazard_rate_goal'] = _hazard_rate_goal
+    attributes['mtbf_goal'] = _mtbf_goal
+
+    return attributes
 
 
-def do_allocate_reliability(parent_goal, cumulative_weight, **attributes):
+def do_allocate_reliability(parent_goal: float, cumulative_weight: int,
+                            **attributes: Dict[str, Any]) -> None:
     """
     Calculate the reliability allocation.
 
     :param float parent_goal: the parent assembly's reliability goal.
     :param cumulative_weight: the cumulative weighting of all child assemblies.
         Used for feasibility of objectives method only.
+    :param dict attributes: the Allocation attributes dict.
     :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
     if attributes['allocation_method_id'] == 1:
-        _time_i = attributes['mission_time'] * attributes['duty_cycle'] / 100.0
-        (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
-         attributes['reliability_alloc']) = _calculate_agree_apportionment(
-             _time_i, attributes['weight_factor'], attributes['n_sub_systems'],
-             attributes['n_sub_elements'], parent_goal)
+        attributes = _calculate_agree_apportionment(parent_goal, attributes)
     elif attributes['allocation_method_id'] == 2:
-        (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
-         attributes['reliability_alloc']) = _calculate_arinc_apportionment(
-             attributes['mission_time'], attributes['weight_factor'],
-             parent_goal)
+        attributes = _calculate_arinc_apportionment(parent_goal, attributes)
     elif attributes['allocation_method_id'] == 3:
-        (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
-         attributes['reliability_alloc']) = _calculate_equal_apportionment(
-             attributes['mission_time'], attributes['weight_factor'],
-             parent_goal)
+        attributes = _calculate_equal_apportionment(parent_goal, attributes)
     elif attributes['allocation_method_id'] == 4:
-        _factors = {
-            'intricacy': attributes['int_factor'],
-            'state_of_art': attributes['soa_factor'],
-            'operating_time': attributes['op_time_factor'],
-            'environment': attributes['env_factor']
-        }
-        (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
-         attributes['reliability_alloc'], attributes['weight_factor'],
-         attributes['_percent_weight_factor']) = _calculate_foo_apportionment(
-             _factors, attributes['mission_time'], cumulative_weight,
-             parent_goal)
+        attributes = _calculate_foo_apportionment(parent_goal,
+                                                  cumulative_weight,
+                                                  attributes)
     else:
-        attributes['hazard_rate_alloc'] = 0.0
-        attributes['mtbf_alloc'] = 0.0
-        attributes['reliability_alloc'] = 1.0
+        _hazard_rate_alloc: Any = 0.0
+        _mtbf_alloc: Any = 0.0
+        _reliability_alloc: Any = 1.0
+        attributes['hazard_rate_alloc'] = _hazard_rate_alloc
+        attributes['mtbf_alloc'] = _mtbf_alloc
+        attributes['reliability_alloc'] = _reliability_alloc
 
     pub.sendMessage('succeed_allocate_reliability', attributes=attributes)
 
 
-def do_calculate_goals(**attributes):
+def do_calculate_goals(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the other two reliability metrics from the third.
 
@@ -312,26 +335,23 @@ def do_calculate_goals(**attributes):
     :rtype: dict
     """
     if attributes['goal_measure_id'] == 1:  # Reliability goal
-        (attributes['mtbf_goal'],
-         attributes['hazard_rate_goal']) = _from_reliability_goal(
-             attributes['mission_time'], attributes['reliability_goal'])
+        attributes = _from_reliability_goal(attributes)
     elif attributes['goal_measure_id'] == 2:  # Hazard rate goal
-        (attributes['mtbf_goal'],
-         attributes['reliability_goal']) = _from_hazard_rate_goal(
-             attributes['mission_time'], attributes['hazard_rate_goal'])
+        attributes = _from_hazard_rate_goal(attributes)
     elif attributes['goal_measure_id'] == 3:  # MTBF goal
-        (attributes['hazard_rate_goal'],
-         attributes['reliability_goal']) = _from_mtbf_goal(
-             attributes['mission_time'], attributes['mtbf_goal'])
+        attributes = _from_mtbf_goal(attributes)
     else:
-        attributes['hazard_rate_goal'] = 0.0
-        attributes['mtbf_goal'] = 0.0
-        attributes['reliability_goal'] = 1.0
+        _hazard_rate_goal: Any = 0.0
+        _mtbf_goal: Any = 0.0
+        _reliability_goal: Any = 1.0
+        attributes['hazard_rate_goal'] = _hazard_rate_goal
+        attributes['mtbf_goal'] = _mtbf_goal
+        attributes['reliability_goal'] = _reliability_goal
 
     return attributes
 
 
-def get_allocation_goal(**attributes):
+def get_allocation_goal(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Retrieve the reliability goal for the hardware item.
 

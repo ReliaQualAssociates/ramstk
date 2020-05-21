@@ -125,8 +125,8 @@ class RAMSTKBaseView(Gtk.HBox):
         # Initialize public scalar attributes.
         self.treeview: RAMSTKTreeView = self._make_treeview(module)
         self.fmt: str = (
-            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) +
-            'G}')
+            '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + 'G}')
         self.hbx_tab_label: Gtk.HBox = Gtk.HBox()
 
         try:
@@ -177,63 +177,63 @@ class RAMSTKBaseView(Gtk.HBox):
             'add':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
             'calculate':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/calculate.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate.png',
             'calculate_all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/calculate-all.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate-all.png',
             'cancel':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/cancel.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/cancel.png',
             'complete':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/complete.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/complete.png',
             'chart':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/charts.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/charts.png',
             'error':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/error.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/error.png',
             'export':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/export.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/export.png',
             'important':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/important.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/important.png',
             'insert_child':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/insert_child.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_child.png',
             'insert_sibling':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/insert_sibling.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_sibling.png',
             'none':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
             'partial':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/partial.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/partial.png',
             'question':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/question.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/question.png',
             'refresh-view':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/view-refresh.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/view-refresh.png',
             'remove':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/remove.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/remove.png',
             'rollup':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/rollup.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/rollup.png',
             'reports':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/reports.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/reports.png',
             'save':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
             'save-all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/save-all.png',
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/save-all.png',
             'warning':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/warning.png'
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/warning.png'
         }
 
     def _make_toolbar(self,
@@ -301,18 +301,16 @@ class RAMSTKBaseView(Gtk.HBox):
             self._lst_col_order = _treeview.order
 
             _fmt_file = (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+                + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
             _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
             _treeview.do_parse_format(_fmt_path, _fmt_file)
 
             try:
-                _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                         +
-                                                                         'bg']
-                _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[module
-                                                                         +
-                                                                         'fg']
+                _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                    module + 'bg']
+                _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                    module + 'fg']
             except KeyError as _error:
                 _bg_color = '#FFFFFF'
                 _fg_color = '#000000'
@@ -625,6 +623,41 @@ class RAMSTKBaseView(Gtk.HBox):
                                self.RAMSTK_USER_CONFIGURATION)
             _menu_item.show()
             _menu.append(_menu_item)
+
+    def on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+                     message: str, position: int) -> None:
+        """
+        Handle edits of the Allocation Work View RAMSTKTreeview().
+
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param str message: the PyPubSub message to publish on success.
+        :param int position: the column position of the edited
+            Gtk.CellRenderer().
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _type = GObject.type_name(_model.get_column_type(position))
+        if _type == 'gchararray':
+            _model[path][position] = str(new_text)
+        elif _type == 'gint':
+            _model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            _model[path][position] = float(new_text)
+
+        try:
+            _key = self._dic_column_keys[self._lst_col_order[position]]
+        except (IndexError, KeyError):
+            _key = ''
+
+        self.treeview.do_edit_cell(__cell, path, new_text, position)
+
+        pub.sendMessage(message,
+                        node_id=[self._record_id, 1],
+                        package={_key: new_text})
 
     def on_combo_changed(self, combo: RAMSTKComboBox, index: int,
                          message: str) -> Dict[Union[str, Any], Any]:
@@ -940,8 +973,8 @@ class RAMSTKListView(RAMSTKBaseView):
             _tooltip = _("Missing tooltip, please file a quality type issue "
                          "to have one added.")
 
-        self.tab_label.set_markup("<span weight='bold'>" + _tab_label +
-                                  "</span>")
+        self.tab_label.set_markup("<span weight='bold'>" + _tab_label
+                                  + "</span>")
         self.tab_label.set_xalign(0.5)
         self.tab_label.set_yalign(0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
@@ -961,14 +994,14 @@ class RAMSTKListView(RAMSTKBaseView):
         if vtype == 'matrix':
             self.matrixview.dic_icons = {
                 'complete':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-                '/32x32/complete.png',
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/complete.png',
                 'none':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-                '/32x32/none.png',
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/none.png',
                 'partial':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-                '/32x32/partial.png'
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + '/32x32/partial.png'
             }
             self.matrixview.set_tooltip_text(_tooltip)
             _scrolledwindow.add(self.matrixview)
@@ -979,29 +1012,6 @@ class RAMSTKListView(RAMSTKBaseView):
         self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
-
-    def on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                     position: int) -> None:
-        """
-        Handle edits of the List View RAMSTKTreeView().
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
-            that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
-            Gtk.CellRenderer().
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _type = GObject.type_name(_model.get_column_type(position))
-        if _type == 'gchararray':
-            _model[path][position] = str(new_text)
-        elif _type == 'gint':
-            _model[path][position] = int(new_text)
-        elif _type == 'gfloat':
-            _model[path][position] = float(new_text)
 
 
 class RAMSTKModuleView(RAMSTKBaseView):
@@ -1030,8 +1040,8 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['insert_part'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/insert_part.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_part.png')
 
         # Initialize private list attributes.
 
@@ -1239,8 +1249,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
                 _minimum: Gtk.Requisition = self._lst_widgets[
                     _idx + _index_start].get_preferred_size()[0]
                 if _minimum.height == 0:
-                    _minimum.height = self._lst_widgets[_idx +
-                                                        _index_start].height
+                    _minimum.height = self._lst_widgets[_idx
+                                                        + _index_start].height
 
                 _fixed.put(_label, 5, _y_pos)
                 # RAMSTKTextViews are placed inside a scrollwindow so that's
@@ -1285,7 +1295,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         """
         Update the Work View Gtk.Widgets() when attributes change.
 
-        This method is called whenever an attribute is edited in a different
+        This method is called whenever an attribute is edited in the module
         view.
 
         :param list node_id: the list of IDs of the item being edited.  This

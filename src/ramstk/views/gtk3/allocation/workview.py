@@ -42,6 +42,10 @@ class Allocation(RAMSTKWorkView):
     +-------+-------------------------------------+
     """
     # Define private class dict attributes.
+    # For each editable WorkView widget, populate this dict with the keymap
+    # for the widgets.  The key is the wdiget's index number on the
+    # WorkView.  The value is the name of the key in the datamanager
+    # attributes dict.
     _dic_keys = {
         0: 'allocation_method_id',
         1: 'goal_measure_id',
@@ -49,8 +53,27 @@ class Allocation(RAMSTKWorkView):
         3: 'hazard_rate_goal',
         4: 'mtbf_goal'
     }
+    # If the workview contains a RAMSTKTreeView, populate this dict with the
+    # keymap for the columns.  The key is the column number in the
+    # RAMSTKTreeView. The value is the name of the key in the datamanger
+    # attributes dict.
+    _dic_column_keys = {
+        3: "included",
+        4: "n_sub_systems",
+        5: "n_sub_elements",
+        6: "mission_time",
+        7: "duty_cycle",
+        8: "int_factor",
+        9: "soa_factor",
+        10: "op_time_factor",
+        11: "env_factor"
+    }
 
     # Define private class list attributes.
+    # This list is the text of the labels that will be placed on the
+    # WorkView.  They should be entered in the list in the order they and
+    # their associated widget will appear on the form.  The list can be
+    # sliced if there are multiple views over which the data is displayed.
     _lst_labels = [
         _("Select Allocation Method"),
         _("Select Goal Metric"),
@@ -118,7 +141,7 @@ class Allocation(RAMSTKWorkView):
         pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
         pub.subscribe(self._do_load_row, 'succeed_get_all_hardware_attributes')
 
-    def __load_combobox(self):
+    def __load_combobox(self) -> None:
         """
         Load the RAMSTKComboBox() widgets.
 
@@ -219,11 +242,11 @@ class Allocation(RAMSTKWorkView):
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cells()
             try:
-                _cell[0].connect('edited', self._on_cell_edit, i,
-                                 self.treeview.get_model())
+                _cell[0].connect('edited', self.on_cell_edit,
+                                 "mvw_editing_allocation", i)
             except TypeError:
-                _cell[0].connect('toggled', self._on_cell_edit, 'new text', i,
-                                 self.treeview.get_model())
+                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
+                                 "mvw_editing_allocation", i)
 
         self.cmbAllocationMethod.dic_handler_id[
             'changed'] = self.cmbAllocationMethod.connect(
@@ -361,7 +384,7 @@ class Allocation(RAMSTKWorkView):
 
         # Only load Hardware items that are immediate children of the
         # selected Hardware item and prevent loading the selected Hardware item
-        # in the Allocation worksheet.  This method will respond to any
+        # itself in the Allocation worksheet.  This method will respond to any
         # successful grabs of all the hardware attributes even when
         # requested by other modules.
         if _data[0] == self._record_id and not _data[1] == self._record_id:
@@ -428,49 +451,22 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        if self._measure_id == 0:  # Nothing selected.
-            self.txtReliabilityGoal.props.editable = 0
-            self.txtReliabilityGoal.set_sensitive(0)
-            self.txtMTBFGoal.props.editable = 0
-            self.txtMTBFGoal.set_sensitive(0)
-            self.txtHazardRateGoal.props.editable = 0
-            self.txtHazardRateGoal.set_sensitive(0)
-        elif self._measure_id == 1:  # Expressed as reliability.
+        self.txtReliabilityGoal.props.editable = 0
+        self.txtReliabilityGoal.set_sensitive(0)
+        self.txtMTBFGoal.props.editable = 0
+        self.txtMTBFGoal.set_sensitive(0)
+        self.txtHazardRateGoal.props.editable = 0
+        self.txtHazardRateGoal.set_sensitive(0)
+
+        if self._measure_id == 1:  # Expressed as reliability.
             self.txtReliabilityGoal.props.editable = 1
             self.txtReliabilityGoal.set_sensitive(1)
-            self.txtReliabilityGoal.set_text(
-                str(self.fmt.format(self._reliability_goal)), )
-            self.txtMTBFGoal.props.editable = 0
-            self.txtMTBFGoal.set_sensitive(0)
-            self.txtMTBFGoal.set_text(str(self.fmt.format(self._mtbf_goal)))
-            self.txtHazardRateGoal.props.editable = 0
-            self.txtHazardRateGoal.set_sensitive(0)
-            self.txtHazardRateGoal.set_text(
-                str(self.fmt.format(self._hazard_rate_goal)), )
         elif self._measure_id == 2:  # Expressed as a hazard rate.
-            self.txtReliabilityGoal.props.editable = 0
-            self.txtReliabilityGoal.set_sensitive(0)
-            self.txtReliabilityGoal.set_text(
-                str(self.fmt.format(self._reliability_goal)), )
-            self.txtMTBFGoal.props.editable = 0
-            self.txtMTBFGoal.set_sensitive(0)
-            self.txtMTBFGoal.set_text(str(self.fmt.format(self._mtbf_goal)))
             self.txtHazardRateGoal.props.editable = 1
             self.txtHazardRateGoal.set_sensitive(1)
-            self.txtHazardRateGoal.set_text(
-                str(self.fmt.format(self._hazard_rate_goal)), )
         elif self._measure_id == 3:  # Expressed as an MTBF.
-            self.txtReliabilityGoal.props.editable = 0
-            self.txtReliabilityGoal.set_sensitive(0)
-            self.txtReliabilityGoal.set_text(
-                str(self.fmt.format(self._reliability_goal)), )
             self.txtMTBFGoal.props.editable = 1
             self.txtMTBFGoal.set_sensitive(1)
-            self.txtMTBFGoal.set_text(str(self.fmt.format(self._mtbf_goal)))
-            self.txtHazardRateGoal.props.editable = 0
-            self.txtHazardRateGoal.set_sensitive(0)
-            self.txtHazardRateGoal.set_text(
-                str(self.fmt.format(self._hazard_rate_goal)), )
 
     def _do_set_tree(self, dmtree: treelib.Tree) -> None:
         """
@@ -517,44 +513,6 @@ class Allocation(RAMSTKWorkView):
                 icons=['calculate'],
                 labels=[_("Calculate")],
                 callbacks=[self._do_request_calculate])
-
-    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int, model: Gtk.TreeModel) -> None:
-        """
-        Handle edits of the Allocation Work View RAMSTKTreeview().
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             Gtk.CellRenderer().
-        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
-                                    belongs to.
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            3: "included",
-            4: "n_sub_systems",
-            5: "n_sub_elements",
-            6: "mission_time",
-            7: "duty_cycle",
-            8: "int_factor",
-            9: "soa_factor",
-            10: "op_time_factor",
-            11: "env_factor"
-        }
-        try:
-            _key = _dic_keys[self._lst_col_order[position]]
-        except KeyError:
-            _key = ''
-
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
-            pub.sendMessage("mvw_editing_allocation",
-                            node_id=[self._record_id, 1],
-                            package={_key: new_text})
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
