@@ -1122,7 +1122,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
         self.show_all()
 
-        self.treeview.do_set_editable_columns(self._on_cell_edit)
+        self.treeview.do_set_editable_columns(self.on_cell_edit)
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """

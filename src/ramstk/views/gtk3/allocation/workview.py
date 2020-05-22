@@ -242,11 +242,9 @@ class Allocation(RAMSTKWorkView):
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cells()
             try:
-                _cell[0].connect('edited', self.on_cell_edit,
-                                 "mvw_editing_allocation", i)
+                _cell[0].connect('edited', self._on_cell_edit, i)
             except TypeError:
-                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
-                                 "mvw_editing_allocation", i)
+                _cell[0].connect('toggled', self._on_cell_edit, 'new text', i)
 
         self.cmbAllocationMethod.dic_handler_id[
             'changed'] = self.cmbAllocationMethod.connect(
@@ -537,16 +535,25 @@ class Allocation(RAMSTKWorkView):
         # Value is the list of columns that should be made visible and/or
         # editable for the selected method.
         _dic_visible = {
-            1: [2, 3, 4, 6, 14, 15, 16, 17, 18, 19],
-            2: [2, 3, 4, 5, 6, 7, 12, 14, 15, 16, 17, 18, 19],
-            3: [2, 3, 12, 14, 15, 16, 17, 18, 19],
-            4: [2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-        }
-        _dic_editable = {
-            1: [3, 6],
-            2: [3, 5, 6, 7],
-            3: [3],
-            4: [3, 8, 9, 10, 11]
+            1: [
+                False, False, True, True, True, False, True, False, False,
+                False, False, False, False, False, True, True, True, True,
+                True, True
+            ],
+            2: [
+                False, False, True, True, True, True, True, True, False, False,
+                False, False, True, False, True, True, True, True, True, True
+            ],
+            3: [
+                False, False, True, True, False, False, False, False, False,
+                False, False, False, True, False, True, True, True, True, True,
+                True
+            ],
+            4: [
+                False, False, True, True, False, False, False, False, True,
+                True, True, True, True, True, True, True, True, True, True,
+                True
+            ]
         }
 
         if index == 0:
@@ -555,18 +562,109 @@ class Allocation(RAMSTKWorkView):
             self._measure_id = _new_text
 
         try:
-            _visible = _dic_visible[self._method_id]
+            self.treeview.do_set_visible_columns(
+                visible=_dic_visible[self._method_id])
         except KeyError:
-            _visible = []
-        try:
-            _editable = _dic_editable[self._method_id]
-        except KeyError:
-            _editable = []
+            pass
 
-        self.treeview.do_set_visible_columns(visible=_visible)
-        # self.treeview.do_set_editable_columns(editable=_editable)
+        self._do_set_columns_editable()
 
         self._do_set_sensitive()
+
+    def _do_set_columns_editable(self) -> None:
+        """
+        Set editable columns based on the Allocation method selected.
+
+        :return: None
+        :rtype: None
+        """
+        # Key is the allocation method ID:
+        #   1: Equal apportionment
+        #   2: AGREE apportionment
+        #   3: ARINC apportionment
+        #   4: Feasibility of Objectives
+        # Value is the list of columns that should be made visible and/or
+        # editable for the selected method.
+        _dic_editable = {
+            1: [
+                False, False, False, True, False, False, True, False, False,
+                False, False, False, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ],
+            2: [
+                False, False, False, True, False, True, True, True, False,
+                False, False, False, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ],
+            3: [
+                False, False, False, True, False, False, False, False, False,
+                False, False, False, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ],
+            4: [
+                False, False, False, True, False, False, False, False, True,
+                True, True, True, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ]
+        }
+
+        for _idx, _editable in enumerate(_dic_editable[self._method_id]):
+            _column = self.treeview.get_column(_idx)
+
+            try:
+                _cells = _column.get_cells()
+            except AttributeError:
+                _cells = []
+
+            # pylint: disable=unused-variable
+            for __, _cell in enumerate(_cells):
+                if _editable:
+                    try:
+                        _cell.set_property('background', 'white')
+                        _cell.set_property('editable', _editable)
+                    except TypeError:
+                        _cell.set_property('cell-background', 'white')
+                        _cell.set_property('activatable', _editable)
+                else:
+                    try:
+                        _cell.set_property('background', 'light gray')
+                    except TypeError:
+                        _cell.set_property('cell-background', 'light gray')
+
+    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+                      position: int) -> None:
+        """
+        Responds to edits in the Allocation RAMSTKTreeView.
+
+        We can't call the parent class RAMSTKBaseView() on_cell_edit() method
+        because the self._record_id will contain the value of the selected
+        parent Hardware item, not the item selected in the Allocation
+        worksheet.  We need to pass the ID of the item selected in the
+        Allocation worksheet or all we do is continually update the parent
+        Hardware item.
+
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param int position: the position of the edited column in the
+        RAMSTKTreeView().
+        :return: None
+        :rtype: None
+        """
+        try:
+            _key = self._dic_column_keys[self._lst_col_order[position]]
+        except (IndexError, KeyError):
+            _key = ''
+
+        _model, _row = self.treeview.get_selection().get_selected()
+        _hardware_id = _model.get_value(_row, 1)
+
+        self.treeview.do_edit_cell(__cell, path, new_text, position)
+
+        pub.sendMessage('wvw_editing_allocation',
+                        node_id=[_hardware_id, 1],
+                        package={_key: new_text})
 
     # pylint: disable=unused-argument
     def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,

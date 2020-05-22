@@ -225,7 +225,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Update the Validation task name for the selected Validation task.
         _types = self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
-        # pylint: disable=unused-argument
+        # pylint: disable=unused-variable
         for __, _type in _types.items():
             if _type[1] == task_type:
                 _code = '{0:s}-{1:04d}'.format(_type[0], int(self._record_id))
@@ -1066,8 +1066,8 @@ class BurndownCurve(RAMSTKWorkView):
 
         # Insert the tab.
         _label = RAMSTKLabel(
-            _("<span weight='bold'>" + _("Program\nValidation\nProgress") +
-              "</span>"))
+            _("<span weight='bold'>" + _("Program\nValidation\nProgress")
+              + "</span>"))
         _label.do_set_properties(height=30,
                                  width=-1,
                                  justify=Gtk.Justification.CENTER,
@@ -1104,11 +1104,11 @@ class BurndownCurve(RAMSTKWorkView):
             self.burndown.axis.annotate(
                 str(
                     self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), 'upper'])) + "\n" +
-                str(
+                        assessed.loc[pd.to_datetime(_date), 'upper'])) + "\n"
+                + str(
                     self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), 'mean'])) + "\n" +
-                str(
+                        assessed.loc[pd.to_datetime(_date), 'mean'])) + "\n"
+                + str(
                     self.fmt.format(
                         assessed.loc[pd.to_datetime(_date), 'lower'])),
                 xy=(_date, 0.9 * _y_max),

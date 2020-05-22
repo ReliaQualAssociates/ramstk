@@ -758,6 +758,7 @@ def _load_hazard_analysis_tables(session: scoped_session) -> None:
     """Load RAMSTKHazards."""
     _hazard = Tuple[str, str]
 
+    # pylint: disable=unused-variable
     for __, _hazard in list(RAMSTK_HAZARDS.items()):
         _record = RAMSTKHazards()
         _record.category = _hazard[0]

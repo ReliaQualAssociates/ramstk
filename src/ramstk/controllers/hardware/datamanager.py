@@ -62,6 +62,8 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_set_hardware_attributes,
                       'request_set_hardware_attributes')
         pub.subscribe(self._do_set_hardware_attributes,
+                      'wvw_editing_allocation')
+        pub.subscribe(self._do_set_hardware_attributes,
                       'wvw_editing_component')
         pub.subscribe(self._do_set_hardware_attributes, 'wvw_editing_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,

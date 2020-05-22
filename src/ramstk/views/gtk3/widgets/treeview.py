@@ -438,6 +438,7 @@ class RAMSTKTreeView(Gtk.TreeView):
             except AttributeError:
                 _cells = []
 
+            # pylint: disable=unused-variable
             for __, _cell in enumerate(_cells):
                 if self.editable[_idx]:
                     try:
@@ -457,14 +458,15 @@ class RAMSTKTreeView(Gtk.TreeView):
         except KeyError:
             _visible = []
 
-        for _col in _visible:
+        for _idx, _showit in enumerate(_visible):
             try:
-                self.get_column(_col).set_visible(1)
-                _column = self.get_column(_col)
+                _column = self.get_column(_idx)
+                _column.set_visible(_showit)
                 _cells = _column.get_cells()
             except AttributeError:
                 _cells = []
 
+            # pylint: disable=unused-variable
             for __, _cell in enumerate(_cells):
                 try:
                     _cell.set_property('background', 'light gray')
