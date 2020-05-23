@@ -93,15 +93,14 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
 
     if not _editable:
         _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
-        cell.set_property('cell-background-rgba', _color)
         _fg_color = '#000000'
-    else:
-        cell.set_property('cell-background', _bg_color)
+        cell.set_property('cell-background-rgba', _color)
 
     cell.set_property('visible', _visible)
     cell.set_property('yalign', 0.1)
 
     if isinstance(cell, Gtk.CellRendererText):
+        cell.set_property('background', _bg_color)
         cell.set_property('editable', _editable)
         cell.set_property('foreground', _fg_color)
         cell.set_property('wrap-width', 250)
@@ -110,6 +109,7 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
         cell.set_property('editable', _editable)
     elif isinstance(cell, Gtk.CellRendererToggle):
         cell.set_property('activatable', _editable)
+        cell.set_property('cell-background', _bg_color)
 
 
 class RAMSTKTreeView(Gtk.TreeView):

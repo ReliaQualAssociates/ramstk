@@ -19,7 +19,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
-    RAMSTKWorkView)
+    RAMSTKWorkView, do_set_cell_properties)
 
 
 class Allocation(RAMSTKWorkView):
@@ -442,6 +442,61 @@ class Allocation(RAMSTKWorkView):
         pub.sendMessage('request_update_all_hardware')
         self.do_set_cursor_active(node_id=self._record_id)
 
+    def _do_set_columns_editable(self) -> None:
+        """
+        Set editable columns based on the Allocation method selected.
+
+        :return: None
+        :rtype: None
+        """
+        # Key is the allocation method ID:
+        #   1: Equal apportionment
+        #   2: AGREE apportionment
+        #   3: ARINC apportionment
+        #   4: Feasibility of Objectives
+        # Value is the list of columns that should be made editable for the
+        # selected method.
+        _dic_editable = {
+            1: [
+                False, False, False, True, False, False, True, False, False,
+                False, False, False, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ],
+            2: [
+                False, False, False, True, False, True, True, True, False,
+                False, False, False, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ],
+            3: [
+                False, False, False, True, False, False, False, False, False,
+                False, False, False, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ],
+            4: [
+                False, False, False, True, False, False, False, False, True,
+                True, True, True, False, False, False, False, False, False,
+                False, False, False, False, False, False
+            ]
+        }
+
+        for _idx, _editable in enumerate(_dic_editable[self._method_id]):
+            _column = self.treeview.get_column(_idx)
+
+            try:
+                _cells = _column.get_cells()
+            except AttributeError:
+                _cells = []
+
+            # pylint: disable=unused-variable
+            for __, _cell in enumerate(_cells):
+                _background = 'light gray'
+                if _editable:
+                    _background = 'white'
+
+                do_set_cell_properties(_cell,
+                                       bg_color=_background,
+                                       editable=_editable)
+
     def _do_set_sensitive(self) -> None:
         """
         Set widget sensitivity as needed for the selected R(t) goal.
@@ -570,66 +625,6 @@ class Allocation(RAMSTKWorkView):
         self._do_set_columns_editable()
 
         self._do_set_sensitive()
-
-    def _do_set_columns_editable(self) -> None:
-        """
-        Set editable columns based on the Allocation method selected.
-
-        :return: None
-        :rtype: None
-        """
-        # Key is the allocation method ID:
-        #   1: Equal apportionment
-        #   2: AGREE apportionment
-        #   3: ARINC apportionment
-        #   4: Feasibility of Objectives
-        # Value is the list of columns that should be made visible and/or
-        # editable for the selected method.
-        _dic_editable = {
-            1: [
-                False, False, False, True, False, False, True, False, False,
-                False, False, False, False, False, False, False, False, False,
-                False, False, False, False, False, False
-            ],
-            2: [
-                False, False, False, True, False, True, True, True, False,
-                False, False, False, False, False, False, False, False, False,
-                False, False, False, False, False, False
-            ],
-            3: [
-                False, False, False, True, False, False, False, False, False,
-                False, False, False, False, False, False, False, False, False,
-                False, False, False, False, False, False
-            ],
-            4: [
-                False, False, False, True, False, False, False, False, True,
-                True, True, True, False, False, False, False, False, False,
-                False, False, False, False, False, False
-            ]
-        }
-
-        for _idx, _editable in enumerate(_dic_editable[self._method_id]):
-            _column = self.treeview.get_column(_idx)
-
-            try:
-                _cells = _column.get_cells()
-            except AttributeError:
-                _cells = []
-
-            # pylint: disable=unused-variable
-            for __, _cell in enumerate(_cells):
-                if _editable:
-                    try:
-                        _cell.set_property('background', 'white')
-                        _cell.set_property('editable', _editable)
-                    except TypeError:
-                        _cell.set_property('cell-background', 'white')
-                        _cell.set_property('activatable', _editable)
-                else:
-                    try:
-                        _cell.set_property('background', 'light gray')
-                    except TypeError:
-                        _cell.set_property('cell-background', 'light gray')
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
