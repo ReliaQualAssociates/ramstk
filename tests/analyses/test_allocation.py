@@ -375,27 +375,30 @@ def test_do_allocate_reliability(method_id):
     _attributes['soa_factor'] = 6
     _attributes['op_time_factor'] = 9
     _attributes['env_factor'] = 2
+    _attributes['weight_factor'] = 1 / 3
+    _attributes['goal_measure_id'] = 1
+    _attributes['reliability_goal'] = 0.995
 
     def on_message(attributes):
         assert isinstance(attributes, dict)
         assert attributes['mtbf_alloc'] == pytest.approx({
-            1: 51274.34572286,
-            2: 1113.48385028,
-            3: 299849.97498753,
+            2: 51274.34572286,
+            3: 1113.48385028,
+            1: 299849.97498753,
             4: 169432.91839557,
             5: 0.0
         }[attributes['allocation_method_id']])
         assert attributes['hazard_rate_alloc'] == pytest.approx({
-            1: 1.95029305e-05,
-            2: 0.00089808218,
-            3: 3.33500111e-06,
+            2: 1.95029305e-05,
+            3: 0.00089808218,
+            1: 3.33500111e-06,
             4: 5.90204082e-06,
             5: 0.0
         }[attributes['allocation_method_id']])
         assert attributes['reliability_alloc'] == pytest.approx({
-            1: 0.99824628,
-            2: 0.91410648,
-            3: 0.99966656,
+            2: 0.99824628,
+            3: 0.91410648,
+            1: 0.99966656,
             4: 0.99940997,
             5: 1.0
         }[attributes['allocation_method_id']])
@@ -404,13 +407,13 @@ def test_do_allocate_reliability(method_id):
 
     if method_id == 1:
         _goal = 0.999
-        _attributes['weight_factor'] = 0.95
+        _attributes['weight_factor'] = 1 / 3
     elif method_id == 2:
+        _goal = 0.999
+        _attributes['weight_factor'] = 0.95
+    elif method_id == 3:
         _goal = 0.0058621
         _attributes['weight_factor'] = 0.00058621 / 0.0038264
-    elif method_id == 3:
-        _goal = 0.999
-        _attributes['weight_factor'] = 1 / 3
     elif method_id == 4:
         _goal = 0.0000482
     elif method_id == 5:

@@ -58,15 +58,23 @@ class Allocation(RAMSTKWorkView):
     # RAMSTKTreeView. The value is the name of the key in the datamanger
     # attributes dict.
     _dic_column_keys = {
-        3: "included",
-        4: "n_sub_systems",
-        5: "n_sub_elements",
-        6: "mission_time",
-        7: "duty_cycle",
-        8: "int_factor",
-        9: "soa_factor",
-        10: "op_time_factor",
-        11: "env_factor"
+        0: 'revision_id',
+        1: 'hardware_id',
+        3: 'included',
+        4: 'n_sub_systems',
+        5: 'n_sub_elements',
+        6: 'mission_time',
+        7: 'duty_cycle',
+        8: 'int_factor',
+        9: 'soa_factor',
+        10: 'op_time_factor',
+        11: 'env_factor',
+        12: 'weight_factor',
+        13: 'percent_weight_factor',
+        15: 'hazard_rate_alloc',
+        17: 'mtbf_alloc',
+        19: 'reliability_alloc',
+        21: 'availability_alloc'
     }
 
     # Define private class list attributes.
@@ -138,6 +146,9 @@ class Allocation(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+        pub.subscribe(self._do_refresh_page,
+                      'succeed_calculate_allocation_goals')
+        pub.subscribe(self._do_refresh_tree, 'succeed_allocate_reliability')
         pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
         pub.subscribe(self._do_load_row, 'succeed_get_all_hardware_attributes')
 
@@ -403,6 +414,39 @@ class Allocation(RAMSTKWorkView):
             pub.sendMessage('request_get_all_hardware_attributes',
                             node_id=_node_id)
 
+    def _do_refresh_page(self, attributes: Dict[str, Any]) -> None:
+        """
+        Update the Allocation page with new values.
+
+        :param dict attributes: the Allocation attributes dict.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_goal = attributes['hazard_rate_goal']
+        self._mtbf_goal = attributes['mtbf_goal']
+        self._reliability_goal = attributes['reliability_goal']
+
+        self.txtReliabilityGoal.do_update(
+            str(self.fmt.format(self._reliability_goal)))
+        self.txtHazardRateGoal.do_update(
+            str(self.fmt.format(self._hazard_rate_goal)))
+        self.txtMTBFGoal.do_update(str(self.fmt.format(self._mtbf_goal)))
+
+    def _do_refresh_tree(self, attributes: Dict[str, Any]) -> None:
+        """
+        Update the Allocation RAMSTKTreeView() with new values.
+
+        :param dict attributes: the Allocation attributes dict.
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _row = self.treeview.do_get_row_by_value(1, attributes['hardware_id'])
+
+        for _column_id in self._dic_column_keys:
+            _value = attributes[self._dic_column_keys[_column_id]]
+            _model.set_value(_row, _column_id, _value)
+
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """
         Calculate the Allocation reliability metrics.
@@ -657,7 +701,7 @@ class Allocation(RAMSTKWorkView):
 
         self.treeview.do_edit_cell(__cell, path, new_text, position)
 
-        pub.sendMessage('wvw_editing_allocation',
+        pub.sendMessage('wvw_editing_hardware',
                         node_id=[_hardware_id, 1],
                         package={_key: new_text})
 
@@ -694,5 +738,3 @@ class Allocation(RAMSTKWorkView):
             self._hazard_rate_goal = _new_text
         elif index == 4:
             self._mtbf_goal = _new_text
-
-        pub.sendMessage('request_calculate_allocation_goals')

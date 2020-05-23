@@ -68,6 +68,10 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_set_hardware_attributes, 'wvw_editing_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
                       'succeed_calculate_hardware')
+        pub.subscribe(self._do_set_all_hardware_attributes,
+                      'succeed_calculate_allocation_goals')
+        pub.subscribe(self._do_set_all_hardware_attributes,
+                      'succeed_allocate_reliability')
         pub.subscribe(self._do_get_all_hardware_attributes,
                       'request_get_all_hardware_attributes')
         pub.subscribe(self._do_get_hardware_tree, 'request_get_hardware_tree')

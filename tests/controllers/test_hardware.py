@@ -21,10 +21,9 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from __mocks__ import (
-    MOCK_217F, MOCK_ALLOCATION, MOCK_DESIGN_ELECTRIC, MOCK_DESIGN_MECHANIC,
-    MOCK_HARDWARE, MOCK_NSWC, MOCK_RELIABILITY, MOCK_RQRMNT_TREE,
-    MOCK_SIMILAR_ITEM)
+from __mocks__ import (MOCK_217F, MOCK_ALLOCATION, MOCK_DESIGN_ELECTRIC,
+                       MOCK_DESIGN_MECHANIC, MOCK_HARDWARE, MOCK_NSWC,
+                       MOCK_RELIABILITY, MOCK_RQRMNT_TREE, MOCK_SIMILAR_ITEM)
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amHardware, dmHardware, mmHardware
 from ramstk.db.base import BaseDatabase
@@ -1886,7 +1885,7 @@ class TestAllocation():
         DATAMGR.do_update(7)
 
         _assembly = DATAMGR.do_select(2, 'allocation')
-        _assembly.allocation_method_id = 1
+        _assembly.allocation_method_id = 2
         _assembly.reliability_goal = 0.717
         DATAMGR.do_update(2)
 
@@ -1905,18 +1904,18 @@ class TestAllocation():
             assert isinstance(attributes, dict)
             if attributes['hardware_id'] == 6:
                 assert attributes['hazard_rate_alloc'] == pytest.approx(
-                    2.89e-07)
+                    1.5582554e-06)
                 assert attributes['mtbf_alloc'] == pytest.approx(
-                    3460207.61245675)
+                    641743.3272299)
                 assert attributes['reliability_alloc'] == pytest.approx(
-                    0.99997110)
+                    0.9998442)
             elif attributes['hardware_id'] == 7:
                 assert attributes['hazard_rate_alloc'] == pytest.approx(
-                    1.132e-08)
+                    6.1036163e-08)
                 assert attributes['mtbf_alloc'] == pytest.approx(
-                    88339222.61484098)
+                    16383729.8206228)
                 assert attributes['reliability_alloc'] == pytest.approx(
-                    0.99999887)
+                    0.9999939)
 
         pub.subscribe(on_message, 'succeed_allocate_reliability')
 
@@ -1931,7 +1930,7 @@ class TestAllocation():
         DATAMGR.do_update(7)
 
         _assembly = DATAMGR.do_select(2, 'allocation')
-        _assembly.allocation_method_id = 2
+        _assembly.allocation_method_id = 3
         _assembly.hazard_rate_goal = 0.000617
         DATAMGR.do_update(2)
 
@@ -1951,7 +1950,7 @@ class TestAllocation():
 
         pub.sendMessage('request_get_hardware_tree')
 
-        DUT._attributes['allocation_method_id'] = 2
+        DUT._attributes['allocation_method_id'] = 3
         DUT._tree.get_node(1).data['reliability'].hazard_rate_active = 0.0
         DUT._do_calculate_arinc_weight_factor(2)
 
@@ -1979,7 +1978,7 @@ class TestAllocation():
         pub.sendMessage('request_get_hardware_tree')
 
         _assembly = DATAMGR.do_select(2, 'allocation')
-        _assembly.allocation_method_id = 3
+        _assembly.allocation_method_id = 1
         _assembly.reliability_goal = 0.995
         DATAMGR.do_update(2)
 
@@ -1998,16 +1997,16 @@ class TestAllocation():
             assert isinstance(attributes, dict)
             if attributes['hardware_id'] == 6:
                 assert attributes['hazard_rate_alloc'] == pytest.approx(
-                    0.00015753191)
-                assert attributes['mtbf_alloc'] == pytest.approx(6347.92004322)
+                    1.2797979e-05)
+                assert attributes['mtbf_alloc'] == pytest.approx(78137.3363963)
                 assert attributes['reliability_alloc'] == pytest.approx(
-                    0.98437024)
+                    0.9987210)
             elif attributes['hardware_id'] == 7:
                 assert attributes['hazard_rate_alloc'] == pytest.approx(
-                    0.00045946809)
-                assert attributes['mtbf_alloc'] == pytest.approx(2176.42972910)
+                    3.7327439e-05)
+                assert attributes['mtbf_alloc'] == pytest.approx(26789.9439073)
                 assert attributes['reliability_alloc'] == pytest.approx(
-                    0.95509276)
+                    0.9962742)
 
         pub.subscribe(on_message, 'succeed_allocate_reliability')
 

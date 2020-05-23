@@ -306,11 +306,11 @@ def do_allocate_reliability(parent_goal: float, cumulative_weight: int,
     :rtype: dict
     """
     if attributes['allocation_method_id'] == 1:
-        attributes = _calculate_agree_apportionment(parent_goal, attributes)
-    elif attributes['allocation_method_id'] == 2:
-        attributes = _calculate_arinc_apportionment(parent_goal, attributes)
-    elif attributes['allocation_method_id'] == 3:
         attributes = _calculate_equal_apportionment(parent_goal, attributes)
+    elif attributes['allocation_method_id'] == 2:
+        attributes = _calculate_agree_apportionment(parent_goal, attributes)
+    elif attributes['allocation_method_id'] == 3:
+        attributes = _calculate_arinc_apportionment(parent_goal, attributes)
     elif attributes['allocation_method_id'] == 4:
         attributes = _calculate_foo_apportionment(parent_goal,
                                                   cumulative_weight,
@@ -347,6 +347,9 @@ def do_calculate_goals(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes['hazard_rate_goal'] = _hazard_rate_goal
         attributes['mtbf_goal'] = _mtbf_goal
         attributes['reliability_goal'] = _reliability_goal
+
+    pub.sendMessage('succeed_calculate_allocation_goals',
+                    attributes=attributes)
 
     return attributes
 

@@ -261,6 +261,27 @@ class RAMSTKTreeView(Gtk.TreeView):
         elif _convert == 'gfloat':
             _model[path][position] = float(new_text)
 
+    def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter:
+        """
+        Finds the row in the RAMSTKTreeView() containing the passed value.
+
+        :param int search_col: the column number to search for the desired
+            value.
+        :param value: the value to match.
+        :return: _iter; the Gtk.TreeIter() for the matching row.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _model = self.get_model()
+        _iter = _model.get_iter_first()
+
+        while _iter is not None:
+            _value = _model.get_value(_iter, search_col)
+            # pylint: disable=no-else-return
+            if _value == value:
+                return _iter
+            else:
+                _iter = _model.iter_next(_iter)
+
     def do_load_tree(self,
                      tree: treelib.Tree,
                      tag: str,
