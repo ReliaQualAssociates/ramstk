@@ -13,3 +13,4 @@ from .moduleview import ModuleView as mvwHardware
 from .workview import AssessmentInputs as wvwHardwareAI
 from .workview import AssessmentResults as wvwHardwareAR
 from .workview import GeneralData as wvwHardwareGD
+from .workview import do_get_attributes

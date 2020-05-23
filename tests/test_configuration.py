@@ -19,14 +19,13 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
-    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_ALLOCATION_MODELS,
-    RAMSTK_CONTROL_TYPES, RAMSTK_COST_TYPES, RAMSTK_CRITICALITY,
-    RAMSTK_DORMANT_ENVIRONMENTS, RAMSTK_FAILURE_PROBABILITY,
-    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS, RAMSTK_HR_TYPES,
-    RAMSTK_LIFECYCLE, RAMSTK_MTTR_TYPES, RAMSTK_S_DIST, RAMSTK_SW_APPLICATION,
-    RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES, RAMSTK_SW_LEVELS,
-    RAMSTK_SW_TEST_METHODS, RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-)
+    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_ALLOCATION_MODELS, RAMSTK_CONTROL_TYPES,
+    RAMSTK_COST_TYPES, RAMSTK_CRITICALITY, RAMSTK_DORMANT_ENVIRONMENTS,
+    RAMSTK_FAILURE_PROBABILITY, RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,
+    RAMSTK_HR_TYPES, RAMSTK_LIFECYCLE, RAMSTK_MTTR_TYPES, RAMSTK_S_DIST,
+    RAMSTK_SW_APPLICATION, RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES,
+    RAMSTK_SW_LEVELS, RAMSTK_SW_TEST_METHODS, RAMSTKSiteConfiguration,
+    RAMSTKUserConfiguration)
 
 try:
     VIRTUAL_ENV = glob.glob(environ['VIRTUAL_ENV'])[0]
@@ -136,8 +135,7 @@ def test_static_variables():
                 "Could result in injury or illness not resulting in a lost work "
                 "day, loss exceeding $2K but less than $10K, or minimal "
                 "environmental damage not violating law or regulation.", ),
-            "IV",
-            1
+            "IV", 1
         ]
     ]
     assert RAMSTK_FAILURE_PROBABILITY == [
@@ -371,8 +369,8 @@ class TestCreateConfiguration():
 
         assert DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_CONF_DIR + "/RAMSTK.toml"
         assert DUT.RAMSTK_USER_LOG == DUT.RAMSTK_LOG_DIR + "/ramstk_run.log"
-        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
-                                         + "/ramstk_import.log")
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR +
+                                         "/ramstk_import.log")
 
     @pytest.mark.unit
     def test_create_site_configuration(self):
@@ -409,8 +407,8 @@ class TestCreateConfiguration():
         assert path.isdir(make_home_config_dir + '/icons/32x32')
         assert path.isfile(make_home_config_dir + '/layouts/Allocation.xml')
         assert path.isfile(make_home_config_dir + '/layouts/FMEA.xml')
-        assert path.isfile(make_home_config_dir
-                           + '/layouts/FailureDefinition.xml')
+        assert path.isfile(make_home_config_dir +
+                           '/layouts/FailureDefinition.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Function.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Hardware.xml')
         assert path.isfile(make_home_config_dir + '/layouts/HazOps.xml')
@@ -647,8 +645,8 @@ class TestGetterSetter():
         assert DUT.RAMSTK_TABPOS["modulebook"] == 'top'
         assert DUT.RAMSTK_TABPOS["workbook"] == 'bottom'
         assert DUT.RAMSTK_USER_LOG == (DUT.RAMSTK_LOG_DIR + "/ramstk_run.log")
-        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
-                                         + "/ramstk_import.log")
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR +
+                                         "/ramstk_import.log")
 
     @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):
@@ -687,7 +685,6 @@ class TestGetterSetter():
             'user': 'me',
             'password': 'big.password'
         }
-        DUT.RAMSTK_FORMAT_FILE['allocation'] = 'MyAllocation.txt'
 
         assert DUT.set_user_configuration() is None
 
@@ -706,7 +703,6 @@ class TestGetterSetter():
             'user': 'me',
             'password': 'big.password'
         }
-        assert DUT.RAMSTK_FORMAT_FILE['allocation'] == 'MyAllocation.txt'
 
     @pytest.mark.unit
     def test_set_user_directories(self):

@@ -15,13 +15,12 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.allocation import wvwAllocation
 from ramstk.views.gtk3.function import wvwFunctionGD, wvwHazOps
 from ramstk.views.gtk3.hardware import (
-    wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
-)
+    wvwHardwareAI, wvwHardwareAR, wvwHardwareGD)
 from ramstk.views.gtk3.requirement import (
-    wvwRequirementAnalysis, wvwRequirementGD
-)
+    wvwRequirementAnalysis, wvwRequirementGD)
 from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.validation import wvwBurndownCurve, wvwValidationGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
@@ -62,7 +61,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             ],
             'hardware': [
                 wvwHardwareGD(configuration, logger),
-                # wvwAllocation(configuration, logger),
+                wvwAllocation(configuration, logger),
                 # wvwSimilarItem(configuration, logger),
                 wvwHardwareAI(configuration, logger),
                 wvwHardwareAR(configuration, logger),

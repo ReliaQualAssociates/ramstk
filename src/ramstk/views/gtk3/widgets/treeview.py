@@ -93,15 +93,14 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
 
     if not _editable:
         _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
-        cell.set_property('cell-background-rgba', _color)
         _fg_color = '#000000'
-    else:
-        cell.set_property('cell-background', _bg_color)
+        cell.set_property('cell-background-rgba', _color)
 
     cell.set_property('visible', _visible)
     cell.set_property('yalign', 0.1)
 
     if isinstance(cell, Gtk.CellRendererText):
+        cell.set_property('background', _bg_color)
         cell.set_property('editable', _editable)
         cell.set_property('foreground', _fg_color)
         cell.set_property('wrap-width', 250)
@@ -110,6 +109,7 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
         cell.set_property('editable', _editable)
     elif isinstance(cell, Gtk.CellRendererToggle):
         cell.set_property('activatable', _editable)
+        cell.set_property('cell-background', _bg_color)
 
 
 class RAMSTKTreeView(Gtk.TreeView):
@@ -260,6 +260,27 @@ class RAMSTKTreeView(Gtk.TreeView):
                 _model[path][position] = int(float(new_text))
         elif _convert == 'gfloat':
             _model[path][position] = float(new_text)
+
+    def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter:
+        """
+        Finds the row in the RAMSTKTreeView() containing the passed value.
+
+        :param int search_col: the column number to search for the desired
+            value.
+        :param value: the value to match.
+        :return: _iter; the Gtk.TreeIter() for the matching row.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _model = self.get_model()
+        _iter = _model.get_iter_first()
+
+        while _iter is not None:
+            _value = _model.get_value(_iter, search_col)
+            # pylint: disable=no-else-return
+            if _value == value:
+                return _iter
+            else:
+                _iter = _model.iter_next(_iter)
 
     def do_load_tree(self,
                      tree: treelib.Tree,
@@ -438,6 +459,7 @@ class RAMSTKTreeView(Gtk.TreeView):
             except AttributeError:
                 _cells = []
 
+            # pylint: disable=unused-variable
             for __, _cell in enumerate(_cells):
                 if self.editable[_idx]:
                     try:
@@ -457,14 +479,15 @@ class RAMSTKTreeView(Gtk.TreeView):
         except KeyError:
             _visible = []
 
-        for _col in _visible:
+        for _idx, _showit in enumerate(_visible):
             try:
-                self.get_column(_col).set_visible(1)
-                _column = self.get_column(_col)
+                _column = self.get_column(_idx)
+                _column.set_visible(_showit)
                 _cells = _column.get_cells()
             except AttributeError:
                 _cells = []
 
+            # pylint: disable=unused-variable
             for __, _cell in enumerate(_cells):
                 try:
                     _cell.set_property('background', 'light gray')

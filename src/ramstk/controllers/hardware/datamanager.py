@@ -18,8 +18,7 @@ from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
-)
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem)
 
 
 class DataManager(RAMSTKDataManager):
@@ -63,10 +62,16 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_set_hardware_attributes,
                       'request_set_hardware_attributes')
         pub.subscribe(self._do_set_hardware_attributes,
+                      'wvw_editing_allocation')
+        pub.subscribe(self._do_set_hardware_attributes,
                       'wvw_editing_component')
         pub.subscribe(self._do_set_hardware_attributes, 'wvw_editing_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
                       'succeed_calculate_hardware')
+        pub.subscribe(self._do_set_all_hardware_attributes,
+                      'succeed_calculate_allocation_goals')
+        pub.subscribe(self._do_set_all_hardware_attributes,
+                      'succeed_allocate_reliability')
         pub.subscribe(self._do_get_all_hardware_attributes,
                       'request_get_all_hardware_attributes')
         pub.subscribe(self._do_get_hardware_tree, 'request_get_hardware_tree')
@@ -338,8 +343,7 @@ class DataManager(RAMSTKDataManager):
                 node_id=[attributes['hardware_id'], -1],
                 package={_key: attributes[_key]})
 
-    def _do_set_hardware_attributes(self,
-                                    node_id: List[int],
+    def _do_set_hardware_attributes(self, node_id: List[int],
                                     package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.

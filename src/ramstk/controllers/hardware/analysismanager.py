@@ -71,7 +71,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_all_hardware')
         pub.subscribe(self._do_derating_analysis, 'request_derate_hardware')
         pub.subscribe(self._do_calculate_allocation_goals,
-                      'request_calculate_goals')
+                      'request_calculate_allocation_goals')
         pub.subscribe(self._do_calculate_allocation,
                       'request_allocate_reliability')
         pub.subscribe(self._on_allocate_reliability,
@@ -88,21 +88,21 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        self._attributes['total_cost'] = (self._attributes['cost'] *
-                                          self._attributes['quantity'])
+        self._attributes['total_cost'] = (self._attributes['cost']
+                                          * self._attributes['quantity'])
         self._attributes['cost_hour'] = (
-            self._attributes['total_cost'] *
-            self._attributes['hazard_rate_mission'])
+            self._attributes['total_cost']
+            * self._attributes['hazard_rate_mission'])
 
         if self._attributes['part'] == 1:
             self._attributes['total_part_count'] = self._attributes['quantity']
             self._attributes['total_power_dissipation'] = (
-                self._attributes['power_operating'] *
-                self._attributes['quantity'])
+                self._attributes['power_operating']
+                * self._attributes['quantity'])
         else:
             self._attributes['total_part_count'] = (
-                self._attributes['total_part_count'] *
-                self._attributes['quantity'])
+                self._attributes['total_part_count']
+                * self._attributes['quantity'])
 
     def _do_calculate_current_ratio(self) -> None:
         """
@@ -138,17 +138,17 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 1.0 / self._attributes['mtbf_specified'])
 
         self._attributes['hazard_rate_active'] = (
-            self._attributes['hazard_rate_active'] +
-            self._attributes['add_adj_factor']
+            self._attributes['hazard_rate_active']
+            + self._attributes['add_adj_factor']
         ) * self._attributes['mult_adj_factor']
 
         self._attributes['hazard_rate_logistics'] = (
-            self._attributes['hazard_rate_active'] +
-            self._attributes['hazard_rate_dormant'] +
-            self._attributes['hazard_rate_software'])
+            self._attributes['hazard_rate_active']
+            + self._attributes['hazard_rate_dormant']
+            + self._attributes['hazard_rate_software'])
         self._attributes['hazard_rate_mission'] = (
-            self._attributes['hazard_rate_active'] +
-            self._attributes['hazard_rate_software'])
+            self._attributes['hazard_rate_active']
+            + self._attributes['hazard_rate_software'])
 
         #// TODO: Add s-Distribution Support for R(t) Predictions
         #//
@@ -240,8 +240,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._attributes['reliability_logistics'] = exp(
                 -1.0 * (self._attributes['hazard_rate_logistics']) * 1000000.0)
             self._attributes['reliability_mission'] = exp(
-                -1.0 * (self._attributes['hazard_rate_mission']) *
-                self._attributes['mission_time'])
+                -1.0 * (self._attributes['hazard_rate_mission'])
+                * self._attributes['mission_time'])
         except ZeroDivisionError:
             pub.sendMessage(
                 'fail_calculate_hardware',
@@ -360,8 +360,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        _voltage_operating = (self._attributes['voltage_ac_operating'] +
-                              self._attributes['voltage_dc_operating'])
+        _voltage_operating = (self._attributes['voltage_ac_operating']
+                              + self._attributes['voltage_dc_operating'])
 
         try:
             self._attributes['voltage_ratio'] = stress.calculate_stress_ratio(
@@ -544,9 +544,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _parent_node = self._tree.parent(node_id)
         try:
             _weight_factor = (_node.data['reliability'].get_attributes()
-                              ['hazard_rate_active'] /
-                              _parent_node.data['reliability'].get_attributes(
-                              )['hazard_rate_active'])
+                              ['hazard_rate_active']
+                              / _parent_node.data['reliability'].
+                              get_attributes()['hazard_rate_active'])
         except ZeroDivisionError:
             _weight_factor = 0.0
             pub.sendMessage(
@@ -570,10 +570,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _cum_weight = 0
         for _node in self._tree.children(node_id):
             _attributes = _node.data['allocation'].get_attributes()
-            _attributes['weight_factor'] = (_attributes['int_factor'] *
-                                            _attributes['soa_factor'] *
-                                            _attributes['op_time_factor'] *
-                                            _attributes['env_factor'])
+            _attributes['weight_factor'] = (_attributes['int_factor']
+                                            * _attributes['soa_factor']
+                                            * _attributes['op_time_factor']
+                                            * _attributes['env_factor'])
             _cum_weight += _attributes['weight_factor']
 
         return _cum_weight
@@ -595,6 +595,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # attributes to pass to the various analysis methods/functions.
         pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
 
+        self._do_calculate_allocation_goals()
+
         self._attributes['n_sub_systems'] = len(self._tree.children(node_id))
         for _node in self._tree.children(node_id):
             _attributes = _node.data['allocation'].get_attributes()
@@ -603,7 +605,12 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _attributes['allocation_method_id'] = self._attributes[
                 'allocation_method_id']
             _attributes['mission_time'] = self._attributes['mission_time']
-            if self._attributes['allocation_method_id'] == 1:
+            if self._attributes['allocation_method_id'] == 1:  # Equal
+                _attributes['weight_factor'] = (
+                    1.0 / self._attributes['n_sub_systems'])
+                _parent_goal = self._attributes['reliability_goal']
+                _cum_weight = 0.0
+            elif self._attributes['allocation_method_id'] == 2:  # AGREE
                 self._attributes[
                     'n_sub_systems'] = self._do_calculate_agree_total_elements(
                         node_id)
@@ -611,18 +618,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
                     'n_sub_systems']
                 _parent_goal = self._attributes['reliability_goal']
                 _cum_weight = 0.0
-            elif self._attributes['allocation_method_id'] == 2:
+            elif self._attributes['allocation_method_id'] == 3:  # ARINC
                 _attributes[
                     'weight_factor'] = self._do_calculate_arinc_weight_factor(
                         _node.identifier)
                 _parent_goal = self._attributes['hazard_rate_goal']
                 _cum_weight = 0.0
-            elif self._attributes['allocation_method_id'] == 3:
-                _attributes['weight_factor'] = (
-                    1.0 / self._attributes['n_sub_systems'])
-                _parent_goal = self._attributes['reliability_goal']
-                _cum_weight = 0.0
-            elif self._attributes['allocation_method_id'] == 4:
+            elif self._attributes['allocation_method_id'] == 4:  # FOO
                 _parent_goal = self._attributes['hazard_rate_goal']
                 _cum_weight = self._do_calculate_foo_cumulative_weight(node_id)
 
