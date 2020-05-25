@@ -348,6 +348,37 @@ class RAMSTKBaseView(Gtk.HBox):
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
 
+    def do_load_row(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the data into a row.
+
+        This is used to load data into a RAMSTKTreeView() that is being used in
+        a "worksheet" manner.  See the Allocation and Similar Item work views
+        for an example.
+
+        :param dict attributes: the Hardware attributes dict for the row to
+            be loaded in the WorkView worksheet.
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+
+        _data = []
+        for _key in self.treeview.korder:
+            if _key == 'dict':
+                _data.append(str(attributes))
+            else:
+                _data.append(attributes[_key])
+
+        # Only load Hardware items that are immediate children of the
+        # selected Hardware item and prevent loading the selected Hardware item
+        # itself in the Allocation worksheet.  This method will respond to any
+        # successful grabs of all the hardware attributes even when
+        # requested by other modules.
+        if _data[0] == self._record_id and not _data[1] == self._record_id:
+            # noinspection PyDeepBugsSwappedArgs
+            _model.append(None, _data)
+
     def do_load_tree(self, tree: treelib.Tree) -> None:
         """
         Load the RAMSTK View RAMSTKTreeView().
@@ -837,13 +868,16 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         _attributes: Dict[str, Any] = {}
 
-        selection.handler_block(self._lst_handler_id[0])
-
         _model, _row = selection.get_selected()
         if _row is not None:
             for _key in self._dic_key_index:
                 _attributes[_key] = _model.get_value(
                     _row, self._lst_col_order[self._dic_key_index[_key]])
+
+        try:
+            self._record_id = _attributes['hardware_id']
+        except KeyError:
+            self._record_id = -1
 
         return _attributes
 

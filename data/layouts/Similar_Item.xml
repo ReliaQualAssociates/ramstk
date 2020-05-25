@@ -8,7 +8,7 @@
 All rights reserved. -->
 
 <root>
-    <tree name="SimilarItem">
+    <tree name="Similar_Item">
         <column>
             <defaulttitle>Revision ID</defaulttitle>
             <usertitle>Revision ID</usertitle>

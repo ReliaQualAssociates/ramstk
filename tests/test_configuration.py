@@ -369,8 +369,8 @@ class TestCreateConfiguration():
 
         assert DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_CONF_DIR + "/RAMSTK.toml"
         assert DUT.RAMSTK_USER_LOG == DUT.RAMSTK_LOG_DIR + "/ramstk_run.log"
-        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR +
-                                         "/ramstk_import.log")
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
+                                         + "/ramstk_import.log")
 
     @pytest.mark.unit
     def test_create_site_configuration(self):
@@ -407,8 +407,8 @@ class TestCreateConfiguration():
         assert path.isdir(make_home_config_dir + '/icons/32x32')
         assert path.isfile(make_home_config_dir + '/layouts/Allocation.xml')
         assert path.isfile(make_home_config_dir + '/layouts/FMEA.xml')
-        assert path.isfile(make_home_config_dir +
-                           '/layouts/FailureDefinition.xml')
+        assert path.isfile(make_home_config_dir
+                           + '/layouts/FailureDefinition.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Function.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Hardware.xml')
         assert path.isfile(make_home_config_dir + '/layouts/HazOps.xml')
@@ -416,7 +416,7 @@ class TestCreateConfiguration():
         assert path.isfile(make_home_config_dir + '/layouts/PoF.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Requirement.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Revision.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/SimilarItem.xml')
+        assert path.isfile(make_home_config_dir + '/layouts/Similar_Item.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Software.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Stakeholder.xml')
         assert path.isfile(make_home_config_dir + '/layouts/Testing.xml')
@@ -609,7 +609,7 @@ class TestGetterSetter():
             'pof': 'PoF.xml',
             'requirement': 'Requirement.xml',
             'revision': 'Revision.xml',
-            'similaritem': 'SimilarItem.xml',
+            'similar_item': 'Similar_Item.xml',
             'stakeholder': 'Stakeholder.xml',
             'validation': 'Validation.xml',
         }
@@ -645,8 +645,8 @@ class TestGetterSetter():
         assert DUT.RAMSTK_TABPOS["modulebook"] == 'top'
         assert DUT.RAMSTK_TABPOS["workbook"] == 'bottom'
         assert DUT.RAMSTK_USER_LOG == (DUT.RAMSTK_LOG_DIR + "/ramstk_run.log")
-        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR +
-                                         "/ramstk_import.log")
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
+                                         + "/ramstk_import.log")
 
     @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):

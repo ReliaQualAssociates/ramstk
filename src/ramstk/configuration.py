@@ -12,8 +12,7 @@ import glob
 import sys
 from distutils import dir_util, file_util  # pylint: disable=no-name-in-module
 from distutils.errors import (  # pylint: disable=no-name-in-module
-    DistutilsFileError
-)
+    DistutilsFileError)
 from os import environ, makedirs
 from typing import Dict, Tuple
 
@@ -331,7 +330,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             * requirement
             * hardware
             * validation
-            * sia
+            * allocation
+            * similar_item
             * fmeca
             * stakeholder
             * ffmeca
@@ -507,19 +507,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize private list attributes.
         self._lst_colors = [
-            "functionbg",
-            "functionfg",
-            "hardwarebg",
-            "hardwarefg",
-            "hazardbg",
-            "hazardfg",
-            "revisionbg",
-            "revisionfg",
-            "requirementfg",
-            "requirementbg",
-            "validationbg",
-            "validationfg",
-            "stakeholderbg",
+            "functionbg", "functionfg", "hardwarebg", "hardwarefg", "hazardbg",
+            "hazardfg", "revisionbg", "revisionfg", "requirementfg",
+            "requirementbg", "validationbg", "validationfg", "stakeholderbg",
             "stakeholderfg"
         ]
         self._lst_format_files = [
@@ -532,7 +522,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "pof",
             "requirement",
             "revision",
-            "similaritem",
+            "similar_item",
             "stakeholder",
             "validation",
         ]
@@ -765,7 +755,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "pof": "PoF.xml",
                 "requirement": "Requirement.xml",
                 "revision": "Revision.xml",
-                "similaritem": "SimilarItem.xml",
+                "similar_item": "Similar_Item.xml",
                 "stakeholder": "Stakeholder.xml",
                 "validation": "Validation.xml"
             },
@@ -930,7 +920,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "pof": self.RAMSTK_FORMAT_FILE['pof'],
                 "requirement": self.RAMSTK_FORMAT_FILE['requirement'],
                 "revision": self.RAMSTK_FORMAT_FILE['revision'],
-                "similaritem": self.RAMSTK_FORMAT_FILE['similaritem'],
+                "similar_item": self.RAMSTK_FORMAT_FILE['similar_item'],
                 "stakeholder": self.RAMSTK_FORMAT_FILE['stakeholder'],
                 "validation": self.RAMSTK_FORMAT_FILE['validation']
             },
