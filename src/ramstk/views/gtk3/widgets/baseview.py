@@ -117,6 +117,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self._revision_id: int = 0
         self._parent_id: int = 0
         self._record_id: int = -1
+        self._tree_loaded: bool = False
 
         # Initialize public dictionary attributes.
 
@@ -354,7 +355,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         This is used to load data into a RAMSTKTreeView() that is being used in
         a "worksheet" manner.  See the Allocation and Similar Item work views
-        for an example.
+        for examples.
 
         :param dict attributes: the Hardware attributes dict for the row to
             be loaded in the WorkView worksheet.
@@ -372,10 +373,8 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Only load Hardware items that are immediate children of the
         # selected Hardware item and prevent loading the selected Hardware item
-        # itself in the Allocation worksheet.  This method will respond to any
-        # successful grabs of all the hardware attributes even when
-        # requested by other modules.
-        if _data[0] == self._record_id and not _data[1] == self._record_id:
+        # itself in the worksheet.
+        if not _data[1] == self._record_id and not self._tree_loaded:
             # noinspection PyDeepBugsSwappedArgs
             _model.append(None, _data)
 
@@ -655,7 +654,7 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.show()
             _menu.append(_menu_item)
 
-    def on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+    def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      message: str, position: int) -> None:
         """
         Handle edits of the Allocation Work View RAMSTKTreeview().
@@ -670,24 +669,22 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
-        _type = GObject.type_name(_model.get_column_type(position))
-        if _type == 'gchararray':
-            _model[path][position] = str(new_text)
-        elif _type == 'gint':
-            _model[path][position] = int(new_text)
-        elif _type == 'gfloat':
-            _model[path][position] = float(new_text)
+        new_text = self.treeview.do_edit_cell(cell, path, new_text, position)
 
+        # The workflow module record ID will always be in the first
+        # position.  For example, the hardware ID is always in the first
+        # position in any RAMSTKTreeView() used in the Hardare work view.
+        # Thus, we can reliably count on the first column containing the
+        # record ID for the record being edited.
+        _model, _row = self.treeview.get_selection().get_selected()
+        _record_id = _model.get_value(_row, self._lst_col_order[1])
         try:
             _key = self._dic_column_keys[self._lst_col_order[position]]
         except (IndexError, KeyError):
             _key = ''
 
-        self.treeview.do_edit_cell(__cell, path, new_text, position)
-
         pub.sendMessage(message,
-                        node_id=[self._record_id, 1],
+                        node_id=[_record_id, -1],
                         package={_key: new_text})
 
     def on_combo_changed(self, combo: RAMSTKComboBox, index: int,
@@ -1237,6 +1234,20 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
+
+    def do_clear_tree(self) -> None:
+        """
+        Clear the contents of a RAMSTKTreeView().
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
 
     def make_toolbuttons(self, **kwargs: Any) -> None:
         """

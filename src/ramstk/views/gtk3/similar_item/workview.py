@@ -170,10 +170,10 @@ class SimilarItem(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_row, 'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_row, 'succeed_get_all_hardware_attributes')
 
         pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+        pub.subscribe(self._do_load_page, 'do_load_similar_item')
         pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
 
     def __do_get_environment(self, environment_id: int) -> str:
@@ -319,15 +319,12 @@ class SimilarItem(RAMSTKWorkView):
             _cell = self.treeview.get_column(
                 self._lst_col_order[_idx]).get_cells()
             try:
-                _cell[0].connect('edited', self._on_cell_edit, _idx)
+                _cell[0].connect('edited', self.on_cell_edit,
+                                 'wvw_editing_hardware', _idx)
             except TypeError:
-                _cell[0].connect('toggled', self._on_cell_edit, 'new text',
-                                 _idx)
+                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
+                                 'wvw_editing_hardware', _idx)
 
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self.on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
         self.cmbSimilarItemMethod.dic_handler_id[
             'changed'] = self.cmbSimilarItemMethod.connect(
                 'changed', self._on_combo_changed, 2)
@@ -354,12 +351,7 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
-        _columns = self.treeview.get_columns()
-        for _column in _columns:
-            self.treeview.remove_column(_column)
-
-        _model.clear()
+        super().do_clear_tree()
 
         self.cmbSimilarItemMethod.do_update(0)
 
@@ -381,22 +373,7 @@ class SimilarItem(RAMSTKWorkView):
         if self._record_id > 0:
             self._do_load_tree()
 
-    def _do_load_tree(self) -> None:
-        """
-        Load the Allocation RAMSTKTreeView() with allocation data.
-
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        for _node in self._similar_item_tree.children(self._record_id):
-            _node_id = _node.data['hardware'].get_attributes()['hardware_id']
-            pub.sendMessage('request_get_all_hardware_attributes',
-                            node_id=_node_id)
-
-    def _do_load_children(self, children: List[object]) -> None:
+    def _do_load_row(self, attributes: Dict[str, Any]) -> None:
         """
         Load the Similar Item RAMSTKTreeView() and other widgets.
 
@@ -406,78 +383,37 @@ class SimilarItem(RAMSTKWorkView):
         :rtype: None
         """
         _model = self.treeview.get_model()
+
+        attributes['quality_from_id'] = self.__do_get_quality(
+            attributes['quality_from_id'])
+        attributes['quality_to_id'] = self.__do_get_quality(
+            attributes['quality_to_id'])
+        attributes['environment_from_id'] = self.__do_get_environment(
+            attributes['environment_from_id'])
+        attributes['environment_to_id'] = self.__do_get_environment(
+            attributes['environment_to_id'])
+
+        super().do_load_row(attributes)
+
+    def _do_load_tree(self) -> None:
+        """
+        Load the Similar Item RAMSTKTreeView() with allocation data.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
         _model.clear()
 
-        _data = []
-        for _child in children:
-            try:
-                _attributes = _child.data.get_attributes()
-                _node_id = _child.identifier
-                _quality_from = self.__do_get_quality(
-                    _attributes['quality_from_id'])
-                _quality_to = self.__do_get_quality(
-                    _attributes['quality_to_id'])
-                _environment_from = self.__do_get_environment(
-                    _attributes['environment_from_id'])
-                _environment_to = self.__do_get_environment(
-                    _attributes['environment_to_id'])
+        self._tree_loaded = False
+        for _node in self._similar_item_tree.children(self._record_id):
+            _node_id = _node.data['hardware'].get_attributes()['hardware_id']
+            pub.sendMessage('request_get_all_hardware_attributes',
+                            node_id=_node_id)
+        self._tree_loaded = True
 
-                _data = [
-                    self._revision_id, _attributes['hardware_id'],
-                    self._dic_hardware[_attributes['hardware_id']][0],
-                    self._dic_hardware[_attributes['hardware_id']][1],
-                    _quality_from, _quality_to, _environment_from,
-                    _environment_to, _attributes['temperature_from'],
-                    _attributes['temperature_to'],
-                    _attributes['change_description_1'].decode('utf-8'),
-                    _attributes['change_factor_1'],
-                    _attributes['change_description_2'].decode('utf-8'),
-                    _attributes['change_factor_2'],
-                    _attributes['change_description_3'].decode('utf-8'),
-                    _attributes['change_factor_3'],
-                    _attributes['change_description_4'].decode('utf-8'),
-                    _attributes['change_factor_4'],
-                    _attributes['change_description_5'].decode('utf-8'),
-                    _attributes['change_factor_5'],
-                    _attributes['change_description_6'].decode('utf-8'),
-                    _attributes['change_factor_6'],
-                    _attributes['change_description_7'].decode('utf-8'),
-                    _attributes['change_factor_7'],
-                    _attributes['change_description_8'].decode('utf-8'),
-                    _attributes['change_factor_8'],
-                    _attributes['change_description_9'].decode('utf-8'),
-                    _attributes['change_factor_9'],
-                    _attributes['change_description_10'].decode('utf-8'),
-                    _attributes['change_factor_10'], _attributes['function_1'],
-                    _attributes['function_2'], _attributes['function_3'],
-                    _attributes['function_4'], _attributes['function_5'],
-                    _attributes['result_1'], _attributes['result_2'],
-                    _attributes['result_3'], _attributes['result_4'],
-                    _attributes['result_5'],
-                    _attributes['user_blob_1'].decode('utf-8'),
-                    _attributes['user_blob_2'].decode('utf-8'),
-                    _attributes['user_blob_3'].decode('utf-8'),
-                    _attributes['user_blob_4'].decode('utf-8'),
-                    _attributes['user_blob_5'].decode('utf-8'),
-                    _attributes['user_float_1'], _attributes['user_float_2'],
-                    _attributes['user_float_3'], _attributes['user_float_4'],
-                    _attributes['user_float_5'], _attributes['user_int_1'],
-                    _attributes['user_int_2'], _attributes['user_int_3'],
-                    _attributes['user_int_4'], _attributes['user_int_5'],
-                    _attributes['parent_id'],
-                    str(_attributes)
-                ]
-                try:
-                    # noinspection PyDeepBugsSwappedArgs
-                    _model.append(None, _data)
-                except TypeError as _error:
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-                except ValueError as _error:
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-            except AttributeError as _error:
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-    def _do_refresh_tree(self, model, row, functions):
+    def _do_refresh_tree(self, model: Gtk.TreeModel, row: Gtk.TreeIter,
+                         functions: List[str]) -> None:
         """
         Refresh the Similar Item Work View RAMSTKTreeView functions.
 
@@ -525,6 +461,8 @@ class SimilarItem(RAMSTKWorkView):
         """
         (_model, _row) = self.treeview.get_selection().get_selected()
 
+        # TODO: Uncomment this line when refactoring the Similar Item
+        #  assistant.
         #_dialog = EditFunction(self.treeview, dlgparent=self.get_parent())
         _dialog = Gtk.Dialog()
 
@@ -590,15 +528,6 @@ class SimilarItem(RAMSTKWorkView):
         """
         self._similar_item_tree = dmtree
 
-    def _do_set_visible(self, **kwargs):
-        """
-        Set the Similar Item treeview columns visible and hidden.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self.treeview.do_set_visible_columns(**kwargs)
-
     def _get_cell_model(self, column: int) -> Gtk.TreeModel:
         """
         Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
@@ -633,13 +562,14 @@ class SimilarItem(RAMSTKWorkView):
             except TypeError:
                 pass
 
-    def _on_button_press(self, treeview: RAMSTKTreeView,
+    # pylint: disable=unused-argument
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the Similar Item Work View RAMSTKTreeView().
 
-        :param treeview: the Similar Item TreeView RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :param __treeview: the Similar Item TreeView RAMSTKTreeView().
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -655,8 +585,6 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
@@ -670,80 +598,43 @@ class SimilarItem(RAMSTKWorkView):
                     self._do_request_edit_function, self._do_request_calculate
                 ])
 
-        treeview.handler_unblock(self._lst_handler_id[1])
-
-    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int) -> None:
+    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
-        Handle edits of the Similar Item Work View RAMSTKTreeview().
+        Respond to RAMSTKComboBox() 'changed' signals.
 
-        We can't call the parent class RAMSTKBaseView() on_cell_edit() method
-        because the self._record_id will contain the value of the selected
-        parent Hardware item, not the item selected in the Similar Item
-        worksheet.  We need to pass the ID of the item selected in the
-        Similar Item worksheet or all we do is continually update the parent
-        Hardware item.
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
-            Gtk.CellRenderer().
-        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
-            belongs to.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _key = self._dic_column_keys[self._lst_col_order[position]]
-        except (IndexError, KeyError):
-            _key = ''
-
-        _model, _row = self.treeview.get_selection().get_selected()
-        _hardware_id = _model.get_value(_row, 1)
-
-        self.treeview.do_edit_cell(__cell, path, new_text, position)
-
-        pub.sendMessage('wvw_editing_hardware',
-                        node_id=[_hardware_id, 1],
-                        package={_key: new_text})
-
-    def _on_combo_changed(self, combo, index):
-        """
-        Respond to Gtk.ComboBox() 'changed' signals.
-
-        :param Gtk.ComboBox combo: the Gtk.ComboBox() that called this method.
+        :param combo: the RAMSTKComboBox() that called this method.
+        :type combo: :class:`ramstk.views.gtk3.widgets.RAMSTKComboBox`
         :param int index: the index in the handler ID list oc the callback
-                          signal associated with the Gtk.ComboBox() that
-                          called this method.
+            signal associated with the Gtk.ComboBox() that called this method.
         :return: None
         :rtype: None
         """
-        _visible = []
-        _editable = []
+        # TODO: See issue #310.
+        _package = super().on_combo_changed(combo, index,
+                                            'wvw_editing_hardware')
+        _new_text = list(_package.values())[0]
 
-        combo.handler_block(self._lst_handler_id[index])
-
-        _new_text = int(combo.get_active())
-
-        if _new_text == 1:  # Topic 633.
-            _visible = [2, 3, 4, 5, 6, 7, 8, 9, 35]
-            _editable = [4, 5, 6, 7, 8, 9]
-
-        elif _new_text == 2:  # User-defined
-            for (_index, _value) in enumerate(self.treeview.visible):
-                if _value == 1:
-                    _visible.append(_index)
-            for (_index, _value) in enumerate(self.treeview.editable):
-                if _value == 1:
-                    _editable.append(_index)
-
-        self._do_set_visible(visible=_visible, editable=_editable)
         self._method_id = _new_text
 
-        combo.handler_unblock(self._lst_handler_id[index])
+        _visible = []
+        _editable = []
+        if _new_text == 1:  # Topic 633.
+            _visible = [
+                0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ]
+            _editable = [
+                0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ]
+        elif _new_text == 2:  # User-defined
+            _visible = self.treeview.visible
+            _editable = self.treeview.editable
 
-        pub.sendMessage('wvw_editing_similar_item',
-                        node_id=[self._parent_id, -1],
-                        package={'method_id': _new_text})
+        try:
+            self.treeview.do_set_visible_columns(visible=_visible)
+            self.treeview.do_set_columns_editable(editable=_editable)
+        except KeyError:
+            pass

@@ -1389,6 +1389,10 @@ class AssessmentInputs(RAMSTKWorkView):
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.
         pub.sendMessage('loaded_hardware_inputs', attributes=attributes)
+        pub.sendMessage('do_load_allocation', attributes=attributes)
+        pub.sendMessage('do_load_similar_item', attributes=attributes)
+        pub.sendMessage('do_load_fmea', attributes=attributes)
+        pub.sendMessage('do_load_pof', attributes=attributes)
 
     def _do_load_component_inputs(self, attributes: Dict[str, Any]) -> None:
         """

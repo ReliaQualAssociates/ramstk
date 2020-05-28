@@ -233,7 +233,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         return _cell
 
     def do_edit_cell(self, cell: Gtk.CellRenderer, path: str, new_text: str,
-                     position: int) -> None:
+                     position: int) -> Any:
         """
         Handle Gtk.CellRenderer() edits.
 
@@ -243,23 +243,28 @@ class RAMSTKTreeView(Gtk.TreeView):
         :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
             Gtk.CellRenderer().
-        :return: None
-        :rtype: None
+        :return: new_text; the value of the new text converted to the
+            correct data type for the attribute being edited.
+        :rtype: Any
         """
         _model = self.get_model()
         _convert = GObject.type_name(_model.get_column_type(position))
 
         if isinstance(cell, Gtk.CellRendererToggle):
-            _model[path][position] = not cell.get_active()
+            new_text = not cell.get_active()
         elif _convert == 'gchararray':
-            _model[path][position] = str(new_text)
+            new_text = str(new_text)
         elif _convert == 'gint':
             try:
-                _model[path][position] = int(new_text)
+                new_text = int(new_text)
             except ValueError:
-                _model[path][position] = int(float(new_text))
+                new_text = int(float(new_text))
         elif _convert == 'gfloat':
-            _model[path][position] = float(new_text)
+            new_text = float(new_text)
+
+        _model[path][position] = new_text
+
+        return new_text
 
     def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter:
         """
@@ -444,6 +449,32 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.order.append(len(self.order))
         self.visible.append(False)
         self.widgets.append('text')
+
+    def do_set_columns_editable(self, editable: List[int]) -> None:
+        """
+        Set list of columns editable.
+
+        :param list editable: the list of editable column numbers.
+        :return: None
+        :rtype: None
+        """
+        for _idx, _editable in enumerate(editable):
+            _column = self.treeview.get_column(_idx)
+
+            try:
+                _cells = _column.get_cells()
+            except AttributeError:
+                _cells = []
+
+            # pylint: disable=unused-variable
+            for __, _cell in enumerate(_cells):
+                _background = 'light gray'
+                if _editable:
+                    _background = 'white'
+
+                do_set_cell_properties(_cell,
+                                       bg_color=_background,
+                                       editable=_editable)
 
     def do_set_editable_columns(self, method: object) -> None:
         """
