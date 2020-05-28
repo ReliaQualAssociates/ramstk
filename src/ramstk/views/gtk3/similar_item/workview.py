@@ -350,8 +350,6 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
-
         attributes['quality_from_id'] = self.__do_get_quality(
             attributes['quality_from_id'])
         attributes['quality_to_id'] = self.__do_get_quality(
@@ -431,7 +429,7 @@ class SimilarItem(RAMSTKWorkView):
 
         # TODO: Uncomment this line when refactoring the Similar Item
         #  assistant.
-        #_dialog = EditFunction(self.treeview, dlgparent=self.get_parent())
+        # _dialog = EditFunction(self.treeview, dlgparent=self.get_parent())
         _dialog = Gtk.Dialog()
 
         if _dialog.do_run() == Gtk.ResponseType.OK:
