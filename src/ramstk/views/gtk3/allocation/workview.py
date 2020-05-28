@@ -18,8 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
-    RAMSTKWorkView)
+    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKTreeView, RAMSTKWorkView)
 
 
 class Allocation(RAMSTKWorkView):
@@ -199,34 +198,9 @@ class Allocation(RAMSTKWorkView):
                 _("Calculate the currently selected child hardware item.")
             ],
             callbacks=[self._do_request_calculate])
-
-        _hbox = Gtk.HBox()
-
-        _fixed = Gtk.Fixed()
-        _y_pos = 5
-        for _idx, _label in enumerate(self._lst_labels):
-            _fixed.put(RAMSTKLabel(_label), 5, _y_pos)
-            _fixed.put(self._lst_widgets[_idx], 5, _y_pos + 25)
-
-            _y_pos += 65
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Allocation Goals and Method"))
-        _frame.add(_fixed)
-
-        _hbox.pack_start(_frame, False, True, 0)
-
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Allocation Analysis"))
-        _frame.add(_scrollwindow)
-
-        _hbox.pack_end(_frame, True, True, 0)
-        self.pack_end(_hbox, True, True, 0)
+        super().make_ui_with_treeview(
+            title=[_("Allocation Goals and Method"),
+                   _("Allocation Analysis")])
 
         _label = RAMSTKLabel(_("Allocation"))
         _label.do_set_properties(
@@ -246,20 +220,12 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        for _idx in [
-                self._lst_col_order[3], self._lst_col_order[5],
-                self._lst_col_order[6], self._lst_col_order[7],
-                self._lst_col_order[8], self._lst_col_order[9],
-                self._lst_col_order[10], self._lst_col_order[11]
-        ]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[_idx]).get_cells()
-            try:
-                _cell[0].connect('edited', self.on_cell_edit,
-                                 'wvw_editing_hardware', _idx)
-            except TypeError:
-                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
-                                 'wvw_editing_hardware', _idx)
+        super().do_set_cell_callbacks('wvw_editing_hardware', [
+            self._lst_col_order[3], self._lst_col_order[5],
+            self._lst_col_order[6], self._lst_col_order[7],
+            self._lst_col_order[8], self._lst_col_order[9],
+            self._lst_col_order[10], self._lst_col_order[11]
+        ])
 
         self.cmbAllocationMethod.dic_handler_id[
             'changed'] = self.cmbAllocationMethod.connect(

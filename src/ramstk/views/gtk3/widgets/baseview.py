@@ -551,6 +551,26 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return self.do_request_insert(sibling=True, **kwargs)
 
+    def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
+        """
+        Set the callback methods for RAMSTKTreeView() cells.
+
+        :param str message: the PyPubSub message to broadcast on a
+            successful edit.
+        :param list columns: the list of column numbers whose cells should
+            have a callback function assigned.
+        :return: None
+        :rtype: None
+        """
+        for _idx in columns:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[_idx]).get_cells()
+            try:
+                _cell[0].connect('edited', self.on_cell_edit, message, _idx)
+            except TypeError:
+                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
+                                 message, _idx)
+
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """
         Set the cursor for the Module, List, and Work Book Gdk.Window().
@@ -1333,6 +1353,64 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _fixed.put(self.txtName, _x_pos, _y_pos[1])
 
         return _x_pos, _y_pos, _fixed
+
+    def make_ui_with_treeview(self, title: List[str]) -> None:
+        """
+        Build the work view UI containing a RAMSTKTreeView().
+
+        :param list title: the list of titles for the two RAMSTKFrame()s
+            used in this view.
+        :return: None
+        :rtype: None
+        """
+        # TMPLT: Use this method to create a work view layout like this:
+        # TMPLT:
+        # TMPLT: +-----+-----+---------------------------------+
+        # TMPLT: |  B  |  W  |                                 |
+        # TMPLT: |  U  |  I  |                                 |
+        # TMPLT: |  T  |  D  |                                 |
+        # TMPLT: |  T  |  G  |          SPREAD SHEET           |
+        # TMPLT: |  O  |  E  |                                 |
+        # TMPLT: |  N  |  T  |                                 |
+        # TMPLT: |  S  |  S  |                                 |
+        # TMPLT: +-----+-----+---------------------------------+
+        # TMPLT:                                      buttons -----+--> self
+        # TMPLT:                                                   |
+        # TMPLT:     Gtk.Fixed --->RAMSTKFrame ---+-->Gtk.HBox ----+
+        # TMPLT:                                  |
+        # TMPLT:  Scrollwindow --->RAMSTKFrame ---+
+        # TMPLT:  w/ self.treeview
+        # TMPLT:
+        # TMPLT: The overall view is created by a call to make_toolbuttons()
+        # TMPLT: from the child class' __make_ui() method followed by a call
+        # TMPLT: to this method.
+        _hbox = Gtk.HBox()
+
+        _fixed = Gtk.Fixed()
+        _y_pos = 5
+        for _idx, _label in enumerate(self._lst_labels):
+            _fixed.put(RAMSTKLabel(_label), 5, _y_pos)
+            _fixed.put(self._lst_widgets[_idx], 5, _y_pos + 25)
+
+            _y_pos += 65
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=title[0])
+        _frame.add(_fixed)
+
+        _hbox.pack_start(_frame, False, True, 0)
+
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=title[1])
+        _frame.add(_scrollwindow)
+
+        _hbox.pack_end(_frame, True, True, 0)
+        self.pack_end(_hbox, True, True, 0)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

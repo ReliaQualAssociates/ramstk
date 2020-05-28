@@ -459,7 +459,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         :rtype: None
         """
         for _idx, _editable in enumerate(editable):
-            _column = self.treeview.get_column(_idx)
+            _column = self.get_column(_idx)
 
             try:
                 _cells = _column.get_cells()
