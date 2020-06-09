@@ -398,6 +398,8 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update(self.tree.get_node(node_id).data['nswc'])
             self.dao.do_update(self.tree.get_node(node_id).data['reliability'])
             self.dao.do_update(self.tree.get_node(node_id).data['allocation'])
+            self.dao.do_update(
+                self.tree.get_node(node_id).data['similar_item'])
 
             pub.sendMessage('succeed_update_hardware', node_id=node_id)
         except (AttributeError, DataAccessError):

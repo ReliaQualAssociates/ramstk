@@ -691,11 +691,11 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         new_text = self.treeview.do_edit_cell(cell, path, new_text, position)
 
-        # The workflow module record ID will always be in the first
-        # position.  For example, the hardware ID is always in the first
-        # position in any RAMSTKTreeView() used in the Hardare work view.
-        # Thus, we can reliably count on the first column containing the
-        # record ID for the record being edited.
+        # The workflow module record ID will always be in position 1.  For
+        # example, the hardware ID is always in position 1 in any
+        # RAMSTKTreeView() used in the Hardare work view.  Thus, we can
+        # reliably count on the first column containing the record ID for the
+        # record being edited.
         _model, _row = self.treeview.get_selection().get_selected()
         _record_id = _model.get_value(_row, self._lst_col_order[1])
         try:

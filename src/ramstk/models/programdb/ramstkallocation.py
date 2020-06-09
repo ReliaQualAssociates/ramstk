@@ -8,7 +8,9 @@
 """RAMSTKAllocation Table."""
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 from sqlalchemy import Column, Float, ForeignKey, Integer
+# noinspection PyPackageRequirements
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports

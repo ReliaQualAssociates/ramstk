@@ -95,12 +95,12 @@ class BaseDatabase():
             if self.cxnargs['dialect'] == 'sqlite':
                 self.database = 'sqlite:///' + self.cxnargs['dbname']
             elif self.cxnargs['dialect'] == 'postgres':
-                self.database = ('postgresql+psycopg2://' +
-                                 self.cxnargs['user'] + ':' +
-                                 self.cxnargs['password'] + '@' +
-                                 self.cxnargs['host'] + ':' +
-                                 self.cxnargs['port'] + '/' +
-                                 self.cxnargs['dbname'])
+                self.database = ('postgresql+psycopg2://'
+                                 + self.cxnargs['user'] + ':'
+                                 + self.cxnargs['password'] + '@'
+                                 + self.cxnargs['host'] + ':'
+                                 + self.cxnargs['port'] + '/'
+                                 + self.cxnargs['dbname'])
             else:
                 raise DataAccessError('Unknown database dialect in database '
                                       'connection dict.')
@@ -323,7 +323,17 @@ class BaseDatabase():
         if not record is None:
             self.session.add(record)
 
-        self.session.commit()
+        try:
+            self.session.commit()
+        except (exc.InvalidRequestError, exc.ProgrammingError) as _error:
+            self.session.rollback()
+            _error_message = (
+                "There was an database error when attempting to update a "
+                "record.  Faulty SQL statement was:\n\t{0:s}.\nParameters "
+                "were:\n\t{1:s}.".format(str(_error.statement),
+                                         str(_error.params)))
+            pub.sendMessage('fail_update_record', error_message=_error_message)
+            raise DataAccessError(_error_message)
 
     def get_database_list(self, database: Dict[str, str]) -> List:
         """
@@ -344,9 +354,9 @@ class BaseDatabase():
         if database['dialect'] == 'postgres':
             _query = self.sqlstatements['select'].format('datname') + \
                  self.sqlstatements['from'].format('pg_database;')
-            database = ('postgresql+psycopg2://' + database['user'] + ':' +
-                        database['password'] + '@' + database['host'] + ':' +
-                        database['port'] + '/' + database['database'])
+            database = ('postgresql+psycopg2://' + database['user'] + ':'
+                        + database['password'] + '@' + database['host'] + ':'
+                        + database['port'] + '/' + database['database'])
             # pylint: disable=unused-variable
             __, _session = do_open_session(database)
 

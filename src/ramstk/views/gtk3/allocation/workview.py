@@ -144,7 +144,7 @@ class Allocation(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_row, 'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_row, 'succeed_get_allocation_attributes')
 
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'do_load_allocation')
@@ -317,6 +317,31 @@ class Allocation(RAMSTKWorkView):
         if self._record_id > 0:
             self._do_load_tree()
 
+    def _do_load_row(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the Similar Item RAMSTKTreeView() and other widgets.
+
+        :param dict attributes: the attributes dict for the row to be loaded.
+        :return: None
+        :rtype: None
+        """
+        _node_id = attributes['hardware_id']
+        attributes['name'] = self._allocation_tree.get_node(
+            _node_id).data['hardware'].get_attributes()['name']
+        attributes['hazard_rate_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes(
+            )['hazard_rate_logistics']
+        attributes['mtbf_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes()['mtbf_logistics']
+        attributes['reliability_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes(
+            )['reliability_logistics']
+        attributes['availability_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes(
+            )['availability_logistics']
+
+        super().do_load_row(attributes)
+
     def _do_load_tree(self) -> None:
         """
         Load the Allocation RAMSTKTreeView() with allocation data.
@@ -330,8 +355,9 @@ class Allocation(RAMSTKWorkView):
         self._tree_loaded = False
         for _node in self._allocation_tree.children(self._record_id):
             _node_id = _node.data['hardware'].get_attributes()['hardware_id']
-            pub.sendMessage('request_get_all_hardware_attributes',
-                            node_id=_node_id)
+            pub.sendMessage('request_get_hardware_attributes',
+                            node_id=_node_id,
+                            table='allocation')
         self._tree_loaded = True
 
     def _do_refresh_page(self, attributes: Dict[str, Any]) -> None:

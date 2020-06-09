@@ -10,6 +10,7 @@
 from sympy import symbols, sympify
 
 ENVIRONMENT_FROM_TO = {
+    (0, 0): 1.0,
     (1, 1): 1.0,
     (1, 2): 0.2,
     (1, 3): 0.3,
@@ -48,6 +49,7 @@ ENVIRONMENT_FROM_TO = {
     (6, 6): 1.0,
 }
 QUALITY_FROM_TO = {
+    (0, 0): 1.0,
     (1, 1): 1.0,
     (1, 2): 0.8,
     (1, 3): 0.5,
@@ -128,7 +130,7 @@ def calculate_topic_633(environment, quality, temperature, hazard_rate):
     :param dict environment: the active environment ID for the from and to
         environments.
     :param dict quality: the quality level ID for the from and to quality.
-    :param dict temperature: the aambient operating temperature (in C) for the
+    :param dict temperature: the ambient operating temperature (in C) for the
         from and to temperatures.
     :param float hazard_rate: the current hazard rate of the hardware item
         being calculated.
@@ -150,8 +152,8 @@ def calculate_topic_633(environment, quality, temperature, hazard_rate):
     _change_factor_3 = TEMPERATURE_FROM_TO[(temperature['from'],
                                             temperature['to'])]
 
-    _result_1 = hazard_rate / (_change_factor_1 * _change_factor_2
-                               * _change_factor_3)
+    _result_1 = float(hazard_rate /
+                      (_change_factor_1 * _change_factor_2 * _change_factor_3))
 
     return _change_factor_1, _change_factor_2, _change_factor_3, _result_1
 

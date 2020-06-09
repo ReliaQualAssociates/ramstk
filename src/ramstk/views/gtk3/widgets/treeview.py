@@ -264,6 +264,16 @@ class RAMSTKTreeView(Gtk.TreeView):
 
         _model[path][position] = new_text
 
+        if isinstance(cell, Gtk.CellRendererCombo):
+            _cell_model = cell.get_property('model')
+            _iter = _cell_model.get_iter_first()
+            _idx = 0
+            while _iter is not None:
+                if _cell_model.get_value(_iter, 0) == new_text:
+                    new_text = _idx
+                _iter = _cell_model.iter_next(_iter)
+                _idx += 1
+
         return new_text
 
     def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter:

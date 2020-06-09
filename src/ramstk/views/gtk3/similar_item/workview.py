@@ -170,7 +170,7 @@ class SimilarItem(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_row, 'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_row, 'succeed_get_similar_item_attributes')
 
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'do_load_similar_item')
@@ -345,19 +345,27 @@ class SimilarItem(RAMSTKWorkView):
         """
         Load the Similar Item RAMSTKTreeView() and other widgets.
 
-        :param list children: a list of child treelib Node()s associated with
-            the Hardware item selected in the RAMSTK Module View.
+        :param dict attributes: the attributes dict for the row to be loaded.
         :return: None
         :rtype: None
         """
-        attributes['quality_from_id'] = self.__do_get_quality(
+        attributes['quality_from'] = self.__do_get_quality(
             attributes['quality_from_id'])
-        attributes['quality_to_id'] = self.__do_get_quality(
+        attributes['quality_to'] = self.__do_get_quality(
             attributes['quality_to_id'])
-        attributes['environment_from_id'] = self.__do_get_environment(
+        attributes['environment_from'] = self.__do_get_environment(
             attributes['environment_from_id'])
-        attributes['environment_to_id'] = self.__do_get_environment(
+        attributes['environment_to'] = self.__do_get_environment(
             attributes['environment_to_id'])
+
+        _node_id = attributes['hardware_id']
+        attributes['revision_id'] = self._similar_item_tree.get_node(
+            _node_id).data['hardware'].get_attributes()['revision_id']
+        attributes['name'] = self._similar_item_tree.get_node(
+            _node_id).data['hardware'].get_attributes()['name']
+        attributes['hazard_rate_active'] = self._similar_item_tree.get_node(
+            _node_id).data['reliability'].get_attributes(
+            )['hazard_rate_active']
 
         super().do_load_row(attributes)
 
@@ -374,8 +382,9 @@ class SimilarItem(RAMSTKWorkView):
         self._tree_loaded = False
         for _node in self._similar_item_tree.children(self._record_id):
             _node_id = _node.data['hardware'].get_attributes()['hardware_id']
-            pub.sendMessage('request_get_all_hardware_attributes',
-                            node_id=_node_id)
+            pub.sendMessage('request_get_hardware_attributes',
+                            node_id=_node_id,
+                            table='similar_item')
         self._tree_loaded = True
 
     def _do_refresh_tree(self, model: Gtk.TreeModel, row: Gtk.TreeIter,
@@ -406,14 +415,17 @@ class SimilarItem(RAMSTKWorkView):
         _model = self.treeview.get_model()
         _row = _model.get_iter_first()
 
-        # Iterate through the hazards and calculate the Similar Item hazard
+        # Iterate through the assemblies and calculate the Similar Item hazard
         # intensities.
         self.do_set_cursor_busy()
+        _node_ids = []
         while _row is not None:
-            pub.sendMessage('request_calculate_similar_item',
-                            node_id=_model.get_value(_row, 1),
-                            hazard_rate=_model.get_value(_row, 3))
+            _node_ids.append(_model.get_value(_row, 1))
             _row = _model.iter_next(_row)
+
+        for _node_id in _node_ids:
+            pub.sendMessage('request_calculate_similar_item', node_id=_node_id)
+
         self.do_set_cursor_active(node_id=self._record_id)
 
     def _do_request_edit_function(self, __button: Gtk.ToolButton) -> None:
@@ -467,7 +479,7 @@ class SimilarItem(RAMSTKWorkView):
         :rtype: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage('request_update_similar_item', node_id=self._record_id)
+        pub.sendMessage('request_update_hardware', node_id=self._record_id)
         self.do_set_cursor_active(node_id=self._record_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -480,7 +492,7 @@ class SimilarItem(RAMSTKWorkView):
         :rtype: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage('request_update_all_similar_items')
+        pub.sendMessage('request_update_all_hardware')
         self.do_set_cursor_active(node_id=self._record_id)
 
     def _do_set_tree(self, dmtree: treelib.Tree) -> None:
@@ -582,8 +594,8 @@ class SimilarItem(RAMSTKWorkView):
 
         self._method_id = _new_text
 
-        _visible = []
-        _editable = []
+        _visible: List[int] = []
+        _editable: List[int] = []
         if _new_text == 1:  # Topic 633.
             _visible = [
                 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
