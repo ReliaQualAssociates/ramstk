@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.SimilarItem.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.similar_item.workview.py is part of the RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RASMTK SimilarItem Work View."""
 
 # Standard Library Imports
@@ -17,6 +18,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
+from ramstk.views.gtk3.assistants import EditFunction
 from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKLabel,
                                        RAMSTKTreeView, RAMSTKWorkView)
 
@@ -188,7 +190,6 @@ class SimilarItem(RAMSTKWorkView):
         try:
             _environment = self._dic_environment[environment_id]
         except KeyError as _error:
-            _environment = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         return _environment
@@ -205,7 +206,6 @@ class SimilarItem(RAMSTKWorkView):
         try:
             _quality = self._dic_quality[quality_id]
         except KeyError as _error:
-            _quality = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         return _quality
@@ -439,10 +439,9 @@ class SimilarItem(RAMSTKWorkView):
         """
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        # TODO: Uncomment this line when refactoring the Similar Item
-        #  assistant.
-        # _dialog = EditFunction(self.treeview, dlgparent=self.get_parent())
-        _dialog = Gtk.Dialog()
+        _dialog = EditFunction(
+            self.treeview,
+            dlgparent=self.get_parent().get_parent().get_parent().get_parent())
 
         if _dialog.do_run() == Gtk.ResponseType.OK:
             _functions = _dialog.do_set_functions(self.treeview)
