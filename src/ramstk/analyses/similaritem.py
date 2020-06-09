@@ -6,10 +6,14 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Reliability Similar Item Assessment Module."""
 
+# Standard Library Imports
+from typing import Dict, List, Tuple
+
 # Third Party Imports
+# noinspection PyPackageRequirements
 from sympy import symbols, sympify
 
-ENVIRONMENT_FROM_TO = {
+ENVIRONMENT_FROM_TO: Dict[Tuple[int, int], float] = {
     (0, 0): 1.0,
     (1, 1): 1.0,
     (1, 2): 0.2,
@@ -48,7 +52,7 @@ ENVIRONMENT_FROM_TO = {
     (6, 5): 0.1,
     (6, 6): 1.0,
 }
-QUALITY_FROM_TO = {
+QUALITY_FROM_TO: Dict[Tuple[int, int], float] = {
     (0, 0): 1.0,
     (1, 1): 1.0,
     (1, 2): 0.8,
@@ -67,7 +71,7 @@ QUALITY_FROM_TO = {
     (4, 3): 2.5,
     (4, 4): 1.0,
 }
-TEMPERATURE_FROM_TO = {
+TEMPERATURE_FROM_TO: Dict[Tuple[float, float], float] = {
     (10.0, 10.0): 1.0,
     (10.0, 20.0): 0.9,
     (10.0, 30.0): 0.8,
@@ -120,7 +124,11 @@ TEMPERATURE_FROM_TO = {
 }
 
 
-def calculate_topic_633(environment, quality, temperature, hazard_rate):
+# noinspection PyTypeChecker
+def calculate_topic_633(environment: Dict[str, float],
+                        quality: Dict[str, float],
+                        temperature: Dict[str, float], hazard_rate: float
+                        ) -> Tuple[float, float, float, float]:
     """
     Calculate the Similar Item analysis using Topic 6.3.3 approach.
 
@@ -158,7 +166,8 @@ def calculate_topic_633(environment, quality, temperature, hazard_rate):
     return _change_factor_1, _change_factor_2, _change_factor_3, _result_1
 
 
-def calculate_user_defined(sia):  # pylint: disable=too-many-locals
+# pylint: disable=too-many-locals
+def calculate_user_defined(sia: Dict[str, float]):
     """
     Calculate the user-defined similar item analysis.
 
@@ -184,6 +193,10 @@ def calculate_user_defined(sia):  # pylint: disable=too-many-locals
          'hr pi1 pi2 pi3 pi4 pi5 pi6 pi7 pi8 pi9 pi10 uf1 uf2 uf3 uf4 uf5 ui1 '
          'ui2 ui3 ui4 ui5 res1 res2 res3 res4 res5')
 
+    # The subs argument needs to be passed as a dict of sia values just like
+    # it is below.  This will result in duplicate code warnings, but passing
+    # it like this is required to allow the use of the results in subsequent
+    # calculations.
     # pylint: disable=eval-used
     sia['res1'] = sympify(sia['equation1']).evalf(
         subs={
@@ -334,7 +347,8 @@ def calculate_user_defined(sia):  # pylint: disable=too-many-locals
     return sia
 
 
-def set_user_defined_change_factors(sia, factors):
+def set_user_defined_change_factors(sia: Dict[str, float],
+                                    factors: List[float]) -> Dict[str, float]:
     """
     Set the change factors for the user-defined calculations.
 
@@ -346,8 +360,8 @@ def set_user_defined_change_factors(sia, factors):
     """
     # Get the change factor values.
     for _idx in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+        _key = list(sia.keys())[_idx]
         try:
-            _key = list(sia.keys())[_idx]
             sia[_key] = factors[_idx - 1]
         except IndexError:
             sia[_key] = 0.0
@@ -355,7 +369,8 @@ def set_user_defined_change_factors(sia, factors):
     return sia
 
 
-def set_user_defined_floats(sia, floats):
+def set_user_defined_floats(sia: Dict[str, float],
+                            floats: List[float]) -> Dict[str, float]:
     """
     Set the user-defined float values for the user-defined calculations.
 
@@ -365,8 +380,8 @@ def set_user_defined_floats(sia, floats):
     :rtype: dict
     """
     for _idx in [11, 12, 13, 14, 15]:
+        _key = list(sia.keys())[_idx]
         try:
-            _key = list(sia.keys())[_idx]
             sia[_key] = float(floats[_idx - 11])
         except IndexError:
             sia[_key] = 0.0
@@ -374,7 +389,8 @@ def set_user_defined_floats(sia, floats):
     return sia
 
 
-def set_user_defined_ints(sia, ints):
+def set_user_defined_ints(sia: Dict[str, int],
+                          ints: List[int]) -> Dict[str, int]:
     """
     Set the user-defined integer values for the user-defined calculations.
 
@@ -384,8 +400,8 @@ def set_user_defined_ints(sia, ints):
     :rtype: dict
     """
     for _idx in [16, 17, 18, 19, 20]:
+        _key = list(sia.keys())[_idx]
         try:
-            _key = list(sia.keys())[_idx]
             sia[_key] = int(ints[_idx - 16])
         except IndexError:
             sia[_key] = 0
@@ -393,7 +409,8 @@ def set_user_defined_ints(sia, ints):
     return sia
 
 
-def set_user_defined_functions(sia, functions):
+def set_user_defined_functions(sia: Dict[str, str],
+                               functions: List[str]) -> Dict[str, str]:
     """
     Set the user-defined functions for the user-defined calculations.
 
@@ -403,8 +420,8 @@ def set_user_defined_functions(sia, functions):
     :rtype: dict
     """
     for _idx in [21, 22, 23, 24, 25]:
+        _key = list(sia.keys())[_idx]
         try:
-            _key = list(sia.keys())[_idx]
             sia[_key] = str(functions[_idx - 21])
         except IndexError:
             sia[_key] = ''
@@ -412,7 +429,8 @@ def set_user_defined_functions(sia, functions):
     return sia
 
 
-def set_user_defined_results(sia, results):
+def set_user_defined_results(sia: Dict[str, float],
+                             results: List[float]) -> Dict[str, float]:
     """
     Set the user-defined results for the user-defined calculations.
 
@@ -426,10 +444,10 @@ def set_user_defined_results(sia, results):
     :rtype: dict
     """
     for _idx in [26, 27, 28, 29, 30]:
+        _key = list(sia.keys())[_idx]
         try:
-            _key = list(sia.keys())[_idx]
             sia[_key] = results[_idx - 26]
         except IndexError:
-            sia[_key] = 0
+            sia[_key] = 0.0
 
     return sia
