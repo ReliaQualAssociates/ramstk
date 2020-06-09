@@ -17,9 +17,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView
-)
+from ramstk.views.gtk3.widgets import (RAMSTKMessageDialog, RAMSTKModuleView,
+                                       RAMSTKTreeView)
 
 
 class ModuleView(RAMSTKModuleView):
@@ -441,10 +440,11 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        selection.handler_block(self._lst_handler_id[0])
+
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
         if _attributes:
-            self._record_id = _attributes['hardware_id']
             self._parent_id = _attributes['parent_id']
 
             _title = _("Analyzing Hardware {0:s}: {1:s}").format(

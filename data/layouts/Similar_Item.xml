@@ -8,7 +8,7 @@
 All rights reserved. -->
 
 <root>
-    <tree name="SimilarItem">
+    <tree name="Similar_Item">
         <column>
             <defaulttitle>Revision ID</defaulttitle>
             <usertitle>Revision ID</usertitle>
@@ -17,6 +17,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>revision_id</key>
         </column>
         <column>
             <defaulttitle>Hardware ID</defaulttitle>
@@ -26,6 +27,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hardware_id</key>
         </column>
         <column>
             <defaulttitle>Assembly</defaulttitle>
@@ -35,6 +37,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>name</key>
         </column>
         <column>
             <defaulttitle>Failure Intensity</defaulttitle>
@@ -44,6 +47,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>hazard_rate_active</key>
         </column>
         <column>
             <defaulttitle>From Quality</defaulttitle>
@@ -53,6 +57,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>quality_from_id</key>
         </column>
         <column>
             <defaulttitle>To Quality</defaulttitle>
@@ -62,6 +67,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>quality_to_id</key>
         </column>
         <column>
             <defaulttitle>From Environment</defaulttitle>
@@ -71,6 +77,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>environment_from_id</key>
         </column>
         <column>
             <defaulttitle>To Environment</defaulttitle>
@@ -80,6 +87,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>environment_to_id</key>
         </column>
         <column>
             <defaulttitle>From Temperature</defaulttitle>
@@ -89,6 +97,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>temperature_from</key>
         </column>
         <column>
             <defaulttitle>To Temperature</defaulttitle>
@@ -98,6 +107,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>temperature_to</key>
         </column>
         <column>
             <defaulttitle>Change Description 1</defaulttitle>
@@ -107,6 +117,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_1</key>
         </column>
         <column>
             <defaulttitle>Change Factor 1</defaulttitle>
@@ -116,6 +127,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_1</key>
         </column>
         <column>
             <defaulttitle>Change Description 2</defaulttitle>
@@ -125,6 +137,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_2</key>
         </column>
         <column>
             <defaulttitle>Change Factor 2</defaulttitle>
@@ -134,6 +147,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_2</key>
         </column>
         <column>
             <defaulttitle>Change Description 3</defaulttitle>
@@ -143,6 +157,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_3</key>
         </column>
         <column>
             <defaulttitle>Change Factor 3</defaulttitle>
@@ -152,6 +167,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_3</key>
         </column>
         <column>
             <defaulttitle>Change Description 4</defaulttitle>
@@ -161,6 +177,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_4</key>
         </column>
         <column>
             <defaulttitle>Change Factor 4</defaulttitle>
@@ -170,6 +187,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_4</key>
         </column>
         <column>
             <defaulttitle>Change Description 5</defaulttitle>
@@ -179,6 +197,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_5</key>
         </column>
         <column>
             <defaulttitle>Change Factor 5</defaulttitle>
@@ -188,6 +207,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_5</key>
         </column>
         <column>
             <defaulttitle>Change Description 6</defaulttitle>
@@ -197,6 +217,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_6</key>
         </column>
         <column>
             <defaulttitle>Change Factor 6</defaulttitle>
@@ -206,6 +227,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_6</key>
         </column>
         <column>
             <defaulttitle>Change Description 7</defaulttitle>
@@ -215,6 +237,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_7</key>
         </column>
         <column>
             <defaulttitle>Change Factor 7</defaulttitle>
@@ -224,6 +247,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_7</key>
         </column>
         <column>
             <defaulttitle>Change Description 8</defaulttitle>
@@ -233,6 +257,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_8</key>
         </column>
         <column>
             <defaulttitle>Change Factor 8</defaulttitle>
@@ -242,6 +267,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_8</key>
         </column>
         <column>
             <defaulttitle>Change Description 9</defaulttitle>
@@ -251,6 +277,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_9</key>
         </column>
         <column>
             <defaulttitle>Change Factor 9</defaulttitle>
@@ -260,6 +287,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_9</key>
         </column>
         <column>
             <defaulttitle>Change Description 10</defaulttitle>
@@ -269,6 +297,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_description_10</key>
         </column>
         <column>
             <defaulttitle>Change Factor 10</defaulttitle>
@@ -278,6 +307,7 @@ All rights reserved. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>change_factor_10</key>
         </column>
         <column>
             <defaulttitle>Function 1</defaulttitle>
@@ -287,6 +317,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>function_1</key>
         </column>
         <column>
             <defaulttitle>Function 2</defaulttitle>
@@ -296,6 +327,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>function_2</key>
         </column>
         <column>
             <defaulttitle>Function 3</defaulttitle>
@@ -305,6 +337,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>function_3</key>
         </column>
         <column>
             <defaulttitle>Function 4</defaulttitle>
@@ -314,6 +347,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>function_4</key>
         </column>
         <column>
             <defaulttitle>Function 5</defaulttitle>
@@ -323,6 +357,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>function_5</key>
         </column>
         <column>
             <defaulttitle>Result 1</defaulttitle>
@@ -332,6 +367,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>result_1</key>
         </column>
         <column>
             <defaulttitle>Result 2</defaulttitle>
@@ -341,6 +377,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>result_2</key>
         </column>
         <column>
             <defaulttitle>Result 3</defaulttitle>
@@ -350,6 +387,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>result_3</key>
         </column>
         <column>
             <defaulttitle>Result 4</defaulttitle>
@@ -359,6 +397,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>result_4</key>
         </column>
         <column>
             <defaulttitle>Result 5</defaulttitle>
@@ -368,6 +407,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>result_5</key>
         </column>
         <column>
             <defaulttitle>User Memo 1</defaulttitle>
@@ -377,6 +417,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_blob_1</key>
         </column>
         <column>
             <defaulttitle>User Memo 2</defaulttitle>
@@ -386,6 +427,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_blob_2</key>
         </column>
         <column>
             <defaulttitle>User Memo 3</defaulttitle>
@@ -395,6 +437,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_blob_3</key>
         </column>
         <column>
             <defaulttitle>User Memo 4</defaulttitle>
@@ -404,6 +447,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_blob_4</key>
         </column>
         <column>
             <defaulttitle>User Memo 5</defaulttitle>
@@ -413,6 +457,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_blob_5</key>
         </column>
         <column>
             <defaulttitle>User Float 1</defaulttitle>
@@ -422,6 +467,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_float_1</key>
         </column>
         <column>
             <defaulttitle>User Float 2</defaulttitle>
@@ -431,6 +477,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_float_2</key>
         </column>
         <column>
             <defaulttitle>User Float 3</defaulttitle>
@@ -440,6 +487,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_float_3</key>
         </column>
         <column>
             <defaulttitle>User Float 4</defaulttitle>
@@ -449,6 +497,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_float_4</key>
         </column>
         <column>
             <defaulttitle>User Float 5</defaulttitle>
@@ -458,6 +507,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_float_5</key>
         </column>
         <column>
             <defaulttitle>User Integer 1</defaulttitle>
@@ -467,6 +517,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_int_1</key>
         </column>
         <column>
             <defaulttitle>User Integer 2</defaulttitle>
@@ -476,6 +527,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_int_2</key>
         </column>
         <column>
             <defaulttitle>User Integer 3</defaulttitle>
@@ -485,6 +537,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_int_3</key>
         </column>
         <column>
             <defaulttitle>User Integer 4</defaulttitle>
@@ -494,6 +547,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_int_4</key>
         </column>
         <column>
             <defaulttitle>User Integer 5</defaulttitle>
@@ -503,6 +557,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>user_int_5</key>
         </column>
         <column>
             <defaulttitle>Parent ID</defaulttitle>
@@ -512,6 +567,7 @@ All rights reserved. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>parent_id</key>
         </column>
     </tree>
 </root>

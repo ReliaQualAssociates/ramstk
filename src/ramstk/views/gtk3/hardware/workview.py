@@ -27,10 +27,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView)
 
 # RAMSTK Local Imports
-from .components import (
-    RAMSTKStressInputs, RAMSTKStressResults, capacitor, connection, inductor,
-    integrated_circuit, meter, miscellaneous, relay, resistor, semiconductor,
-    switch)
+from .components import (RAMSTKStressInputs, RAMSTKStressResults, capacitor,
+                         connection, inductor, integrated_circuit, meter,
+                         miscellaneous, relay, resistor, semiconductor, switch)
 
 
 def do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
@@ -56,15 +55,19 @@ def do_get_attributes(dmtree: treelib.Tree, record_id: int) -> Dict[str, Any]:
     }
     _attributes = {
         **_attributes,
-        **dmtree.get_node(record_id).data['allocation'].get_attributes()
-    }
-    _attributes = {
-        **_attributes,
         **dmtree.get_node(record_id).data['design_electric'].get_attributes()
     }
     _attributes = {
         **_attributes,
         **dmtree.get_node(record_id).data['mil_hdbk_217f'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['allocation'].get_attributes()
+    }
+    _attributes = {
+        **_attributes,
+        **dmtree.get_node(record_id).data['similar_item'].get_attributes()
     }
 
     return _attributes
@@ -202,8 +205,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['comp_ref_des'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/rollup.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/rollup.png')
 
         # Initialize private list attributes.
 
@@ -1386,6 +1389,10 @@ class AssessmentInputs(RAMSTKWorkView):
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.
         pub.sendMessage('loaded_hardware_inputs', attributes=attributes)
+        pub.sendMessage('do_load_allocation', attributes=attributes)
+        pub.sendMessage('do_load_similar_item', attributes=attributes)
+        pub.sendMessage('do_load_fmea', attributes=attributes)
+        pub.sendMessage('do_load_pof', attributes=attributes)
 
     def _do_load_component_inputs(self, attributes: Dict[str, Any]) -> None:
         """

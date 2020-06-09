@@ -730,6 +730,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         elif self._attributes['similar_item_method_id'] == 2:
             self._do_calculate_user_defined()
 
+        pub.sendMessage('succeed_calculate_hardware',
+                        attributes=self._attributes)
+        pub.sendMessage('request_update_hardware', node_id=node_id)
+
     def _do_derating_analysis(self, node_id: int) -> None:
         """
         Perform a derating analysis.
@@ -814,7 +818,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         pub.sendMessage('succeed_derate_hardware', attributes=self._attributes)
 
-    def _do_get_allocation_goal(self) -> float:
+    def _do_get_allocation_goal(self) -> Dict[str, Any]:
         """
         Retrieve the proper allocation goal.
 

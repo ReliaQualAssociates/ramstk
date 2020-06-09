@@ -30,8 +30,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
-    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-)
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -124,12 +123,11 @@ ROW_DATA = [
         0, 0
     ],
     [
-        1, 10, 0, 'Gotta do something', "Fig. 1", 2, "3.2-1", 0, 4,
-        'GEN-001', "Spec. 12", 4, 0, '2019-08-18'
+        1, 10, 0, 'Gotta do something', "Fig. 1", 2, "3.2-1", 0, 4, 'GEN-001',
+        "Spec. 12", 4, 0, '2019-08-18'
     ],
     [
-        1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported',
-        87.0, '',
+        1, 10, '', '', 0, 'S1', 47.28, 1, 'System That Was Imported', 87.0, '',
         '', 1, '', 72.0, 'Imported System', '', '', 0, 0, '', 1, 'S1',
         'Remarks in a binary field.', 1, '', 0, 0, 2018, 0, 0.0, 0.0, 0, 0, 0,
         0.0, 0, 0.0, 0.0, 0.0, 4, 1, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0, 0, 0.0, 0,
@@ -435,7 +433,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "pof": "PoF.xml",
             "requirement": "Requirement.xml",
             "revision": "Revision.xml",
-            "similaritem": "SimilarItem.xml",
+            "similar_item": "Similar_Item.xml",
             "stakeholder": "Stakeholder.xml",
             "validation": "Validation.xml"
         },

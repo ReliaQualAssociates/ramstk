@@ -18,8 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
-    RAMSTKWorkView, do_set_cell_properties)
+    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKTreeView, RAMSTKWorkView)
 
 
 class Allocation(RAMSTKWorkView):
@@ -42,10 +41,10 @@ class Allocation(RAMSTKWorkView):
     +-------+-------------------------------------+
     """
     # Define private class dict attributes.
-    # For each editable WorkView widget, populate this dict with the keymap
-    # for the widgets.  The key is the wdiget's index number on the
-    # WorkView.  The value is the name of the key in the datamanager
-    # attributes dict.
+    # TMPLT: For each editable WorkView widget, populate this dict with the
+    # TMPLT: keymap for the widgets.  The key is the wdiget's index number on
+    # TMPLT: the WorkView.  The value is the name of the key in the datamanager
+    # TMPLT: attributes dict.
     _dic_keys = {
         0: 'allocation_method_id',
         1: 'goal_measure_id',
@@ -53,10 +52,10 @@ class Allocation(RAMSTKWorkView):
         3: 'hazard_rate_goal',
         4: 'mtbf_goal'
     }
-    # If the workview contains a RAMSTKTreeView, populate this dict with the
-    # keymap for the columns.  The key is the column number in the
-    # RAMSTKTreeView. The value is the name of the key in the datamanger
-    # attributes dict.
+    # TMPLT: If the workview contains a RAMSTKTreeView, populate this dict with
+    # TMPLT: the keymap for the columns.  The key is the column number in the
+    # TMPLT: RAMSTKTreeView. The value is the name of the key in the datamanger
+    # TMPLT: attributes dict.
     _dic_column_keys = {
         0: 'revision_id',
         1: 'hardware_id',
@@ -78,10 +77,11 @@ class Allocation(RAMSTKWorkView):
     }
 
     # Define private class list attributes.
-    # This list is the text of the labels that will be placed on the
-    # WorkView.  They should be entered in the list in the order they and
-    # their associated widget will appear on the form.  The list can be
-    # sliced if there are multiple views over which the data is displayed.
+    # TMPLT: This list is the text of the labels that will be placed on the
+    # TMPLT: WorkView.  They should be entered in the list in the order they
+    # TMPLT: and their associated widget will appear on the form.  The list can
+    # TMPLT: be sliced if there are multiple views over which the data is
+    # TMPLT: displayed.
     _lst_labels = [
         _("Select Allocation Method"),
         _("Select Goal Metric"),
@@ -144,13 +144,14 @@ class Allocation(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_row, 'succeed_get_allocation_attributes')
+
         pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+        pub.subscribe(self._do_load_page, 'do_load_allocation')
         pub.subscribe(self._do_refresh_page,
                       'succeed_calculate_allocation_goals')
         pub.subscribe(self._do_refresh_tree, 'succeed_allocate_reliability')
         pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
-        pub.subscribe(self._do_load_row, 'succeed_get_all_hardware_attributes')
 
     def __load_combobox(self) -> None:
         """
@@ -175,15 +176,15 @@ class Allocation(RAMSTKWorkView):
         :rtype: None
         """
         # This page has the following layout:
-        # +-----+---------------------------------------+
-        # |  B  |                                       |
-        # |  U  |                                       |
-        # |  T  |             SPREAD SHEET              |
-        # |  T  |                                       |
-        # |  O  |                                       |
-        # |  N  |                                       |
-        # |  S  |                                       |
-        # +-----+---------------------------------------+
+        # +-----+-----+---------------------------------+
+        # |  B  |  W  |                                 |
+        # |  U  |  I  |                                 |
+        # |  T  |  D  |                                 |
+        # |  T  |  G  |          SPREAD SHEET           |
+        # |  O  |  E  |                                 |
+        # |  N  |  T  |                                 |
+        # |  S  |  S  |                                 |
+        # +-----+-----+---------------------------------+
         #                                      buttons -----+--> self
         #                                                   |
         #     Gtk.Fixed --->RAMSTKFrame ---+-->Gtk.HBox ----+
@@ -197,34 +198,9 @@ class Allocation(RAMSTKWorkView):
                 _("Calculate the currently selected child hardware item.")
             ],
             callbacks=[self._do_request_calculate])
-
-        _hbox = Gtk.HBox()
-
-        _fixed = Gtk.Fixed()
-        _y_pos = 5
-        for _idx, _label in enumerate(self._lst_labels):
-            _fixed.put(RAMSTKLabel(_label), 5, _y_pos)
-            _fixed.put(self._lst_widgets[_idx], 5, _y_pos + 25)
-
-            _y_pos += 65
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Allocation Goals and Method"))
-        _frame.add(_fixed)
-
-        _hbox.pack_start(_frame, False, True, 0)
-
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Allocation Analysis"))
-        _frame.add(_scrollwindow)
-
-        _hbox.pack_end(_frame, True, True, 0)
-        self.pack_end(_hbox, True, True, 0)
+        super().make_ui_with_treeview(
+            title=[_("Allocation Goals and Method"),
+                   _("Allocation Analysis")])
 
         _label = RAMSTKLabel(_("Allocation"))
         _label.do_set_properties(
@@ -244,18 +220,12 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        for i in [
-                self._lst_col_order[3], self._lst_col_order[5],
-                self._lst_col_order[6], self._lst_col_order[7],
-                self._lst_col_order[8], self._lst_col_order[9],
-                self._lst_col_order[10], self._lst_col_order[11]
-        ]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cells()
-            try:
-                _cell[0].connect('edited', self._on_cell_edit, i)
-            except TypeError:
-                _cell[0].connect('toggled', self._on_cell_edit, 'new text', i)
+        super().do_set_cell_callbacks('wvw_editing_hardware', [
+            self._lst_col_order[3], self._lst_col_order[5],
+            self._lst_col_order[6], self._lst_col_order[7],
+            self._lst_col_order[8], self._lst_col_order[9],
+            self._lst_col_order[10], self._lst_col_order[11]
+        ])
 
         self.cmbAllocationMethod.dic_handler_id[
             'changed'] = self.cmbAllocationMethod.connect(
@@ -302,27 +272,6 @@ class Allocation(RAMSTKWorkView):
                 "Displays the reliability goal for the selected hardware "
                 "item."))
 
-    def _do_change_row(self, treeview: RAMSTKTreeView) -> None:
-        """
-        Handle events for the Allocation Tree View RAMSTKTreeView().
-
-        This method is called whenever a Tree View row is activated.
-
-        :param treeview: the Allocation RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.RAMSTKTreeView`
-        :return: None
-        :rtype: None
-        """
-        treeview.handler_block(self._lst_handler_id[0])
-
-        (_model, _row) = treeview.get_selection().get_selected()
-        try:
-            self._record_id = _model.get_value(_row, 1)
-        except TypeError:
-            self._record_id = -1
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
     def _do_clear_page(self) -> None:
         """
         Clear the contents of the page.
@@ -330,12 +279,7 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
-        _columns = self.treeview.get_columns()
-        for _column in _columns:
-            self.treeview.remove_column(_column)
-
-        _model.clear()
+        super().do_clear_tree()
 
         self.cmbAllocationMethod.do_update(0)
         self.cmbAllocationGoal.do_update(0)
@@ -373,31 +317,30 @@ class Allocation(RAMSTKWorkView):
         if self._record_id > 0:
             self._do_load_tree()
 
-    # noinspection PyDeepBugsSwappedArgs
     def _do_load_row(self, attributes: Dict[str, Any]) -> None:
         """
-        Load the data into a row.
+        Load the Similar Item RAMSTKTreeView() and other widgets.
 
-        :param dict attributes:
+        :param dict attributes: the attributes dict for the row to be loaded.
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
+        _node_id = attributes['hardware_id']
+        attributes['name'] = self._allocation_tree.get_node(
+            _node_id).data['hardware'].get_attributes()['name']
+        attributes['hazard_rate_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes(
+            )['hazard_rate_logistics']
+        attributes['mtbf_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes()['mtbf_logistics']
+        attributes['reliability_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes(
+            )['reliability_logistics']
+        attributes['availability_logistics'] = self._allocation_tree.get_node(
+            _node_id).data['reliability'].get_attributes(
+            )['availability_logistics']
 
-        _data = []
-        for _key in self.treeview.korder:
-            if _key == 'dict':
-                _data.append(str(attributes))
-            else:
-                _data.append(attributes[_key])
-
-        # Only load Hardware items that are immediate children of the
-        # selected Hardware item and prevent loading the selected Hardware item
-        # itself in the Allocation worksheet.  This method will respond to any
-        # successful grabs of all the hardware attributes even when
-        # requested by other modules.
-        if _data[0] == self._record_id and not _data[1] == self._record_id:
-            _model.append(None, _data)
+        super().do_load_row(attributes)
 
     def _do_load_tree(self) -> None:
         """
@@ -409,10 +352,13 @@ class Allocation(RAMSTKWorkView):
         _model = self.treeview.get_model()
         _model.clear()
 
+        self._tree_loaded = False
         for _node in self._allocation_tree.children(self._record_id):
             _node_id = _node.data['hardware'].get_attributes()['hardware_id']
-            pub.sendMessage('request_get_all_hardware_attributes',
-                            node_id=_node_id)
+            pub.sendMessage('request_get_hardware_attributes',
+                            node_id=_node_id,
+                            table='allocation')
+        self._tree_loaded = True
 
     def _do_refresh_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -502,44 +448,24 @@ class Allocation(RAMSTKWorkView):
         # selected method.
         _dic_editable = {
             1: [
-                False, False, False, True, False, False, True, False, False,
-                False, False, False, False, False, False, False, False, False,
-                False, False, False, False, False, False
+                0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0
             ],
             2: [
-                False, False, False, True, False, True, True, True, False,
-                False, False, False, False, False, False, False, False, False,
-                False, False, False, False, False, False
+                0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0
             ],
             3: [
-                False, False, False, True, False, False, False, False, False,
-                False, False, False, False, False, False, False, False, False,
-                False, False, False, False, False, False
+                0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0
             ],
             4: [
-                False, False, False, True, False, False, False, False, True,
-                True, True, True, False, False, False, False, False, False,
-                False, False, False, False, False, False
+                0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0
             ]
         }
-
-        for _idx, _editable in enumerate(_dic_editable[self._method_id]):
-            _column = self.treeview.get_column(_idx)
-
-            try:
-                _cells = _column.get_cells()
-            except AttributeError:
-                _cells = []
-
-            # pylint: disable=unused-variable
-            for __, _cell in enumerate(_cells):
-                _background = 'light gray'
-                if _editable:
-                    _background = 'white'
-
-                do_set_cell_properties(_cell,
-                                       bg_color=_background,
-                                       editable=_editable)
+        self.treeview.do_set_columns_editable(
+            editable=_dic_editable[self._method_id])
 
     def _do_set_sensitive(self) -> None:
         """
@@ -599,17 +525,16 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
+        # TMPLT: The cursor-changed signal will call the _on_change_row.  If
+        # TMPLT: _on_change_row is called from here, it gets called twice.
+        # TMPLT: Once on the currently selected row and once on the newly
+        # TMPLT: selected row.  Thus, we don't need (or want) to respond to
+        # TMPLT: left button clicks.
         if event.button == 3:
-            RAMSTKWorkView.on_button_press(
-                self,
-                event,
-                icons=['calculate'],
-                labels=[_("Calculate")],
-                callbacks=[self._do_request_calculate])
+            super().on_button_press(event,
+                                    icons=['calculate'],
+                                    labels=[_("Calculate")],
+                                    callbacks=[self._do_request_calculate])
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
@@ -634,25 +559,10 @@ class Allocation(RAMSTKWorkView):
         # Value is the list of columns that should be made visible and/or
         # editable for the selected method.
         _dic_visible = {
-            1: [
-                False, False, True, True, True, False, True, False, False,
-                False, False, False, False, False, True, True, True, True,
-                True, True
-            ],
-            2: [
-                False, False, True, True, True, True, True, True, False, False,
-                False, False, True, False, True, True, True, True, True, True
-            ],
-            3: [
-                False, False, True, True, False, False, False, False, False,
-                False, False, False, True, False, True, True, True, True, True,
-                True
-            ],
-            4: [
-                False, False, True, True, False, False, False, False, True,
-                True, True, True, True, True, True, True, True, True, True,
-                True
-            ]
+            1: [0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+            2: [0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1],
+            3: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1],
+            4: [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         }
 
         if index == 0:
@@ -669,41 +579,6 @@ class Allocation(RAMSTKWorkView):
         self._do_set_columns_editable()
 
         self._do_set_sensitive()
-
-    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int) -> None:
-        """
-        Responds to edits in the Allocation RAMSTKTreeView.
-
-        We can't call the parent class RAMSTKBaseView() on_cell_edit() method
-        because the self._record_id will contain the value of the selected
-        parent Hardware item, not the item selected in the Allocation
-        worksheet.  We need to pass the ID of the item selected in the
-        Allocation worksheet or all we do is continually update the parent
-        Hardware item.
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the position of the edited column in the
-        RAMSTKTreeView().
-        :return: None
-        :rtype: None
-        """
-        try:
-            _key = self._dic_column_keys[self._lst_col_order[position]]
-        except (IndexError, KeyError):
-            _key = ''
-
-        _model, _row = self.treeview.get_selection().get_selected()
-        _hardware_id = _model.get_value(_row, 1)
-
-        self.treeview.do_edit_cell(__cell, path, new_text, position)
-
-        pub.sendMessage('wvw_editing_hardware',
-                        node_id=[_hardware_id, 1],
-                        package={_key: new_text})
 
     # pylint: disable=unused-argument
     def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,

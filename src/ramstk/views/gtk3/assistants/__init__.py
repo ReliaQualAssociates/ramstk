@@ -8,4 +8,5 @@
 """RAMSTK GTK3 Books Package."""
 
 # RAMSTK Local Imports
+from .similaritem import EditFunction
 from .project import CreateProject, OpenProject

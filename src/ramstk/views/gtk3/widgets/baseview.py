@@ -117,6 +117,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self._revision_id: int = 0
         self._parent_id: int = 0
         self._record_id: int = -1
+        self._tree_loaded: bool = False
 
         # Initialize public dictionary attributes.
 
@@ -348,6 +349,35 @@ class RAMSTKBaseView(Gtk.HBox):
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
 
+    def do_load_row(self, attributes: Dict[str, Any]) -> None:
+        """
+        Load the data into a row.
+
+        This is used to load data into a RAMSTKTreeView() that is being used in
+        a "worksheet" manner.  See the Allocation and Similar Item work views
+        for examples.
+
+        :param dict attributes: the Hardware attributes dict for the row to
+            be loaded in the WorkView worksheet.
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+
+        _data = []
+        for _key in self.treeview.korder:
+            if _key == 'dict':
+                _data.append(str(attributes))
+            else:
+                _data.append(attributes[_key])
+
+        # Only load Hardware items that are immediate children of the
+        # selected Hardware item and prevent loading the selected Hardware item
+        # itself in the worksheet.
+        if not _data[1] == self._record_id and not self._tree_loaded:
+            # noinspection PyDeepBugsSwappedArgs
+            _model.append(None, _data)
+
     def do_load_tree(self, tree: treelib.Tree) -> None:
         """
         Load the RAMSTK View RAMSTKTreeView().
@@ -521,6 +551,26 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return self.do_request_insert(sibling=True, **kwargs)
 
+    def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
+        """
+        Set the callback methods for RAMSTKTreeView() cells.
+
+        :param str message: the PyPubSub message to broadcast on a
+            successful edit.
+        :param list columns: the list of column numbers whose cells should
+            have a callback function assigned.
+        :return: None
+        :rtype: None
+        """
+        for _idx in columns:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[_idx]).get_cells()
+            try:
+                _cell[0].connect('edited', self.on_cell_edit, message, _idx)
+            except TypeError:
+                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
+                                 message, _idx)
+
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """
         Set the cursor for the Module, List, and Work Book Gdk.Window().
@@ -624,7 +674,7 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.show()
             _menu.append(_menu_item)
 
-    def on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+    def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      message: str, position: int) -> None:
         """
         Handle edits of the Allocation Work View RAMSTKTreeview().
@@ -639,24 +689,22 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
-        _type = GObject.type_name(_model.get_column_type(position))
-        if _type == 'gchararray':
-            _model[path][position] = str(new_text)
-        elif _type == 'gint':
-            _model[path][position] = int(new_text)
-        elif _type == 'gfloat':
-            _model[path][position] = float(new_text)
+        new_text = self.treeview.do_edit_cell(cell, path, new_text, position)
 
+        # The workflow module record ID will always be in position 1.  For
+        # example, the hardware ID is always in position 1 in any
+        # RAMSTKTreeView() used in the Hardare work view.  Thus, we can
+        # reliably count on the first column containing the record ID for the
+        # record being edited.
+        _model, _row = self.treeview.get_selection().get_selected()
+        _record_id = _model.get_value(_row, self._lst_col_order[1])
         try:
             _key = self._dic_column_keys[self._lst_col_order[position]]
         except (IndexError, KeyError):
             _key = ''
 
-        self.treeview.do_edit_cell(__cell, path, new_text, position)
-
         pub.sendMessage(message,
-                        node_id=[self._record_id, 1],
+                        node_id=[_record_id, -1],
                         package={_key: new_text})
 
     def on_combo_changed(self, combo: RAMSTKComboBox, index: int,
@@ -837,13 +885,16 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         _attributes: Dict[str, Any] = {}
 
-        selection.handler_block(self._lst_handler_id[0])
-
         _model, _row = selection.get_selected()
         if _row is not None:
             for _key in self._dic_key_index:
                 _attributes[_key] = _model.get_value(
                     _row, self._lst_col_order[self._dic_key_index[_key]])
+
+        try:
+            self._record_id = _attributes['hardware_id']
+        except KeyError:
+            self._record_id = -1
 
         return _attributes
 
@@ -1204,6 +1255,20 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
 
+    def do_clear_tree(self) -> None:
+        """
+        Clear the contents of a RAMSTKTreeView().
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
+
     def make_toolbuttons(self, **kwargs: Any) -> None:
         """
         Common method to create the WorkView tool buttons.
@@ -1288,6 +1353,64 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _fixed.put(self.txtName, _x_pos, _y_pos[1])
 
         return _x_pos, _y_pos, _fixed
+
+    def make_ui_with_treeview(self, title: List[str]) -> None:
+        """
+        Build the work view UI containing a RAMSTKTreeView().
+
+        :param list title: the list of titles for the two RAMSTKFrame()s
+            used in this view.
+        :return: None
+        :rtype: None
+        """
+        # TMPLT: Use this method to create a work view layout like this:
+        # TMPLT:
+        # TMPLT: +-----+-----+---------------------------------+
+        # TMPLT: |  B  |  W  |                                 |
+        # TMPLT: |  U  |  I  |                                 |
+        # TMPLT: |  T  |  D  |                                 |
+        # TMPLT: |  T  |  G  |          SPREAD SHEET           |
+        # TMPLT: |  O  |  E  |                                 |
+        # TMPLT: |  N  |  T  |                                 |
+        # TMPLT: |  S  |  S  |                                 |
+        # TMPLT: +-----+-----+---------------------------------+
+        # TMPLT:                                      buttons -----+--> self
+        # TMPLT:                                                   |
+        # TMPLT:     Gtk.Fixed --->RAMSTKFrame ---+-->Gtk.HBox ----+
+        # TMPLT:                                  |
+        # TMPLT:  Scrollwindow --->RAMSTKFrame ---+
+        # TMPLT:  w/ self.treeview
+        # TMPLT:
+        # TMPLT: The overall view is created by a call to make_toolbuttons()
+        # TMPLT: from the child class' __make_ui() method followed by a call
+        # TMPLT: to this method.
+        _hbox = Gtk.HBox()
+
+        _fixed = Gtk.Fixed()
+        _y_pos = 5
+        for _idx, _label in enumerate(self._lst_labels):
+            _fixed.put(RAMSTKLabel(_label), 5, _y_pos)
+            _fixed.put(self._lst_widgets[_idx], 5, _y_pos + 25)
+
+            _y_pos += 65
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=title[0])
+        _frame.add(_fixed)
+
+        _hbox.pack_start(_frame, False, True, 0)
+
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=title[1])
+        _frame.add(_scrollwindow)
+
+        _hbox.pack_end(_frame, True, True, 0)
+        self.pack_end(_hbox, True, True, 0)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

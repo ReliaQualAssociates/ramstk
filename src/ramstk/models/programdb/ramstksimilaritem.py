@@ -8,7 +8,9 @@
 """RAMSTKSimilarItem Table."""
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
+# noinspection PyPackageRequirements
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -82,70 +84,47 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
     __tablename__ = 'ramstk_similar_item'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column(
-        'fld_revision_id',
-        Integer,
-        ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False,
-    )
-    hardware_id = Column(
-        'fld_hardware_id',
-        Integer,
-        ForeignKey('ramstk_hardware.fld_hardware_id'),
-        primary_key=True,
-        nullable=False,
-    )
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         ForeignKey('ramstk_revision.fld_revision_id'),
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         ForeignKey('ramstk_hardware.fld_hardware_id'),
+                         primary_key=True,
+                         nullable=False)
 
-    change_description_1 = Column(
-        'fld_change_description_1',
-        String,
-        default=__defaults__['change_description_1'],
-    )
-    change_description_2 = Column(
-        'fld_change_description_2',
-        String,
-        default=__defaults__['change_description_2'],
-    )
-    change_description_3 = Column(
-        'fld_change_description_3',
-        String,
-        default=__defaults__['change_description_3'],
-    )
-    change_description_4 = Column(
-        'fld_change_description_4',
-        String,
-        default=__defaults__['change_description_4'],
-    )
-    change_description_5 = Column(
-        'fld_change_description_5',
-        String,
-        default=__defaults__['change_description_5'],
-    )
-    change_description_6 = Column(
-        'fld_change_description_6',
-        String,
-        default=__defaults__['change_description_6'],
-    )
-    change_description_7 = Column(
-        'fld_change_description_7',
-        String,
-        default=__defaults__['change_description_7'],
-    )
-    change_description_8 = Column(
-        'fld_change_description_8',
-        String,
-        default=__defaults__['change_description_8'],
-    )
-    change_description_9 = Column(
-        'fld_change_description_9',
-        String,
-        default=__defaults__['change_description_9'],
-    )
+    change_description_1 = Column('fld_change_description_1',
+                                  String,
+                                  default=__defaults__['change_description_1'])
+    change_description_2 = Column('fld_change_description_2',
+                                  String,
+                                  default=__defaults__['change_description_2'])
+    change_description_3 = Column('fld_change_description_3',
+                                  String,
+                                  default=__defaults__['change_description_3'])
+    change_description_4 = Column('fld_change_description_4',
+                                  String,
+                                  default=__defaults__['change_description_4'])
+    change_description_5 = Column('fld_change_description_5',
+                                  String,
+                                  default=__defaults__['change_description_5'])
+    change_description_6 = Column('fld_change_description_6',
+                                  String,
+                                  default=__defaults__['change_description_6'])
+    change_description_7 = Column('fld_change_description_7',
+                                  String,
+                                  default=__defaults__['change_description_7'])
+    change_description_8 = Column('fld_change_description_8',
+                                  String,
+                                  default=__defaults__['change_description_8'])
+    change_description_9 = Column('fld_change_description_9',
+                                  String,
+                                  default=__defaults__['change_description_9'])
     change_description_10 = Column(
         'fld_change_description_10',
         String,
-        default=__defaults__['change_description_10'],
-    )
+        default=__defaults__['change_description_10'])
     change_factor_1 = Column('fld_change_factor_1',
                              Float,
                              default=__defaults__['change_factor_1'])
@@ -347,7 +326,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
             'user_int_2': self.user_int_2,
             'user_int_3': self.user_int_3,
             'user_int_4': self.user_int_4,
-            'user_int_5': self.user_int_5,
+            'user_int_5': self.user_int_5
         }
 
         return _attributes
