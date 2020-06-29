@@ -30,9 +30,9 @@ from ramstk.configuration import (
 try:
     VIRTUAL_ENV = glob.glob(environ['VIRTUAL_ENV'])[0]
 except KeyError:
-    if sys.platform == 'Linux':
+    if sys.platform == 'Linux' or sys.platform == 'linux':
         VIRTUAL_ENV = getenv('HOME') + '/.local'
-    elif sys.platform == 'Windows':
+    elif sys.platform == 'Windows' or sys.platform == 'windows':
         VIRTUAL_ENV = getenv('TEMP')
     else:
         print(("The {0:s} system platform is not "

@@ -68,14 +68,19 @@ class RAMSTKBaseView(Gtk.HBox):
         tab Gtk.Label().
     :type hbx_tab_label: :class:`Gtk.HBox`
     """
-    RAMSTK_USER_CONFIGURATION = None
+    # Define private class scalar attributes.
+    _pixbuf: bool = False
 
+    # Define public class dict attributes.
     dic_tab_position = {
         'left': Gtk.PositionType.LEFT,
         'right': Gtk.PositionType.RIGHT,
         'top': Gtk.PositionType.TOP,
         'bottom': Gtk.PositionType.BOTTOM
     }
+
+    # Define public class scalar attributes.
+    RAMSTK_USER_CONFIGURATION = None
 
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -114,9 +119,9 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         self._module: str = module
         self._notebook: Gtk.Notebook = Gtk.Notebook()
-        self._revision_id: int = 0
         self._parent_id: int = 0
         self._record_id: int = -1
+        self._revision_id: int = 0
         self._tree_loaded: bool = False
 
         # Initialize public dictionary attributes.
@@ -299,14 +304,14 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         try:
             _treeview = RAMSTKTreeView()
-            self._lst_col_order = _treeview.order
 
             _fmt_file = (
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
                 + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
             _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
-            _treeview.do_parse_format(_fmt_path, _fmt_file)
+            _treeview.do_parse_format(_fmt_path, _fmt_file, self._pixbuf)
 
+            self._lst_col_order = _treeview.order
             try:
                 _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
                     module + 'bg']
@@ -319,7 +324,6 @@ class RAMSTKBaseView(Gtk.HBox):
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
             _treeview.make_model(_bg_color, _fg_color)
-
         except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()

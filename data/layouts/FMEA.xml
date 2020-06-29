@@ -14,7 +14,7 @@ various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
 <root>
-    <tree name="FMEA">
+    <tree name="Fmea">
         <column>
             <defaulttitle>Entity ID</defaulttitle>
             <usertitle>Entity ID</usertitle>
