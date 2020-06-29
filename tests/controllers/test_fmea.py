@@ -19,9 +19,8 @@ from treelib import Tree
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amFMEA, dmFMEA
 from ramstk.db.base import BaseDatabase
-from ramstk.models.programdb import (
-    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
-)
+from ramstk.models.programdb import (RAMSTKAction, RAMSTKCause, RAMSTKControl,
+                                     RAMSTKMechanism, RAMSTKMode)
 
 ATTRIBUTES = {
     'type_id': 0,
@@ -62,7 +61,7 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert not DUT._is_functional
-        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_hardware')
+        assert pub.isSubscribed(DUT._do_select_all_fmea, 'selected_hardware')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_fmea')
         assert pub.isSubscribed(DUT._do_insert_action,
                                 'request_insert_fmea_action')
@@ -130,7 +129,7 @@ class TestSelectMethods():
 
         DUT = dmFMEA(functional=True)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         assert isinstance(DUT.tree.get_node('1').data['mode'], RAMSTKMode)
 
@@ -145,7 +144,7 @@ class TestSelectMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         assert isinstance(DUT.tree.get_node('4').data['mode'], RAMSTKMode)
 
@@ -157,7 +156,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMode on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         _mode = DUT.do_select('4', table='mode')
 
@@ -170,7 +169,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMechanism on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         _mechanism = DUT.do_select('4.1', table='mechanism')
 
@@ -183,7 +182,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKCause on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         _cause = DUT.do_select('4.1.1', table='cause')
 
@@ -196,7 +195,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKControl on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         _control = DUT.do_select('4.1.1.4.c', table='control')
 
@@ -209,13 +208,14 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKAction on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         _action = DUT.do_select('4.1.1.4.a', table='action')
 
         assert isinstance(_action, RAMSTKAction)
-        assert _action.action_recommended == ('Test FMEA Recommended Action #1 '
-                                              'for Cause ID 1.')
+        assert _action.action_recommended == (
+            'Test FMEA Recommended Action #1 '
+            'for Cause ID 1.')
         assert _action.action_due_date == date(2019, 8, 20)
 
     @pytest.mark.integration
@@ -223,7 +223,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select('4', table='scibbidy-bibbidy-doo')
@@ -233,7 +233,7 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent FMEA ID is requested."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         assert DUT.do_select(100, table='mode') is None
 
@@ -294,7 +294,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('6.3.6.6.a')
 
     @pytest.mark.integration
@@ -304,7 +304,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('300')
 
     @pytest.mark.integration
@@ -314,7 +314,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('6.3.6.6.c')
 
     @pytest.mark.integration
@@ -324,7 +324,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('300')
 
     @pytest.mark.integration
@@ -334,7 +334,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('6.3.6')
 
     @pytest.mark.integration
@@ -344,7 +344,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('300')
 
     @pytest.mark.integration
@@ -355,7 +355,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('6.3')
 
     @pytest.mark.integration
@@ -365,7 +365,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('300')
 
     @pytest.mark.integration
@@ -375,7 +375,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('6')
 
     @pytest.mark.integration
@@ -385,7 +385,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_delete('300')
 
 
@@ -442,7 +442,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_mode()
 
         assert isinstance(DUT.tree.get_node('5').data['mode'], RAMSTKMode)
@@ -460,14 +460,14 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_mechanism('5')
 
         assert isinstance(
             DUT.tree.get_node('5.2').data['mechanism'], RAMSTKMechanism)
         assert DUT.tree.get_node('5.2').data['mechanism'].mechanism_id == 2
-        assert DUT.tree.get_node(
-            '5.2').data['mechanism'].description == 'Test Failure Mechanism #1 for Mode ID 5'
+        assert DUT.tree.get_node('5.2').data[
+            'mechanism'].description == 'Test Failure Mechanism #1 for Mode ID 5'
 
         pub.unsubscribe(self.on_succeed_insert_mechanism,
                         'succeed_insert_mechanism')
@@ -479,7 +479,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_mechanism('40')
 
         pub.unsubscribe(self.on_fail_insert_mechanism, 'fail_insert_mechanism')
@@ -491,14 +491,14 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_cause(5, 2, '5.2')
 
         assert isinstance(
             DUT.tree.get_node('5.2.2').data['cause'], RAMSTKCause)
         assert DUT.tree.get_node('5.2.2').data['cause'].cause_id == 2
-        assert DUT.tree.get_node(
-            '5.2.2').data['cause'].description == 'Test Failure Cause #2 for Mechanism ID 2'
+        assert DUT.tree.get_node('5.2.2').data[
+            'cause'].description == 'Test Failure Cause #2 for Mechanism ID 2'
 
         pub.unsubscribe(self.on_succeed_insert_cause, 'succeed_insert_cause')
 
@@ -509,7 +509,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_cause(7, 40, '7.40')
 
         pub.unsubscribe(self.on_fail_insert_cause, 'fail_insert_cause')
@@ -521,15 +521,15 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_control(5, '5.2.2')
 
         assert isinstance(
             DUT.tree.get_node('5.2.2.5.c').data['control'], RAMSTKControl)
         assert DUT.tree.get_node('5.2.2.5.c').data['control'].control_id == 5
-        assert DUT.tree.get_node(
-            '5.2.2.5.c').data['control'].description == ('Test FMEA Control '
-                                                         '#1 for Cause ID 5')
+        assert DUT.tree.get_node('5.2.2.5.c').data['control'].description == (
+            'Test FMEA Control '
+            '#1 for Cause ID 5')
 
         pub.unsubscribe(self.on_succeed_insert_control,
                         'succeed_insert_control')
@@ -541,7 +541,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_mechanism('7')
         DUT._do_insert_cause(7, 6, '7.6')
         DUT._do_insert_control(40, '7.6.40')
@@ -555,15 +555,16 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_action(5, '5.2.2')
 
         assert isinstance(
             DUT.tree.get_node('5.2.2.5.a').data['action'], RAMSTKAction)
         assert DUT.tree.get_node('5.2.2.5.a').data['action'].action_id == 5
-        assert DUT.tree.get_node('5.2.2.5.a').data[
-            'action'].action_recommended == ('Test FMEA Recommended Action #1 '
-                                             'for Cause ID 2.')
+        assert DUT.tree.get_node(
+            '5.2.2.5.a').data['action'].action_recommended == (
+                'Test FMEA Recommended Action #1 '
+                'for Cause ID 2.')
 
         pub.unsubscribe(self.on_succeed_insert_action, 'succeed_insert_action')
 
@@ -574,7 +575,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT._do_insert_mechanism('7')
         DUT._do_insert_action(40, '7.6.40')
 
@@ -616,8 +617,9 @@ class TestGetterSetter():
     def on_succeed_get_action_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['action_id'] == 4
-        assert attributes['action_recommended'] == ('Test FMEA Recommended '
-                                                    'Action #1 for Cause ID 1.')
+        assert attributes['action_recommended'] == (
+            'Test FMEA Recommended '
+            'Action #1 for Cause ID 1.')
         print("\033[36m\nsucceed_get_action_attributes topic was broadcast.")
 
     def on_succeed_get_fmea_tree(self, dmtree):
@@ -635,7 +637,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT.do_get_attributes('5', 'mode')
 
         pub.unsubscribe(self.on_succeed_get_mode_attrs,
@@ -649,7 +651,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT.do_get_attributes('5.2', 'mechanism')
 
         pub.unsubscribe(self.on_succeed_get_mechanism_attrs,
@@ -663,7 +665,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT.do_get_attributes('4.1.1', 'cause')
 
         pub.unsubscribe(self.on_succeed_get_cause_attrs,
@@ -677,7 +679,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT.do_get_attributes('4.1.1.4.c', 'control')
 
         pub.unsubscribe(self.on_succeed_get_control_attrs,
@@ -691,7 +693,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT.do_get_attributes('4.1.1.4.a', 'action')
 
         pub.unsubscribe(self.on_succeed_get_action_attrs,
@@ -702,7 +704,7 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting failure mode attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         DUT.do_set_attributes(node_id='4',
                               key='effect_local',
@@ -724,7 +726,7 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         DUT.do_set_attributes(node_id='4.1',
                               key='rpn_detection',
@@ -745,7 +747,7 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting failure cause attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         DUT.do_set_attributes(node_id='4.1.1',
                               key='rpn_detection',
@@ -766,7 +768,7 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting control attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         DUT.do_set_attributes(node_id='4.1.1.4.c',
                               key='type_id',
@@ -788,7 +790,7 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting action attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         DUT.do_set_attributes(node_id='4.1.1.4.a',
                               key='action_recommended',
@@ -812,7 +814,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_fmea_tree, 'succeed_get_fmea_tree')
@@ -823,7 +825,7 @@ class TestGetterSetter():
         """on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_fmea_tree message."""
         DATAMGR = dmFMEA()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(parent_id=1)
+        DATAMGR._do_select_all_fmea({'parent_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
         DATAMGR.do_get_tree()
 
@@ -850,7 +852,7 @@ class TestUpdateMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
 
         DUT.tree.get_node('5').data['mode'].description = 'Test failure mode'
         DUT.tree.get_node('5').data['mode'].operator_actions = (
@@ -859,7 +861,7 @@ class TestUpdateMethods():
         DUT.tree.get_node('5.2').data[
             'mechanism'].description = 'Test failure mechanism, updated'
 
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         assert DUT.tree.get_node('5').data['mode'].description == (
             'Test failure mode')
         assert DUT.tree.get_node('5').data['mode'].operator_actions == (
@@ -876,7 +878,7 @@ class TestUpdateMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT._do_select_all_fmea({'parent_id': 1})
         DUT.do_update(100)
 
         pub.unsubscribe(self.on_fail_update_fmea, 'fail_update_fmea')
@@ -904,7 +906,7 @@ class TestAnalysisMethods():
 
         DATAMGR = dmFMEA()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(parent_id=1)
+        DATAMGR._do_select_all_fmea({'parent_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')
@@ -923,7 +925,7 @@ class TestAnalysisMethods():
 
         DATAMGR = dmFMEA()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(parent_id=1)
+        DATAMGR._do_select_all_fmea({'parent_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')
@@ -940,7 +942,7 @@ class TestAnalysisMethods():
         """do_calculate_rpn() should calculate the risk priority number (RPN) for all failure modes when using the cause for O and D values."""
         DATAMGR = dmFMEA(functional=True)
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(parent_id=1)
+        DATAMGR._do_select_all_fmea({'parent_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')

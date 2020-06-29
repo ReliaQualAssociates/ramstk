@@ -6,6 +6,9 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Model."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 from pubsub import pub
 from treelib.exceptions import NodeIDAbsentError
@@ -13,8 +16,8 @@ from treelib.exceptions import NodeIDAbsentError
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import (
-    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode)
+from ramstk.models.programdb import (RAMSTKAction, RAMSTKCause, RAMSTKControl,
+                                     RAMSTKMechanism, RAMSTKMode)
 
 
 class DataManager(RAMSTKDataManager):
@@ -28,7 +31,8 @@ class DataManager(RAMSTKDataManager):
     _tag = 'fmea'
     _root = 0
 
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a FMEA data manager instance."""
         RAMSTKDataManager.__init__(self, **kwargs)
 
@@ -38,10 +42,10 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private scalar attributes.
         try:
-            self._is_functional = kwargs['functional']
+            self._is_functional: bool = kwargs['functional']
         except KeyError:
             self._is_functional = False
-        self._parent_id = 0
+        self._parent_id: str = '0'
 
         # Initialize public dictionary attributes.
 
@@ -50,7 +54,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'succeed_select_hardware')
+        pub.subscribe(self._do_select_all_fmea, 'selected_hardware')
         pub.subscribe(self._do_delete, 'request_delete_fmea')
         pub.subscribe(self._do_insert_action, 'request_insert_fmea_action')
         pub.subscribe(self._do_insert_cause, 'request_insert_fmea_cause')
@@ -68,7 +72,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_tree, 'request_get_fmea_tree')
         pub.subscribe(self.do_set_attributes, 'request_set_fmea_attributes')
 
-    def _add_cause_node(self, cause, parent_id):
+    def _add_cause_node(self, cause: object, parent_id: str) -> None:
         """
         Add a node to the treelib Tree() to hold a failure cause.
 
@@ -77,7 +81,7 @@ class DataManager(RAMSTKDataManager):
 
         :param cause: an instance of RAMSTKCause.
         :type cause: :class:`ramstk.models.programdb.RAMSTKCause`
-        :parem str parent_id: the parent node ID the causes are associated
+        :param str parent_id: the parent node ID the causes are associated
             with.
         :return: None
         :rtype: None
@@ -94,7 +98,7 @@ class DataManager(RAMSTKDataManager):
         self._do_select_all_control(cause.cause_id, _identifier)
         self._do_select_all_action(cause.cause_id, _identifier)
 
-    def _add_mode_node(self, mode):
+    def _add_mode_node(self, mode: object) -> None:
         """
         Add a node to the treelib Tree() to hold a failure mode.
 
@@ -102,9 +106,7 @@ class DataManager(RAMSTKDataManager):
         function (functional FMEA) or a hardware item (hardware FMEA).
 
         :param mode: an instance of RAMSTKMode.
-        :type cause: :class:`ramstk.models.programdb.RAMSTKMode`
-        :parem str parent_id: the parent node ID the causes are associated
-            with.
+        :type mode: :class:`ramstk.models.programdb.RAMSTKMode`
         :return: None
         :rtype: None
         """
@@ -115,7 +117,7 @@ class DataManager(RAMSTKDataManager):
                               parent=self._root,
                               data=_data_package)
 
-    def _do_delete(self, node_id):
+    def _do_delete(self, node_id: int) -> None:
         """
         Remove a FMEA element.
 
@@ -137,12 +139,12 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_fmea', error_message=_error_msg)
 
-    def _do_insert_action(self, cause_id, parent_id):
+    def _do_insert_action(self, cause_id: int, parent_id: str) -> None:
         """
         Add a new action to FMEA cause ID.
 
         :param int fmea_id: the FMEA cause ID to associate the new action with.
-        :parem str parent_id: the parent node ID the control is associated
+        :param str parent_id: the parent node ID the control is associated
             with.
         :return: None
         :rtype: None
@@ -166,7 +168,8 @@ class DataManager(RAMSTKDataManager):
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_action", error_message=_error_msg)
 
-    def _do_insert_cause(self, mode_id, mechanism_id, parent_id):
+    def _do_insert_cause(self, mode_id: int, mechanism_id: int,
+                         parent_id: str) -> None:
         """
         Add a new failure cause to FMEA mechanism ID.
 
@@ -199,7 +202,7 @@ class DataManager(RAMSTKDataManager):
                     mode_id, mechanism_id))
             pub.sendMessage("fail_insert_cause", error_message=_error_msg)
 
-    def _do_insert_control(self, cause_id, parent_id):
+    def _do_insert_control(self, cause_id: int, parent_id: str) -> None:
         """
         Add a new control to FMEA cause ID.
 
@@ -230,7 +233,7 @@ class DataManager(RAMSTKDataManager):
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_control", error_message=_error_msg)
 
-    def _do_insert_mechanism(self, mode_id):
+    def _do_insert_mechanism(self, mode_id: str) -> None:
         """
         Add a new failure mechanism to FMEA mode ID.
 
@@ -259,7 +262,7 @@ class DataManager(RAMSTKDataManager):
                           'failure mode ID {0:s}.'.format(mode_id))
             pub.sendMessage("fail_insert_mechanism", error_message=_error_msg)
 
-    def _do_insert_mode(self):
+    def _do_insert_mode(self) -> None:
         """
         Add a new failure mode.
 
@@ -282,7 +285,7 @@ class DataManager(RAMSTKDataManager):
         except (DataAccessError, NodeIDAbsentError) as _error:
             pub.sendMessage("fail_insert_mode", error_message=_error)
 
-    def _do_select_all_action(self, cause_id, parent_id):
+    def _do_select_all_action(self, cause_id: int, parent_id: str) -> None:
         """
         Retrieve all the actions for the cause ID.
 
@@ -304,7 +307,7 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
-    def _do_select_all_cause(self, mechanism_id, parent_id):
+    def _do_select_all_cause(self, mechanism_id: int, parent_id: str) -> None:
         """
         Retrieve all the failure causes for the mechanism ID.
 
@@ -325,7 +328,7 @@ class DataManager(RAMSTKDataManager):
 
                 self._add_cause_node(_cause, parent_id)
 
-    def _do_select_all_control(self, cause_id, parent_id):
+    def _do_select_all_control(self, cause_id: int, parent_id: str) -> None:
         """
         Retrieve all the controls for the cause ID.
 
@@ -348,7 +351,39 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
-    def _do_select_all_mechanism(self, mode_id):
+    def _do_select_all_fmea(self, attributes: Dict[str, Any]) -> None:
+        """
+        Retrieve all the FMEA data from the RAMSTK Program database.
+
+        :param dict attributes: the attributes dict for the selected
+            function or hardware item.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes['parent_id']
+
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        if not self._is_functional:
+            for _mode in self.dao.session.query(RAMSTKMode).filter(
+                    RAMSTKMode.hardware_id == self._parent_id).all():
+
+                self._add_mode_node(_mode)
+                self._do_select_all_mechanism(_mode.mode_id)
+
+            pub.sendMessage('succeed_retrieve_hardware_fmea', tree=self.tree)
+
+        elif self._is_functional:
+            for _mode in self.dao.session.query(RAMSTKMode).filter(
+                    RAMSTKMode.function_id == self._parent_id).all():
+
+                self._add_mode_node(_mode)
+                self._do_select_all_cause(_mode.mode_id, str(self._parent_id))
+
+            pub.sendMessage('succeed_retrieve_functional_fmea', tree=self.tree)
+
+    def _do_select_all_mechanism(self, mode_id: int) -> None:
         """
         Retrieve all the failure mechanisms for the mode ID.
 
@@ -380,39 +415,8 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_fmea_tree', dmtree=self.tree)
 
-    def do_select_all(self, parent_id):  # pylint: disable=arguments-differ
-        """
-        Retrieve all the FMEA data from the RAMSTK Program database.
-
-        :param int parent_id: the parent (function or hardware) ID to select
-            the FMEA for.
-        :return: None
-        :rtype: None
-        """
-        self._parent_id = parent_id
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        if not self._is_functional:
-            for _mode in self.dao.session.query(RAMSTKMode).filter(
-                    RAMSTKMode.hardware_id == self._parent_id).all():
-
-                self._add_mode_node(_mode)
-                self._do_select_all_mechanism(_mode.mode_id)
-
-            pub.sendMessage('succeed_retrieve_hardware_fmea', tree=self.tree)
-
-        elif self._is_functional:
-            for _mode in self.dao.session.query(RAMSTKMode).filter(
-                    RAMSTKMode.function_id == self._parent_id).all():
-
-                self._add_mode_node(_mode)
-                self._do_select_all_cause(_mode.mode_id, str(parent_id))
-
-            pub.sendMessage('succeed_retrieve_functional_fmea', tree=self.tree)
-
-    def do_set_attributes(self, node_id, key, value, table):
+    def do_set_attributes(self, node_id: int, key: str, value: Any,
+                          table: str) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 

@@ -244,8 +244,7 @@ class DataManager(RAMSTKDataManager):
         """
         Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
-        :param dict revision_id: the Revision ID to select the Hardware BoM
-            for.
+        :param dict attributes: the attributes dict for the selected Revision.
         :return: None
         :rtype: None
         """
