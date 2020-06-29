@@ -19,7 +19,7 @@ from ramstk.configuration import (RAMSTK_CONTROL_TYPES, RAMSTK_CRITICALITY,
                                   RAMSTKUserConfiguration)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
-from ramstk.views.gtk3.assistants.fmea import AddControlAction
+from ramstk.views.gtk3.assistants import AddControlAction
 from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKLabel,
                                        RAMSTKMessageDialog, RAMSTKTextView,
                                        RAMSTKTreeView, RAMSTKWorkView)
