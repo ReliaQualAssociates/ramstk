@@ -13,7 +13,7 @@ on:
 
 jobs:
   good_pr_title:
-    name: Ensure Sematic PR Title
+    name: Ensure Semantic PR Title
     runs-on: ubuntu-latest
     steps:
       - uses: aslafy-z/conventional-pr-title-action@master

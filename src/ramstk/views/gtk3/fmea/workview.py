@@ -33,15 +33,15 @@ class FMEA(RAMSTKWorkView):
     Analysis (FMEA). The attributes of a FMEA Work View are:
 
     :cvar list _lst_control_type: list containing the types of controls that
-                                  can be implemented.
+        can be implemented.
     :cvar list _lst_fmea_data: list containing the FMEA row data.
 
     :ivar dict _dic_missions: a dict containing all this missions associated
-    with the selected Revision.
+        with the selected Revision.
     :ivar dict _dic_mission_phases: a dict containing all the mission phases
-    associated with each mission in _dic_missions.
+        associated with each mission in _dic_missions.
     :ivar float _item_hazard_rate: the hazard rate of the Function or Hardware
-    item associated with the FMEA.
+        item associated with the FMEA.
     """
 
     # Define private class dict attributes.
@@ -91,54 +91,39 @@ class FMEA(RAMSTKWorkView):
 
     # Define private class list attributes.
     _lst_control_type: List[bool] = [_("Prevention"), _("Detection")]
-    _lst_functional_mode_mask: List[bool] = [
-        True, True, False, False, True, True, True, False, False, False, True,
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        True, True, False, False
-    ]
-    _lst_hardware_mode_mask: List[bool] = [
+    _lst_mode_mask: List[bool] = [
         True, True, True, True, True, True, True, True, True, True, True, True,
         True, True, True, True, True, True, True, True, False, True, False,
         False, False, False, False, False, False, False, False, False, False,
-        False, True, False, False, False, True, True, False, True, True, False,
-        False
+        False, True, False, False, False, True, True, False, True, False, False
     ]
-    _lst_functional_mechanism_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, True, False, False
-    ]
-    _lst_hardware_mechanism_mask: List[bool] = [
+    _lst_mechanism_mask: List[bool] = [
         True, True, False, False, False, False, False, False, False, False,
         False, False, False, False, False, False, False, False, False, False,
         False, False, True, True, True, False, False, False, False, False,
         False, False, False, False, False, True, True, True, False, False,
-        True, False, True, False, False
+        True, True, False, False
     ]
     _lst_cause_mask: List[bool] = [
         True, True, False, False, False, False, False, False, False, False,
         False, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, True, False, False
+        False, False, True, True, True, False, False, False, False, False,
+        False, False, False, False, False, True, True, True, False, False,
+        False, True, False, False
     ]
     _lst_control_mask: List[bool] = [
         True, True, False, False, False, False, False, False, False, False,
         False, False, False, False, False, False, False, False, False, False,
         True, False, False, False, False, False, False, False, False, False,
         False, False, False, False, False, False, False, False, False, False,
-        False, False, True, False, False
+        False, True, False, False
     ]
     _lst_action_mask: List[bool] = [
         True, True, False, False, False, False, False, False, False, False,
         False, False, False, False, False, False, False, False, False, False,
         False, False, False, False, False, True, True, True, True, True, True,
         True, True, True, False, False, False, False, False, False, False,
-        False, True, False, False
+        True, False, False
     ]
     _lst_labels: List[str] = ["", "", _("Item Criticality:")]
 
@@ -428,8 +413,6 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.treeview.connect("cursor_changed", self._do_change_row))
-        self._lst_handler_id.append(
             self.treeview.connect("button_press_event", self._on_button_press))
 
         for i in self._lst_col_order:
@@ -481,70 +464,6 @@ class FMEA(RAMSTKWorkView):
             _("Displays the (Design) Failure Mode and Effects "
               "(and Criticality) Analysis [(D)FME(C)A] for the "
               "currently selected Hardware item."))
-
-    def _do_change_row(self, treeview: RAMSTKTreeView) -> None:
-        """
-        Handle events for the FMEA Work View RAMSTKTreeView().
-
-        This method is called whenever a RAMSTKTreeView() row is activated.
-
-        :param treeview: the FMEA RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.RAMSTKTreeView`
-        :return: None
-        :rtype: None
-        """
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-        try:
-            self._record_id = _model.get_value(_row, 0)
-            _mission = _model.get_value(_row, 2)
-            _node_id = _model.get_value(_row, 43)
-        except TypeError:
-            _mission = ""
-            _node_id = 0
-
-        _set_visible = self.treeview.visible
-        if _node_id.count(".") == 1:
-            self.treeview.headings[self._lst_col_order[0]] = _("Mode ID")
-            self.treeview.headings[self._lst_col_order[1]] = _("Failure\nMode")
-            self._do_load_mission_phases(_mission)
-            _set_visible = _set_visible and self._lst_hardware_mode_mask
-        elif _node_id.count(".") == 2:
-            self.treeview.headings[self._lst_col_order[0]] = _("Mechanism ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Failure\nMechanism")
-            _set_visible = _set_visible and self._lst_hardware_mechanism_mask
-        elif _node_id.count(".") == 3:
-            self.treeview.headings[self._lst_col_order[0]] = _("Cause ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Failure\nCause")
-            _set_visible = _set_visible and self._lst_cause_mask
-        elif _node_id.count(".") == 4 and _node_id[-1] == "c":
-            self.treeview.headings[self._lst_col_order[0]] = _("Control ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Existing\nControl")
-            _set_visible = _set_visible and self._lst_control_mask
-        elif _node_id.count(".") == 4 and _node_id[-1] == "a":
-            self.treeview.headings[self._lst_col_order[0]] = _("Action ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Recommended\nAction")
-            _set_visible = _set_visible and self._lst_action_mask
-
-        _columns = self.treeview.get_columns()
-        i = 0
-        for _heading in self.treeview.headings:
-            _label = RAMSTKLabel(_heading)
-            _label.do_set_properties(height=-1,
-                                     justify=Gtk.Justification.CENTER,
-                                     wrap=True)
-            _label.show_all()
-            _columns[i].set_widget(_label)
-            _columns[i].set_visible(_set_visible[self._lst_col_order[i]])
-
-            i += 1
-
-        treeview.handler_unblock(self._lst_handler_id[0])
 
     def _do_load_action(self, entity: object, node_id: str) -> None:
         """
@@ -668,7 +587,23 @@ class FMEA(RAMSTKWorkView):
         for _node in attributes.children(_nid):
             self._lst_missions.append(_node.tag)
 
-        print(self._lst_missions)
+    def _do_load_mission_phases(self, mission: str) -> None:
+        """
+        Load the mission phase Gtk.CellRendererCombo().
+
+        :param str mission: the mission that was selected.
+        :return: None
+        :rtype: None
+        """
+        _model = self._get_cell_model(self._lst_col_order[3])
+        _model.clear()
+        _model.append(("", ))
+
+        try:
+            for _phase in self._dic_mission_phases[mission]:
+                _model.append((_phase, ))
+        except KeyError:
+            pass
 
     def _do_load_mode(self, entity: object, node_id: str) -> None:
         """
@@ -912,6 +847,56 @@ class FMEA(RAMSTKWorkView):
         pub.sendMessage("request_update_all_fmea")
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
+    def _do_set_headings(self) -> List[bool]:
+        """
+        Set the heading text for the FMEA columns.
+
+        :return: _set_visible; a list of True/False for the columns to be
+            set visible.
+        :rtype: list
+        """
+        _set_visible = []
+
+        if self._record_id.count(".") == 0:
+            self.treeview.headings[self._lst_col_order[0]] = _("Mode ID")
+            self.treeview.headings[self._lst_col_order[1]] = _("Failure\nMode")
+            _set_visible = self._do_set_visible_columns(self._lst_mode_mask)
+        elif self._record_id.count(".") == 1:
+            self.treeview.headings[self._lst_col_order[0]] = _("Mechanism ID")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Failure\nMechanism")
+            _set_visible = self._do_set_visible_columns(
+                self._lst_mechanism_mask)
+        elif self._record_id.count(".") == 2:
+            self.treeview.headings[self._lst_col_order[0]] = _("Cause ID")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Failure\nCause")
+            _set_visible = self._do_set_visible_columns(self._lst_cause_mask)
+        elif self._record_id.count(".") == 4 and self._record_id[-1] == "c":
+            self.treeview.headings[self._lst_col_order[0]] = _("Control ID")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Existing\nControl")
+            _set_visible = self._do_set_visible_columns(self._lst_control_mask)
+        elif self._record_id.count(".") == 4 and self._record_id[-1] == "a":
+            self.treeview.headings[self._lst_col_order[0]] = _("Action ID")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Recommended\nAction")
+            _set_visible = self._do_set_visible_columns(self._lst_action_mask)
+
+        return _set_visible
+
+    def _do_set_visible_columns(self, mask: List[bool]) -> List[bool]:
+        """
+        Set the list of True/False for the visible FMEA columns.
+
+        :param list mask: the list of True/False mask for the type of FMEA
+            object selected.
+        :return: _set_visible; a list of True/False for the columns to be
+            set visible.
+        :rtype: list
+        """
+        return self.treeview.visible and mask
+
     def _get_cell_model(self, column: int) -> None:
         """
         Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
@@ -999,7 +984,48 @@ class FMEA(RAMSTKWorkView):
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
-    def do_load_page(self, tree: treelib.Tree, nid: int = 0, row=None) -> None:
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        """
+        Handle events for the FMEA Work View RAMSTKTreeView().
+
+        This method is called whenever a RAMSTKTreeView() row is activated.
+
+        :param treeview: the FMEA RAMSTKTreeView().
+        :type treeview: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
+        :return: None
+        :rtype: None
+        """
+        selection.handler_block(self._lst_handler_id[0])
+
+        _model, _row = selection.get_selected()
+        try:
+            self._record_id = _model.get_value(_row, 0)
+            _mission = _model.get_value(_row, 2)
+        except TypeError:
+            _mission = ""
+
+        self._do_load_mission_phases(_mission)
+        _set_visible = self._do_set_headings()
+
+        _columns = self.treeview.get_columns()
+        i = 0
+        for _heading in self.treeview.headings:
+            _label = RAMSTKLabel(_heading)
+            _label.do_set_properties(height=-1,
+                                     justify=Gtk.Justification.CENTER,
+                                     wrap=True)
+            _label.show_all()
+            _columns[i].set_widget(_label)
+            _columns[i].set_visible(_set_visible[self._lst_col_order[i]])
+
+            i += 1
+
+        selection.handler_unblock(self._lst_handler_id[0])
+
+    def do_load_page(self,
+                     tree: treelib.Tree,
+                     nid: int = 0,
+                     row: Gtk.TreeIter = None) -> None:
         """
         Iterate through tree and load the FMEA RAMSTKTreeView().
 
@@ -1008,6 +1034,8 @@ class FMEA(RAMSTKWorkView):
         :type tree: :class:`treelib.Tree`
         :param int nid: the node ID of the parent whose children should be
             loaded into the RAMSTKTreeView.
+        :param row: the last row to be loaded with FMEA data.
+        :type row: :class:`Gtk.TreeIter`
         :return: None
         :rtype: None
         """
