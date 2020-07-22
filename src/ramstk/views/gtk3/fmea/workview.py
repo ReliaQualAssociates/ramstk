@@ -207,7 +207,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._get_cell_model(self._lst_col_order[25])
+        _model = self.treeview.get_cell_model(self._lst_col_order[25])
         for _item in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_CATEGORY:
             _model.append([
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_CATEGORY[_item][1]
@@ -220,7 +220,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._get_cell_model(self._lst_col_order[20])
+        _model = self.treeview.get_cell_model(self._lst_col_order[20])
         for _item in RAMSTK_CONTROL_TYPES:
             _model.append([_item])
 
@@ -231,7 +231,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._get_cell_model(self._lst_col_order[14])
+        _model = self.treeview.get_cell_model(self._lst_col_order[14])
         for _item in RAMSTK_FAILURE_PROBABILITY:
             _model.append([_item[0]])
 
@@ -245,7 +245,8 @@ class FMEA(RAMSTKWorkView):
         _detection = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION
 
         for _position in [23, 36]:
-            _model = self._get_cell_model(self._lst_col_order[_position])
+            _model = self.treeview.get_cell_model(
+                self._lst_col_order[_position])
             _model.append("")
             for _item in sorted(_detection):
                 _model.append([_detection[_item]['name']])
@@ -260,7 +261,8 @@ class FMEA(RAMSTKWorkView):
         _occurrence = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE
 
         for _position in [22, 35]:
-            _model = self._get_cell_model(self._lst_col_order[_position])
+            _model = self.treeview.get_cell_model(
+                self._lst_col_order[_position])
             _model.append("")
             for _item in sorted(_occurrence):
                 _model.append([_occurrence[_item]['name']])
@@ -275,7 +277,8 @@ class FMEA(RAMSTKWorkView):
         _severity = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY
 
         for _position in [21, 34]:
-            _model = self._get_cell_model(self._lst_col_order[_position])
+            _model = self.treeview.get_cell_model(
+                self._lst_col_order[_position])
             _model.append("")
             for _item in sorted(_severity):
                 _model.append([_severity[_item]['name']])
@@ -287,7 +290,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._get_cell_model(self._lst_col_order[12])
+        _model = self.treeview.get_cell_model(self._lst_col_order[12])
         for _item in RAMSTK_CRITICALITY:
             _model.append([_item[0]])
 
@@ -298,7 +301,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._get_cell_model(self._lst_col_order[28])
+        _model = self.treeview.get_cell_model(self._lst_col_order[28])
         for _item in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS:
             _model.append([
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS[_item][0]
@@ -311,7 +314,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._get_cell_model(self._lst_col_order[26])
+        _model = self.treeview.get_cell_model(self._lst_col_order[26])
         for _item in self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS:
             _user = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS[_item][0]
                      + ", "
@@ -394,16 +397,28 @@ class FMEA(RAMSTKWorkView):
 
     def __set_callbacks(self) -> None:
         """
-        Set the callback methods and functions for the common FMEA widgets.
+        Set the callback methods and functions for the FMEA widgets.
 
         :return: None
         :rtype: None
         """
-        super().do_set_cell_callbacks('wvw_editing_fmea',
-                                      self._lst_col_order[2:])
-
         self._lst_handler_id.append(
             self.treeview.connect("button_press_event", self._on_button_press))
+
+        super().do_set_cell_callbacks('wvw_editing_fmea',
+                                      self._lst_col_order[2:20])
+        super().do_set_cell_callbacks('wvw_editing_fmea',
+                                      self._lst_col_order[20:33])
+        super().do_set_cell_callbacks('wvw_editing_fmea',
+                                      self._lst_col_order[33:])
+
+        # These are the RPN SOD inputs and require looking up a value in a
+        # dict rather than a direct read of the cell contents.
+        for _column in [21, 22, 23, 34, 35, 36]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[_column]).get_cells()
+
+            _cell[0].connect('edited', self._on_cell_edit, _column)
 
     def __set_properties(self) -> None:
         """
@@ -448,11 +463,12 @@ class FMEA(RAMSTKWorkView):
         _model = self.treeview.get_model()
         _model.clear()
 
-    def _do_load_action(self, entity: RAMSTKAction,
+    def _do_load_action(self, identifier: str, entity: RAMSTKAction,
                         row: Gtk.TreeIter) -> Gtk.TreeIter:
         """
         Load an action record into the RAMSTKTreeView().
 
+        :param str identifier: the node ID from the FMEA tree.
         :param entity: the FMEA entity containing the data to load.
         :type entity: :class:`ramstk.dao.programdb.RAMSTKAction`
         :param row: the parent row of the action to load into the FMEA form.
@@ -460,15 +476,16 @@ class FMEA(RAMSTKWorkView):
         :return: _new_row; the row that was just populated with action data.
         :rtype: :class:`Gtk.TreeIter`
         """
+        _new_row = None
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons["action"], 22, 22)
 
         _attributes = [
-            str(entity.action_id), entity.action_recommended, "", "", "", "",
-            "", "", "", "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "",
-            "", "", "", 0, entity.action_category, entity.action_owner,
+            identifier, entity.action_recommended, "", "", "", "", "", "", "",
+            "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "", "", "", 0,
+            entity.action_category, entity.action_owner,
             entity.action_due_date.strftime('%Y-%m-%d'), entity.action_status,
             entity.action_taken, entity.action_approved,
             entity.action_approve_date.strftime('%Y-%m-%d'),
@@ -480,34 +497,30 @@ class FMEA(RAMSTKWorkView):
 
         try:
             _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("FMEA action {0:s} was missing it's data "
+                           "package.").format(str(entity.action_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
         except TypeError:
-            _user_msg = _("One or more Actions had the wrong data type in "
-                          "it's data package and is not displayed in the "
-                          "FMEA.")
             _debug_msg = (
-                "Data for Action ID {0:s} for Hardware ID {1:s} is the wrong "
-                "type for one or more columns.".format(str(entity.action_id),
-                                                       str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                "Data for FMEA action ID {0:s} is the wrong type for one or "
+                "more columns.".format(str(entity.action_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Actions was missing some of it's "
-                          "data and is not displayed in the FMEA.")
-            _debug_msg = ("Too few fields for Action ID {0:s} for Hardware "
-                          "ID {1:s}.".format(str(entity.action_id),
-                                             str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            _debug_msg = ("Too few fields in the data package for FMEA action "
+                          "ID {0:s}.".format(str(entity.action_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         return _new_row
 
-    def _do_load_cause(self, entity: RAMSTKCause,
+    def _do_load_cause(self, identifier: str, entity: RAMSTKCause,
                        row: Gtk.TreeIter) -> Gtk.TreeIter:
         """
         Load a failure cause record into the RAMSTKTreeView().
 
+        :param str identifier: the node ID from the FMEA tree.
         :param entity: the FMEA entity containing the data to load.
         :type entity: :class:`ramstk.dao.programdb.RAMSTKCause`
         :param row: the parent row of the cause to load into the FMEA form.
@@ -515,53 +528,50 @@ class FMEA(RAMSTKWorkView):
         :return: _new_row; the row that was just populated with cause data.
         :rtype: :class:`Gtk.TreeIter`
         """
+        _new_row = None
         _model = self.treeview.get_model()
 
         (_occurrence, _detection, _occurrence_new,
-         _detection_new) = self._get_rpn_values(entity)
+         _detection_new) = self._get_rpn_names(entity)
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons["cause"], 22, 22)
 
         _attributes = [
-            str(entity.cause_id), entity.description, "", "", "", "", "", "",
-            "", "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
-            _occurrence, _detection, entity.rpn, "", "", "", "", "", 0, "", 0,
-            "", "", _occurrence_new, _detection_new, entity.rpn_new, 0, 0, 0,
-            "", _icon,
+            identifier, entity.description, "", "", "", "", "", "", "", "", "",
+            "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "", _occurrence,
+            _detection, entity.rpn, "", "", "", "", "", 0, "", 0, "", "",
+            _occurrence_new, _detection_new, entity.rpn_new, 0, 0, 0, "",
+            _icon,
             str(entity.get_attributes())
         ]
 
         try:
             _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("Failure cause {0:s} was missing it's data "
+                           "package.").format(str(entity.cause_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
         except TypeError:
-            _user_msg = _("One or more Causes had the wrong data type in "
-                          "it's data package and is not displayed in the "
-                          "FMEA.")
             _debug_msg = (
-                "Data for Cause ID {0:s} for Hardware ID {1:s} is the wrong "
-                "type for one or more columns.".format(str(entity.cause_id),
-                                                       str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                "Data for failure cause ID {0:s} is the wrong type for one or "
+                "more columns.".format(str(entity.cause_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Causes was missing some of it's "
-                          "data and is not displayed in the FMEA.")
-            _debug_msg = ("Too few fields for Cause ID {0:s} for Hardware "
-                          "ID {1:s}.".format(str(entity.cause_id),
-                                             str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            _debug_msg = ("Too few fields in the data package for failure "
+                          "cause ID {0:s}.".format(str(entity.cause_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         return _new_row
 
-    def _do_load_control(self, entity: RAMSTKControl,
+    def _do_load_control(self, identifier: str, entity: RAMSTKControl,
                          row: Gtk.TreeIter) -> Gtk.TreeIter:
         """
         Load a control record into the RAMSTKTreeView().
 
+        :param str identifier: the node ID from the FMEA tree.
         :param entity: the FMEA entity containing the data to load.
         :type entity: :class:`ramstk.dao.programdb.RAMSTKControl`
         :param row: the parent row of the control to load into the FMEA form.
@@ -569,49 +579,46 @@ class FMEA(RAMSTKWorkView):
         :return: _new_row; the row that was just populated with control data.
         :rtype: :class:`Gtk.TreeIter`
         """
+        _new_row = None
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons["control"], 22, 22)
 
         _attributes = [
-            str(entity.control_id), entity.description, "", "", "", "", "", "",
-            "", "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0,
-            entity.type_id, "", "", "", 0, "", "", "", "", "", 0, "", 0, "",
-            "", "", "", 0, 0, 0, 0, "", _icon,
+            identifier, entity.description, "", "", "", "", "", "", "", "", "",
+            "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, entity.type_id, "", "",
+            "", 0, "", "", "", "", "", 0, "", 0, "", "", "", "", 0, 0, 0, 0,
+            "", _icon,
             str(entity.get_attributes())
         ]
 
         try:
             _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("FMEA control {0:s} was missing it's data "
+                           "package.").format(str(entity.control_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
         except TypeError:
-            _user_msg = _("One or more Controls had the wrong data type in "
-                          "it's data package and is not displayed in the "
-                          "FMEA.")
             _debug_msg = (
-                "Data for Control ID {0:s} for Hardware ID {1:s} is the wrong "
-                "type for one or more columns.".format(str(entity.control_id),
-                                                       str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                "Data for FMEA control ID {0:s} is the wrong type for one or "
+                "more columns.".format(str(entity.control_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Controls was missing some of it's "
-                          "data and is not displayed in the FMEA.")
-            _debug_msg = ("Too few fields for Control ID {0:s} for Hardware "
-                          "ID {1:s}.".format(str(entity.control_id),
-                                             str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            _debug_msg = ("Too few fields in the data package for FMEA "
+                          "control ID {0:s}.".format(str(entity.control_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         return _new_row
 
-    def _do_load_mechanism(self, entity: RAMSTKMechanism,
+    def _do_load_mechanism(self, identifier: str, entity: RAMSTKMechanism,
                            row: Gtk.TreeIter) -> Gtk.TreeIter:
         """
         Load a failure mechanism record into the RAMSTKTreeView().
 
+        :param str identifier: the node ID from the FMEA tree.
         :param entity: the FMEA entity containing the data to load.
         :type entity: :class:`ramstk.dao.programdb.RAMSTKMechanism`
         :param row: the parent row of the mechanism to load into the FMEA form.
@@ -619,43 +626,40 @@ class FMEA(RAMSTKWorkView):
         :return: _new_row; the row that was just populated with mechanism data.
         :rtype: :class:`Gtk.TreeIter`
         """
+        _new_row = None
         _model = self.treeview.get_model()
 
         (_occurrence, _detection, _occurrence_new,
-         _detection_new) = self._get_rpn_values(entity)
+         _detection_new) = self._get_rpn_names(entity)
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons["mechanism"], 22, 22)
 
         _attributes = [
-            str(entity.mechanism_id), entity.description, "", "", "", "", "",
-            "", "", "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
-            _occurrence, _detection, entity.rpn, "", "", "", "", "", 0, "", 0,
-            "", "", _occurrence_new, _detection_new, entity.rpn_new,
+            identifier, entity.description, "", "", "", "", "", "", "", "", "",
+            "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "", _occurrence,
+            _detection, entity.rpn, "", "", "", "", "", 0, "", 0, "", "",
+            _occurrence_new, _detection_new, entity.rpn_new,
             entity.pof_include, 0, 0, "", _icon,
             str(entity.get_attributes())
         ]
 
         try:
             _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("Failure mechanism {0:s} was missing it's data "
+                           "package.").format(str(entity.mechanism_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
         except TypeError:
-            _user_msg = _("One or more Mechanisms had the wrong data type in "
-                          "it's data package and is not displayed in the "
-                          "FMEA.")
             _debug_msg = (
-                "Data for Mechanism ID {0:s} for Hardware ID {1:s} is the "
-                "wrong type for one or more columns.".format(
-                    str(entity.mechanism_id), str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                "Data for failure mechanism ID {0:s} is the wrong type for "
+                "one or more columns.".format(str(entity.mechanism_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Mechanisms was missing some of it's "
-                          "data and is not displayed in the FMEA.")
-            _debug_msg = ("Too few fields for Mechanism ID {0:s} for Hardware "
-                          "ID {1:s}.".format(str(entity.mechanism_id),
-                                             str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            _debug_msg = ("Too few fields in the data package for "
+                          "failure mechanism ID {0:s}.".format(
+                              str(entity.mechanism_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
@@ -671,8 +675,7 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         _nid = attributes.root
-        _model = self._get_cell_model(self._lst_col_order[2])
-        _model.clear()
+        _model = self.treeview.get_cell_model(self._lst_col_order[2])
 
         self._lst_missions = [""]
         _model.append([""])
@@ -688,8 +691,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._get_cell_model(self._lst_col_order[3])
-        _model.clear()
+        _model = self.treeview.get_cell_model(self._lst_col_order[3])
         _model.append([""])
 
         try:
@@ -698,11 +700,12 @@ class FMEA(RAMSTKWorkView):
         except KeyError:
             pass
 
-    def _do_load_mode(self, entity: RAMSTKMode,
+    def _do_load_mode(self, identifier: str, entity: RAMSTKMode,
                       row: Gtk.TreeIter) -> Gtk.TreeIter:
         """
         Load a failure mode record into the RAMSTKTreeView().
 
+        :param str identifier: the node ID from the FMEA tree.
         :param entity: the FMEA entity containing the data to load.
         :type entity: :class:`ramstk.dao.programdb.RAMSTKMode`
         :param row: the parent row of the mode to load into the FMEA form.
@@ -710,17 +713,18 @@ class FMEA(RAMSTKWorkView):
         :return: _new_row; the row that was just populated with mode data.
         :rtype: :class:`Gtk.TreeIter`
         """
+        _new_row = None
         _model = self.treeview.get_model()
 
         _severity = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY[
-            entity.rpn_severity]['description']
+            entity.rpn_severity]['name']
         _severity_new = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY[
-            entity.rpn_severity_new]['description']
+            entity.rpn_severity_new]['name']
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self._dic_icons["mode"],
                                                        22, 22)
 
         _attributes = [
-            str(entity.mode_id), entity.description, entity.mission,
+            identifier, entity.description, entity.mission,
             entity.mission_phase, entity.effect_local, entity.effect_next,
             entity.effect_end, entity.detection_method,
             entity.other_indications, entity.isolation_method,
@@ -736,26 +740,56 @@ class FMEA(RAMSTKWorkView):
 
         try:
             _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("Failure mode {0:s} was missing it's data "
+                           "package.").format(str(entity.mode_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
         except TypeError:
-            _user_msg = _("One or more failure modes had the wrong data type "
-                          "in it's data package and is not displayed in the "
-                          "FMEA.")
-            _debug_msg = (
-                "Data for Mode ID {0:s} for Hardware ID {1:s} is the wrong "
-                "type for one or more columns.".format(str(entity.mode_id),
-                                                       str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            _debug_msg = ("Data for failure mode ID {0:s} is the wrong "
+                          "type for one or more columns.".format(
+                              str(entity.mode_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more failure modes was missing some of it's "
-                          "data and is not displayed in the FMEA.")
-            _debug_msg = ("Too few fields for Mode ID {0:s} for Hardware ID "
-                          "{1:s}.".format(str(entity.mode_id),
-                                          str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            _debug_msg = ("Too few fields in the data package for Mode ID "
+                          "{0:s}.".format(str(entity.mode_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
+
+        return _new_row
+
+    def _do_load_row(self, node: object, row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """
+        Determines which type of row to load and loads the data.
+
+        :param node: the FMEA treelib Node() whose data is to be loaded.
+        :type nose: :class:`treelib.Node`
+        :param row: the parent row for the row to be loaded.
+        :type row: :class:`Gtk.TreeIter`
+        :return: _new_row; the row that was just added to the FMEA treeview.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        # The root node will have no data package, so this indicates the need
+        # to clear the tree in preparation for the load.
+        if node.data is None:
+            self._do_clear_page()
+        else:
+            [[__, _entity]] = node.data.items()
+
+            if _entity.is_mode:
+                self._get_mission(_entity)
+                _new_row = self._do_load_mode(node.identifier, _entity, row)
+            elif _entity.is_mechanism:
+                _new_row = self._do_load_mechanism(node.identifier, _entity,
+                                                   row)
+            elif _entity.is_cause:
+                _new_row = self._do_load_cause(node.identifier, _entity, row)
+            elif _entity.is_control:
+                _new_row = self._do_load_control(node.identifier, _entity, row)
+            elif _entity.is_action:
+                _new_row = self._do_load_action(node.identifier, _entity, row)
 
         return _new_row
 
@@ -776,34 +810,8 @@ class FMEA(RAMSTKWorkView):
         _model = self.treeview.get_model()
 
         _node = tree.nodes[list(tree.nodes.keys())[0]]
-        _entity = _node.data
-        # The root node will have no data package, so this indicates the need
-        # to clear the tree in preparation for the load.
-        if _entity is None:
-            self._do_clear_page()
-        else:
-            [[__, _entity]] = _node.data.items()
 
-        try:
-            if _entity.is_mode:
-                self._get_mission(_entity)
-                _new_row = self._do_load_mode(_entity, row)
-            elif _entity.is_mechanism:
-                _new_row = self._do_load_mechanism(_entity, row)
-            elif _entity.is_cause:
-                _new_row = self._do_load_cause(_entity, row)
-            elif _entity.is_control:
-                _new_row = self._do_load_control(_entity, row)
-            elif _entity.is_action:
-                _new_row = self._do_load_action(_entity, row)
-        except AttributeError:
-            _user_msg = _("One or more FMEA line items was missing it's data "
-                          "package and is not displayed in the FMEA.")
-            _debug_msg = (
-                "There is no data package for FMEA ID {0:s} for Hardware ID "
-                "{1:s}.".format(str(_node.identifier), str(self._record_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        _new_row = self._do_load_row(_node, row)
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)
@@ -988,14 +996,8 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 43)
-
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        if self._functional:
-            pub.sendMessage("request_update_ffmea", node_id=_node_id)
-        else:
-            pub.sendMessage("request_update_dfmeca", node_id=_node_id)
+        pub.sendMessage('request_update_fmea', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -1008,10 +1010,10 @@ class FMEA(RAMSTKWorkView):
         :rtype: bool
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage("request_update_all_fmea")
+        pub.sendMessage('request_update_all_fmea')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _do_set_headings(self, node_id: str) -> List[bool]:
+    def _do_set_headings(self) -> List[bool]:
         """
         Set the heading text for the FMEA columns.
 
@@ -1021,28 +1023,27 @@ class FMEA(RAMSTKWorkView):
         """
         _set_visible = []
 
-        if node_id.count(".") == 0:
-            self._record_id = int(node_id)
+        if self._record_id.count(".") == 0:
             self.treeview.headings[self._lst_col_order[0]] = _("Mode ID")
             self.treeview.headings[self._lst_col_order[1]] = _("Failure\nMode")
             _set_visible = self._do_set_visible_columns(self._lst_mode_mask)
-        elif node_id.count(".") == 1:
+        elif self._record_id.count(".") == 1:
             self.treeview.headings[self._lst_col_order[0]] = _("Mechanism ID")
             self.treeview.headings[self._lst_col_order[1]] = _(
                 "Failure\nMechanism")
             _set_visible = self._do_set_visible_columns(
                 self._lst_mechanism_mask)
-        elif node_id.count(".") == 2:
+        elif self._record_id.count(".") == 2:
             self.treeview.headings[self._lst_col_order[0]] = _("Cause ID")
             self.treeview.headings[self._lst_col_order[1]] = _(
                 "Failure\nCause")
             _set_visible = self._do_set_visible_columns(self._lst_cause_mask)
-        elif node_id.count(".") == 4 and node_id[-1] == "c":
+        elif self._record_id.count(".") == 4 and self._record_id[-1] == "c":
             self.treeview.headings[self._lst_col_order[0]] = _("Control ID")
             self.treeview.headings[self._lst_col_order[1]] = _(
                 "Existing\nControl")
             _set_visible = self._do_set_visible_columns(self._lst_control_mask)
-        elif node_id.count(".") == 4 and node_id[-1] == "a":
+        elif self._record_id.count(".") == 4 and self._record_id[-1] == "a":
             self.treeview.headings[self._lst_col_order[0]] = _("Action ID")
             self.treeview.headings[self._lst_col_order[1]] = _(
                 "Recommended\nAction")
@@ -1061,21 +1062,6 @@ class FMEA(RAMSTKWorkView):
         :rtype: list
         """
         return self.treeview.visible and mask
-
-    def _get_cell_model(self, column: int) -> Gtk.TreeModel:
-        """
-        Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
-
-        :param int column: the column number to retrieve the cell from.
-        :return: _model
-        :rtype: :class:`Gtk.TreeModel`
-        """
-        _column = self.treeview.get_column(column)
-        _cell = _column.get_cells()[0]
-        _model = _cell.get_property("model")
-        _model.clear()
-
-        return _model
 
     def _get_mission(self, entity: object) -> None:
         """
@@ -1096,7 +1082,7 @@ class FMEA(RAMSTKWorkView):
         except (AttributeError, KeyError):
             self._lst_fmea_data[3] = ""
 
-    def _get_rpn_values(self, entity: object) -> Tuple[str, str, str, str]:
+    def _get_rpn_names(self, entity: object) -> Tuple[str, str, str, str]:
         """
         Retrieve the RPN category for the selected mechanism or cause.
 
@@ -1107,17 +1093,42 @@ class FMEA(RAMSTKWorkView):
         :rtype: tuple
         """
         _occurrence = str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE[
-            entity.rpn_occurrence]['description'])
+            entity.rpn_occurrence]['name'])
         _detection = str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION[
-            entity.rpn_detection]['description'])
+            entity.rpn_detection]['name'])
         _occurrence_new = str(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE[
-                entity.rpn_occurrence_new]['description'])
+                entity.rpn_occurrence_new]['name'])
         _detection_new = str(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION[
-                entity.rpn_detection_new]['description'])
+                entity.rpn_detection_new]['name'])
 
         return (_occurrence, _detection, _occurrence_new, _detection_new)
+
+    def _get_rpn_values(self, position: int, name: str) -> int:
+        """
+        Retrieve the RPN value for the selected SOD description.
+
+        :param str name: the noun name in the severity, detection,
+            or occurrence list.
+        :return: _value
+        :rtype: int
+        """
+        _rpn = {}
+        _value = 0
+
+        if position in [21, 34]:
+            _rpn = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY
+        elif position in [22, 35]:
+            _rpn = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE
+        elif position in [23, 36]:
+            _rpn = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION
+
+        for _item in _rpn.items():
+            if _item[1]['name'] == name:
+                _value = int(_item[1]['value'])
+
+        return _value
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
@@ -1172,6 +1183,34 @@ class FMEA(RAMSTKWorkView):
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
+    def _on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
+                      position: int) -> None:
+        """
+        Handle edits of the Allocation Work View RAMSTKTreeview().
+
+        :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param str message: the PyPubSub message to publish on success.
+        :param int position: the column position of the edited
+            Gtk.CellRenderer().
+        :return: None
+        :rtype: None
+        """
+        self.treeview.do_edit_cell(cell, path, new_text, position)
+
+        _value = self._get_rpn_values(self._lst_col_order[position], new_text)
+
+        try:
+            _key = self._dic_column_keys[self._lst_col_order[position]]
+        except (IndexError, KeyError):
+            _key = ''
+
+        pub.sendMessage('wvw_editing_fmea',
+                        node_id=[self._record_id, -1],
+                        package={_key: _value})
+
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
         Handle events for the FMEA Work View RAMSTKTreeView().
@@ -1187,14 +1226,14 @@ class FMEA(RAMSTKWorkView):
 
         _model, _row = selection.get_selected()
         try:
-            _node_id = _model.get_value(_row, 0)
+            self._record_id = _model.get_value(_row, 0)
             _mission = _model.get_value(_row, 2)
         except TypeError:
-            _node_id = '0'
+            self._record_id = '0'
             _mission = ""
 
         self._do_load_mission_phases(_mission)
-        _set_visible = self._do_set_headings(_node_id)
+        _set_visible = self._do_set_headings()
 
         _columns = self.treeview.get_columns()
         i = 0

@@ -446,7 +446,7 @@ class DataManager(RAMSTKDataManager):
             try:
                 _attributes = self.do_select(node_id[0],
                                              table=_table).get_attributes()
-            except KeyError:
+            except (AttributeError, KeyError):
                 _attributes = {}
 
             if _key in _attributes:
