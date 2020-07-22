@@ -94,7 +94,7 @@ class DataManager(RAMSTKDataManager):
 
         _identifier = '{0:s}.{1:d}'.format(parent_id, cause.cause_id)
 
-        self.tree.create_node(tag=_identifier,
+        self.tree.create_node(tag='cause',
                               identifier=_identifier,
                               parent=parent_id,
                               data=_data_package)
@@ -116,10 +116,11 @@ class DataManager(RAMSTKDataManager):
         """
         _data_package = {'mode': mode}
 
-        self.tree.create_node(tag=str(mode.mode_id),
-                              identifier=str(mode.mode_id),
-                              parent=self._root,
-                              data=_data_package)
+        self.tree.create_node(
+            tag='mode',  #str(mode.mode_id),
+            identifier=str(mode.mode_id),
+            parent=self._root,
+            data=_data_package)
 
     def _do_delete(self, node_id: int) -> None:
         """
@@ -306,7 +307,7 @@ class DataManager(RAMSTKDataManager):
 
             _identifier = '{0:s}.{1:d}.a'.format(parent_id, _action.action_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='action',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data=_data_package)
@@ -350,7 +351,7 @@ class DataManager(RAMSTKDataManager):
             _identifier = '{0:s}.{1:d}.c'.format(parent_id,
                                                  _control.control_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='control',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data=_data_package)
@@ -414,7 +415,7 @@ class DataManager(RAMSTKDataManager):
             _identifier = '{0:d}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='mechanism',
                                   identifier=_identifier,
                                   parent=str(mode_id),
                                   data=_data_package)

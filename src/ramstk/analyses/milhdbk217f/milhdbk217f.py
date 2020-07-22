@@ -15,9 +15,9 @@ from typing import Any, Dict
 from pubsub import pub
 
 # RAMSTK Local Imports
-from .models import (
-    capacitor, connection, crystal, efilter, fuse, inductor, integratedcircuit,
-    lamp, meter, relay, resistor, semiconductor, switch)
+from .models import (capacitor, connection, crystal, efilter, fuse, inductor,
+                     integratedcircuit, lamp, meter, relay, resistor,
+                     semiconductor, switch)
 
 
 # noinspection PyTypeChecker
@@ -61,15 +61,13 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
     if attributes['category_id'] != 2:
         attributes['piQ'] = _get_part_count_quality_factor(
-            attributes['category_id'],
-            attributes['subcategory_id'],
-            attributes['quality_id'],
-        )
+            attributes['category_id'], attributes['subcategory_id'],
+            attributes['quality_id'])
     else:
         attributes = semiconductor.get_part_count_quality_factor(attributes)
 
-    attributes['hazard_rate_active'] = (attributes['lambda_b'] *
-                                        attributes['piQ'])
+    attributes['hazard_rate_active'] = (attributes['lambda_b']
+                                        * attributes['piQ'])
 
     return attributes
 
@@ -297,10 +295,10 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> None:
             attributes = _do_calculate_part_stress(**attributes)
 
         attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] +
-            attributes['add_adj_factor']) * (
-                (attributes['duty_cycle'] / 100.0) *
-                attributes['mult_adj_factor'] * attributes['quantity'])
+            attributes['hazard_rate_active']
+            + attributes['add_adj_factor']) * (
+                (attributes['duty_cycle'] / 100.0)
+                * attributes['mult_adj_factor'] * attributes['quantity'])
 
         pub.sendMessage('succeed_predict_reliability', attributes=attributes)
     except ValueError:
