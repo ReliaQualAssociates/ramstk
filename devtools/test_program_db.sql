@@ -257,7 +257,7 @@ CREATE TABLE ramstk_action (
 );
 INSERT INTO "ramstk_action" VALUES(1,4,'Test FMEA Recommended Action #1 for Cause ID 1.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 INSERT INTO "ramstk_action" VALUES(2,5,'Test FMEA Recommended Action #1 for Cause ID 2.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
-INSERT INTO "ramstk_action" VALUES(3,6,'Test FMEA Recommended Action #1 for Cause ID 6','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
+INSERT INTO "ramstk_action" VALUES(3,6,'Test FMEA Recommended Action #1 for Cause ID 3','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 CREATE TABLE ramstk_control (
     fld_cause_id INTEGER,
     fld_control_id INTEGER NOT NULL,

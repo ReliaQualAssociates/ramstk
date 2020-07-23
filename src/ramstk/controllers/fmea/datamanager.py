@@ -39,6 +39,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._last_id = [0, 0, 0, 0, 0]
 
         # Initialize private scalar attributes.
         try:
@@ -99,6 +100,8 @@ class DataManager(RAMSTKDataManager):
                               parent=parent_id,
                               data=_data_package)
 
+        self._last_id[2] = max(self._last_id[2], cause.cause_id)
+
         self._do_select_all_control(cause.cause_id, _identifier)
         self._do_select_all_action(cause.cause_id, _identifier)
 
@@ -121,6 +124,8 @@ class DataManager(RAMSTKDataManager):
             identifier=str(mode.mode_id),
             parent=self._root,
             data=_data_package)
+
+        self._last_id[0] = max(self._last_id[0], mode.mode_id)
 
     def _do_delete(self, node_id: int) -> None:
         """
@@ -155,9 +160,14 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _action = RAMSTKAction(cause_id=cause_id,
-                                   action_recommended=b'Recommended Action')
+            _action = RAMSTKAction()
+            _action.cause_id = cause_id
+            _action.action_id = self._last_id[4] + 1
+            _action.action_recommended = 'Recommended Action'
+
             self.dao.do_insert(_action)
+
+            self._last_id[4] = _action.action_id
 
             _data_package = {'action': _action}
 
@@ -168,7 +178,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_action', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError):
+        except (DataAccessError, NodeIDAbsentError) as _e:
             _error_msg = ('Attempting to add an action to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_action", error_message=_error_msg)
@@ -186,10 +196,15 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _cause = RAMSTKCause(mode_id=mode_id,
-                                 mechanism_id=mechanism_id,
-                                 description='New Failure Cause')
+            _cause = RAMSTKCause()
+            _cause.mode_id = mode_id
+            _cause.mechanism_id = mechanism_id
+            _cause.cause_id = self._last_id[2] + 1
+            _cause.description = 'New Failure Cause'
+
             self.dao.do_insert(_cause)
+
+            self._last_id[2] = _cause.cause_id
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _cause.cause_id)
 
@@ -219,9 +234,14 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _control = RAMSTKControl(cause_id=cause_id,
-                                     description='New Control')
+            _control = RAMSTKControl()
+            _control.cause_id = cause_id
+            _control.control_id = self._last_id[3] + 1
+            _control.description = 'New Control'
+
             self.dao.do_insert(_control)
+
+            self._last_id[3] = _control.control_id
 
             _data_package = {'control': _control}
 
@@ -248,9 +268,14 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _mechanism = RAMSTKMechanism(mode_id=mode_id,
-                                         description='New Failure Mechanism')
+            _mechanism = RAMSTKMechanism()
+            _mechanism.mode_id = mode_id
+            _mechanism.mechanism_id = self._last_id[1] + 1
+            _mechanism.description = 'New Failure Mechanism'
+
             self.dao.do_insert(_mechanism)
+
+            self._last_id[1] = _mechanism.mechanism_id
 
             _identifier = '{0:s}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
@@ -262,9 +287,9 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_mechanism', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError):
+        except (DataAccessError, NodeIDAbsentError) as _e:
             _error_msg = ('Attempting to add a failure mechanism to unknown '
-                          'failure mode ID {0:s}.'.format(mode_id))
+                          'failure mode ID {0:s}.'.format(str(mode_id)))
             pub.sendMessage("fail_insert_mechanism", error_message=_error_msg)
 
     def _do_insert_mode(self) -> None:
@@ -275,10 +300,15 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _mode = RAMSTKMode(function_id=-1,
-                               hardware_id=self._parent_id,
-                               description='New Failure Mode')
+            _mode = RAMSTKMode()
+            _mode.function_id = -1
+            _mode.hardware_id = self._parent_id
+            _mode.mode_id = self._last_id[0] + 1
+            _mode.description = 'New Failure Mode'
+
             self.dao.do_insert(_mode)
+
+            self._last_id[0] = _mode.mode_id
 
             _data_package = {'mode': _mode}
             self.tree.create_node(tag=_mode.description,
@@ -287,8 +317,10 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_mode', node_id=str(_mode.mode_id))
-        except (DataAccessError, NodeIDAbsentError) as _error:
-            pub.sendMessage("fail_insert_mode", error_message=_error)
+        except (DataAccessError, NodeIDAbsentError) as _e:
+            _error_msg = ('Attempting to add a failure mode to unknown '
+                          'hardware ID {0:s}.'.format(str(self._root)))
+            pub.sendMessage("fail_insert_mode", error_message=_error_msg)
 
     def _do_select_all_action(self, cause_id: int, parent_id: str) -> None:
         """
@@ -311,6 +343,8 @@ class DataManager(RAMSTKDataManager):
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data=_data_package)
+
+            self._last_id[4] = max(self._last_id[4], _action.action_id)
 
     def _do_select_all_cause(self, mechanism_id: int, parent_id: str) -> None:
         """
@@ -355,6 +389,8 @@ class DataManager(RAMSTKDataManager):
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data=_data_package)
+
+            self._last_id[3] = max(self._last_id[3], _control.control_id)
 
     def _do_select_all_functional_fmea(self,
                                        attributes: Dict[str, Any]) -> None:
@@ -419,6 +455,8 @@ class DataManager(RAMSTKDataManager):
                                   identifier=_identifier,
                                   parent=str(mode_id),
                                   data=_data_package)
+
+            self._last_id[1] = max(self._last_id[1], _mechanism.mechanism_id)
 
             self._do_select_all_cause(_mechanism.mechanism_id, _identifier)
 

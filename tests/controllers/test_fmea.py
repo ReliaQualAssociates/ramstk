@@ -299,7 +299,9 @@ class TestDeleteMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
-        DUT._do_delete('6.3.6.6.a')
+        DUT._do_delete('6.3.3.6.a')
+
+        pub.unsubscribe(self.on_succeed_delete_action, 'succeed_delete_action')
 
     @pytest.mark.integration
     def test_do_delete_action_non_existent_id(self, test_program_dao):
@@ -311,6 +313,8 @@ class TestDeleteMethods():
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('300')
 
+        pub.unsubscribe(self.on_fail_delete_action, 'fail_delete_action')
+
     @pytest.mark.integration
     def test_do_delete_control(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree."""
@@ -319,7 +323,10 @@ class TestDeleteMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
-        DUT._do_delete('6.3.6.6.c')
+        DUT._do_delete('6.3.3.6.c')
+
+        pub.unsubscribe(self.on_succeed_delete_control,
+                        'succeed_delete_control')
 
     @pytest.mark.integration
     def test_do_delete_control_non_existent_id(self, test_program_dao):
@@ -331,6 +338,8 @@ class TestDeleteMethods():
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('300')
 
+        pub.unsubscribe(self.on_fail_delete_control, 'fail_delete_control')
+
     @pytest.mark.integration
     def test_do_delete_cause(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree."""
@@ -341,6 +350,8 @@ class TestDeleteMethods():
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('6.3.6')
 
+        pub.unsubscribe(self.on_succeed_delete_cause, 'succeed_delete_cause')
+
     @pytest.mark.integration
     def test_do_delete_cause_non_existent_id(self, test_program_dao):
         """_do_delete_cause() should send the fail message."""
@@ -350,6 +361,8 @@ class TestDeleteMethods():
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('300')
+
+        pub.unsubscribe(self.on_fail_delete_cause, 'fail_delete_cause')
 
     @pytest.mark.integration
     def test_do_delete_mechanism(self, test_program_dao):
@@ -362,6 +375,9 @@ class TestDeleteMethods():
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('6.3')
 
+        pub.unsubscribe(self.on_succeed_delete_mechanism,
+                        'succeed_delete_mechanism')
+
     @pytest.mark.integration
     def test_do_delete_mechanism_non_existent_id(self, test_program_dao):
         """_do_delete_mechanism() should send the fail message."""
@@ -371,6 +387,8 @@ class TestDeleteMethods():
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('300')
+
+        pub.unsubscribe(self.on_fail_delete_mechanism, 'fail_delete_mechanism')
 
     @pytest.mark.integration
     def test_do_delete_mode(self, test_program_dao):
@@ -382,6 +400,8 @@ class TestDeleteMethods():
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('6')
 
+        pub.unsubscribe(self.on_succeed_delete_mode, 'succeed_delete_mode')
+
     @pytest.mark.integration
     def test_do_delete_mode_non_existent_id(self, test_program_dao):
         """_do_delete_mode() should send the fail message."""
@@ -392,16 +412,23 @@ class TestDeleteMethods():
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_delete('300')
 
+        pub.unsubscribe(self.on_fail_delete_mode, 'fail_delete_mode')
+
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_mode(self, node_id):
-        assert node_id == '7'
+        assert node_id == '6'
         print("\033[36m\nsucceed_insert_mode topic was broadcast.")
 
+    def on_fail_insert_mode(self, error_message):
+        assert error_message == ('Attempting to add a failure mode to unknown '
+                                 'hardware ID 40.')
+        print("\033[35m\nfail_insert_mode topic was broadcast.")
+
     def on_succeed_insert_mechanism(self, node_id):
-        assert node_id == '7.4'
+        assert node_id == '5.3'
         print("\033[36m\nsucceed_insert_mechanism topic was broadcast.")
 
     def on_fail_insert_mechanism(self, error_message):
@@ -410,7 +437,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     def on_succeed_insert_cause(self, node_id):
-        assert node_id == '7.4.7'
+        assert node_id == '5.2.7'
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
     def on_fail_insert_cause(self, error_message):
@@ -420,7 +447,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     def on_succeed_insert_control(self, node_id):
-        assert node_id == '7.4.7.7.c'
+        assert node_id == '5.2.2.6.c'
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
     def on_fail_insert_control(self, error_message):
@@ -430,7 +457,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
     def on_succeed_insert_action(self, node_id):
-        assert node_id == '7.4.7.7.a'
+        assert node_id == '5.2.2.6.a'
         print("\033[36m\nsucceed_insert_action topic was broadcast.")
 
     def on_fail_insert_action(self, error_message):
@@ -449,12 +476,25 @@ class TestInsertMethods():
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
         DUT._do_insert_mode()
 
-        assert isinstance(DUT.tree.get_node('5').data['mode'], RAMSTKMode)
-        assert DUT.tree.get_node('5').data['mode'].mode_id == 5
+        assert isinstance(DUT.tree.get_node('6').data['mode'], RAMSTKMode)
+        assert DUT.tree.get_node('6').data['mode'].mode_id == 6
         assert DUT.tree.get_node(
-            '5').data['mode'].description == 'System Test Failure Mode #2'
+            '6').data['mode'].description == 'New Failure Mode'
 
         pub.unsubscribe(self.on_succeed_insert_mode, 'succeed_insert_mode')
+
+    @pytest.mark.integration
+    def test_do_insert_mode_no_hardware(self, test_program_dao):
+        """_do_insert_mode() should send the fail message if attempting to insert a failure mode for a non-existent hardware ID."""
+        pub.subscribe(self.on_fail_insert_mode, 'fail_insert_mode')
+
+        DUT = dmFMEA()
+        DUT.do_connect(test_program_dao)
+        DUT._do_select_all_hardware_fmea({'hardware_id': 1})
+        DUT._root = 40
+        DUT._do_insert_mode()
+
+        pub.unsubscribe(self.on_fail_insert_mode, 'fail_insert_mode')
 
     @pytest.mark.integration
     def test_do_insert_mechanism(self, test_program_dao):
@@ -468,10 +508,10 @@ class TestInsertMethods():
         DUT._do_insert_mechanism('5')
 
         assert isinstance(
-            DUT.tree.get_node('5.2').data['mechanism'], RAMSTKMechanism)
-        assert DUT.tree.get_node('5.2').data['mechanism'].mechanism_id == 2
-        assert DUT.tree.get_node('5.2').data[
-            'mechanism'].description == 'Test Failure Mechanism #1 for Mode ID 5'
+            DUT.tree.get_node('5.3').data['mechanism'], RAMSTKMechanism)
+        assert DUT.tree.get_node('5.3').data['mechanism'].mechanism_id == 3
+        assert DUT.tree.get_node(
+            '5.3').data['mechanism'].description == 'New Failure Mechanism'
 
         pub.unsubscribe(self.on_succeed_insert_mechanism,
                         'succeed_insert_mechanism')
@@ -489,6 +529,18 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_fail_insert_mechanism, 'fail_insert_mechanism')
 
     @pytest.mark.integration
+    def test_do_insert_mechanism_bad_mode_id(self, test_program_dao):
+        """do_insert() should send the fail message if attempting to add a mechanism using int mode ID."""
+        pub.subscribe(self.on_fail_insert_mechanism, 'fail_insert_mechanism')
+
+        DUT = dmFMEA()
+        DUT.do_connect(test_program_dao)
+        DUT._do_select_all_hardware_fmea({'hardware_id': 1})
+        DUT._do_insert_mechanism(40)
+
+        pub.unsubscribe(self.on_fail_insert_mechanism, 'fail_insert_mechanism')
+
+    @pytest.mark.integration
     def test_do_insert_cause(self, test_program_dao):
         """_do_insert_cause() should send the success message after successfully inserting a failure cause."""
         pub.subscribe(self.on_succeed_insert_cause, 'succeed_insert_cause')
@@ -499,10 +551,10 @@ class TestInsertMethods():
         DUT._do_insert_cause(5, 2, '5.2')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.2').data['cause'], RAMSTKCause)
-        assert DUT.tree.get_node('5.2.2').data['cause'].cause_id == 2
-        assert DUT.tree.get_node('5.2.2').data[
-            'cause'].description == 'Test Failure Cause #2 for Mechanism ID 2'
+            DUT.tree.get_node('5.2.7').data['cause'], RAMSTKCause)
+        assert DUT.tree.get_node('5.2.7').data['cause'].cause_id == 7
+        assert DUT.tree.get_node(
+            '5.2.7').data['cause'].description == 'New Failure Cause'
 
         pub.unsubscribe(self.on_succeed_insert_cause, 'succeed_insert_cause')
 
@@ -529,11 +581,10 @@ class TestInsertMethods():
         DUT._do_insert_control(5, '5.2.2')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.2.5.c').data['control'], RAMSTKControl)
-        assert DUT.tree.get_node('5.2.2.5.c').data['control'].control_id == 5
-        assert DUT.tree.get_node('5.2.2.5.c').data['control'].description == (
-            'Test FMEA Control '
-            '#1 for Cause ID 5')
+            DUT.tree.get_node('5.2.2.6.c').data['control'], RAMSTKControl)
+        assert DUT.tree.get_node('5.2.2.6.c').data['control'].control_id == 6
+        assert DUT.tree.get_node('5.2.2.6.c').data['control'].description == (
+            'New Control')
 
         pub.unsubscribe(self.on_succeed_insert_control,
                         'succeed_insert_control')
@@ -560,15 +611,14 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
-        DUT._do_insert_action(5, '5.2.2')
+        DUT._do_insert_action(2, '5.2.2')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.2.5.a').data['action'], RAMSTKAction)
-        assert DUT.tree.get_node('5.2.2.5.a').data['action'].action_id == 5
+            DUT.tree.get_node('5.2.2.6.a').data['action'], RAMSTKAction)
+        assert DUT.tree.get_node('5.2.2.6.a').data['action'].action_id == 6
         assert DUT.tree.get_node(
-            '5.2.2.5.a').data['action'].action_recommended == (
-                'Test FMEA Recommended Action #1 '
-                'for Cause ID 2.')
+            '5.2.2.6.a').data['action'].action_recommended == (
+                'Recommended Action')
 
         pub.unsubscribe(self.on_succeed_insert_action, 'succeed_insert_action')
 

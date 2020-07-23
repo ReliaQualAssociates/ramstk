@@ -31,7 +31,7 @@ ATTRIBUTES = {
     'description': 'Test Functional Failure Mode #1',
     'mission_phase': '',
     'mode_probability': '',
-    'remarks': b'',
+    'remarks': '',
     'mode_ratio': 0.0,
     'mode_hazard_rate': 0.0,
     'rpn_severity': 1,
@@ -83,7 +83,6 @@ class TestRAMSTKMode():
         assert DUT.single_point == 0
         assert DUT.type_id == 0
 
-
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
         """ get_attributes() should return a dict of attribute name:value pairs. """
@@ -119,14 +118,12 @@ class TestRAMSTKMode():
         assert _attributes['single_point'] == 0
         assert _attributes['type_id'] == 0
 
-
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
         """ set_attributes() should return a zero error code on success. """
         DUT = test_program_dao.session.query(RAMSTKMode).first()
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-
 
     @pytest.mark.integration
     def test_set_attributes_none_value(self, test_program_dao):
@@ -137,7 +134,6 @@ class TestRAMSTKMode():
 
         assert DUT.set_attributes(ATTRIBUTES) is None
         assert DUT.get_attributes()['description'] == ''
-
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

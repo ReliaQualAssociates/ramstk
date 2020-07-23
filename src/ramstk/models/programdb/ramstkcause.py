@@ -27,34 +27,28 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
     __defaults__ = {
         'description': '',
         'rpn': 0,
-        'rpn_detection': 0,
-        'rpn_detection_new': 0,
+        'rpn_detection': 10,
+        'rpn_detection_new': 10,
         'rpn_new': 0,
-        'rpn_occurrence': 0,
-        'rpn_occurrence_new': 0
+        'rpn_occurrence': 10,
+        'rpn_occurrence_new': 10
     }
     __tablename__ = 'ramstk_cause'
     __table_args__ = {'extend_existing': True}
 
-    mode_id = Column(
-        'fld_mode_id',
-        Integer,
-        ForeignKey('ramstk_mode.fld_mode_id'),
-        nullable=False,
-    )
-    mechanism_id = Column(
-        'fld_mechanism_id',
-        Integer,
-        ForeignKey('ramstk_mechanism.fld_mechanism_id'),
-        nullable=False,
-    )
-    cause_id = Column(
-        'fld_cause_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False,
-    )
+    mode_id = Column('fld_mode_id',
+                     Integer,
+                     ForeignKey('ramstk_mode.fld_mode_id'),
+                     nullable=False)
+    mechanism_id = Column('fld_mechanism_id',
+                          Integer,
+                          ForeignKey('ramstk_mechanism.fld_mechanism_id'),
+                          nullable=False)
+    cause_id = Column('fld_cause_id',
+                      Integer,
+                      primary_key=True,
+                      autoincrement=True,
+                      nullable=False)
 
     description = Column('fld_description',
                          String(512),
@@ -105,7 +99,7 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
             'rpn_detection_new': self.rpn_detection_new,
             'rpn_new': self.rpn_new,
             'rpn_occurrence': self.rpn_occurrence,
-            'rpn_occurrence_new': self.rpn_occurrence_new,
+            'rpn_occurrence_new': self.rpn_occurrence_new
         }
 
         return _attributes

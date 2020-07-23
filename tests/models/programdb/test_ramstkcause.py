@@ -16,11 +16,11 @@ from ramstk.models.programdb import RAMSTKCause
 
 ATTRIBUTES = {
     'rpn_new': 0,
-    'rpn_occurrence_new': 0,
+    'rpn_occurrence_new': 10,
     'description': 'Test Failure Cause #1',
-    'rpn_occurrence': 0,
-    'rpn_detection_new': 0,
-    'rpn_detection': 0,
+    'rpn_occurrence': 10,
+    'rpn_detection_new': 10,
+    'rpn_detection': 10,
     'rpn': 0
 }
 

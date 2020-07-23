@@ -26,12 +26,12 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'action_recommended': b'',
+        'action_recommended': '',
         'action_category': '',
         'action_owner': '',
         'action_due_date': date.today() + timedelta(days=30),
         'action_status': '',
-        'action_taken': b'',
+        'action_taken': '',
         'action_approved': 0,
         'action_approve_date': date.today() + timedelta(days=30),
         'action_closed': 0,
@@ -40,19 +40,15 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
     __tablename__ = 'ramstk_action'
     __table_args__ = {'extend_existing': True}
 
-    cause_id = Column(
-        'fld_cause_id',
-        Integer,
-        ForeignKey('ramstk_cause.fld_cause_id'),
-        nullable=False,
-    )
-    action_id = Column(
-        'fld_action_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False,
-    )
+    cause_id = Column('fld_cause_id',
+                      Integer,
+                      ForeignKey('ramstk_cause.fld_cause_id'),
+                      nullable=False)
+    action_id = Column('fld_action_id',
+                       Integer,
+                       primary_key=True,
+                       autoincrement=True,
+                       nullable=False)
 
     action_recommended = Column('fld_action_recommended',
                                 String,
@@ -117,7 +113,7 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
             'action_approved': self.action_approved,
             'action_approve_date': self.action_approve_date,
             'action_closed': self.action_closed,
-            'action_close_date': self.action_close_date,
+            'action_close_date': self.action_close_date
         }
 
         return _attributes

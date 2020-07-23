@@ -18,7 +18,7 @@ experience. -->
         <column>
             <defaulttitle>Entity ID</defaulttitle>
             <usertitle>Entity ID</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>0</position>
             <widget>text</widget>
             <editable>0</editable>
