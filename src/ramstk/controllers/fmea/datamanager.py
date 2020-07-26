@@ -69,6 +69,7 @@ class DataManager(RAMSTKDataManager):
                       'request_set_fmea_attributes')
 
         pub.subscribe(self.do_update, 'request_update_fmea')
+        pub.subscribe(self.do_update_all, 'request_update_all_fmea')
         pub.subscribe(self.do_get_attributes, 'request_get_mode_attributes')
         pub.subscribe(self.do_get_attributes,
                       'request_get_mechanism_attributes')
@@ -178,7 +179,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_action', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _e:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add an action to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
             pub.sendMessage("fail_insert_action", error_message=_error_msg)
@@ -269,7 +270,7 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _mechanism = RAMSTKMechanism()
-            _mechanism.mode_id = mode_id
+            _mechanism.mode_id = int(mode_id)
             _mechanism.mechanism_id = self._last_id[1] + 1
             _mechanism.description = 'New Failure Mechanism'
 
@@ -361,11 +362,11 @@ class DataManager(RAMSTKDataManager):
                     RAMSTKCause.mechanism_id == mechanism_id).all():
 
                 self._add_cause_node(_cause, parent_id)
-        elif self._is_functional:
-            for _cause in self.dao.session.query(RAMSTKCause).filter(
-                    RAMSTKCause.mode_id == mechanism_id).all():
+        # elif self._is_functional:
+        #     for _cause in self.dao.session.query(RAMSTKCause).filter(
+        #             RAMSTKCause.mode_id == mechanism_id).all():
 
-                self._add_cause_node(_cause, parent_id)
+        #         self._add_cause_node(_cause, parent_id)
 
     def _do_select_all_control(self, cause_id: int, parent_id: str) -> None:
         """

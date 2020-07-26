@@ -977,7 +977,8 @@ class TestAnalysisMethods():
         assert DUT._tree.get_node('4.1').data['mechanism'].rpn_new == 14
         assert DUT._tree.get_node('5.2').data['mechanism'].rpn_new == 20
 
-    @pytest.mark.integration
+    # Add this to the integration suite when adding the functional FMEA.
+    @pytest.mark.skip
     def test_do_calculate_rpn_using_cause(self, test_program_dao,
                                           test_toml_user_configuration):
         """do_calculate_rpn() should calculate the risk priority number (RPN) for all failure modes when using the cause for O and D values."""

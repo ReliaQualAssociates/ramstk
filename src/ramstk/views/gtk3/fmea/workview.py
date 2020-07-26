@@ -8,6 +8,7 @@
 
 # Standard Library Imports
 from typing import Any, Dict, List, Tuple
+import json
 
 # Third Party Imports
 import treelib
@@ -21,8 +22,38 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddControlAction
 from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKLabel,
-                                       RAMSTKMessageDialog, RAMSTKTextView,
-                                       RAMSTKTreeView, RAMSTKWorkView)
+                                       RAMSTKTextView, RAMSTKTreeView,
+                                       RAMSTKWorkView)
+
+
+def do_request_insert(attributes: Dict[str, Any], level: str,
+                      parent_id: str) -> None:
+    """
+    Send the correct request for the FMEA item to insert.
+
+    :param dict attributes: the attributes of the currently selected
+        element in the FMEA.
+    :param str level: the indenture level in the FMEA of the new element to
+        insert.
+    :param str parent_id: the node ID in the FMEA treelib Tree() of the
+        parent element.
+    :return: None
+    :rtype: None
+    """
+    if level == 'mode':
+        pub.sendMessage('request_insert_fmea_mode')
+    elif level == 'mechanism':
+        pub.sendMessage('request_insert_fmea_mechanism',
+                        mode_id=str(parent_id))
+    elif level == 'cause':
+        pub.sendMessage('request_insert_fmea_cause',
+                        mode_id=attributes['mode_id'],
+                        mechanism_id=attributes['mechanism_id'],
+                        parent_id=str(parent_id))
+    elif level in ['control', 'action']:
+        pub.sendMessage('request_insert_fmea_{0:s}'.format(level),
+                        cause_id=attributes['cause_id'],
+                        parent_id=str(parent_id))
 
 
 class FMEA(RAMSTKWorkView):
@@ -193,6 +224,7 @@ class FMEA(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_set_parent, 'selected_hardware')
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_missions,
                       'succeed_get_usage_profile_attributes')
@@ -372,7 +404,7 @@ class FMEA(RAMSTKWorkView):
                   "number (RPN).")
             ],
             callbacks=[
-                self.do_request_insert_sibling, self.do_request_insert_child,
+                self._do_request_insert_sibling, self._do_request_insert_child,
                 self._do_request_delete, self._do_request_calculate
             ])
         super().make_ui_with_treeview(title=[
@@ -892,102 +924,82 @@ class FMEA(RAMSTKWorkView):
 
         pub.sendMessage("request_delete_fmea", node_id=_node_id)
 
-    def _do_request_insert(self, **kwargs: Dict[str, Any]) -> None:
+    def _do_request_insert_child(self, __button: Gtk.ToolButton) -> None:
         """
         Request to insert a new entity to the FMEA.
 
         :return: None
         :rtype: None
         """
-        _sibling = kwargs["sibling"]
-
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
         # add a failure Mode.
         _model, _row = self.treeview.get_selection().get_selected()
         try:
-            _node_id = _model.get_value(_row, 43)
-            _level = self._get_level(_node_id)
-            _prow = _model.iter_parent(_row)
+            _parent_id = _model.get_value(_row, 0)
+            _attributes = _model.get_value(_row, 43).replace("'", '"')
+            _attributes = json.loads("{0}".format(_attributes))
+            _level = self._get_indenture_level()
         except TypeError:
-            _node_id = 0
-            _level = "mode"
-            _prow = None
+            _parent_id = '0'
+            _attributes = {}
+            _level = 'mode'
 
-        # Dict to hold the set of arguments to use for flow control.
-        # Outer key is FMEA level.  Inner key determines whether sibling or
-        # child is requested for insert.  Value is the entity ID, parent ID,
-        # whether to raise ActionControl dialog, and if an undefined condition
-        # exists (no child for control or action).
-        _dic_args = {
-            "mode": {
-                True: [self._parent_id, _node_id, False, False],
-                False: [_model.get_value(_prow, 0), _node_id, False, False]
-            },
-            "mechanism": {
-                True: [
-                    _model.get_value(_prow, 0),
-                    _model.get_value(_prow, 43), False, False
-                ],
-                False: [_model.get_value(_row, 0), _node_id, False, False]
-            },
-            "cause": {
-                True: [
-                    _model.get_value(_prow, 0),
-                    _model.get_value(_prow, 43), False, False
-                ],
-                False: [_model.get_value(_row, 0), _node_id, True, False]
-            },
-            "control": {
-                True: [
-                    _model.get_value(_prow, 0),
-                    _model.get_value(_prow, 43), True, False
-                ],
-                False: [_model.get_value(_row, 0), _node_id, True, True]
-            },
-            "action": {
-                True: [
-                    _model.get_value(_prow, 0),
-                    _model.get_value(_prow, 43), True, False
-                ],
-                False: [_model.get_value(_row, 0), _node_id, True, True]
-            }
-        }
+        _level = {
+            'mode': 'mechanism',
+            'mechanism': 'cause',
+            'cause': 'control_action'
+        }[_level]
 
-        # The _entity_id is the RAMSTK Program database Hardware ID, Mode ID,
-        # Mechanism ID, or Cause ID to add the new entity to.  The _parent_id
-        # is the Node ID of the parent node in the treelib Tree().
-        (_entity_id, _parent_id, _choose,
-         _undefined) = _dic_args[_sibling][_level]
-
-        if _undefined:
-            _prompt = _(
-                "A FMEA control or an action cannot have a child entity.")
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons["error"],
-                                          "error")
-
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                _dialog.do_destroy()
-
-        if _choose:
+        if _level == 'control_action':
             _dialog = AddControlAction()
 
             if _dialog.do_run() == Gtk.ResponseType.OK:
-                _control = _dialog.rdoControl.get_active()
-                _action = _dialog.rdoAction.get_active()
-
-                if _control:
+                if _dialog.rdoControl.get_active():
                     _level = "control"
-                elif _action:
+                elif _dialog.rdoAction.get_active():
                     _level = "action"
 
             _dialog.do_destroy()
 
-        if not _undefined:
-            pub.sendMessage("request_insert_fmea",
-                            entity_id=_entity_id,
-                            parent_id=_parent_id,
-                            level=_level)
+        do_request_insert(_attributes, _level, _parent_id)
+
+    def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to insert a new entity to the FMEA.
+
+        :return: None
+        :rtype: None
+        """
+        # Try to get the information needed to add a new entity at the correct
+        # location in the FMEA.  If there is nothing in the FMEA, by default
+        # add a failure Mode.
+        _model, _row = self.treeview.get_selection().get_selected()
+        try:
+            _node_id = _model.get_value(_row, 0)
+            _attributes = _model.get_value(_row, 43).replace("'", '"')
+            _attributes = json.dumps("{0}".format(_attributes))
+            _prow = _model.iter_parent(_row)
+            _parent_id = _model.get_value(_prow, 0)
+            _level = self._get_indenture_level()
+        except TypeError:
+            _node_id = 0
+            _attributes = {}
+            _parent_id = '0'
+            _level = 'mode'
+
+        if _level in ['control', 'action']:
+            _dialog = AddControlAction()
+
+            if _dialog.do_run() == Gtk.ResponseType.OK:
+                if _dialog.rdoControl.get_active():
+                    _level = "control"
+                elif _dialog.rdoAction.get_active():
+                    _level = "action"
+
+            _dialog.do_destroy()
+
+        do_request_insert(_attributes, _level, _parent_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1025,33 +1037,41 @@ class FMEA(RAMSTKWorkView):
         """
         _set_visible = []
 
-        if self._record_id.count(".") == 0:
-            self.treeview.headings[self._lst_col_order[0]] = _("Mode ID")
-            self.treeview.headings[self._lst_col_order[1]] = _("Failure\nMode")
-            _set_visible = self._do_set_visible_columns(self._lst_mode_mask)
-        elif self._record_id.count(".") == 1:
-            self.treeview.headings[self._lst_col_order[0]] = _("Mechanism ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Failure\nMechanism")
-            _set_visible = self._do_set_visible_columns(
-                self._lst_mechanism_mask)
-        elif self._record_id.count(".") == 2:
-            self.treeview.headings[self._lst_col_order[0]] = _("Cause ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Failure\nCause")
-            _set_visible = self._do_set_visible_columns(self._lst_cause_mask)
-        elif self._record_id.count(".") == 4 and self._record_id[-1] == "c":
-            self.treeview.headings[self._lst_col_order[0]] = _("Control ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Existing\nControl")
-            _set_visible = self._do_set_visible_columns(self._lst_control_mask)
-        elif self._record_id.count(".") == 4 and self._record_id[-1] == "a":
-            self.treeview.headings[self._lst_col_order[0]] = _("Action ID")
-            self.treeview.headings[self._lst_col_order[1]] = _(
-                "Recommended\nAction")
-            _set_visible = self._do_set_visible_columns(self._lst_action_mask)
+        _headings = {
+            'mode': [_("Mode ID"),
+                     _("Failure\nMode"), self._lst_mode_mask],
+            'mechanism': [
+                _("Mechanism ID"),
+                _("Failure\nMechanism"), self._lst_mechanism_mask
+            ],
+            'cause':
+            [_("Cause ID"),
+             _("Failure\nCause"), self._lst_cause_mask],
+            'control':
+            [_("Control ID"),
+             _("Existing\nControl"), self._lst_control_mask],
+            'action':
+            [_("Action ID"),
+             _("Recommended\nAction"), self._lst_action_mask]
+        }
 
-        return _set_visible
+        _level = self._get_indenture_level()
+
+        self.treeview.headings[self._lst_col_order[0]] = _headings[_level][0]
+        self.treeview.headings[self._lst_col_order[1]] = _headings[_level][1]
+
+        return self._do_set_visible_columns(_headings[_level][2])
+
+    def _do_set_parent(self, attributes: Dict[str, Any]) -> None:
+        """
+        Sets the parent (hardware) ID whenever a new hardware item is selected.
+
+        :param dict attributes: the attributes of the newly selected hardware
+            item.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes['hardware_id']
 
     def _do_set_visible_columns(self, mask: List[bool]) -> List[bool]:
         """
@@ -1064,6 +1084,28 @@ class FMEA(RAMSTKWorkView):
         :rtype: list
         """
         return self.treeview.visible and mask
+
+    def _get_indenture_level(self) -> str:
+        """
+        Determine the FMEA indenture level based on the record ID.
+
+        :return: _level; the level in the FMEA that is currently selected.
+        :rtype: str
+        """
+        _level = ''
+
+        if self._record_id.count(".") == 0:
+            _level = 'mode'
+        elif self._record_id.count(".") == 1:
+            _level = 'mechanism'
+        elif self._record_id.count(".") == 2:
+            _level = 'cause'
+        elif self._record_id.count(".") == 4 and self._record_id[-1] == "c":
+            _level = 'control'
+        elif self._record_id.count(".") == 4 and self._record_id[-1] == "a":
+            _level = 'action'
+
+        return _level
 
     def _get_mission(self, entity: object) -> None:
         """
