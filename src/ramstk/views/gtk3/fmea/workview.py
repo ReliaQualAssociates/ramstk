@@ -952,15 +952,7 @@ class FMEA(RAMSTKWorkView):
         }[_level]
 
         if _level == 'control_action':
-            _dialog = AddControlAction()
-
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                if _dialog.rdoControl.get_active():
-                    _level = "control"
-                elif _dialog.rdoAction.get_active():
-                    _level = "action"
-
-            _dialog.do_destroy()
+            _level = self._on_request_insert_control_action()
 
         do_request_insert(_attributes, _level, _parent_id)
 
@@ -976,28 +968,18 @@ class FMEA(RAMSTKWorkView):
         # add a failure Mode.
         _model, _row = self.treeview.get_selection().get_selected()
         try:
-            _node_id = _model.get_value(_row, 0)
             _attributes = _model.get_value(_row, 43).replace("'", '"')
-            _attributes = json.dumps("{0}".format(_attributes))
+            _attributes = json.loads("{0}".format(_attributes))
             _prow = _model.iter_parent(_row)
             _parent_id = _model.get_value(_prow, 0)
             _level = self._get_indenture_level()
         except TypeError:
-            _node_id = 0
             _attributes = {}
             _parent_id = '0'
             _level = 'mode'
 
         if _level in ['control', 'action']:
-            _dialog = AddControlAction()
-
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                if _dialog.rdoControl.get_active():
-                    _level = "control"
-                elif _dialog.rdoAction.get_active():
-                    _level = "action"
-
-            _dialog.do_destroy()
+            _level = self._on_request_insert_control_action()
 
         do_request_insert(_attributes, _level, _parent_id)
 
@@ -1035,8 +1017,6 @@ class FMEA(RAMSTKWorkView):
             set visible.
         :rtype: list
         """
-        _set_visible = []
-
         _headings = {
             'mode': [_("Mode ID"),
                      _("Failure\nMode"), self._lst_mode_mask],
@@ -1254,6 +1234,28 @@ class FMEA(RAMSTKWorkView):
         pub.sendMessage('wvw_editing_fmea',
                         node_id=[self._record_id, -1],
                         package={_key: _value})
+
+    def _on_request_insert_control_action(self) -> str:
+        """
+        Raise dialog to select whether to add a control or action.
+
+        :return: _level; the level to add, control or action.
+        :rtype: str
+        """
+        _level = ""
+
+        _dialog = AddControlAction(
+            parent=self.get_parent().get_parent().get_parent().get_parent())
+
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            if _dialog.rdoControl.get_active():
+                _level = "control"
+            elif _dialog.rdoAction.get_active():
+                _level = "action"
+
+        _dialog.do_destroy()
+
+        return _level
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """

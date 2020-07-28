@@ -288,7 +288,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_mechanism', node_id=_identifier)
-        except (DataAccessError, NodeIDAbsentError) as _e:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a failure mechanism to unknown '
                           'failure mode ID {0:s}.'.format(str(mode_id)))
             pub.sendMessage("fail_insert_mechanism", error_message=_error_msg)

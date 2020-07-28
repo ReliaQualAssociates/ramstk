@@ -8,17 +8,16 @@
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKDialog, RAMSTKLabel,
-                                       RAMSTKOptionButton)
+from ramstk.views.gtk3.widgets import (RAMSTKDialog, RAMSTKLabel)
 
 
 class AddControlAction(RAMSTKDialog):
     """Assistant to walk user through process of adding control or action."""
-    def __init__(self):
+    def __init__(self, parent=None):
         """Initialize on instance of the Add Control or Action Assistant."""
-        super().__init__(
-            _("RAMSTK FMEA/FMECA Design Control and "
-              "Action Addition Assistant"))
+        super().__init__(_("RAMSTK FMEA/FMECA Design Control and "
+                           "Action Addition Assistant"),
+                         dlgparent=parent)
 
         # Initialize private dictionary attributes.
 
@@ -31,8 +30,10 @@ class AddControlAction(RAMSTKDialog):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.rdoControl = RAMSTKOptionButton(None, _("Add control"))
-        self.rdoAction = RAMSTKOptionButton(self.rdoControl, _("Add action"))
+        self.rdoControl = Gtk.RadioButton.new_with_label_from_widget(
+            None, _("Add control"))
+        self.rdoAction = Gtk.RadioButton.new_from_widget(self.rdoControl)
+        self.rdoAction.set_label(_("Add action"))
 
         self.__make_ui()
 
@@ -54,18 +55,21 @@ class AddControlAction(RAMSTKDialog):
               "Program database."))
         _label.do_set_properties(width=600, height=-1, wrap=True)
         _fixed.put(_label, 5, 10)
-        _y_pos = _label.size_request()[1] + 50
+
+        _y_pos: Gtk.Requisition = _label.get_preferred_size()[0].height + 50
 
         self.rdoControl.set_tooltip_text(
             _("Select to add a design control to the selected failure "
               "cause."))
         self.rdoAction.set_tooltip_text(
-            _("Select to add an Action to the selected failure cause."))
+            _("Select to add an action to the selected failure cause."))
 
         _fixed.put(self.rdoControl, 10, _y_pos)
         _fixed.put(self.rdoAction, 10, _y_pos + 35)
 
         _fixed.show_all()
+
+        self.set_default_size(250, -1)
 
     def _cancel(self, __button):
         """

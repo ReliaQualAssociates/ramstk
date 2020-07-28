@@ -45,12 +45,8 @@ class RAMSTKDialog(Gtk.Dialog):
         try:
             self.add_buttons(kwargs['dlgbuttons'])
         except KeyError:
-            self.add_buttons(
-                Gtk.STOCK_OK,
-                Gtk.ResponseType.OK,
-                Gtk.STOCK_CANCEL,
-                Gtk.ResponseType.CANCEL,
-            )
+            self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK,
+                             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
 
         self.set_destroy_with_parent(True)
         self.set_modal(True)
