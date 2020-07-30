@@ -710,7 +710,6 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.treeview.do_edit_cell(cell, path, new_text, position)
 
-        _model, _row = self.treeview.get_selection().get_selected()
         try:
             _key = self._dic_column_keys[self._lst_col_order[position]]
         except (IndexError, KeyError):

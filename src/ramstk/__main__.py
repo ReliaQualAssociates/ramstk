@@ -157,8 +157,8 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['function']['matrix'] = mmFunction()
     _program_mgr.dic_managers['function']['analysis'] = amFunction(
         user_configuration)
-    _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)
-    _program_mgr.dic_managers['ffmea']['data'] = dmFMEA(functional=True)
+    # _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)
+    # _program_mgr.dic_managers['ffmea']['data'] = dmFMEA(functional=True)
     _program_mgr.dic_managers['requirement']['data'] = dmRequirement()
     _program_mgr.dic_managers['requirement']['matrix'] = mmRequirement()
     _program_mgr.dic_managers['stakeholder']['analysis'] = amStakeholder(

@@ -257,6 +257,7 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
 
         if self.run() == Gtk.ResponseType.ACCEPT:
             _filename = self.get_filename()
+            # pylint: disable=unused-variable
             __, _extension = os.path.splitext(_filename)
         elif self.run() == Gtk.ResponseType.REJECT:
             self.do_destroy()

@@ -507,7 +507,7 @@ class FMEA(RAMSTKWorkView):
         """
         _new_row = None
 
-        [[__, _entity]] = node.data.items()
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _model = self.treeview.get_model()
 
@@ -562,7 +562,7 @@ class FMEA(RAMSTKWorkView):
         """
         _new_row = None
 
-        [[__, _entity]] = node.data.items()
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _model = self.treeview.get_model()
 
@@ -615,7 +615,7 @@ class FMEA(RAMSTKWorkView):
         """
         _new_row = None
 
-        [[__, _entity]] = node.data.items()
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _model = self.treeview.get_model()
 
@@ -664,7 +664,7 @@ class FMEA(RAMSTKWorkView):
         """
         _new_row = None
 
-        [[__, _entity]] = node.data.items()
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _model = self.treeview.get_model()
 
@@ -753,7 +753,7 @@ class FMEA(RAMSTKWorkView):
         """
         _new_row = None
 
-        [[__, _entity]] = node.data.items()
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _model = self.treeview.get_model()
 

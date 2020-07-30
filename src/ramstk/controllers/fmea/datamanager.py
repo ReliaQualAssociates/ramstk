@@ -318,7 +318,7 @@ class DataManager(RAMSTKDataManager):
                                   data=_data_package)
 
             pub.sendMessage('succeed_insert_mode', node_id=str(_mode.mode_id))
-        except (DataAccessError, NodeIDAbsentError) as _e:
+        except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a failure mode to unknown '
                           'hardware ID {0:s}.'.format(str(self._root)))
             pub.sendMessage("fail_insert_mode", error_message=_error_msg)
