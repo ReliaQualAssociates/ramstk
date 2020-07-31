@@ -56,7 +56,7 @@ class AddControlAction(RAMSTKDialog):
         _label.do_set_properties(width=600, height=-1, wrap=True)
         _fixed.put(_label, 5, 10)
 
-        _y_pos: Gtk.Requisition = _label.get_preferred_size()[0].height + 50
+        _y_pos: int = _label.get_preferred_size()[0].height + 50
 
         self.rdoControl.set_tooltip_text(
             _("Select to add a design control to the selected failure "

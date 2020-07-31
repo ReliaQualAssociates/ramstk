@@ -178,7 +178,9 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
-            pub.sendMessage('succeed_insert_action', node_id=_identifier)
+            pub.sendMessage('succeed_insert_action',
+                            node_id=_identifier,
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add an action to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
@@ -215,7 +217,9 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
-            pub.sendMessage('succeed_insert_cause', node_id=_identifier)
+            pub.sendMessage('succeed_insert_cause',
+                            node_id=_identifier,
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = (
                 'Attempting to add a failure cause to unknown '
@@ -253,7 +257,9 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
-            pub.sendMessage('succeed_insert_control', node_id=_identifier)
+            pub.sendMessage('succeed_insert_control',
+                            node_id=_identifier,
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a control to unknown failure '
                           'cause ID {0:d}.'.format(cause_id))
@@ -287,7 +293,9 @@ class DataManager(RAMSTKDataManager):
                                   parent=mode_id,
                                   data=_data_package)
 
-            pub.sendMessage('succeed_insert_mechanism', node_id=_identifier)
+            pub.sendMessage('succeed_insert_mechanism',
+                            node_id=_identifier,
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a failure mechanism to unknown '
                           'failure mode ID {0:s}.'.format(str(mode_id)))
@@ -317,7 +325,9 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data=_data_package)
 
-            pub.sendMessage('succeed_insert_mode', node_id=str(_mode.mode_id))
+            pub.sendMessage('succeed_insert_mode',
+                            node_id=str(_mode.mode_id),
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a failure mode to unknown '
                           'hardware ID {0:s}.'.format(str(self._root)))

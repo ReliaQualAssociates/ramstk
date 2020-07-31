@@ -418,8 +418,9 @@ class TestDeleteMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_mode(self, node_id):
+    def on_succeed_insert_mode(self, node_id, tree):
         assert node_id == '6'
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mode topic was broadcast.")
 
     def on_fail_insert_mode(self, error_message):
@@ -427,8 +428,9 @@ class TestInsertMethods():
                                  'hardware ID 40.')
         print("\033[35m\nfail_insert_mode topic was broadcast.")
 
-    def on_succeed_insert_mechanism(self, node_id):
+    def on_succeed_insert_mechanism(self, node_id, tree):
         assert node_id == '5.3'
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mechanism topic was broadcast.")
 
     def on_fail_insert_mechanism(self, error_message):
@@ -436,8 +438,9 @@ class TestInsertMethods():
                                  'unknown failure mode ID 40.')
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
-    def on_succeed_insert_cause(self, node_id):
+    def on_succeed_insert_cause(self, node_id, tree):
         assert node_id == '5.2.7'
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
     def on_fail_insert_cause(self, error_message):
@@ -446,8 +449,9 @@ class TestInsertMethods():
             'failure mode ID 7 or mechanism ID 40.')
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
-    def on_succeed_insert_control(self, node_id):
+    def on_succeed_insert_control(self, node_id, tree):
         assert node_id == '5.2.2.6.c'
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
     def on_fail_insert_control(self, error_message):
@@ -456,8 +460,9 @@ class TestInsertMethods():
             'cause ID 40.')
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
-    def on_succeed_insert_action(self, node_id):
+    def on_succeed_insert_action(self, node_id, tree):
         assert node_id == '5.2.2.6.a'
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_action topic was broadcast.")
 
     def on_fail_insert_action(self, error_message):

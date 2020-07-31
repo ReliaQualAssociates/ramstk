@@ -202,7 +202,6 @@ class DataManager(RAMSTKDataManager):
                                           'similar_item': _similaritem
                                       })
 
-                pub.sendMessage('inserted_hardware', tree=self.tree)
                 pub.sendMessage('succeed_insert_hardware',
                                 node_id=self.last_id,
                                 tree=self.tree)
