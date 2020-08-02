@@ -29,8 +29,8 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration, RAMSTKUserConfiguration)
+from ramstk.configuration import (RAMSTKSiteConfiguration,
+                                  RAMSTKUserConfiguration)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -202,25 +202,112 @@ def make_home_config_dir():
     shutil.rmtree(VIRTUAL_ENV + '/tmp/analyses')
 
 
-@pytest.fixture(scope='class')
-def test_simple_database():
-    """Create a simple test database using SQLite3."""
+@pytest.fixture(scope="function")
+def test_simple_program_database():
+    """Create a simple test database using postgres."""
     # This temporary database has two tables (RAMSTKRevision and
     # RAMSTKSiteInfo) and is used primarily to test the connect, insert,
     # insert_many, delete, and update methods of the database drivers.
-    tempdir = tempfile.TemporaryDirectory(prefix=TMP_DIR + '/')
-    tempdb = str(tempdir.name) + '/SimpleTestDB.ramstk'
-    test_program_db_uri = tempdb
+    test_simple_db = {
+        'dialect': 'postgres',
+        'user': 'postgres',
+        'password': 'postgres',
+        'host': 'localhost',
+        'port': '5432',
+        'database': 'simple_program_db'
+    }
 
-    # Create the test database.
-    sql_file = open('./devtools/sqlite_test_simple_db.sql', 'r')
-    script_str = sql_file.read().strip()
-    conn = sqlite3.connect(tempdb)
-    conn.executescript(script_str)
-    conn.commit()
+    # Create the simple test database.
+    conn = psycopg2.connect(host=test_simple_db['host'],
+                            dbname='postgres',
+                            user=test_simple_db['user'],
+                            password=test_simple_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL('CREATE DATABASE {}').format(
+            sql.Identifier(test_simple_db['database'])))
+    cursor.close()
     conn.close()
 
-    yield test_program_db_uri
+    # Use the RAMSTK DAO to connect to the fresh, new test database.
+    dao = BaseDatabase()
+    dao.do_connect(test_simple_db)
+
+    yield dao
+
+    dao.do_disconnect()
+    conn = psycopg2.connect(host=test_simple_db['host'],
+                            dbname='postgres',
+                            user=test_simple_db['user'],
+                            password=test_simple_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM "
+                "pg_stat_activity WHERE pg_stat_activity.datname = "
+                "'simple_program_db';"))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_simple_db['database'])))
+    cursor.close()
+    conn.close()
+
+
+@pytest.fixture(scope='session')
+def test_simple_database():
+    """Create a simple test database using postgres."""
+    # This temporary database has two tables (RAMSTKRevision and
+    # RAMSTKSiteInfo) and is used primarily to test the connect, insert,
+    # insert_many, delete, and update methods of the database drivers.
+    test_simple_db = {
+        'dialect': 'postgres',
+        'user': 'postgres',
+        'password': 'postgres',
+        'host': 'localhost',
+        'port': '5432',
+        'database': 'simple_test_db'
+    }
+
+    # Create the simple test database.
+    conn = psycopg2.connect(host=test_simple_db['host'],
+                            dbname='postgres',
+                            user=test_simple_db['user'],
+                            password=test_simple_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_simple_db['database'])))
+    cursor.execute(
+        sql.SQL('CREATE DATABASE {}').format(
+            sql.Identifier(test_simple_db['database'])))
+    cursor.close()
+    conn.close()
+
+    # Populate the test database.
+    conn = psycopg2.connect(host=test_simple_db['host'],
+                            dbname=test_simple_db['database'],
+                            user=test_simple_db['user'],
+                            password=test_simple_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    conn.set_session(autocommit=True)
+
+    cursor = conn.cursor()
+    cursor.execute(open('./devtools/test_simple_db.sql', 'r').read())
+    cursor.close()
+    conn.close()
+
+    # Use the RAMSTK DAO to connect to the fresh, new test database.
+    dao = BaseDatabase()
+    dao.do_connect(test_simple_db)
+
+    yield dao
+
+    dao.do_disconnect()
 
 
 @pytest.fixture(scope='function')

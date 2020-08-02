@@ -229,6 +229,11 @@ class FMEA(RAMSTKWorkView):
         pub.subscribe(self._do_load_missions,
                       'succeed_get_usage_profile_attributes')
         pub.subscribe(self._do_load_tree, 'succeed_retrieve_hardware_fmea')
+        pub.subscribe(self._on_insert_fmea, 'succeed_insert_action')
+        pub.subscribe(self._on_insert_fmea, 'succeed_insert_cause')
+        pub.subscribe(self._on_insert_fmea, 'succeed_insert_control')
+        pub.subscribe(self._on_insert_fmea, 'succeed_insert_mechanism')
+        pub.subscribe(self._on_insert_fmea, 'succeed_insert_mode')
 
     def __do_load_action_category(self) -> None:
         """
@@ -820,13 +825,15 @@ class FMEA(RAMSTKWorkView):
         if node.tag == 'fmea':
             self._do_clear_page()
         else:
-            _new_row = {
+            _method = {
                 'mode': self._do_load_mode,
                 'mechanism': self._do_load_mechanism,
                 'cause': self._do_load_cause,
                 'control': self._do_load_control,
                 'action': self._do_load_action
-            }[node.tag](node, row)
+            }[node.tag]
+            # noinspection PyArgumentList
+            _new_row = _method(node, row)
 
         return _new_row
 
@@ -1234,6 +1241,19 @@ class FMEA(RAMSTKWorkView):
         pub.sendMessage('wvw_editing_fmea',
                         node_id=[self._record_id, -1],
                         package={_key: _value})
+
+    def _on_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
+        """
+        Add row to work view for newly added FMEA element.
+
+        :param int node_id: the ID of the newly added FMEA element.
+        :param tree: the treelib Tree() containing the FMEA module's data.
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        print(node_id)
+        print(tree)
 
     def _on_request_insert_control_action(self) -> str:
         """

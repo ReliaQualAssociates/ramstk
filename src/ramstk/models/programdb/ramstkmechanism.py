@@ -41,12 +41,14 @@ class RAMSTKMechanism(RAMSTK_BASE, RAMSTKBaseTable):
     mode_id = Column('fld_mode_id',
                      Integer,
                      ForeignKey('ramstk_mode.fld_mode_id'),
+                     primary_key=True,
                      nullable=False)
     mechanism_id = Column('fld_mechanism_id',
                           Integer,
                           primary_key=True,
                           autoincrement=True,
-                          nullable=False)
+                          nullable=False,
+                          unique=True)
 
     description = Column('fld_description',
                          String(512),

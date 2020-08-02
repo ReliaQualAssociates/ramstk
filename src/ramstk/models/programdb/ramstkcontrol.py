@@ -30,6 +30,7 @@ class RAMSTKControl(RAMSTK_BASE, RAMSTKBaseTable):
         'fld_cause_id',
         Integer,
         ForeignKey('ramstk_cause.fld_cause_id'),
+        primary_key=True,
         nullable=False,
     )
     control_id = Column(

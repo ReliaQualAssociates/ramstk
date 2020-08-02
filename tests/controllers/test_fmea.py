@@ -429,7 +429,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_mode topic was broadcast.")
 
     def on_succeed_insert_mechanism(self, node_id, tree):
-        assert node_id == '5.3'
+        assert node_id == '6.3'
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mechanism topic was broadcast.")
 
@@ -439,7 +439,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     def on_succeed_insert_cause(self, node_id, tree):
-        assert node_id == '5.2.7'
+        assert node_id == '6.3.3'
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
@@ -450,7 +450,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     def on_succeed_insert_control(self, node_id, tree):
-        assert node_id == '5.2.2.6.c'
+        assert node_id == '6.3.3.6.c'
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
@@ -461,7 +461,7 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
     def on_succeed_insert_action(self, node_id, tree):
-        assert node_id == '5.2.2.6.a'
+        assert node_id == '6.3.3.6.a'
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_action topic was broadcast.")
 
@@ -510,13 +510,13 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
-        DUT._do_insert_mechanism('5')
+        DUT._do_insert_mechanism('6')
 
         assert isinstance(
-            DUT.tree.get_node('5.3').data['mechanism'], RAMSTKMechanism)
-        assert DUT.tree.get_node('5.3').data['mechanism'].mechanism_id == 3
+            DUT.tree.get_node('6.3').data['mechanism'], RAMSTKMechanism)
+        assert DUT.tree.get_node('6.3').data['mechanism'].mechanism_id == 3
         assert DUT.tree.get_node(
-            '5.3').data['mechanism'].description == 'New Failure Mechanism'
+            '6.3').data['mechanism'].description == 'New Failure Mechanism'
 
         pub.unsubscribe(self.on_succeed_insert_mechanism,
                         'succeed_insert_mechanism')
@@ -553,13 +553,13 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
-        DUT._do_insert_cause(5, 2, '5.2')
+        DUT._do_insert_cause(6, 3, '6.3')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.7').data['cause'], RAMSTKCause)
-        assert DUT.tree.get_node('5.2.7').data['cause'].cause_id == 7
+            DUT.tree.get_node('6.3.3').data['cause'], RAMSTKCause)
+        assert DUT.tree.get_node('6.3.3').data['cause'].cause_id == 3
         assert DUT.tree.get_node(
-            '5.2.7').data['cause'].description == 'New Failure Cause'
+            '6.3.3').data['cause'].description == 'New Failure Cause'
 
         pub.unsubscribe(self.on_succeed_insert_cause, 'succeed_insert_cause')
 
@@ -583,12 +583,12 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
-        DUT._do_insert_control(5, '5.2.2')
+        DUT._do_insert_control(3, '6.3.3')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.2.6.c').data['control'], RAMSTKControl)
-        assert DUT.tree.get_node('5.2.2.6.c').data['control'].control_id == 6
-        assert DUT.tree.get_node('5.2.2.6.c').data['control'].description == (
+            DUT.tree.get_node('6.3.3.6.c').data['control'], RAMSTKControl)
+        assert DUT.tree.get_node('6.3.3.6.c').data['control'].control_id == 6
+        assert DUT.tree.get_node('6.3.3.6.c').data['control'].description == (
             'New Control')
 
         pub.unsubscribe(self.on_succeed_insert_control,
@@ -616,13 +616,13 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'hardware_id': 1})
-        DUT._do_insert_action(2, '5.2.2')
+        DUT._do_insert_action(3, '6.3.3')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.2.6.a').data['action'], RAMSTKAction)
-        assert DUT.tree.get_node('5.2.2.6.a').data['action'].action_id == 6
+            DUT.tree.get_node('6.3.3.6.a').data['action'], RAMSTKAction)
+        assert DUT.tree.get_node('6.3.3.6.a').data['action'].action_id == 6
         assert DUT.tree.get_node(
-            '5.2.2.6.a').data['action'].action_recommended == (
+            '6.3.3.6.a').data['action'].action_recommended == (
                 'Recommended Action')
 
         pub.unsubscribe(self.on_succeed_insert_action, 'succeed_insert_action')

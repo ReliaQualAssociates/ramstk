@@ -17,10 +17,9 @@ from ramstk.models.programdb import (
     RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKHardware,
     RAMSTKHazardAnalysis, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF,
     RAMSTKMission, RAMSTKMissionPhase, RAMSTKMode, RAMSTKOpLoad,
-    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus,
-    RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem,
-    RAMSTKStakeholder, RAMSTKTestMethod, RAMSTKValidation
-)
+    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus, RAMSTKReliability,
+    RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem, RAMSTKStakeholder,
+    RAMSTKTestMethod, RAMSTKValidation)
 
 
 def do_make_programdb_tables(engine: Engine) -> None:
@@ -33,35 +32,40 @@ def do_make_programdb_tables(engine: Engine) -> None:
     :return: None
     :rtype: None
     """
-    RAMSTKAction.__table__.create(bind=engine)
-    RAMSTKAllocation.__table__.create(bind=engine)
-    RAMSTKCause.__table__.create(bind=engine)
-    RAMSTKControl.__table__.create(bind=engine)
-    RAMSTKDesignElectric.__table__.create(bind=engine)
-    RAMSTKDesignMechanic.__table__.create(bind=engine)
-    RAMSTKEnvironment.__table__.create(bind=engine)
-    RAMSTKFailureDefinition.__table__.create(bind=engine)
-    RAMSTKFunction.__table__.create(bind=engine)
-    RAMSTKHardware.__table__.create(bind=engine)
-    RAMSTKHazardAnalysis.__table__.create(bind=engine)
-    RAMSTKMatrix.__table__.create(bind=engine)
-    RAMSTKMechanism.__table__.create(bind=engine)
-    RAMSTKMilHdbkF.__table__.create(bind=engine)
-    RAMSTKMission.__table__.create(bind=engine)
-    RAMSTKMissionPhase.__table__.create(bind=engine)
-    RAMSTKMode.__table__.create(bind=engine)
-    RAMSTKNSWC.__table__.create(bind=engine)
-    RAMSTKOpLoad.__table__.create(bind=engine)
-    RAMSTKOpStress.__table__.create(bind=engine)
+    RAMSTKRevision.__table__.create(bind=engine)
     RAMSTKProgramInfo.__table__.create(bind=engine)
     RAMSTKProgramStatus.__table__.create(bind=engine)
-    RAMSTKReliability.__table__.create(bind=engine)
+    RAMSTKMission.__table__.create(bind=engine)
+    RAMSTKMissionPhase.__table__.create(bind=engine)
+    RAMSTKEnvironment.__table__.create(bind=engine)
+    RAMSTKFailureDefinition.__table__.create(bind=engine)
+
+    RAMSTKFunction.__table__.create(bind=engine)
+    RAMSTKHazardAnalysis.__table__.create(bind=engine)
+
     RAMSTKRequirement.__table__.create(bind=engine)
-    RAMSTKRevision.__table__.create(bind=engine)
-    RAMSTKSimilarItem.__table__.create(bind=engine)
     RAMSTKStakeholder.__table__.create(bind=engine)
+
+    RAMSTKHardware.__table__.create(bind=engine)
+    RAMSTKAllocation.__table__.create(bind=engine)
+    RAMSTKDesignElectric.__table__.create(bind=engine)
+    RAMSTKDesignMechanic.__table__.create(bind=engine)
+    RAMSTKMilHdbkF.__table__.create(bind=engine)
+    RAMSTKNSWC.__table__.create(bind=engine)
+    RAMSTKReliability.__table__.create(bind=engine)
+    RAMSTKSimilarItem.__table__.create(bind=engine)
+    RAMSTKMode.__table__.create(bind=engine)
+    RAMSTKMechanism.__table__.create(bind=engine)
+    RAMSTKCause.__table__.create(bind=engine)
+    RAMSTKAction.__table__.create(bind=engine)
+    RAMSTKControl.__table__.create(bind=engine)
+    RAMSTKOpLoad.__table__.create(bind=engine)
+    RAMSTKOpStress.__table__.create(bind=engine)
     RAMSTKTestMethod.__table__.create(bind=engine)
+
     RAMSTKValidation.__table__.create(bind=engine)
+
+    RAMSTKMatrix.__table__.create(bind=engine)
 
 
 def do_create_program_db(engine: Engine, session: scoped_session) -> None:

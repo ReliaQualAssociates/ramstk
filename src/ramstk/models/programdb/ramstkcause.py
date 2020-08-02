@@ -43,12 +43,14 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
     mechanism_id = Column('fld_mechanism_id',
                           Integer,
                           ForeignKey('ramstk_mechanism.fld_mechanism_id'),
+                          primary_key=True,
                           nullable=False)
     cause_id = Column('fld_cause_id',
                       Integer,
                       primary_key=True,
                       autoincrement=True,
-                      nullable=False)
+                      nullable=False,
+                      unique=True)
 
     description = Column('fld_description',
                          String(512),
@@ -71,8 +73,12 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
     # Define the relationships to other tables in the RAMSTK Program database.
     mode = relationship('RAMSTKMode', back_populates='cause')
     mechanism = relationship('RAMSTKMechanism', back_populates='cause')
-    control = relationship('RAMSTKControl', back_populates='cause')
-    action = relationship('RAMSTKAction', back_populates='cause')
+    control = relationship('RAMSTKControl',
+                           back_populates='cause',
+                           cascade='delete, delete-orphan')
+    action = relationship('RAMSTKAction',
+                          back_populates='cause',
+                          cascade='delete, delete-orphan')
 
     is_mode = False
     is_mechanism = False

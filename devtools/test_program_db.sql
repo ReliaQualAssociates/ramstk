@@ -202,8 +202,8 @@ INSERT INTO "ramstk_mode" VALUES(-1,1,4,0,'System Test Failure Mode #1','','',''
 INSERT INTO "ramstk_mode" VALUES(-1,1,5,0,'System Test Failure Mode #2','','','','','',0.75,'','','Default Mission','',0.0,0.0,5.0,'',0.2,'','','',1,1,'I',0,0);
 INSERT INTO "ramstk_mode" VALUES(-1,1,6,0,'System Test Failure Mode #3','','','','','',0.9,'','','Default Mission','',0.0,0.0,10.0,'',0.3,'','','',1,1,'I',0,0);
 CREATE TABLE ramstk_mechanism (
-    fld_mode_id INTEGER,
-    fld_mechanism_id INTEGER NOT NULL,
+    fld_mode_id INTEGER NOT NULL,
+    fld_mechanism_id INTEGER NOT NULL UNIQUE,
     fld_description VARCHAR(512),
     fld_pof_include INTEGER,
     fld_rpn INTEGER,
@@ -212,7 +212,7 @@ CREATE TABLE ramstk_mechanism (
     fld_rpn_new INTEGER,
     fld_rpn_occurrence INTEGER,
     fld_rpn_occurrence_new INTEGER,
-    PRIMARY KEY (fld_mechanism_id),
+    PRIMARY KEY (fld_mode_id, fld_mechanism_id),
     FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_mechanism" VALUES(4,1,'Test Failure Mechanism #1 for Mode ID 4',1,0,8,7,0,2,2);
@@ -220,8 +220,8 @@ INSERT INTO "ramstk_mechanism" VALUES(5,2,'Test Failure Mechanism #1 for Mode ID
 INSERT INTO "ramstk_mechanism" VALUES(6,3,'Test Failure Mechanism #1 for Mode ID 6',1,0,5,2,0,7,5);
 CREATE TABLE ramstk_cause (
     fld_mode_id INTEGER,
-    fld_mechanism_id INTEGER,
-    fld_cause_id INTEGER NOT NULL,
+    fld_mechanism_id INTEGER NOT NULL,
+    fld_cause_id INTEGER NOT NULL UNIQUE,
     fld_description VARCHAR(512),
     fld_rpn INTEGER,
     fld_rpn_detection INTEGER,
@@ -229,18 +229,14 @@ CREATE TABLE ramstk_cause (
     fld_rpn_new INTEGER,
     fld_rpn_occurrence INTEGER,
     fld_rpn_occurrence_new INTEGER,
-    PRIMARY KEY (fld_cause_id),
-    FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE,
+    PRIMARY KEY (fld_mechanism_id, fld_cause_id),
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_cause" VALUES(1,1,4,'Test Failure Cause #1 for Mode ID 1',0,2,1,0,8,5);
-INSERT INTO "ramstk_cause" VALUES(1,1,5,'Test Failure Cause #2 for Mode ID 1',0,2,4,0,7,2);
-INSERT INTO "ramstk_cause" VALUES(1,1,6,'Test Failure Cause #3 for Mode ID 1',0,2,3,0,8,3);
 INSERT INTO "ramstk_cause" VALUES(4,1,1,'Test Failure Cause #1 for Mechanism ID 1',0,2,1,0,8,5);
 INSERT INTO "ramstk_cause" VALUES(5,2,2,'Test Failure Cause #2 for Mechanism ID 2',0,4,3,0,4,3);
 INSERT INTO "ramstk_cause" VALUES(6,3,3,'Test Failure Cause #1 for Mechanism ID 3',0,3,3,0,6,4);
 CREATE TABLE ramstk_action (
-    fld_cause_id INTEGER,
+    fld_cause_id INTEGER NOT NULL,
     fld_action_id INTEGER NOT NULL,
     fld_action_recommended VARCHAR,
     fld_action_category VARCHAR(512),
@@ -252,18 +248,18 @@ CREATE TABLE ramstk_action (
     fld_action_approve_date DATE,
     fld_action_closed INTEGER,
     fld_action_close_date DATE,
-    PRIMARY KEY (fld_action_id),
+    PRIMARY KEY (fld_cause_id, fld_action_id),
     FOREIGN KEY(fld_cause_id) REFERENCES ramstk_cause (fld_cause_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_action" VALUES(1,4,'Test FMEA Recommended Action #1 for Cause ID 1.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 INSERT INTO "ramstk_action" VALUES(2,5,'Test FMEA Recommended Action #1 for Cause ID 2.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 INSERT INTO "ramstk_action" VALUES(3,6,'Test FMEA Recommended Action #1 for Cause ID 3','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 CREATE TABLE ramstk_control (
-    fld_cause_id INTEGER,
+    fld_cause_id INTEGER NOT NULL,
     fld_control_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
     fld_type_id VARCHAR(512),
-    PRIMARY KEY (fld_control_id),
+    PRIMARY KEY (fld_cause_id, fld_control_id),
     FOREIGN KEY(fld_cause_id) REFERENCES ramstk_cause (fld_cause_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_control" VALUES(1,4,'Test FMEA Control #1 for Cause ID 4','');

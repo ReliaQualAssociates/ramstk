@@ -43,6 +43,7 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
     cause_id = Column('fld_cause_id',
                       Integer,
                       ForeignKey('ramstk_cause.fld_cause_id'),
+                      primary_key=True,
                       nullable=False)
     action_id = Column('fld_action_id',
                        Integer,
