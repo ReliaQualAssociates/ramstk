@@ -7,7 +7,7 @@
 """RAMSTKCause Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -34,15 +34,32 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
         'rpn_occurrence_new': 10
     }
     __tablename__ = 'ramstk_cause'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (ForeignKeyConstraint(
+        [
+            'fld_revision_id', 'fld_hardware_id', 'fld_mode_id',
+            'fld_mechanism_id'
+        ],
+        [
+            'ramstk_mechanism.fld_revision_id',
+            'ramstk_mechanism.fld_hardware_id', 'ramstk_mechanism.fld_mode_id',
+            'ramstk_mechanism.fld_mechanism_id'
+        ],
+    ), {
+        'extend_existing': True
+    })
 
-    mode_id = Column('fld_mode_id',
-                     Integer,
-                     ForeignKey('ramstk_mode.fld_mode_id'),
-                     nullable=False)
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         primary_key=True,
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         primary_key=True,
+                         default=-1,
+                         nullable=False)
+    mode_id = Column('fld_mode_id', Integer, primary_key=True, nullable=False)
     mechanism_id = Column('fld_mechanism_id',
                           Integer,
-                          ForeignKey('ramstk_mechanism.fld_mechanism_id'),
                           primary_key=True,
                           nullable=False)
     cause_id = Column('fld_cause_id',
@@ -71,7 +88,7 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
                                 default=__defaults__['rpn_occurrence_new'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mode = relationship('RAMSTKMode', back_populates='cause')
+    # mode = relationship('RAMSTKMode', back_populates='cause')
     mechanism = relationship('RAMSTKMechanism', back_populates='cause')
     control = relationship('RAMSTKControl',
                            back_populates='cause',

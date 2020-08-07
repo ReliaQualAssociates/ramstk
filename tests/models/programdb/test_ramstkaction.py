@@ -42,11 +42,10 @@ class TestRAMSTKAction():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_action'
-        assert DUT.cause_id == 2
-        assert DUT.action_id == 5
+        assert DUT.cause_id == 1
+        assert DUT.action_id == 1
         assert DUT.action_recommended == (
-            'Test FMEA Recommended Action #1 for Cause ID 2.'
-        )
+            'Test FMEA Recommended Action #1 for Cause ID 2.')
         assert DUT.action_category == ''
         assert DUT.action_owner == ''
         assert DUT.action_due_date == date(2019, 8, 20)
@@ -57,7 +56,6 @@ class TestRAMSTKAction():
         assert DUT.action_closed == 0
         assert DUT.action_close_date == date(2019, 8, 20)
 
-
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
         """get_attributes() should return a dict of attribute:value pairs."""
@@ -67,14 +65,12 @@ class TestRAMSTKAction():
 
         assert isinstance(_attributes, dict)
 
-
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
         """set_attributes() should return a zero error code on success."""
         DUT = test_program_dao.session.query(RAMSTKAction).first()
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-
 
     @pytest.mark.integration
     def test_set_attributes_none_value(self, test_program_dao):
@@ -89,7 +85,6 @@ class TestRAMSTKAction():
                                                               'Failure Cause '
                                                               '#1')
         assert DUT.get_attributes()['action_status'] == ''
-
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

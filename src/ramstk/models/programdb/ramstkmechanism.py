@@ -8,7 +8,7 @@
 """RAMSTKMechanism Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -36,13 +36,26 @@ class RAMSTKMechanism(RAMSTK_BASE, RAMSTKBaseTable):
         'rpn_occurrence_new': 10
     }
     __tablename__ = 'ramstk_mechanism'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (ForeignKeyConstraint(
+        ['fld_revision_id', 'fld_hardware_id', 'fld_mode_id'],
+        [
+            'ramstk_mode.fld_revision_id', 'ramstk_mode.fld_hardware_id',
+            'ramstk_mode.fld_mode_id'
+        ],
+    ), {
+        'extend_existing': True
+    })
 
-    mode_id = Column('fld_mode_id',
-                     Integer,
-                     ForeignKey('ramstk_mode.fld_mode_id'),
-                     primary_key=True,
-                     nullable=False)
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         primary_key=True,
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         primary_key=True,
+                         default=-1,
+                         nullable=False)
+    mode_id = Column('fld_mode_id', Integer, primary_key=True, nullable=False)
     mechanism_id = Column('fld_mechanism_id',
                           Integer,
                           primary_key=True,

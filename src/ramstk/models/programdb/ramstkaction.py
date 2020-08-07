@@ -10,7 +10,7 @@
 from datetime import date, timedelta
 
 # Third Party Imports
-from sqlalchemy import Column, Date, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -38,13 +38,39 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
         'action_close_date': date.today() + timedelta(days=30)
     }
     __tablename__ = 'ramstk_action'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (ForeignKeyConstraint(
+        [
+            'fld_revision_id', 'fld_hardware_id', 'fld_mode_id',
+            'fld_mechanism_id', 'fld_cause_id'
+        ],
+        [
+            'ramstk_cause.fld_revision_id', 'ramstk_cause.fld_hardware_id',
+            'ramstk_cause.fld_mode_id', 'ramstk_cause.fld_mechanism_id',
+            'ramstk_cause.fld_cause_id'
+        ],
+    ), {
+        'extend_existing': True
+    })
 
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         primary_key=True,
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         primary_key=True,
+                         default=-1,
+                         nullable=False)
+    mode_id = Column('fld_mode_id', Integer, primary_key=True, nullable=False)
+    mechanism_id = Column('fld_mechanism_id',
+                          Integer,
+                          primary_key=True,
+                          nullable=False)
     cause_id = Column('fld_cause_id',
                       Integer,
-                      ForeignKey('ramstk_cause.fld_cause_id'),
                       primary_key=True,
-                      nullable=False)
+                      nullable=False,
+                      unique=True)
     action_id = Column('fld_action_id',
                        Integer,
                        primary_key=True,

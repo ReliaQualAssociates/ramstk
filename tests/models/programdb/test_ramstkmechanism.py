@@ -39,7 +39,7 @@ class TestRAMSTKMechanism():
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_mechanism'
         assert DUT.mode_id == 6
-        assert DUT.mechanism_id == 3
+        assert DUT.mechanism_id == 2
         assert DUT.description == 'New Failure Mechanism'
         assert DUT.pof_include == 1
         assert DUT.rpn == 100
@@ -59,7 +59,7 @@ class TestRAMSTKMechanism():
         assert isinstance(_attributes, dict)
 
         assert _attributes['mode_id'] == 6
-        assert _attributes['mechanism_id'] == 3
+        assert _attributes['mechanism_id'] == 2
         assert _attributes['description'] == ('New Failure Mechanism')
         assert _attributes['pof_include'] == 1
         assert _attributes['rpn'] == 100

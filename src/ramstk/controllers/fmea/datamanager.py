@@ -160,9 +160,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id, _cause_id) = parent_id.split('.')
         try:
             _action = RAMSTKAction()
-            _action.cause_id = cause_id
+            _action.revision_id = self._revision_id
+            _action.hardware_id = self._parent_id
+            _action.mode_id = int(_mode_id)
+            _action.mechanism_id = int(_mechanism_id)
+            _action.cause_id = int(_cause_id)
             _action.action_id = self._last_id[4] + 1
             _action.action_recommended = 'Recommended Action'
 
@@ -183,7 +188,7 @@ class DataManager(RAMSTKDataManager):
                             tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add an action to unknown failure '
-                          'cause ID {0:d}.'.format(cause_id))
+                          'cause ID {0:d}.'.format(int(_cause_id)))
             pub.sendMessage("fail_insert_action", error_message=_error_msg)
 
     def _do_insert_cause(self, mode_id: int, mechanism_id: int,
@@ -198,10 +203,13 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id) = parent_id.split('.')
         try:
             _cause = RAMSTKCause()
-            _cause.mode_id = mode_id
-            _cause.mechanism_id = mechanism_id
+            _cause.revision_id = self._revision_id
+            _cause.hardware_id = self._parent_id
+            _cause.mode_id = int(_mode_id)
+            _cause.mechanism_id = int(_mechanism_id)
             _cause.cause_id = self._last_id[2] + 1
             _cause.description = 'New Failure Cause'
 
@@ -224,7 +232,7 @@ class DataManager(RAMSTKDataManager):
             _error_msg = (
                 'Attempting to add a failure cause to unknown '
                 'failure mode ID {0:d} or mechanism ID {1:d}.'.format(
-                    mode_id, mechanism_id))
+                    int(_mode_id), int(_mechanism_id)))
             pub.sendMessage("fail_insert_cause", error_message=_error_msg)
 
     def _do_insert_control(self, cause_id: int, parent_id: str) -> None:
@@ -238,9 +246,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id, _cause_id) = parent_id.split('.')
         try:
             _control = RAMSTKControl()
-            _control.cause_id = cause_id
+            _control.revision_id = self._revision_id
+            _control.hardware_id = self._parent_id
+            _control.mode_id = int(_mode_id)
+            _control.mechanism_id = int(_mechanism_id)
+            _control.cause_id = int(_cause_id)
             _control.control_id = self._last_id[3] + 1
             _control.description = 'New Control'
 
@@ -262,7 +275,7 @@ class DataManager(RAMSTKDataManager):
                             tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a control to unknown failure '
-                          'cause ID {0:d}.'.format(cause_id))
+                          'cause ID {0:d}.'.format(int(_cause_id)))
             pub.sendMessage("fail_insert_control", error_message=_error_msg)
 
     def _do_insert_mechanism(self, mode_id: str) -> None:
@@ -276,6 +289,8 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _mechanism = RAMSTKMechanism()
+            _mechanism.revision_id = self._revision_id
+            _mechanism.hardware_id = self._parent_id
             _mechanism.mode_id = int(mode_id)
             _mechanism.mechanism_id = self._last_id[1] + 1
             _mechanism.description = 'New Failure Mechanism'
@@ -310,7 +325,7 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _mode = RAMSTKMode()
-            _mode.function_id = -1
+            _mode.revision_id = self._revision_id
             _mode.hardware_id = self._parent_id
             _mode.mode_id = self._last_id[0] + 1
             _mode.description = 'New Failure Mode'
@@ -343,8 +358,11 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id, _cause_id) = parent_id.split('.')
         for _action in self.dao.session.query(RAMSTKAction).filter(
-                RAMSTKAction.cause_id == cause_id).all():
+                RAMSTKAction.mode_id == int(_mode_id),
+                RAMSTKAction.mechanism_id == int(_mechanism_id),
+                RAMSTKAction.cause_id == int(_cause_id)).all():
 
             _data_package = {'action': _action}
 
@@ -367,16 +385,12 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        if not self._is_functional:
-            for _cause in self.dao.session.query(RAMSTKCause).filter(
-                    RAMSTKCause.mechanism_id == mechanism_id).all():
+        (_mode_id, _mechanism_id) = parent_id.split('.')
+        for _cause in self.dao.session.query(RAMSTKCause).filter(
+                RAMSTKCause.mode_id == int(_mode_id),
+                RAMSTKCause.mechanism_id == int(_mechanism_id)).all():
 
-                self._add_cause_node(_cause, parent_id)
-        # elif self._is_functional:
-        #     for _cause in self.dao.session.query(RAMSTKCause).filter(
-        #             RAMSTKCause.mode_id == mechanism_id).all():
-
-        #         self._add_cause_node(_cause, parent_id)
+            self._add_cause_node(_cause, parent_id)
 
     def _do_select_all_control(self, cause_id: int, parent_id: str) -> None:
         """
@@ -388,8 +402,11 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id, _cause_id) = parent_id.split('.')
         for _control in self.dao.session.query(RAMSTKControl).filter(
-                RAMSTKControl.cause_id == cause_id).all():
+                RAMSTKControl.mode_id == int(_mode_id),
+                RAMSTKControl.mechanism_id == int(_mechanism_id),
+                RAMSTKControl.cause_id == int(_cause_id)).all():
 
             _data_package = {'control': _control}
 
@@ -437,6 +454,8 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
+        self._last_id = [0, 0, 0, 0, 0]
+        self._revision_id = attributes['revision_id']
         self._parent_id = attributes['hardware_id']
         for _mode in self.dao.session.query(RAMSTKMode).filter(
                 RAMSTKMode.hardware_id == self._parent_id).all():
@@ -485,12 +504,22 @@ class DataManager(RAMSTKDataManager):
         """
         [[_key, _value]] = package.items()
 
-        _poppers = {
-            'mode': ['function_id', 'hardware_id', 'mode_id'],
-            'mechanism': ['mode_id', 'mechanism_id'],
-            'cause': ['mode_id', 'mechanism_id', 'cause_id'],
-            'control': ['cause_id', 'control_id'],
-            'action': ['cause_id', 'action_id']
+        _pkey = {
+            'mode': ['revision_id', 'hardware_id', 'mode_id'],
+            'mechanism':
+            ['revision_id', 'hardware_id', 'mode_id', 'mechanism_id'],
+            'cause': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'cause_id'
+            ],
+            'control': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'cause_id', 'control_id'
+            ],
+            'action': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'cause_id', 'action_id'
+            ]
         }
         for _table in ['mode', 'mechanism', 'cause', 'control', 'action']:
             try:
@@ -499,14 +528,14 @@ class DataManager(RAMSTKDataManager):
             except (AttributeError, KeyError):
                 _attributes = {}
 
-            if _key in _attributes:
-                _attributes[_key] = _value
-
+            for _field in _pkey[_table]:
                 try:
-                    for _field in _poppers[_table]:
-                        _attributes.pop(_field)
+                    _attributes.pop(_field)
                 except KeyError:
                     pass
+
+            if _key in _attributes:
+                _attributes[_key] = _value
 
                 self.do_select(node_id[0],
                                table=_table).set_attributes(_attributes)
