@@ -103,8 +103,8 @@ class DataManager(RAMSTKDataManager):
 
         self._last_id[2] = max(self._last_id[2], cause.cause_id)
 
-        self._do_select_all_control(cause.cause_id, _identifier)
-        self._do_select_all_action(cause.cause_id, _identifier)
+        self._do_select_all_control(_identifier)
+        self._do_select_all_action(_identifier)
 
     def _add_mode_node(self, mode: object) -> None:
         """
@@ -149,11 +149,10 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_fmea', error_message=_error_msg)
 
-    def _do_insert_action(self, cause_id: int, parent_id: str) -> None:
+    def _do_insert_action(self, parent_id: str) -> None:
         """
         Add a new action to FMEA cause ID.
 
-        :param int fmea_id: the FMEA cause ID to associate the new action with.
         :param str parent_id: the parent node ID the control is associated
             with.
         :return: None
@@ -190,14 +189,10 @@ class DataManager(RAMSTKDataManager):
                           'cause ID {0:d}.'.format(int(_cause_id)))
             pub.sendMessage("fail_insert_action", error_message=_error_msg)
 
-    def _do_insert_cause(self, mode_id: int, mechanism_id: int,
-                         parent_id: str) -> None:
+    def _do_insert_cause(self, parent_id: str) -> None:
         """
         Add a new failure cause to FMEA mechanism ID.
 
-        :param int mode_id: the FMEA mode ID to associate the new cause with.
-        :param int mechanism_id: the FMEA mechanism ID to associate the new
-            cause with.
         :parem str parent_id: the parent node ID the cause is associated with.
         :return: None
         :rtype: None
@@ -234,12 +229,10 @@ class DataManager(RAMSTKDataManager):
                     int(_mode_id), int(_mechanism_id)))
             pub.sendMessage("fail_insert_cause", error_message=_error_msg)
 
-    def _do_insert_control(self, cause_id: int, parent_id: str) -> None:
+    def _do_insert_control(self, parent_id: str) -> None:
         """
         Add a new control to FMEA cause ID.
 
-        :param int cause_id: the FMEA cause ID to associate the new control
-            with.
         :parem str parent_id: the parent node ID the control is associated
             with.
         :return: None
@@ -347,11 +340,10 @@ class DataManager(RAMSTKDataManager):
                           'hardware ID {0:s}.'.format(str(self._root)))
             pub.sendMessage("fail_insert_mode", error_message=_error_msg)
 
-    def _do_select_all_action(self, cause_id: int, parent_id: str) -> None:
+    def _do_select_all_action(self, parent_id: str) -> None:
         """
         Retrieve all the actions for the cause ID.
 
-        :param int cause_id: the cause ID to select the actions for.
         :parem str parent_id: the parent node ID the actions are associated
             with.
         :return: None
@@ -374,11 +366,10 @@ class DataManager(RAMSTKDataManager):
 
             self._last_id[4] = max(self._last_id[4], _action.action_id)
 
-    def _do_select_all_cause(self, mechanism_id: int, parent_id: str) -> None:
+    def _do_select_all_cause(self, parent_id: str) -> None:
         """
         Retrieve all the failure causes for the mechanism ID.
 
-        :param int mechanism_id: the mechanism ID to select the causes for.
         :parem str parent_id: the parent node ID the causes are associated
             with.
         :return: None
@@ -391,11 +382,10 @@ class DataManager(RAMSTKDataManager):
 
             self._add_cause_node(_cause, parent_id)
 
-    def _do_select_all_control(self, cause_id: int, parent_id: str) -> None:
+    def _do_select_all_control(self, parent_id: str) -> None:
         """
         Retrieve all the controls for the cause ID.
 
-        :param int cause_id: the cause ID to select the controls for.
         :parem str parent_id: the parent node ID the controls are associated
             with.
         :return: None
@@ -437,7 +427,7 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKMode.function_id == self._parent_id).all():
 
             self._add_mode_node(_mode)
-            self._do_select_all_cause(_mode.mode_id, str(self._parent_id))
+            self._do_select_all_cause(str(self._parent_id))
 
         pub.sendMessage('succeed_retrieve_functional_fmea', tree=self.tree)
 
@@ -487,7 +477,7 @@ class DataManager(RAMSTKDataManager):
 
             self._last_id[1] = max(self._last_id[1], _mechanism.mechanism_id)
 
-            self._do_select_all_cause(_mechanism.mechanism_id, _identifier)
+            self._do_select_all_cause(_identifier)
 
     def _do_set_fmea_attributes(self, node_id: List[int],
                                 package: Dict[str, Any]) -> None:

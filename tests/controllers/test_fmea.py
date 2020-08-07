@@ -553,7 +553,7 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
-        DUT._do_insert_cause(6, 2, '6.2')
+        DUT._do_insert_cause('6.2')
 
         assert isinstance(
             DUT.tree.get_node('6.2.2').data['cause'], RAMSTKCause)
@@ -571,7 +571,7 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
-        DUT._do_insert_cause(7, 40, '7.40')
+        DUT._do_insert_cause('7.40')
 
         pub.unsubscribe(self.on_fail_insert_cause, 'fail_insert_cause')
 
@@ -583,7 +583,7 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
-        DUT._do_insert_control(3, '6.2.2')
+        DUT._do_insert_control('6.2.2')
 
         assert isinstance(
             DUT.tree.get_node('6.2.2.2.c').data['control'], RAMSTKControl)
@@ -603,8 +603,8 @@ class TestInsertMethods():
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mechanism('7')
-        DUT._do_insert_cause(7, 6, '7.6')
-        DUT._do_insert_control(40, '7.6.40')
+        DUT._do_insert_cause('7.6')
+        DUT._do_insert_control('7.6.40')
 
         pub.unsubscribe(self.on_fail_insert_control, 'fail_insert_control')
 
@@ -616,7 +616,7 @@ class TestInsertMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
-        DUT._do_insert_action(3, '6.2.2')
+        DUT._do_insert_action('6.2.2')
 
         assert isinstance(
             DUT.tree.get_node('6.2.2.2.a').data['action'], RAMSTKAction)
@@ -636,7 +636,7 @@ class TestInsertMethods():
         DUT.do_connect(test_program_dao)
         DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mechanism('7')
-        DUT._do_insert_action(40, '7.6.40')
+        DUT._do_insert_action('7.6.40')
 
         pub.unsubscribe(self.on_fail_insert_action, 'fail_insert_action')
 

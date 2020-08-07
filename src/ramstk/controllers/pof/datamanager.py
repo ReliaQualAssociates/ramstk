@@ -193,14 +193,12 @@ class DataManager(RAMSTKDataManager):
                                   parent=str(mode_id),
                                   data={'mechanism': _mechanism})
 
-            self._do_select_all_opload(_mechanism.mechanism_id, _identifier)
+            self._do_select_all_opload(_identifier)
 
-    def _do_select_all_opload(self, mechanism_id, parent_id):
+    def _do_select_all_opload(self, parent_id):
         """
         Retrieve all the operating loads for the mechanism ID.
 
-        :param int mechanism_id: the mechanism ID to select the operating loads
-            for.
         :parem str parent_id: the parent node ID the coperating loads are
             associated with.
         :return: None
@@ -219,14 +217,13 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opload': _opload})
 
-            self._do_select_all_opstress(_opload.load_id, _identifier)
-            self._do_select_all_testmethod(_opload.load_id, _identifier)
+            self._do_select_all_opstress(_identifier)
+            self._do_select_all_testmethod(_identifier)
 
-    def _do_select_all_opstress(self, load_id, parent_id):
+    def _do_select_all_opstress(self, parent_id):
         """
         Retrieve all the operating stresses for the load ID.
 
-        :param int load_id: the operating load ID to select the stresses for.
         :parem str parent_id: the parent node ID the operating stresses are
             associated with.
         :return: None
@@ -247,12 +244,10 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opstress': _opstress})
 
-    def _do_select_all_testmethod(self, load_id, parent_id):
+    def _do_select_all_testmethod(self, parent_id):
         """
         Retrieve all the test methods for the load ID.
 
-        :param int load_id: the operating load ID to select the test methods
-            for.
         :parem str parent_id: the parent node ID the test methods are
             associated with.
         :return: None
