@@ -13,9 +13,8 @@ from treelib.exceptions import NodeIDAbsentError
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import (
-    RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad, RAMSTKOpStress,
-    RAMSTKTestMethod)
+from ramstk.models.programdb import (RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
+                                     RAMSTKOpStress, RAMSTKTestMethod)
 
 
 class DataManager(RAMSTKDataManager):
@@ -207,8 +206,11 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id) = parent_id.split('.')
         for _opload in self.dao.session.query(RAMSTKOpLoad).filter(
-                RAMSTKOpLoad.mechanism_id == mechanism_id).all():
+                RAMSTKOpLoad.hardware_id == self._parent_id,
+                RAMSTKOpLoad.mode_id == int(_mode_id),
+                RAMSTKOpLoad.mechanism_id == int(_mechanism_id)).all():
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _opload.load_id)
 
@@ -230,8 +232,12 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id, _load_id) = parent_id.split('.')
         for _opstress in self.dao.session.query(RAMSTKOpStress).filter(
-                RAMSTKOpStress.load_id == load_id).all():
+                RAMSTKOpStress.hardware_id == self._parent_id,
+                RAMSTKOpStress.mode_id == int(_mode_id),
+                RAMSTKOpStress.mechanism_id == int(_mechanism_id),
+                RAMSTKOpStress.load_id == int(_load_id)).all():
 
             _identifier = '{0:s}.{1:d}.s'.format(parent_id,
                                                  _opstress.stress_id)
@@ -252,8 +258,12 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        (_mode_id, _mechanism_id, _load_id) = parent_id.split('.')
         for _method in self.dao.session.query(RAMSTKTestMethod).filter(
-                RAMSTKTestMethod.load_id == load_id).all():
+                RAMSTKTestMethod.hardware_id == self._parent_id,
+                RAMSTKTestMethod.mode_id == int(_mode_id),
+                RAMSTKTestMethod.mechanism_id == int(_mechanism_id),
+                RAMSTKTestMethod.load_id == int(_load_id)).all():
 
             _identifier = '{0:s}.{1:d}.t'.format(parent_id, _method.test_id)
 
@@ -310,17 +320,30 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _poppers = {
-            'mode': ['function_id', 'hardware_id', 'mode_id'],
-            'mechanism': ['mode_id', 'mechanism_id'],
-            'opload': ['mechanism_id', 'load_id'],
-            'opstress': ['load_id', 'stress_id'],
-            'testmethod': ['load_id', 'test_id']
+            'mode': ['revision_id', 'hardware_id', 'mode_id'],
+            'mechanism':
+            ['revision_id', 'hardware_id', 'mode_id', 'mechanism_id'],
+            'opload': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'load_id'
+            ],
+            'opstress': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'load_id', 'stress_id'
+            ],
+            'testmethod': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'load_id', 'test_id'
+            ]
         }
 
         _attributes = self.do_select(node_id, table=table).get_attributes()
 
         for _field in _poppers[table]:
-            _attributes.pop(_field)
+            try:
+                _attributes.pop(_field)
+            except KeyError:
+                pass
 
         if key in _attributes:
             _attributes[key] = value

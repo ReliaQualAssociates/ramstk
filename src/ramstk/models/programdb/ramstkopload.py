@@ -3,11 +3,11 @@
 #       ramstk.models.programdb.RAMSTKOpLoad.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKOpLoad Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -26,21 +26,39 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
 
     __defaults__ = {'description': '', 'damage_model': '', 'priority_id': 0}
     __tablename__ = 'ramstk_op_load'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (ForeignKeyConstraint(
+        [
+            'fld_revision_id', 'fld_hardware_id', 'fld_mode_id',
+            'fld_mechanism_id'
+        ],
+        [
+            'ramstk_mechanism.fld_revision_id',
+            'ramstk_mechanism.fld_hardware_id', 'ramstk_mechanism.fld_mode_id',
+            'ramstk_mechanism.fld_mechanism_id'
+        ],
+    ), {
+        'extend_existing': True
+    })
 
-    mechanism_id = Column(
-        'fld_mechanism_id',
-        Integer,
-        ForeignKey('ramstk_mechanism.fld_mechanism_id'),
-        nullable=False,
-    )
-    load_id = Column(
-        'fld_load_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False,
-    )
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         primary_key=True,
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         primary_key=True,
+                         default=-1,
+                         nullable=False)
+    mode_id = Column('fld_mode_id', Integer, primary_key=True, nullable=False)
+    mechanism_id = Column('fld_mechanism_id',
+                          Integer,
+                          primary_key=True,
+                          nullable=False)
+    load_id = Column('fld_load_id',
+                     Integer,
+                     primary_key=True,
+                     autoincrement=True,
+                     nullable=False)
 
     description = Column('fld_description',
                          String(512),
@@ -54,16 +72,12 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mechanism = relationship('RAMSTKMechanism', back_populates='op_load')
-    op_stress = relationship(
-        'RAMSTKOpStress',
-        back_populates='op_load',
-        cascade='all,delete',
-    )
-    test_method = relationship(
-        'RAMSTKTestMethod',
-        back_populates='op_load',
-        cascade='all,delete',
-    )
+    op_stress = relationship('RAMSTKOpStress',
+                             back_populates='op_load',
+                             cascade='all,delete')
+    test_method = relationship('RAMSTKTestMethod',
+                               back_populates='op_load',
+                               cascade='all,delete')
 
     is_mode = False
     is_mechanism = False
@@ -84,7 +98,7 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
             'load_id': self.load_id,
             'description': self.description,
             'damage_model': self.damage_model,
-            'priority_id': self.priority_id,
+            'priority_id': self.priority_id
         }
 
         return _attributes
