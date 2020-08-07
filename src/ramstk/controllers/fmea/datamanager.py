@@ -120,11 +120,10 @@ class DataManager(RAMSTKDataManager):
         """
         _data_package = {'mode': mode}
 
-        self.tree.create_node(
-            tag='mode',  #str(mode.mode_id),
-            identifier=str(mode.mode_id),
-            parent=self._root,
-            data=_data_package)
+        self.tree.create_node(tag='mode',
+                              identifier=str(mode.mode_id),
+                              parent=self._root,
+                              data=_data_package)
 
         self._last_id[0] = max(self._last_id[0], mode.mode_id)
 
@@ -178,7 +177,7 @@ class DataManager(RAMSTKDataManager):
             _data_package = {'action': _action}
 
             _identifier = '{0:s}.{1:d}.a'.format(parent_id, _action.action_id)
-            self.tree.create_node(tag=_action.action_recommended,
+            self.tree.create_node(tag='action',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data=_data_package)
@@ -220,7 +219,7 @@ class DataManager(RAMSTKDataManager):
             _identifier = '{0:s}.{1:d}'.format(parent_id, _cause.cause_id)
 
             _data_package = {'cause': _cause}
-            self.tree.create_node(tag=_cause.description,
+            self.tree.create_node(tag='cause',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data=_data_package)
@@ -265,7 +264,7 @@ class DataManager(RAMSTKDataManager):
 
             _identifier = '{0:s}.{1:d}.c'.format(parent_id,
                                                  _control.control_id)
-            self.tree.create_node(tag=_control.description,
+            self.tree.create_node(tag='control',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data=_data_package)
@@ -303,7 +302,7 @@ class DataManager(RAMSTKDataManager):
                                                _mechanism.mechanism_id)
 
             _data_package = {'mechanism': _mechanism}
-            self.tree.create_node(tag=_mechanism.description,
+            self.tree.create_node(tag='mechanism',
                                   identifier=_identifier,
                                   parent=mode_id,
                                   data=_data_package)
@@ -335,7 +334,7 @@ class DataManager(RAMSTKDataManager):
             self._last_id[0] = _mode.mode_id
 
             _data_package = {'mode': _mode}
-            self.tree.create_node(tag=_mode.description,
+            self.tree.create_node(tag='mode',
                                   identifier=str(_mode.mode_id),
                                   parent=self._root,
                                   data=_data_package)

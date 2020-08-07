@@ -1242,6 +1242,7 @@ class FMEA(RAMSTKWorkView):
                         node_id=[self._record_id, -1],
                         package={_key: _value})
 
+    # pylint: disable=unused-argument
     def _on_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Add row to work view for newly added FMEA element.
@@ -1252,8 +1253,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        print(node_id)
-        print(tree)
+        self._do_load_tree(tree)
 
     def _on_request_insert_control_action(self) -> str:
         """
