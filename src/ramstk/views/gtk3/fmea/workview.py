@@ -229,11 +229,12 @@ class FMEA(RAMSTKWorkView):
         pub.subscribe(self._do_load_missions,
                       'succeed_get_usage_profile_attributes')
         pub.subscribe(self._do_load_tree, 'succeed_retrieve_hardware_fmea')
-        pub.subscribe(self._on_insert_fmea, 'succeed_insert_action')
-        pub.subscribe(self._on_insert_fmea, 'succeed_insert_cause')
-        pub.subscribe(self._on_insert_fmea, 'succeed_insert_control')
-        pub.subscribe(self._on_insert_fmea, 'succeed_insert_mechanism')
-        pub.subscribe(self._on_insert_fmea, 'succeed_insert_mode')
+        pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_action')
+        pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_cause')
+        pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_control')
+        pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_mechanism')
+        pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_mode')
+        pub.subscribe(self._on_delete_insert_fmea, 'succeed_delete_fmea')
 
     def __do_load_action_category(self) -> None:
         """
@@ -860,48 +861,6 @@ class FMEA(RAMSTKWorkView):
 
         super().do_expand_tree()
 
-    def _do_refresh_view(self, model: Gtk.TreeModel, __path: str,
-                         row: Gtk.TreeIter) -> None:
-        """
-        Refresh the FMEA Work View after a successful calculation.
-
-        :return: None
-        :rtype: None
-        """
-        # if row is not None:
-        #    _node_id = model.get_value(row, 43)
-
-        #    _level = self._get_level(_node_id)
-        #    _node = self._dtc_data_controller.request_do_select(_node_id)
-
-        #    if _level == "mode":
-        #        model.set_value(
-        #            row,
-        #            self._lst_col_order[17],
-        #            _node.mode_hazard_rate,
-        #        )
-        #        model.set_value(
-        #            row,
-        #            self._lst_col_order[19],
-        #            _node.mode_criticality,
-        #        )
-        #    elif _level in ["mechanism", "cause"]:
-        #        model.set_value(row, self._lst_col_order[24], _node.rpn)
-        #        model.set_value(row, self._lst_col_order[37], _node.rpn_new)
-        # if not self._functional:
-        #    _str_item_crit = ""
-        #    _dic_item_crit = self._dtc_data_controller.request_item_criticality(
-        #    )
-
-        #    for _key in _dic_item_crit:
-        #        _str_item_crit = _str_item_crit + _("{0:s}: {1:g}\n").format(
-        #            _key,
-        #            _dic_item_crit[_key],
-        #        )
-
-        #    self.txtItemCriticality.do_get_buffer().set_text(
-        #        str(_str_item_crit), )
-
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """
         Calculate the FMEA RPN or criticality.
@@ -927,7 +886,7 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         _model, _row = self.treeview.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 43)
+        _node_id = _model.get_value(_row, 0)
 
         pub.sendMessage("request_delete_fmea", node_id=_node_id)
 
@@ -1243,11 +1202,11 @@ class FMEA(RAMSTKWorkView):
                         package={_key: _value})
 
     # pylint: disable=unused-argument
-    def _on_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_delete_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
         """
-        Add row to work view for newly added FMEA element.
+        Update FMEA worksheet whenever an element is inserted or deleted.
 
-        :param int node_id: the ID of the newly added FMEA element.
+        :param int node_id: the ID of the inserted/deleted FMEA element.
         :param tree: the treelib Tree() containing the FMEA module's data.
         :type tree: :class:`treelib.Tree`
         :return: None

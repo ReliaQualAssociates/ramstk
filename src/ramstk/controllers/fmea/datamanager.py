@@ -34,7 +34,7 @@ class DataManager(RAMSTKDataManager):
     # pylint: disable=unused-argument
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a FMEA data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -138,10 +138,12 @@ class DataManager(RAMSTKDataManager):
         try:
             _table = list(self.tree.get_node(node_id).data.keys())[0]
 
-            RAMSTKDataManager.do_delete(self, node_id, _table)
+            super().do_delete(node_id, _table)
 
             self.tree.remove_node(node_id)
-            pub.sendMessage('succeed_delete_fmea', node_id=node_id)
+            pub.sendMessage('succeed_delete_fmea',
+                            node_id=node_id,
+                            tree=self.tree)
 
         except (AttributeError, DataAccessError):
             _error_msg = ("Attempted to delete non-existent FMEA element ID "
