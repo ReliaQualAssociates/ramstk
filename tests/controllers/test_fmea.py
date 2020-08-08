@@ -61,8 +61,7 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert not DUT._is_functional
-        assert pub.isSubscribed(DUT._do_select_all_hardware_fmea,
-                                'selected_hardware')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_hardware')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_fmea')
         assert pub.isSubscribed(DUT._do_insert_action,
                                 'request_insert_fmea_action')
@@ -130,10 +129,7 @@ class TestSelectMethods():
 
         DUT = dmFMEA(functional=True)
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_functional_fmea({
-            'hardware_id': 1,
-            'function_id': 1
-        })
+        DUT.do_select_all({'hardware_id': 1, 'function_id': 1})
 
         assert isinstance(DUT.tree.get_node('1').data['mode'], RAMSTKMode)
 
@@ -148,7 +144,7 @@ class TestSelectMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         assert isinstance(DUT.tree.get_node('4').data['mode'], RAMSTKMode)
 
@@ -160,7 +156,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMode on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _mode = DUT.do_select('4', table='mode')
 
@@ -173,7 +169,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMechanism on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _mechanism = DUT.do_select('4.1', table='mechanism')
 
@@ -186,7 +182,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKCause on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _cause = DUT.do_select('4.1.1', table='cause')
 
@@ -199,7 +195,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKControl on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _control = DUT.do_select('4.1.1.1.c', table='control')
 
@@ -212,7 +208,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKAction on success."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _action = DUT.do_select('4.1.1.1.a', table='action')
 
@@ -227,7 +223,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select('4', table='scibbidy-bibbidy-doo')
@@ -237,7 +233,7 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent FMEA ID is requested."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         assert DUT.do_select(100, table='mode') is None
 
@@ -298,7 +294,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('6.3.3.6.a')
 
         pub.unsubscribe(self.on_succeed_delete_action, 'succeed_delete_action')
@@ -310,7 +306,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('300')
 
         pub.unsubscribe(self.on_fail_delete_action, 'fail_delete_action')
@@ -322,7 +318,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('6.3.3.6.c')
 
         pub.unsubscribe(self.on_succeed_delete_control,
@@ -335,7 +331,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('300')
 
         pub.unsubscribe(self.on_fail_delete_control, 'fail_delete_control')
@@ -347,7 +343,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('6.3.6')
 
         pub.unsubscribe(self.on_succeed_delete_cause, 'succeed_delete_cause')
@@ -359,7 +355,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('300')
 
         pub.unsubscribe(self.on_fail_delete_cause, 'fail_delete_cause')
@@ -372,7 +368,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('6.3')
 
         pub.unsubscribe(self.on_succeed_delete_mechanism,
@@ -385,7 +381,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('300')
 
         pub.unsubscribe(self.on_fail_delete_mechanism, 'fail_delete_mechanism')
@@ -397,7 +393,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('6')
 
         pub.unsubscribe(self.on_succeed_delete_mode, 'succeed_delete_mode')
@@ -409,7 +405,7 @@ class TestDeleteMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('300')
 
         pub.unsubscribe(self.on_fail_delete_mode, 'fail_delete_mode')
@@ -478,7 +474,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mode()
 
         assert isinstance(DUT.tree.get_node('6').data['mode'], RAMSTKMode)
@@ -495,7 +491,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._root = 40
         DUT._do_insert_mode()
 
@@ -509,7 +505,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mechanism('6')
 
         assert isinstance(
@@ -528,7 +524,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mechanism('40')
 
         pub.unsubscribe(self.on_fail_insert_mechanism, 'fail_insert_mechanism')
@@ -540,7 +536,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mechanism(40)
 
         pub.unsubscribe(self.on_fail_insert_mechanism, 'fail_insert_mechanism')
@@ -552,7 +548,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_cause('6.2')
 
         assert isinstance(
@@ -570,7 +566,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_cause('7.40')
 
         pub.unsubscribe(self.on_fail_insert_cause, 'fail_insert_cause')
@@ -582,7 +578,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_control('6.2.2')
 
         assert isinstance(
@@ -601,7 +597,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mechanism('7')
         DUT._do_insert_cause('7.6')
         DUT._do_insert_control('7.6.40')
@@ -615,7 +611,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_action('6.2.2')
 
         assert isinstance(
@@ -634,7 +630,7 @@ class TestInsertMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_mechanism('7')
         DUT._do_insert_action('7.6.40')
 
@@ -696,7 +692,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('5', 'mode')
 
         pub.unsubscribe(self.on_succeed_get_mode_attrs,
@@ -710,7 +706,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('5.1', 'mechanism')
 
         pub.unsubscribe(self.on_succeed_get_mechanism_attrs,
@@ -724,7 +720,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('4.1.1', 'cause')
 
         pub.unsubscribe(self.on_succeed_get_cause_attrs,
@@ -738,7 +734,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('4.1.1.1.c', 'control')
 
         pub.unsubscribe(self.on_succeed_get_control_attrs,
@@ -752,7 +748,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('4.1.1.1.a', 'action')
 
         pub.unsubscribe(self.on_succeed_get_action_attrs,
@@ -760,98 +756,92 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_set_mode_attributes(self, test_program_dao):
-        """_do_set_fmea_attributes() should return None when successfully setting failure mode attributes."""
+        """do_set_attributes() should return None when successfully setting failure mode attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT._do_set_fmea_attributes(
+        DUT.do_set_attributes(
             node_id=['4', -1],
             package={'effect_local': 'Some really bad shit will happen.'})
-        DUT._do_set_fmea_attributes(node_id=['4', -1],
-                                    package={'description': 'Ivanka Trump'})
+        DUT.do_set_attributes(node_id=['4', -1],
+                              package={'description': 'Ivanka Trump'})
         assert DUT.do_select('4', table='mode').description == 'Ivanka Trump'
         assert DUT.do_select(
             '4',
             table='mode').effect_local == ('Some really bad shit will happen.')
 
-        pub.unsubscribe(DUT._do_set_fmea_attributes,
-                        'request_set_fmea_attributes')
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
     @pytest.mark.integration
     def test_do_set_mechanism_attributes(self, test_program_dao):
-        """_do_set_fmea_attributes() should return None when successfully setting failure mechanism attributes."""
+        """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT._do_set_fmea_attributes(node_id=['4.1', -1],
-                                    package={'rpn_detection': 8})
-        DUT._do_set_fmea_attributes(node_id=['4.1', -1],
-                                    package={'description': 'Jared Kushner'})
+        DUT.do_set_attributes(node_id=['4.1', -1],
+                              package={'rpn_detection': 8})
+        DUT.do_set_attributes(node_id=['4.1', -1],
+                              package={'description': 'Jared Kushner'})
         assert DUT.do_select('4.1',
                              table='mechanism').description == 'Jared Kushner'
         assert DUT.do_select('4.1', table='mechanism').rpn_detection == 8
 
-        pub.unsubscribe(DUT._do_set_fmea_attributes,
-                        'request_set_fmea_attributes')
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
     @pytest.mark.integration
     def test_do_set_cause_attributes(self, test_program_dao):
-        """_do_set_fmea_attributes() should return None when successfully setting failure cause attributes."""
+        """do_set_attributes() should return None when successfully setting failure cause attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT._do_set_fmea_attributes(node_id=['4.1.1', -1],
-                                    package={'rpn_detection': 8})
-        DUT._do_set_fmea_attributes(node_id=['4.1.1', -1],
-                                    package={'description': 'Jared Kushner'})
+        DUT.do_set_attributes(node_id=['4.1.1', -1],
+                              package={'rpn_detection': 8})
+        DUT.do_set_attributes(node_id=['4.1.1', -1],
+                              package={'description': 'Jared Kushner'})
         assert DUT.do_select('4.1.1',
                              table='cause').description == 'Jared Kushner'
         assert DUT.do_select('4.1.1', table='cause').rpn_detection == 8
 
-        pub.unsubscribe(DUT._do_set_fmea_attributes,
-                        'request_set_fmea_attributes')
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
     @pytest.mark.integration
     def test_do_set_control_attributes(self, test_program_dao):
-        """_do_set_fmea_attributes() should return None when successfully setting control attributes."""
+        """do_set_attributes() should return None when successfully setting control attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT._do_set_fmea_attributes(node_id=['4.1.1.1.c', -1],
-                                    package={'type_id': 'Prevention'})
-        DUT._do_set_fmea_attributes(node_id=['4.1.1.1.c', -1],
-                                    package={'description': 'Lock and chain'})
+        DUT.do_set_attributes(node_id=['4.1.1.1.c', -1],
+                              package={'type_id': 'Prevention'})
+        DUT.do_set_attributes(node_id=['4.1.1.1.c', -1],
+                              package={'description': 'Lock and chain'})
         assert DUT.do_select('4.1.1.1.c',
                              table='control').description == 'Lock and chain'
         assert DUT.do_select('4.1.1.1.c',
                              table='control').type_id == 'Prevention'
 
-        pub.unsubscribe(DUT._do_set_fmea_attributes,
-                        'request_set_fmea_attributes')
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
     @pytest.mark.integration
     def test_do_set_action_attributes(self, test_program_dao):
-        """_do_set_fmea_attributes() should return None when successfully setting action attributes."""
+        """do_set_attributes() should return None when successfully setting action attributes."""
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT._do_set_fmea_attributes(
-            node_id=['4.1.1.1.a', -1],
-            package={'action_recommended': 'Kick his ass'})
-        DUT._do_set_fmea_attributes(node_id=['4.1.1.1.a', -1],
-                                    package={'action_owner': 'Doyle Rowland'})
+        DUT.do_set_attributes(node_id=['4.1.1.1.a', -1],
+                              package={'action_recommended': 'Kick his ass'})
+        DUT.do_set_attributes(node_id=['4.1.1.1.a', -1],
+                              package={'action_owner': 'Doyle Rowland'})
         assert DUT.do_select(
             '4.1.1.1.a', table='action').action_recommended == 'Kick his ass'
         assert DUT.do_select('4.1.1.1.a',
                              table='action').action_owner == 'Doyle Rowland'
 
-        pub.unsubscribe(DUT._do_set_fmea_attributes,
-                        'request_set_fmea_attributes')
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_fmea_attributes')
 
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self, test_program_dao):
@@ -860,7 +850,7 @@ class TestGetterSetter():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_fmea_tree, 'succeed_get_fmea_tree')
@@ -871,10 +861,7 @@ class TestGetterSetter():
         """on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_fmea_tree message."""
         DATAMGR = dmFMEA()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware_fmea({
-            'revision_id': 1,
-            'hardware_id': 1
-        })
+        DATAMGR.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
         DATAMGR.do_get_tree()
 
@@ -901,7 +888,7 @@ class TestUpdateMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         DUT.tree.get_node('5').data['mode'].description = 'Test failure mode'
         DUT.tree.get_node('5').data['mode'].operator_actions = (
@@ -910,7 +897,7 @@ class TestUpdateMethods():
         DUT.tree.get_node('5.1').data[
             'mechanism'].description = 'Test failure mechanism, updated'
 
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         assert DUT.tree.get_node('5').data['mode'].description == (
             'Test failure mode')
         assert DUT.tree.get_node('5').data['mode'].operator_actions == (
@@ -927,7 +914,7 @@ class TestUpdateMethods():
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware_fmea({'revision_id': 1, 'hardware_id': 1})
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_update(100)
 
         pub.unsubscribe(self.on_fail_update_fmea, 'fail_update_fmea')
@@ -955,10 +942,7 @@ class TestAnalysisMethods():
 
         DATAMGR = dmFMEA()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware_fmea({
-            'revision_id': 1,
-            'hardware_id': 1
-        })
+        DATAMGR.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')
@@ -977,10 +961,7 @@ class TestAnalysisMethods():
 
         DATAMGR = dmFMEA()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware_fmea({
-            'revision_id': 1,
-            'hardware_id': 1
-        })
+        DATAMGR.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')
@@ -998,10 +979,7 @@ class TestAnalysisMethods():
         """do_calculate_rpn() should calculate the risk priority number (RPN) for all failure modes when using the cause for O and D values."""
         DATAMGR = dmFMEA(functional=True)
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_functional_fmea({
-            'revision_id': 1,
-            'function_id': 1
-        })
+        DATAMGR.do_select_all({'revision_id': 1, 'function_id': 1})
         DUT = amFMEA(test_toml_user_configuration)
 
         pub.sendMessage('request_get_fmea_tree')

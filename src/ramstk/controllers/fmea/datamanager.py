@@ -55,8 +55,8 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_select_all_functional_fmea, 'selected_function')
-        pub.subscribe(self._do_select_all_hardware_fmea, 'selected_hardware')
+        pub.subscribe(self.do_select_all, 'selected_function')
+        pub.subscribe(self.do_select_all, 'selected_hardware')
         pub.subscribe(self._do_delete, 'request_delete_fmea')
         pub.subscribe(self._do_insert_action, 'request_insert_fmea_action')
         pub.subscribe(self._do_insert_cause, 'request_insert_fmea_cause')
@@ -64,9 +64,8 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_insert_mechanism,
                       'request_insert_fmea_mechanism')
         pub.subscribe(self._do_insert_mode, 'request_insert_fmea_mode')
-        pub.subscribe(self._do_set_fmea_attributes, 'wvw_editing_fmea')
-        pub.subscribe(self._do_set_fmea_attributes,
-                      'request_set_fmea_attributes')
+        pub.subscribe(self._do_set_attributes, 'wvw_editing_fmea')
+        pub.subscribe(self._do_set_attributes, 'request_set_fmea_attributes')
 
         pub.subscribe(self.do_update, 'request_update_fmea')
         pub.subscribe(self.do_update_all, 'request_update_all_fmea')
@@ -409,20 +408,13 @@ class DataManager(RAMSTKDataManager):
 
             self._last_id[3] = max(self._last_id[3], _control.control_id)
 
-    def _do_select_all_functional_fmea(self,
-                                       attributes: Dict[str, Any]) -> None:
+    def _do_select_all_functional_fmea(self) -> None:
         """
         Retrieve all functional FMEA data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes dict for the selected
-            function or hardware item.
         :return: None
         :rtype: None
         """
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        self._parent_id = attributes['function_id']
         for _mode in self.dao.session.query(RAMSTKMode).filter(
                 RAMSTKMode.function_id == self._parent_id).all():
 
@@ -431,22 +423,15 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_functional_fmea', tree=self.tree)
 
-    def _do_select_all_hardware_fmea(self, attributes: Dict[str, Any]) -> None:
+    def _do_select_all_hardware_fmea(self) -> None:
         """
         Retrieve all hardware FMEA data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes dict for the selected
-            function or hardware item.
         :return: None
         :rtype: None
         """
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        self._last_id = [0, 0, 0, 0, 0]
-        self._revision_id = attributes['revision_id']
-        self._parent_id = attributes['hardware_id']
         for _mode in self.dao.session.query(RAMSTKMode).filter(
+                RAMSTKMode.revision_id == self._revision_id,
                 RAMSTKMode.hardware_id == self._parent_id).all():
 
             self._add_mode_node(_mode)
@@ -479,8 +464,40 @@ class DataManager(RAMSTKDataManager):
 
             self._do_select_all_cause(_identifier)
 
-    def _do_set_fmea_attributes(self, node_id: List[int],
-                                package: Dict[str, Any]) -> None:
+    def do_get_tree(self) -> None:
+        """
+        Retrieve the FMEA treelib Tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_fmea_tree', dmtree=self.tree)
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """
+        Retrieve all FMEA data from the RAMSTK Program database.
+
+        :param dict attributes: the attributes dict for the selected
+            function or hardware item.
+        :return: None
+        :rtype: None
+        """
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        self._last_id = [0, 0, 0, 0, 0]
+        self._revision_id = attributes['revision_id']
+
+        try:
+            self._is_functional = False
+            self._parent_id = attributes['hardware_id']
+            self._do_select_all_hardware_fmea()
+        except KeyError:
+            self._is_functional = True
+            self._parent_id = attributes['function_id']
+
+    def do_set_attributes(self, node_id: List[int],
+                          package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -528,15 +545,6 @@ class DataManager(RAMSTKDataManager):
 
                 self.do_select(node_id[0],
                                table=_table).set_attributes(_attributes)
-
-    def do_get_tree(self) -> None:
-        """
-        Retrieve the FMEA treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_fmea_tree', dmtree=self.tree)
 
     def do_update(self, node_id: int) -> None:
         """
