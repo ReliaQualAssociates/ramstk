@@ -236,6 +236,10 @@ class FMEA(RAMSTKWorkView):
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_mechanism')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_mode')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_delete_fmea')
+        pub.subscribe(self._on_get_hardware_attributes,
+                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_update_item_criticality,
+                      'succeed_calculate_fmea_criticality')
 
     def __do_load_action_category(self) -> None:
         """
@@ -420,6 +424,13 @@ class FMEA(RAMSTKWorkView):
               "[(D)FME(C)A]")
         ])
 
+        # Move the item criticality RAMSTKTextView() below it's label.
+        _fixed = self.get_children()[1].get_children()[0].get_child()
+        _label = _fixed.get_children()[-1]
+        _x_pos = _fixed.child_get_property(_label, 'x')
+        _y_pos = _fixed.child_get_property(_label, 'y') + 25
+        _fixed.put(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
+
         # Set the tab label.
         _label = RAMSTKLabel(_("FMEA"))
         _label.do_set_properties(
@@ -439,6 +450,8 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self.txtItemCriticality.dic_handler_id['edited'] = 0
+
         self._lst_handler_id.append(
             self.treeview.connect("button_press_event", self._on_button_press))
 
@@ -481,7 +494,7 @@ class FMEA(RAMSTKWorkView):
         # ----- ENTRIES
         self.txtItemCriticality.do_set_properties(
             editable=False,
-            height=75,
+            height=125,
             tooltip=_(
                 "Displays the MIL-STD-1629A, Task 102 item criticality for "
                 "the selected hardware item."))
@@ -875,11 +888,12 @@ class FMEA(RAMSTKWorkView):
         """
         _model, _row = self.treeview.get_selection().get_selected()
 
-        pub.sendMessage("request_calculate_dfmeca",
-                        node_id=_model.get_value(_row, 43),
-                        item_hr=self._item_hazard_rate,
-                        criticality=self.chkCriticality.get_active(),
-                        rpn=self.chkRPN.get_active())
+        if self.chkCriticality.get_active():
+            pub.sendMessage("request_calculate_criticality",
+                            item_hr=self._item_hazard_rate)
+
+        if self.chkRPN.get_active():
+            pub.sendMessage("request_calculate_rpn", method='mechanism')
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1034,6 +1048,22 @@ class FMEA(RAMSTKWorkView):
         :rtype: list
         """
         return self.treeview.visible and mask
+
+    def _do_update_item_criticality(self, item_criticality: str) -> None:
+        """
+        Update the item criticality RAMSTKTextView() with the results.
+
+        :param dict item_criticality: the item criticality for the selected
+            hardware item.
+        :return: None
+        :rtype: None
+        """
+        _item_criticality = ""
+        for _key, _value in item_criticality.items():
+            _item_criticality = _item_criticality + _key + ": " + str(
+                _value) + "\n"
+
+        self.txtItemCriticality.do_update(_item_criticality, 0, 'edited')
 
     def _get_indenture_level(self) -> str:
         """
@@ -1250,6 +1280,14 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         self._do_load_tree(tree)
+
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+        """
+
+        :param attributes:
+        :return:
+        """
+        self._item_hazard_rate = attributes['hazard_rate_active']
 
     def _on_request_insert_control_action(self) -> str:
         """

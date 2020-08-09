@@ -12,6 +12,7 @@ from collections import defaultdict
 
 # Third Party Imports
 from pubsub import pub
+import treelib
 
 # RAMSTK Package Imports
 from ramstk.analyses import criticality
@@ -49,6 +50,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_get_tree, 'succeed_get_fmea_tree')
+        pub.subscribe(self._on_get_tree, 'succeed_retrieve_hardware_fmea')
         pub.subscribe(self._do_calculate_criticality,
                       'request_calculate_criticality')
         pub.subscribe(self._do_calculate_rpn, 'request_calculate_rpn')
@@ -113,3 +115,27 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _child.data[method].rpn_new = criticality.calculate_rpn(_sod)
 
         pub.sendMessage('succeed_calculate_rpn')
+
+    #// TODO: Update RAMSTKAnalysisManager.on_get_tree dmtree argument to tree.
+    #//
+    #// The analysis manager should be loaded with the tree as soon as the
+    #// data manager retrieves it.  The analysis managers should subscribe to
+    #// the work stream module's corresponding succeed_retrieve_* message.
+    #// These messages are all sent with a data package named tree,
+    #// not dmtree.  The RAMSTKAnalysisManager.on_get_tree() method should be
+    #// updated to accept tree as the argument, not dmtree.  Each of the work
+    #// stream module analysis managers should be updated to subscribe to the
+    #// proper message.
+    #//
+    #// Remove _on_get_tree() method from FMEA analysis manager when this is
+    #// complete.
+    def _on_get_tree(self, tree: treelib.Tree) -> None:
+        """
+        Set the analysis manager's treelib Tree().
+
+        :param tree: the data manager's treelib Tree().
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        self._tree = tree
