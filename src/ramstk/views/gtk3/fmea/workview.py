@@ -19,6 +19,7 @@ from ramstk.configuration import (RAMSTK_CONTROL_TYPES, RAMSTK_CRITICALITY,
                                   RAMSTK_FAILURE_PROBABILITY,
                                   RAMSTKUserConfiguration)
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddControlAction
 from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKLabel,
@@ -441,16 +442,19 @@ class FMEA(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.treeview.connect("button_press_event", self._on_button_press))
 
-        super().do_set_cell_callbacks('wvw_editing_fmea',
-                                      self._lst_col_order[2:20])
-        super().do_set_cell_callbacks('wvw_editing_fmea',
-                                      self._lst_col_order[20:33])
-        super().do_set_cell_callbacks('wvw_editing_fmea',
-                                      self._lst_col_order[33:])
+        # CellRendererToggle columns.
+        for _column in [30, 32, 38, 39, 40]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[_column]).get_cells()
 
-        # These are the RPN SOD inputs and require looking up a value in a
-        # dict rather than a direct read of the cell contents.
-        for _column in [21, 22, 23, 34, 35, 36]:
+            _cell[0].connect('toggled', self._on_cell_toggled, _column)
+
+        # CellRendererCombo and CellRendererText columns.
+        for _column in [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34, 35, 36,
+                37, 41
+        ]:
             _cell = self.treeview.get_column(
                 self._lst_col_order[_column]).get_cells()
 
@@ -684,8 +688,8 @@ class FMEA(RAMSTKWorkView):
             node.identifier, _entity.description, "", "", "", "", "", "", "",
             "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
             _occurrence, _detection, _entity.rpn, "", "", "", "", "", 0, "", 0,
-            "", "", _occurrence_new, _detection_new, _entity.rpn_new,
-            _entity.pof_include, 0, 0, "", _icon,
+            "", "", _occurrence_new, _detection_new, _entity.rpn_new, 0, 0,
+            _entity.pof_include, "", _icon,
             str(_entity.get_attributes())
         ]
 
@@ -1176,13 +1180,12 @@ class FMEA(RAMSTKWorkView):
     def _on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
         """
-        Handle edits of the Allocation Work View RAMSTKTreeview().
+        Handle edits of the FMEA Work View RAMSTKTreeview().
 
         :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
         :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was edited.
         :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param str message: the PyPubSub message to publish on success.
         :param int position: the column position of the edited
             Gtk.CellRenderer().
         :return: None
@@ -1190,7 +1193,41 @@ class FMEA(RAMSTKWorkView):
         """
         self.treeview.do_edit_cell(cell, path, new_text, position)
 
-        _value = self._get_rpn_values(self._lst_col_order[position], new_text)
+        if position in [21, 22, 23, 34, 35, 36]:
+            new_text = self._get_rpn_values(self._lst_col_order[position],
+                                            new_text)
+
+        try:
+            _key = self._dic_column_keys[self._lst_col_order[position]]
+        except (IndexError, KeyError):
+            _key = ''
+
+        #// TODO: Update ramstk_action fld_action_recommended to fld_description.
+        #//
+        #// Updating fld_action_recommended to fld_description makes
+        #// ramstk_action consistent with other FMEA tables in position 1.
+        if self._lst_col_order[position] == 1 and self._record_id[-1] == 'a':
+            _key = 'action_recommended'
+
+        pub.sendMessage('wvw_editing_fmea',
+                        node_id=[self._record_id, -1],
+                        package={_key: new_text})
+
+    # pylint: disable=unused-argument
+    def _on_cell_toggled(self, cell: Gtk.CellRenderer, path: str,
+                         position: int) -> None:
+        """
+        Handle edits of the FMEA Work View RAMSTKTreeview() toggle cells.
+
+        :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was toggled.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was toggled.
+        :param int position: the column position of the toggled
+            Gtk.CellRenderer().
+        :return: None
+        :rtype: None
+        """
+        _new_text = boolean_to_integer(cell.get_active())
 
         try:
             _key = self._dic_column_keys[self._lst_col_order[position]]
@@ -1199,7 +1236,7 @@ class FMEA(RAMSTKWorkView):
 
         pub.sendMessage('wvw_editing_fmea',
                         node_id=[self._record_id, -1],
-                        package={_key: _value})
+                        package={_key: _new_text})
 
     # pylint: disable=unused-argument
     def _on_delete_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:

@@ -64,7 +64,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_insert_mechanism,
                       'request_insert_fmea_mechanism')
         pub.subscribe(self._do_insert_mode, 'request_insert_fmea_mode')
-        pub.subscribe(self._do_set_attributes, 'wvw_editing_fmea')
+        pub.subscribe(self.do_set_attributes, 'wvw_editing_fmea')
         pub.subscribe(self._do_set_attributes, 'request_set_fmea_attributes')
 
         pub.subscribe(self.do_update, 'request_update_fmea')
@@ -558,6 +558,7 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _table = list(self.tree.get_node(node_id).data.keys())[0]
+
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
             self.dao.do_update()
