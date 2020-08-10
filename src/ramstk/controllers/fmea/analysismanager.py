@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from collections import defaultdict
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -16,25 +17,24 @@ import treelib
 
 # RAMSTK Package Imports
 from ramstk.analyses import criticality
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
 
 
 class AnalysisManager(RAMSTKAnalysisManager):
     """
-    Contain the attributes and methods of the Function analysis manager.
-
-    This class manages the functional analysis for functional hazards analysis
-    (FHA).  Attributes of the function Analysis Manager are:
+    Contain the attributes and methods of the FMEA analysis manager.
     """
-    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 **kwargs: Dict[str, Any]) -> None:
         """
-        Initialize an instance of the function analysis manager.
+        Initialize an instance of the FMEA analysis manager.
 
         :param configuration: the Configuration instance associated with the
             current instance of the RAMSTK application.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super(AnalysisManager, self).__init__(configuration, **kwargs)
+        super().__init__(configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -55,7 +55,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_criticality')
         pub.subscribe(self._do_calculate_rpn, 'request_calculate_rpn')
 
-    def _do_calculate_criticality(self, item_hr):
+    def _do_calculate_criticality(self, item_hr: float) -> None:
         """
         Calculate the MIL-STD-1629A, Task 102 criticality of a hardware item.
 
@@ -80,7 +80,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.sendMessage('succeed_calculate_fmea_criticality',
                         item_criticality=_item_criticality)
 
-    def _do_calculate_rpn(self, method='mechanism'):
+    def _do_calculate_rpn(self, method: str = 'mechanism') -> None:
         """
         Calculate the risk priority number (RPN) of a hardware item's modes.
 
@@ -93,7 +93,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 mechanism or both are associated with a cause.  Regardless of
                 the method, the mechanism or cause must be an immediate child
                 of the failure mode.  Typically, hardware FMEA use mechanisms
-                and functional FMEA use causes.
+                and FMEAal FMEA use causes.
 
         :param str method: the method to use when calculating the RPN.  Options
             are mechanism (default) and cause.  Whichever is selected will
@@ -102,19 +102,40 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _sod = {'rpn_severity': 10, 'rpn_occurrence': 10, 'rpn_detection': 10}
+
         for _mode in self._tree.children(0):
             _sod['rpn_severity'] = _mode.data['mode'].rpn_severity
+            self.__do_calculate_rpn(_mode, _sod, method)
 
-            for _child in self._tree.children(str(_mode.data['mode'].mode_id)):
-                _sod['rpn_occurrence'] = _child.data[method].rpn_occurrence
-                _sod['rpn_detection'] = _child.data[method].rpn_detection
-                _child.data[method].rpn = criticality.calculate_rpn(_sod)
+            _sod['rpn_severity'] = _mode.data['mode'].rpn_severity_new
+            self.__do_calculate_rpn(_mode, _sod, method)
 
-                _sod['rpn_occurrence'] = _child.data[method].rpn_occurrence_new
-                _sod['rpn_detection'] = _child.data[method].rpn_detection_new
-                _child.data[method].rpn_new = criticality.calculate_rpn(_sod)
+        pub.sendMessage('succeed_calculate_rpn', tree=self._tree)
 
-        pub.sendMessage('succeed_calculate_rpn')
+    def __do_calculate_rpn(self, mode: object, sod: Dict[str, int],
+                           method: str) -> None:
+        """
+
+        :param mode:
+        :param sod:
+        :param method:
+        :return:
+        """
+        for _child in self._tree.children(str(mode.data['mode'].mode_id)):
+            sod['rpn_occurrence'] = _child.data[method].rpn_occurrence
+            sod['rpn_detection'] = _child.data[method].rpn_detection
+            _child.data[method].rpn = criticality.calculate_rpn(sod)
+
+            sod['rpn_occurrence'] = _child.data[method].rpn_occurrence_new
+            sod['rpn_detection'] = _child.data[method].rpn_detection_new
+            _child.data[method].rpn_new = criticality.calculate_rpn(sod)
+
+            pub.sendMessage('request_set_fmea_attributes',
+                            node_id=[_child.identifier, -1],
+                            package={'rpn': _child.data[method].rpn})
+            pub.sendMessage('request_set_fmea_attributes',
+                            node_id=[_child.identifier, -1],
+                            package={'rpn_new': _child.data[method].rpn_new})
 
     #// TODO: Update RAMSTKAnalysisManager.on_get_tree dmtree argument to tree.
     #//

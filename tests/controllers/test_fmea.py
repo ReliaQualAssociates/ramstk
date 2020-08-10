@@ -931,7 +931,8 @@ class TestAnalysisMethods():
         print(
             "\033[36m\nsucceed_calculate_fmea_criticality topic was broadcast")
 
-    def on_succeed_calculate_rpn(self):
+    def on_succeed_calculate_rpn(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_calculate_rpn topic was broadcast")
 
     @pytest.mark.integration

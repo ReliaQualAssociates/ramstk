@@ -230,6 +230,7 @@ class FMEA(RAMSTKWorkView):
         pub.subscribe(self._do_load_missions,
                       'succeed_get_usage_profile_attributes')
         pub.subscribe(self._do_load_tree, 'succeed_retrieve_hardware_fmea')
+        pub.subscribe(self._do_load_tree, 'succeed_calculate_rpn')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_action')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_cause')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_control')
