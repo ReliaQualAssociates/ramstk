@@ -14,10 +14,7 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.programdb import RAMSTKControl
 
-ATTRIBUTES = {
-    'description': 'Test Control',
-    'type_id': 'Detection'
-}
+ATTRIBUTES = {'description': 'Test Control', 'type_id': 'Detection'}
 
 
 @pytest.mark.usefixtures('test_program_dao')
@@ -34,11 +31,10 @@ class TestRAMSTKControl():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_control'
-        assert DUT.cause_id == 2
-        assert DUT.control_id == 5
+        assert DUT.cause_id == 1
+        assert DUT.control_id == 1
         assert DUT.description == 'Test FMEA Control #1 for Cause ID 5'
         assert DUT.type_id == ''
-
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -51,12 +47,11 @@ class TestRAMSTKControl():
 
         assert isinstance(_attributes, dict)
 
-        assert _attributes['cause_id'] == 2
-        assert _attributes['control_id'] == 5
+        assert _attributes['cause_id'] == 1
+        assert _attributes['control_id'] == 1
         assert _attributes['description'] == ('Test FMEA Control #1 for Cause '
                                               'ID 5')
         assert _attributes['type_id'] == ''
-
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -67,7 +62,6 @@ class TestRAMSTKControl():
 
         assert DUT.set_attributes(ATTRIBUTES) is None
 
-
     @pytest.mark.integration
     def test_set_attributes_none_value(self, test_program_dao):
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
@@ -77,7 +71,6 @@ class TestRAMSTKControl():
 
         assert DUT.set_attributes(ATTRIBUTES) is None
         assert DUT.get_attributes()['description'] == ''
-
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):

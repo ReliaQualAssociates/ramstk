@@ -202,7 +202,6 @@ class DataManager(RAMSTKDataManager):
                                           'similar_item': _similaritem
                                       })
 
-                pub.sendMessage('inserted_hardware', tree=self.tree)
                 pub.sendMessage('succeed_insert_hardware',
                                 node_id=self.last_id,
                                 tree=self.tree)
@@ -244,8 +243,7 @@ class DataManager(RAMSTKDataManager):
         """
         Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
-        :param dict revision_id: the Revision ID to select the Hardware BoM
-            for.
+        :param dict attributes: the attributes dict for the selected Revision.
         :return: None
         :rtype: None
         """

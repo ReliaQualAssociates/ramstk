@@ -45,12 +45,8 @@ class RAMSTKDialog(Gtk.Dialog):
         try:
             self.add_buttons(kwargs['dlgbuttons'])
         except KeyError:
-            self.add_buttons(
-                Gtk.STOCK_OK,
-                Gtk.ResponseType.OK,
-                Gtk.STOCK_CANCEL,
-                Gtk.ResponseType.CANCEL,
-            )
+            self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK,
+                             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
 
         self.set_destroy_with_parent(True)
         self.set_modal(True)
@@ -261,6 +257,7 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
 
         if self.run() == Gtk.ResponseType.ACCEPT:
             _filename = self.get_filename()
+            # pylint: disable=unused-variable
             __, _extension = os.path.splitext(_filename)
         elif self.run() == Gtk.ResponseType.REJECT:
             self.do_destroy()

@@ -10,7 +10,8 @@
 from datetime import date
 
 # Third Party Imports
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import (Column, Float, ForeignKey, Integer, String,
+                        UniqueConstraint)
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -71,21 +72,21 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseTable):
         'year_of_manufacture': date.today().year
     }
     __tablename__ = 'ramstk_hardware'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (UniqueConstraint('fld_revision_id',
+                                       'fld_hardware_id',
+                                       name='ramstk_hardware_ukey'), {
+                                           'extend_existing': True
+                                       })
 
-    revision_id = Column(
-        'fld_revision_id',
-        Integer,
-        ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False,
-    )
-    hardware_id = Column(
-        'fld_hardware_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False,
-    )
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         ForeignKey('ramstk_revision.fld_revision_id'),
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         primary_key=True,
+                         autoincrement=True,
+                         nullable=False)
 
     alt_part_number = Column('fld_alt_part_number',
                              String(256),

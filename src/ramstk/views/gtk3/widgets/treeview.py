@@ -420,7 +420,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         if pixbuf:
             self.datatypes.append('pixbuf')
             self.editable.append(0)
-            self.headings.append('')
+            self.headings.append('icon')
             self.order.append(len(self.order))
             self.pixbuf_col = int(len(self.datatypes)) - 1
             self.visible.append(True)
@@ -432,7 +432,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         if indexed:
             self.datatypes.append('gchararray')
             self.editable.append(0)
-            self.headings.append('')
+            self.headings.append('index')
             self.order.append(len(self.order))
             self.visible.append(False)
             self.widgets.append('text')
@@ -454,7 +454,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         # attributes dict.
         self.datatypes.append('gchararray')
         self.editable.append(False)
-        self.headings.append('Attributes')
+        self.headings.append('attributes')
         self.korder.append('dict')
         self.order.append(len(self.order))
         self.visible.append(False)
@@ -596,11 +596,9 @@ class RAMSTKTreeView(Gtk.TreeView):
                                          visible=self.visible[_idx])
                 _column.set_attributes(_pbcell, pixbuf=self.pixbuf_col)
             else:
-                _column = do_make_column(
-                    [_cell],
-                    heading=self.headings[_idx],
-                    visible=self.visible[_idx],
-                )
+                _column = do_make_column([_cell],
+                                         heading=self.headings[_idx],
+                                         visible=self.visible[_idx])
             _column.set_cell_data_func(
                 _cell, self._format_cell,
                 (self.order[_idx], self.datatypes[_idx]))

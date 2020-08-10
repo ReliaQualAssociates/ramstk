@@ -15,10 +15,8 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmPoF
 from ramstk.db.base import BaseDatabase
-from ramstk.models.programdb import (
-    RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
-    RAMSTKOpStress, RAMSTKTestMethod
-)
+from ramstk.models.programdb import (RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
+                                     RAMSTKOpStress, RAMSTKTestMethod)
 
 
 @pytest.mark.usefixtures('test_program_dao')
@@ -126,10 +124,10 @@ class TestSelectMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        _opstress = DUT.do_select('4.1.1.2.s', table='opstress')
+        _opstress = DUT.do_select('4.1.1.1.s', table='opstress')
 
         assert isinstance(_opstress, RAMSTKOpStress)
-        assert _opstress.description == ''
+        assert _opstress.description == 'Test Operating Stress'
         assert _opstress.load_history == ''
 
     @pytest.mark.integration
@@ -327,13 +325,13 @@ class TestInsertMethods():
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_opload(2, '5.2')
+
+        DUT._do_insert_opload(2, '5.1')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.3').data['opload'], RAMSTKOpLoad)
-        assert DUT.tree.get_node('5.2.3').data['opload'].load_id == 3
-        assert DUT.tree.get_node(
-            '5.2.3').data['opload'].description == ''
+            DUT.tree.get_node('5.1.1').data['opload'], RAMSTKOpLoad)
+        assert DUT.tree.get_node('5.1.1').data['opload'].load_id == 1
+        assert DUT.tree.get_node('5.1.1').data['opload'].description == ''
 
         pub.unsubscribe(self.on_succeed_insert_opload, 'succeed_insert_opload')
 
@@ -360,13 +358,13 @@ class TestInsertMethods():
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_opstress(3, '5.2.3')
+        DUT._do_insert_opstress(3, '5.1.1')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.3.3.s').data['opstress'], RAMSTKOpStress)
-        assert DUT.tree.get_node('5.2.3.3.s').data['opstress'].stress_id == 3
+            DUT.tree.get_node('5.1.1.1.s').data['opstress'], RAMSTKOpStress)
+        assert DUT.tree.get_node('5.1.1.1.s').data['opstress'].stress_id == 1
         assert DUT.tree.get_node(
-            '5.2.3.3.s').data['opstress'].description == ''
+            '5.1.1.1.s').data['opstress'].description == ''
 
         pub.unsubscribe(self.on_succeed_insert_opstress,
                         'succeed_insert_opstress')
@@ -394,14 +392,14 @@ class TestInsertMethods():
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT._do_insert_testmethod(3, '5.2.3')
+        DUT._do_insert_testmethod(3, '5.1.1')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.3.3.t').data['testmethod'],
+            DUT.tree.get_node('5.1.1.1.t').data['testmethod'],
             RAMSTKTestMethod)
-        assert DUT.tree.get_node('5.2.3.3.t').data['testmethod'].test_id == 3
+        assert DUT.tree.get_node('5.1.1.1.t').data['testmethod'].test_id == 1
         assert DUT.tree.get_node(
-            '5.2.3.3.t').data['testmethod'].description == ''
+            '5.1.1.1.t').data['testmethod'].description == ''
 
         pub.unsubscribe(self.on_succeed_insert_test_method,
                         'succeed_insert_test_method')
@@ -442,7 +440,7 @@ class TestGetterSetter():
 
     def on_succeed_get_mechanism_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['mechanism_id'] == 2
+        assert attributes['mechanism_id'] == 1
         # When this script is run by itself, the first response is expected.
         # When run with make test as part of the complete test suite,
         # the test_fmea.py script will have previously updated the description
@@ -458,19 +456,19 @@ class TestGetterSetter():
 
     def on_succeed_get_opload_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['load_id'] == 3
+        assert attributes['load_id'] == 1
         assert attributes['description'] == ''
         print("\033[36m\nsucceed_get_opload_attributes topic was broadcast.")
 
     def on_succeed_get_opstress_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['stress_id'] == 3
+        assert attributes['stress_id'] == 1
         assert attributes['description'] == ''
         print("\033[36m\nsucceed_get_opstress_attributes topic was broadcast.")
 
     def on_succeed_get_test_method_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['test_id'] == 3
+        assert attributes['test_id'] == 1
         assert attributes['description'] == ''
         print(
             "\033[36m\nsucceed_get_test_method_attributes topic was broadcast."
@@ -480,7 +478,7 @@ class TestGetterSetter():
         assert isinstance(dmtree, Tree)
         assert isinstance(dmtree.get_node('5').data['mode'], RAMSTKMode)
         assert isinstance(
-            dmtree.get_node('5.2').data['mechanism'], RAMSTKMechanism)
+            dmtree.get_node('5.1').data['mechanism'], RAMSTKMechanism)
         print("\033[36m\nsucceed_get_pof_tree topic was broadcast")
 
     @pytest.mark.integration
@@ -508,10 +506,10 @@ class TestGetterSetter():
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('5.2', 'mechanism')
+        DUT.do_get_attributes('5.1', 'mechanism')
 
         assert isinstance(
-            DUT.tree.get_node('5.2').data['mechanism'], RAMSTKMechanism)
+            DUT.tree.get_node('5.1').data['mechanism'], RAMSTKMechanism)
 
         pub.unsubscribe(self.on_succeed_get_mechanism_attrs,
                         'succeed_get_mechanism_attributes')
@@ -525,10 +523,10 @@ class TestGetterSetter():
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('5.2.3', 'opload')
+        DUT.do_get_attributes('5.1.1', 'opload')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.3').data['opload'], RAMSTKOpLoad)
+            DUT.tree.get_node('5.1.1').data['opload'], RAMSTKOpLoad)
 
         pub.unsubscribe(self.on_succeed_get_opload_attrs,
                         'succeed_get_opload_attributes')
@@ -542,10 +540,10 @@ class TestGetterSetter():
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('5.2.3.3.s', 'opstress')
+        DUT.do_get_attributes('5.1.1.1.s', 'opstress')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.3.3.s').data['opstress'], RAMSTKOpStress)
+            DUT.tree.get_node('5.1.1.1.s').data['opstress'], RAMSTKOpStress)
 
         pub.unsubscribe(self.on_succeed_get_opstress_attrs,
                         'succeed_get_opstress_attributes')
@@ -559,10 +557,10 @@ class TestGetterSetter():
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
-        DUT.do_get_attributes('5.2.3.3.t', 'testmethod')
+        DUT.do_get_attributes('5.1.1.1.t', 'testmethod')
 
         assert isinstance(
-            DUT.tree.get_node('5.2.3.3.t').data['testmethod'],
+            DUT.tree.get_node('5.1.1.1.t').data['testmethod'],
             RAMSTKTestMethod)
 
         pub.unsubscribe(self.on_succeed_get_test_method_attrs,
@@ -597,17 +595,17 @@ class TestGetterSetter():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        DUT.do_set_attributes(node_id='5.2',
+        DUT.do_set_attributes(node_id='5.1',
                               key='rpn_detection',
                               value=8,
                               table='mechanism')
-        DUT.do_set_attributes(node_id='5.2',
+        DUT.do_set_attributes(node_id='5.1',
                               key='description',
                               value='Jared Kushner',
                               table='mechanism')
-        assert DUT.do_select('5.2',
+        assert DUT.do_select('5.1',
                              table='mechanism').description == 'Jared Kushner'
-        assert DUT.do_select('5.2', table='mechanism').rpn_detection == 8
+        assert DUT.do_select('5.1', table='mechanism').rpn_detection == 8
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
@@ -618,18 +616,18 @@ class TestGetterSetter():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        DUT.do_set_attributes(node_id='5.2.3',
+        DUT.do_set_attributes(node_id='5.1.1',
                               key='damage_model',
                               value='Fancy math model',
                               table='opload')
-        DUT.do_set_attributes(node_id='5.2.3',
+        DUT.do_set_attributes(node_id='5.1.1',
                               key='description',
                               value='Jared Kushner',
                               table='opload')
-        assert DUT.do_select('5.2.3',
+        assert DUT.do_select('5.1.1',
                              table='opload').description == 'Jared Kushner'
         assert DUT.do_select(
-            '5.2.3', table='opload').damage_model == ('Fancy math model')
+            '5.1.1', table='opload').damage_model == ('Fancy math model')
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
@@ -640,18 +638,18 @@ class TestGetterSetter():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        DUT.do_set_attributes(node_id='5.2.3.3.s',
+        DUT.do_set_attributes(node_id='5.1.1.1.s',
                               key='load_history',
                               value='Waterfall histogram',
                               table='opstress')
-        DUT.do_set_attributes(node_id='5.2.3.3.s',
+        DUT.do_set_attributes(node_id='5.1.1.1.s',
                               key='description',
                               value='Lock and chain',
                               table='opstress')
-        assert DUT.do_select('5.2.3.3.s',
+        assert DUT.do_select('5.1.1.1.s',
                              table='opstress').description == 'Lock and chain'
         assert DUT.do_select(
-            '5.2.3.3.s',
+            '5.1.1.1.s',
             table='opstress').load_history == ('Waterfall histogram')
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
@@ -663,17 +661,17 @@ class TestGetterSetter():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(parent_id=1)
 
-        DUT.do_set_attributes(node_id='5.2.3.3.t',
+        DUT.do_set_attributes(node_id='5.1.1.1.t',
                               key='description',
                               value='Kick his ass',
                               table='testmethod')
-        DUT.do_set_attributes(node_id='5.2.3.3.t',
+        DUT.do_set_attributes(node_id='5.1.1.1.t',
                               key='remarks',
                               value='Doyle Rowland',
                               table='testmethod')
-        assert DUT.do_select('5.2.3.3.t',
+        assert DUT.do_select('5.1.1.1.t',
                              table='testmethod').description == 'Kick his ass'
-        assert DUT.do_select('5.2.3.3.t',
+        assert DUT.do_select('5.1.1.1.t',
                              table='testmethod').remarks == 'Doyle Rowland'
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
@@ -716,7 +714,7 @@ class TestUpdateMethods():
         DUT.tree.get_node('5').data['mode'].operator_actions = (
             'Take evasive actions.')
         DUT.do_update('5')
-        DUT.tree.get_node('5.2').data[
+        DUT.tree.get_node('5.1').data[
             'mechanism'].description = 'Test failure mechanism, updated'
 
         DUT.do_select_all(parent_id=1)
@@ -724,7 +722,7 @@ class TestUpdateMethods():
             'Test failure mode')
         assert DUT.tree.get_node('5').data['mode'].operator_actions == (
             'Take evasive actions.')
-        assert DUT.tree.get_node('5.2').data['mechanism'].description == (
+        assert DUT.tree.get_node('5.1').data['mechanism'].description == (
             'Test failure mechanism, updated')
 
         pub.unsubscribe(self.on_succeed_update_pof, 'succeed_update_pof')

@@ -7,7 +7,7 @@
 """RAMSTKMode Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -52,14 +52,20 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
         'type_id': 0
     }
     __tablename__ = 'ramstk_mode'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (ForeignKeyConstraint(
+        ['fld_revision_id', 'fld_hardware_id'],
+        ['ramstk_hardware.fld_revision_id', 'ramstk_hardware.fld_hardware_id'],
+    ), {
+        'extend_existing': True
+    })
 
-    function_id = Column('fld_function_id',
+    revision_id = Column('fld_revision_id',
                          Integer,
-                         default=-1,
+                         primary_key=True,
                          nullable=False)
     hardware_id = Column('fld_hardware_id',
                          Integer,
+                         primary_key=True,
                          default=-1,
                          nullable=False)
     mode_id = Column('fld_mode_id',
@@ -144,9 +150,9 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
     mechanism = relationship('RAMSTKMechanism',
                              back_populates='mode',
                              cascade='all,delete')
-    cause = relationship('RAMSTKCause',
-                         back_populates='mode',
-                         cascade='all,delete')
+    # cause = relationship('RAMSTKCause',
+    #                      back_populates='mode',
+    #                      cascade='all,delete')
 
     is_mode = True
     is_mechanism = False
@@ -161,7 +167,7 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
         """
         Retrieve the current values of the RAMSTKMode data model attributes.
 
-        :return: {function_id, hardware_id, mode_id, critical_item,
+        :return: {revision_id, hardware_id, mode_id, critical_item,
                   description, design_provisions, detection_method,
                   effect_end, effect_local, effect_next, effect_probability,
                   hazard_rate_source, isolation_method, mission, mission_phase,
@@ -172,7 +178,7 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'function_id': self.function_id,
+            'revision_id': self.revision_id,
             'hardware_id': self.hardware_id,
             'mode_id': self.mode_id,
             'critical_item': self.critical_item,

@@ -140,8 +140,6 @@ class SimilarItem(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['edit'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/edit.png')
         self._dic_hardware: Dict[str, Any] = {}
 
         # Initialize private list attributes.

@@ -7,7 +7,7 @@
 """RAMSTKCause Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -27,34 +27,47 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
     __defaults__ = {
         'description': '',
         'rpn': 0,
-        'rpn_detection': 0,
-        'rpn_detection_new': 0,
+        'rpn_detection': 10,
+        'rpn_detection_new': 10,
         'rpn_new': 0,
-        'rpn_occurrence': 0,
-        'rpn_occurrence_new': 0
+        'rpn_occurrence': 10,
+        'rpn_occurrence_new': 10
     }
     __tablename__ = 'ramstk_cause'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = (ForeignKeyConstraint(
+        [
+            'fld_revision_id', 'fld_hardware_id', 'fld_mode_id',
+            'fld_mechanism_id'
+        ],
+        [
+            'ramstk_mechanism.fld_revision_id',
+            'ramstk_mechanism.fld_hardware_id', 'ramstk_mechanism.fld_mode_id',
+            'ramstk_mechanism.fld_mechanism_id'
+        ],
+    ), {
+        'extend_existing': True
+    })
 
-    mode_id = Column(
-        'fld_mode_id',
-        Integer,
-        ForeignKey('ramstk_mode.fld_mode_id'),
-        nullable=False,
-    )
-    mechanism_id = Column(
-        'fld_mechanism_id',
-        Integer,
-        ForeignKey('ramstk_mechanism.fld_mechanism_id'),
-        nullable=False,
-    )
-    cause_id = Column(
-        'fld_cause_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False,
-    )
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         primary_key=True,
+                         nullable=False)
+    hardware_id = Column('fld_hardware_id',
+                         Integer,
+                         primary_key=True,
+                         default=-1,
+                         nullable=False)
+    mode_id = Column('fld_mode_id', Integer, primary_key=True, nullable=False)
+    mechanism_id = Column('fld_mechanism_id',
+                          Integer,
+                          primary_key=True,
+                          nullable=False)
+    cause_id = Column('fld_cause_id',
+                      Integer,
+                      primary_key=True,
+                      autoincrement=True,
+                      nullable=False,
+                      unique=True)
 
     description = Column('fld_description',
                          String(512),
@@ -75,10 +88,14 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
                                 default=__defaults__['rpn_occurrence_new'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mode = relationship('RAMSTKMode', back_populates='cause')
+    # mode = relationship('RAMSTKMode', back_populates='cause')
     mechanism = relationship('RAMSTKMechanism', back_populates='cause')
-    control = relationship('RAMSTKControl', back_populates='cause')
-    action = relationship('RAMSTKAction', back_populates='cause')
+    control = relationship('RAMSTKControl',
+                           back_populates='cause',
+                           cascade='delete, delete-orphan')
+    action = relationship('RAMSTKAction',
+                          back_populates='cause',
+                          cascade='delete, delete-orphan')
 
     is_mode = False
     is_mechanism = False
@@ -105,7 +122,7 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
             'rpn_detection_new': self.rpn_detection_new,
             'rpn_new': self.rpn_new,
             'rpn_occurrence': self.rpn_occurrence,
-            'rpn_occurrence_new': self.rpn_occurrence_new,
+            'rpn_occurrence_new': self.rpn_occurrence_new
         }
 
         return _attributes

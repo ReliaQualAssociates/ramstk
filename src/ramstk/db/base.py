@@ -185,7 +185,7 @@ class BaseDatabase():
                     str(_error)))
             pub.sendMessage('fail_delete_record', error_message=_error_message)
             raise DataAccessError(_error_message)
-        except exc.OperationalError as _error:
+        except exc.ProgrammingError as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
             # unlikely to be user errors and will most likely be the result of

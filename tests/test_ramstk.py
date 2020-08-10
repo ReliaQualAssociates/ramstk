@@ -95,7 +95,7 @@ class TestProgramManager():
             'data': None,
             'matrix': None
         }
-        assert DUT.dic_managers['ffmea'] == {'analysis': None, 'data': None}
+        # assert DUT.dic_managers['ffmea'] == {'analysis': None, 'data': None}
         assert DUT.dic_managers['requirement'] == {
             'data': None,
             'matrix': None

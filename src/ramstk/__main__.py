@@ -15,15 +15,13 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-)
+from ramstk.configuration import (RAMSTKSiteConfiguration,
+                                  RAMSTKUserConfiguration)
 from ramstk.controllers import (
-    amFMEA, amFunction, amHardware, amStakeholder, amValidation,
-    dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
-    dmRequirement, dmRevision, dmStakeholder, dmValidation,
-    mmFunction, mmHardware, mmRequirement, mmValidation
-)
+    amFMEA, amFunction, amHardware, amStakeholder, amValidation, dmFMEA,
+    dmFunction, dmHardware, dmOptions, dmPoF, dmRequirement, dmRevision,
+    dmStakeholder, dmValidation, mmFunction, mmHardware, mmRequirement,
+    mmValidation)
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.logger import RAMSTKLogManager
@@ -140,6 +138,17 @@ def the_one_ring() -> None:
         site_configuration.RAMSTK_SUBCATEGORIES
     user_configuration.RAMSTK_MANUFACTURERS = \
         site_configuration.RAMSTK_MANUFACTURERS
+    user_configuration.RAMSTK_USERS = site_configuration.RAMSTK_USERS
+    user_configuration.RAMSTK_ACTION_CATEGORY = \
+        site_configuration.RAMSTK_ACTION_CATEGORY
+    user_configuration.RAMSTK_ACTION_STATUS = \
+        site_configuration.RAMSTK_ACTION_STATUS
+    user_configuration.RAMSTK_RPN_SEVERITY = \
+        site_configuration.RAMSTK_RPN_SEVERITY
+    user_configuration.RAMSTK_RPN_OCCURRENCE = \
+        site_configuration.RAMSTK_RPN_OCCURRENCE
+    user_configuration.RAMSTK_RPN_DETECTION = \
+        site_configuration.RAMSTK_RPN_DETECTION
 
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()
@@ -148,8 +157,8 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['function']['matrix'] = mmFunction()
     _program_mgr.dic_managers['function']['analysis'] = amFunction(
         user_configuration)
-    _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)
-    _program_mgr.dic_managers['ffmea']['data'] = dmFMEA(functional=True)
+    # _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)
+    # _program_mgr.dic_managers['ffmea']['data'] = dmFMEA(functional=True)
     _program_mgr.dic_managers['requirement']['data'] = dmRequirement()
     _program_mgr.dic_managers['requirement']['matrix'] = mmRequirement()
     _program_mgr.dic_managers['stakeholder']['analysis'] = amStakeholder(

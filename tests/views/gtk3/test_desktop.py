@@ -14,9 +14,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
-from ramstk.views.gtk3.books import (
-    RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
-)
+from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
+                                     RAMSTKWorkBook)
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -26,24 +25,36 @@ class TestRAMSTKBook():
     def test_create_basebook(self, test_toml_user_configuration,
                              test_toml_site_configuration):
         """__init__() should create a RAMSTKBook."""
+        test_toml_user_configuration.RAMSTK_ACTION_CATEGORY = \
+            test_toml_site_configuration.RAMSTK_ACTION_CATEGORY
+        test_toml_user_configuration.RAMSTK_ACTION_STATUS = \
+            test_toml_site_configuration.RAMSTK_ACTION_STATUS
         test_toml_user_configuration.RAMSTK_AFFINITY_GROUPS = \
             test_toml_site_configuration.RAMSTK_AFFINITY_GROUPS
-        test_toml_user_configuration.RAMSTK_REQUIREMENT_TYPE = \
-            test_toml_site_configuration.RAMSTK_REQUIREMENT_TYPE
-        test_toml_user_configuration.RAMSTK_STAKEHOLDERS = \
-            test_toml_site_configuration.RAMSTK_STAKEHOLDERS
-        test_toml_user_configuration.RAMSTK_WORKGROUPS = \
-            test_toml_site_configuration.RAMSTK_WORKGROUPS
-        test_toml_user_configuration.RAMSTK_VALIDATION_TYPE = \
-            test_toml_site_configuration.RAMSTK_VALIDATION_TYPE
-        test_toml_user_configuration.RAMSTK_MEASUREMENT_UNITS = \
-            test_toml_site_configuration.RAMSTK_MEASUREMENT_UNITS
         test_toml_user_configuration.RAMSTK_CATEGORIES = \
             test_toml_site_configuration.RAMSTK_CATEGORIES
-        test_toml_user_configuration.RAMSTK_SUBCATEGORIES = \
-            test_toml_site_configuration.RAMSTK_SUBCATEGORIES
         test_toml_user_configuration.RAMSTK_MANUFACTURERS = \
             test_toml_site_configuration.RAMSTK_MANUFACTURERS
+        test_toml_user_configuration.RAMSTK_MEASUREMENT_UNITS = \
+            test_toml_site_configuration.RAMSTK_MEASUREMENT_UNITS
+        test_toml_user_configuration.RAMSTK_REQUIREMENT_TYPE = \
+            test_toml_site_configuration.RAMSTK_REQUIREMENT_TYPE
+        test_toml_user_configuration.RAMSTK_RPN_DETECTION = \
+            test_toml_site_configuration.RAMSTK_RPN_DETECTION
+        test_toml_user_configuration.RAMSTK_RPN_OCCURRENCE = \
+            test_toml_site_configuration.RAMSTK_RPN_OCCURRENCE
+        test_toml_user_configuration.RAMSTK_RPN_SEVERITY = \
+            test_toml_site_configuration.RAMSTK_RPN_SEVERITY
+        test_toml_user_configuration.RAMSTK_STAKEHOLDERS = \
+            test_toml_site_configuration.RAMSTK_STAKEHOLDERS
+        test_toml_user_configuration.RAMSTK_SUBCATEGORIES = \
+            test_toml_site_configuration.RAMSTK_SUBCATEGORIES
+        test_toml_user_configuration.RAMSTK_USERS = \
+            test_toml_site_configuration.RAMSTK_USERS
+        test_toml_user_configuration.RAMSTK_VALIDATION_TYPE = \
+            test_toml_site_configuration.RAMSTK_VALIDATION_TYPE
+        test_toml_user_configuration.RAMSTK_WORKGROUPS = \
+            test_toml_site_configuration.RAMSTK_WORKGROUPS
 
         DUT = RAMSTKDesktop(
             [test_toml_user_configuration, test_toml_site_configuration],

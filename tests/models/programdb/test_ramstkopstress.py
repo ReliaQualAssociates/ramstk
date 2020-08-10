@@ -33,8 +33,8 @@ class TestRAMSTKOpStress():
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_op_stress'
-        assert DUT.load_id == 3
-        assert DUT.stress_id == 3
+        assert DUT.load_id == 1
+        assert DUT.stress_id == 1
         assert DUT.description == 'Lock and chain'
         assert DUT.measurable_parameter == ''
         assert DUT.load_history == 'Waterfall histogram'

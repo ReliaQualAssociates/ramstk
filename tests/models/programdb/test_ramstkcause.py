@@ -16,11 +16,11 @@ from ramstk.models.programdb import RAMSTKCause
 
 ATTRIBUTES = {
     'rpn_new': 0,
-    'rpn_occurrence_new': 0,
+    'rpn_occurrence_new': 10,
     'description': 'Test Failure Cause #1',
-    'rpn_occurrence': 0,
-    'rpn_detection_new': 0,
-    'rpn_detection': 0,
+    'rpn_occurrence': 10,
+    'rpn_detection_new': 10,
+    'rpn_detection': 10,
     'rpn': 0
 }
 
@@ -38,7 +38,7 @@ class TestRAMSTKCause():
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_cause'
         assert DUT.mode_id == 5
-        assert DUT.cause_id == 2
+        assert DUT.cause_id == 1
         assert DUT.description == 'Test Failure Cause #2 for Mechanism ID 2'
         assert DUT.rpn == 0
         assert DUT.rpn_detection == 4
@@ -56,8 +56,8 @@ class TestRAMSTKCause():
 
         assert isinstance(_attributes, dict)
         assert _attributes['mode_id'] == 5
-        assert _attributes['mechanism_id'] == 2
-        assert _attributes['cause_id'] == 2
+        assert _attributes['mechanism_id'] == 1
+        assert _attributes['cause_id'] == 1
         assert _attributes['description'] == (
             'Test Failure Cause #2 for Mechanism ID 2')
         assert _attributes['rpn'] == 0

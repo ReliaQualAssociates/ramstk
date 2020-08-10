@@ -57,7 +57,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
-            <key>quality_from_id</key>
+            <key>quality_from</key>
         </column>
         <column>
             <defaulttitle>To Quality</defaulttitle>
@@ -67,7 +67,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
-            <key>quality_to_id</key>
+            <key>quality_to</key>
         </column>
         <column>
             <defaulttitle>From Environment</defaulttitle>
@@ -77,7 +77,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
-            <key>environment_from_id</key>
+            <key>environment_from</key>
         </column>
         <column>
             <defaulttitle>To Environment</defaulttitle>
@@ -87,7 +87,7 @@ All rights reserved. -->
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
-            <key>environment_to_id</key>
+            <key>environment_to</key>
         </column>
         <column>
             <defaulttitle>From Temperature</defaulttitle>

@@ -68,14 +68,19 @@ class RAMSTKBaseView(Gtk.HBox):
         tab Gtk.Label().
     :type hbx_tab_label: :class:`Gtk.HBox`
     """
-    RAMSTK_USER_CONFIGURATION = None
+    # Define private class scalar attributes.
+    _pixbuf: bool = False
 
+    # Define public class dict attributes.
     dic_tab_position = {
         'left': Gtk.PositionType.LEFT,
         'right': Gtk.PositionType.RIGHT,
         'top': Gtk.PositionType.TOP,
         'bottom': Gtk.PositionType.BOTTOM
     }
+
+    # Define public class scalar attributes.
+    RAMSTK_USER_CONFIGURATION = None
 
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -114,9 +119,9 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         self._module: str = module
         self._notebook: Gtk.Notebook = Gtk.Notebook()
-        self._revision_id: int = 0
         self._parent_id: int = 0
         self._record_id: int = -1
+        self._revision_id: int = 0
         self._tree_loaded: bool = False
 
         # Initialize public dictionary attributes.
@@ -175,6 +180,9 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: dict
         """
         return {
+            'action':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/action.png',
             'add':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
             'calculate':
@@ -186,12 +194,20 @@ class RAMSTKBaseView(Gtk.HBox):
             'cancel':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/cancel.png',
+            'cause':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/cause.png',
             'complete':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/complete.png',
+            'control':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/control.png',
             'chart':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/charts.png',
+            'edit':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/edit.png',
             'error':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/error.png',
@@ -207,6 +223,11 @@ class RAMSTKBaseView(Gtk.HBox):
             'insert_sibling':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/insert_sibling.png',
+            'mechanism':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/mechanism.png',
+            'mode':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mode.png',
             'none':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
             'partial':
@@ -299,14 +320,14 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         try:
             _treeview = RAMSTKTreeView()
-            self._lst_col_order = _treeview.order
 
             _fmt_file = (
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
                 + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
             _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
-            _treeview.do_parse_format(_fmt_path, _fmt_file)
+            _treeview.do_parse_format(_fmt_path, _fmt_file, self._pixbuf)
 
+            self._lst_col_order = _treeview.order
             try:
                 _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
                     module + 'bg']
@@ -319,7 +340,6 @@ class RAMSTKBaseView(Gtk.HBox):
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
             _treeview.make_model(_bg_color, _fg_color)
-
         except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()
@@ -371,9 +391,8 @@ class RAMSTKBaseView(Gtk.HBox):
             else:
                 _data.append(attributes[_key])
 
-        # Only load Hardware items that are immediate children of the
-        # selected Hardware item and prevent loading the selected Hardware item
-        # itself in the worksheet.
+        # Only load items that are immediate children of the selected item and
+        # prevent loading the selected item itself in the worksheet.
         if not _data[1] == self._record_id and not self._tree_loaded:
             # noinspection PyDeepBugsSwappedArgs
             _model.append(None, _data)
@@ -679,7 +698,7 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         Handle edits of the Allocation Work View RAMSTKTreeview().
 
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
         :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was edited.
         :param str new_text: the new text in the edited Gtk.CellRenderer().
@@ -689,22 +708,15 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        new_text = self.treeview.do_edit_cell(cell, path, new_text, position)
+        self.treeview.do_edit_cell(cell, path, new_text, position)
 
-        # The workflow module record ID will always be in position 1.  For
-        # example, the hardware ID is always in position 1 in any
-        # RAMSTKTreeView() used in the Hardare work view.  Thus, we can
-        # reliably count on the first column containing the record ID for the
-        # record being edited.
-        _model, _row = self.treeview.get_selection().get_selected()
-        _record_id = _model.get_value(_row, self._lst_col_order[1])
         try:
             _key = self._dic_column_keys[self._lst_col_order[position]]
         except (IndexError, KeyError):
             _key = ''
 
         pub.sendMessage(message,
-                        node_id=[_record_id, -1],
+                        node_id=[self._record_id, -1],
                         package={_key: new_text})
 
     def on_combo_changed(self, combo: RAMSTKComboBox, index: int,

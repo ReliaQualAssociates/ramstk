@@ -10,11 +10,12 @@
 import gettext
 import glob
 import sys
-from distutils import dir_util, file_util  # pylint: disable=no-name-in-module
-from distutils.errors import (  # pylint: disable=no-name-in-module
-    DistutilsFileError)
+# pylint: disable=no-name-in-module
+from distutils import dir_util, file_util
+# pylint: disable=no-name-in-module
+from distutils.errors import DistutilsFileError
 from os import environ, makedirs
-from typing import Dict, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 import toml
@@ -26,55 +27,31 @@ from ramstk.utilities import dir_exists, file_exists, get_install_prefix
 _ = gettext.gettext
 
 # Define global list constants.
-RAMSTK_ACTIVE_ENVIRONMENTS = [
-    [_("Ground, Benign")],
-    [_("Ground, Fixed")],
-    [_("Ground, Mobile")],
-    [_("Naval, Sheltered")],
-    [_("Naval, Unsheltered")],
-    [_("Airborne, Inhabited, Cargo")],
-    [_("Airborne, Inhabited, Fighter")],
-    [_("Airborne, Uninhabited, Cargo")],
-    [_("Airborne, Uninhabited, Fighter")],
-    [_("Airborne, Rotary Wing")],
-    [_("Space, Flight")],
-    [_("Missile, Flight")],
-    [_("Missile, Launch")],
-]
-RAMSTK_DORMANT_ENVIRONMENTS = [
-    [_("Airborne")],
-    [_("Ground")],
-    [_("Naval")],
-    [_("Space")],
-]
+RAMSTK_ACTIVE_ENVIRONMENTS = [[_("Ground, Benign")], [_("Ground, Fixed")],
+                              [_("Ground, Mobile")], [_("Naval, Sheltered")],
+                              [_("Naval, Unsheltered")],
+                              [_("Airborne, Inhabited, Cargo")],
+                              [_("Airborne, Inhabited, Fighter")],
+                              [_("Airborne, Uninhabited, Cargo")],
+                              [_("Airborne, Uninhabited, Fighter")],
+                              [_("Airborne, Rotary Wing")],
+                              [_("Space, Flight")], [_("Missile, Flight")],
+                              [_("Missile, Launch")]]
+RAMSTK_DORMANT_ENVIRONMENTS = [[_("Airborne")], [_("Ground")], [_("Naval")],
+                               [_("Space")]]
 
-RAMSTK_ALLOCATION_MODELS = [
-    ["Equal Apportionment"],
-    ["ARINC Apportionment"],
-    ["AGREE Apportionment"],
-    ["Feasibility of Objectives"],
-    ["Repairable Systems Apportionment"],
-]
+RAMSTK_ALLOCATION_MODELS = [["Equal Apportionment"], ["ARINC Apportionment"],
+                            ["AGREE Apportionment"],
+                            ["Feasibility of Objectives"],
+                            ["Repairable Systems Apportionment"]]
 
-RAMSTK_HR_TYPES = [
-    [_("Assessed")],
-    [_("Defined, Hazard Rate")],
-    [_("Defined, MTBF")],
-    [_("Defined, Distribution")],
-]
-RAMSTK_HR_MODELS = [
-    [_("MIL-HDBK-217F Parts Count")],
-    [_("MIL-HDBK-217F Parts Stress")],
-    [_("NSWC-11")],
-]
-RAMSTK_HR_DISTRIBUTIONS = [
-    [_("1P Exponential")],
-    [_("2P Exponential")],
-    [_("Gaussian")],
-    [_("Lognormal")],
-    [_("2P Weibull")],
-    [_("3P Weibull")],
-]
+RAMSTK_HR_TYPES = [[_("Assessed")], [_("Defined, Hazard Rate")],
+                   [_("Defined, MTBF")], [_("Defined, Distribution")]]
+RAMSTK_HR_MODELS = [[_("MIL-HDBK-217F Parts Count")],
+                    [_("MIL-HDBK-217F Parts Stress")], [_("NSWC-11")]]
+RAMSTK_HR_DISTRIBUTIONS = [[_("1P Exponential")], [_("2P Exponential")],
+                           [_("Gaussian")], [_("Lognormal")],
+                           [_("2P Weibull")], [_("3P Weibull")]]
 
 RAMSTK_CONTROL_TYPES = [_("Prevention"), _("Detection")]
 RAMSTK_COST_TYPES = [[_("Defined")], [_("Calculated")]]
@@ -83,110 +60,71 @@ RAMSTK_MTTR_TYPES = [[_("Defined")], [_("Calculated")]]
 RAMSTK_CRITICALITY = [
     [
         _("Catastrophic"),
-        _(
-            "Could result in death, permanent total disability, loss "
-            "exceeding $1M, or irreversible severe environmental damage that "
-            "violates law or regulation.", ),
-        "I",
-        4,
+        _("Could result in death, permanent total disability, loss "
+          "exceeding $1M, or irreversible severe environmental damage that "
+          "violates law or regulation."), "I", 4
     ],
     [
         _("Critical"),
-        _(
-            "Could result in permanent partial disability, injuries or "
-            "occupational illness that may result in hospitalization of at "
-            "least three personnel, loss exceeding $200K but less than $1M, "
-            "or reversible environmental damage causing a violation of law or "
-            "regulation.", ),
-        "II",
-        3,
+        _("Could result in permanent partial disability, injuries or "
+          "occupational illness that may result in hospitalization of at "
+          "least three personnel, loss exceeding $200K but less than $1M, "
+          "or reversible environmental damage causing a violation of law or "
+          "regulation."), "II", 3
     ],
     [
         _("Marginal"),
-        _(
-            "Could result in injury or occupational illness resulting in one "
-            "or more lost work days(s), loss exceeding $10K but less than "
-            "$200K, or mitigatible environmental damage without violation of "
-            "law or regulation where restoration activities can be "
-            "accomplished.", ),
-        "III",
-        2,
+        _("Could result in injury or occupational illness resulting in one "
+          "or more lost work days(s), loss exceeding $10K but less than "
+          "$200K, or mitigatible environmental damage without violation of "
+          "law or regulation where restoration activities can be "
+          "accomplished."), "III", 2
     ],
     [
         _("Negligble"),
-        _(
-            "Could result in injury or illness not resulting in a lost work "
-            "day, loss exceeding $2K but less than $10K, or minimal "
-            "environmental damage not violating law or regulation.", ),
-        "IV",
-        1,
-    ],
+        _("Could result in injury or illness not resulting in a lost work "
+          "day, loss exceeding $2K but less than $10K, or minimal "
+          "environmental damage not violating law or regulation."), "IV", 1
+    ]
 ]
-RAMSTK_FAILURE_PROBABILITY = [
-    [_("Level E - Extremely Unlikely"), 1],
-    [_("Level D - Remote"), 2],
-    [_("Level C - Occasional"), 3],
-    [_("Level B - Reasonably Probable"), 4],
-    [_("Level A - Frequent"), 5],
-]
+RAMSTK_FAILURE_PROBABILITY = [[_("Level E - Extremely Unlikely"), 1],
+                              [_("Level D - Remote"), 2],
+                              [_("Level C - Occasional"), 3],
+                              [_("Level B - Reasonably Probable"), 4],
+                              [_("Level A - Frequent"), 5]]
 
-RAMSTK_SW_DEV_ENVIRONMENTS = [
-    [_("Organic"), 1.0, 0.76],
-    [_("Semi-Detached"), 1.0, 1.0],
-    [_("Embedded"), 1.0, 1.3],
-]
-RAMSTK_SW_DEV_PHASES = [
-    [_("Concept/Planning (PCP)")],
-    [_("Requirements Analysis (SRA)")],
-    [_("Preliminary Design Review (PDR)")],
-    [_("Critical Design Review (CDR)")],
-    [_("Test Readiness Review (TRR)")],
-    [_("Released")],
-]
-RAMSTK_SW_LEVELS = [
-    [_("Software System"), 0],
-    [_("Software Module"), 0],
-    [_("Software Unit"), 0],
-]
-RAMSTK_SW_APPLICATION = [
-    [_("Airborne"), 0.0128, 6.28],
-    [_("Strategic"), 0.0092, 1.2],
-    [_("Tactical"), 0.0078, 13.8],
-    [_("Process Control"), 0.0018, 3.8],
-    [_("Production Center"), 0.0085, 23.0],
-    [_("Developmental"), 0.0123, 132.6],
-]
-RAMSTK_SW_TEST_METHODS = [
-    [
-        _("Code Reviews"),
-        _(
-            "Code review is a systematic examination (often known as peer "
-            "review) of computer source code.", ),
-    ],
-    [_("Error/Anomaly Detection"), _("")],
-    [_("Structure Analysis"), _("")],
-    [_("Random Testing"), _("")],
-    [_("Functional Testing"), _("")],
-    [_("Branch Testing"), _("")],
-]
+RAMSTK_SW_DEV_ENVIRONMENTS = [[_("Organic"), 1.0, 0.76],
+                              [_("Semi-Detached"), 1.0, 1.0],
+                              [_("Embedded"), 1.0, 1.3]]
+RAMSTK_SW_DEV_PHASES = [[_("Concept/Planning (PCP)")],
+                        [_("Requirements Analysis (SRA)")],
+                        [_("Preliminary Design Review (PDR)")],
+                        [_("Critical Design Review (CDR)")],
+                        [_("Test Readiness Review (TRR)")], [_("Released")]]
+RAMSTK_SW_LEVELS = [[_("Software System"), 0], [_("Software Module"), 0],
+                    [_("Software Unit"), 0]]
+RAMSTK_SW_APPLICATION = [[_("Airborne"), 0.0128, 6.28],
+                         [_("Strategic"), 0.0092, 1.2],
+                         [_("Tactical"), 0.0078, 13.8],
+                         [_("Process Control"), 0.0018, 3.8],
+                         [_("Production Center"), 0.0085, 23.0],
+                         [_("Developmental"), 0.0123, 132.6]]
+RAMSTK_SW_TEST_METHODS = [[
+    _("Code Reviews"),
+    _("Code review is a systematic examination (often known as peer "
+      "review) of computer source code.")
+], [_("Error/Anomaly Detection"), _("")], [_("Structure Analysis"),
+                                           _("")],
+                          [_("Random Testing"), _("")],
+                          [_("Functional Testing"),
+                           _("")], [_("Branch Testing"),
+                                    _("")]]
 
-RAMSTK_LIFECYCLE = [
-    [_("Design")],
-    [_("Reliability Growth")],
-    [_("Reliability Qualification")],
-    [_("Production")],
-    [_("Storage")],
-    [_("Operation")],
-    [_("Disposal")],
-]
-RAMSTK_S_DIST = [
-    ["Constant Probability"],
-    ["Exponential"],
-    ["Gaussian"],
-    ["LogNormal"],
-    ["Uniform"],
-    ["Weibull"],
-]
+RAMSTK_LIFECYCLE = [[_("Design")], [_("Reliability Growth")],
+                    [_("Reliability Qualification")], [_("Production")],
+                    [_("Storage")], [_("Operation")], [_("Disposal")]]
+RAMSTK_S_DIST = [["Constant Probability"], ["Exponential"], ["Gaussian"],
+                 ["LogNormal"], ["Uniform"], ["Weibull"]]
 
 
 class RAMSTKSiteConfiguration:
@@ -226,7 +164,8 @@ class RAMSTKSiteConfiguration:
         self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
-        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {}
+        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {
+        }  # Admin
         self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
         self.RAMSTK_STRESS_LIMITS: Dict[
             str, Tuple[float, float, float, float, float, float, float, float,
@@ -498,8 +437,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         value is *en_US*.
     :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
+    _lst_format_files: List[str]
     RAMSTK_PROG_DIR: str
-    RAMSTK_PROG_INFO: Dict[int, str]
+    RAMSTK_PROG_INFO: Dict[int, Any]
 
     def __init__(self) -> None:
         """Class for user-specific RAMSTK configuration settings."""
@@ -513,18 +453,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "stakeholderfg"
         ]
         self._lst_format_files = [
-            "allocation",
-            "failure_definition",
-            "fmea",
-            "function",
-            "hardware",
-            "hazard",
-            "pof",
-            "requirement",
-            "revision",
-            "similar_item",
-            "stakeholder",
-            "validation",
+            "allocation", "failure_definition", "fmea", "function", "hardware",
+            "hazard", "pof", "requirement", "revision", "similar_item",
+            "stakeholder", "validation"
         ]
         self._lst_categories = [
             'integratedcircuit', 'semiconductor', 'resistor', 'capacitor',
