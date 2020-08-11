@@ -230,27 +230,18 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.get_child().set_property('height-request', self.height)
         self.get_child().set_property('width-request', self.width)
 
-    def do_update(self, value: int, handler_id: int = 0,
-                  signal: str = '') -> None:
+    def do_update(self, value: int, signal: str = '') -> None:
         """
         Update the RAMSTK CheckButton with a new value.
 
         :param int value: the information to update the RAMSTKCheckButton() to
             display.
-        :param int handler_id: the handler ID associated with the
-            RAMSTKCheckButton().
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKCheckButton() needs to block.
         :return: None
         :rtype: None
         """
-        # TODO: Remove this try construct after all views calling this
-        #  method have been updated to account for the widget attribute
-        #  containing the signal handler IDs.
-        try:
-            _handler_id = self.dic_handler_id[signal]
-        except KeyError:
-            _handler_id = handler_id
+        _handler_id = self.dic_handler_id[signal]
 
         self.handler_block(_handler_id)
         self.set_active(int(value))

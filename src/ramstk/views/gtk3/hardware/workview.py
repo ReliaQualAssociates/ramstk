@@ -494,23 +494,23 @@ class GeneralData(RAMSTKWorkView):
         self.cmbSubcategory.do_update(0, signal='changed')
         self.cmbCostType.do_update(0, signal='changed')
         self.cmbManufacturer.do_update(0, signal='changed')
-        self.txtAltPartNum.do_update('', signal='focus-out')
-        self.txtAttachments.do_update('', signal='focus-out')
-        self.txtCAGECode.do_update('', signal='focus-out')
-        self.txtCompRefDes.do_update('', signal='focus-out')
-        self.txtCost.do_update('', signal='focus-out')
-        self.txtDescription.do_update('', signal='focus-out')
-        self.txtFigureNumber.do_update('', signal='focus-out')
-        self.txtLCN.do_update('', signal='focus-out')
-        self.txtName.do_update('', signal='focus-out')
-        self.txtNSN.do_update('', signal='focus-out')
-        self.txtPageNumber.do_update('', signal='focus-out')
-        self.txtPartNumber.do_update('', signal='focus-out')
-        self.txtQuantity.do_update('', signal='focus-out')
-        self.txtRefDes.do_update('', signal='focus-out')
-        self.txtRemarks.do_update('', signal='focus-out')
-        self.txtSpecification.do_update('', signal='focus-out')
-        self.txtYearMade.do_update('', signal='focus-out')
+        self.txtAltPartNum.do_update('', signal='changed')
+        self.txtAttachments.do_update('', signal='changed')
+        self.txtCAGECode.do_update('', signal='changed')
+        self.txtCompRefDes.do_update('', signal='changed')
+        self.txtCost.do_update('', signal='changed')
+        self.txtDescription.do_update('', signal='changed')
+        self.txtFigureNumber.do_update('', signal='changed')
+        self.txtLCN.do_update('', signal='changed')
+        self.txtName.do_update('', signal='changed')
+        self.txtNSN.do_update('', signal='changed')
+        self.txtPageNumber.do_update('', signal='changed')
+        self.txtPartNumber.do_update('', signal='changed')
+        self.txtQuantity.do_update('', signal='changed')
+        self.txtRefDes.do_update('', signal='changed')
+        self.txtRemarks.do_update('', signal='changed')
+        self.txtSpecification.do_update('', signal='changed')
+        self.txtYearMade.do_update('', signal='changed')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -547,45 +547,44 @@ class GeneralData(RAMSTKWorkView):
                                           signal='changed')
 
         self.chkRepairable.do_update(int(attributes['repairable']),
-                                     signal='changed')
+                                     signal='toggled')
         self.chkTagged.do_update(int(attributes['tagged_part']),
-                                 signal='changed')
+                                 signal='toggled')
 
         self.cmbCostType.do_update(int(attributes['cost_type_id']),
                                    signal='changed')
         self.cmbManufacturer.do_update(int(attributes['manufacturer_id']),
                                        signal='changed')
         self.txtAltPartNum.do_update(str(attributes['alt_part_number']),
-                                     signal='focus-out')
+                                     signal='changed')
         self.txtAttachments.do_update(str(attributes['attachments']),
                                       signal='changed')
         self.txtCAGECode.do_update(str(attributes['cage_code']),
-                                   signal='focus-out')
+                                   signal='changed')
         self.txtCompRefDes.do_update(str(attributes['comp_ref_des']),
-                                     signal='focus-out')
+                                     signal='changed')
         self.txtCost.do_update(str(locale.currency(attributes['cost'])),
-                               signal='focus-out')
+                               signal='changed')
         self.txtDescription.do_update(str(attributes['description']),
                                       signal='changed')
         self.txtFigureNumber.do_update(str(attributes['figure_number']),
-                                       signal='focus-out')
-        self.txtLCN.do_update(str(attributes['lcn']), signal='focus-out')
-        self.txtName.do_update(str(attributes['name']), signal='focus-out')
-        self.txtNSN.do_update(str(attributes['nsn']), signal='focus-out')
+                                       signal='changed')
+        self.txtLCN.do_update(str(attributes['lcn']), signal='changed')
+        self.txtName.do_update(str(attributes['name']), signal='changed')
+        self.txtNSN.do_update(str(attributes['nsn']), signal='changed')
         self.txtPageNumber.do_update(str(attributes['page_number']),
-                                     signal='focus-out')
+                                     signal='changed')
         self.txtPartNumber.do_update(str(attributes['part_number']),
-                                     signal='focus-out')
+                                     signal='changed')
         self.txtQuantity.do_update(str(attributes['quantity']),
-                                   signal='focus-out')
-        self.txtRefDes.do_update(str(attributes['ref_des']),
-                                 signal='focus-out')
+                                   signal='changed')
+        self.txtRefDes.do_update(str(attributes['ref_des']), signal='changed')
         self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
         self.txtSpecification.do_update(str(
             attributes['specification_number']),
-                                        signal='focus-out')
+                                        signal='changed')
         self.txtYearMade.do_update(str(attributes['year_of_manufacture']),
-                                   signal='focus-out')
+                                   signal='changed')
 
     def _do_load_subcategory(self, category_id: int) -> None:
         """

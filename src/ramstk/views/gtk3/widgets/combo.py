@@ -88,8 +88,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     def do_load_combo(self,
                       entries: List[List[str]],
                       signal: str = '',
-                      simple: bool = True,
-                      **kwargs) -> None:
+                      simple: bool = True) -> None:
         """
         Load RAMSTK ComboBox widgets.
 
@@ -112,19 +111,8 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         :rtype: None
         :raise: TypeError if attempting to load other than string values.
         """
-        # TODO: Remove this try construct after all views calling this
-        #  method have been updated to account for the widget attribute
-        #  containing the signal handler IDs.
-        try:
-            _handler_id = self.dic_handler_id[signal]
-        except KeyError:
-            # TODO: Remove this try block when requirements 305.7 and 305.8 are
-            #  implemented in the RAMSTKComboBox.  See issue #310.
-            try:
-                _handler_id = kwargs['handler_id']
-                self.handler_block(_handler_id)
-            except KeyError:
-                _handler_id = -1
+        _handler_id = self.dic_handler_id[signal]
+        self.handler_block(_handler_id)
 
         _model = self.get_model()
         _model.clear()
@@ -140,31 +128,21 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
             for __, _entry in enumerate(entries):
                 _model.append([_entry[self._index]])
 
-        if _handler_id > -1:
+        if _handler_id > 0:
             self.handler_unblock(_handler_id)
 
-    def do_update(self, value: int, handler_id: int = 0,
-                  signal: str = '') -> None:
+    def do_update(self, value: int, signal: str = '') -> None:
         """
         Update the RAMSTK Combo with a new value.
 
         :param str value: the information to update the RAMSTKCombo() to
             display.
-        :keyword int handler_id: the handler ID associated with the
-            RAMSTKComboBox().  This input will be removed in a future
-            version in preference for using the signal ID dict.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKComboBox() needs to block.
         :return: None
         :rtype: None
         """
-        # TODO: Remove this try construct after all views calling this
-        #  method have been updated to account for the widget attribute
-        #  containing the signal handler IDs.
-        try:
-            _handler_id = self.dic_handler_id[signal]
-        except KeyError:
-            _handler_id = handler_id
+        _handler_id = self.dic_handler_id[signal]
 
         self.handler_block(_handler_id)
         self.set_active(value)

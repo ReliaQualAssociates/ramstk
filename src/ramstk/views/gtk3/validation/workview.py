@@ -178,9 +178,9 @@ class GeneralData(RAMSTKWorkView):
         }
 
         self.__set_properties()
-        self.__load_combobox()
         self.__make_ui()
         self.__set_callbacks()
+        self.__load_combobox()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
@@ -615,7 +615,7 @@ class GeneralData(RAMSTKWorkView):
         self._record_id = attributes['validation_id']
 
         _code = self.__do_make_task_code(attributes['task_type'])
-        self.txtCode.do_update(_code, signal='changed')
+        self.txtCode.do_update(_code)
         self.txtTask.do_update(attributes['description'], signal='changed')
 
         self.cmbTaskType.handler_block(
@@ -683,24 +683,18 @@ class GeneralData(RAMSTKWorkView):
         self.txtMaxCost.do_update(str(
             self.fmt.format(attributes['cost_maximum'])),
                                   signal='changed')
-        self.txtMeanTimeLL.do_update(str(self.fmt.format(
-            attributes['time_ll'])),
-                                     signal='changed')
-        self.txtMeanTime.do_update(str(self.fmt.format(
-            attributes['time_mean'])),
-                                   signal='changed')
-        self.txtMeanTimeUL.do_update(str(self.fmt.format(
-            attributes['time_ul'])),
-                                     signal='changed')
-        self.txtMeanCostLL.do_update(str(self.fmt.format(
-            attributes['cost_ll'])),
-                                     signal='changed')
-        self.txtMeanCost.do_update(str(self.fmt.format(
-            attributes['cost_mean'])),
-                                   signal='changed')
-        self.txtMeanCostUL.do_update(str(self.fmt.format(
-            attributes['cost_ul'])),
-                                     signal='changed')
+        self.txtMeanTimeLL.do_update(
+            str(self.fmt.format(attributes['time_ll'])))
+        self.txtMeanTime.do_update(
+            str(self.fmt.format(attributes['time_mean'])))
+        self.txtMeanTimeUL.do_update(
+            str(self.fmt.format(attributes['time_ul'])))
+        self.txtMeanCostLL.do_update(
+            str(self.fmt.format(attributes['cost_ll'])))
+        self.txtMeanCost.do_update(
+            str(self.fmt.format(attributes['cost_mean'])))
+        self.txtMeanCostUL.do_update(
+            str(self.fmt.format(attributes['cost_ul'])))
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """

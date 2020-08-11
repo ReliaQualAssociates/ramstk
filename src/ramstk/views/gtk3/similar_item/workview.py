@@ -153,8 +153,8 @@ class SimilarItem(RAMSTKWorkView):
 
         self.__set_properties()
         self.__make_ui()
-        self.__load_combobox()
         self.__set_callbacks()
+        self.__load_combobox()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_row, 'succeed_get_similar_item_attributes')

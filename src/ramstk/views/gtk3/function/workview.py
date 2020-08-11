@@ -187,7 +187,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtName.do_update(str(attributes['name']), signal='changed')
         self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
         self.chkSafetyCritical.do_update(int(attributes['safety_critical']),
-                                         signal='changed')
+                                         signal='toggled')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
