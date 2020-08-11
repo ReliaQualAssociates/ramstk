@@ -26,8 +26,8 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKTextView,
-    RAMSTKWorkView, do_make_buttonbox)
+    RAMSTKLabel, RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKSpinButton,
+    RAMSTKTextView, RAMSTKWorkView, do_make_buttonbox)
 
 register_matplotlib_converters()
 
@@ -66,24 +66,25 @@ class GeneralData(RAMSTKWorkView):
     # Define private list class attributes.
     _lst_labels = [
         _("Task ID:"),
+        _("Task Name:"),
         _("Task Description:"),
         _("Task Type:"),
         _("Specification:"),
         _("Measurement Unit:"),
-        _("Minimum Acceptable:"),
-        _("Maximum Acceptable:"),
+        _("Min. Acceptable:"),
+        _("Max. Acceptable:"),
         _("Mean Acceptable:"),
         _("Variance:"),
         _("Start Date:"),
         _("End Date:"),
         _("% Complete:"),
-        _("Minimum Task Time:"),
+        _("Min. Task Time:"),
         _("Most Likely Task Time:"),
-        _("Maximum Task Time:"),
+        _("Max. Task Time:"),
         _("Task Time (95% Confidence):"),
-        _("Minimum Task Cost:"),
+        _("Min. Task Cost:"),
         _("Most Likely Task Cost:"),
-        _("Maximum Task Cost:"),
+        _("Max. Task Cost:"),
         _("Task Cost (95% Confidence):"),
         _("Project Time (95% Confidence):"),
         _("Project Cost (95% Confidence):")
@@ -126,7 +127,7 @@ class GeneralData(RAMSTKWorkView):
         self.cmbTaskType: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbMeasurementUnit: RAMSTKComboBox = RAMSTKComboBox()
 
-        self.spnStatus: Gtk.SpinButton = Gtk.SpinButton()
+        self.spnStatus: RAMSTKSpinButton = RAMSTKSpinButton()
 
         self.txtCode: RAMSTKEntry = RAMSTKEntry()
         self.txtName: RAMSTKEntry = RAMSTKEntry()
@@ -176,6 +177,17 @@ class GeneralData(RAMSTKWorkView):
             'cost_average': [self.txtExpCost.do_update, 'changed'],
             'cost_maximum': [self.txtMaxCost.do_update, 'changed']
         }
+
+        self._lst_widgets = [
+            self.txtCode, self.txtName, self.txtTask, self.cmbTaskType,
+            self.txtSpecification, self.cmbMeasurementUnit,
+            self.txtMinAcceptable, self.txtMaxAcceptable,
+            self.txtMeanAcceptable, self.txtVarAcceptable, self.txtStartDate,
+            self.txtEndDate, self.spnStatus, self.txtMinTime, self.txtExpTime,
+            self.txtMaxTime, self.txtMeanTimeLL, self.txtMinCost,
+            self.txtExpCost, self.txtMaxCost, self.txtMeanCostLL,
+            self.txtProjectTimeLL, self.txtProjectCostLL
+        ]
 
         self.__set_properties()
         self.__make_ui()
@@ -249,26 +261,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos,
-         _fixed) = super().make_ui(icons=['calculate', 'calculate-all'],
-                                   tooltips=[
-                                       _("Calculate the expected cost and "
-                                         "time of the selected Validation "
-                                         "task."),
-                                       _("Calculate the cost and time "
-                                         "of the program (i.e., all "
-                                         "Validation tasks).")
-                                   ],
-                                   callbacks=[
-                                       self._do_request_calculate,
-                                       self._do_request_calculate_all
-                                   ])
-
-        # We will re-arrange the layout of the Validation work view so the
-        # information can be grouped and presented as related data.  We'll
-        # create the following layout rather than use separate notebook tabs
-        # for each logical grouping of data.  The final window layout will
-        # look similar to:
+        # This page has the following layout:
         # +-----+-------------------+-------------------+
         # |  B  |      L. SIDE      |      R. TOP       |
         # |  U  |                   |                   |
@@ -278,117 +271,94 @@ class GeneralData(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        # Retrieve the label widgets so some can be moved to R. TOP and R.
-        # BOTTOM.
-        _labels = _fixed.get_children()[:-2]
+        #                                                     buttons -+-> self
+        #                                                              |
+        #                  Gtk.Fixed --> RAMSTKFrame -+-> Gtk.HPaned --+
+        #                                             |
+        #  Gtk.Fixed --> RAMSTKFrame -+-> Gtk.VPaned -+
+        #                             |
+        #  Gtk.Fixed --> RAMSTKFrame -+
+        # Make the buttons.
+        super().make_toolbuttons(icons=['calculate', 'calculate-all'],
+                                 tooltips=[
+                                     _("Calculate the expected cost and "
+                                       "time of the selected Validation "
+                                       "task."),
+                                     _("Calculate the cost and time "
+                                       "of the program (i.e., all "
+                                       "Validation tasks).")
+                                 ],
+                                 callbacks=[
+                                     self._do_request_calculate,
+                                     self._do_request_calculate_all
+                                 ])
 
-        # Move the default RAMSTKFrame() to the new Gtk.HBox() to make the
-        # L. SIDE of the work view.
-        _hbox = Gtk.HBox()
-        _frame = self.get_children()[1]
-        _frame.do_set_properties(title=_("Task Description"))
-        self.remove(_frame)
-        _hbox.pack_start(_frame, True, True, 0)
+        # Build out the containers for the page.
+        _hpaned: Gtk.HPaned = Gtk.HPaned()
+        self.pack_start(_hpaned, True, True, 0)
 
-        # Now add a Gtk.VPaned() to the right side of the Gtk.HBox().  This
-        # Gtk.VPaned() will create the R. TOP and R. BOTTOM views.
+        # Place the LEFT side widgets.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
+        (__, __, _fixed) = super().make_ui(end=13)
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(bold=True, title=_("Task Description"))
+        _frame.add(_fixed)
+        _hpaned.pack1(_frame, True, True)
+
+        # Place the TOP RIGHT side widgets.
         _vpaned: Gtk.VPaned = Gtk.VPaned()
+        _hpaned.pack2(_vpaned, True, True)
 
-        _r_top_fixed = Gtk.Fixed()
-        # noinspection PyTypeChecker
-        _scrollwindow = RAMSTKScrolledWindow(_r_top_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Task Effort"))
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
+        (__, __, _fixed) = super().make_ui(start=13, end=21)
+
+        # We add the mean time and mean time UL to the same y position as
+        # the mean time LL widget.
+        _time_entry = _fixed.get_children()[7]
+        _cost_entry = _fixed.get_children()[-1]
+        _x_pos = _fixed.child_get_property(_time_entry, 'x')
+        _y_pos = _fixed.child_get_property(_time_entry, 'y')
+        _fixed.put(self.txtMeanTime, _x_pos + 175, _y_pos)
+        _fixed.put(self.txtMeanTimeUL, _x_pos + 350, _y_pos)
+
+        # We add the mean cost and mean cost UL to the same y position as
+        # the mean cost LL widget.
+        _x_pos = _fixed.child_get_property(_cost_entry, 'x')
+        _y_pos = _fixed.child_get_property(_cost_entry, 'y')
+        _fixed.put(self.txtMeanCost, _x_pos + 195, _y_pos)
+        _fixed.put(self.txtMeanCostUL, _x_pos + 390, _y_pos)
+
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(bold=True, title=_("Task Effort"))
         _frame.add(_scrollwindow)
-        # noinspection PyArgumentList
         _vpaned.pack1(_frame, True, True)
 
-        _r_bottom_fixed = Gtk.Fixed()
-        # noinspection PyTypeChecker
-        _scrollwindow = RAMSTKScrolledWindow(_r_bottom_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Project Effort"))
+        # Place the BOTTOM RIGHT side widgets.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
+        (__, __, _fixed) = super().make_ui(start=21)
+
+        # We add the project time and project time UL to the same y position
+        # as the project time LL widget.
+        _time_entry = _fixed.get_children()[1]
+        _cost_entry = _fixed.get_children()[-1]
+        _x_pos = _fixed.child_get_property(_time_entry, 'x')
+        _y_pos = _fixed.child_get_property(_time_entry, 'y')
+        _fixed.put(self.txtProjectTime, _x_pos + 175, _y_pos)
+        _fixed.put(self.txtProjectTimeUL, _x_pos + 350, _y_pos)
+
+        # We add the project cost and project cost UL to the same y position
+        # as the project cost LL widget.
+        _x_pos = _fixed.child_get_property(_cost_entry, 'x')
+        _y_pos = _fixed.child_get_property(_cost_entry, 'y')
+        _fixed.put(self.txtProjectCost, _x_pos + 175, _y_pos)
+        _fixed.put(self.txtProjectCostUL, _x_pos + 350, _y_pos)
+
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(bold=True, title=_("Project Effort"))
         _frame.add(_scrollwindow)
         _vpaned.pack2(_frame, True, True)
-
-        # Adjust the L. SIDE labels to accomodate the task description widget.
-        _lst_adjust = [80, 90, 100, 110, 115, 120, 125]
-        for _idx, _label in enumerate(_labels[2:9]):
-            _fixed.remove(_label)
-            _fixed.put(_label, 5, _y_pos[_idx] + _lst_adjust[_idx] + 65)
-
-        # Place the widgets in the L. SIDE of the Gtk.HBox().
-        _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1] + 10)
-        _fixed.put(self.cmbTaskType, _x_pos, _y_pos[2] + _lst_adjust[0])
-        _fixed.put(self.txtSpecification, _x_pos, _y_pos[3] + _lst_adjust[1])
-        _fixed.put(self.cmbMeasurementUnit, _x_pos, _y_pos[4] + _lst_adjust[2])
-        _fixed.put(self.txtMinAcceptable, _x_pos, _y_pos[5] + _lst_adjust[3])
-        _fixed.put(self.txtMaxAcceptable, _x_pos, _y_pos[6] + _lst_adjust[4])
-        _fixed.put(self.txtMeanAcceptable, _x_pos, _y_pos[7] + _lst_adjust[5])
-        _fixed.put(self.txtVarAcceptable, _x_pos, _y_pos[8] + _lst_adjust[6])
-
-        # Move the R. TOP labels to the new _r_top_fixed and then place the
-        # data entry widgets associated with these labels.
-        _adjust = _y_pos[9] - 5
-        _lst_adjust = [
-            _adjust, _adjust - 10, _adjust - 20, _adjust - 30, _adjust - 40,
-            _adjust - 50, _adjust - 60, _adjust - 70, _adjust - 80,
-            _adjust - 90, _adjust - 100
-        ]
-        for _idx, _label in enumerate(_labels[9:20]):
-            _fixed.remove(_label)
-            _r_top_fixed.put(_label, 5, _y_pos[_idx + 9] - _lst_adjust[_idx])
-
-        _r_top_fixed.put(self.txtStartDate, _x_pos, _y_pos[9] - _lst_adjust[0])
-        _r_top_fixed.put(self.btnStartDate, _x_pos + 175,
-                         _y_pos[9] - _lst_adjust[0])
-        _r_top_fixed.put(self.txtEndDate, _x_pos, _y_pos[10] - _lst_adjust[1])
-        _r_top_fixed.put(self.btnEndDate, _x_pos + 175,
-                         _y_pos[10] - _lst_adjust[1])
-        _r_top_fixed.put(self.spnStatus, _x_pos, _y_pos[11] - _lst_adjust[2])
-        _r_top_fixed.put(self.txtMinTime, _x_pos, _y_pos[12] - _lst_adjust[3])
-        _r_top_fixed.put(self.txtExpTime, _x_pos, _y_pos[13] - _lst_adjust[4])
-        _r_top_fixed.put(self.txtMaxTime, _x_pos, _y_pos[14] - _lst_adjust[5])
-        _r_top_fixed.put(self.txtMeanTimeLL, _x_pos,
-                         _y_pos[15] - _lst_adjust[6])
-        _r_top_fixed.put(self.txtMeanTime, _x_pos + 175,
-                         _y_pos[15] - _lst_adjust[6])
-        _r_top_fixed.put(self.txtMeanTimeUL, _x_pos + 350,
-                         _y_pos[15] - _lst_adjust[6])
-        _r_top_fixed.put(self.txtMinCost, _x_pos, _y_pos[16] - _lst_adjust[7])
-        _r_top_fixed.put(self.txtExpCost, _x_pos, _y_pos[17] - _lst_adjust[8])
-        _r_top_fixed.put(self.txtMaxCost, _x_pos, _y_pos[18] - _lst_adjust[9])
-        _r_top_fixed.put(self.txtMeanCostLL, _x_pos,
-                         _y_pos[19] - _lst_adjust[10])
-        _r_top_fixed.put(self.txtMeanCost, _x_pos + 175,
-                         _y_pos[19] - _lst_adjust[10])
-        _r_top_fixed.put(self.txtMeanCostUL, _x_pos + 350,
-                         _y_pos[19] - _lst_adjust[10])
-
-        # Move the R. BOTTOM labels to the new _r_bottom_fixed and then place
-        # the data entry widgets associated with these labels.
-        _adjust = _y_pos[20] - 5
-        _lst_adjust = [_adjust, _adjust - 10]
-        for _idx, _label in enumerate(_labels[20:22]):
-            _fixed.remove(_label)
-            _r_bottom_fixed.put(_label, 5,
-                                _y_pos[_idx + 20] - _lst_adjust[_idx])
-
-        _r_bottom_fixed.put(self.txtProjectTimeLL, _x_pos,
-                            _y_pos[20] - _lst_adjust[0])
-        _r_bottom_fixed.put(self.txtProjectTime, _x_pos + 175,
-                            _y_pos[20] - _lst_adjust[0])
-        _r_bottom_fixed.put(self.txtProjectTimeUL, _x_pos + 350,
-                            _y_pos[20] - _lst_adjust[0])
-        _r_bottom_fixed.put(self.txtProjectCostLL, _x_pos,
-                            _y_pos[21] - _lst_adjust[1])
-        _r_bottom_fixed.put(self.txtProjectCost, _x_pos + 175,
-                            _y_pos[21] - _lst_adjust[1])
-        _r_bottom_fixed.put(self.txtProjectCostUL, _x_pos + 350,
-                            _y_pos[21] - _lst_adjust[1])
-
-        _hbox.pack_end(_vpaned, True, True, 0)
-        self.pack_start(_hbox, True, True, 0)
 
         _label = RAMSTKLabel(_("General\nData"))
         _label.do_set_properties(
@@ -486,7 +456,6 @@ class GeneralData(RAMSTKWorkView):
             "V&amp;V activity acceptance parameter."))
 
         # ----- ENTRIES
-        self.spnStatus.dic_handler_id = {'': 0}
         self.txtTask.do_set_properties(
             height=100,
             width=500,
@@ -557,13 +526,11 @@ class GeneralData(RAMSTKWorkView):
         self.txtProjectCostUL.do_set_properties(width=100, editable=False)
 
         # ----- SPINBUTTONS
-        self.spnStatus.set_tooltip_text(
-            _("Displays % complete of the selected V&amp;V activity."))
-        # noinspection PyArgumentList
-        self.spnStatus.set_adjustment(Gtk.Adjustment(0, 0, 100, 1, 0.1))
-        self.spnStatus.set_update_policy(Gtk.SpinButtonUpdatePolicy.IF_VALID)
-        self.spnStatus.set_numeric(True)
-        self.spnStatus.set_snap_to_ticks(True)
+        self.spnStatus.do_set_properties(
+            limits=[0, 0, 100, 1, 0.1],
+            numeric=True,
+            ticks=True,
+            tooltip=_("Displays % complete of the selected V&amp;V activity."))
 
     def _do_clear_page(self) -> None:
         """
@@ -584,10 +551,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtStartDate.do_update('', signal='changed')
         self.txtEndDate.do_update('', signal='changed')
 
-        self.spnStatus.handler_block(self.spnStatus.dic_handler_id['changed'])
-        self.spnStatus.set_value(0.0)
-        self.spnStatus.handler_unblock(
-            self.spnStatus.dic_handler_id['changed'])
+        self.spnStatus.do_update(0.0, signal='changed')
 
         self.txtMinTime.do_update('', signal='changed')
         self.txtExpTime.do_update('', signal='changed')
@@ -660,10 +624,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtStartDate.do_update(attributes['date_start'], signal='changed')
         self.txtEndDate.do_update(attributes['date_end'], signal='changed')
 
-        self.spnStatus.handler_block(self.spnStatus.dic_handler_id['changed'])
-        self.spnStatus.set_value(attributes['status'])
-        self.spnStatus.handler_unblock(
-            self.spnStatus.dic_handler_id['changed'])
+        self.spnStatus.do_update(attributes['status'], signal='changed')
 
         self.txtMinTime.do_update(str(
             self.fmt.format(attributes['time_minimum'])),
@@ -852,11 +813,7 @@ class GeneralData(RAMSTKWorkView):
         [[_key, _value]] = package.items()
 
         if _key == 'status':
-            self.spnStatus.handler_block(
-                self.spnStatus.dic_handler_id['changed'])
-            self.spnStatus.set_value(_value)
-            self.spnStatus.handler_unblock(
-                self.spnStatus.dic_handler_id['changed'])
+            self.spnStatus.do_update(_value, signal='changed')
         else:
             (_function, _signal) = self._dic_switch.get(_key)
             _function(_value, signal=_signal)

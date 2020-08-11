@@ -18,7 +18,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView,
-    RAMSTKTreeView, RAMSTKWorkView, do_make_buttonbox)
+    RAMSTKTreeView, RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -38,7 +38,7 @@ class GeneralData(RAMSTKWorkView):
     }
 
     # Define private list class attributes.
-    _lst_labels = [_("Function Code:"), _("Function Name:"), _("Remarks:")]
+    _lst_labels = [_("Function Code:"), _("Function Name:"), _("Remarks:"), '']
 
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -70,11 +70,11 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.chkSafetyCritical = RAMSTKCheckButton(
+        self.chkSafetyCritical: RAMSTKCheckButton = RAMSTKCheckButton(
             label=_("Function is safety critical."))
-        self.txtCode = RAMSTKEntry()
-        self.txtName = RAMSTKEntry()
-        self.txtRemarks = RAMSTKTextView(Gtk.TextBuffer())
+        self.txtCode: RAMSTKEntry = RAMSTKEntry()
+        self.txtName: RAMSTKEntry = RAMSTKEntry()
+        self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
         self._dic_switch: Dict[str, Union[object, str]] = {
             'function_code': [self.txtCode.do_update, 'changed'],
@@ -82,6 +82,10 @@ class GeneralData(RAMSTKWorkView):
             'remarks': [self.txtRemarks.do_update, 'changed'],
             'safety_critical': [self.chkSafetyCritical.do_update, 'toggled']
         }
+
+        self._lst_widgets = [
+            self.txtCode, self.txtName, self.txtRemarks, self.chkSafetyCritical
+        ]
 
         self.__set_properties()
         self.__make_ui()
@@ -100,12 +104,31 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[],
-                                                   tooltips=[],
-                                                   callbacks=[])
+        # This page has the following layout:
+        #
+        # +-----+---------------------------------------+
+        # |  B  |                                       |
+        # |  U  |                                       |
+        # |  T  |                                       |
+        # |  T  |                WIDGETS                |
+        # |  O  |                                       |
+        # |  N  |                                       |
+        # |  S  |                                       |
+        # +-----+---------------------------------------+
+        #                           buttons ----+--> self
+        #                                       |
+        #      RAMSTKFixed ------>RAMSTKFrame --+
+        # Make the buttons.
+        super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
-        _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
+        # Layout the widgets.
+        # TODO: See issue #304.  Only _fixed will be returned in the future.
+        (__, __, _fixed) = super().make_ui()
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("General Information"))
+        _frame.add(_fixed)
+        self.pack_end(_frame, True, True, 0)
 
         _label = RAMSTKLabel(_("General\nData"))
         _label.do_set_properties(
@@ -284,6 +307,10 @@ class HazOps(RAMSTKWorkView):
 
     :ivar int _hazard_id: the ID of the currently selected hazard.
     """
+
+    # Define private list class attributes.
+    _lst_labels = []
+
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
@@ -371,35 +398,36 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            do_make_buttonbox(
-                self,
-                icons=['calculate', 'add', 'remove'],
-                tooltips=[
-                    _("Calculate the HazOps analysis."),
-                    _("Add a hazard to the HazOps analysis."),
-                    _("Remove the selected hazard and all associated data "
-                      "from the HazOps analysis.")
-                ],
-                callbacks=[
-                    self._do_request_calculate, self._do_request_insert,
-                    self._do_request_delete
-                ]))
-        self.pack_start(_scrolledwindow, False, False, 0)
-
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("HazOps Analysis"))
-        _frame.add(_scrollwindow)
-
-        self.pack_end(_frame, True, True, 0)
+        # This page has the following layout:
+        #
+        # +-----+---------------------------------------+
+        # |  B  |                                       |
+        # |  U  |                                       |
+        # |  T  |                                       |
+        # |  T  |              SPREAD SHEET             |
+        # |  O  |                                       |
+        # |  N  |                                       |
+        # |  S  |                                       |
+        # +-----+---------------------------------------+
+        #                          buttons -----+--> self
+        #                                       |
+        #  RAMSTKFixed ---+-->Gtk.VPaned -->RAMSTKFrame --+
+        #                 |
+        #  RAMSTKFrame ---+
+        # Make the buttons.
+        super().make_toolbuttons(
+            icons=['calculate', 'add', 'remove'],
+            tooltips=[
+                _("Calculate the HazOps analysis."),
+                _("Add a hazard to the HazOps analysis."),
+                _("Remove the selected hazard and all associated data "
+                  "from the HazOps analysis.")
+            ],
+            callbacks=[
+                self._do_request_calculate, self._do_request_insert,
+                self._do_request_delete
+            ])
+        super().make_ui_with_treeview(title=["", _("HazOps Analysis")])
 
         _label = RAMSTKLabel(_("HazOps"))
         _label.do_set_properties(

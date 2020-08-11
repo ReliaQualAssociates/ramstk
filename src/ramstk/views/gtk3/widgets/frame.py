@@ -19,7 +19,6 @@ from .label import RAMSTKLabel
 
 class RAMSTKFrame(Gtk.Frame):
     """This is the RAMSTK Frame class."""
-
     def __init__(self) -> None:
         """
         Initialize an instance of the RAMSTK Frame.
@@ -32,15 +31,20 @@ class RAMSTKFrame(Gtk.Frame):
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set the RAMSTKFrame properties."""
         try:
-            _title = kwargs['title']
+            _bold = kwargs['bold']
         except KeyError:
-            _title = ""
+            _bold = False
         try:
             _shadow = kwargs['shadow']
         except KeyError:
             _shadow = Gtk.ShadowType.ETCHED_OUT
+        try:
+            _title = kwargs['title']
+        except KeyError:
+            _title = ""
 
         _label = RAMSTKLabel(_title)
+        _label.do_set_properties(bold=_bold)
         _label.show_all()
         self.set_label_widget(_label)
 

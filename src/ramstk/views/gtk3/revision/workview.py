@@ -16,7 +16,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKLabel,
+from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
                                        RAMSTKTextView, RAMSTKWorkView)
 
 
@@ -36,8 +36,10 @@ class GeneralData(RAMSTKWorkView):
     # Define private list class attributes.
     _lst_labels = [_("Revision Code:"), _("Revision Name:"), _("Remarks:")]
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'revision') -> None:
         """
         Initialize the Revision Work View general data page.
 
@@ -46,7 +48,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, 'revision')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -74,6 +76,8 @@ class GeneralData(RAMSTKWorkView):
             'revision_code': [self.txtCode.do_update, 'changed']
         }
 
+        self._lst_widgets = [self.txtCode, self.txtName, self.txtRemarks]
+
         self.__set_properties()
         self.__make_ui()
         self.__set_callbacks()
@@ -89,11 +93,31 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[],
-                                                   tooltips=[],
-                                                   callbacks=[])
+        # This page has the following layout:
+        #
+        # +-----+---------------------------------------+
+        # |  B  |                                       |
+        # |  U  |                                       |
+        # |  T  |                                       |
+        # |  T  |                WIDGETS                |
+        # |  O  |                                       |
+        # |  N  |                                       |
+        # |  S  |                                       |
+        # +-----+---------------------------------------+
+        #                           buttons ----+--> self
+        #                                       |
+        #      RAMSTKFixed ------>RAMSTKFrame --+
+        # Make the buttons.
+        super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
+        # Layout the widgets.
+        # TODO: See issue #304.
+        (__, __, _fixed) = super().make_ui()
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("General Information"))
+        _frame.add(_fixed)
+        self.pack_end(_frame, True, True, 0)
 
         _label = RAMSTKLabel(_("General\nData"))
         _label.do_set_properties(
