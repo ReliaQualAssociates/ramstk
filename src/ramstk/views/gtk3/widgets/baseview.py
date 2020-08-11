@@ -739,6 +739,8 @@ class RAMSTKBaseView(Gtk.HBox):
         index of the newly selected RAMSTKComboBox() item.
         :rtype: dict
         """
+        combo.handler_block(combo.dic_handler_id['changed'])
+
         try:
             _key: str = self._dic_keys[index]
         except KeyError as _error:
@@ -770,6 +772,8 @@ class RAMSTKBaseView(Gtk.HBox):
                                 package={_key: _new_text})
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        combo.handler_unblock(combo.dic_handler_id['changed'])
 
         return {_key: _new_text}
 
@@ -824,6 +828,8 @@ class RAMSTKBaseView(Gtk.HBox):
             index of the newly changed RAMSTKEntry() or RAMSTKTextView().
         :rtype: dict
         """
+        entry.handler_block(entry.dic_handler_id['changed'])
+
         try:
             _key = self._dic_keys[index]
         except KeyError as _error:
@@ -847,6 +853,8 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.sendMessage(message,
                         node_id=[self._record_id, -1],
                         package={_key: _new_text})
+
+        entry.handler_unblock(entry.dic_handler_id['changed'])
 
         return {_key: _new_text}
 
@@ -1466,9 +1474,9 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        checkbutton.handler_block(self._lst_handler_id[index])
-
         _new_text = int(checkbutton.get_active())
+
+        checkbutton.do_update(_new_text, signal='toggled')
 
         pub.sendMessage(message,
                         node_id=[self._record_id, -1, ''],

@@ -50,12 +50,10 @@ class SimilarItem(RAMSTKWorkView):
     +-------+-------------------------------------------+
     |   1   | treeview - `button_press_event`           |
     +-------+-------------------------------------------+
-    |   2   | cmbSimilarItemMethod - `changed`          |
-    +-------+-------------------------------------------+
-    |   3   | treeview (cell) - `edited` or `toggled`   |
+    |   2   | treeview (cell) - `edited` or `toggled`   |
     +-------+-------------------------------------------+
     """
-    # Define private class dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {2: 'method_id'}
     _dic_column_keys = {
         4: 'quality_from_id',
@@ -228,8 +226,8 @@ class SimilarItem(RAMSTKWorkView):
                 _model.append([_environment])
 
         # Load the method combobox.
-        self.cmbSimilarItemMethod.do_load_combo([[_("Topic 633"), 0],
-                                                 [_("User-Defined"), 1]])
+        self.cmbSimilarItemMethod.do_load_combo(
+            [[_("Topic 633"), 0], [_("User-Defined"), 1]], signal='changed')
 
     def __make_ui(self) -> None:
         """
@@ -319,7 +317,7 @@ class SimilarItem(RAMSTKWorkView):
         """
         super().do_clear_tree()
 
-        self.cmbSimilarItemMethod.do_update(0)
+        self.cmbSimilarItemMethod.do_update(0, signal='changed')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -334,7 +332,7 @@ class SimilarItem(RAMSTKWorkView):
         self._record_id = attributes['hardware_id']
         self._method_id = attributes['similar_item_method_id']
 
-        self.cmbSimilarItemMethod.do_update(self._method_id)
+        self.cmbSimilarItemMethod.do_update(self._method_id, signal='changed')
 
         if self._record_id > 0:
             self._do_load_tree()
@@ -584,7 +582,6 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
         _package = super().on_combo_changed(combo, index,
                                             'wvw_editing_hardware')
         _new_text = list(_package.values())[0]

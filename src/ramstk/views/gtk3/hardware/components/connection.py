@@ -62,37 +62,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         connections.
     :ivar txtPlanes: enter and display the number of layers in the circuit
         board the PTH needs to penetrate.
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   0   | cmbQuality - `changed`                    |
-    +-------+-------------------------------------------+
-    |   1   | cmbType - `changed`                       |
-    +-------+-------------------------------------------+
-    |   2   | cmbSpecification - `changed`              |
-    +-------+-------------------------------------------+
-    |   3   | cmbInsert - `changed`                     |
-    +-------+-------------------------------------------+
-    |   4   | txtContactGauge - `changed`               |
-    +-------+-------------------------------------------+
-    |   5   | txtActivePins - `changed`                 |
-    +-------+-------------------------------------------+
-    |   6   | txtAmpsContact - `changed`                |
-    +-------+-------------------------------------------+
-    |   7   | txtMating - `changed`                     |
-    +-------+-------------------------------------------+
-    |   8   | txtNWave - `changed`                      |
-    +-------+-------------------------------------------+
-    |   9   | txtNHand - `changed`                      |
-    +-------+-------------------------------------------+
-    |  10   | txtNPlanes - `changed`                    |
-    +-------+-------------------------------------------+
     """
 
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {
         0: 'quality_id',
         1: 'type_id',
@@ -264,32 +236,33 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbType.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          2))
-        self._lst_handler_id.append(
-            self.cmbInsert.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.txtContactGauge.connect('focus-out-event', self._on_focus_out,
-                                         4))
-        self._lst_handler_id.append(
-            self.txtActivePins.connect('focus-out-event', self._on_focus_out,
-                                       5))
-        self._lst_handler_id.append(
-            self.txtAmpsContact.connect('focus-out-event', self._on_focus_out,
-                                        6))
-        self._lst_handler_id.append(
-            self.txtMating.connect('focus-out-event', self._on_focus_out, 7))
-        self._lst_handler_id.append(
-            self.txtNWave.connect('focus-out-event', self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.txtNHand.connect('focus-out-event', self._on_focus_out, 9))
-        self._lst_handler_id.append(
-            self.txtNPlanes.connect('focus-out-event', self._on_focus_out, 10))
+        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
+            'changed', self._on_combo_changed, 0)
+        self.cmbType.dic_handler_id['changed'] = self.cmbType.connect(
+            'changed', self._on_combo_changed, 1)
+        self.cmbSpecification.dic_handler_id[
+            'changed'] = self.cmbSpecification.connect('changed',
+                                                       self._on_combo_changed,
+                                                       2)
+        self.cmbInsert.dic_handler_id['changed'] = self.cmbInsert.connect(
+            'changed', self._on_combo_changed, 3)
+        self.txtContactGauge.dic_handler_id[
+            'changed'] = self.txtContactGauge.connect('focus-out-event',
+                                                      self._on_focus_out, 4)
+        self.txtActivePins.dic_handler_id[
+            'changed'] = self.txtActivePins.connect('focus-out-event',
+                                                    self._on_focus_out, 5)
+        self.txtAmpsContact.dic_handler_id[
+            'changed'] = self.txtAmpsContact.connect('focus-out-event',
+                                                     self._on_focus_out, 6)
+        self.txtMating.dic_handler_id['changed'] = self.txtMating.connect(
+            'focus-out-event', self._on_focus_out, 7)
+        self.txtNWave.dic_handler_id['changed'] = self.txtNWave.connect(
+            'focus-out-event', self._on_focus_out, 8)
+        self.txtNHand.dic_handler_id['changed'] = self.txtNHand.connect(
+            'focus-out-event', self._on_focus_out, 9)
+        self.txtNPlanes.dic_handler_id['changed'] = self.txtNPlanes.connect(
+            'focus-out-event', self._on_focus_out, 10)
 
     def __set_properties(self) -> None:
         """
@@ -341,38 +314,37 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
         # We don't block the callback signal otherwise the specification
         # RAMSTKComboBox() will not be loaded and set.
-        self.cmbType.set_active(attributes['type_id'])
+        self.cmbType.do_update(attributes['type_id'], signal='changed')
 
         if self._hazard_rate_method_id == 2:
             # We don't block the callback signal otherwise the insert
             # RAMSTKComboBox() will not be loaded and set.
             self.cmbSpecification.set_active(attributes['specification_id'])
-            self.cmbInsert.do_update(attributes['insert_id'],
-                                     self._lst_handler_id[3])
+            self.cmbInsert.do_update(attributes['insert_id'], signal='changed')
 
-            self.txtContactGauge.do_update(
-                str(self.fmt.format(attributes['contact_gauge'])),
-                self._lst_handler_id[4])
-            self.txtActivePins.do_update(
-                str(self.fmt.format(attributes['n_active_pins'])),
-                self._lst_handler_id[5])
-            self.txtAmpsContact.do_update(
-                str(self.fmt.format(attributes['current_operating'])),
-                self._lst_handler_id[6])
-            self.txtMating.do_update(
-                str(self.fmt.format(attributes['n_cycles'])),
-                self._lst_handler_id[7])
+            self.txtContactGauge.do_update(str(
+                self.fmt.format(attributes['contact_gauge'])),
+                                           signal='changed')
+            self.txtActivePins.do_update(str(
+                self.fmt.format(attributes['n_active_pins'])),
+                                         signal='changed')
+            self.txtAmpsContact.do_update(str(
+                self.fmt.format(attributes['current_operating'])),
+                                          signal='changed')
+            self.txtMating.do_update(str(
+                self.fmt.format(attributes['n_cycles'])),
+                                     signal='changed')
 
             if self._subcategory_id == 4:
-                self.txtNWave.do_update(
-                    str(self.fmt.format(attributes['n_wave_soldered'])),
-                    self._lst_handler_id[8])
-                self.txtNHand.do_update(
-                    str(self.fmt.format(attributes['n_hand_soldered'])),
-                    self._lst_handler_id[9])
-                self.txtNPlanes.do_update(
-                    str(self.fmt.format(attributes['n_circuit_planes'])),
-                    self._lst_handler_id[10])
+                self.txtNWave.do_update(str(
+                    self.fmt.format(attributes['n_wave_soldered'])),
+                                        signal='changed')
+                self.txtNHand.do_update(str(
+                    self.fmt.format(attributes['n_hand_soldered'])),
+                                        signal='changed')
+                self.txtNPlanes.do_update(str(
+                    self.fmt.format(attributes['n_circuit_planes'])),
+                                          signal='changed')
 
         self._do_set_sensitive()
 
@@ -480,9 +452,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        combo.handler_block(self._lst_handler_id[index])
-
         super().on_combo_changed(combo, index, 'wvw_editing_component')
 
         # If the connection type changed, load the specification
@@ -493,8 +462,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_specification[_type_id]
             except KeyError:
                 _data = []
-            self.cmbSpecification.do_load_combo(
-                _data, handler_id=self._lst_handler_id[2])
+            self.cmbSpecification.do_load_combo(_data, signal='changed')
 
         # If the connection specification changed, load the insert material
         # RAMSTKComboBox().
@@ -505,10 +473,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_insert[_type_id][_spec_id]
             except KeyError:
                 _data = []
-            self.cmbInsert.do_load_combo(_data,
-                                         handler_id=self._lst_handler_id[3])
-
-        combo.handler_unblock(self._lst_handler_id[index])
+            self.cmbInsert.do_load_combo(_data, signal='changed')
 
     def _on_focus_out(
             self,
@@ -565,15 +530,14 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data,
-                                      handler_id=self._lst_handler_id[0])
+        self.cmbQuality.do_load_combo(_data, signal='changed')
 
         # Load the connector type RAMSTKComboBox().
         try:
             _data = self._dic_type[subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data, handler_id=self._lst_handler_id[1])
+        self.cmbType.do_load_combo(_data, signal='changed')
 
         # Clear the remaining ComboBox()s.  These are loaded dynamically
         # based on the selection made in other ComboBox()s.
@@ -609,7 +573,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().__init__(configuration, logger, module=module)
 
-        # Initialize private dictionary attributes.
+        # Initialize private dict attributes.
         self._dic_part_stress = {
             1:
             "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
@@ -630,7 +594,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
 
         # Initialize private scalar attributes.
 
-        # Initialize public dictionary attributes.
+        # Initialize public dict attributes.
 
         # Initialize public list attributes.
 
@@ -692,10 +656,9 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        # TODO: See issue #305.
-        self.txtPiK.set_text(str(self.fmt.format(attributes['piK'])))
-        self.txtPiP.set_text(str(self.fmt.format(attributes['piP'])))
-        self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
+        self.txtPiK.do_update(str(self.fmt.format(attributes['piK'])))
+        self.txtPiP.do_update(str(self.fmt.format(attributes['piP'])))
+        self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
 
         self._do_set_sensitive()
 

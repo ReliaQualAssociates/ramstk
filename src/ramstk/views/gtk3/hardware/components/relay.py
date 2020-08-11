@@ -47,31 +47,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     :ivar cmbConstruction: select and display the relay's method of
         construction.
     :ivar txtCycles: enter and display the number of relay cycles per hour.
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+------------------------------+
-    | Index | Widget - Signal              |
-    +=======+==============================+
-    |   0   | cmbQuality - `changed`       |
-    +-------+------------------------------+
-    |   1   | cmbType - `changed`          |
-    +-------+------------------------------+
-    |   2   | cmbLoadType - `changed`      |
-    +-------+------------------------------+
-    |   3   | cmbContactForm - `changed`   |
-    +-------+------------------------------+
-    |   4   | cmbContactRating - `changed` |
-    +-------+------------------------------+
-    |   5   | cmbApplication - `changed`   |
-    +-------+------------------------------+
-    |   6   | cmbConstruction - `changed`  |
-    +-------+------------------------------+
-    |   7   | txtCycles - `changed`        |
-    +-------+------------------------------+
     """
 
-    # Define private class dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {
         0: 'quality_id',
         1: 'type_id',
@@ -145,7 +123,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         }
     }
 
-    # Define private class list attributes.
+    # Define private list class attributes.
 
     # Index is the technology ID (load type).
     _lst_technology = [[_("Resistive")], [_("Inductive")], [_("Lamp")]]
@@ -231,7 +209,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_application[_contact_rating_id]
         except KeyError:
             _data = []
-        self.cmbApplication.do_load_combo(_data)
+        self.cmbApplication.do_load_combo(_data, signal='changed')
 
     def __do_load_construction_combo(self) -> None:
         """
@@ -246,7 +224,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_construction[_contact_rating_id][_application_id]
         except KeyError:
             _data = []
-        self.cmbConstruction.do_load_combo(_data)
+        self.cmbConstruction.do_load_combo(_data, signal='changed')
 
     def __do_load_quality_combo(self) -> None:
         """
@@ -263,7 +241,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[self._subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data)
+        self.cmbQuality.do_load_combo(_data, signal='changed')
 
     def __do_load_type_combo(self) -> None:
         """
@@ -276,7 +254,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_types[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data)
+        self.cmbType.do_load_combo(_data, signal='changed')
 
     def __set_callbacks(self) -> None:
         """
@@ -287,10 +265,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
             'changed', self._on_combo_changed, 0)
-        # TODO: See issue #310.  The _lst_handler_id attribute will be
-        #  retired once issue #310 is implemented completely.
-        self._lst_handler_id.append(self.cmbQuality.dic_handler_id['changed'])
-
         self.cmbType.dic_handler_id['changed'] = self.cmbType.connect(
             'changed', self._on_combo_changed, 1)
         self.cmbLoadType.dic_handler_id['changed'] = self.cmbLoadType.connect(
@@ -346,21 +320,27 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         super().do_load_page(attributes)
 
-        self.cmbType.do_update(attributes['type_id'])
+        self.cmbType.do_update(attributes['type_id'], signal='changed')
 
         if self._hazard_rate_method_id == 2:
-            self.cmbLoadType.do_update(attributes['technology_id'])
-            self.cmbContactForm.do_update(attributes['contact_form_id'])
-            self.cmbContactRating.do_update(attributes['contact_rating_id'])
+            self.cmbLoadType.do_update(attributes['technology_id'],
+                                       signal='changed')
+            self.cmbContactForm.do_update(attributes['contact_form_id'],
+                                          signal='changed')
+            self.cmbContactRating.do_update(attributes['contact_rating_id'],
+                                            signal='changed')
 
             self.__do_load_application_combo()
-            self.cmbApplication.do_update(attributes['application_id'])
+            self.cmbApplication.do_update(attributes['application_id'],
+                                          signal='changed')
 
             self.__do_load_construction_combo()
-            self.cmbConstruction.do_update(attributes['construction_id'])
+            self.cmbConstruction.do_update(attributes['construction_id'],
+                                           signal='changed')
 
-            self.txtCycles.do_update(
-                str(self.fmt.format(attributes['n_cycles'])), )
+            self.txtCycles.do_update(str(
+                self.fmt.format(attributes['n_cycles'])),
+                                     signal='changed')
 
         self._do_set_sensitive()
 
@@ -466,9 +446,11 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.__do_load_quality_combo()
         self.__do_load_type_combo()
 
-        self.cmbLoadType.do_load_combo(self._lst_technology)
-        self.cmbContactForm.do_load_combo(self._lst_contact_form)
-        self.cmbContactRating.do_load_combo(self._lst_contact_rating)
+        self.cmbLoadType.do_load_combo(self._lst_technology, signal='changed')
+        self.cmbContactForm.do_load_combo(self._lst_contact_form,
+                                          signal='changed')
+        self.cmbContactRating.do_load_combo(self._lst_contact_rating,
+                                            signal='changed')
 
 
 class AssessmentResults(RAMSTKAssessmentResults):
@@ -487,7 +469,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
     relay.
     """
 
-    # Define private class dict attributes.
+    # Define private dict class attributes.
     _dic_part_stress = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
@@ -495,7 +477,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
-    # Define private class list attributes.
+    # Define private list class attributes.
     _lst_tooltips = [
         _("The assessment model used to calculate the relay's failure rate."),
         _("The base hazard rate of the relay."),
@@ -565,11 +547,10 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_load_page(attributes)
 
-        # TODO: See issue #305.
-        self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
-        self.txtPiCYC.set_text(str(self.fmt.format(attributes['piCYC'])))
-        self.txtPiF.set_text(str(self.fmt.format(attributes['piF'])))
-        self.txtPiL.set_text(str(self.fmt.format(attributes['piL'])))
+        self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
+        self.txtPiCYC.do_update(str(self.fmt.format(attributes['piCYC'])))
+        self.txtPiF.do_update(str(self.fmt.format(attributes['piF'])))
+        self.txtPiL.do_update(str(self.fmt.format(attributes['piL'])))
 
         self._do_set_sensitive()
 

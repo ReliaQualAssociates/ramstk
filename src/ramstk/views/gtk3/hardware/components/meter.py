@@ -44,21 +44,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
     :ivar cmbApplication: select and display the application of the meter.
     :ivar cmbType: select and display the type of meter.
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   0   | cmbQuality - `changed`                    |
-    +-------+-------------------------------------------+
-    |   1   | cmbApplication - `changed`                |
-    +-------+-------------------------------------------+
-    |   2   | cmbType - `changed`                       |
-    +-------+-------------------------------------------+
     """
 
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {0: 'quality_id', 1: 'application_id', 2: 'type_id'}
 
     # Quality levels; key is the subcategory ID.
@@ -72,7 +60,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         2: [[_("Direct Current")], [_("Alternating Current")]]
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [_("Quality Level:"), _("Meter Type:"), _("Meter Function:")]
 
     def __init__(self,
@@ -126,10 +114,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
             'changed', self._on_combo_changed, 0)
-        # TODO: See issue #310.  The _lst_handler_id attribute will be
-        #  retired once issue #310 is implemented completely.
-        self._lst_handler_id.append(self.cmbQuality.dic_handler_id['changed'])
-
         self.cmbApplication.dic_handler_id[
             'changed'] = self.cmbApplication.connect('changed',
                                                      self._on_combo_changed, 1)
@@ -158,8 +142,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         super().do_load_page(attributes)
 
-        self.cmbApplication.do_update(attributes['application_id'])
-        self.cmbType.do_update(attributes['type_id'])
+        self.cmbApplication.do_update(attributes['application_id'],
+                                      signal='changed')
+        self.cmbType.do_update(attributes['type_id'], signal='changed')
 
         self._do_set_sensitive()
 
@@ -221,18 +206,18 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data)
+        self.cmbQuality.do_load_combo(_data, signal='changed')
 
         # Load the meter application RAMSTKComboBox().
-        self.cmbApplication.do_load_combo([[_("Ammeter")], [_("Voltmeter")],
-                                           [_("Other")]])
+        self.cmbApplication.do_load_combo(
+            [[_("Ammeter")], [_("Voltmeter")], [_("Other")]], signal='changed')
 
         # Load the meter type RAMSTKComboBox().
         try:
             _data = self._dic_types[subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data)
+        self.cmbType.do_load_combo(_data, signal='changed')
 
 
 class AssessmentResults(RAMSTKAssessmentResults):
@@ -250,7 +235,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         meter.
     """
 
-    # Define private class dict attributes.
+    # Define private class dict class attributes.
     _dic_part_stress = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
@@ -258,7 +243,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
     }
 
-    # Define private class list attributes.
+    # Define private class list class attributes.
     _lst_tooltips = [
         _("The assessment model used to calculate the meter failure rate."),
         _("The base hazard rate of the meter."),
@@ -345,10 +330,9 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_load_page(attributes)
 
-        # TODO: See issue #305.
-        self.txtPiA.set_text(str(self.fmt.format(attributes['piA'])))
-        self.txtPiF.set_text(str(self.fmt.format(attributes['piF'])))
-        self.txtPiT.set_text(str(self.fmt.format(attributes['piT'])))
+        self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
+        self.txtPiF.do_update(str(self.fmt.format(attributes['piF'])))
+        self.txtPiT.do_update(str(self.fmt.format(attributes['piT'])))
 
         self._do_set_sensitive()
 

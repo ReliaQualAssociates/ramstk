@@ -19,8 +19,8 @@ from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox, RAMSTKDateSelect,
-    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView,
-    RAMSTKWorkView, do_make_buttonbox)
+    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView,
+    do_make_buttonbox)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -28,22 +28,23 @@ class GeneralData(RAMSTKWorkView):
     Display general Requirement attribute data in the RAMSTK Work Book.
 
     The Requirement Work View displays all the general data attributes for the
-    selected Requirement. The attributes of a Requirement General Data Work
-    View are:
-
-    Callbacks signals in _lst_handler_id:
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtCode `focus_out_event`                 |
-    +----------+-------------------------------------------+
-    |     1    | txtName `focus_out_event`                 |
-    +----------+-------------------------------------------+
-    |     2    | txtRemarks `changed`                      |
-    +----------+-------------------------------------------+
+    selected Requirement.
     """
+    # Define private dict class attributes.
+    _dic_keys = {
+        0: 'requirement_code',
+        1: 'description',
+        2: 'requirement_type',
+        4: 'specification',
+        5: 'page_number',
+        6: 'figure_number',
+        7: 'priority',
+        8: 'owner',
+        9: 'requirement_code',
+        10: 'validated_date'
+    }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Requirement Code:"),
         _("Requirement Description:"),
@@ -77,8 +78,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['create_code'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/create_code.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/create_code.png')
 
         # Initialize private list attributes.
 
@@ -216,35 +217,39 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.txtCode.connect('focus-out-event', self._on_focus_out, 0))
-        self._lst_handler_id.append(self.txtName.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 1))
-        self._lst_handler_id.append(
-            self.cmbRequirementType.connect('changed', self._on_combo_changed,
-                                            2))
-        self._lst_handler_id.append(
-            self.chkDerived.connect('toggled', self._on_toggled, 3))
-        self._lst_handler_id.append(
-            self.txtSpecification.connect('focus-out-event',
-                                          self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtPageNum.connect('focus-out-event', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtFigNum.connect('focus-out-event', self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.cmbPriority.connect('changed', self._on_combo_changed, 7))
-        self._lst_handler_id.append(
-            self.cmbOwner.connect('changed', self._on_combo_changed, 8))
-        self._lst_handler_id.append(
-            self.chkValidated.connect('toggled', self._on_toggled, 9))
-        self._lst_handler_id.append(
-            self.txtValidatedDate.connect('focus-out-event',
-                                          self._on_focus_out, 10))
-        self._lst_handler_id.append(
-            self.btnValidateDate.connect('button-release-event',
-                                         self._do_select_date,
-                                         self.txtValidatedDate))
+        self.btnValidateDate.dic_handler_id[
+            'released'] = self.btnValidateDate.connect('button-release-event',
+                                                       self._do_select_date,
+                                                       self.txtValidatedDate)
+
+        self.chkDerived.dic_handler_id['toggled'] = self.chkDerived.connect(
+            'toggled', self._on_toggled, 3)
+        self.chkValidated.dic_handler_id[
+            'toggled'] = self.chkValidated.connect('toggled', self._on_toggled,
+                                                   9)
+
+        self.cmbRequirementType.dic_handler_id[
+            'changed'] = self.cmbRequirementType.connect(
+                'changed', self._on_combo_changed, 2)
+        self.cmbPriority.dic_handler_id['changed'] = self.cmbPriority.connect(
+            'changed', self._on_combo_changed, 7)
+        self.cmbOwner.dic_handler_id['changed'] = self.cmbOwner.connect(
+            'changed', self._on_combo_changed, 8)
+
+        self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
+            'focus-out-event', self._on_focus_out, 0)
+        self.txtName.dic_handler_id['changed'] = self.txtName.do_get_buffer(
+        ).connect('changed', self._on_focus_out, None, 1)
+        self.txtSpecification.dic_handler_id[
+            'changed'] = self.txtSpecification.connect('focus-out-event',
+                                                       self._on_focus_out, 4)
+        self.txtPageNum.dic_handler_id['changed'] = self.txtPageNum.connect(
+            'focus-out-event', self._on_focus_out, 5)
+        self.txtFigNum.dic_handler_id['changed'] = self.txtFigNum.connect(
+            'focus-out-event', self._on_focus_out, 6)
+        self.txtValidatedDate.dic_handler_id[
+            'changed'] = self.txtValidatedDate.connect('focus-out-event',
+                                                       self._on_focus_out, 10)
 
     def __set_properties(self) -> None:
         """
@@ -286,28 +291,21 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtCode.do_update('', self._lst_handler_id[0])
-        self.txtName.do_update('', self._lst_handler_id[1])
+        self.txtCode.do_update('', signal='changed')
+        self.txtName.do_update('', signal='changed')
 
-        self.cmbRequirementType.handler_block(self._lst_handler_id[2])
-        self.cmbRequirementType.set_active(0)
-        self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
+        self.cmbRequirementType.do_update(0, signal='changed')
 
-        self.chkDerived.do_update(False, self._lst_handler_id[3])
-        self.txtSpecification.do_update('', self._lst_handler_id[4])
-        self.txtPageNum.do_update('', self._lst_handler_id[5])
-        self.txtFigNum.do_update('', self._lst_handler_id[6])
+        self.chkDerived.do_update(False, signal='toggled')
+        self.txtSpecification.do_update('', signal='changed')
+        self.txtPageNum.do_update('', signal='changed')
+        self.txtFigNum.do_update('', signal='changed')
 
-        self.cmbPriority.handler_block(self._lst_handler_id[7])
-        self.cmbPriority.set_active(0)
-        self.cmbPriority.handler_unblock(self._lst_handler_id[7])
+        self.cmbPriority.do_update(0, signal='changed')
+        self.cmbOwner.do_update(0, signal='changed')
 
-        self.cmbOwner.handler_block(self._lst_handler_id[8])
-        self.cmbOwner.set_active(0)
-        self.cmbOwner.handler_unblock(self._lst_handler_id[8])
-
-        self.chkValidated.do_update(False, self._lst_handler_id[9])
-        self.txtValidatedDate.do_update('', self._lst_handler_id[10])
+        self.chkValidated.do_update(False, signal='toggled')
+        self.txtValidatedDate.do_update('', signal='changed')
 
     def _do_load_code(self, requirement_code: int) -> None:
         """
@@ -317,7 +315,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtCode.do_update(str(requirement_code), self._lst_handler_id[0])
+        self.txtCode.do_update(str(requirement_code), signal='changed')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -331,30 +329,28 @@ class GeneralData(RAMSTKWorkView):
         self._record_id = attributes['requirement_id']
 
         self.txtCode.do_update(str(attributes['requirement_code']),
-                               self._lst_handler_id[0])
+                               signal='changed')
         self.txtName.do_update(str(attributes['description']),
-                               self._lst_handler_id[1])
-        self.chkDerived.do_update(int(attributes['derived']),
-                                  self._lst_handler_id[3])
+                               signal='changed')
+        self.chkDerived.do_update(int(attributes['derived']), signal='toggled')
         self.cmbRequirementType.do_update(int(attributes['requirement_type']),
-                                          self._lst_handler_id[2])
+                                          signal='changed')
         self.txtSpecification.do_update(str(attributes['specification']),
-                                        self._lst_handler_id[4])
+                                        signal='changed')
         self.txtPageNum.do_update(str(attributes['page_number']),
-                                  self._lst_handler_id[5])
+                                  signal='changed')
         self.txtFigNum.do_update(str(attributes['figure_number']),
-                                 self._lst_handler_id[6])
+                                 signal='changed')
         self.cmbPriority.do_update(int(attributes['priority']),
-                                   self._lst_handler_id[7])
-        self.cmbOwner.do_update(int(attributes['owner']),
-                                self._lst_handler_id[8])
+                                   signal='changed')
+        self.cmbOwner.do_update(int(attributes['owner']), signal='changed')
         self.chkValidated.do_update(int(attributes['validated']),
-                                    self._lst_handler_id[9])
+                                    signal='toggled')
         if attributes['validated']:
             self.txtValidatedDate.do_update(str(attributes['validated_date']),
-                                            self._lst_handler_id[10])
+                                            signal='changed')
         else:
-            self.txtValidatedDate.do_update("", self._lst_handler_id[10])
+            self.txtValidatedDate.do_update("", signal='changed')
 
     def _do_request_create_code(self, __button: Gtk.ToolButton) -> None:
         """
@@ -455,25 +451,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {2: 'requirement_type', 7: 'priority', 8: 'owner'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        # TODO: See issue #310.
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
-
-        pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._record_id, -1],
-                        package={_key: _new_text})
-
-        combo.handler_unblock(self._lst_handler_id[index])
+        super().on_combo_changed(combo, index, 'wvw_editing_requirement')
 
     def _on_focus_out(
             self,
@@ -499,23 +477,13 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {
-            0: 'requirement_code',
-            1: 'description',
-            4: 'specification',
-            5: 'page_number',
-            6: 'figure_number',
-            9: 'requirement_code',
-            10: 'validated_date'
-        }
         try:
-            _key = _dic_keys[index]
+            _key = self._dic_keys[index]
         except KeyError as _error:
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        # TODO: See issue #310.
-        entry.handler_block(self._lst_handler_id[index])
+        entry.handler_block(entry.dic_handler_id['changed'])
 
         if index == 1:
             _new_text: str = self.txtName.do_get_text()
@@ -526,7 +494,7 @@ class GeneralData(RAMSTKWorkView):
                         node_id=[self._record_id, -1],
                         package={_key: _new_text})
 
-        entry.handler_unblock(self._lst_handler_id[index])
+        entry.handler_unblock(entry.dic_handler_id['changed'])
 
     def _on_toggled(self, checkbutton: RAMSTKCheckButton, index: int) -> None:
         """
@@ -542,8 +510,6 @@ class GeneralData(RAMSTKWorkView):
                            index,
                            message='wvw_editing_requirement')
 
-        checkbutton.handler_unblock(self._lst_handler_id[index])
-
 
 class RequirementAnalysis(RAMSTKWorkView):
     """
@@ -554,23 +520,23 @@ class RequirementAnalysis(RAMSTKWorkView):
     Analysis Work View are:
 
     :ivar list _lst_clear_a: the list of integers [0, 1] corresponding to the
-                             answers to the Clarity questions.
+        answers to the Clarity questions.
     :ivar list _lst_complete_a: the list of integers [0, 1] corresponding to
-                                the answers to the Completeness questions.
+        the answers to the Completeness questions.
     :ivar list _lst_consistent_a: the list of integers [0, 1] corresponding to
-                                  the answers to the Consistency questions.
+        the answers to the Consistency questions.
     :ivar list _lst_verifiable_a: the list of integers [0, 1] corresponding to
-                                  the answers to the Verifiability questions.
+        the answers to the Verifiability questions.
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
-                               being controlled.
+        being controlled.
     :ivar tvwClear: the :class:`Gtk.RAMSTKTreeView` listing all the Clarity
-                    questions and answers.
+        questions and answers.
     :ivar tvwComplete: the :class:`Gtk.RAMSTKTreeView` listing all the
-                       Completeness questions and answers.
+        Completeness questions and answers.
     :ivar tvwConsistent: the :class:`Gtk.RAMSTKTreeView` listing all the
-                         Consistency questions and answers.
+        Consistency questions and answers.
     :ivar tvwVerifiable: the :class:`Gtk.RAMSTKTreeView` listing all the
-                         Verifiability questions and answers.
+        Verifiability questions and answers.
     """
     _lst_clear = [
         _("1. The requirement clearly states what is needed or "
@@ -760,18 +726,18 @@ class RequirementAnalysis(RAMSTKWorkView):
         # Create quadrant #1 (upper left) for determining if the
         # requirement is clear.
         _vpaned = Gtk.VPaned()
-        _hpaned.pack1(_vpaned, resize=False)
+        _hpaned.pack1(_vpaned, False)
 
-        _vpaned.pack1(self.__make_ui_clear(), resize=False)
-        _vpaned.pack2(self.__make_ui_complete(), resize=False)
+        _vpaned.pack1(self.__make_ui_clear(), False)
+        _vpaned.pack2(self.__make_ui_complete(), False)
 
         # Create quadrant #2 (upper right) for determining if the
         # requirement is consistent.
         _vpaned = Gtk.VPaned()
-        _hpaned.pack2(_vpaned, resize=False)
+        _hpaned.pack2(_vpaned, False)
 
-        _vpaned.pack1(self.__make_ui_consistent(), resize=False)
-        _vpaned.pack2(self.__make_ui_verifiable(), resize=False)
+        _vpaned.pack1(self.__make_ui_consistent(), False)
+        _vpaned.pack2(self.__make_ui_verifiable(), False)
 
         self.pack_start(_hpaned, True, True, 0)
 

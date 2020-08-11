@@ -17,9 +17,8 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-    RAMSTKTextView, RAMSTKTreeView, RAMSTKWorkView, do_make_buttonbox
-)
+    RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView,
+    RAMSTKTreeView, RAMSTKWorkView, do_make_buttonbox)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -28,20 +27,17 @@ class GeneralData(RAMSTKWorkView):
 
     The Function Work View displays all the general data attributes for the
     selected Function. The attributes of a Function General Data Work View are:
-
-    Callbacks signals in _lst_handler_id:
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtCode `focus_out_event`                 |
-    +----------+-------------------------------------------+
-    |     1    | txtName `focus_out_event`                 |
-    +----------+-------------------------------------------+
-    |     2    | txtRemarks `changed`                      |
-    +----------+-------------------------------------------+
     """
 
-    # Define private list attributes.
+    # Define private dict class attributes.
+    _dic_keys = {
+        0: 'function_code',
+        1: 'name',
+        2: 'remarks',
+        3: 'safety_critical'
+    }
+
+    # Define private list class attributes.
     _lst_labels = [_("Function Code:"), _("Function Name:"), _("Remarks:")]
 
     def __init__(self,
@@ -129,13 +125,15 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.txtCode.connect('focus-out-event', self._on_focus_out, 0))
-        self._lst_handler_id.append(
-            self.txtName.connect('focus-out-event', self._on_focus_out, 1))
-        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 2))
-        self._lst_handler_id.append(
+        self.txtCode.dic_handler_id['changed'] = (self.txtCode.connect(
+            'focus-out-event', self._on_focus_out, 0))
+        self.txtName.dic_handler_id['changed'] = (self.txtName.connect(
+            'focus-out-event', self._on_focus_out, 1))
+        self.txtRemarks.dic_handler_id['changed'] = (
+            self.txtRemarks.do_get_buffer().connect('changed',
+                                                    self._on_focus_out, None,
+                                                    2))
+        self.chkSafetyCritical.dic_handler_id['toggled'] = (
             self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
     def __set_properties(self) -> None:
@@ -168,19 +166,10 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text('')
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text('')
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-        _buffer = self.txtRemarks.do_get_buffer()
-        _buffer.handler_block(self._lst_handler_id[2])
-        _buffer.set_text('')
-        _buffer.handler_block(self._lst_handler_id[2])
-        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
-        self.chkSafetyCritical.do_update(False, self._lst_handler_id[3])
-        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
+        self.txtCode.do_update('', signal='changed')
+        self.txtName.do_update('', signal='changed')
+        self.txtRemarks.do_update('', signal='changed')
+        self.chkSafetyCritical.do_update(False, signal='toggled')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -194,13 +183,11 @@ class GeneralData(RAMSTKWorkView):
         self._record_id = attributes['function_id']
 
         self.txtCode.do_update(str(attributes['function_code']),
-                               self._lst_handler_id[0])
-        self.txtName.do_update(str(attributes['name']),
-                               self._lst_handler_id[1])
-        self.txtRemarks.do_update(str(attributes['remarks']),
-                                  self._lst_handler_id[2])
+                               signal='changed')
+        self.txtName.do_update(str(attributes['name']), signal='changed')
+        self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
         self.chkSafetyCritical.do_update(int(attributes['safety_critical']),
-                                         self._lst_handler_id[3])
+                                         signal='changed')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -252,15 +239,13 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {0: 'function_code', 1: 'name', 2: 'remarks'}
         try:
-            _key = _dic_keys[index]
+            _key = self._dic_keys[index]
         except KeyError as _error:
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        # TODO: See issue #310.
-        entry.handler_block(self._lst_handler_id[index])
+        entry.handler_block(entry.dic_handler_id['changed'])
 
         try:
             if index == 2:
@@ -275,7 +260,7 @@ class GeneralData(RAMSTKWorkView):
                         node_id=[self._record_id, -1],
                         package={_key: _new_text})
 
-        entry.handler_unblock(self._lst_handler_id[index])
+        entry.handler_unblock(entry.dic_handler_id['changed'])
 
     def _on_toggled(self, checkbutton: RAMSTKCheckButton, index: int) -> None:
         """
@@ -288,8 +273,6 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         super().on_toggled(checkbutton, index, message='wvw_editing_function')
-
-        checkbutton.handler_unblock(self._lst_handler_id[index])
 
 
 class HazOps(RAMSTKWorkView):

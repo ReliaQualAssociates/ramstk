@@ -79,60 +79,8 @@ class GeneralData(RAMSTKWorkView):
 
     The Hardware Work View displays all the general data attributes for the
     selected Hardware.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | chkRepairable - `toggled`                 |
-    +----------+-------------------------------------------+
-    |     1    | chkTagged - `toggled`                     |
-    +----------+-------------------------------------------+
-    |     2    | cmbCategory - `changed`                   |
-    +----------+-------------------------------------------+
-    |     3    | cmbCostType - `changed`                   |
-    +----------+-------------------------------------------+
-    |     4    | cmbManufacturer - `changed`               |
-    +----------+-------------------------------------------+
-    |     5    | cmbSubcategory - `changed`                |
-    +----------+-------------------------------------------+
-    |     6    | txtAltPartNum - `changed`                 |
-    +----------+-------------------------------------------+
-    |     7    | txtAttachments - `changed`                |
-    +----------+-------------------------------------------+
-    |     8    | txtCAGECode - `changed`                   |
-    +----------+-------------------------------------------+
-    |     9    | txtCompRefDes - `changed`                 |
-    +----------+-------------------------------------------+
-    |    10    | txtCost - `changed`                       |
-    +----------+-------------------------------------------+
-    |    11    | txtDescription - `changed`                |
-    +----------+-------------------------------------------+
-    |    12    | txtFigureNumber - `changed`               |
-    +----------+-------------------------------------------+
-    |    13    | txtLCN - `changed`                        |
-    +----------+-------------------------------------------+
-    |    14    | txtName - `changed`                       |
-    +----------+-------------------------------------------+
-    |    15    | txtNSN - `changed`                        |
-    +----------+-------------------------------------------+
-    |    16    | txtPageNumber - `changed`                 |
-    +----------+-------------------------------------------+
-    |    17    | txtPartNumber - `changed`                 |
-    +----------+-------------------------------------------+
-    |    18    | txtQuantity - `changed`                   |
-    +----------+-------------------------------------------+
-    |    19    | txtRefDes - `changed`                     |
-    +----------+-------------------------------------------+
-    |    20    | txtRemarks - `changed`                    |
-    +----------+-------------------------------------------+
-    |    21    | txtSpecification - `changed`              |
-    +----------+-------------------------------------------+
-    |    22    | txtYearMade - `changed`                   |
-    +----------+-------------------------------------------+
     """
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {
         0: 'repairable',
         1: 'tagged_part',
@@ -159,7 +107,7 @@ class GeneralData(RAMSTKWorkView):
         22: 'year_of_manufacture'
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Reference Designator:"),
         _("Composite Ref. Des."),
@@ -403,64 +351,66 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
+        self.chkRepairable.dic_handler_id['toggled'] = (
             self.chkRepairable.connect('toggled', self._on_toggled, 0))
-        self._lst_handler_id.append(
-            self.chkTagged.connect('toggled', self._on_toggled, 1))
+        self.chkTagged.dic_handler_id['toggled'] = (self.chkTagged.connect(
+            'toggled', self._on_toggled, 1))
 
-        self._lst_handler_id.append(
-            self.cmbCategory.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbCostType.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbManufacturer.connect('changed', self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.cmbSubcategory.connect('changed', self._on_combo_changed, 5))
+        self.cmbCategory.dic_handler_id['changed'] = self.cmbCategory.connect(
+            'changed', self._on_combo_changed, 2)
+        self.cmbCostType.dic_handler_id['changed'] = self.cmbCostType.connect(
+            'changed', self._on_combo_changed, 3)
+        self.cmbManufacturer.dic_handler_id[
+            'changed'] = self.cmbManufacturer.connect('changed',
+                                                      self._on_combo_changed,
+                                                      4)
+        self.cmbSubcategory.dic_handler_id[
+            'changed'] = self.cmbSubcategory.connect('changed',
+                                                     self._on_combo_changed, 5)
 
-        self._lst_handler_id.append(
-            self.txtAltPartNum.connect('focus-out-event', self._on_focus_out,
-                                       6))
-        self._lst_handler_id.append(
-            self.txtAttachments.do_get_buffer().connect(
-                'changed', self._on_focus_out, None, 7))
-        self._lst_handler_id.append(
-            self.txtCAGECode.connect('focus-out-event', self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.txtCompRefDes.connect('focus-out-event', self._on_focus_out,
-                                       9))
-        self._lst_handler_id.append(
-            self.txtCost.connect('focus-out-event', self._on_focus_out, 10))
-        self._lst_handler_id.append(
-            self.txtDescription.do_get_buffer().connect(
-                'changed', self._on_focus_out, None, 11))
-        self._lst_handler_id.append(
-            self.txtFigureNumber.connect('focus-out-event', self._on_focus_out,
-                                         12))
-        self._lst_handler_id.append(
-            self.txtLCN.connect('focus-out-event', self._on_focus_out, 13))
-        self._lst_handler_id.append(
-            self.txtName.connect('focus-out-event', self._on_focus_out, 14))
-        self._lst_handler_id.append(
-            self.txtNSN.connect('focus-out-event', self._on_focus_out, 15))
-        self._lst_handler_id.append(
-            self.txtPageNumber.connect('focus-out-event', self._on_focus_out,
-                                       16))
-        self._lst_handler_id.append(
-            self.txtPartNumber.connect('focus-out-event', self._on_focus_out,
-                                       17))
-        self._lst_handler_id.append(
-            self.txtQuantity.connect('focus-out-event', self._on_focus_out,
-                                     18))
-        self._lst_handler_id.append(
-            self.txtRefDes.connect('focus-out-event', self._on_focus_out, 19))
-        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 20))
-        self._lst_handler_id.append(
-            self.txtSpecification.connect('focus-out-event',
-                                          self._on_focus_out, 21))
-        self._lst_handler_id.append(
-            self.txtYearMade.connect('focus-out-event', self._on_focus_out,
-                                     22))
+        self.txtAltPartNum.dic_handler_id[
+            'changed'] = self.txtAltPartNum.connect('focus-out-event',
+                                                    self._on_focus_out, 6)
+        self.txtAttachments.dic_handler_id[
+            'changed'] = self.txtAttachments.do_get_buffer().connect(
+                'changed', self._on_focus_out, None, 7)
+        self.txtCAGECode.dic_handler_id['changed'] = self.txtCAGECode.connect(
+            'focus-out-event', self._on_focus_out, 8)
+        self.txtCompRefDes.dic_handler_id[
+            'changed'] = self.txtCompRefDes.connect('focus-out-event',
+                                                    self._on_focus_out, 9)
+        self.txtCost.dic_handler_id['changed'] = self.txtCost.connect(
+            'focus-out-event', self._on_focus_out, 10)
+        self.txtDescription.dic_handler_id[
+            'changed'] = self.txtDescription.do_get_buffer().connect(
+                'changed', self._on_focus_out, None, 11)
+        self.txtFigureNumber.dic_handler_id[
+            'changed'] = self.txtFigureNumber.connect('focus-out-event',
+                                                      self._on_focus_out, 12)
+        self.txtLCN.dic_handler_id['changed'] = self.txtLCN.connect(
+            'focus-out-event', self._on_focus_out, 13)
+        self.txtName.dic_handler_id['changed'] = self.txtName.connect(
+            'focus-out-event', self._on_focus_out, 14)
+        self.txtNSN.dic_handler_id['changed'] = self.txtNSN.connect(
+            'focus-out-event', self._on_focus_out, 15)
+        self.txtPageNumber.dic_handler_id[
+            'changed'] = self.txtPageNumber.connect('focus-out-event',
+                                                    self._on_focus_out, 16)
+        self.txtPartNumber.dic_handler_id[
+            'changed'] = self.txtPartNumber.connect('focus-out-event',
+                                                    self._on_focus_out, 17)
+        self.txtQuantity.dic_handler_id['changed'] = self.txtQuantity.connect(
+            'focus-out-event', self._on_focus_out, 18)
+        self.txtRefDes.dic_handler_id['changed'] = self.txtRefDes.connect(
+            'focus-out-event', self._on_focus_out, 19)
+        self.txtRemarks.dic_handler_id[
+            'changed'] = self.txtRemarks.do_get_buffer().connect(
+                'changed', self._on_focus_out, None, 20)
+        self.txtSpecification.dic_handler_id[
+            'changed'] = self.txtSpecification.connect('focus-out-event',
+                                                       self._on_focus_out, 21)
+        self.txtYearMade.dic_handler_id['changed'] = self.txtYearMade.connect(
+            'focus-out-event', self._on_focus_out, 22)
 
     def __set_properties(self) -> None:
         """
@@ -537,29 +487,29 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.chkRepairable.do_update(False, self._lst_handler_id[0])
-        self.chkTagged.do_update(False, self._lst_handler_id[1])
-        self.cmbCategory.do_update(0, self._lst_handler_id[2])
-        self.cmbSubcategory.do_update(0, self._lst_handler_id[5])
-        self.cmbCostType.do_update(0, self._lst_handler_id[3])
-        self.cmbManufacturer.do_update(0, self._lst_handler_id[4])
-        self.txtAltPartNum.do_update('', self._lst_handler_id[6])
-        self.txtAttachments.do_update('', self._lst_handler_id[7])
-        self.txtCAGECode.do_update('', self._lst_handler_id[8])
-        self.txtCompRefDes.do_update('', self._lst_handler_id[9])
-        self.txtCost.do_update('', self._lst_handler_id[10])
-        self.txtDescription.do_update('', self._lst_handler_id[11])
-        self.txtFigureNumber.do_update('', self._lst_handler_id[12])
-        self.txtLCN.do_update('', self._lst_handler_id[13])
-        self.txtName.do_update('', self._lst_handler_id[14])
-        self.txtNSN.do_update('', self._lst_handler_id[15])
-        self.txtPageNumber.do_update('', self._lst_handler_id[16])
-        self.txtPartNumber.do_update('', self._lst_handler_id[17])
-        self.txtQuantity.do_update('', self._lst_handler_id[18])
-        self.txtRefDes.do_update('', self._lst_handler_id[19])
-        self.txtRemarks.do_update('', self._lst_handler_id[20])
-        self.txtSpecification.do_update('', self._lst_handler_id[21])
-        self.txtYearMade.do_update('', self._lst_handler_id[22])
+        self.chkRepairable.do_update(False, signal='toggled')
+        self.chkTagged.do_update(False, signal='toggled')
+        self.cmbCategory.do_update(0, signal='changed')
+        self.cmbSubcategory.do_update(0, signal='changed')
+        self.cmbCostType.do_update(0, signal='changed')
+        self.cmbManufacturer.do_update(0, signal='changed')
+        self.txtAltPartNum.do_update('', signal='focus-out')
+        self.txtAttachments.do_update('', signal='focus-out')
+        self.txtCAGECode.do_update('', signal='focus-out')
+        self.txtCompRefDes.do_update('', signal='focus-out')
+        self.txtCost.do_update('', signal='focus-out')
+        self.txtDescription.do_update('', signal='focus-out')
+        self.txtFigureNumber.do_update('', signal='focus-out')
+        self.txtLCN.do_update('', signal='focus-out')
+        self.txtName.do_update('', signal='focus-out')
+        self.txtNSN.do_update('', signal='focus-out')
+        self.txtPageNumber.do_update('', signal='focus-out')
+        self.txtPartNumber.do_update('', signal='focus-out')
+        self.txtQuantity.do_update('', signal='focus-out')
+        self.txtRefDes.do_update('', signal='focus-out')
+        self.txtRemarks.do_update('', signal='focus-out')
+        self.txtSpecification.do_update('', signal='focus-out')
+        self.txtYearMade.do_update('', signal='focus-out')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -579,63 +529,62 @@ class GeneralData(RAMSTKWorkView):
             self.cmbSubcategory.set_button_sensitivity(Gtk.SensitivityType.ON)
 
             self.cmbCategory.do_update(int(attributes['category_id']),
-                                       self._lst_handler_id[2])
+                                       signal='changed')
 
             self._do_load_subcategory(int(attributes['category_id']))
             self.cmbSubcategory.do_update(int(attributes['subcategory_id']),
-                                          self._lst_handler_id[5])
+                                          signal='changed')
 
         else:
             self.cmbCategory.set_button_sensitivity(Gtk.SensitivityType.OFF)
             self.cmbSubcategory.set_button_sensitivity(Gtk.SensitivityType.OFF)
 
             self.cmbCategory.do_update(int(attributes['category_id']),
-                                       self._lst_handler_id[2])
+                                       signal='changed')
 
             self.cmbSubcategory.do_update(int(attributes['subcategory_id']),
-                                          self._lst_handler_id[5])
+                                          signal='changed')
 
         self.chkRepairable.do_update(int(attributes['repairable']),
-                                     self._lst_handler_id[0])
+                                     signal='changed')
         self.chkTagged.do_update(int(attributes['tagged_part']),
-                                 self._lst_handler_id[1])
+                                 signal='changed')
 
         self.cmbCostType.do_update(int(attributes['cost_type_id']),
-                                   self._lst_handler_id[3])
+                                   signal='changed')
         self.cmbManufacturer.do_update(int(attributes['manufacturer_id']),
-                                       self._lst_handler_id[4])
+                                       signal='changed')
         self.txtAltPartNum.do_update(str(attributes['alt_part_number']),
-                                     self._lst_handler_id[6])
+                                     signal='focus-out')
         self.txtAttachments.do_update(str(attributes['attachments']),
-                                      self._lst_handler_id[7])
+                                      signal='changed')
         self.txtCAGECode.do_update(str(attributes['cage_code']),
-                                   self._lst_handler_id[8])
+                                   signal='focus-out')
         self.txtCompRefDes.do_update(str(attributes['comp_ref_des']),
-                                     self._lst_handler_id[9])
+                                     signal='focus-out')
         self.txtCost.do_update(str(locale.currency(attributes['cost'])),
-                               self._lst_handler_id[10])
+                               signal='focus-out')
         self.txtDescription.do_update(str(attributes['description']),
-                                      self._lst_handler_id[11])
+                                      signal='changed')
         self.txtFigureNumber.do_update(str(attributes['figure_number']),
-                                       self._lst_handler_id[12])
-        self.txtLCN.do_update(str(attributes['lcn']), self._lst_handler_id[13])
-        self.txtName.do_update(str(attributes['name']),
-                               self._lst_handler_id[14])
-        self.txtNSN.do_update(str(attributes['nsn']), self._lst_handler_id[15])
+                                       signal='focus-out')
+        self.txtLCN.do_update(str(attributes['lcn']), signal='focus-out')
+        self.txtName.do_update(str(attributes['name']), signal='focus-out')
+        self.txtNSN.do_update(str(attributes['nsn']), signal='focus-out')
         self.txtPageNumber.do_update(str(attributes['page_number']),
-                                     self._lst_handler_id[16])
+                                     signal='focus-out')
         self.txtPartNumber.do_update(str(attributes['part_number']),
-                                     self._lst_handler_id[17])
+                                     signal='focus-out')
         self.txtQuantity.do_update(str(attributes['quantity']),
-                                   self._lst_handler_id[18])
+                                   signal='focus-out')
         self.txtRefDes.do_update(str(attributes['ref_des']),
-                                 self._lst_handler_id[19])
-        self.txtRemarks.do_update(str(attributes['remarks']),
-                                  self._lst_handler_id[20])
-        self.txtSpecification.do_update(
-            str(attributes['specification_number']), self._lst_handler_id[21])
+                                 signal='focus-out')
+        self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
+        self.txtSpecification.do_update(str(
+            attributes['specification_number']),
+                                        signal='focus-out')
         self.txtYearMade.do_update(str(attributes['year_of_manufacture']),
-                                   self._lst_handler_id[22])
+                                   signal='focus-out')
 
     def _do_load_subcategory(self, category_id: int) -> None:
         """
@@ -649,8 +598,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.cmbSubcategory.do_load_combo([],
-                                          handler_id=self._lst_handler_id[5])
+        self.cmbSubcategory.do_load_combo([], signal='changed')
 
         if category_id > 0:
             _subcategory = SortedDict(self.RAMSTK_USER_CONFIGURATION.
@@ -658,8 +606,7 @@ class GeneralData(RAMSTKWorkView):
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
-            self.cmbSubcategory.do_load_combo(
-                _data, handler_id=self._lst_handler_id[5])
+            self.cmbSubcategory.do_load_combo(_data, signal='changed')
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """
@@ -728,9 +675,6 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        combo.handler_block(self._lst_handler_id[index])
-
         _package = super().on_combo_changed(combo, index,
                                             'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
@@ -741,14 +685,12 @@ class GeneralData(RAMSTKWorkView):
             _model = combo.get_model()
             _row = combo.get_active_iter()
             self.txtCAGECode.do_update(str(_model.get(_row, 2)[0]),
-                                       self._lst_handler_id[8])
+                                       signal='changed')
             pub.sendMessage('wvw_editing_hardware',
                             node_id=[self._record_id, -1],
                             package={'cage_code': str(_model.get(_row, 2)[0])})
         elif index == 5:
             pub.sendMessage('changed_subcategory', subcategory_id=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
 
     # pylint: disable=unused-argument
     def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
@@ -772,9 +714,6 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        entry.handler_block(self._lst_handler_id[index])
-
         _package = super().on_focus_out(entry, index, 'wvw_editing_hardware')
         # pylint: disable=unused-variable
         [[_key, __]] = _package.items()
@@ -800,8 +739,6 @@ class GeneralData(RAMSTKWorkView):
                         node_id=[self._record_id, -1],
                         package=_package)
 
-        entry.handler_unblock(self._lst_handler_id[index])
-
     def _on_toggled(self, checkbutton: RAMSTKCheckButton, index: int) -> None:
         """
         Handle RAMSTKCheckButton() 'toggle' signals.
@@ -813,8 +750,6 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         super().on_toggled(checkbutton, index, 'wvw_editing_hardware')
-
-        checkbutton.handler_unblock(self._lst_handler_id[index])
 
 
 class AssessmentInputs(RAMSTKWorkView):
@@ -865,44 +800,6 @@ class AssessmentInputs(RAMSTKWorkView):
     :ivar txtSpecifiedMTBF: the stated mean time between failure (MTBF).
     :ivar txtSpecifiedMTBFVar: the variance of the stated mean time between
         failure (MTBF).
-
-    Callbacks signals in RAMSTKBaseView._lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | cmbActiveEnviron - `changed`              |
-    +----------+-------------------------------------------+
-    |     1    | cmbDormantEnviron - `changed`             |
-    +----------+-------------------------------------------+
-    |     2    | cmbFailureDist - `changed`                |
-    +----------+-------------------------------------------+
-    |     3    | cmbHRType - `changed`                     |
-    +----------+-------------------------------------------+
-    |     4    | cmbHRMethod - `changed`                   |
-    +----------+-------------------------------------------+
-    |     5    | txtActiveTemp - `changed`                 |
-    +----------+-------------------------------------------+
-    |     6    | txtAddAdjFactor - `changed`               |
-    +----------+-------------------------------------------+
-    |     7    | txtDormantTemp - `changed`                |
-    +----------+-------------------------------------------+
-    |     8    | txtFailScale - `changed`                  |
-    +----------+-------------------------------------------+
-    |     9    | txtFailShape - `changed`                  |
-    +----------+-------------------------------------------+
-    |    10    | txtFailLocation - `changed`               |
-    +----------+-------------------------------------------+
-    |    11    | txtMultAdjFactor - `changed`              |
-    +----------+-------------------------------------------+
-    |    12    | txtSpecifiedHt - `changed`                |
-    +----------+-------------------------------------------+
-    |    13    | txtSpecifiedHtVar - `changed`             |
-    +----------+-------------------------------------------+
-    |    14    | txtSpecifiedMTBF - `changed`              |
-    +----------+-------------------------------------------+
-    |    15    | txtSpecifiedMTBFVar - `changed`           |
-    +----------+-------------------------------------------+
     """
     # Define private dict attributes.
     _dic_keys = {
@@ -1170,58 +1067,60 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.cmbActiveEnviron.connect('changed', self._on_combo_changed,
-                                          0))
-        self._lst_handler_id.append(
-            self.cmbDormantEnviron.connect('changed', self._on_combo_changed,
-                                           1))
-        self._lst_handler_id.append(
-            self.cmbFailureDist.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbHRType.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbHRMethod.connect('changed', self._on_combo_changed, 4))
+        self.cmbActiveEnviron.dic_handler_id[
+            'changed'] = self.cmbActiveEnviron.connect('changed',
+                                                       self._on_combo_changed,
+                                                       0)
+        self.cmbDormantEnviron.dic_handler_id[
+            'changed'] = self.cmbDormantEnviron.connect(
+                'changed', self._on_combo_changed, 1)
+        self.cmbFailureDist.dic_handler_id[
+            'changed'] = self.cmbFailureDist.connect('changed',
+                                                     self._on_combo_changed, 2)
+        self.cmbHRType.dic_handler_id['changed'] = self.cmbHRType.connect(
+            'changed', self._on_combo_changed, 3)
+        self.cmbHRMethod.dic_handler_id['changed'] = self.cmbHRMethod.connect(
+            'changed', self._on_combo_changed, 4)
 
-        self._lst_handler_id.append(
-            self.txtActiveTemp.connect('focus-out-event', self._on_focus_out,
-                                       5))
-        self._lst_handler_id.append(
-            self.txtAddAdjFactor.connect('focus-out-event', self._on_focus_out,
-                                         6))
-        self._lst_handler_id.append(
-            self.txtDormantTemp.connect('focus-out-event', self._on_focus_out,
-                                        7))
-        self._lst_handler_id.append(
-            self.txtFailScale.connect('focus-out-event', self._on_focus_out,
-                                      8))
-        self._lst_handler_id.append(
-            self.txtFailShape.connect('focus-out-event', self._on_focus_out,
-                                      9))
-        self._lst_handler_id.append(
-            self.txtFailLocation.connect('focus-out-event', self._on_focus_out,
-                                         10))
-        self._lst_handler_id.append(
-            self.txtMultAdjFactor.connect('focus-out-event',
-                                          self._on_focus_out, 11))
-        self._lst_handler_id.append(
-            self.txtSpecifiedHt.connect('focus-out-event', self._on_focus_out,
-                                        12))
-        self._lst_handler_id.append(
-            self.txtSpecifiedHtVar.connect('focus-out-event',
-                                           self._on_focus_out, 13))
-        self._lst_handler_id.append(
-            self.txtSpecifiedMTBF.connect('focus-out-event',
-                                          self._on_focus_out, 14))
-        self._lst_handler_id.append(
-            self.txtSpecifiedMTBFVar.connect('focus-out-event',
-                                             self._on_focus_out, 15))
-        self._lst_handler_id.append(
-            self.txtDutyCycle.connect('focus-out-event', self._on_focus_out,
-                                      16))
-        self._lst_handler_id.append(
-            self.txtMissionTime.connect('focus-out-event', self._on_focus_out,
-                                        17))
+        self.txtActiveTemp.dic_handler_id[
+            'changed'] = self.txtActiveTemp.connect('focus-out-event',
+                                                    self._on_focus_out, 5)
+        self.txtAddAdjFactor.dic_handler_id[
+            'changed'] = self.txtAddAdjFactor.connect('focus-out-event',
+                                                      self._on_focus_out, 6)
+        self.txtDormantTemp.dic_handler_id[
+            'changed'] = self.txtDormantTemp.connect('focus-out-event',
+                                                     self._on_focus_out, 7)
+        self.txtFailScale.dic_handler_id[
+            'changed'] = self.txtFailScale.connect('focus-out-event',
+                                                   self._on_focus_out, 8)
+        self.txtFailShape.dic_handler_id[
+            'changed'] = self.txtFailShape.connect('focus-out-event',
+                                                   self._on_focus_out, 9)
+        self.txtFailLocation.dic_handler_id[
+            'changed'] = self.txtFailLocation.connect('focus-out-event',
+                                                      self._on_focus_out, 10)
+        self.txtMultAdjFactor.dic_handler_id[
+            'changed'] = self.txtMultAdjFactor.connect('focus-out-event',
+                                                       self._on_focus_out, 11)
+        self.txtSpecifiedHt.dic_handler_id[
+            'changed'] = self.txtSpecifiedHt.connect('focus-out-event',
+                                                     self._on_focus_out, 12)
+        self.txtSpecifiedHtVar.dic_handler_id[
+            'changed'] = self.txtSpecifiedHtVar.connect(
+                'focus-out-event', self._on_focus_out, 13)
+        self.txtSpecifiedMTBF.dic_handler_id[
+            'changed'] = self.txtSpecifiedMTBF.connect('focus-out-event',
+                                                       self._on_focus_out, 14)
+        self.txtSpecifiedMTBFVar.dic_handler_id[
+            'changed'] = self.txtSpecifiedMTBFVar.connect(
+                'focus-out-event', self._on_focus_out, 15)
+        self.txtDutyCycle.dic_handler_id[
+            'changed'] = self.txtDutyCycle.connect('focus-out-event',
+                                                   self._on_focus_out, 16)
+        self.txtMissionTime.dic_handler_id[
+            'changed'] = self.txtMissionTime.connect('focus-out-event',
+                                                     self._on_focus_out, 17)
 
     def __set_properties(self) -> None:
         """
@@ -1294,24 +1193,24 @@ class AssessmentInputs(RAMSTKWorkView):
         for _child in self.scwDesignRatings.get_children():
             self.scwDesignRatings.remove(_child)
 
-        self.cmbActiveEnviron.do_update(0, self._lst_handler_id[0])
-        self.cmbDormantEnviron.do_update(0, self._lst_handler_id[1])
-        self.cmbFailureDist.do_update(0, self._lst_handler_id[2])
-        self.cmbHRType.do_update(0, self._lst_handler_id[3])
-        self.cmbHRMethod.do_update(0, self._lst_handler_id[4])
-        self.txtActiveTemp.do_update('', self._lst_handler_id[5])
-        self.txtAddAdjFactor.do_update('', self._lst_handler_id[6])
-        self.txtDormantTemp.do_update('', self._lst_handler_id[7])
-        self.txtFailScale.do_update('', self._lst_handler_id[8])
-        self.txtFailShape.do_update('', self._lst_handler_id[9])
-        self.txtFailLocation.do_update('', self._lst_handler_id[10])
-        self.txtMultAdjFactor.do_update('', self._lst_handler_id[11])
-        self.txtSpecifiedHt.do_update('', self._lst_handler_id[12])
-        self.txtSpecifiedHtVar.do_update('', self._lst_handler_id[13])
-        self.txtSpecifiedMTBF.do_update('', self._lst_handler_id[14])
-        self.txtSpecifiedMTBFVar.do_update('', self._lst_handler_id[15])
-        self.txtDutyCycle.do_update('', self._lst_handler_id[16])
-        self.txtMissionTime.do_update('', self._lst_handler_id[17])
+        self.cmbActiveEnviron.do_update(0, signal='changed')
+        self.cmbDormantEnviron.do_update(0, signal='changed')
+        self.cmbFailureDist.do_update(0, signal='changed')
+        self.cmbHRType.do_update(0, signal='changed')
+        self.cmbHRMethod.do_update(0, signal='changed')
+        self.txtActiveTemp.do_update('', signal='changed')
+        self.txtAddAdjFactor.do_update('', signal='changed')
+        self.txtDormantTemp.do_update('', signal='changed')
+        self.txtFailScale.do_update('', signal='changed')
+        self.txtFailShape.do_update('', signal='changed')
+        self.txtFailLocation.do_update('', signal='changed')
+        self.txtMultAdjFactor.do_update('', signal='changed')
+        self.txtSpecifiedHt.do_update('', signal='changed')
+        self.txtSpecifiedHtVar.do_update('', signal='changed')
+        self.txtSpecifiedMTBF.do_update('', signal='changed')
+        self.txtSpecifiedMTBFVar.do_update('', signal='changed')
+        self.txtDutyCycle.do_update('', signal='changed')
+        self.txtMissionTime.do_update('', signal='changed')
 
     def _do_load_page(self, dmtree: treelib.Tree) -> None:
         """
@@ -1334,55 +1233,57 @@ class AssessmentInputs(RAMSTKWorkView):
             self.scwDesignRatings.hide()
             self.wvwOperatingStress.hide()
 
-        self.cmbActiveEnviron.do_update(
-            int(attributes['environment_active_id']), self._lst_handler_id[0])
-        self.cmbDormantEnviron.do_update(
-            int(attributes['environment_dormant_id']), self._lst_handler_id[1])
-        self.cmbFailureDist.do_update(
-            int(attributes['failure_distribution_id']),
-            self._lst_handler_id[2])
+        self.cmbActiveEnviron.do_update(int(
+            attributes['environment_active_id']),
+                                        signal='changed')
+        self.cmbDormantEnviron.do_update(int(
+            attributes['environment_dormant_id']),
+                                         signal='changed')
+        self.cmbFailureDist.do_update(int(
+            attributes['failure_distribution_id']),
+                                      signal='changed')
         self.cmbHRType.do_update(int(attributes['hazard_rate_type_id']),
-                                 self._lst_handler_id[3])
+                                 signal='changed')
         self.cmbHRMethod.do_update(int(attributes['hazard_rate_method_id']),
-                                   self._lst_handler_id[4])
-        self.txtActiveTemp.do_update(
-            self.fmt.format(attributes['temperature_active']),
-            self._lst_handler_id[5])
-        self.txtAddAdjFactor.do_update(
-            self.fmt.format(attributes['add_adj_factor']),
-            self._lst_handler_id[6])
-        self.txtDormantTemp.do_update(
-            self.fmt.format(attributes['temperature_dormant']),
-            self._lst_handler_id[7])
-        self.txtFailScale.do_update(
-            self.fmt.format(attributes['scale_parameter']),
-            self._lst_handler_id[8])
-        self.txtFailShape.do_update(
-            self.fmt.format(attributes['shape_parameter']),
-            self._lst_handler_id[9])
-        self.txtFailLocation.do_update(
-            self.fmt.format(attributes['location_parameter']),
-            self._lst_handler_id[10])
-        self.txtMultAdjFactor.do_update(
-            self.fmt.format(attributes['mult_adj_factor']),
-            self._lst_handler_id[11])
-        self.txtSpecifiedHt.do_update(
-            self.fmt.format(attributes['hazard_rate_specified']),
-            self._lst_handler_id[12])
-        self.txtSpecifiedHtVar.do_update(
-            self.fmt.format(attributes['hr_specified_variance']),
-            self._lst_handler_id[13])
-        self.txtSpecifiedMTBF.do_update(
-            self.fmt.format(attributes['mtbf_specified']),
-            self._lst_handler_id[14])
-        self.txtSpecifiedMTBFVar.do_update(
-            self.fmt.format(attributes['mtbf_specified_variance']),
-            self._lst_handler_id[15])
+                                   signal='changed')
+        self.txtActiveTemp.do_update(self.fmt.format(
+            attributes['temperature_active']),
+                                     signal='changed')
+        self.txtAddAdjFactor.do_update(self.fmt.format(
+            attributes['add_adj_factor']),
+                                       signal='changed')
+        self.txtDormantTemp.do_update(self.fmt.format(
+            attributes['temperature_dormant']),
+                                      signal='changed')
+        self.txtFailScale.do_update(self.fmt.format(
+            attributes['scale_parameter']),
+                                    signal='changed')
+        self.txtFailShape.do_update(self.fmt.format(
+            attributes['shape_parameter']),
+                                    signal='changed')
+        self.txtFailLocation.do_update(self.fmt.format(
+            attributes['location_parameter']),
+                                       signal='changed')
+        self.txtMultAdjFactor.do_update(self.fmt.format(
+            attributes['mult_adj_factor']),
+                                        signal='changed')
+        self.txtSpecifiedHt.do_update(self.fmt.format(
+            attributes['hazard_rate_specified']),
+                                      signal='changed')
+        self.txtSpecifiedHtVar.do_update(self.fmt.format(
+            attributes['hr_specified_variance']),
+                                         signal='changed')
+        self.txtSpecifiedMTBF.do_update(self.fmt.format(
+            attributes['mtbf_specified']),
+                                        signal='changed')
+        self.txtSpecifiedMTBFVar.do_update(self.fmt.format(
+            attributes['mtbf_specified_variance']),
+                                           signal='changed')
         self.txtDutyCycle.do_update(self.fmt.format(attributes['duty_cycle']),
-                                    self._lst_handler_id[16])
-        self.txtMissionTime.do_update(
-            self.fmt.format(attributes['mission_time']),
-            self._lst_handler_id[17])
+                                    signal='changed')
+        self.txtMissionTime.do_update(self.fmt.format(
+            attributes['mission_time']),
+                                      signal='changed')
 
         self._do_set_sensitive(type_id=attributes['hazard_rate_type_id'])
 
@@ -1599,9 +1500,6 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        combo.handler_block(self._lst_handler_id[index])
-
         _package = super().on_combo_changed(combo, index,
                                             'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
@@ -1620,8 +1518,6 @@ class AssessmentInputs(RAMSTKWorkView):
         elif index == 4:
             pub.sendMessage('changed_hazard_rate_method', method_id=_new_text)
             self._hazard_rate_method_id = _new_text
-
-        combo.handler_unblock(self._lst_handler_id[index])
 
     def _on_focus_out(
             self,
@@ -1647,13 +1543,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        entry.handler_block(self._lst_handler_id[index])
-
         # TODO: See issue #309.
         super().on_focus_out(entry, index, 'wvw_editing_hardware')
-
-        entry.handler_unblock(self._lst_handler_id[index])
 
 
 class AssessmentResults(RAMSTKWorkView):

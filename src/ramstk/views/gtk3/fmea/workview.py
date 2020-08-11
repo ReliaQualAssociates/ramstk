@@ -451,7 +451,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtItemCriticality.dic_handler_id['edited'] = 0
+        self.txtItemCriticality.dic_handler_id['changed'] = 0
 
         self._lst_handler_id.append(
             self.treeview.connect("button_press_event", self._on_button_press))

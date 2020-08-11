@@ -32,9 +32,6 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
     MIL-HDBK-217FN2 parts count and part stress analyses.  The attributes of a
     Hardware assessment input view are:
 
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-        input widgets.
-
     :ivar int _hardware_id: the ID of the Hardware item currently being
         displayed.
     :ivar int _subcategory_id: the ID of the subcategory for the hardware item
@@ -44,7 +41,7 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         item.
     """
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels: List[str] = []
 
     def __init__(self,
@@ -63,7 +60,6 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         self._dic_switch: Dict[str, Union[object, int]] = {}
 
         # Initialize private list attributes.
-        self._lst_handler_id: List[int] = []
         self._lst_widgets: List[object] = []
 
         # Initialize private scalar attributes.
@@ -123,9 +119,7 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
 
         self.do_load_comboboxes(attributes['subcategory_id'])
 
-        self.cmbQuality.do_update(attributes['quality_id'],
-                                  handler_id=self._lst_handler_id[0],
-                                  signal='changed')
+        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -170,9 +164,6 @@ class RAMSTKStressInputs(RAMSTKWorkView):
     :cvar list _lst_labels: the text to use for the assessment input widget
         labels.
 
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-        input widgets.
-
     :ivar _dtc_data_controller: the Hardware BoM data controller instance.
 
     :ivar int _hardware_id: the ID of the Hardware item currently being
@@ -200,32 +191,6 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         hardware item.
     :ivar txtVoltageDC: enter and display the operating DC voltage of the
         hardware item.
-
-    Callbacks signals in RAMSTKBaseView._lst_handler_id:
-
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   0   | txtTemperatureRatedMin - `changed`        |
-    +-------+-------------------------------------------+
-    |   1   | txtTemperatureKnee - `changed`            |
-    +-------+-------------------------------------------+
-    |   2   | txtTemperatureRatedMax - `changed`        |
-    +-------+-------------------------------------------+
-    |   3   | txtCurrentRated - `changed`               |
-    +-------+-------------------------------------------+
-    |   4   | txtCurrentOperating - `changed`           |
-    +-------+-------------------------------------------+
-    |   5   | txtPowerRated - `changed`                 |
-    +-------+-------------------------------------------+
-    |   6   | txtPowerOperating - `changed`             |
-    +-------+-------------------------------------------+
-    |   7   | txtVoltageRated - `changed`               |
-    +-------+-------------------------------------------+
-    |   8   | txtVoltageAC - `changed`                  |
-    +-------+-------------------------------------------+
-    |   9   | txtVoltageDC - `changed`                  |
-    +-------+-------------------------------------------+
     """
 
     RAMSTK_USER_CONFIGURATION = None
@@ -244,7 +209,7 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         9: 'voltage_dc_operating'
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Minimum Rated Temperature (\u00B0C):"),
         _("Knee Temperature (\u00B0C):"),
@@ -273,7 +238,6 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
         self._record_id: int = -1
@@ -346,36 +310,36 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMin.connect('focus-out-event',
-                                                self._on_focus_out, 0))
-        self._lst_handler_id.append(
-            self.txtTemperatureKnee.connect('focus-out-event',
-                                            self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMax.connect('focus-out-event',
-                                                self._on_focus_out, 2))
-        self._lst_handler_id.append(
-            self.txtCurrentRated.connect('focus-out-event', self._on_focus_out,
-                                         3))
-        self._lst_handler_id.append(
-            self.txtCurrentOperating.connect('focus-out-event',
-                                             self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtPowerRated.connect('focus-out-event', self._on_focus_out,
-                                       5))
-        self._lst_handler_id.append(
-            self.txtPowerOperating.connect('focus-out-event',
-                                           self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.txtVoltageRated.connect('focus-out-event', self._on_focus_out,
-                                         7))
-        self._lst_handler_id.append(
-            self.txtVoltageAC.connect('focus-out-event', self._on_focus_out,
-                                      8))
-        self._lst_handler_id.append(
-            self.txtVoltageDC.connect('focus-out-event', self._on_focus_out,
-                                      9))
+        self.txtTemperatureRatedMin.dic_handler_id[
+            'changed'] = self.txtTemperatureRatedMin.connect(
+                'focus-out-event', self._on_focus_out, 0)
+        self.txtTemperatureKnee.dic_handler_id[
+            'changed'] = self.txtTemperatureKnee.connect(
+                'focus-out-event', self._on_focus_out, 1)
+        self.txtTemperatureRatedMax.dic_handler_id[
+            'changed'] = self.txtTemperatureRatedMax.connect(
+                'focus-out-event', self._on_focus_out, 2)
+        self.txtCurrentRated.dic_handler_id[
+            'changed'] = self.txtCurrentRated.connect('focus-out-event',
+                                                      self._on_focus_out, 3)
+        self.txtCurrentOperating.dic_handler_id[
+            'changed'] = self.txtCurrentOperating.connect(
+                'focus-out-event', self._on_focus_out, 4)
+        self.txtPowerRated.dic_handler_id[
+            'changed'] = self.txtPowerRated.connect('focus-out-event',
+                                                    self._on_focus_out, 5)
+        self.txtPowerOperating.dic_handler_id[
+            'changed'] = self.txtPowerOperating.connect(
+                'focus-out-event', self._on_focus_out, 6)
+        self.txtVoltageRated.dic_handler_id[
+            'changed'] = self.txtVoltageRated.connect('focus-out-event',
+                                                      self._on_focus_out, 7)
+        self.txtVoltageAC.dic_handler_id[
+            'changed'] = self.txtVoltageAC.connect('focus-out-event',
+                                                   self._on_focus_out, 8)
+        self.txtVoltageDC.dic_handler_id[
+            'changed'] = self.txtVoltageDC.connect('focus-out-event',
+                                                   self._on_focus_out, 9)
 
     def __set_properties(self) -> None:
         """
@@ -444,36 +408,36 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         self._record_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
 
-        self.txtTemperatureRatedMin.do_update(
-            str(self.fmt.format(attributes['temperature_rated_min'])),
-            self._lst_handler_id[0])
-        self.txtTemperatureKnee.do_update(
-            str(self.fmt.format(attributes['temperature_knee'])),
-            self._lst_handler_id[1])
-        self.txtTemperatureRatedMax.do_update(
-            str(self.fmt.format(attributes['temperature_rated_max'])),
-            self._lst_handler_id[2])
-        self.txtCurrentRated.do_update(
-            str(self.fmt.format(attributes['current_rated'])),
-            self._lst_handler_id[3])
-        self.txtCurrentOperating.do_update(
-            str(self.fmt.format(attributes['current_operating'])),
-            self._lst_handler_id[4])
-        self.txtPowerRated.do_update(
-            str(self.fmt.format(attributes['power_rated'])),
-            self._lst_handler_id[5])
-        self.txtPowerOperating.do_update(
-            str(self.fmt.format(attributes['power_operating'])),
-            self._lst_handler_id[6])
-        self.txtVoltageRated.do_update(
-            str(self.fmt.format(attributes['voltage_rated'])),
-            self._lst_handler_id[7])
-        self.txtVoltageAC.do_update(
-            str(self.fmt.format(attributes['voltage_ac_operating'])),
-            self._lst_handler_id[8])
-        self.txtVoltageDC.do_update(
-            str(self.fmt.format(attributes['voltage_dc_operating'])),
-            self._lst_handler_id[9])
+        self.txtTemperatureRatedMin.do_update(str(
+            self.fmt.format(attributes['temperature_rated_min'])),
+                                              signal='changed')
+        self.txtTemperatureKnee.do_update(str(
+            self.fmt.format(attributes['temperature_knee'])),
+                                          signal='changed')
+        self.txtTemperatureRatedMax.do_update(str(
+            self.fmt.format(attributes['temperature_rated_max'])),
+                                              signal='changed')
+        self.txtCurrentRated.do_update(str(
+            self.fmt.format(attributes['current_rated'])),
+                                       signal='changed')
+        self.txtCurrentOperating.do_update(str(
+            self.fmt.format(attributes['current_operating'])),
+                                           signal='changed')
+        self.txtPowerRated.do_update(str(
+            self.fmt.format(attributes['power_rated'])),
+                                     signal='changed')
+        self.txtPowerOperating.do_update(str(
+            self.fmt.format(attributes['power_operating'])),
+                                         signal='changed')
+        self.txtVoltageRated.do_update(str(
+            self.fmt.format(attributes['voltage_rated'])),
+                                       signal='changed')
+        self.txtVoltageAC.do_update(str(
+            self.fmt.format(attributes['voltage_ac_operating'])),
+                                    signal='changed')
+        self.txtVoltageDC.do_update(str(
+            self.fmt.format(attributes['voltage_dc_operating'])),
+                                    signal='changed')
 
     def _on_focus_out(
             self,
@@ -693,9 +657,9 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         else:
             self._lblModel.set_markup("No Model")
 
-        self.txtLambdaB.set_text(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.set_text(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.set_text(str(self.fmt.format(attributes['piE'])))
+        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
+        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
+        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
 
     def do_set_sensitive(self) -> None:
         """
@@ -976,14 +940,13 @@ class RAMSTKStressResults(RAMSTKWorkView):
         self._record_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
 
-        self.txtCurrentRatio.set_text(
+        self.txtCurrentRatio.do_update(
             str(self.fmt.format(attributes['current_ratio'])))
-        self.txtPowerRatio.set_text(
+        self.txtPowerRatio.do_update(
             str(self.fmt.format(attributes['power_ratio'])))
-        self.txtVoltageRatio.set_text(
+        self.txtVoltageRatio.do_update(
             str(self.fmt.format(attributes['voltage_ratio'])))
         self.chkOverstress.set_active(attributes['overstress'])
-        _textbuffer = self.txtReason.do_get_buffer()
-        _textbuffer.set_text(attributes['reason'])
+        self.txtReason.do_update(attributes['reason'])
 
         self._do_load_derating_curve(attributes)

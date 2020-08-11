@@ -67,49 +67,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         VLSI.
     :ivar txtYearsProduction: enter and display the number of years the
         integrated circuit type has been in production.
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   0   | cmbQuality - `changed`                    |
-    +-------+-------------------------------------------+
-    |   1   | cmbApplication - `changed`                |
-    +-------+-------------------------------------------+
-    |   2   | cmbConstruction - `changed`               |
-    +-------+-------------------------------------------+
-    |   3   | cmbECC - `changed`                        |
-    +-------+-------------------------------------------+
-    |   4   | cmbManufacturing - `changed`              |
-    +-------+-------------------------------------------+
-    |   5   | cmbPackage - `changed`                    |
-    +-------+-------------------------------------------+
-    |   6   | cmbTechnology - `changed`                 |
-    +-------+-------------------------------------------+
-    |   7   | cmbType - `changed`                       |
-    +-------+-------------------------------------------+
-    |   8   | txtArea - `changed`                       |
-    +-------+-------------------------------------------+
-    |   9   | txtFeatureSize - `changed`                |
-    +-------+-------------------------------------------+
-    |  10   | txtNActivePins - `changed`                |
-    +-------+-------------------------------------------+
-    |  11   | txtNCycles - `changed`                    |
-    +-------+-------------------------------------------+
-    |  12   | txtNElements - `changed`                  |
-    +-------+-------------------------------------------+
-    |  13   | txtOperatingLife - `changed`              |
-    +-------+-------------------------------------------+
-    |  14   | txtThetaJC - `changed`                    |
-    +-------+-------------------------------------------+
-    |  15   | txtVoltageESD - `changed`                 |
-    +-------+-------------------------------------------+
-    |  16   | txtYearsInProduction - `changed`          |
-    +-------+-------------------------------------------+
     """
 
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {
         0: 'quality_id',
         1: 'application_id',
@@ -149,7 +109,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         10: [[_("Logic and Custom")], [_("Gate Array")]]
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Quality Level:"),
         _("Package:"),
@@ -241,10 +201,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
             'changed', self._on_combo_changed, 0)
-        # TODO: See issue #310.  The _lst_handler_id attribute will be
-        #  retired once issue #310 is implemented completely.
-        self._lst_handler_id.append(self.cmbQuality.dic_handler_id['changed'])
-
         self.cmbApplication.dic_handler_id[
             'changed'] = self.cmbApplication.connect('changed',
                                                      self._on_combo_changed, 1)
@@ -388,12 +344,17 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :rtype: None
         """
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbConstruction.do_update(attributes['construction_id'])
-            self.cmbTechnology.do_update(attributes['technology_id'])
-            self.cmbType.do_update(attributes['type_id'])  # Use for ECC.
-            self.txtNCycles.do_update(str(attributes['n_cycles']))
-            self.txtOperatingLife.do_update(
-                str(self.fmt.format(attributes['operating_life'])))
+            self.cmbConstruction.do_update(attributes['construction_id'],
+                                           signal='changed')
+            self.cmbTechnology.do_update(attributes['technology_id'],
+                                         signal='changed')
+            self.cmbType.do_update(attributes['type_id'],
+                                   signal='changed')  # Use for ECC.
+            self.txtNCycles.do_update(str(attributes['n_cycles']),
+                                      signal='changed')
+            self.txtOperatingLife.do_update(str(
+                self.fmt.format(attributes['operating_life'])),
+                                            signal='changed')
 
     def __do_load_gaas(self, attributes: Dict[str, Any]) -> None:
         """
@@ -405,10 +366,12 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :rtype: None
         """
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbApplication.do_update(attributes['application_id'])
-            self.cmbType.do_update(attributes['type_id'])
-            self.txtYearsInProduction.do_update(
-                str(attributes['years_in_production']))
+            self.cmbApplication.do_update(attributes['application_id'],
+                                          signal='changed')
+            self.cmbType.do_update(attributes['type_id'], signal='changed')
+            self.txtYearsInProduction.do_update(str(
+                attributes['years_in_production']),
+                                                signal='changed')
 
     def __do_load_linear(self, attributes: Dict[str, Any]) -> None:
         """
@@ -419,11 +382,14 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'],
+                                     signal='changed')
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
-            self.txtYearsInProduction.do_update(
-                str(attributes['years_in_production']))
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']),
+                                          signal='changed')
+            self.txtYearsInProduction.do_update(str(
+                attributes['years_in_production']),
+                                                signal='changed')
 
     def __do_load_logic(self, attributes: Dict[str, Any]) -> None:
         """
@@ -434,11 +400,14 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'],
+                                     signal='changed')
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
-            self.txtYearsInProduction.do_update(
-                str(attributes['years_in_production']))
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']),
+                                          signal='changed')
+            self.txtYearsInProduction.do_update(str(
+                attributes['years_in_production']),
+                                                signal='changed')
 
     def __do_load_microprocessor_microcontroller(self,
                                                  attributes: Dict[str, Any]
@@ -451,11 +420,14 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'],
+                                     signal='changed')
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
-            self.txtYearsInProduction.do_update(
-                str(attributes['years_in_production']))
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']),
+                                          signal='changed')
+            self.txtYearsInProduction.do_update(str(
+                attributes['years_in_production']),
+                                                signal='changed')
 
     def __do_load_pal_pla(self, attributes: Dict[str, Any]) -> None:
         """
@@ -466,11 +438,14 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'],
+                                     signal='changed')
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(str(attributes['n_active_pins']))
-            self.txtYearsInProduction.do_update(
-                str(attributes['years_in_production']))
+            self.txtNActivePins.do_update(str(attributes['n_active_pins']),
+                                          signal='changed')
+            self.txtYearsInProduction.do_update(str(
+                attributes['years_in_production']),
+                                                signal='changed')
 
     def __do_load_rom(self, attributes: Dict[str, Any]) -> None:
         """
@@ -481,7 +456,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'],
+                                     signal='changed')
 
     def __do_load_sram(self, attributes: Dict[str, Any]) -> None:
         """
@@ -492,7 +468,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbTechnology.do_update(attributes['technology_id'])
+        self.cmbTechnology.do_update(attributes['technology_id'],
+                                     signal='changed')
 
     def __do_load_vhsic_vlsi(self, attributes: Dict[str, Any]) -> None:
         """
@@ -504,13 +481,17 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :rtype: None
         """
         if self._subcategory_id == 10:
-            self.cmbManufacturing.do_update(attributes['manufacturing_id'])
+            self.cmbManufacturing.do_update(attributes['manufacturing_id'],
+                                            signal='changed')
             self.cmbType.do_update(attributes['type_id'])
-            self.txtArea.do_update(str(self.fmt.format(attributes['area'])))
-            self.txtFeatureSize.do_update(
-                str(self.fmt.format(attributes['feature_size'])))
-            self.txtVoltageESD.do_update(
-                str(self.fmt.format(attributes['voltage_esd'])))
+            self.txtArea.do_update(str(self.fmt.format(attributes['area'])),
+                                   signal='changed')
+            self.txtFeatureSize.do_update(str(
+                self.fmt.format(attributes['feature_size'])),
+                                          signal='changed')
+            self.txtVoltageESD.do_update(str(
+                self.fmt.format(attributes['voltage_esd'])),
+                                         signal='changed')
 
     def __do_set_dram_sensitive(self) -> None:
         """
@@ -709,13 +690,18 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             pass
 
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.txtNElements.do_update(str(attributes['n_elements']))
+            self.txtNElements.do_update(str(attributes['n_elements']),
+                                        signal='changed')
         elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbPackage.do_update(attributes['package_id'])
-            self.txtArea.do_update(str(self.fmt.format(attributes['area'])))
-            self.txtNElements.do_update(str(attributes['n_elements']))
-            self.txtThetaJC.do_update(
-                str(self.fmt.format(attributes['theta_jc'])))
+            self.cmbPackage.do_update(attributes['package_id'],
+                                      signal='changed')
+            self.txtArea.do_update(str(self.fmt.format(attributes['area'])),
+                                   signal='changed')
+            self.txtNElements.do_update(str(attributes['n_elements']),
+                                        signal='changed')
+            self.txtThetaJC.do_update(str(
+                self.fmt.format(attributes['theta_jc'])),
+                                      signal='changed')
 
         self._do_set_sensitive()
 
@@ -925,7 +911,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
     :ivar txtPiA: displays the application factor for the integrated circuit.
     """
 
-    # Define private class dict attributes.
+    # Define private class dict class attributes.
     _dic_part_stress: Dict[int, str] = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = (C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
@@ -949,7 +935,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub>CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub>\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span>"
     }
 
-    # Define private class list attributes.
+    # Define private class list class attributes.
     _lst_tooltips = [
         _("The assessment model used to calculate the integrated circuit "
           "failure rate."),
@@ -1079,21 +1065,22 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_load_page(attributes)
 
-        # TODO: See issue #305.
-        self.txtC1.set_text(str(self.fmt.format(attributes['C1'])))
-        self.txtPiT.set_text(str(self.fmt.format(attributes['piT'])))
-        self.txtC2.set_text(str(self.fmt.format(attributes['C2'])))
-        self.txtPiL.set_text(str(self.fmt.format(attributes['piL'])))
-        self.txtLambdaCYC.set_text(
+        self.txtC1.do_update(str(self.fmt.format(attributes['C1'])))
+        self.txtPiT.do_update(str(self.fmt.format(attributes['piT'])))
+        self.txtC2.do_update(str(self.fmt.format(attributes['C2'])))
+        self.txtPiL.do_update(str(self.fmt.format(attributes['piL'])))
+        self.txtLambdaCYC.do_update(
             str(self.fmt.format(attributes['lambdaCYC'])), )
-        self.txtLambdaBD.set_text(str(self.fmt.format(attributes['lambdaBD'])))
-        self.txtPiMFG.set_text(str(self.fmt.format(attributes['piMFG'])))
-        self.txtPiCD.set_text(str(self.fmt.format(attributes['piCD'])))
-        self.txtLambdaBP.set_text(str(self.fmt.format(attributes['lambdaBP'])))
-        self.txtPiPT.set_text(str(self.fmt.format(attributes['piPT'])))
-        self.txtLambdaEOS.set_text(
+        self.txtLambdaBD.do_update(str(self.fmt.format(
+            attributes['lambdaBD'])))
+        self.txtPiMFG.do_update(str(self.fmt.format(attributes['piMFG'])))
+        self.txtPiCD.do_update(str(self.fmt.format(attributes['piCD'])))
+        self.txtLambdaBP.do_update(str(self.fmt.format(
+            attributes['lambdaBP'])))
+        self.txtPiPT.do_update(str(self.fmt.format(attributes['piPT'])))
+        self.txtLambdaEOS.do_update(
             str(self.fmt.format(attributes['lambdaEOS'])), )
-        self.txtPiA.set_text(str(self.fmt.format(attributes['piA'])))
+        self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
 
         self._do_set_sensitive()
 

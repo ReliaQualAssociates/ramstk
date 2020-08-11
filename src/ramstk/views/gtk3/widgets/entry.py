@@ -21,12 +21,12 @@ from .widget import RAMSTKWidget
 class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
     """This is the RAMSTK Entry class."""
 
-    # Define private class scalar attributes.
+    # Define private scalar class attributes.
     _default_height = 25
     _default_width = 200
 
     def __init__(self) -> None:
-        r"""
+        """
         Create a RAMSTK Entry widget.
         """
         RAMSTKWidget.__init__(self)
@@ -180,7 +180,8 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.scrollwindow.set_property('width-request', self.width)
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
-    def do_update(self, value: str, handler_id: int, signal: str = '') -> None:
+    def do_update(self, value: str, handler_id: int = 0,
+                  signal: str = '') -> None:
         """
         Update the RAMSTK TextView with a new value.
 

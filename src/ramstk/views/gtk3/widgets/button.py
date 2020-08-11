@@ -8,7 +8,7 @@
 """RAMSTK Button Module."""
 
 # Standard Library Imports
-from typing import Any
+from typing import Any, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
@@ -17,7 +17,8 @@ from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from .widget import RAMSTKWidget
 
 
-def do_make_buttonbox(view: Any, **kwargs: Any) -> Gtk.ButtonBox:
+def do_make_buttonbox(view: Any,
+                      **kwargs: Any) -> Union[Gtk.HButtonBox, Gtk.VButtonBox]:
     r"""
     Create the buttonbox for RAMSTK Views.
 
@@ -142,6 +143,7 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
         :return: None
         :rtype: None
         """
+        # noinspection PyCallByClass,PyTypeChecker
         RAMSTKWidget.__init__(self)
 
         self.set_label(label)
@@ -199,6 +201,7 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         :return: None
         :rtype: None
         """
+        # noinspection PyCallByClass,PyTypeChecker
         RAMSTKWidget.__init__(self)
 
         self.set_label(label)
@@ -227,7 +230,8 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.get_child().set_property('height-request', self.height)
         self.get_child().set_property('width-request', self.width)
 
-    def do_update(self, value: int, handler_id: int, signal: str = '') -> None:
+    def do_update(self, value: int, handler_id: int = 0,
+                  signal: str = '') -> None:
         """
         Update the RAMSTK CheckButton with a new value.
 
@@ -268,6 +272,7 @@ class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
         :return: None
         :rtype: None
         """
+        # noinspection PyCallByClass,PyTypeChecker
         RAMSTKWidget.__init__(self)
 
         self.set_group(group)
