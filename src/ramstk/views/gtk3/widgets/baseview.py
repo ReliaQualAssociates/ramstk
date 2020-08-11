@@ -165,9 +165,9 @@ class RAMSTKBaseView(Gtk.HBox):
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         try:
-            self._lst_handler_id.append(
-                self.treeview.connect('button_press_event',
-                                      self._on_button_press))
+            self.treeview.dic_handler_id[
+                'button-press'] = self.treeview.connect(
+                    'button_press_event', self._on_button_press)
         except AttributeError as _error:
             if self._module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -343,6 +343,7 @@ class RAMSTKBaseView(Gtk.HBox):
         except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()
+            _treeview.dic_handler_id = {'': 0}
             if module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 

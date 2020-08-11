@@ -18,9 +18,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView
-)
+from ramstk.views.gtk3.widgets import (RAMSTKMessageDialog, RAMSTKModuleView,
+                                       RAMSTKTreeView)
 
 
 class ModuleView(RAMSTKModuleView):
@@ -187,8 +186,7 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_validation',
-                        node_id=self._record_id)
+        pub.sendMessage('request_update_validation', node_id=self._record_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -225,7 +223,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
+        treeview.handler_block(treeview.dic_handler_id['button-press'])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -242,7 +240,7 @@ class ModuleView(RAMSTKModuleView):
                                     ],
                                     callbacks=[self.do_request_insert_sibling])
 
-        treeview.handler_unblock(self._lst_handler_id[1])
+        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

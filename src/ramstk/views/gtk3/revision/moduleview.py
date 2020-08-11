@@ -17,8 +17,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKTreeView)
+from ramstk.views.gtk3.widgets import (RAMSTKMessageDialog, RAMSTKModuleView,
+                                       RAMSTKTreeView)
 
 
 class ModuleView(RAMSTKModuleView):
@@ -79,8 +79,8 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/revision.png')
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/revision.png')
 
         # Initialize private list attributes.
 
@@ -224,7 +224,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
+        treeview.handler_block(treeview.dic_handler_id['button-press'])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -241,7 +241,7 @@ class ModuleView(RAMSTKModuleView):
                                     ],
                                     callbacks=[self.do_request_insert_sibling])
 
-        treeview.handler_unblock(self._lst_handler_id[1])
+        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

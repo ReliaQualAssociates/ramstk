@@ -22,6 +22,7 @@ from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango
 
 # RAMSTK Local Imports
 from .label import RAMSTKLabel
+from .widget import RAMSTKWidget
 
 
 def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
@@ -112,7 +113,7 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
         cell.set_property('cell-background', _bg_color)
 
 
-class RAMSTKTreeView(Gtk.TreeView):
+class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     """The RAMSTKTreeView class."""
     def __init__(self) -> None:
         """
@@ -121,6 +122,8 @@ class RAMSTKTreeView(Gtk.TreeView):
         :return: None
         :rtype: None
         """
+        # noinspection PyCallByClass,PyTypeChecker
+        RAMSTKWidget.__init__(self)
         GObject.GObject.__init__(self)
 
         # Initialize private dictionary instance attributes:
