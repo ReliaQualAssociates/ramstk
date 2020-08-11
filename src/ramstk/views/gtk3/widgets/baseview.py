@@ -29,9 +29,8 @@ from .combo import RAMSTKComboBox
 from .dialog import RAMSTKMessageDialog
 from .entry import RAMSTKTextView
 from .frame import RAMSTKFrame
-from .label import RAMSTKLabel, do_make_label_group, do_make_label_group2
+from .label import RAMSTKLabel, do_make_label_group
 from .matrixview import RAMSTKMatrixView
-from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
 
 
@@ -1322,56 +1321,31 @@ class RAMSTKWorkView(RAMSTKBaseView):
         except KeyError:
             _y_inc = 25
 
-        # TODO: See issue #304.
-        if self._lst_widgets:
-            _fixed = Gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
-            _y_pos = 5
-            (_x_pos, _lst_labels) = do_make_label_group2(
-                self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
-            for _idx, _label in enumerate(_lst_labels):
-                _minimum: Gtk.Requisition = self._lst_widgets[
-                    _idx + _index_start].get_preferred_size()[0]
-                if _minimum.height == 0:
-                    _minimum.height = self._lst_widgets[_idx
-                                                        + _index_start].height
+        _y_pos = 5
+        (_x_pos, _lst_labels) = do_make_label_group(
+            self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
+        for _idx, _label in enumerate(_lst_labels):
+            _minimum: Gtk.Requisition = self._lst_widgets[
+                _idx + _index_start].get_preferred_size()[0]
+            if _minimum.height == 0:
+                _minimum.height = self._lst_widgets[_idx + _index_start].height
 
-                _fixed.put(_label, 5, _y_pos)
-                # RAMSTKTextViews are placed inside a scrollwindow so that's
-                # what needs to be placed on the container.
-                if isinstance(self._lst_widgets[_idx + _index_start],
-                              RAMSTKTextView):
-                    _fixed.put(
-                        self._lst_widgets[_idx + _index_start].scrollwindow,
-                        _x_pos + 5, _y_pos)
-                    _y_pos += _minimum.height + 30
-                else:
-                    _fixed.put(self._lst_widgets[_idx + _index_start],
-                               _x_pos + 5, _y_pos)
-                    _y_pos += _minimum.height + 5
-        else:
-            self.make_toolbuttons(**kwargs)
+            _fixed.put(_label, 5, _y_pos)
+            # RAMSTKTextViews are placed inside a scrollwindow so that's
+            # what needs to be placed on the container.
+            if isinstance(self._lst_widgets[_idx + _index_start],
+                          RAMSTKTextView):
+                _fixed.put(self._lst_widgets[_idx + _index_start].scrollwindow,
+                           _x_pos + 5, _y_pos)
+                _y_pos += _minimum.height + 30
+            else:
+                _fixed.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
+                           _y_pos)
+                _y_pos += _minimum.height + 5
 
-            _fixed = Gtk.Fixed()
-
-            _scrollwindow = RAMSTKScrolledWindow(_fixed)
-            _frame = RAMSTKFrame()
-            _frame.do_set_properties(title=_("General Information"))
-            _frame.add(_scrollwindow)
-
-            self.pack_start(_frame, True, True, 0)
-
-            _x_pos, _y_pos = do_make_label_group(self._lst_labels,
-                                                 _fixed,
-                                                 5,
-                                                 5,
-                                                 y_inc=_y_inc)
-            _x_pos += 50
-
-            _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-            _fixed.put(self.txtName, _x_pos, _y_pos[1])
-
-        return _x_pos, _y_pos, _fixed
+        return _fixed
 
     def make_ui_with_treeview(self, title: List[str]) -> None:
         """

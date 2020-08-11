@@ -300,9 +300,7 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Make the left side of the page.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0, end=13)
+        _fixed = super().make_ui(start=0, end=13)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -313,9 +311,7 @@ class GeneralData(RAMSTKWorkView):
         # Make the top right side of the page.
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=13, end=20)
+        _fixed = super().make_ui(start=13, end=20)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -324,9 +320,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(_frame, True, True)
 
         # Make the bottom right side of the page.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=20)
+        _fixed = super().make_ui(start=20)
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Miscellaneous Information"))
@@ -1011,9 +1005,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0, end=12)
+        _fixed = super().make_ui(start=0, end=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1033,9 +1025,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=12)
+        _fixed = super().make_ui(start=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1774,9 +1764,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0, end=10)
+        _fixed = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1796,9 +1784,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=10)
+        _fixed = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()

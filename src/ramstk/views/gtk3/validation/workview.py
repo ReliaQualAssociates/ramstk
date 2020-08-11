@@ -298,8 +298,7 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Place the LEFT side widgets.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        (__, __, _fixed) = super().make_ui(end=13)
+        _fixed = super().make_ui(end=13)
         _frame: RAMSTKFrame = RAMSTKFrame()
         _frame.do_set_properties(bold=True, title=_("Task Description"))
         _frame.add(_fixed)
@@ -309,8 +308,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned: Gtk.VPaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
 
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        (__, __, _fixed) = super().make_ui(start=13, end=21)
+        _fixed = super().make_ui(start=13, end=21)
 
         # We add the mean time and mean time UL to the same y position as
         # the mean time LL widget.
@@ -335,8 +333,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(_frame, True, True)
 
         # Place the BOTTOM RIGHT side widgets.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        (__, __, _fixed) = super().make_ui(start=21)
+        _fixed = super().make_ui(start=21)
 
         # We add the project time and project time UL to the same y position
         # as the project time LL widget.

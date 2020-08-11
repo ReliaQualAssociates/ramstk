@@ -122,8 +122,7 @@ class GeneralData(RAMSTKWorkView):
         super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
         # Layout the widgets.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        (__, __, _fixed) = super().make_ui()
+        _fixed = super().make_ui()
 
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("General Information"))

@@ -18,7 +18,7 @@ from .dialog import (RAMSTKDatabaseSelect, RAMSTKDateSelect, RAMSTKDialog,
                      RAMSTKFileChooser, RAMSTKMessageDialog)
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
-from .label import RAMSTKLabel, do_make_label_group, do_make_label_group2
+from .label import RAMSTKLabel, do_make_label_group
 from .matrixview import RAMSTKMatrixView
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow

@@ -201,8 +201,7 @@ class GeneralData(RAMSTKWorkView):
                                  callbacks=[self._do_request_create_code])
 
         # Layout the widgets.
-        # TODO: See issue #304.
-        (__, __, _fixed) = super().make_ui()
+        _fixed = super().make_ui()
 
         # Add the validation date dialog launcher button to the right of the
         # validated date RAMSTKEntry.
