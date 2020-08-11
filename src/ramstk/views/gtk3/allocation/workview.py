@@ -23,22 +23,10 @@ from ramstk.views.gtk3.widgets import (
 
 class Allocation(RAMSTKWorkView):
     """
-    Display general Function attribute data in the RAMSTK Work Book.
+    Display Allocation attribute data in the RAMSTK Work Book.
 
-    The Function Work View displays all the general data attributes for the
-    selected Function. The attributes of a Function General Data Work View are:
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+-------------------------------------+
-    | Index | Widget - Signal                     |
-    +=======+=====================================+
-    |   0   | tvw_allocation `cursor_changed`     |
-    +-------+-------------------------------------+
-    |   1   | tvw_allocation `button_press_event` |
-    +-------+-------------------------------------+
-    |   2   | tvw_allocation `edited`             |
-    +-------+-------------------------------------+
+    The Allocation Work View displays all the allocation data attributes for the
+    selected hardware item. The attributes of an Allocation General Data Work View are:
     """
     # Define private class dict attributes.
     # TMPLT: For each editable WorkView widget, populate this dict with the
@@ -281,11 +269,11 @@ class Allocation(RAMSTKWorkView):
         """
         super().do_clear_tree()
 
-        self.cmbAllocationMethod.do_update(0)
-        self.cmbAllocationGoal.do_update(0)
-        self.txtHazardRateGoal.do_update("")
-        self.txtMTBFGoal.do_update("")
-        self.txtReliabilityGoal.do_update("")
+        self.cmbAllocationMethod.do_update(0, signal='changed')
+        self.cmbAllocationGoal.do_update(0, signal='changed')
+        self.txtHazardRateGoal.do_update("", signal='changed')
+        self.txtMTBFGoal.do_update("", signal='changed')
+        self.txtReliabilityGoal.do_update("", signal='changed')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -304,13 +292,16 @@ class Allocation(RAMSTKWorkView):
         self._reliability_goal = attributes['reliability_goal']
         self._system_hazard_rate = attributes['hazard_rate_logistics']
 
-        self.cmbAllocationMethod.do_update(self._method_id)
-        self.cmbAllocationGoal.do_update(self._measure_id)
-        self.txtReliabilityGoal.do_update(
-            str(self.fmt.format(self._reliability_goal)))
-        self.txtHazardRateGoal.do_update(
-            str(self.fmt.format(self._hazard_rate_goal)))
-        self.txtMTBFGoal.do_update(str(self.fmt.format(self._mtbf_goal)))
+        self.cmbAllocationMethod.do_update(self._method_id, signal='changed')
+        self.cmbAllocationGoal.do_update(self._measure_id, signal='changed')
+        self.txtReliabilityGoal.do_update(str(
+            self.fmt.format(self._reliability_goal)),
+                                          signal='changed')
+        self.txtHazardRateGoal.do_update(str(
+            self.fmt.format(self._hazard_rate_goal)),
+                                         signal='changed')
+        self.txtMTBFGoal.do_update(str(self.fmt.format(self._mtbf_goal)),
+                                   signal='changed')
 
         self._do_set_sensitive()
 
@@ -602,7 +593,6 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: See issues #310.
         _package = super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
         _new_text = list(_package.values())[0]

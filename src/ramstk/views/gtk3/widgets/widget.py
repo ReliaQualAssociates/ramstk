@@ -29,7 +29,7 @@ class RAMSTKWidget():
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_handler_id: Dict[str, int] = {}
+        self.dic_handler_id: Dict[str, int] = {'': 0}
 
         # Initialize public list attributes.
 

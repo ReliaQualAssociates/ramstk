@@ -451,10 +451,10 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtItemCriticality.dic_handler_id['edited'] = 0
+        self.txtItemCriticality.dic_handler_id['changed'] = 0
 
-        self._lst_handler_id.append(
-            self.treeview.connect("button_press_event", self._on_button_press))
+        self.treeview.dic_handler_id['button-press'] = self.treeview.connect(
+            "button_press_event", self._on_button_press)
 
         # CellRendererToggle columns.
         for _column in [30, 32, 38, 39, 40]:
@@ -1177,7 +1177,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
+        treeview.handler_block(treeview.dic_handler_id['button-press'])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -1206,7 +1206,7 @@ class FMEA(RAMSTKWorkView):
                                            labels=_labels,
                                            callbacks=_callbacks)
 
-        treeview.handler_unblock(self._lst_handler_id[1])
+        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
@@ -1323,8 +1323,6 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        selection.handler_block(self._lst_handler_id[0])
-
         _model, _row = selection.get_selected()
         try:
             self._record_id = _model.get_value(_row, 0)
@@ -1348,5 +1346,3 @@ class FMEA(RAMSTKWorkView):
             _columns[i].set_visible(_set_visible[self._lst_col_order[i]])
 
             i += 1
-
-        selection.handler_unblock(self._lst_handler_id[0])

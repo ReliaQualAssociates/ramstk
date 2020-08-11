@@ -48,27 +48,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
     :ivar txtArea: enter and display the heat dissipating area of the inductor.
     :ivar txtWeight: enter and display the weight of the inductor.
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+------------------------------+
-    | Index | Widget - Signal              |
-    +=======+==============================+
-    |   1   | cmbInsulation - `changed`    |
-    +-------+------------------------------+
-    |   2   | cmbSpecification - `changed` |
-    +-------+------------------------------+
-    |   3   | cmbFamily - `changed`        |
-    +-------+------------------------------+
-    |   4   | cmbConstruction - `changed`  |
-    +-------+------------------------------+
-    |   5   | txtArea - `changed`          |
-    +-------+------------------------------+
-    |   6   | txtWeight - `changed`        |
-    +-------+------------------------------+
     """
 
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {
         0: 'quality_id',
         1: 'specification_id',
@@ -100,7 +82,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         2: [["MIL-T-15305"], ["MIL-T-39010"]]
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Quality Level:"),
         _("Specification:"),
@@ -162,21 +144,25 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          1))
-        self._lst_handler_id.append(
-            self.cmbInsulation.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbFamily.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.txtArea.connect('focus-out-event', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtWeight.connect('focus-out-event', self._on_focus_out, 6))
+        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
+            'changed', self._on_combo_changed, 0)
+        self.cmbSpecification.dic_handler_id[
+            'changed'] = self.cmbSpecification.connect('changed',
+                                                       self._on_combo_changed,
+                                                       1)
+        self.cmbInsulation.dic_handler_id[
+            'changed'] = self.cmbInsulation.connect('changed',
+                                                    self._on_combo_changed, 2)
+        self.cmbFamily.dic_handler_id['changed'] = self.cmbFamily.connect(
+            'changed', self._on_combo_changed, 3)
+        self.cmbConstruction.dic_handler_id[
+            'changed'] = self.cmbConstruction.connect('changed',
+                                                      self._on_combo_changed,
+                                                      4)
+        self.txtArea.dic_handler_id['changed'] = self.txtArea.connect(
+            'focus-out-event', self._on_focus_out, 5)
+        self.txtWeight.dic_handler_id['changed'] = self.txtWeight.connect(
+            'focus-out-event', self._on_focus_out, 6)
 
     def __set_properties(self) -> None:
         """
@@ -213,21 +199,20 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         super().do_load_page(attributes)
 
-        self.cmbFamily.do_update(attributes['family_id'],
-                                 self._lst_handler_id[3])
+        self.cmbFamily.do_update(attributes['family_id'], signal='changed')
 
         if self._hazard_rate_method_id == 2:
             self.cmbSpecification.do_update(attributes['specification_id'],
-                                            self._lst_handler_id[1])
+                                            signal='changed')
             self.cmbInsulation.do_update(attributes['insulation_id'],
-                                         self._lst_handler_id[2])
+                                         signal='changed')
             self.cmbConstruction.do_update(attributes['construction_id'],
-                                           self._lst_handler_id[4])
+                                           signal='changed')
             self.txtArea.do_update(str(self.fmt.format(attributes['area'])),
-                                   self._lst_handler_id[5])
-            self.txtWeight.do_update(
-                str(self.fmt.format(attributes['weight'])),
-                self._lst_handler_id[6])
+                                   signal='changed')
+            self.txtWeight.do_update(str(self.fmt.format(
+                attributes['weight'])),
+                                     signal='changed')
 
         self._do_set_sensitive()
 
@@ -285,12 +270,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        combo.handler_block(self._lst_handler_id[index])
-
         super().on_combo_changed(combo, index, 'wvw_editing_component')
-
-        combo.handler_unblock(self._lst_handler_id[index])
 
     def _on_focus_out(
             self,
@@ -343,7 +323,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         else:
             _data = [[_("Pulse Transformer")], [_("Audio Transformer")],
                      [_("Power Transformer or Filter")], [_("RF Transformer")]]
-        self.cmbFamily.do_load_combo(_data, handler_id=self._lst_handler_id[3])
+        self.cmbFamily.do_load_combo(_data, signal='changed')
 
     def __do_load_insulation_combobox(self) -> None:
         """
@@ -356,8 +336,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_insulation[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbInsulation.do_load_combo(_data,
-                                         handler_id=self._lst_handler_id[2])
+        self.cmbInsulation.do_load_combo(_data, signal='changed')
 
     def __do_load_quality_combobox(self) -> None:
         """
@@ -374,8 +353,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[self._subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data,
-                                      handler_id=self._lst_handler_id[0])
+        self.cmbQuality.do_load_combo(_data, signal='changed')
 
     def __do_load_specification_combobox(self) -> None:
         """
@@ -388,8 +366,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbSpecification.do_load_combo(_data,
-                                            handler_id=self._lst_handler_id[1])
+        self.cmbSpecification.do_load_combo(_data, signal='changed')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -407,7 +384,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         self.__do_load_specification_combobox()
 
         self.cmbConstruction.do_load_combo([[_("Fixed")], [_("Variable")]],
-                                           handler_id=self._lst_handler_id[4])
+                                           signal='changed')
 
 
 class AssessmentResults(RAMSTKAssessmentResults):
@@ -433,7 +410,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().__init__(configuration, logger, module=module)
 
-        # Initialize private dictionary attributes.
+        # Initialize private dict attributes.
         self._dic_part_stress = {
             1:
             "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
@@ -446,7 +423,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
 
         # Initialize private scalar attributes.
 
-        # Initialize public dictionary attributes.
+        # Initialize public dict attributes.
 
         # Initialize public list attributes.
 
@@ -493,8 +470,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        # TODO: See issue #305.
-        self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
+        self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
 
         self._do_set_sensitive()
 

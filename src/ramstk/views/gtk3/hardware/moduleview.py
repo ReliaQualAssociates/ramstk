@@ -302,7 +302,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
+        treeview.handler_block(treeview.dic_handler_id['button-press'])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -334,7 +334,7 @@ class ModuleView(RAMSTKModuleView):
                     self._do_request_delete, self._do_request_update,
                     self._do_request_update_all
                 ])
-        treeview.handler_unblock(self._lst_handler_id[1])
+        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
@@ -440,7 +440,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
 
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
@@ -455,4 +455,4 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._record_id)
             pub.sendMessage('request_set_title', title=_title)
 
-        selection.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])

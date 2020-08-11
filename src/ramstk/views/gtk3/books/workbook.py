@@ -46,7 +46,6 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
 

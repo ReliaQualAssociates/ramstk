@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Validation Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -39,54 +39,31 @@ class GeneralData(RAMSTKWorkView):
     The Validation Work View displays all the general data attributes for the
     selected Validation. The attributes of a Validation General Data Work View are:
 
+    :cvar dict _dic_keys:
     :cvar list _lst_labels: the list of label text.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtTask - `changed`                       |
-    +----------+-------------------------------------------+
-    |     1    | cmbTaskType - `changed`                   |
-    +----------+-------------------------------------------+
-    |     2    | txtSpecification - `focus-out-event`      |
-    +----------+-------------------------------------------+
-    |     3    | cmbMeasurementUnit - `changed`            |
-    +----------+-------------------------------------------+
-    |     4    | txtMinAcceptable - `focus-out-event`      |
-    +----------+-------------------------------------------+
-    |     5    | txtMeanAcceptable - `focus-out-event`     |
-    +----------+-------------------------------------------+
-    |     6    | txtMaxAcceptable - `focus-out-event`      |
-    +----------+-------------------------------------------+
-    |     7    | txtVarAcceptable - `focus-out-event`      |
-    +----------+-------------------------------------------+
-    |     8    | txtStartDate - `changed`                  |
-    +          +-------------------------------------------+
-    |          | txtStartDate - `focus-out-event`          |
-    +----------+-------------------------------------------+
-    |     9    | txtEndDate - `changed`                    |
-    +          +-------------------------------------------+
-    |          | txtEndDate - `focus-out-event`            |
-    +----------+-------------------------------------------+
-    |    10    | spnStatus - `value-changed`               |
-    +----------+-------------------------------------------+
-    |    11    | txtMinTime - `focus-out-event`            |
-    +----------+-------------------------------------------+
-    |    12    | txtExpTime - `focus-out-event`            |
-    +----------+-------------------------------------------+
-    |    13    | txtMaxTime - `focus-out-event`            |
-    +----------+-------------------------------------------+
-    |    14    | txtMinCost - `focus-out-event`            |
-    +----------+-------------------------------------------+
-    |    15    | txtExpCost - `focus-out-event`            |
-    +----------+-------------------------------------------+
-    |    16    | txtMaxCost - `focus-out-event`            |
-    +----------+-------------------------------------------+
     """
+    # Define private dict class attributes.
+    _dic_keys = {
+        0: 'description',
+        1: 'task_type',
+        2: 'task_specification',
+        3: 'measurement_unit',
+        4: 'acceptable_minimum',
+        5: 'acceptable_maximum',
+        6: 'acceptable_mean',
+        7: 'acceptable_variance',
+        8: 'date_start',
+        9: 'date_end',
+        11: 'time_minimum',
+        12: 'time_average',
+        13: 'time_maximum',
+        14: 'cost_minimum',
+        15: 'cost_average',
+        16: 'cost_maximum',
+        32: 'name'
+    }
 
-    # Define private class list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Task ID:"),
         _("Task Description:"),
@@ -180,29 +157,30 @@ class GeneralData(RAMSTKWorkView):
         self.txtProjectCost: RAMSTKEntry = RAMSTKEntry()
         self.txtProjectCostUL: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_switch = {
-            'description': [self.txtTask.do_update, 0],
-            'task_type': [self.cmbTaskType.do_update, 1],
-            'task_specification': [self.txtSpecification.do_update, 2],
-            'measurement_unit': [self.cmbMeasurementUnit.do_update, 3],
-            'acceptable_minimum': [self.txtMinAcceptable, 4],
-            'acceptable_mean': [self.txtMeanAcceptable, 5],
-            'acceptable_maximum': [self.txtMaxAcceptable, 6],
-            'acceptable_variance': [self.txtVarAcceptable.do_update, 7],
-            'date_start': [self.txtStartDate.do_update, 8],
-            'date_end': [self.txtEndDate.do_update, 9],
-            'time_minimum': [self.txtMinTime.do_update, 11],
-            'time_average': [self.txtExpTime.do_update, 12],
-            'time_maximum': [self.txtMaxTime.do_update, 13],
-            'cost_minimum': [self.txtMinCost.do_update, 14],
-            'cost_average': [self.txtExpCost.do_update, 15],
-            'cost_maximum': [self.txtMaxCost.do_update, 16]
+        self._dic_switch: Dict[str, Union[object, str]] = {
+            'description': [self.txtTask.do_update, 'changed'],
+            'task_type': [self.cmbTaskType.do_update, 'changed'],
+            'task_specification': [self.txtSpecification.do_update, 'changed'],
+            'measurement_unit': [self.cmbMeasurementUnit.do_update, 'changed'],
+            'acceptable_minimum': [self.txtMinAcceptable, 'changed'],
+            'acceptable_mean': [self.txtMeanAcceptable, 'changed'],
+            'acceptable_maximum': [self.txtMaxAcceptable, 'changed'],
+            'acceptable_variance':
+            [self.txtVarAcceptable.do_update, 'changed'],
+            'date_start': [self.txtStartDate.do_update, 'changed'],
+            'date_end': [self.txtEndDate.do_update, 'changed'],
+            'time_minimum': [self.txtMinTime.do_update, 'changed'],
+            'time_average': [self.txtExpTime.do_update, 'changed'],
+            'time_maximum': [self.txtMaxTime.do_update, 'changed'],
+            'cost_minimum': [self.txtMinCost.do_update, 'changed'],
+            'cost_average': [self.txtExpCost.do_update, 'changed'],
+            'cost_maximum': [self.txtMaxCost.do_update, 'changed']
         }
 
         self.__set_properties()
-        self.__load_combobox()
         self.__make_ui()
         self.__set_callbacks()
+        self.__load_combobox()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
@@ -236,7 +214,7 @@ class GeneralData(RAMSTKWorkView):
 
         return _code
 
-    def __load_combobox(self):
+    def __load_combobox(self) -> None:
         """
         Load the RAMSTK ComboBox widgets with lists of information.
 
@@ -435,49 +413,50 @@ class GeneralData(RAMSTKWorkView):
                                 self.txtEndDate)
         self.btnStartDate.connect('button-release-event', self._do_select_date,
                                   self.txtStartDate)
+        self.spnStatus.dic_handler_id['changed'] = self.spnStatus.connect(
+            'focus-out-event', self._on_value_changed)
 
         # noinspection PyArgumentList
-        self._lst_handler_id.append(self.txtTask.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 0))
-        self._lst_handler_id.append(
-            self.cmbTaskType.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.txtSpecification.connect('focus-out-event',
-                                          self._on_focus_out, 2))
-        self._lst_handler_id.append(
-            self.cmbMeasurementUnit.connect('changed', self._on_combo_changed,
-                                            3))
-        self._lst_handler_id.append(
-            self.txtMinAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtMaxAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtMeanAcceptable.connect('focus-out-event',
-                                           self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.txtVarAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 7))
-        self._lst_handler_id.append(
-            self.txtStartDate.connect('changed', self._on_focus_out, None, 8))
-        self._lst_handler_id.append(
-            self.txtEndDate.connect('changed', self._on_focus_out, None, 9))
-        self._lst_handler_id.append(
-            self.spnStatus.connect('focus-out-event', self._on_value_changed,
-                                   10))
-        self._lst_handler_id.append(
-            self.txtMinTime.connect('focus-out-event', self._on_focus_out, 11))
-        self._lst_handler_id.append(
-            self.txtExpTime.connect('focus-out-event', self._on_focus_out, 12))
-        self._lst_handler_id.append(
-            self.txtMaxTime.connect('focus-out-event', self._on_focus_out, 13))
-        self._lst_handler_id.append(
-            self.txtMinCost.connect('focus-out-event', self._on_focus_out, 14))
-        self._lst_handler_id.append(
-            self.txtExpCost.connect('focus-out-event', self._on_focus_out, 15))
-        self._lst_handler_id.append(
-            self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
+        self.txtTask.dic_handler_id['changed'] = self.txtTask.do_get_buffer(
+        ).connect('changed', self._on_focus_out, None, 0)
+        self.cmbTaskType.dic_handler_id['changed'] = self.cmbTaskType.connect(
+            'changed', self._on_combo_changed, 1)
+        self.txtSpecification.dic_handler_id[
+            'changed'] = self.txtSpecification.connect('focus-out-event',
+                                                       self._on_focus_out, 2)
+        self.cmbMeasurementUnit.dic_handler_id[
+            'changed'] = self.cmbMeasurementUnit.connect(
+                'changed', self._on_combo_changed, 3)
+        self.txtMinAcceptable.dic_handler_id[
+            'changed'] = self.txtMinAcceptable.connect('focus-out-event',
+                                                       self._on_focus_out, 4)
+        self.txtMaxAcceptable.dic_handler_id[
+            'changed'] = self.txtMaxAcceptable.connect('focus-out-event',
+                                                       self._on_focus_out, 5)
+        self.txtMeanAcceptable.dic_handler_id[
+            'changed'] = self.txtMeanAcceptable.connect(
+                'focus-out-event', self._on_focus_out, 6)
+        self.txtVarAcceptable.dic_handler_id[
+            'changed'] = self.txtVarAcceptable.connect('focus-out-event',
+                                                       self._on_focus_out, 7)
+        self.txtStartDate.dic_handler_id[
+            'changed'] = self.txtStartDate.connect('changed',
+                                                   self._on_focus_out, None, 8)
+        self.txtEndDate.dic_handler_id['changed'] = self.txtEndDate.connect(
+            'changed', self._on_focus_out, None, 9)
+
+        self.txtMinTime.dic_handler_id['changed'] = self.txtMinTime.connect(
+            'focus-out-event', self._on_focus_out, 11)
+        self.txtExpTime.dic_handler_id['changed'] = self.txtExpTime.connect(
+            'focus-out-event', self._on_focus_out, 12)
+        self.txtMaxTime.dic_handler_id['changed'] = self.txtMaxTime.connect(
+            'focus-out-event', self._on_focus_out, 13)
+        self.txtMinCost.dic_handler_id['changed'] = self.txtMinCost.connect(
+            'focus-out-event', self._on_focus_out, 14)
+        self.txtExpCost.dic_handler_id['changed'] = self.txtExpCost.connect(
+            'focus-out-event', self._on_focus_out, 15)
+        self.txtMaxCost.dic_handler_id['changed'] = self.txtMaxCost.connect(
+            'focus-out-event', self._on_focus_out, 16)
 
     def __set_properties(self) -> None:
         """
@@ -507,6 +486,7 @@ class GeneralData(RAMSTKWorkView):
             "V&amp;V activity acceptance parameter."))
 
         # ----- ENTRIES
+        self.spnStatus.dic_handler_id = {'': 0}
         self.txtTask.do_set_properties(
             height=100,
             width=500,
@@ -592,43 +572,36 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtCode.set_text('')
-        self.txtTask.do_update('', self._lst_handler_id[0])
+        self.txtCode.do_update('', signal='changed')
+        self.txtTask.do_update('', signal='changed')
+        self.cmbTaskType.do_update(0, signal='changed')
+        self.txtSpecification.do_update('', signal='changed')
+        self.cmbMeasurementUnit.do_update(0, signal='changed')
+        self.txtMinAcceptable.do_update('', signal='changed')
+        self.txtMeanAcceptable.do_update('', signal='changed')
+        self.txtMaxAcceptable.do_update('', signal='changed')
+        self.txtVarAcceptable.do_update('', signal='changed')
+        self.txtStartDate.do_update('', signal='changed')
+        self.txtEndDate.do_update('', signal='changed')
 
-        self.cmbTaskType.handler_block(self._lst_handler_id[1])
-        self.cmbTaskType.set_active(0)
-        self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
-
-        self.txtSpecification.do_update('', self._lst_handler_id[2])
-
-        self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
-        self.cmbMeasurementUnit.set_active(0)
-        self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
-
-        self.txtMinAcceptable.do_update('', self._lst_handler_id[4])
-        self.txtMeanAcceptable.do_update('', self._lst_handler_id[5])
-        self.txtMaxAcceptable.do_update('', self._lst_handler_id[6])
-        self.txtVarAcceptable.do_update('', self._lst_handler_id[7])
-        self.txtStartDate.do_update('', self._lst_handler_id[8])
-        self.txtEndDate.do_update('', self._lst_handler_id[9])
-
-        self.spnStatus.handler_block(self._lst_handler_id[10])
+        self.spnStatus.handler_block(self.spnStatus.dic_handler_id['changed'])
         self.spnStatus.set_value(0.0)
-        self.spnStatus.handler_unblock(self._lst_handler_id[10])
+        self.spnStatus.handler_unblock(
+            self.spnStatus.dic_handler_id['changed'])
 
-        self.txtMinTime.do_update('', self._lst_handler_id[11])
-        self.txtExpTime.do_update('', self._lst_handler_id[12])
-        self.txtMaxTime.do_update('', self._lst_handler_id[13])
-        self.txtMinCost.do_update('', self._lst_handler_id[14])
-        self.txtExpCost.do_update('', self._lst_handler_id[15])
-        self.txtMaxCost.do_update('', self._lst_handler_id[16])
+        self.txtMinTime.do_update('', signal='changed')
+        self.txtExpTime.do_update('', signal='changed')
+        self.txtMaxTime.do_update('', signal='changed')
+        self.txtMinCost.do_update('', signal='changed')
+        self.txtExpCost.do_update('', signal='changed')
+        self.txtMaxCost.do_update('', signal='changed')
 
-        self.txtMeanTimeLL.set_text('')
-        self.txtMeanTime.set_text('')
-        self.txtMeanTimeUL.set_text('')
-        self.txtMeanCostLL.set_text('')
-        self.txtMeanCost.set_text('')
-        self.txtMeanCostUL.set_text('')
+        self.txtMeanTimeLL.do_update('', signal='changed')
+        self.txtMeanTime.do_update('', signal='changed')
+        self.txtMeanTimeUL.do_update('', signal='changed')
+        self.txtMeanCostLL.do_update('', signal='changed')
+        self.txtMeanCost.do_update('', signal='changed')
+        self.txtMeanCostUL.do_update('', signal='changed')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -642,84 +615,86 @@ class GeneralData(RAMSTKWorkView):
         self._record_id = attributes['validation_id']
 
         _code = self.__do_make_task_code(attributes['task_type'])
-        self.txtCode.set_text(_code)
-        self.txtTask.do_update(attributes['description'],
-                               self._lst_handler_id[0])
+        self.txtCode.do_update(_code)
+        self.txtTask.do_update(attributes['description'], signal='changed')
 
-        self.cmbTaskType.handler_block(self._lst_handler_id[1])
+        self.cmbTaskType.handler_block(
+            self.cmbTaskType.dic_handler_id['changed'])
         _types = self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         _index = 1
-        self.cmbTaskType.set_active(0)
+        self.cmbTaskType.do_update(0, signal='changed')
         for _key, _type in _types.items():
             if _type[1] == attributes['task_type']:
                 self.cmbTaskType.set_active(_index)
             else:
                 _index += 1
-        self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
+        self.cmbTaskType.handler_unblock(
+            self.cmbTaskType.dic_handler_id['changed'])
 
         self.txtSpecification.do_update(str(attributes['task_specification']),
-                                        self._lst_handler_id[2])
+                                        signal='changed')
 
-        self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
+        self.cmbMeasurementUnit.handler_block(
+            self.cmbMeasurementUnit.dic_handler_id['changed'])
         _units = self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
-        self.cmbMeasurementUnit.set_active(0)
+        self.cmbMeasurementUnit.do_update(0, signal='changed')
         for _key, _unit in _units.items():
             if _unit[1] == attributes['measurement_unit']:
                 self.cmbMeasurementUnit.set_active(int(_key))
-        self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
+        self.cmbMeasurementUnit.handler_unblock(
+            self.cmbMeasurementUnit.dic_handler_id['changed'])
 
-        self.txtMinAcceptable.do_update(
-            str(self.fmt.format(attributes['acceptable_minimum'])),
-            self._lst_handler_id[4])
-        self.txtMeanAcceptable.do_update(
-            str(self.fmt.format(attributes['acceptable_mean'])),
-            self._lst_handler_id[5])
-        self.txtMaxAcceptable.do_update(
-            str(self.fmt.format(attributes['acceptable_maximum'])),
-            self._lst_handler_id[6])
-        self.txtVarAcceptable.do_update(
-            str(self.fmt.format(attributes['acceptable_variance'])),
-            self._lst_handler_id[7])
+        self.txtMinAcceptable.do_update(str(
+            self.fmt.format(attributes['acceptable_minimum'])),
+                                        signal='changed')
+        self.txtMeanAcceptable.do_update(str(
+            self.fmt.format(attributes['acceptable_mean'])),
+                                         signal='changed')
+        self.txtMaxAcceptable.do_update(str(
+            self.fmt.format(attributes['acceptable_maximum'])),
+                                        signal='changed')
+        self.txtVarAcceptable.do_update(str(
+            self.fmt.format(attributes['acceptable_variance'])),
+                                        signal='changed')
 
-        self.txtStartDate.do_update(attributes['date_start'],
-                                    self._lst_handler_id[8])
-        self.txtEndDate.do_update(attributes['date_end'],
-                                  self._lst_handler_id[9])
+        self.txtStartDate.do_update(attributes['date_start'], signal='changed')
+        self.txtEndDate.do_update(attributes['date_end'], signal='changed')
 
-        self.spnStatus.handler_block(self._lst_handler_id[10])
+        self.spnStatus.handler_block(self.spnStatus.dic_handler_id['changed'])
         self.spnStatus.set_value(attributes['status'])
-        self.spnStatus.handler_unblock(self._lst_handler_id[10])
+        self.spnStatus.handler_unblock(
+            self.spnStatus.dic_handler_id['changed'])
 
-        self.txtMinTime.do_update(
-            str(self.fmt.format(attributes['time_minimum'])),
-            self._lst_handler_id[11])
-        self.txtExpTime.do_update(
-            str(self.fmt.format(attributes['time_average'])),
-            self._lst_handler_id[12])
-        self.txtMaxTime.do_update(
-            str(self.fmt.format(attributes['time_maximum'])),
-            self._lst_handler_id[13])
-        self.txtMinCost.do_update(
-            str(self.fmt.format(attributes['cost_minimum'])),
-            self._lst_handler_id[14])
-        self.txtExpCost.do_update(
-            str(self.fmt.format(attributes['cost_average'])),
-            self._lst_handler_id[15])
-        self.txtMaxCost.do_update(
-            str(self.fmt.format(attributes['cost_maximum'])),
-            self._lst_handler_id[16])
-        self.txtMeanTimeLL.set_text(str(self.fmt.format(
-            attributes['time_ll'])))
-        self.txtMeanTime.set_text(str(self.fmt.format(
-            attributes['time_mean'])))
-        self.txtMeanTimeUL.set_text(str(self.fmt.format(
-            attributes['time_ul'])))
-        self.txtMeanCostLL.set_text(str(self.fmt.format(
-            attributes['cost_ll'])))
-        self.txtMeanCost.set_text(str(self.fmt.format(
-            attributes['cost_mean'])))
-        self.txtMeanCostUL.set_text(str(self.fmt.format(
-            attributes['cost_ul'])))
+        self.txtMinTime.do_update(str(
+            self.fmt.format(attributes['time_minimum'])),
+                                  signal='changed')
+        self.txtExpTime.do_update(str(
+            self.fmt.format(attributes['time_average'])),
+                                  signal='changed')
+        self.txtMaxTime.do_update(str(
+            self.fmt.format(attributes['time_maximum'])),
+                                  signal='changed')
+        self.txtMinCost.do_update(str(
+            self.fmt.format(attributes['cost_minimum'])),
+                                  signal='changed')
+        self.txtExpCost.do_update(str(
+            self.fmt.format(attributes['cost_average'])),
+                                  signal='changed')
+        self.txtMaxCost.do_update(str(
+            self.fmt.format(attributes['cost_maximum'])),
+                                  signal='changed')
+        self.txtMeanTimeLL.do_update(
+            str(self.fmt.format(attributes['time_ll'])))
+        self.txtMeanTime.do_update(
+            str(self.fmt.format(attributes['time_mean'])))
+        self.txtMeanTimeUL.do_update(
+            str(self.fmt.format(attributes['time_ul'])))
+        self.txtMeanCostLL.do_update(
+            str(self.fmt.format(attributes['cost_ll'])))
+        self.txtMeanCost.do_update(
+            str(self.fmt.format(attributes['cost_mean'])))
+        self.txtMeanCostUL.do_update(
+            str(self.fmt.format(attributes['cost_ul'])))
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """
@@ -775,7 +750,8 @@ class GeneralData(RAMSTKWorkView):
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     @staticmethod
-    def _do_select_date(__button, __event, entry):
+    def _do_select_date(__button: Gtk.ToolButton, __event: Gdk.Event,
+                        entry: RAMSTKEntry) -> None:
         """
         Select a date from a Calendar widget.
 
@@ -799,7 +775,7 @@ class GeneralData(RAMSTKWorkView):
 
         _calendar.do_destroy()
 
-    def _on_combo_changed(self, combo, index):
+    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """
         Handle changs made in Gtk.ComboBox() widgets.
 
@@ -817,14 +793,12 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         _new_text = ''
-        _dic_keys = {1: 'task_type', 3: 'measurement_unit'}
         try:
-            _key = _dic_keys[self._lst_col_order[index]]
+            _key = self._dic_keys[self._lst_col_order[index]]
         except KeyError:
             _key = None
 
-        # TODO: See issue #310.
-        combo.handler_block(self._lst_handler_id[index])
+        combo.handler_block(combo.dic_handler_id['changed'])
 
         _model = combo.get_model()
         _row = combo.get_active_iter()
@@ -842,7 +816,7 @@ class GeneralData(RAMSTKWorkView):
                         node_id=[self._record_id, -1],
                         package={_key: _new_text})
 
-        combo.handler_unblock(self._lst_handler_id[index])
+        combo.handler_unblock(combo.dic_handler_id['changed'])
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -878,16 +852,18 @@ class GeneralData(RAMSTKWorkView):
         [[_key, _value]] = package.items()
 
         if _key == 'status':
-            self.spnStatus.handler_block(self._lst_handler_id[10])
+            self.spnStatus.handler_block(
+                self.spnStatus.dic_handler_id['changed'])
             self.spnStatus.set_value(_value)
-            self.spnStatus.handler_unblock(self._lst_handler_id[10])
+            self.spnStatus.handler_unblock(
+                self.spnStatus.dic_handler_id['changed'])
         else:
-            (_function, _id) = self._dic_switch.get(_key)
-            _function(_value, self._lst_handler_id[_id])
+            (_function, _signal) = self._dic_switch.get(_key)
+            _function(_value, signal=_signal)
 
     def _on_focus_out(
             self,
-            entry: Gtk.Entry,
+            entry: RAMSTKEntry,
             __event: Gdk.EventFocus,  # pylint: disable=unused-argument
             index: int) -> None:
         """
@@ -900,8 +876,8 @@ class GeneralData(RAMSTKWorkView):
 
         This method sends the 'wvw_editing_validation' message.
 
-        :param entry: the Gtk.Entry() that called the method.
-        :type entry: :class:`Gtk.Entry`
+        :param entry: the RAMSTKEntry() that called the method.
+        :type entry: :class:`ramstk.views.gtk3.widgets.RAMSTKEntry`
         :param __event: the Gdk.EventFocus that triggered the signal.
         :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Validation class Gtk.TreeModel()
@@ -909,30 +885,12 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {
-            0: 'description',
-            2: 'task_specification',
-            4: 'acceptable_minimum',
-            5: 'acceptable_maximum',
-            6: 'acceptable_mean',
-            7: 'acceptable_variance',
-            8: 'date_start',
-            9: 'date_end',
-            11: 'time_minimum',
-            12: 'time_average',
-            13: 'time_maximum',
-            14: 'cost_minimum',
-            15: 'cost_average',
-            16: 'cost_maximum',
-            32: 'name'
-        }
         try:
-            _key = _dic_keys[index]
+            _key = self._dic_keys[index]
         except KeyError:
             _key = ''
 
-        # TODO: See issue #310.
-        entry.handler_block(self._lst_handler_id[index])
+        entry.handler_block(entry.dic_handler_id['changed'])
 
         if index == 0:
             _new_text: Any = self.txtTask.do_get_text()
@@ -951,10 +909,10 @@ class GeneralData(RAMSTKWorkView):
                         node_id=[self._record_id, -1, ''],
                         package={_key: _new_text})
 
-        entry.handler_unblock(self._lst_handler_id[index])
+        entry.handler_unblock(entry.dic_handler_id['changed'])
 
     def _on_value_changed(self, spinbutton: Gtk.SpinButton,
-                          __event: Gdk.EventFocus, index: int) -> None:
+                          __event: Gdk.EventFocus) -> None:
         """
         Handle changes made in Gtk.SpinButton() widgets.
 
@@ -968,18 +926,16 @@ class GeneralData(RAMSTKWorkView):
         :type spinbutton: :class:`Gtk.SpinButton`
         :param __event: the Gdk.EventFocus that triggered the signal.
         :type __event: :class:`Gdk.EventFocus`
-        :param int index: the position in the Validation class attribute list
-            associated with the data from the calling spinbutton.
         :return: None
         :rtype: None
         """
-        spinbutton.handler_block(self._lst_handler_id[index])
+        spinbutton.handler_block(spinbutton.dic_handler_id['changed'])
 
         pub.sendMessage('wvw_editing_validation',
                         node_id=[self._record_id, -1],
                         package={'status': float(spinbutton.get_value())})
 
-        spinbutton.handler_unblock(self._lst_handler_id[index])
+        spinbutton.handler_unblock(spinbutton.dic_handler_id['changed'])
 
 
 class BurndownCurve(RAMSTKWorkView):

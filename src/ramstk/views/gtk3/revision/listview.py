@@ -294,7 +294,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
+        treeview.handler_block(treeview.dic_handler_id['button-press'])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -316,7 +316,7 @@ class FailureDefinition(RAMSTKListView):
                                      self._do_request_update_all
                                  ])
 
-        treeview.handler_unblock(self._lst_handler_id[1])
+        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
@@ -353,7 +353,7 @@ class FailureDefinition(RAMSTKListView):
         """
         _attributes = {}
 
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
 
         _model, _row = selection.get_selected()
 
@@ -367,7 +367,7 @@ class FailureDefinition(RAMSTKListView):
             pub.sendMessage('selected_failure_definition',
                             attributes=_attributes)
 
-        selection.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
 
 class UsageProfile(RAMSTKListView):
@@ -1027,7 +1027,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
+        treeview.handler_block(treeview.dic_handler_id['button-press'])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
@@ -1049,7 +1049,7 @@ class UsageProfile(RAMSTKListView):
                     self._do_request_update_all
                 ])
 
-        treeview.handler_unblock(self._lst_handler_id[1])
+        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:
@@ -1118,7 +1118,7 @@ class UsageProfile(RAMSTKListView):
         _headings: List[str] = []
         _level: str = ''
 
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
 
         _model, _row = selection.get_selected()
 
@@ -1145,7 +1145,7 @@ class UsageProfile(RAMSTKListView):
 
                 i += 1
 
-        selection.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
         pub.sendMessage('selected_usage_profile',
                         attributes=self.__get_attributes(selection, _level))

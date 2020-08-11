@@ -8,7 +8,7 @@
 """RAMSTK Button Module."""
 
 # Standard Library Imports
-from typing import Any
+from typing import Any, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
@@ -17,7 +17,8 @@ from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from .widget import RAMSTKWidget
 
 
-def do_make_buttonbox(view: Any, **kwargs: Any) -> Gtk.ButtonBox:
+def do_make_buttonbox(view: Any,
+                      **kwargs: Any) -> Union[Gtk.HButtonBox, Gtk.VButtonBox]:
     r"""
     Create the buttonbox for RAMSTK Views.
 
@@ -142,6 +143,7 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
         :return: None
         :rtype: None
         """
+        # noinspection PyCallByClass,PyTypeChecker
         RAMSTKWidget.__init__(self)
 
         self.set_label(label)
@@ -199,6 +201,7 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         :return: None
         :rtype: None
         """
+        # noinspection PyCallByClass,PyTypeChecker
         RAMSTKWidget.__init__(self)
 
         self.set_label(label)
@@ -227,26 +230,18 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.get_child().set_property('height-request', self.height)
         self.get_child().set_property('width-request', self.width)
 
-    def do_update(self, value: int, handler_id: int, signal: str = '') -> None:
+    def do_update(self, value: int, signal: str = '') -> None:
         """
         Update the RAMSTK CheckButton with a new value.
 
         :param int value: the information to update the RAMSTKCheckButton() to
             display.
-        :param int handler_id: the handler ID associated with the
-            RAMSTKCheckButton().
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKCheckButton() needs to block.
         :return: None
         :rtype: None
         """
-        # TODO: Remove this try construct after all views calling this
-        #  method have been updated to account for the widget attribute
-        #  containing the signal handler IDs.
-        try:
-            _handler_id = self.dic_handler_id[signal]
-        except KeyError:
-            _handler_id = handler_id
+        _handler_id = self.dic_handler_id[signal]
 
         self.handler_block(_handler_id)
         self.set_active(int(value))
@@ -268,6 +263,7 @@ class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
         :return: None
         :rtype: None
         """
+        # noinspection PyCallByClass,PyTypeChecker
         RAMSTKWidget.__init__(self)
 
         self.set_group(group)

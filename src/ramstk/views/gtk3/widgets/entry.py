@@ -21,12 +21,12 @@ from .widget import RAMSTKWidget
 class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
     """This is the RAMSTK Entry class."""
 
-    # Define private class scalar attributes.
+    # Define private scalar class attributes.
     _default_height = 25
     _default_width = 200
 
     def __init__(self) -> None:
-        r"""
+        """
         Create a RAMSTK Entry widget.
         """
         RAMSTKWidget.__init__(self)
@@ -72,28 +72,18 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         if _bold:
             self.modify_font(Pango.FontDescription('bold'))
 
-    def do_update(self, value: str, handler_id: int = 0,
-                  signal: str = '') -> None:
+    def do_update(self, value: str, signal: str = '') -> None:
         """
         Update the RAMSTK Entry with a new value.
 
         :param str value: the information to update the RAMSTKEntry() to
             display.
-        :keyword int handler_id: the handler ID associated with the
-            RAMSTKComboBox().  This input will be removed in a future
-            version in preference for using the signal ID dict.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKEntry() needs to block.
         :return: None
         :rtype: None
         """
-        # TODO: Remove this try construct after all views calling this
-        #  method have been updated to account for the widget attribute
-        #  containing the signal handler IDs.
-        try:
-            _handler_id = self.dic_handler_id[signal]
-        except KeyError:
-            _handler_id = handler_id
+        _handler_id = self.dic_handler_id[signal]
 
         self.handler_block(_handler_id)
         try:
@@ -180,26 +170,18 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.scrollwindow.set_property('width-request', self.width)
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
-    def do_update(self, value: str, handler_id: int, signal: str = '') -> None:
+    def do_update(self, value: str, signal: str = '') -> None:
         """
         Update the RAMSTK TextView with a new value.
 
         :param str value: the information to update the RAMSTKTextView() to
             display.
-        :param int handler_id: the handler ID associated with the
-            RAMSTKTextView().
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKTextView() needs to block.
         :return: None
         :rtype: None
         """
-        # TODO: Remove this try construct after all views calling this
-        #  method have been updated to account for the widget attribute
-        #  containing the signal handler IDs.
-        try:
-            _handler_id = self.dic_handler_id[signal]
-        except KeyError:
-            _handler_id = handler_id
+        _handler_id = self.dic_handler_id[signal]
 
         _buffer = self.do_get_buffer()
 

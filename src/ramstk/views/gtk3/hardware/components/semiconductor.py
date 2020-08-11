@@ -57,33 +57,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     :ivar txtNElements: enter and display the number of elements in the
         optoelectronic display.
     :ivar txtThetaJC: enter and display the junction-case thermal resistance.
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   0   | cmbQuality - `changed`                    |
-    +-------+-------------------------------------------+
-    |   1   | cmbApplication - `changed`                |
-    +-------+-------------------------------------------+
-    |   2   | cmbConstruction - `changed`               |
-    +-------+-------------------------------------------+
-    |   3   | cmbMatching - `changed`                   |
-    +-------+-------------------------------------------+
-    |   4   | cmbPackage - `changed`                    |
-    +-------+-------------------------------------------+
-    |   5   | cmbType - `changed`                       |
-    +-------+-------------------------------------------+
-    |   6   | txtFrequencyOperating - `changed`         |
-    +-------+-------------------------------------------+
-    |   7   | txtNElements - `changed`                  |
-    +-------+-------------------------------------------+
-    |   8   | txtThetaJC - `changed`                    |
-    +-------+-------------------------------------------+
     """
 
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_keys = {
         0: 'quality_id',
         1: 'application_id',
@@ -166,7 +142,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         8: [[_("Input and Output")], [_("Input Only")], [_("None")]]
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_packages = [["TO-1"], ["TO-3"], ["TO-5"], ["TO-8"], ["TO-9"],
                      ["TO-12"], ["TO-18"], ["TO-28"], ["TO-33"], ["TO-39"],
                      ["TO-41"], ["TO-44"], ["TO-46"], ["TO-52"], ["TO-53"],
@@ -256,7 +232,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_applications[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbApplication.do_load_combo(_data)
+        self.cmbApplication.do_load_combo(_data, signal='changed')
 
     def __do_load_construction(self) -> None:
         """
@@ -267,7 +243,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         self.cmbConstruction.do_load_combo(
             [[_("Metallurgically Bonded")],
-             [_("Non-Metallurgically Bonded and Spring Loaded Contacts")]])
+             [_("Non-Metallurgically Bonded and Spring Loaded Contacts")]],
+            signal='changed')
 
     def __do_load_matching(self) -> None:
         """
@@ -280,7 +257,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             _data = self._dic_matchings[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbMatching.do_load_combo(_data)
+        self.cmbMatching.do_load_combo(_data, signal='changed')
 
     def __do_load_quality(self) -> None:
         """
@@ -302,7 +279,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_quality[self._subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data)
+        self.cmbQuality.do_load_combo(_data, signal='changed')
 
     def __do_load_type(self) -> None:
         """
@@ -320,7 +297,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 _data = self._dic_types[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data)
+        self.cmbType.do_load_combo(_data, signal='changed')
 
     def __do_set_application_sensitive(self) -> None:
         """
@@ -404,10 +381,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
             'changed', self._on_combo_changed, 0)
-        # TODO: See issue #310.  The _lst_handler_id attribute will be
-        #  retired once issue #310 is implemented completely.
-        self._lst_handler_id.append(self.cmbQuality.dic_handler_id['changed'])
-
         self.cmbApplication.dic_handler_id[
             'changed'] = self.cmbApplication.connect('changed',
                                                      self._on_combo_changed, 1)
@@ -470,19 +443,26 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         super().do_load_page(attributes)
 
-        self.cmbType.do_update(attributes['type_id'])
+        self.cmbType.do_update(attributes['type_id'], signal='changed')
 
         if self._hazard_rate_method_id == 2:
-            self.cmbApplication.do_update(attributes['application_id'])
-            self.cmbConstruction.do_update(attributes['construction_id'])
-            self.cmbMatching.do_update(attributes['matching_id'])
-            self.cmbPackage.do_update(attributes['package_id'])
-            self.txtFrequencyOperating.do_update(
-                str(self.fmt.format(attributes['frequency_operating'])))
-            self.txtNElements.do_update(
-                str(self.fmt.format(attributes['n_elements'])))
-            self.txtThetaJC.do_update(
-                str(self.fmt.format(attributes['theta_jc'])))
+            self.cmbApplication.do_update(attributes['application_id'],
+                                          signal='changed')
+            self.cmbConstruction.do_update(attributes['construction_id'],
+                                           signal='changed')
+            self.cmbMatching.do_update(attributes['matching_id'],
+                                       signal='changed')
+            self.cmbPackage.do_update(attributes['package_id'],
+                                      signal='changed')
+            self.txtFrequencyOperating.do_update(str(
+                self.fmt.format(attributes['frequency_operating'])),
+                                                 signal='changed')
+            self.txtNElements.do_update(str(
+                self.fmt.format(attributes['n_elements'])),
+                                        signal='changed')
+            self.txtThetaJC.do_update(str(
+                self.fmt.format(attributes['theta_jc'])),
+                                      signal='changed')
 
         self._do_set_sensitive()
 
@@ -611,7 +591,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
     :ivar txtPiS: displays the electrical stress factor for the semiconductor.
     """
 
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_part_stress = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>S</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
@@ -641,7 +621,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>I</sub>\u03C0<sub>A</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>"
     }
 
-    # Define private class list attributes.
+    # Define private list class attributes.
     _lst_tooltips = [
         _("The assessment model used to calculate the semiconductor failure "
           "rate."),
@@ -839,15 +819,14 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_load_page(attributes)
 
-        # TODO: See issue #305.
-        self.txtPiT.set_text(str(self.fmt.format(attributes['piT'])))
-        self.txtPiA.set_text(str(self.fmt.format(attributes['piA'])))
-        self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
-        self.txtPiR.set_text(str(self.fmt.format(attributes['piR'])))
-        self.txtPiM.set_text(str(self.fmt.format(attributes['piM'])))
-        self.txtPiI.set_text(str(self.fmt.format(attributes['piI'])))
-        self.txtPiP.set_text(str(self.fmt.format(attributes['piP'])))
-        self.txtPiS.set_text(str(self.fmt.format(attributes['piS'])))
+        self.txtPiT.do_update(str(self.fmt.format(attributes['piT'])))
+        self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
+        self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
+        self.txtPiR.do_update(str(self.fmt.format(attributes['piR'])))
+        self.txtPiM.do_update(str(self.fmt.format(attributes['piM'])))
+        self.txtPiI.do_update(str(self.fmt.format(attributes['piI'])))
+        self.txtPiP.do_update(str(self.fmt.format(attributes['piP'])))
+        self.txtPiS.do_update(str(self.fmt.format(attributes['piS'])))
 
         self._do_set_sensitive()
 

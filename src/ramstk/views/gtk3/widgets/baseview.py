@@ -51,8 +51,6 @@ class RAMSTKBaseView(Gtk.HBox):
         key:value pairs.
     :ivar list _lst_col_order: list containing the order of the columns in the
         List View RAMSTKTreeView().
-    :ivar list _lst_handler_id: list containing the ID's of the callback
-        signals for each Gtk.Widget() associated with an editable attribute.
     :ivar float _mission_time: the mission time for the open RAMSTK Program.
     :ivar _notebook: the Gtk.Notebook() to hold all the pages of information to
         be displayed.
@@ -157,17 +155,17 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         try:
-            self._lst_handler_id.append(
-                self.treeview.selection.connect('changed',
-                                                self._on_row_change))
+            self.treeview.dic_handler_id[
+                'changed'] = self.treeview.selection.connect(
+                    'changed', self._on_row_change)
         except AttributeError as _error:
             if self._module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         try:
-            self._lst_handler_id.append(
-                self.treeview.connect('button_press_event',
-                                      self._on_button_press))
+            self.treeview.dic_handler_id[
+                'button-press'] = self.treeview.connect(
+                    'button_press_event', self._on_button_press)
         except AttributeError as _error:
             if self._module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -343,6 +341,7 @@ class RAMSTKBaseView(Gtk.HBox):
         except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()
+            _treeview.dic_handler_id = {'': 0}
             if module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
@@ -739,6 +738,8 @@ class RAMSTKBaseView(Gtk.HBox):
         index of the newly selected RAMSTKComboBox() item.
         :rtype: dict
         """
+        combo.handler_block(combo.dic_handler_id['changed'])
+
         try:
             _key: str = self._dic_keys[index]
         except KeyError as _error:
@@ -770,6 +771,8 @@ class RAMSTKBaseView(Gtk.HBox):
                                 package={_key: _new_text})
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        combo.handler_unblock(combo.dic_handler_id['changed'])
 
         return {_key: _new_text}
 
@@ -824,6 +827,8 @@ class RAMSTKBaseView(Gtk.HBox):
             index of the newly changed RAMSTKEntry() or RAMSTKTextView().
         :rtype: dict
         """
+        entry.handler_block(entry.dic_handler_id['changed'])
+
         try:
             _key = self._dic_keys[index]
         except KeyError as _error:
@@ -847,6 +852,8 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.sendMessage(message,
                         node_id=[self._record_id, -1],
                         package={_key: _new_text})
+
+        entry.handler_unblock(entry.dic_handler_id['changed'])
 
         return {_key: _new_text}
 
@@ -1445,8 +1452,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
         """
         [[_key, _value]] = package.items()
 
-        (_function, _id) = self._dic_switch.get(_key)
-        _function(_value, self._lst_handler_id[_id])
+        (_function, _signal) = self._dic_switch.get(_key)
+        _function(_value, _signal)
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    message: str) -> None:
@@ -1466,9 +1473,9 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _key = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        checkbutton.handler_block(self._lst_handler_id[index])
-
         _new_text = int(checkbutton.get_active())
+
+        checkbutton.do_update(_new_text, signal='toggled')
 
         pub.sendMessage(message,
                         node_id=[self._record_id, -1, ''],

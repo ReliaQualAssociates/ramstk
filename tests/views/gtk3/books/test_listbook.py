@@ -35,6 +35,5 @@ class TestRAMSTKListBook():
         assert DUT.dic_tab_position['top'] == Gtk.PositionType.TOP
         assert DUT.dic_tab_position['bottom'] == Gtk.PositionType.BOTTOM
         assert isinstance(DUT._dic_list_views, dict)
-        assert len(DUT._lst_handler_id) == 0
         assert pub.isSubscribed(DUT._on_module_change, 'mvwSwitchedPage')
         assert pub.isSubscribed(DUT._on_close, 'succeed_closed_program')

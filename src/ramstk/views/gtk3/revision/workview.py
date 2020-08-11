@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Revision Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -16,9 +16,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKEntry, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView
-)
+from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKLabel,
+                                       RAMSTKTextView, RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -28,22 +27,13 @@ class GeneralData(RAMSTKWorkView):
     The Revision Work View displays all the general data attributes for the
     selected Revision. The attributes of a Revision General Data Work View are:
 
+    :cvar dict _dic_keys: the index:database table field dictionary.
     :cvar list _lst_labels: the list of label text.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtCode `focus_out_event`                 |
-    +----------+-------------------------------------------+
-    |     1    | txtName `focus_out_event`                 |
-    +----------+-------------------------------------------+
-    |     2    | txtRemarks `changed`                      |
-    +----------+-------------------------------------------+
     """
+    # Define private dict class attributes.
+    _dic_keys = {0: 'name', 1: 'remarks', 2: 'revision_code'}
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [_("Revision Code:"), _("Revision Name:"), _("Remarks:")]
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
@@ -74,14 +64,14 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtCode = RAMSTKEntry()
-        self.txtName = RAMSTKEntry()
-        self.txtRemarks = RAMSTKTextView(Gtk.TextBuffer())
+        self.txtCode: RAMSTKEntry = RAMSTKEntry()
+        self.txtName: RAMSTKEntry = RAMSTKEntry()
+        self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_switch = {
-            'name': [self.txtName.do_update, 0],
-            'remarks': [self.txtRemarks.do_update, 1],
-            'revision_code': [self.txtCode.do_update, 2]
+        self._dic_switch: Dict[str, Union[object, str]] = {
+            'name': [self.txtName.do_update, 'changed'],
+            'remarks': [self.txtRemarks.do_update, 'changed'],
+            'revision_code': [self.txtCode.do_update, 'changed']
         }
 
         self.__set_properties()
@@ -123,12 +113,13 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.txtName.connect('focus-out-event', self._on_focus_out, 0))
-        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 1))
-        self._lst_handler_id.append(
-            self.txtCode.connect('focus-out-event', self._on_focus_out, 2))
+        self.txtName.dic_handler_id['changed'] = self.txtName.connect(
+            'focus-out-event', self._on_focus_out, 0)
+        self.txtRemarks.dic_handler_id[
+            'changed'] = self.txtRemarks.do_get_buffer().connect(
+                'changed', self._on_focus_out, None, 1)
+        self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
+            'focus-out-event', self._on_focus_out, 2)
 
     def __set_properties(self) -> None:
         """
@@ -155,16 +146,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtName.handler_block(self._lst_handler_id[0])
-        self.txtName.set_text('')
-        self.txtName.handler_unblock(self._lst_handler_id[0])
-        _buffer = self.txtRemarks.do_get_buffer()
-        _buffer.handler_block(self._lst_handler_id[1])
-        _buffer.set_text('')
-        _buffer.handler_block(self._lst_handler_id[1])
-        self.txtCode.handler_block(self._lst_handler_id[2])
-        self.txtCode.set_text('')
-        self.txtCode.handler_unblock(self._lst_handler_id[2])
+        self.txtName.do_update('', signal='changed')
+        self.txtRemarks.do_update('', signal='changed')
+        self.txtCode.do_update('', signal='changed')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
@@ -177,12 +161,10 @@ class GeneralData(RAMSTKWorkView):
         """
         self._revision_id = attributes['revision_id']
 
-        self.txtName.do_update(str(attributes['name']),
-                               self._lst_handler_id[0])
-        self.txtRemarks.do_update(str(attributes['remarks']),
-                                  self._lst_handler_id[1])
+        self.txtName.do_update(str(attributes['name']), signal='changed')
+        self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
         self.txtCode.do_update(str(attributes['revision_code']),
-                               self._lst_handler_id[2])
+                               signal='changed')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -234,14 +216,12 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {0: 'name', 1: 'remarks', 2: 'revision_code'}
         try:
-            _key = _dic_keys[index]
+            _key = self._dic_keys[index]
         except KeyError:
             _key = ''
 
-        # TODO: See issue #310.
-        entry.handler_block(self._lst_handler_id[index])
+        entry.handler_block(entry.dic_handler_id['changed'])
 
         try:
             if index in [0, 2]:
@@ -255,4 +235,4 @@ class GeneralData(RAMSTKWorkView):
                         node_id=[self._revision_id, -1, ''],
                         package={_key: _new_text})
 
-        entry.handler_unblock(self._lst_handler_id[index])
+        entry.handler_unblock(entry.dic_handler_id['changed'])

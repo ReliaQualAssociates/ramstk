@@ -54,24 +54,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     :ivar txtCapacitance: enter and display the capacitance rating of the
         capacitor.
     :ivar txtESR: enter and display the equivalent series resistance.
-
-    Callbacks signals in RAMSTKBaseView._lst_handler_id:
-
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   1   | cmbSpecification - `changed`              |
-    +-------+-------------------------------------------+
-    |   2   | cmbStyle - `changed`                      |
-    +-------+-------------------------------------------+
-    |   3   | cmbConfiguration - `changed`              |
-    +-------+-------------------------------------------+
-    |   4   | cmbConstruction - `changed`               |
-    +-------+-------------------------------------------+
-    |   5   | txtCapacitance - `changed`                |
-    +-------+-------------------------------------------+
-    |   6   | txtESR - `changed`                        |
-    +-------+-------------------------------------------+
     """
 
     # Define private dict attributes.
@@ -287,23 +269,27 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          1))
-        self._lst_handler_id.append(
-            self.cmbStyle.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbConfiguration.connect('changed', self._on_combo_changed,
-                                          3))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.txtCapacitance.connect('focus-out-event', self._on_focus_out,
-                                        5))
-        self._lst_handler_id.append(
-            self.txtESR.connect('focus-out-event', self._on_focus_out, 6))
+        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
+            'changed', self._on_combo_changed, 0)
+        self.cmbSpecification.dic_handler_id[
+            'changed'] = self.cmbSpecification.connect('changed',
+                                                       self._on_combo_changed,
+                                                       1)
+        self.cmbStyle.dic_handler_id['changed'] = self.cmbStyle.connect(
+            'changed', self._on_combo_changed, 2)
+        self.cmbConfiguration.dic_handler_id[
+            'changed'] = self.cmbConfiguration.connect('changed',
+                                                       self._on_combo_changed,
+                                                       3)
+        self.cmbConstruction.dic_handler_id[
+            'changed'] = self.cmbConstruction.connect('changed',
+                                                      self._on_combo_changed,
+                                                      4)
+        self.txtCapacitance.dic_handler_id[
+            'changed'] = self.txtCapacitance.connect('focus-out-event',
+                                                     self._on_focus_out, 5)
+        self.txtESR.dic_handler_id['changed'] = self.txtESR.connect(
+            'focus-out-event', self._on_focus_out, 6)
 
     def __set_properties(self) -> None:
         """
@@ -340,22 +326,22 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
         # We don't block the callback signal otherwise the style
         # RAMSTKComboBox() will not be loaded and set.
-        self.cmbSpecification.set_active(attributes['specification_id'])
+        self.cmbSpecification.do_update(attributes['specification_id'],
+                                        signal='changed')
 
         if self._hazard_rate_method_id != 1:
-            self.cmbStyle.do_update(attributes['type_id'],
-                                    self._lst_handler_id[2])
+            self.cmbStyle.do_update(attributes['type_id'], signal='changed')
             self.cmbConfiguration.do_update(attributes['configuration_id'],
-                                            self._lst_handler_id[3])
+                                            signal='changed')
             self.cmbConstruction.do_update(attributes['construction_id'],
-                                           self._lst_handler_id[4])
+                                           signal='changed')
 
-            self.txtCapacitance.do_update(
-                str(self.fmt.format(attributes['capacitance'])),
-                self._lst_handler_id[5])
-            self.txtESR.do_update(
-                str(self.fmt.format(attributes['resistance'])),
-                self._lst_handler_id[6])
+            self.txtCapacitance.do_update(str(
+                self.fmt.format(attributes['capacitance'])),
+                                          signal='changed')
+            self.txtESR.do_update(str(self.fmt.format(
+                attributes['resistance'])),
+                                  signal='changed')
 
         self._do_set_sensitive()
 
@@ -442,9 +428,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        combo.handler_block(self._lst_handler_id[index])
-
         super().on_combo_changed(combo, index, 'wvw_editing_component')
 
         # If the capacitor specification changed, load the capacitor style
@@ -458,10 +441,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                     _data = self._dic_styles[self._subcategory_id]
             except KeyError:
                 _data = []
-            self.cmbStyle.do_load_combo(_data,
-                                        handler_id=self._lst_handler_id[2])
-
-        combo.handler_unblock(self._lst_handler_id[index])
+            self.cmbStyle.do_load_combo(_data, signal='changed')
 
     def _on_focus_out(
             self,
@@ -514,27 +494,25 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
             except KeyError:
                 _data = []
 
-        self.cmbQuality.do_load_combo(_data,
-                                      handler_id=self._lst_handler_id[0])
+        self.cmbQuality.do_load_combo(_data, signal='changed')
 
         try:
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
             _data = []
 
-        self.cmbSpecification.do_load_combo(_data,
-                                            handler_id=self._lst_handler_id[1])
+        self.cmbSpecification.do_load_combo(_data, signal='changed')
 
-        self.cmbStyle.do_load_combo([], handler_id=self._lst_handler_id[2])
+        self.cmbStyle.do_load_combo([], signal='changed')
 
         self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]],
-                                            handler_id=self._lst_handler_id[3])
+                                            signal='changed')
 
         self.cmbConstruction.do_load_combo(
             [[_("Slug, All Tantalum")], [_("Foil, Hermetic")],
              [_("Slug, Hermetic")], [_("Foil, Non-Hermetic")],
              [_("Slug, Non-Hermetic")]],
-            handler_id=self._lst_handler_id[4])
+            signal='changed')
 
 
 class AssessmentResults(RAMSTKAssessmentResults):
@@ -554,7 +532,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
     :ivar txtPiC: displays the construction factor for the capacitor.
     """
 
-    # Define private class dict attributes.
+    # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
@@ -675,10 +653,9 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_load_page(attributes)
 
-        # TODO: See issue #305.
-        self.txtPiCV.set_text(str(self.fmt.format(attributes['piCV'])))
-        self.txtPiCF.set_text(str(self.fmt.format(attributes['piCF'])))
-        self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
+        self.txtPiCV.do_update(str(self.fmt.format(attributes['piCV'])))
+        self.txtPiCF.do_update(str(self.fmt.format(attributes['piCF'])))
+        self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
 
         self._do_set_sensitive()
 

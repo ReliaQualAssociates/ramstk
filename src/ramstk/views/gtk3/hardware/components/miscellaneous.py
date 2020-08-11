@@ -40,25 +40,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         miscellaneous item (crystals only).
     :ivar txtUtilization: enter and display the utilization factor of the
         miscellaneous item (lamps only).
-
-    Callbacks signals in _lst_handler_id:
-
-    +-------+----------------------------+
-    | Index | Widget - Signal            |
-    +=======+============================+
-    |   0   | cmbQuality - `changed`     |
-    +-------+----------------------------+
-    |   1   | cmbApplication - `changed` |
-    +-------+----------------------------+
-    |   2   | cmbType - `changed`        |
-    +-------+----------------------------+
-    |   3   | txtFrequency - `changed`   |
-    +-------+----------------------------+
-    |   4   | txtUtilization - `changed` |
-    +-------+----------------------------+
     """
 
-    # Define private dictionary attributes.
+    # Define private dict class attributes.
     _dic_keys = {
         0: 'quality_id',
         1: 'application_id',
@@ -67,7 +51,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         4: 'duty_cycle'
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Quality Level:"),
         _("Application:"),
@@ -133,8 +117,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
 
         if self._hazard_rate_method_id == 2:
-            self.txtFrequency.do_update(
-                str(self.fmt.format(attributes['frequency_operating'])))
+            self.txtFrequency.do_update(str(
+                self.fmt.format(attributes['frequency_operating'])),
+                                        signal='changed')
 
     def __do_load_filter(self, attributes: Dict[str, Any]) -> None:
         """
@@ -145,7 +130,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbType.do_update(attributes['type_id'])
+        self.cmbType.do_update(attributes['type_id'], signal='changed')
 
     def __do_load_lamp(self, attributes: Dict[str, Any]) -> None:
         """
@@ -156,11 +141,13 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :return: None
         :rtype: None
         """
-        self.cmbApplication.do_update(attributes['application_id'])
+        self.cmbApplication.do_update(attributes['application_id'],
+                                      signal='changed')
 
         if self._hazard_rate_method_id == 2:
-            self.txtUtilization.do_update(
-                str(self.fmt.format(attributes['duty_cycle'])))
+            self.txtUtilization.do_update(str(
+                self.fmt.format(attributes['duty_cycle'])),
+                                          signal='changed')
 
     def __do_set_crystal_sensitive(self) -> None:
         """
@@ -205,10 +192,6 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         """
         self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
             'changed', self._on_combo_changed, 0)
-        # TODO: See issue #310.  The _lst_handler_id attribute will be
-        #  retired once issue #310 is implemented completely.
-        self._lst_handler_id.append(self.cmbQuality.dic_handler_id['changed'])
-
         self.cmbApplication.dic_handler_id[
             'changed'] = self.cmbApplication.connect('changed',
                                                      self._on_combo_changed, 1)
@@ -358,23 +341,27 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :rtype: None
         """
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]])
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]],
+                                      signal='changed')
 
         # Load the application RAMSTKComboBox().
-        self.cmbApplication.do_load_combo([[_("Incandescent, AC")],
-                                           [_("Incandescent, DC")]])
+        self.cmbApplication.do_load_combo(
+            [[_("Incandescent, AC")], [_("Incandescent, DC")]],
+            signal='changed')
 
         # Load the type RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
             self.cmbType.do_load_combo(
                 [[_("Ceramic-Ferrite")], [_("Discrete LC Components")],
-                 [_("Discrete LC and Crystal Components")]])
+                 [_("Discrete LC and Crystal Components")]],
+                signal='changed')
         elif self._hazard_rate_method_id == 2:
             self.cmbType.do_load_combo(
                 [[_("MIL-F-15733 Ceramic-Ferrite")],
                  [_("MIL-F-15733 Discrete LC Components")],
                  [_("MIL-F-18327 Discrete LC Components")],
-                 [_("MIL-F-18327 Discrete LC and Crystal Components")]])
+                 [_("MIL-F-18327 Discrete LC and Crystal Components")]],
+                signal='changed')
 
 
 class AssessmentResults(RAMSTKAssessmentResults):
@@ -393,7 +380,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         hardware item.
     """
 
-    # Define private dict attributes.
+    # Define private dict class attributes.
     _dic_part_stress = {
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
@@ -405,7 +392,7 @@ class AssessmentResults(RAMSTKAssessmentResults):
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E</sub></span>"
     }
 
-    # Define private class list attributes.
+    # Define private class list class attributes.
     _lst_tooltips = [
         _("The assessment model used to calculate the miscellaneous item "
           "failure rate."),
@@ -497,9 +484,8 @@ class AssessmentResults(RAMSTKAssessmentResults):
         """
         super().do_load_page(attributes)
 
-        # TODO: See issue #305.
-        self.txtPiU.set_text(str(self.fmt.format(attributes['piU'])))
-        self.txtPiA.set_text(str(self.fmt.format(attributes['piA'])))
+        self.txtPiU.do_update(str(self.fmt.format(attributes['piU'])))
+        self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
 
         if (self._hazard_rate_method_id == 1
                 and self._subcategory_id in [3, 4]):
