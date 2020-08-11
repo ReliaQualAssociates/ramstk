@@ -57,7 +57,7 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         super().__init__(configuration, logger, module=module)
 
         # Initialize private dictionary attributes.
-        self._dic_switch: Dict[str, Union[object, int]] = {}
+        self._dic_switch: Dict[str, Union[object, str]] = {}
 
         # Initialize private list attributes.
         self._lst_widgets: List[object] = []

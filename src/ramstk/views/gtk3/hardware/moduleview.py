@@ -440,7 +440,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
 
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
@@ -455,4 +455,4 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._record_id)
             pub.sendMessage('request_set_title', title=_title)
 
-        selection.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])

@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Revision Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -68,10 +68,10 @@ class GeneralData(RAMSTKWorkView):
         self.txtName: RAMSTKEntry = RAMSTKEntry()
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_switch = {
-            'name': [self.txtName.do_update, 0],
-            'remarks': [self.txtRemarks.do_update, 1],
-            'revision_code': [self.txtCode.do_update, 2]
+        self._dic_switch: Dict[str, Union[object, str]] = {
+            'name': [self.txtName.do_update, 'changed'],
+            'remarks': [self.txtRemarks.do_update, 'changed'],
+            'revision_code': [self.txtCode.do_update, 'changed']
         }
 
         self.__set_properties()

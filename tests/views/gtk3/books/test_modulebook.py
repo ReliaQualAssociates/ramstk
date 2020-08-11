@@ -35,6 +35,5 @@ class TestRAMSTKModuleBook():
         assert DUT.dic_tab_position['bottom'] == Gtk.PositionType.BOTTOM
         assert isinstance(DUT, RAMSTKModuleBook)
         assert isinstance(DUT._dic_module_views, dict)
-        assert len(DUT._lst_handler_id) == 2
         assert pub.isSubscribed(DUT._on_open, 'succeed_retrieve_revisions')
         assert pub.isSubscribed(DUT._on_close, 'succeed_closed_program')

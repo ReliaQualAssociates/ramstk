@@ -353,7 +353,7 @@ class FailureDefinition(RAMSTKListView):
         """
         _attributes = {}
 
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
 
         _model, _row = selection.get_selected()
 
@@ -367,7 +367,7 @@ class FailureDefinition(RAMSTKListView):
             pub.sendMessage('selected_failure_definition',
                             attributes=_attributes)
 
-        selection.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
 
 class UsageProfile(RAMSTKListView):
@@ -1118,7 +1118,7 @@ class UsageProfile(RAMSTKListView):
         _headings: List[str] = []
         _level: str = ''
 
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
 
         _model, _row = selection.get_selected()
 
@@ -1145,7 +1145,7 @@ class UsageProfile(RAMSTKListView):
 
                 i += 1
 
-        selection.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
         pub.sendMessage('selected_usage_profile',
                         attributes=self.__get_attributes(selection, _level))

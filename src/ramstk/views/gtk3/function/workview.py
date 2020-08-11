@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Function Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -76,11 +76,11 @@ class GeneralData(RAMSTKWorkView):
         self.txtName = RAMSTKEntry()
         self.txtRemarks = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_switch = {
-            'function_code': [self.txtCode.do_update, 0],
-            'name': [self.txtName.do_update, 1],
-            'remarks': [self.txtRemarks.do_update, 2],
-            'safety_critical': [self.chkSafetyCritical.do_update, 3]
+        self._dic_switch: Dict[str, Union[object, str]] = {
+            'function_code': [self.txtCode.do_update, 'changed'],
+            'name': [self.txtName.do_update, 'changed'],
+            'remarks': [self.txtRemarks.do_update, 'changed'],
+            'safety_critical': [self.chkSafetyCritical.do_update, 'toggled']
         }
 
         self.__set_properties()
@@ -283,15 +283,6 @@ class HazOps(RAMSTKWorkView):
     The attributes of a HazOps Work View are:
 
     :ivar int _hazard_id: the ID of the currently selected hazard.
-
-    self._lst_handler_id signals are:
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   0   | treeview `cursor_changed`                 |
-    +-------+-------------------------------------------+
-    |   1   | treeview `button_press_event`             |
-    +-------+-------------------------------------------+
     """
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -523,8 +514,8 @@ class HazOps(RAMSTKWorkView):
             for _hazard in _hazards:
                 _attributes = list(_hazard.get_attributes().values())
                 _attributes.append('')
-                # noinspection PyDeepBugsSwappedArgs
                 try:
+                    # noinspection PyDeepBugsSwappedArgs
                     _model.append(None, _attributes)
                 except ValueError as _error:
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -731,7 +722,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.treeview.handler_block(self._lst_handler_id[0])
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
 
         _model, _row = selection.get_selected()
         try:
@@ -740,7 +731,7 @@ class HazOps(RAMSTKWorkView):
             self._record_id = -1
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        self.treeview.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
     def do_load_combobox(self, hazards: Dict[Any, Any],
                          severity: Dict[Any, Any], probability: List[str]) -> \

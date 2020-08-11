@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import locale
-from typing import Any, Dict, List
+from typing import Any, Dict, Union
 
 # Third Party Imports
 import treelib
@@ -193,28 +193,29 @@ class GeneralData(RAMSTKWorkView):
         self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
         self.txtYearMade: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_switch: Dict[str, List[Any]] = {
-            'category_id': [self.cmbCategory.do_update, 2],
-            'cost_type_id': [self.cmbCostType.do_update, 3],
-            'manufacturer_id': [self.cmbManufacturer.do_update, 4],
-            'subcategory_id': [self.cmbSubcategory.do_update, 5],
-            'alt_part_number': [self.txtAltPartNum.do_update, 6],
-            'attachments': [self.txtAttachments.do_update, 7],
-            'cage_code': [self.txtCAGECode.do_update, 8],
-            'comp_ref_des': [self.txtCompRefDes.do_update, 9],
-            'cost': [self.txtCost.do_update, 10],
-            'description': [self.txtDescription.do_update, 11],
-            'figure_number': [self.txtFigureNumber.do_update, 12],
-            'lcn': [self.txtLCN.do_update, 13],
-            'name': [self.txtName.do_update, 14],
-            'nsn': [self.txtNSN.do_update, 15],
-            'page_number': [self.txtPageNumber.do_update, 16],
-            'part_number': [self.txtPartNumber.do_update, 17],
-            'quantity': [self.txtQuantity.do_update, 18],
-            'ref_des': [self.txtRefDes.do_update, 19],
-            'remarks': [self.txtRemarks.do_update, 20],
-            'specification_number': [self.txtSpecification.do_update, 21],
-            'year_of_manufacture': [self.txtYearMade.do_update, 22]
+        self._dic_switch: Dict[str, Union[object, str]] = {
+            'category_id': [self.cmbCategory.do_update, 'changed'],
+            'cost_type_id': [self.cmbCostType.do_update, 'changed'],
+            'manufacturer_id': [self.cmbManufacturer.do_update, 'changed'],
+            'subcategory_id': [self.cmbSubcategory.do_update, 'changed'],
+            'alt_part_number': [self.txtAltPartNum.do_update, 'changed'],
+            'attachments': [self.txtAttachments.do_update, 'changed'],
+            'cage_code': [self.txtCAGECode.do_update, 'changed'],
+            'comp_ref_des': [self.txtCompRefDes.do_update, 'changed'],
+            'cost': [self.txtCost.do_update, 'changed'],
+            'description': [self.txtDescription.do_update, 'changed'],
+            'figure_number': [self.txtFigureNumber.do_update, 'changed'],
+            'lcn': [self.txtLCN.do_update, 'changed'],
+            'name': [self.txtName.do_update, 'changed'],
+            'nsn': [self.txtNSN.do_update, 'changed'],
+            'page_number': [self.txtPageNumber.do_update, 'changed'],
+            'part_number': [self.txtPartNumber.do_update, 'changed'],
+            'quantity': [self.txtQuantity.do_update, 'changed'],
+            'ref_des': [self.txtRefDes.do_update, 'changed'],
+            'remarks': [self.txtRemarks.do_update, 'changed'],
+            'specification_number':
+            [self.txtSpecification.do_update, 'changed'],
+            'year_of_manufacture': [self.txtYearMade.do_update, 'changed']
         }
 
         self._lst_widgets = [
@@ -926,18 +927,21 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtDutyCycle
         ]
 
-        self._dic_switch = {
-            'add_adj_factor': [self.txtAddAdjFactor.do_update, 6],
-            'scale_parameter': [self.txtFailScale.do_update, 8],
-            'shape_parameter': [self.txtFailShape.do_update, 9],
-            'location_parameter': [self.txtFailLocation.do_update, 10],
-            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 11],
-            'hazard_rate_specified': [self.txtSpecifiedHt.do_update, 12],
-            'hr_specified_variance': [self.txtSpecifiedHtVar.do_update, 13],
-            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 14],
-            'mtbf_spec_variance': [self.txtSpecifiedMTBFVar.do_update, 15],
-            'duty_cycle': [self.txtDutyCycle.do_update, 16],
-            'mission_time': [self.txtMissionTime.do_update, 17]
+        self._dic_switch: Dict[str, Union[object, str]] = {
+            'add_adj_factor': [self.txtAddAdjFactor.do_update, 'changed'],
+            'scale_parameter': [self.txtFailScale.do_update, 'changed'],
+            'shape_parameter': [self.txtFailShape.do_update, 'changed'],
+            'location_parameter': [self.txtFailLocation.do_update, 'changed'],
+            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 'changed'],
+            'hazard_rate_specified':
+            [self.txtSpecifiedHt.do_update, 'changed'],
+            'hr_specified_variance':
+            [self.txtSpecifiedHtVar.do_update, 'changed'],
+            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 'changed'],
+            'mtbf_spec_variance':
+            [self.txtSpecifiedMTBFVar.do_update, 'changed'],
+            'duty_cycle': [self.txtDutyCycle.do_update, 'changed'],
+            'mission_time': [self.txtMissionTime.do_update, 'changed']
         }
 
         self.__set_properties()

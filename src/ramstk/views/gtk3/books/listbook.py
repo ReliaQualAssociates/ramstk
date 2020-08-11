@@ -6,9 +6,6 @@
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK GTK3 List Book Module."""
 
-# Standard Library Imports
-from typing import List
-
 # Third Party Imports
 from pubsub import pub
 
@@ -16,9 +13,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import mtxFunctionHardware
-from ramstk.views.gtk3.requirement import (
-    lvwStakeholders, mtxRequirementHardware
-)
+from ramstk.views.gtk3.requirement import (lvwStakeholders,
+                                           mtxRequirementHardware)
 from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
 from ramstk.views.gtk3.validation import mtxValidationRequirement
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
@@ -37,7 +33,6 @@ class RAMSTKListBook(RAMSTKBaseBook):
         Key is the RAMSTK module name; value is a list of Views associated with
         that RAMSTK module.
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
@@ -56,8 +51,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
                 lvwUsageProfile(configuration, logger),
                 lvwFailureDefinition(configuration, logger)
             ],
-            'function':
-                [mtxFunctionHardware(configuration, logger)],
+            'function': [mtxFunctionHardware(configuration, logger)],
             'requirement': [
                 lvwStakeholders(configuration, logger),
                 mtxRequirementHardware(configuration, logger),
@@ -67,13 +61,10 @@ class RAMSTKListBook(RAMSTKBaseBook):
                 # mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
                 # mtxHardware(configuration, matrix_type='hrdwr_vldtn')
             ],
-            'validation': [
-                mtxValidationRequirement(configuration, logger)
-            ]
+            'validation': [mtxValidationRequirement(configuration, logger)]
         }
 
         # Initialize private list attributes.
-        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
 

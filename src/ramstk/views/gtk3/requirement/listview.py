@@ -428,12 +428,14 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
+
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
         if _attributes:
             self._record_id = _attributes['stakeholder_id']
 
-        selection.handler_unblock(self._lst_handler_id[0])
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
 
 class RequirementHardware(RAMSTKListView):

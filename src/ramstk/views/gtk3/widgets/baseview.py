@@ -51,8 +51,6 @@ class RAMSTKBaseView(Gtk.HBox):
         key:value pairs.
     :ivar list _lst_col_order: list containing the order of the columns in the
         List View RAMSTKTreeView().
-    :ivar list _lst_handler_id: list containing the ID's of the callback
-        signals for each Gtk.Widget() associated with an editable attribute.
     :ivar float _mission_time: the mission time for the open RAMSTK Program.
     :ivar _notebook: the Gtk.Notebook() to hold all the pages of information to
         be displayed.
@@ -157,9 +155,9 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         try:
-            self._lst_handler_id.append(
-                self.treeview.selection.connect('changed',
-                                                self._on_row_change))
+            self.treeview.dic_handler_id[
+                'changed'] = self.treeview.selection.connect(
+                    'changed', self._on_row_change)
         except AttributeError as _error:
             if self._module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -1454,8 +1452,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
         """
         [[_key, _value]] = package.items()
 
-        (_function, _id) = self._dic_switch.get(_key)
-        _function(_value, self._lst_handler_id[_id])
+        (_function, _signal) = self._dic_switch.get(_key)
+        _function(_value, _signal)
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    message: str) -> None:

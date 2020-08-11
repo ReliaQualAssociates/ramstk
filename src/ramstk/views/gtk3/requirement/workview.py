@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Requirement Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -107,14 +107,14 @@ class GeneralData(RAMSTKWorkView):
         self.txtSpecification = RAMSTKEntry()
         self.txtValidatedDate: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_switch = {
-            'derived': [self.chkDerived.do_update, 2],
-            'description': [self.txtName.do_update, 3],
-            'figure_number': [self.txtFigNum.do_update, 4],
-            'page_number': [self.txtPageNum.do_update, 6],
-            'specification': [self.txtSpecification.do_update, 10],
-            'validated': [self.chkValidated.do_update, 12],
-            'validated_date': [self.txtValidatedDate.do_update, 13]
+        self._dic_switch: Dict[str, Union[object, str]] = {
+            'derived': [self.chkDerived.do_update, 'toggled'],
+            'description': [self.txtName.do_update, 'changed'],
+            'figure_number': [self.txtFigNum.do_update, 'changed'],
+            'page_number': [self.txtPageNum.do_update, 'changed'],
+            'specification': [self.txtSpecification.do_update, 'changed'],
+            'validated': [self.chkValidated.do_update, 'toggled'],
+            'validated_date': [self.txtValidatedDate.do_update, 'changed']
         }
 
         self.__set_properties()

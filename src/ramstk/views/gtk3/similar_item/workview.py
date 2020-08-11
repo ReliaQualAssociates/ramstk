@@ -41,17 +41,6 @@ class SimilarItem(RAMSTKWorkView):
     :ivar int _method_id: the ID of the similar item method to use.
     :ivar cmbSimilarItemMethod: the method (Topic 633 or user-defined) to use
         for the similar item analysis.
-
-    The _lst_handler_id for the Similar Item Work View:
-    +-------+-------------------------------------------+
-    | Index | Widget - Signal                           |
-    +=======+===========================================+
-    |   0   | treeview - `cursor_changed`               |
-    +-------+-------------------------------------------+
-    |   1   | treeview - `button_press_event`           |
-    +-------+-------------------------------------------+
-    |   2   | treeview (cell) - `edited` or `toggled`   |
-    +-------+-------------------------------------------+
     """
     # Define private dict class attributes.
     _dic_keys = {2: 'method_id'}

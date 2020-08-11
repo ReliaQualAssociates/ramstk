@@ -14,16 +14,14 @@ from typing import TypeVar
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTK_FAILURE_PROBABILITY,
-    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-)
+from ramstk.configuration import (RAMSTK_FAILURE_PROBABILITY,
+                                  RAMSTKSiteConfiguration,
+                                  RAMSTKUserConfiguration)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import CreateProject, OpenProject
-from ramstk.views.gtk3.books import (
-    RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
-)
+from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
+                                     RAMSTKWorkBook)
 
 Tconfiguration = TypeVar('Tconfiguration', RAMSTKUserConfiguration,
                          RAMSTKSiteConfiguration)
@@ -59,7 +57,6 @@ class RAMSTKDesktop(Gtk.Window):
     :cvar dict dic_books: dictionary holding a reference to each RAMSTK book.
     :cvar dict dic_tab_pos: dictionary holding the Gtk.PositionType()s for each
         of left, right, top, and botton.
-    :ivar list _lst_handler_id: the list of widget callback handler IDs.
     :ivar int _n_screens: the number of monitors attached to the machine
         running RAMSTK.
     :ivar float _height: the height of the monitors attached to the machine
@@ -95,7 +92,6 @@ class RAMSTKDesktop(Gtk.Window):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
         try:

@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Validation Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -39,15 +39,8 @@ class GeneralData(RAMSTKWorkView):
     The Validation Work View displays all the general data attributes for the
     selected Validation. The attributes of a Validation General Data Work View are:
 
+    :cvar dict _dic_keys:
     :cvar list _lst_labels: the list of label text.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | spnStatus - `value-changed`               |
-    +----------+-------------------------------------------+
     """
     # Define private dict class attributes.
     _dic_keys = {
@@ -164,7 +157,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtProjectCost: RAMSTKEntry = RAMSTKEntry()
         self.txtProjectCostUL: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_switch = {
+        self._dic_switch: Dict[str, Union[object, str]] = {
             'description': [self.txtTask.do_update, 'changed'],
             'task_type': [self.cmbTaskType.do_update, 'changed'],
             'task_specification': [self.txtSpecification.do_update, 'changed'],
@@ -420,8 +413,8 @@ class GeneralData(RAMSTKWorkView):
                                 self.txtEndDate)
         self.btnStartDate.connect('button-release-event', self._do_select_date,
                                   self.txtStartDate)
-        self._lst_handler_id.append(
-            self.spnStatus.connect('focus-out-event', self._on_value_changed))
+        self.spnStatus.dic_handler_id['changed'] = self.spnStatus.connect(
+            'focus-out-event', self._on_value_changed)
 
         # noinspection PyArgumentList
         self.txtTask.dic_handler_id['changed'] = self.txtTask.do_get_buffer(
@@ -493,6 +486,7 @@ class GeneralData(RAMSTKWorkView):
             "V&amp;V activity acceptance parameter."))
 
         # ----- ENTRIES
+        self.spnStatus.dic_handler_id = {'': 0}
         self.txtTask.do_set_properties(
             height=100,
             width=500,
@@ -590,9 +584,10 @@ class GeneralData(RAMSTKWorkView):
         self.txtStartDate.do_update('', signal='changed')
         self.txtEndDate.do_update('', signal='changed')
 
-        self.spnStatus.handler_block(self._lst_handler_id[0])
+        self.spnStatus.handler_block(self.spnStatus.dic_handler_id['changed'])
         self.spnStatus.set_value(0.0)
-        self.spnStatus.handler_unblock(self._lst_handler_id[0])
+        self.spnStatus.handler_unblock(
+            self.spnStatus.dic_handler_id['changed'])
 
         self.txtMinTime.do_update('', signal='changed')
         self.txtExpTime.do_update('', signal='changed')
@@ -665,9 +660,10 @@ class GeneralData(RAMSTKWorkView):
         self.txtStartDate.do_update(attributes['date_start'], signal='changed')
         self.txtEndDate.do_update(attributes['date_end'], signal='changed')
 
-        self.spnStatus.handler_block(self._lst_handler_id[0])
+        self.spnStatus.handler_block(self.spnStatus.dic_handler_id['changed'])
         self.spnStatus.set_value(attributes['status'])
-        self.spnStatus.handler_unblock(self._lst_handler_id[0])
+        self.spnStatus.handler_unblock(
+            self.spnStatus.dic_handler_id['changed'])
 
         self.txtMinTime.do_update(str(
             self.fmt.format(attributes['time_minimum'])),
@@ -862,9 +858,11 @@ class GeneralData(RAMSTKWorkView):
         [[_key, _value]] = package.items()
 
         if _key == 'status':
-            self.spnStatus.handler_block(self._lst_handler_id[0])
+            self.spnStatus.handler_block(
+                self.spnStatus.dic_handler_id['changed'])
             self.spnStatus.set_value(_value)
-            self.spnStatus.handler_unblock(self._lst_handler_id[0])
+            self.spnStatus.handler_unblock(
+                self.spnStatus.dic_handler_id['changed'])
         else:
             (_function, _signal) = self._dic_switch.get(_key)
             _function(_value, signal=_signal)
@@ -937,13 +935,13 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        spinbutton.handler_block(self._lst_handler_id[0])
+        spinbutton.handler_block(spinbutton.dic_handler_id['changed'])
 
         pub.sendMessage('wvw_editing_validation',
                         node_id=[self._record_id, -1],
                         package={'status': float(spinbutton.get_value())})
 
-        spinbutton.handler_unblock(self._lst_handler_id[0])
+        spinbutton.handler_unblock(spinbutton.dic_handler_id['changed'])
 
 
 class BurndownCurve(RAMSTKWorkView):

@@ -6,9 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Module Book Module."""
 
-# Standard Library Imports
-from typing import List
-
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
@@ -58,11 +55,11 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         }
 
         # Initialize private list attributes.
-        self._lst_handler_id: List[int] = []
 
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
+        self.dic_handler_id = {'': 0}
 
         # Initialize public list attributes.
 
@@ -99,10 +96,10 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.connect('select-page', self._on_switch_page))
-        self._lst_handler_id.append(
-            self.connect('switch-page', self._on_switch_page))
+        self.dic_handler_id['select-page'] = self.connect(
+            'select-page', self._on_switch_page)
+        self.dic_handler_id['switch-page'] = self.connect(
+            'switch-page', self._on_switch_page)
 
     def _on_close(self) -> None:
         """
