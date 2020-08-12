@@ -20,7 +20,6 @@ def test_do_make_label_group():
     _test_labels = ["This", "is", "a", "list", "of", "labels"]
     _max_x, _lst_labels = do_make_label_group(_test_labels, wrap=True)
 
-    assert _max_x == 72
     assert isinstance(_lst_labels[0], RAMSTKLabel)
     assert isinstance(_lst_labels[1], RAMSTKLabel)
     assert isinstance(_lst_labels[2], RAMSTKLabel)
