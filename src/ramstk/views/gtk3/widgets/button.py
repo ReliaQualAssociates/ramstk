@@ -151,7 +151,7 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
 
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
-        Set the properties of the RAMSTK button.
+        Set the properties of the RAMSTKButton.
 
         :param \**kwargs: See below
 
@@ -291,15 +291,15 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
 
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
-        Set the properties of the RAMSTK button.
+        Set the properties of the RAMSTKSpinButton.
 
         :param \**kwargs: See below
 
         :Keyword Arguments:
             * *height* (int) -- height of the RAMSTKButton() widget.
                 Default is 30.
-            * *icon* (str) -- the icon to display on the button.  Default is
-                None.
+            * *limits* (list) -- the list of values for the spin button
+                Gtk.Adjustment().
             * *tooltip* (str) -- the tooltip, if any, for the button.
                 Default is a message to file a QA-type issue to have one added.
             * *width* (int) -- width of the RAMSTKButton() widget.

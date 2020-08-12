@@ -31,7 +31,11 @@ class GeneralData(RAMSTKWorkView):
     :cvar list _lst_labels: the list of label text.
     """
     # Define private dict class attributes.
-    _dic_keys = {0: 'name', 1: 'remarks', 2: 'revision_code'}
+    _dic_keys = {
+        0: ['name', 'string'],
+        1: ['remarks', 'string'],
+        2: ['revision_code', 'string']
+    }
 
     # Define private list class attributes.
     _lst_labels = [_("Revision Code:"), _("Revision Name:"), _("Remarks:")]
@@ -215,11 +219,9 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_update_all_revisions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _on_focus_out(
-            self,
-            entry: Gtk.Entry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
+    # pylint: disable=unused-argument
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -239,23 +241,4 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(entry.dic_handler_id['changed'])
-
-        try:
-            if index in [0, 2]:
-                _new_text: str = str(entry.get_text())
-            else:
-                _new_text = self.txtRemarks.do_get_text()
-        except ValueError:
-            _new_text = ''
-
-        pub.sendMessage('wvw_editing_revision',
-                        node_id=[self._revision_id, -1, ''],
-                        package={_key: _new_text})
-
-        entry.handler_unblock(entry.dic_handler_id['changed'])
+        super().on_focus_out(entry, index, 'wvw_editing_revision')

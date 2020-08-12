@@ -829,24 +829,19 @@ class RAMSTKBaseView(Gtk.HBox):
         entry.handler_block(entry.dic_handler_id['changed'])
 
         try:
-            _key = self._dic_keys[index]
+            _key = self._dic_keys[index][0]
+            _type = self._dic_keys[index][1]
         except KeyError as _error:
             _key = ''
+            _type = 'string'
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        try:
-            _new_text: Any = int(entry.get_text())
-        except ValueError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-            try:
-                _new_text = float(entry.get_text())
-            except ValueError as _error:
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-                try:
-                    _new_text = str(entry.get_text())
-                except ValueError as _error:
-                    _new_text = None
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        if _type == 'float':
+            _new_text: Any = float(entry.get_text())
+        elif _type == 'integer':
+            _new_text = int(entry.get_text())
+        elif _type == 'string':
+            _new_text = str(entry.get_text())
 
         pub.sendMessage(message,
                         node_id=[self._record_id, -1],

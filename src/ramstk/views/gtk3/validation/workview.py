@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Validation Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -44,23 +44,23 @@ class GeneralData(RAMSTKWorkView):
     """
     # Define private dict class attributes.
     _dic_keys = {
-        0: 'description',
+        0: ['description', 'string'],
         1: 'task_type',
-        2: 'task_specification',
+        2: ['task_specification', 'string'],
         3: 'measurement_unit',
-        4: 'acceptable_minimum',
-        5: 'acceptable_maximum',
-        6: 'acceptable_mean',
-        7: 'acceptable_variance',
-        8: 'date_start',
-        9: 'date_end',
-        11: 'time_minimum',
-        12: 'time_average',
-        13: 'time_maximum',
-        14: 'cost_minimum',
-        15: 'cost_average',
-        16: 'cost_maximum',
-        32: 'name'
+        4: ['acceptable_minimum', 'float'],
+        5: ['acceptable_maximum', 'float'],
+        6: ['acceptable_mean', 'float'],
+        7: ['acceptable_variance', 'float'],
+        8: ['date_start', 'string'],
+        9: ['date_end', 'string'],
+        11: ['time_minimum', 'float'],
+        12: ['time_average', 'float'],
+        13: ['time_maximum', 'float'],
+        14: ['cost_minimum', 'float'],
+        15: ['cost_average', 'float'],
+        16: ['cost_maximum', 'float'],
+        32: ['name', 'string']
     }
 
     # Define private list class attributes.
@@ -90,8 +90,10 @@ class GeneralData(RAMSTKWorkView):
         _("Project Cost (95% Confidence):")
     ]
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'validation') -> None:
         """
         Initialize the Validation Work View general data page.
 
@@ -100,7 +102,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, 'validation')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -170,6 +172,7 @@ class GeneralData(RAMSTKWorkView):
             [self.txtVarAcceptable.do_update, 'changed'],
             'date_start': [self.txtStartDate.do_update, 'changed'],
             'date_end': [self.txtEndDate.do_update, 'changed'],
+            'status': [self.spnStatus.do_update, 'changed'],
             'time_minimum': [self.txtMinTime.do_update, 'changed'],
             'time_average': [self.txtExpTime.do_update, 'changed'],
             'time_maximum': [self.txtMaxTime.do_update, 'changed'],
@@ -298,16 +301,81 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Place the LEFT side widgets.
+        _hpaned.pack1(self.__make_ui_left(), True, True)
+
+        # Place the RIGHT side widgets.
+        _vpaned: Gtk.VPaned = Gtk.VPaned()
+        _hpaned.pack2(_vpaned, True, True)
+        _vpaned.pack1(self.__make_ui_top_right(), True, True)
+        _vpaned.pack2(self.__make_ui_bottom_right(), True, True)
+
+        _label = RAMSTKLabel(_("General\nData"))
+        _label.do_set_properties(
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_(
+                "Displays general information for the selected Validation"))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+        self.show_all()
+
+    def __make_ui_bottom_right(self) -> RAMSTKFrame:
+        """
+        Make the bottom right frame of the UI.
+
+        :return: _frame; the frame containing the Gtk.Fixed() with widgets
+            loaded.
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
+        """
+        _fixed = super().make_ui(start=21)
+
+        # We add the project time and project time UL to the same y position
+        # as the project time LL widget.
+        _time_entry = _fixed.get_children()[1]
+        _cost_entry = _fixed.get_children()[-1]
+        _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
+        _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
+        _fixed.put(self.txtProjectTime, _x_pos + 175, _y_pos)
+        _fixed.put(self.txtProjectTimeUL, _x_pos + 350, _y_pos)
+
+        # We add the project cost and project cost UL to the same y position
+        # as the project cost LL widget.
+        _x_pos: int = _fixed.child_get_property(_cost_entry, 'x')
+        _y_pos: int = _fixed.child_get_property(_cost_entry, 'y')
+        _fixed.put(self.txtProjectCost, _x_pos + 175, _y_pos)
+        _fixed.put(self.txtProjectCostUL, _x_pos + 350, _y_pos)
+
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(bold=True, title=_("Project Effort"))
+        _frame.add(_scrollwindow)
+
+        return _frame
+
+    def __make_ui_left(self) -> RAMSTKFrame:
+        """
+        Make the left frame of the UI.
+
+        :return: _frame; the frame containing the Gtk.Fixed() with widgets
+            loaded.
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
+        """
         _fixed = super().make_ui(end=13)
         _frame: RAMSTKFrame = RAMSTKFrame()
         _frame.do_set_properties(bold=True, title=_("Task Description"))
         _frame.add(_fixed)
-        _hpaned.pack1(_frame, True, True)
 
-        # Place the TOP RIGHT side widgets.
-        _vpaned: Gtk.VPaned = Gtk.VPaned()
-        _hpaned.pack2(_vpaned, True, True)
+        return _frame
 
+    def __make_ui_top_right(self) -> RAMSTKFrame:
+        """
+        Make the top right frame of the UI.
+
+        :return: _frame; the frame containing the Gtk.Fixed() with widgets
+            loaded.
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
+        """
         _fixed = super().make_ui(start=13, end=21)
 
         # We add the mean time and mean time UL to the same y position as
@@ -330,43 +398,8 @@ class GeneralData(RAMSTKWorkView):
         _frame: RAMSTKFrame = RAMSTKFrame()
         _frame.do_set_properties(bold=True, title=_("Task Effort"))
         _frame.add(_scrollwindow)
-        _vpaned.pack1(_frame, True, True)
 
-        # Place the BOTTOM RIGHT side widgets.
-        _fixed = super().make_ui(start=21)
-
-        # We add the project time and project time UL to the same y position
-        # as the project time LL widget.
-        _time_entry = _fixed.get_children()[1]
-        _cost_entry = _fixed.get_children()[-1]
-        _x_pos = _fixed.child_get_property(_time_entry, 'x')
-        _y_pos = _fixed.child_get_property(_time_entry, 'y')
-        _fixed.put(self.txtProjectTime, _x_pos + 175, _y_pos)
-        _fixed.put(self.txtProjectTimeUL, _x_pos + 350, _y_pos)
-
-        # We add the project cost and project cost UL to the same y position
-        # as the project cost LL widget.
-        _x_pos = _fixed.child_get_property(_cost_entry, 'x')
-        _y_pos = _fixed.child_get_property(_cost_entry, 'y')
-        _fixed.put(self.txtProjectCost, _x_pos + 175, _y_pos)
-        _fixed.put(self.txtProjectCostUL, _x_pos + 350, _y_pos)
-
-        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
-        _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True, title=_("Project Effort"))
-        _frame.add(_scrollwindow)
-        _vpaned.pack2(_frame, True, True)
-
-        _label = RAMSTKLabel(_("General\nData"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_(
-                "Displays general information for the selected Validation"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
-
-        self.show_all()
+        return _frame
 
     # noinspection PyArgumentList
     def __set_callbacks(self) -> None:
@@ -777,49 +810,8 @@ class GeneralData(RAMSTKWorkView):
         combo.handler_unblock(combo.dic_handler_id['changed'])
 
     # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _on_edit(self, node_id: List, package: Dict) -> None:
-        """
-        Update the Validation Work View Gtk.Widgets().
-
-        This method updates the Validation Work View Gtk.Widgets() with changes
-        to the Validation data model attributes.  The moduleview sends a dict
-        that relates the database field and the new data for that field.
-
-            `package` key: `package` value
-
-        corresponds to:
-
-            database field name: new value
-
-        This method uses the key to determine which widget needs to be
-        updated with the new data.
-
-        :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list
-            is:
-
-                0 - Validation ID
-                1 - Failure Definition ID
-                2 - Usage ID
-
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        """
-        [[_key, _value]] = package.items()
-
-        if _key == 'status':
-            self.spnStatus.do_update(_value, signal='changed')
-        else:
-            (_function, _signal) = self._dic_switch.get(_key)
-            _function(_value, signal=_signal)
-
-    def _on_focus_out(
-            self,
-            entry: RAMSTKEntry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
+    def _on_focus_out(self, entry: RAMSTKEntry, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -839,31 +831,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(entry.dic_handler_id['changed'])
-
-        if index == 0:
-            _new_text: Any = self.txtTask.do_get_text()
-        elif index in [2, 8, 9, 32]:
-            try:
-                _new_text = str(entry.get_text())
-            except ValueError:
-                _new_text = ''
-        else:
-            try:
-                _new_text = float(entry.get_text())
-            except ValueError:
-                _new_text = 0.0
-
-        pub.sendMessage('wvw_editing_validation',
-                        node_id=[self._record_id, -1, ''],
-                        package={_key: _new_text})
-
-        entry.handler_unblock(entry.dic_handler_id['changed'])
+        super().on_focus_out(entry, index, 'wvw_editing_validation')
 
     def _on_value_changed(self, spinbutton: Gtk.SpinButton,
                           __event: Gdk.EventFocus) -> None:
@@ -905,15 +873,17 @@ class BurndownCurve(RAMSTKWorkView):
     :ivar burndown: the RAMSTKPlot() widget to display the burndown curve of
                     program V&V task effort.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'validation') -> None:
         """
         Initialize the Work View for the Validation package.
 
         :param configuration: the RAMSTK configuration instance.
         :type configuration: :class:`ramstk.RAMSTK.Configuration`
         """
-        super().__init__(configuration, logger, 'validation')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -952,7 +922,6 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)

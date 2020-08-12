@@ -36,9 +36,9 @@ class Allocation(RAMSTKWorkView):
     _dic_keys = {
         0: 'allocation_method_id',
         1: 'goal_measure_id',
-        2: 'reliability_goal',
-        3: 'hazard_rate_goal',
-        4: 'mtbf_goal'
+        2: ['reliability_goal', 'float'],
+        3: ['hazard_rate_goal', 'float'],
+        4: ['mtbf_goal', 'float']
     }
     # TMPLT: If the workview contains a RAMSTKTreeView, populate this dict with
     # TMPLT: the keymap for the columns.  The key is the column number in the

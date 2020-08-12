@@ -31,16 +31,16 @@ class GeneralData(RAMSTKWorkView):
     """
     # Define private dict class attributes.
     _dic_keys = {
-        0: 'requirement_code',
-        1: 'description',
+        0: ['requirement_code', 'string'],
+        1: ['description', 'string'],
         2: 'requirement_type',
-        4: 'specification',
-        5: 'page_number',
-        6: 'figure_number',
+        4: ['specification', 'string'],
+        5: ['page_number', 'string'],
+        6: ['figure_number', 'string'],
         7: 'priority',
         8: 'owner',
-        9: 'requirement_code',
-        10: 'validated_date'
+        9: ['requirement_code', 'string'],
+        10: ['validated_date', 'date']
     }
 
     # Define private list class attributes.
@@ -469,11 +469,9 @@ class GeneralData(RAMSTKWorkView):
         """
         super().on_combo_changed(combo, index, 'wvw_editing_requirement')
 
-    def _on_focus_out(
-            self,
-            entry: Gtk.Entry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
+    # pylint: disable=unused-argument
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -493,24 +491,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        entry.handler_block(entry.dic_handler_id['changed'])
-
-        if index == 1:
-            _new_text: str = self.txtName.do_get_text()
-        else:
-            _new_text = str(entry.get_text())
-
-        pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._record_id, -1],
-                        package={_key: _new_text})
-
-        entry.handler_unblock(entry.dic_handler_id['changed'])
+        super().on_focus_out(entry, index, 'wvw_editing_requirement')
 
     def _on_toggled(self, checkbutton: RAMSTKCheckButton, index: int) -> None:
         """
@@ -1020,7 +1001,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.do_set_cursor_active(node_id=self._record_id)
 
     def _on_cell_edit(self, cell: Gtk.CellRendererToggle, path: str,
-                      model: Gtk.TreeModel, index: int) -> None:
+                      model: Gtk.TreeModel, position: int) -> None:
         """
         Handle edits of the Requirement Analysis RAMSTKTreeview().
 
@@ -1031,8 +1012,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         :param model: the Gtk.TreeModel() for the Gtk.Treeview() that is being
                       edited.
         :type model: :class:`Gtk.TreeModel`
-        :param int index: the index of the Requirement analysis Gtk.Treeview()
-                          questions being answered.  Indices are:
+        :param int position: the position of the Requirement analysis
+            Gtk.Treeview() questions being answered.  Indices are:
 
                              * 0 = clarity
                              * 1 = completeness
@@ -1049,16 +1030,16 @@ class RequirementAnalysis(RAMSTKWorkView):
         model[path][2] = _new_text
 
         try:
-            if index == 0:
+            if position == 0:
                 self._lst_clear_a[_position] = _new_text
                 _key = 'q_clarity_{0:d}'.format(_position)
-            elif index == 1:
+            elif position == 1:
                 self._lst_complete_a[_position] = _new_text
                 _key = 'q_complete_{0:d}'.format(_position)
-            elif index == 2:
+            elif position == 2:
                 self._lst_consistent_a[_position] = _new_text
                 _key = 'q_consistent_{0:d}'.format(_position)
-            elif index == 3:
+            elif position == 3:
                 self._lst_verifiable_a[_position] = _new_text
                 _key = 'q_verifiable_{0:d}'.format(_position)
         except IndexError as _error:

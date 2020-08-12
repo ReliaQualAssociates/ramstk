@@ -42,12 +42,10 @@ def do_make_label_group(text: List[str],
             * *wrap* (bool) -- boolean indicating whether the label text should
                 wrap or not.
 
-    :return: (_max_x, _lst_y_pos)
-        the width of the label with the longest text and a list of the y
-        position for each label in the container.  Use this list to place
-        Gtk.Entry(), Gtk.ComboBox(), etc. so they line up with their
-        associated label.
-    :rtype: tuple of (integer, list of integers)
+    :return: (_max_x, _lst_labels)
+        the width of the label with the longest text and a list of the
+        RAMSTKLabel() instances.
+    :rtype: tuple of (integer, list of RAMSTKLabel())
     """
     try:
         _wrap = kwargs['wrap']
