@@ -17,8 +17,8 @@ from ramstk.views.gtk3 import Gtk
 from .widget import RAMSTKWidget
 
 
-def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int,
-                        y_pos: int, **kwargs: Any) -> Tuple[int, List[int]]:
+def do_make_label_group(text: List[str],
+                        **kwargs: Any) -> Tuple[int, List[int]]:
     r"""
     Make and place a group of labels.
 
@@ -42,74 +42,10 @@ def do_make_label_group(text: List[str], container: Gtk.Widget, x_pos: int,
             * *wrap* (bool) -- boolean indicating whether the label text should
                 wrap or not.
 
-    :return: (_max_x, _lst_y_pos)
-        the width of the label with the longest text and a list of the y
-        position for each label in the container.  Use this list to place
-        Gtk.Entry(), Gtk.ComboBox(), etc. so they line up with their
-        associated label.
-    :rtype: tuple of (integer, list of integers)
-    """
-    try:
-        _y_inc = kwargs['y_inc']
-    except KeyError:
-        _y_inc = 25
-    try:
-        _wrap = kwargs['wrap']
-    except KeyError:
-        _wrap = True
-
-    _lst_y_pos = []
-    _max_x = 0
-
-    _char_width = max([len(_label_text) for _label_text in text])
-
-    # pylint: disable=unused-variable
-    for __, _label_text in enumerate(text):
-        _label = RAMSTKLabel(_label_text)
-        _label.do_set_properties(width=-1,
-                                 height=-1,
-                                 wrap=_wrap,
-                                 justify=Gtk.Justification.RIGHT)
-        _label.set_width_chars(_char_width)
-        _max_x = max(_max_x, _label.get_attribute('width'))
-        container.put(_label, x_pos, y_pos)
-        _lst_y_pos.append(y_pos)
-        y_pos += max(_label.get_attribute('height'), _y_inc) + 5
-
-    return _max_x, _lst_y_pos
-
-
-def do_make_label_group2(text: List[str],
-                         **kwargs: Any) -> Tuple[int, List[int]]:
-    r"""
-    Make and place a group of labels.
-
-    The width of each label is set using a natural request.  This ensures the
-    label doesn't cut off letters.  The maximum size of the labels is
-    determined and used to set the left position of widget displaying the data
-    described by the label.  This ensures everything lines up.  It also returns
-    a list of y-coordinates indicating the placement of each label that is used
-    to place the corresponding widget.
-
-    :param list text: a list containing the text for each label.
-    :param Gtk.Widget container: the container widget to place the labels in.
-    :param int x_pos: the x position in the container for the left edge of all
-        labels.
-    :param int y_pos: the y position in the container of the first label.
-    :param \**kwargs: See below
-
-        :Keyword Arguments:
-            * *y_inc* (int) -- the amount to increment the y_pos between each
-                label.
-            * *wrap* (bool) -- boolean indicating whether the label text should
-                wrap or not.
-
-    :return: (_max_x, _lst_y_pos)
-        the width of the label with the longest text and a list of the y
-        position for each label in the container.  Use this list to place
-        Gtk.Entry(), Gtk.ComboBox(), etc. so they line up with their
-        associated label.
-    :rtype: tuple of (integer, list of integers)
+    :return: (_max_x, _lst_labels)
+        the width of the label with the longest text and a list of the
+        RAMSTKLabel() instances.
+    :rtype: tuple of (integer, list of RAMSTKLabel())
     """
     try:
         _wrap = kwargs['wrap']

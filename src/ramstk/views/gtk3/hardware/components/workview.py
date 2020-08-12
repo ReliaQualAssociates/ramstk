@@ -145,9 +145,7 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0)
+        _fixed = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
         self.show_all()
@@ -296,9 +294,7 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0)
+        _fixed = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
         self.show_all()
@@ -695,9 +691,7 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         # |  N  |                   |                   |
         # |  S  |                   |                   |
         # +-----+-------------------+-------------------+
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0)
+        _fixed = super().make_ui(start=0)
         self.pack_start(_fixed, True, True, 0)
 
         self.show_all()
@@ -817,9 +811,7 @@ class RAMSTKStressResults(RAMSTKWorkView):
         _hpaned = Gtk.HPaned()
         self.pack_start(_hpaned, True, True, 0)
 
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0)
+        _fixed = super().make_ui(start=0)
         _hpaned.pack1(_fixed, False, False)
 
         # Create the derating plot.

@@ -88,23 +88,23 @@ class GeneralData(RAMSTKWorkView):
         3: 'cost_type_id',
         4: 'manufacturer_id',
         5: 'subcategory_id',
-        6: 'alt_part_number',
-        7: 'attachments',
-        8: 'cage_code',
-        9: 'comp_ref_des',
-        10: 'cost',
-        11: 'description',
-        12: 'figure_number',
-        13: 'lcn',
-        14: 'name',
-        15: 'nsn',
-        16: 'page_number',
-        17: 'part_number',
-        18: 'quantity',
-        19: 'ref_des',
-        20: 'remarks',
-        21: 'specification_number',
-        22: 'year_of_manufacture'
+        6: ['alt_part_number', 'string'],
+        7: ['attachments', 'string'],
+        8: ['cage_code', 'string'],
+        9: ['comp_ref_des', 'string'],
+        10: ['cost', 'float'],
+        11: ['description', 'string'],
+        12: ['figure_number', 'string'],
+        13: ['lcn', 'string'],
+        14: ['name', 'string'],
+        15: ['nsn', 'string'],
+        16: ['page_number', 'string'],
+        17: ['part_number', 'string'],
+        18: ['quantity', 'integer'],
+        19: ['ref_des', 'string'],
+        20: ['remarks', 'string'],
+        21: ['specification_number', 'string'],
+        22: ['year_of_manufacture', 'integer']
     }
 
     # Define private list class attributes.
@@ -300,9 +300,7 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Make the left side of the page.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0, end=13)
+        _fixed = super().make_ui(start=0, end=13)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -313,9 +311,7 @@ class GeneralData(RAMSTKWorkView):
         # Make the top right side of the page.
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=13, end=20)
+        _fixed = super().make_ui(start=13, end=20)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -324,9 +320,7 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(_frame, True, True)
 
         # Make the bottom right side of the page.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=20)
+        _fixed = super().make_ui(start=20)
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
         _frame.do_set_properties(title=_("Miscellaneous Information"))
@@ -808,19 +802,19 @@ class AssessmentInputs(RAMSTKWorkView):
         2: 'failure_distribution_id',
         3: 'hazard_rate_type_id',
         4: 'hazard_rate_method_id',
-        5: 'temperature_active',
-        6: 'add_adj_factor',
-        7: 'temperature_dormant',
-        8: 'scale_parameter',
-        9: 'shape_parameter',
-        10: 'location_parameter',
-        11: 'mult_adj_factor',
-        12: 'hazard_rate_specified',
-        13: 'hr_specified_variance',
-        14: 'mtbf_specified',
-        15: 'mtbf_specified_variance',
-        16: 'duty_cycle',
-        17: 'mission_time'
+        5: ['temperature_active', 'float'],
+        6: ['add_adj_factor', 'float'],
+        7: ['temperature_dormant', 'float'],
+        8: ['scale_parameter', 'float'],
+        9: ['shape_parameter', 'float'],
+        10: ['location_parameter', 'float'],
+        11: ['mult_adj_factor', 'float'],
+        12: ['hazard_rate_specified', 'float'],
+        13: ['hr_specified_variance', 'float'],
+        14: ['mtbf_specified', 'float'],
+        15: ['mtbf_specified_variance', 'float'],
+        16: ['duty_cycle', 'float'],
+        17: ['mission_time', 'float']
     }
 
     # Define private list attributes.
@@ -1011,9 +1005,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0, end=12)
+        _fixed = super().make_ui(start=0, end=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1033,9 +1025,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=12)
+        _fixed = super().make_ui(start=12)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1546,7 +1536,6 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: See issue #309.
         super().on_focus_out(entry, index, 'wvw_editing_hardware')
 
 
@@ -1774,9 +1763,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=0, end=10)
+        _fixed = super().make_ui(start=0, end=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()
@@ -1796,9 +1783,7 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        # TODO: See issue #304.  Only _fixed will be returned in the future.
-        # pylint: disable=unused-variable
-        (__, __, _fixed) = super().make_ui(start=10)
+        _fixed = super().make_ui(start=10)
 
         _scrollwindow = RAMSTKScrolledWindow(_fixed)
         _frame = RAMSTKFrame()

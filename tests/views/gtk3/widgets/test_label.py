@@ -18,10 +18,14 @@ from ramstk.views.gtk3.widgets import RAMSTKLabel, do_make_label_group
 def test_do_make_label_group():
     """do_make_label_group() should return the x- and y-positions of a group of labels."""
     _test_labels = ["This", "is", "a", "list", "of", "labels"]
-    _x_pos, _y_pos = do_make_label_group(_test_labels, Gtk.Fixed(), 5, 5)
+    _max_x, _lst_labels = do_make_label_group(_test_labels, wrap=True)
 
-    # assert _x_pos == 48
-    assert _y_pos == [5, 35, 65, 95, 125, 155]
+    assert isinstance(_lst_labels[0], RAMSTKLabel)
+    assert isinstance(_lst_labels[1], RAMSTKLabel)
+    assert isinstance(_lst_labels[2], RAMSTKLabel)
+    assert isinstance(_lst_labels[3], RAMSTKLabel)
+    assert isinstance(_lst_labels[4], RAMSTKLabel)
+    assert isinstance(_lst_labels[5], RAMSTKLabel)
 
 
 class TestRAMSTKLabel():

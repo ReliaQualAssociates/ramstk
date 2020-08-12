@@ -151,7 +151,7 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
 
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
-        Set the properties of the RAMSTK button.
+        Set the properties of the RAMSTKButton.
 
         :param \**kwargs: See below
 
@@ -268,3 +268,80 @@ class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
 
         self.set_group(group)
         self.set_label(label)
+
+
+class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
+    """This is the RAMSTK Spin Button class."""
+
+    # Define private class scalar attributes.
+    _default_height = 30
+    _default_width = 200
+
+    def __init__(self) -> None:
+        """
+        Initialize an instance of the RAMSTKSpinButton().
+
+        :return: None
+        :rtype: None
+        """
+        # noinspection PyCallByClass,PyTypeChecker
+        RAMSTKWidget.__init__(self)
+
+        self.show_all()
+
+    def do_set_properties(self, **kwargs: Any) -> None:
+        r"""
+        Set the properties of the RAMSTKSpinButton.
+
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *height* (int) -- height of the RAMSTKButton() widget.
+                Default is 30.
+            * *limits* (list) -- the list of values for the spin button
+                Gtk.Adjustment().
+            * *tooltip* (str) -- the tooltip, if any, for the button.
+                Default is a message to file a QA-type issue to have one added.
+            * *width* (int) -- width of the RAMSTKButton() widget.
+                Default is 200.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_properties(**kwargs)
+
+        try:
+            _limits = kwargs['limits']
+        except KeyError:
+            _limits = [0, 0, 100, 1, 0.1]
+        try:
+            _numeric = kwargs['numeric']
+        except KeyError:
+            _numeric = True
+        try:
+            _snap_to_ticks = kwargs['ticks']
+        except KeyError:
+            _snap_to_ticks = True
+
+        self.set_adjustment(
+            Gtk.Adjustment(_limits[0], _limits[1], _limits[2], _limits[3],
+                           _limits[4]))
+        self.set_numeric(_numeric)
+        self.set_snap_to_ticks(_snap_to_ticks)
+        self.set_update_policy(Gtk.SpinButtonUpdatePolicy.IF_VALID)
+
+    def do_update(self, value: int, signal: str = '') -> None:
+        """
+        Update the RAMSTK Spin Button with a new value.
+
+        :param int value: the information to update the RAMSTKSpinButton() to
+            display.
+        :keyword str signal: the name of the signal whose handler ID the
+            RAMSTKSpinButton() needs to block.
+        :return: None
+        :rtype: None
+        """
+        _handler_id = self.dic_handler_id[signal]
+
+        self.handler_block(_handler_id)
+        self.set_value(int(value))
+        self.handler_unblock(_handler_id)

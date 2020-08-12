@@ -33,7 +33,7 @@ before_script:
 # Command to run tests.  First the full test suite without coverage, then again
 # with coverage.
 script:
-    - make test
+#    - make test
     - make coverage
 
 # After the build was successful what to do?

@@ -16,7 +16,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKLabel,
+from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
                                        RAMSTKTextView, RAMSTKWorkView)
 
 
@@ -31,13 +31,19 @@ class GeneralData(RAMSTKWorkView):
     :cvar list _lst_labels: the list of label text.
     """
     # Define private dict class attributes.
-    _dic_keys = {0: 'name', 1: 'remarks', 2: 'revision_code'}
+    _dic_keys = {
+        0: ['name', 'string'],
+        1: ['remarks', 'string'],
+        2: ['revision_code', 'string']
+    }
 
     # Define private list class attributes.
     _lst_labels = [_("Revision Code:"), _("Revision Name:"), _("Remarks:")]
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'revision') -> None:
         """
         Initialize the Revision Work View general data page.
 
@@ -46,7 +52,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, 'revision')
+        super().__init__(configuration, logger, module)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -74,6 +80,8 @@ class GeneralData(RAMSTKWorkView):
             'revision_code': [self.txtCode.do_update, 'changed']
         }
 
+        self._lst_widgets = [self.txtCode, self.txtName, self.txtRemarks]
+
         self.__set_properties()
         self.__make_ui()
         self.__set_callbacks()
@@ -89,11 +97,30 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = super().make_ui(icons=[],
-                                                   tooltips=[],
-                                                   callbacks=[])
+        # This page has the following layout:
+        #
+        # +-----+---------------------------------------+
+        # |  B  |                                       |
+        # |  U  |                                       |
+        # |  T  |                                       |
+        # |  T  |                WIDGETS                |
+        # |  O  |                                       |
+        # |  N  |                                       |
+        # |  S  |                                       |
+        # +-----+---------------------------------------+
+        #                           buttons ----+--> self
+        #                                       |
+        #      RAMSTKFixed ------>RAMSTKFrame --+
+        # Make the buttons.
+        super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
+        # Layout the widgets.
+        _fixed = super().make_ui()
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("General Information"))
+        _frame.add(_fixed)
+        self.pack_end(_frame, True, True, 0)
 
         _label = RAMSTKLabel(_("General\nData"))
         _label.do_set_properties(
@@ -192,11 +219,9 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_update_all_revisions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _on_focus_out(
-            self,
-            entry: Gtk.Entry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
+    # pylint: disable=unused-argument
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -216,23 +241,4 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(entry.dic_handler_id['changed'])
-
-        try:
-            if index in [0, 2]:
-                _new_text: str = str(entry.get_text())
-            else:
-                _new_text = self.txtRemarks.do_get_text()
-        except ValueError:
-            _new_text = ''
-
-        pub.sendMessage('wvw_editing_revision',
-                        node_id=[self._revision_id, -1, ''],
-                        package={_key: _new_text})
-
-        entry.handler_unblock(entry.dic_handler_id['changed'])
+        super().on_focus_out(entry, index, 'wvw_editing_revision')

@@ -9,20 +9,16 @@
 
 # RAMSTK Local Imports
 from .basebook import RAMSTKBaseBook
-from .baseview import (
-    RAMSTKBaseView, RAMSTKListView, RAMSTKModuleView, RAMSTKWorkView
-)
-from .button import (
-    RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton, do_make_buttonbox
-)
+from .baseview import (RAMSTKBaseView, RAMSTKListView, RAMSTKModuleView,
+                       RAMSTKWorkView)
+from .button import (RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton,
+                     RAMSTKSpinButton, do_make_buttonbox)
 from .combo import RAMSTKComboBox
-from .dialog import (
-    RAMSTKDatabaseSelect, RAMSTKDateSelect, RAMSTKDialog,
-    RAMSTKFileChooser, RAMSTKMessageDialog
-)
+from .dialog import (RAMSTKDatabaseSelect, RAMSTKDateSelect, RAMSTKDialog,
+                     RAMSTKFileChooser, RAMSTKMessageDialog)
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
-from .label import RAMSTKLabel, do_make_label_group, do_make_label_group2
+from .label import RAMSTKLabel, do_make_label_group
 from .matrixview import RAMSTKMatrixView
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow

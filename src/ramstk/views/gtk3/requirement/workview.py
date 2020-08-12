@@ -19,8 +19,7 @@ from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox, RAMSTKDateSelect,
-    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView,
-    do_make_buttonbox)
+    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -32,16 +31,16 @@ class GeneralData(RAMSTKWorkView):
     """
     # Define private dict class attributes.
     _dic_keys = {
-        0: 'requirement_code',
-        1: 'description',
+        0: ['requirement_code', 'string'],
+        1: ['description', 'string'],
         2: 'requirement_type',
-        4: 'specification',
-        5: 'page_number',
-        6: 'figure_number',
+        4: ['specification', 'string'],
+        5: ['page_number', 'string'],
+        6: ['figure_number', 'string'],
         7: 'priority',
         8: 'owner',
-        9: 'requirement_code',
-        10: 'validated_date'
+        9: ['requirement_code', 'string'],
+        10: ['validated_date', 'date']
     }
 
     # Define private list class attributes.
@@ -90,21 +89,23 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.btnValidateDate = RAMSTKButton()
+        self.btnValidateDate: RAMSTKButton = RAMSTKButton()
 
-        self.chkDerived = RAMSTKCheckButton(label=_("Requirement is derived."))
-        self.chkValidated = RAMSTKCheckButton(
+        self.chkDerived: RAMSTKCheckButton = RAMSTKCheckButton(
+            label=_("Requirement is derived."))
+        self.chkValidated: RAMSTKCheckButton = RAMSTKCheckButton(
             label=_("Requirement is validated."))
 
-        self.cmbOwner = RAMSTKComboBox()
-        self.cmbRequirementType = RAMSTKComboBox(index=1, simple=False)
-        self.cmbPriority = RAMSTKComboBox()
+        self.cmbOwner: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbRequirementType: RAMSTKComboBox = RAMSTKComboBox(index=1,
+                                                                 simple=False)
+        self.cmbPriority: RAMSTKComboBox = RAMSTKComboBox()
 
-        self.txtCode = RAMSTKEntry()
-        self.txtFigNum = RAMSTKEntry()
-        self.txtName = RAMSTKTextView(Gtk.TextBuffer())
-        self.txtPageNum = RAMSTKEntry()
-        self.txtSpecification = RAMSTKEntry()
+        self.txtCode: RAMSTKEntry = RAMSTKEntry()
+        self.txtFigNum: RAMSTKEntry = RAMSTKEntry()
+        self.txtName: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+        self.txtPageNum: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
         self.txtValidatedDate: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_switch: Dict[str, Union[object, str]] = {
@@ -116,6 +117,13 @@ class GeneralData(RAMSTKWorkView):
             'validated': [self.chkValidated.do_update, 'toggled'],
             'validated_date': [self.txtValidatedDate.do_update, 'changed']
         }
+
+        self._lst_widgets = [
+            self.txtCode, self.txtName, self.cmbRequirementType,
+            self.chkDerived, self.txtSpecification, self.txtPageNum,
+            self.txtFigNum, self.cmbPriority, self.cmbOwner, self.chkValidated,
+            self.txtValidatedDate
+        ]
 
         self.__set_properties()
         self.__load_combobox()
@@ -169,35 +177,43 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _lst_adjust = [0, 0, 75, 75, 85, 85, 85, 95, 95, 95, 105, 105]
-        (_x_pos, _y_pos,
-         _fixed) = super().make_ui(icons=['create_code'],
-                                   tooltips=[
-                                       _('Automatically create code '
-                                         'for the selected '
-                                         'requirement.')
-                                   ],
-                                   callbacks=[self._do_request_create_code])
+        # This page has the following layout:
+        #
+        # +-----+---------------------------------------+
+        # |  B  |                                       |
+        # |  U  |                                       |
+        # |  T  |                                       |
+        # |  T  |                WIDGETS                |
+        # |  O  |                                       |
+        # |  N  |                                       |
+        # |  S  |                                       |
+        # +-----+---------------------------------------+
+        #                           buttons ----+--> self
+        #                                       |
+        #      RAMSTKFixed ------>RAMSTKFrame --+
+        # Make the buttons.
+        super().make_toolbuttons(icons=['create_code'],
+                                 tooltips=[
+                                     _('Automatically create code '
+                                       'for the selected '
+                                       'requirement.')
+                                 ],
+                                 callbacks=[self._do_request_create_code])
 
-        # self.txtName has a height of 100 so the labels need adjusted.
-        # The first two labels will be properly placed and the last widget
-        # is the common RAMSTKEntry() widget that we don't want to move.
-        for _idx, _widget in enumerate(_fixed.get_children()[:-1]):
-            if isinstance(_widget, RAMSTKLabel):
-                _fixed.move(_widget, 5, _y_pos[_idx] + _lst_adjust[_idx])
+        # Layout the widgets.
+        _fixed = super().make_ui()
 
-        _fixed.put(self.txtName.scrollwindow, _x_pos, _y_pos[1])
-        _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2] + _lst_adjust[2])
-        _fixed.put(self.chkDerived, _x_pos, _y_pos[3] + _lst_adjust[3])
-        _fixed.put(self.txtSpecification, _x_pos, _y_pos[4] + _lst_adjust[4])
-        _fixed.put(self.txtPageNum, _x_pos, _y_pos[5] + _lst_adjust[5])
-        _fixed.put(self.txtFigNum, _x_pos, _y_pos[6] + _lst_adjust[6])
-        _fixed.put(self.cmbPriority, _x_pos, _y_pos[7] + _lst_adjust[7])
-        _fixed.put(self.cmbOwner, _x_pos, _y_pos[8] + _lst_adjust[8])
-        _fixed.put(self.chkValidated, _x_pos, _y_pos[9] + _lst_adjust[9])
-        _fixed.put(self.txtValidatedDate, _x_pos, _y_pos[10] + _lst_adjust[10])
-        _fixed.put(self.btnValidateDate, _x_pos + 205,
-                   _y_pos[10] + _lst_adjust[11])
+        # Add the validation date dialog launcher button to the right of the
+        # validated date RAMSTKEntry.
+        _entry = _fixed.get_children()[-1]
+        _x_pos = _fixed.child_get_property(_entry, 'x') + 205
+        _y_pos = _fixed.child_get_property(_entry, 'y')
+        _fixed.put(self.btnValidateDate, _x_pos, _y_pos)
+
+        _frame = RAMSTKFrame()
+        _frame.do_set_properties(title=_("General Information"))
+        _frame.add(_fixed)
+        self.pack_end(_frame, True, True, 0)
 
         _label = RAMSTKLabel(_("General\nData"))
         _label.do_set_properties(
@@ -453,11 +469,9 @@ class GeneralData(RAMSTKWorkView):
         """
         super().on_combo_changed(combo, index, 'wvw_editing_requirement')
 
-    def _on_focus_out(
-            self,
-            entry: Gtk.Entry,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
+    # pylint: disable=unused-argument
+    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
+                      index: int) -> None:
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
@@ -477,24 +491,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        try:
-            _key = self._dic_keys[index]
-        except KeyError as _error:
-            _key = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        entry.handler_block(entry.dic_handler_id['changed'])
-
-        if index == 1:
-            _new_text: str = self.txtName.do_get_text()
-        else:
-            _new_text = str(entry.get_text())
-
-        pub.sendMessage('wvw_editing_requirement',
-                        node_id=[self._record_id, -1],
-                        package={_key: _new_text})
-
-        entry.handler_unblock(entry.dic_handler_id['changed'])
+        super().on_focus_out(entry, index, 'wvw_editing_requirement')
 
     def _on_toggled(self, checkbutton: RAMSTKCheckButton, index: int) -> None:
         """
@@ -651,10 +648,10 @@ class RequirementAnalysis(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.tvwClear = Gtk.TreeView()
-        self.tvwComplete = Gtk.TreeView()
-        self.tvwConsistent = Gtk.TreeView()
-        self.tvwVerifiable = Gtk.TreeView()
+        self.tvwClear: Gtk.TreeView = Gtk.TreeView()
+        self.tvwComplete: Gtk.TreeView = Gtk.TreeView()
+        self.tvwConsistent: Gtk.TreeView = Gtk.TreeView()
+        self.tvwVerifiable: Gtk.TreeView = Gtk.TreeView()
 
         self.__make_ui()
 
@@ -714,12 +711,28 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            do_make_buttonbox(self, icons=[], tooltips=[], callbacks=[]))
-        self.pack_start(_scrolledwindow, False, False, 0)
+        # This page has the following layout:
+        #
+        # +-----+--------------------+-------------------+
+        # |  B  |                    |                   |
+        # |  U  |                    |                   |
+        # |  T  |                    |                   |
+        # |  T  +--------------------+-------------------+
+        # |  O  |                    |                   |
+        # |  N  |                    |                   |
+        # |  S  |                    |                   |
+        # +-----+--------------------+-------------------+
+        #                                          buttons --+--> self
+        #                                                    |
+        #    RAMSTKFrame --+-->Gtk.VPaned --+-->Gtk.HPaned --+
+        #                  |                |
+        #    RAMSTKFrame --+                |
+        #                                   |
+        #    RAMSTKFrame --+-->Gtk.VPaned --+
+        #                  |
+        #    RAMSTKFrame --+
+        # Make the buttons.
+        super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
         _hpaned = Gtk.HPaned()
 
@@ -764,8 +777,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         _scrollwindow.add(self.tvwClear)
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Clarity of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.do_set_properties(bold=True, title=_("Clarity of Requirement"))
         _frame.add(_scrollwindow)
 
         (_model, _column) = self.__make_treeview(0)
@@ -775,8 +787,7 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         _model.clear()
         for _index, _answer in enumerate(self._lst_clear):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
+            _model.append([_index, _answer, 0])
 
         return _frame
 
@@ -794,8 +805,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         _scrollwindow.add(self.tvwComplete)
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Completeness of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.do_set_properties(bold=True,
+                                 title=_("Completeness of Requirement"))
         _frame.add(_scrollwindow)
 
         (_model, _column) = self.__make_treeview(1)
@@ -805,8 +816,7 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         _model.clear()
         for _index, _answer in enumerate(self._lst_complete):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
+            _model.append([_index, _answer, 0])
 
         return _frame
 
@@ -824,8 +834,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         _scrollwindow.add(self.tvwConsistent)
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Consistency of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.do_set_properties(bold=True,
+                                 title=_("Consistency of Requirement"))
         _frame.add(_scrollwindow)
 
         (_model, _column) = self.__make_treeview(2)
@@ -835,8 +845,7 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         _model.clear()
         for _index, _answer in enumerate(self._lst_consistent):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
+            _model.append([_index, _answer, 0])
 
         return _frame
 
@@ -854,8 +863,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         _scrollwindow.add(self.tvwVerifiable)
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Verifiability of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.do_set_properties(bold=True,
+                                 title=_("Verifiability of Requirement"))
         _frame.add(_scrollwindow)
 
         (_model, _column) = self.__make_treeview(3)
@@ -865,8 +874,7 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         _model.clear()
         for _index, _answer in enumerate(self._lst_verifiable):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
+            _model.append([_index, _answer, 0])
 
         return _frame
 
@@ -993,7 +1001,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.do_set_cursor_active(node_id=self._record_id)
 
     def _on_cell_edit(self, cell: Gtk.CellRendererToggle, path: str,
-                      model: Gtk.TreeModel, index: int) -> None:
+                      model: Gtk.TreeModel, position: int) -> None:
         """
         Handle edits of the Requirement Analysis RAMSTKTreeview().
 
@@ -1004,8 +1012,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         :param model: the Gtk.TreeModel() for the Gtk.Treeview() that is being
                       edited.
         :type model: :class:`Gtk.TreeModel`
-        :param int index: the index of the Requirement analysis Gtk.Treeview()
-                          questions being answered.  Indices are:
+        :param int position: the position of the Requirement analysis
+            Gtk.Treeview() questions being answered.  Indices are:
 
                              * 0 = clarity
                              * 1 = completeness
@@ -1022,16 +1030,16 @@ class RequirementAnalysis(RAMSTKWorkView):
         model[path][2] = _new_text
 
         try:
-            if index == 0:
+            if position == 0:
                 self._lst_clear_a[_position] = _new_text
                 _key = 'q_clarity_{0:d}'.format(_position)
-            elif index == 1:
+            elif position == 1:
                 self._lst_complete_a[_position] = _new_text
                 _key = 'q_complete_{0:d}'.format(_position)
-            elif index == 2:
+            elif position == 2:
                 self._lst_consistent_a[_position] = _new_text
                 _key = 'q_consistent_{0:d}'.format(_position)
-            elif index == 3:
+            elif position == 3:
                 self._lst_verifiable_a[_position] = _new_text
                 _key = 'q_verifiable_{0:d}'.format(_position)
         except IndexError as _error:
