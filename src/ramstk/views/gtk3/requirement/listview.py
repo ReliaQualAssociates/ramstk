@@ -180,6 +180,7 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _("Displays the list of stakeholder inputs for the selected "
               "revision."))

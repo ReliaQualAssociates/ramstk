@@ -174,6 +174,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _("Displays the list of failure definitions for the selected "
               "revision."))
@@ -384,7 +385,7 @@ class UsageProfile(RAMSTKListView):
     _dic_headings = {
         'mission': [
             _("Mission ID"),
-            _("Description"),
+            _("Mission Description"),
             _("Units"),
             _("Start Time"),
             _("End Time"),
@@ -394,7 +395,7 @@ class UsageProfile(RAMSTKListView):
         ],
         'phase': [
             _("Phase ID"),
-            _("  Code\t\tDescription"),
+            _("Phase Description"),
             _("Units"),
             _("Start Time"),
             _("End Time"),
@@ -404,7 +405,7 @@ class UsageProfile(RAMSTKListView):
         ],
         'environment': [
             _("Environment ID"),
-            _("Condition"),
+            _("Condition Description"),
             _("Units"),
             _("Minimum Value"),
             _("Maximum Value"),
@@ -647,6 +648,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _("Displays the list of usage profiles for the selected "
               "revision."))

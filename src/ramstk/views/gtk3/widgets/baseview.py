@@ -960,19 +960,8 @@ class RAMSTKListView(RAMSTKBaseView):
         self.matrixview: RAMSTKMatrixView = RAMSTKMatrixView(module=module)
         self.tab_label: Gtk.Label = Gtk.Label()
 
-        self.__set_properties()
-
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_matrix, 'succeed_load_matrix')
-
-    def __set_properties(self) -> None:
-        """
-        Set common properties of the ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.treeview.set_rubber_banding(True)
 
     def do_request_update(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
