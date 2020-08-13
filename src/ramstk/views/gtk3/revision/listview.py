@@ -18,8 +18,7 @@ from ramstk.models.programdb import (RAMSTKEnvironment,
                                      RAMSTKFailureDefinition, RAMSTKMission,
                                      RAMSTKMissionPhase)
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
-from ramstk.views.gtk3.widgets import (RAMSTKListView, RAMSTKMessageDialog,
-                                       RAMSTKTreeView)
+from ramstk.views.gtk3.widgets import (RAMSTKListView, RAMSTKTreeView)
 
 
 def _do_make_column(header: str, index: int,
@@ -64,7 +63,9 @@ class FailureDefinition(RAMSTKListView):
     :ivar int _definition_id: the Failure Definition ID of the definition
         selected in the List View.
     """
-    def __init__(self, configuration, logger,
+    def __init__(self,
+                 configuration,
+                 logger,
                  module='failure_definition') -> None:
         """
         Initialize the List View for the Failure Definition package.
@@ -217,14 +218,16 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _prompt = _("You are about to delete Failure Definition {0:d} and "
-                    "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question')
-        _response = _dialog.do_run()
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
+        _dialog = super().do_raise_dialog(user_msg=_(
+            "You are about to delete Failure Definition {0:d} and "
+            "all data associated with it.  Is this really what you "
+            "want to do?").format(self._record_id),
+                                          severity='question',
+                                          parent=_parent)
 
-        if _response == Gtk.ResponseType.YES:
+        if _dialog.do_run() == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_failure_definition',
                             revision_id=self._revision_id,
                             node_id=self._record_id)
@@ -253,11 +256,11 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_failure_definition',
                         revision_id=self._revision_id,
                         node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -268,10 +271,10 @@ class FailureDefinition(RAMSTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_failure_definitions',
                         revision_id=self._revision_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
@@ -836,14 +839,16 @@ class UsageProfile(RAMSTKListView):
         except TypeError:
             _parent_id = -1
 
-        _prompt = _("You are about to delete {1:s} {0:s} and all data "
-                    "associated with it.  Is this really what you want to "
-                    "do?").format(_node_id, _level)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question')
-        _response = _dialog.do_run()
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
+        _dialog = super().do_raise_dialog(user_msg=_(
+            "You are about to delete {1:s} {0:s} and all data "
+            "associated with it.  Is this really what you want to "
+            "do?").format(_node_id, _level),
+                                          severity='question',
+                                          parent=_parent)
 
-        if _response == Gtk.ResponseType.YES:
+        if _dialog.do_run() == Gtk.ResponseType.YES:
             if _level == 'mission':
                 pub.sendMessage('request_delete_mission',
                                 revision_id=self._revision_id,
@@ -887,9 +892,12 @@ class UsageProfile(RAMSTKListView):
                             mission_id=_mission_id,
                             phase_id=_phase_id)
         elif _level == 'environment':
-            _prompt = _("An environmental condition cannot have a child.")
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                          'error')
+            _parent = self.get_parent().get_parent().get_parent().get_parent(
+            ).get_parent()
+            _dialog = super().do_raise_dialog(
+                user_msg=_("An environmental condition cannot have a child."),
+                severity='error',
+                parent=_parent)
             _dialog.do_run()
             _dialog.do_destroy()
 

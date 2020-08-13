@@ -462,12 +462,24 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         try:
-            _dialog = RAMSTKMessageDialog(kwargs['user_msg'],
-                                          self._dic_icons[kwargs['severity']],
-                                          kwargs['severity'],
-                                          parent=self)
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                _dialog.destroy()
+            _user_msg = kwargs['user_msg']
+        except KeyError:
+            _user_msg = "User message not supplied by calling function."
+            _severity = 'error'
+        try:
+            _severity = kwargs['severity']
+        except KeyError:
+            _severity = 'error'
+        try:
+            _parent = kwargs['parent']
+        except KeyError:
+            _parent = None
+
+        try:
+            _dialog = RAMSTKMessageDialog(_user_msg,
+                                          self._dic_icons[_severity],
+                                          _severity,
+                                          parent=_parent)
         except KeyError as _error:
             _debug_msg = ("Failed attempting to raise a RAMSTKMessageDialog "
                           "with either the severity or message missing.")
@@ -479,6 +491,8 @@ class RAMSTKBaseView(Gtk.HBox):
         except KeyError as _error:
             _debug_msg = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        return _dialog
 
     def do_refresh_tree(self, package: Dict[str, Any]) -> None:
         """
@@ -643,10 +657,12 @@ class RAMSTKBaseView(Gtk.HBox):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def do_set_cursor_active(self, node_id: Any) -> None:
+    def do_set_cursor_active(self, node_id: Any = '') -> None:
         """
         Set the active cursor for the Module, List, and Work Book Gdk.Window().
 
+        :keyword node_id: the node ID passed in the PyPubSub message.  Only
+            needed when this method is a PyPubSub subscriber.
         :return: None
         :rtype: None
         """

@@ -17,8 +17,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKListView, RAMSTKMessageDialog,
-                                       RAMSTKTreeView)
+from ramstk.views.gtk3.widgets import (RAMSTKListView, RAMSTKTreeView)
 
 
 class Stakeholders(RAMSTKListView):
@@ -231,10 +230,10 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_stakeholder',
                         node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -245,9 +244,9 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_all_stakeholders')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -258,14 +257,16 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _prompt = _("You are about to delete Stakeholder input {0:d} and "
-                    "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question')
-        _response = _dialog.do_run()
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
+        _dialog = super().do_raise_dialog(user_msg=_(
+            "You are about to delete Stakeholder input {0:d} and "
+            "all data associated with it.  Is this really what you "
+            "want to do?").format(self._record_id),
+                                          severity='question',
+                                          parent=_parent)
 
-        if _response == Gtk.ResponseType.YES:
+        if _dialog.do_run() == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_stakeholder',
                             node_id=self._record_id)
 
@@ -280,9 +281,9 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_stakeholder', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -293,9 +294,9 @@ class Stakeholders(RAMSTKListView):
         :return: none
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_stakeholders')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
