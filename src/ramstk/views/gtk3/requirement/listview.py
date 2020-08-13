@@ -217,7 +217,7 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.do_refresh_tree(package, self._dic_key_index)
+        self.do_refresh_tree(package)
         pub.sendMessage('lvw_editing_stakeholder',
                         node_id=[self._record_id, -1],
                         package=package)

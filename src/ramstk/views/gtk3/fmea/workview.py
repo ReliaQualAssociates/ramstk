@@ -7,8 +7,8 @@
 """The RAMSTK base FME(C)A Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
 import json
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -77,6 +77,15 @@ class FMEA(RAMSTKWorkView):
     """
 
     # Define private class dict attributes.
+    _dic_headings = {
+        'mode': [_("Mode ID"), _("Failure\nMode")],
+        'mechanism': [_("Mechanism ID"),
+                      _("Failure\nMechanism")],
+        'cause': [_("Cause ID"), _("Failure\nCause")],
+        'control': [_("Control ID"), _("Existing\nControl")],
+        'action': [_("Action ID"), _("Recommended\nAction")]
+    }
+
     _dic_keys = {
         1: 'description',
         2: 'mission',
@@ -183,6 +192,13 @@ class FMEA(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
+        self._dic_column_masks = {
+            'mode': self._lst_mode_mask,
+            'mechanism': self._lst_mechanism_mask,
+            'cause': self._lst_cause_mask,
+            'control': self._lst_control_mask,
+            'action': self._lst_action_mask
+        }
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
 
         # Initialize private list attributes.
@@ -856,7 +872,8 @@ class FMEA(RAMSTKWorkView):
 
         return _new_row
 
-    def _do_load_tree(self, tree: treelib.Tree,
+    def _do_load_tree(self,
+                      tree: treelib.Tree,
                       row: Gtk.TreeIter = None) -> None:
         """
         Iterate through tree and load the FMEA RAMSTKTreeView().
@@ -994,39 +1011,6 @@ class FMEA(RAMSTKWorkView):
         pub.sendMessage('request_update_all_fmea')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _do_set_headings(self) -> List[bool]:
-        """
-        Set the heading text for the FMEA columns.
-
-        :return: _set_visible; a list of True/False for the columns to be
-            set visible.
-        :rtype: list
-        """
-        _headings = {
-            'mode': [_("Mode ID"),
-                     _("Failure\nMode"), self._lst_mode_mask],
-            'mechanism': [
-                _("Mechanism ID"),
-                _("Failure\nMechanism"), self._lst_mechanism_mask
-            ],
-            'cause':
-            [_("Cause ID"),
-             _("Failure\nCause"), self._lst_cause_mask],
-            'control':
-            [_("Control ID"),
-             _("Existing\nControl"), self._lst_control_mask],
-            'action':
-            [_("Action ID"),
-             _("Recommended\nAction"), self._lst_action_mask]
-        }
-
-        _level = self._get_indenture_level()
-
-        self.treeview.headings[self._lst_col_order[0]] = _headings[_level][0]
-        self.treeview.headings[self._lst_col_order[1]] = _headings[_level][1]
-
-        return self._do_set_visible_columns(_headings[_level][2])
-
     def _do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """
         Sets the parent (hardware) ID whenever a new hardware item is selected.
@@ -1037,18 +1021,6 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         self._parent_id = attributes['hardware_id']
-
-    def _do_set_visible_columns(self, mask: List[bool]) -> List[bool]:
-        """
-        Set the list of True/False for the visible FMEA columns.
-
-        :param list mask: the list of True/False mask for the type of FMEA
-            object selected.
-        :return: _set_visible; a list of True/False for the columns to be
-            set visible.
-        :rtype: list
-        """
-        return self.treeview.visible and mask
 
     def _do_update_item_criticality(self, item_criticality: str) -> None:
         """
@@ -1324,6 +1296,7 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         _model, _row = selection.get_selected()
+
         try:
             self._record_id = _model.get_value(_row, 0)
             _mission = _model.get_value(_row, 2)
@@ -1331,8 +1304,13 @@ class FMEA(RAMSTKWorkView):
             self._record_id = '0'
             _mission = ""
 
+        _level = self._get_indenture_level()
+        _headings = super().do_get_headings(_level)
+        self.treeview.headings[self._lst_col_order[0]] = _headings[0]
+        self.treeview.headings[self._lst_col_order[1]] = _headings[1]
+
         self._do_load_mission_phases(_mission)
-        _set_visible = self._do_set_headings()
+        _set_visible = self.treeview.visible and self._dic_column_masks[_level]
 
         _columns = self.treeview.get_columns()
         i = 0

@@ -1,4 +1,4 @@
-# pylint: disable=non-parent-init-called
+# pylint: disable=non-parent-init-called, too-many-public-methods
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.widgets.view.py is part of the RAMSTK Project
@@ -367,6 +367,17 @@ class RAMSTKBaseView(Gtk.HBox):
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
 
+    def do_get_headings(self, level: str) -> List:
+        """
+        Get the list of headings for the Usage Profile treeview.
+
+        :param level: the level (mission, phase, environment) to retrieve
+            headers for.
+        :return: list of headings
+        :rtype: list
+        """
+        return self._dic_headings[level]
+
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """
         Load the data into a row.
@@ -469,7 +480,7 @@ class RAMSTKBaseView(Gtk.HBox):
             _debug_msg = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-    def do_refresh_tree(self, package: Dict, keys: Dict) -> None:
+    def do_refresh_tree(self, package: Dict[str, Any]) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
@@ -495,15 +506,13 @@ class RAMSTKBaseView(Gtk.HBox):
         the proper column of the RAMSTKTreeView with the new data.
 
         :param dict package: the key:value for the data being updated.
-        :param dict keys: the name:index relationship for the work stream
-            module's data keys.
         :return: None
         :rtype: None
         """
         [[_key, _value]] = package.items()
 
         try:
-            _position = self._lst_col_order[keys[_key]]
+            _position = self._lst_col_order[self._dic_key_index[_key]]
 
             _model, _row = self.treeview.get_selection().get_selected()
             _model.set(_row, _position, _value)

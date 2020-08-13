@@ -376,6 +376,41 @@ class UsageProfile(RAMSTKListView):
 
     All attributes of a Usage Profile List View are inherited.
     """
+
+    # Define private dict class attributes.
+    _dic_headings = {
+        'mission': [
+            _("Mission ID"),
+            _("Description"),
+            _("Units"),
+            _("Start Time"),
+            _("End Time"),
+            _(""),
+            _(""),
+            _("")
+        ],
+        'phase': [
+            _("Phase ID"),
+            _("  Code\t\tDescription"),
+            _("Units"),
+            _("Start Time"),
+            _("End Time"),
+            _(""),
+            _(""),
+            _("")
+        ],
+        'environment': [
+            _("Environment ID"),
+            _("Condition"),
+            _("Units"),
+            _("Minimum Value"),
+            _("Maximum Value"),
+            _("Mean Value"),
+            _("Variance"),
+            _("")
+        ]
+    }
+
     def __init__(self, configuration, logger, module='usage_profile') -> None:
         """
         Initialize the List View for the Usage Profile.
@@ -449,49 +484,6 @@ class UsageProfile(RAMSTKListView):
             for _n in attributes.children(self._revision_id):
                 _mission: Tree = attributes.subtree(_n.identifier)
                 self._do_load_tree(_mission, row=None)
-
-    @staticmethod
-    def __get_headings(level):
-        """
-        Get the list of headings for the Usage Profile treeview.
-
-        :param level: the level (mission, phase, environment) to retrieve
-            headers for.
-        :return: list of headings
-        :rtype: list
-        """
-        return {
-            'mission': [
-                _("Mission ID"),
-                _("Description"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ],
-            'phase': [
-                _("Phase ID"),
-                _("  Code\t\tDescription"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ],
-            'environment': [
-                _("Environment ID"),
-                _("Condition"),
-                _("Units"),
-                _("Minimum Value"),
-                _("Maximum Value"),
-                _("Mean Value"),
-                _("Variance"),
-                _("")
-            ]
-        }[level]
 
     def __make_cell(self, cell: str, editable: bool,
                     position: int) -> Gtk.CellRenderer:
@@ -1089,7 +1081,7 @@ class UsageProfile(RAMSTKListView):
                 _level = _model.get_value(_row, 11)
             except TypeError:
                 _level = ''
-            _headings = self.__get_headings(_level)
+            _headings = super().do_get_headings(_level)
 
             # Change the column headings depending on what is being selected.
             i = 0
