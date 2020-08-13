@@ -18,7 +18,7 @@ from ramstk.models.programdb import (RAMSTKEnvironment,
                                      RAMSTKFailureDefinition, RAMSTKMission,
                                      RAMSTKMissionPhase)
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
-from ramstk.views.gtk3.widgets import (RAMSTKListView, RAMSTKTreeView)
+from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
 
 
 def _do_make_column(header: str, index: int,
@@ -150,6 +150,14 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().make_ui(
+            icons=['add', 'remove'],
+            tooltips=[
+                _("Add a new Failure Definition."),
+                _("Remove the currently selected Failure Definition.")
+            ],
+            callbacks=[self._do_request_insert, self._do_request_delete])
+
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Failure\nDefinitions") + "</span>")
         self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
@@ -158,14 +166,6 @@ class FailureDefinition(RAMSTKListView):
         self.tab_label.set_tooltip_text(
             _("Displays failure definitions for the "
               "selected revision."))
-
-        super().make_ui(
-            icons=['add', 'remove'],
-            tooltips=[
-                _("Add a new Failure Definition."),
-                _("Remove the currently selected Failure Definition.")
-            ],
-            callbacks=[self._do_request_insert, self._do_request_delete])
 
     def __set_properties(self) -> None:
         """
@@ -207,7 +207,7 @@ class FailureDefinition(RAMSTKListView):
             except ValueError:
                 pass
 
-        self.do_expand_tree()
+        super().do_expand_tree()
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -488,6 +488,32 @@ class UsageProfile(RAMSTKListView):
                 _mission: Tree = attributes.subtree(_n.identifier)
                 self._do_load_tree(_mission, row=None)
 
+    def __do_request_delete(self, level: str) -> None:
+        """
+        Send the correct delete message.
+
+        :param str level: the indenture level of the Usage Profile element to delete.
+        :return: None
+        :rtype: None
+        """
+        _model, _row = self.treeview.selection.get_selected()
+        _node_id = _model.get_value(_row, 9)
+
+        if level == 'mission':
+            pub.sendMessage('request_delete_mission',
+                            revision_id=self._revision_id,
+                            node_id=_node_id)
+        elif level == 'phase':
+            pub.sendMessage('request_delete_mission_phase',
+                            revision_id=self._revision_id,
+                            mission_id=self._parent_id,
+                            node_id=_node_id)
+        elif level == 'environment':
+            pub.sendMessage('request_delete_environment',
+                            revision_id=self._revision_id,
+                            phase_id=self._parent_id,
+                            node_id=_node_id)
+
     def __make_cell(self, cell: str, editable: bool,
                     position: int) -> Gtk.CellRenderer:
         """
@@ -590,15 +616,6 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
-                                  + "</span>")
-        self.tab_label.set_xalign(xalign=0.5)
-        self.tab_label.set_yalign(yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays usage profiles for the selected revision."))
-
         super().make_ui(
             icons=['insert_sibling', 'insert_child', 'remove'],
             tooltips=[
@@ -613,6 +630,15 @@ class UsageProfile(RAMSTKListView):
                 self._do_request_insert_sibling, self._do_request_insert_child,
                 self._do_request_delete
             ])
+
+        self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
+                                  + "</span>")
+        self.tab_label.set_xalign(xalign=0.5)
+        self.tab_label.set_yalign(yalign=0.5)
+        self.tab_label.set_justify(Gtk.Justification.CENTER)
+        self.tab_label.show_all()
+        self.tab_label.set_tooltip_text(
+            _("Displays usage profiles for the selected revision."))
 
     def __set_properties(self) -> None:
         """
@@ -818,7 +844,7 @@ class UsageProfile(RAMSTKListView):
             _child_tree = tree.subtree(_n.identifier)
             self._do_load_tree(_child_tree, row=_new_row)
 
-        self.do_expand_tree()
+        super().do_expand_tree()
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -833,12 +859,6 @@ class UsageProfile(RAMSTKListView):
         _node_id = _model.get_value(_row, 9)
         _level = _model.get_value(_row, 11)
 
-        _prow = _model.iter_parent(_row)
-        try:
-            _parent_id = _model.get_value(_prow, 9)
-        except TypeError:
-            _parent_id = -1
-
         _parent = self.get_parent().get_parent().get_parent().get_parent(
         ).get_parent()
         _dialog = super().do_raise_dialog(user_msg=_(
@@ -849,20 +869,7 @@ class UsageProfile(RAMSTKListView):
                                           parent=_parent)
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
-            if _level == 'mission':
-                pub.sendMessage('request_delete_mission',
-                                revision_id=self._revision_id,
-                                node_id=_node_id)
-            elif _level == 'phase':
-                pub.sendMessage('request_delete_mission_phase',
-                                revision_id=self._revision_id,
-                                mission_id=_parent_id,
-                                node_id=_node_id)
-            elif _level == 'environment':
-                pub.sendMessage('request_delete_environment',
-                                revision_id=self._revision_id,
-                                phase_id=_parent_id,
-                                node_id=_node_id)
+            self.__do_request_delete(_level)
 
         _dialog.do_destroy()
 
@@ -1086,15 +1093,20 @@ class UsageProfile(RAMSTKListView):
 
         if _row is not None:
             try:
+                _prow = _model.iter_parent(_row)
+                self._parent_id = _model.get_value(_prow, 9)
+            except TypeError:
+                self._parent_id = - 1
+
+            try:
                 _level = _model.get_value(_row, 11)
             except TypeError:
                 _level = ''
-            _headings = super().do_get_headings(_level)
 
             # Change the column headings depending on what is being selected.
             i = 0
             _columns = self.treeview.get_columns()
-            for _heading in _headings:
+            for _heading in super().do_get_headings(_level):
                 _label = Gtk.Label()
                 _label.set_line_wrap(True)
                 _label.set_alignment(xalign=0.5, yalign=0.5)

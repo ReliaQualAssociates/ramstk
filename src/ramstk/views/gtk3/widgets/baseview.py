@@ -21,7 +21,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
+from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 
 # RAMSTK Local Imports
 from .button import RAMSTKCheckButton, do_make_buttonbox
@@ -255,58 +255,6 @@ class RAMSTKBaseView(Gtk.HBox):
             + '/32x32/warning.png'
         }
 
-    def _make_toolbar(self,
-                      icons: List[str],
-                      orientation: str = 'horizontal',
-                      height: int = 60,
-                      width: int = 60) -> Tuple[Gtk.Toolbar, int]:
-        """
-        Create the toolbar for RAMSTK Views.
-
-        This method creates the base toolbar used by all RAMSTK Views.  Use a
-        toolbar for an RAMSTK View if there are other than buttons to be added.
-
-        :param list icons: list of icon names to place on the toolbuttons.
-            The items in the list are keys in _dic_icons.
-        :return: _toolbar, _position
-        :rtype: (:class:`Gtk.Toolbar`, int)
-        """
-        _toolbar = Gtk.Toolbar()
-
-        if orientation == 'horizontal':
-            _toolbar.set_orientation(Gtk.Orientation.HORIZONTAL)
-            _scale = 0.58
-        else:
-            _toolbar.set_orientation(Gtk.Orientation.VERTICAL)
-            _scale = 0.4
-
-        _position = 0
-        for _icon in icons:
-            if _icon is None:
-                _toolbar.insert(Gtk.SeparatorToolItem(), _position)
-            else:
-                _image = Gtk.Image()
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons[_icon], int(_scale * height),
-                    int(_scale * width))
-                _image.set_from_pixbuf(_icon)
-
-                _button = Gtk.ToolButton()
-                _button.set_property("height_request", height)
-                _button.set_property("width_request", width)
-                _button.set_icon_widget(_image)
-                _button.show()
-                _toolbar.insert(_button, _position)
-
-            _position += 1
-
-        _toolbar.show()
-
-        # Return the toolbar and the next position to place an Gtk.ToolBar()
-        # item.  The _position variable can be used by derived classes to
-        # add additional items to the Gtk.ToolBar().
-        return _toolbar, _position
-
     def _make_treeview(self, module: str) -> RAMSTKTreeView:
         """
         Make the RAMSTKTreeView instance for this view.
@@ -376,7 +324,12 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: list of headings
         :rtype: list
         """
-        return self._dic_headings[level]
+        try:
+            _headings = self._dic_headings[level]
+        except KeyError:
+            _headings = []
+
+        return _headings
 
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """
@@ -1021,13 +974,13 @@ class RAMSTKListView(RAMSTKBaseView):
         """
         self.treeview.set_rubber_banding(True)
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+    def do_request_update(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type=self._module.lower())
 
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+    def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
         self._do_request_update(__button)
 
