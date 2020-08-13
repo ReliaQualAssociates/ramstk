@@ -451,44 +451,6 @@ class UsageProfile(RAMSTKListView):
                 self._do_load_tree(_mission, row=None)
 
     @staticmethod
-    def __get_attributes(selection: Gtk.TreeSelection, level: str) -> Dict:
-        """
-        Retrieve the attributes for the line being edited.
-
-        :param selection: the Gtk.TreeSelection that is currently selected.
-        :type selection: :class:`Gtk.TreeSelection`
-        :param str level: the indenture level in the Usage Profile that is
-            selected.
-        :return: a dict of attributes and values.
-        :rtype: dict
-        """
-        _attributes = {}
-
-        _model, _row = selection.get_selected()
-
-        if level == 'mission':
-            _attributes['mission_id'] = _model.get_value(_row, 0)
-            _attributes['description'] = _model.get_value(_row, 2)
-            _attributes['time_units'] = _model.get_value(_row, 4)
-            _attributes['mission_time'] = _model.get_value(_row, 6)
-        elif level == 'phase':
-            _attributes['phase_id'] = _model.get_value(_row, 0)
-            _attributes['name'] = _model.get_value(_row, 2)
-            _attributes['description'] = _model.get_value(_row, 3)
-            _attributes['phase_start'] = _model.get_value(_row, 5)
-            _attributes['phase_end'] = _model.get_value(_row, 6)
-        elif level == 'environment':
-            _attributes['environment_id'] = _model.get_value(_row, 0)
-            _attributes['name'] = _model.get_value(_row, 2)
-            _attributes['units'] = _model.get_value(_row, 4)
-            _attributes['minimum'] = _model.get_value(_row, 5)
-            _attributes['maximum'] = _model.get_value(_row, 6)
-            _attributes['mean'] = _model.get_value(_row, 7)
-            _attributes['variance'] = _model.get_value(_row, 8)
-
-        return _attributes
-
-    @staticmethod
     def __get_headings(level):
         """
         Get the list of headings for the Usage Profile treeview.
@@ -1146,6 +1108,3 @@ class UsageProfile(RAMSTKListView):
                 i += 1
 
         selection.handler_unblock(self.treeview.dic_handler_id['changed'])
-
-        pub.sendMessage('selected_usage_profile',
-                        attributes=self.__get_attributes(selection, _level))
