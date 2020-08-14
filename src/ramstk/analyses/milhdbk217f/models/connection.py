@@ -189,9 +189,12 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['subcategory_id'],
-                                   attributes['environment_active_id'],
-                                   type_id=attributes['type_id'])
+    return get_part_count_lambda_b(
+        id_keys={
+            'subcategory_id': attributes['subcategory_id'],
+            'environment_active_id': attributes['environment_active_id'],
+            'type_id': attributes['type_id']
+        })
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -375,9 +378,7 @@ def get_mate_unmate_factor(n_cycles: float) -> float:
     return _pi_k
 
 
-def get_part_count_lambda_b(subcategory_id: int,
-                            environment_active_id: int,
-                            type_id: int = -1) -> float:
+def get_part_count_lambda_b(id_keys: Dict[str, int]) -> float:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -408,19 +409,19 @@ def get_part_count_lambda_b(subcategory_id: int,
     |        5       | Non-PTH                       |       17.1      |
     +----------------+-------------------------------+-----------------+
 
-    :param int subcategory_id: the connection subcategory identifier.
-    :param int environment_active_id: the active environment identifier.
-    :keyword int type_id: the connection type identifier.  Default is -1.
+    :param dict id_keys: the ID's used as keys when selecting
+        the base hazard rate.  The keys are subcategory_id,
+        environment_active_id, and type_id.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     :raise: IndexError if passed an unknown active environment ID.
     """
-    if subcategory_id in [1, 5]:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][type_id][
-            environment_active_id - 1]
+    if id_keys['subcategory_id'] in [1, 5]:
+        _base_hr = PART_COUNT_LAMBDA_B[id_keys['subcategory_id']][
+            id_keys['type_id']][id_keys['environment_active_id'] - 1]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id
-                                                       - 1]
+        _base_hr = PART_COUNT_LAMBDA_B[id_keys['subcategory_id']][
+            id_keys['environment_active_id'] - 1]
 
     return _base_hr

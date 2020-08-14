@@ -42,13 +42,14 @@ ATTRIBUTES = {
     "environment_active_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
-def test_get_part_count_lambda_b_xfmr(
-        family_id,
-        environment_active_id,
-):
+def test_get_part_count_lambda_b_xfmr(family_id, environment_active_id):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = inductor.get_part_count_lambda_b(1, family_id,
-                                                 environment_active_id)
+    _lambda_b = inductor.get_part_count_lambda_b(
+        id_keys={
+            'subcategory_id': 1,
+            'family_id': family_id,
+            'environment_active_id': environment_active_id
+        })
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == {
@@ -79,12 +80,16 @@ def test_get_part_count_lambda_b_xfmr(
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
 def test_get_part_count_lambda_b_inductor(
-        family_id,
-        environment_active_id,
+    family_id,
+    environment_active_id,
 ):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = inductor.get_part_count_lambda_b(2, family_id,
-                                                 environment_active_id)
+    _lambda_b = inductor.get_part_count_lambda_b(
+        id_keys={
+            'subcategory_id': 2,
+            'family_id': family_id,
+            'environment_active_id': environment_active_id
+        })
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == {
@@ -104,7 +109,11 @@ def test_get_part_count_lambda_b_inductor(
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = inductor.get_part_count_lambda_b(20, 1, 3)
+        _lambda_b = inductor.get_part_count_lambda_b(id_keys={
+            'subcategory_id': 20,
+            'family_id': 1,
+            'environment_active_id': 3
+        })
 
 
 @pytest.mark.unit
@@ -112,7 +121,11 @@ def test_get_part_count_lambda_b_no_subcategory():
 def test_get_part_count_lambda_b_no_family():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown family ID."""
     with pytest.raises(KeyError):
-        _lambda_b = inductor.get_part_count_lambda_b(2, 12, 3)
+        _lambda_b = inductor.get_part_count_lambda_b(id_keys={
+            'subcategory_id': 2,
+            'family_id': 12,
+            'environment_active_id': 3
+        })
 
 
 @pytest.mark.unit
@@ -120,7 +133,12 @@ def test_get_part_count_lambda_b_no_family():
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = inductor.get_part_count_lambda_b(2, 1, 31)
+        _lambda_b = inductor.get_part_count_lambda_b(
+            id_keys={
+                'subcategory_id': 2,
+                'family_id': 1,
+                'environment_active_id': 31
+            })
 
 
 @pytest.mark.unit
@@ -128,11 +146,11 @@ def test_get_part_count_lambda_b_no_environment():
 @pytest.mark.parametrize("family_id", [1, 2])
 @pytest.mark.parametrize(
     "environment_active_id",
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 )
 def test_calculate_part_count_inductor(
-        family_id,
-        environment_active_id,
+    family_id,
+    environment_active_id,
 ):
     """calculate_part_count() should return a float value for the base hazard rate on success."""
     ATTRIBUTES['subcategory_id'] = 2
@@ -161,8 +179,8 @@ def test_calculate_part_count_inductor(
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
 def test_calculate_part_count_xfmr(
-        family_id,
-        environment_active_id,
+    family_id,
+    environment_active_id,
 ):
     """calculate_part_count() should return a float value for the base hazard rate on success."""
     ATTRIBUTES['subcategory_id'] = 1
