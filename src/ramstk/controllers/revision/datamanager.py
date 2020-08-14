@@ -684,6 +684,13 @@ class DataManager(RAMSTKDataManager):
                 value=None,
                 order=RAMSTKRevision.revision_id):
 
+            #// TODO: Break Failure Definitions out into a new data manager.
+            #//
+            #// The Revision controller currently manages the Failure
+            #// Definitions.  This makes it difficult to use common
+            #// classes/methods/functions in the GUI for each work flow
+            #// module.  Moving the Failure Definitions to their own data
+            #// manager will allow the use of commonality.
             _failure_definitions = self.dao.do_select_all(
                 RAMSTKFailureDefinition,
                 key=RAMSTKFailureDefinition.revision_id,
@@ -696,6 +703,13 @@ class DataManager(RAMSTKDataManager):
             except ValueError:  # No failure definitions for current revision.
                 pass
 
+            #// TODO: Break Usage Profile out into a new data manager.
+            #//
+            #// The Revision controller currently manages the Usage Profile
+            #// This makes it difficult to use common
+            #// classes/methods/functions in the GUI for each work flow
+            #// module.  Moving the Usage PRofile to their it's data
+            #// manager will allow the use of commonality.
             _usage_profile = self._do_select_usage_profile(
                 _revision.revision_id)
 

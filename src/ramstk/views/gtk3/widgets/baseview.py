@@ -878,10 +878,19 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: _attributes; the dict containing the record's attributes.
         :rtype: dict
         """
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
+
         _attributes: Dict[str, Any] = {}
 
         _model, _row = selection.get_selected()
         if _row is not None:
+            #// TODO: Update base view on_row_change() to use _dic_column_keys.
+            #//
+            #// The _dic_key_index and _dic_column_keys are both
+            #// dictionaries with the object's attribute name (str) as the key
+            #// and the associated work flow column number (int) as the
+            #// value.  Only one is needed; the _dic_column_keys is more
+            #// widely used and is more descriptive of what the dict holds.
             for _key in self._dic_key_index:
                 _attributes[_key] = _model.get_value(
                     _row, self._lst_col_order[self._dic_key_index[_key]])
@@ -890,6 +899,8 @@ class RAMSTKBaseView(Gtk.HBox):
             self._record_id = _attributes['hardware_id']
         except KeyError:
             self._record_id = -1
+
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
         return _attributes
 

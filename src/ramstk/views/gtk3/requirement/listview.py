@@ -28,6 +28,25 @@ class Stakeholders(RAMSTKListView):
     with the selected Stakeholder.  The attributes of the Stakeholder List View
     are:
     """
+    # Define private dict class attributes.
+    _dic_keys = {
+        2: 'customer_rank',
+        3: 'description',
+        4: 'group',
+        5: 'improvement',
+        6: 'overall_weight',
+        7: 'planned_rank',
+        8: 'priority',
+        9: 'requirement_id',
+        10: 'stakeholder',
+        11: 'user_float_1',
+        12: 'user_float_2',
+        13: 'user_float_3',
+        14: 'user_float_4',
+        15: 'user_float_5'
+    }
+    _dic_column_keys = _dic_keys
+
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
@@ -169,7 +188,9 @@ class Stakeholders(RAMSTKListView):
         ]:
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cells()
-            _cell[0].connect('edited', self._on_cell_edit, i)
+            _cell[0].connect('edited',
+                             super().on_cell_edit, 'lvw_editing_stakeholder',
+                             i)
 
         self.treeview.set_rubber_banding(True)
 
@@ -184,6 +205,23 @@ class Stakeholders(RAMSTKListView):
         self.treeview.set_tooltip_text(
             _("Displays the list of stakeholder inputs for the selected "
               "revision."))
+
+    def _do_insert_to_affinity_group(self, new_text: str) -> None:
+        """
+        Add an entry to the RAMSTK_AFFINITY_GROUP dictionary.
+
+        :param str new_text: the name of the new group to add to the
+            RAMSTK_AFFINITY_GROUP dictionary.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _new_key = max(self.RAMSTK_USER_CONFIGURATION.
+                           RAMSTK_AFFINITY_GROUPS.keys()) + 1
+        except ValueError:
+            _new_key = 1
+        self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_new_key] = str(
+            new_text)
 
     def _do_load_requirements(self, tree: treelib.Tree) -> None:
         """
@@ -299,13 +337,14 @@ class Stakeholders(RAMSTKListView):
         pub.sendMessage('request_update_all_stakeholders')
         super().do_set_cursor_active()
 
-    def _on_button_press(self, treeview: RAMSTKTreeView,
+    # pylint: disable=unused-argument
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the Stakeholder List View RAMSTKTreeView().
 
-        :param treeview: the Stakeholder ListView RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :param __treeview: the Stakeholder ListView RAMSTKTreeView().
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -326,74 +365,19 @@ class Stakeholders(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            super().on_button_press(event,
-                                    icons=['add', 'remove', 'calculate'],
-                                    labels=[
-                                        _("Add a new Stakeholder input."),
-                                        _("Remove the currently selected "
-                                          "Stakeholder input."),
-                                        _("Calculate the Stakeholder improvement factors.")
-                                    ],
-                                    callbacks=[
-                                        self.do_request_insert_sibling,
-                                        self._do_request_delete, self._do_request_calculate
-                                    ])
-
-    # noinspection PyUnusedLocal
-    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int) -> None:
-        """
-        Handle edits of the Stakeholder List View RAMSTKTreeView().
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             Gtk.CellRenderer().
-        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
-                                    belongs to.
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            2: 'customer_rank',
-            3: 'description',
-            4: 'group',
-            5: 'improvement',
-            6: 'overall_weight',
-            7: 'planned_rank',
-            8: 'priority',
-            9: 'requirement_id',
-            10: 'stakeholder',
-            11: 'user_float_1',
-            12: 'user_float_2',
-            13: 'user_float_3',
-            14: 'user_float_4',
-            15: 'user_float_5'
-        }
-
-        try:
-            _key = _dic_keys[self._lst_col_order[position]]
-        except KeyError:
-            _key = ''
-
-        if _key == 'group':
-            try:
-                _new_key = max(self.RAMSTK_USER_CONFIGURATION.
-                               RAMSTK_AFFINITY_GROUPS.keys()) + 1
-            except ValueError:
-                _new_key = 1
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
-                _new_key] = str(new_text)
-        elif position in [2, 7, 8]:
-            new_text = int(float(new_text))
-        elif position in [5, 6, 11, 12, 13, 14, 15]:
-            new_text = float(new_text)
-
-        pub.sendMessage('lvw_editing_stakeholder',
-                        node_id=[self._record_id, -1],
-                        package={_key: new_text})
+            super().on_button_press(
+                event,
+                icons=['add', 'remove', 'calculate'],
+                labels=[
+                    _("Add a new Stakeholder input."),
+                    _("Remove the currently selected "
+                      "Stakeholder input."),
+                    _("Calculate the Stakeholder improvement factors.")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling, self._do_request_delete,
+                    self._do_request_calculate
+                ])
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """
@@ -422,14 +406,10 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        selection.handler_block(self.treeview.dic_handler_id['changed'])
-
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
         if _attributes:
             self._record_id = _attributes['stakeholder_id']
-
-        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
 
 class RequirementHardware(RAMSTKListView):
