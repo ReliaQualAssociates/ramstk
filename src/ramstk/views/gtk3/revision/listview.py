@@ -298,29 +298,24 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            self.on_button_press(event,
-                                 icons=['add', 'remove', 'save', 'save-all'],
-                                 labels=[
-                                     _("Add New Definition"),
-                                     _("Remove Selected Definition"),
-                                     _("Save Selected Definition"),
-                                     _("Save All Definitions")
-                                 ],
-                                 callbacks=[
-                                     self._do_request_insert,
-                                     self._do_request_delete,
-                                     self._do_request_update,
-                                     self._do_request_update_all
-                                 ])
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
+            super().on_button_press(
+                event,
+                icons=['add', 'remove', 'save', 'save-all'],
+                labels=[
+                    _("Add New Definition"),
+                    _("Remove Selected Definition"),
+                    _("Save Selected Definition"),
+                    _("Save All Definitions")
+                ],
+                callbacks=[
+                    self._do_request_insert, self._do_request_delete,
+                    self._do_request_update, self._do_request_update_all
+                ])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
@@ -976,13 +971,15 @@ class UsageProfile(RAMSTKListView):
                         revision_id=self._revision_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _on_button_press(self, treeview: RAMSTKTreeView,
+    # pylint: disable=unused-argument
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the Usage Profile List View RAMSTKTreeView().
 
-        :param treeview: the Usage Profile ListView Gtk.TreeView().
-        :type treeview: :class:`Gtk.TreeView`.
+        :param __treeview: the Usage Profile ListView Gtk.TreeView().
+            Currently unused in this method.
+        :type __treeview: :class:`Gtk.TreeView`.
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -998,14 +995,12 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            self.on_button_press(
+            super().on_button_press(
                 event,
                 icons=['insert_sibling', 'insert_child', 'remove', 'save-all'],
                 labels=[
@@ -1019,8 +1014,6 @@ class UsageProfile(RAMSTKListView):
                     self.do_request_insert_child, self._do_request_delete,
                     self._do_request_update_all
                 ])
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:
@@ -1098,7 +1091,7 @@ class UsageProfile(RAMSTKListView):
                 _prow = _model.iter_parent(_row)
                 self._parent_id = _model.get_value(_prow, 9)
             except TypeError:
-                self._parent_id = - 1
+                self._parent_id = -1
 
             try:
                 _level = _model.get_value(_row, 11)

@@ -649,6 +649,8 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
+        self.treeview.handler_block(self.treeview.dic_handler_id['button-press'])
+
         _icons = kwargs['icons']
         _labels = kwargs['labels']
         _callbacks = kwargs['callbacks']
@@ -668,6 +670,8 @@ class RAMSTKBaseView(Gtk.HBox):
                                self.RAMSTK_USER_CONFIGURATION)
             _menu_item.show()
             _menu.append(_menu_item)
+
+        self.treeview.handler_unblock(self.treeview.dic_handler_id['button-press'])
 
     def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      message: str, position: int) -> None:

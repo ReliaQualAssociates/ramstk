@@ -321,31 +321,23 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'save', 'save-all']
-            _labels = [
-                _("Add New Stakeholder Input"),
-                _("Remove Selected Stakeholder Input"),
-                _("Save Selected Stakeholder Input"),
-                _("Save All Stakeholder Inputs")
-            ]
-            _callbacks = [
-                self._do_request_insert, self._do_request_delete,
-                self._do_request_update, self._do_request_update_all
-            ]
-
-            self.on_button_press(event,
-                                 icons=_icons,
-                                 labels=_labels,
-                                 callbacks=_callbacks)
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
+            super().on_button_press(event,
+                                    icons=['add', 'remove', 'calculate'],
+                                    labels=[
+                                        _("Add a new Stakeholder input."),
+                                        _("Remove the currently selected "
+                                          "Stakeholder input."),
+                                        _("Calculate the Stakeholder improvement factors.")
+                                    ],
+                                    callbacks=[
+                                        self.do_request_insert_sibling,
+                                        self._do_request_delete, self._do_request_calculate
+                                    ])
 
     # noinspection PyUnusedLocal
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
