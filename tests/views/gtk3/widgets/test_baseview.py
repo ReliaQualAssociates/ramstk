@@ -14,7 +14,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
-from ramstk.views.gtk3.widgets import RAMSTKBaseView
+from ramstk.views.gtk3.widgets import RAMSTKBaseView, RAMSTKMessageDialog
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -57,10 +57,10 @@ class TestRAMSTKBaseView():
                              _logger,
                              module='revision')
 
-        assert DUT.do_raise_dialog(
+        assert isinstance(DUT.do_raise_dialog(
             error_code=1,
             user_msg="This is a test user message.",
-            debug_msg='This is a test debug message.') is None
+            debug_msg='This is a test debug message.'), RAMSTKMessageDialog)
 
     @pytest.mark.gui
     def test_do_raise_dialog_missing_message(self,
@@ -73,7 +73,7 @@ class TestRAMSTKBaseView():
                              _logger,
                              module='revision')
 
-        assert DUT.do_raise_dialog(
+        assert isinstance(DUT.do_raise_dialog(
             error_code=1,
             severity="error",
-            debug_msg='This is a test debug message.') is None
+            debug_msg='This is a test debug message.'), RAMSTKMessageDialog)

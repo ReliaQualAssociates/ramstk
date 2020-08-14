@@ -7,19 +7,20 @@
 """The RAMSTK Failure Definition List View Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models.programdb import (RAMSTKEnvironment,
-                                     RAMSTKFailureDefinition, RAMSTKMission,
-                                     RAMSTKMissionPhase)
+from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
+from ramstk.models.programdb import (
+    RAMSTKEnvironment, RAMSTKFailureDefinition, RAMSTKMission,
+    RAMSTKMissionPhase)
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
-from ramstk.views.gtk3.widgets import (RAMSTKListView, RAMSTKMessageDialog,
-                                       RAMSTKTreeView)
+from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
 
 
 def _do_make_column(header: str, index: int,
@@ -64,7 +65,13 @@ class FailureDefinition(RAMSTKListView):
     :ivar int _definition_id: the Failure Definition ID of the definition
         selected in the List View.
     """
-    def __init__(self, configuration, logger,
+    # Define private dict class attributes.
+    _dic_keys = {2: 'definition'}
+    _dic_column_keys = {'definition': 2}
+
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
                  module='failure_definition') -> None:
         """
         Initialize the List View for the Failure Definition package.
@@ -83,8 +90,18 @@ class FailureDefinition(RAMSTKListView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
+        self._dic_key_index = {'definition_id': 0, 'definition': 2}
 
         # Initialize private list attributes.
+        self._lst_icons = ['add', 'remove']
+        self._lst_tooltips = [
+            _("Add a new Failure Definition."),
+            _("Remove the currently selected "
+              "Failure Definition.")
+        ]
+        self._lst_callbacks = [
+            self._do_request_insert, self._do_request_delete
+        ]
 
         # Initialize private scalar attributes.
 
@@ -127,17 +144,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _model = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_INT,
-                               GObject.TYPE_STRING)
-        self.treeview.set_model(_model)
-
-        # pylint: disable=bad-continuation
-        for _header in enumerate(
-            ["Revision ID", "Definition\nNumber", "Failure Definition"]):
-            _column = _do_make_column(_header[1], _header[0], _header[0])
-            self.treeview.append_column(_column)
-
-        _cell = self.treeview.get_columns()[2].get_cells()[0]
+        _cell = self.treeview.get_columns()[1].get_cells()[0]
         _cell.set_property('editable', True)
         self._lst_handler_id.append(
             _cell.connect('edited', self._on_cell_edit, 2))
@@ -149,6 +156,10 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().make_ui(icons=self._lst_icons,
+                        tooltips=self._lst_tooltips,
+                        callbacks=self._lst_callbacks)
+
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Failure\nDefinitions") + "</span>")
         self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
@@ -158,14 +169,6 @@ class FailureDefinition(RAMSTKListView):
             _("Displays failure definitions for the "
               "selected revision."))
 
-        super().make_ui(
-            icons=['add', 'remove'],
-            tooltips=[
-                _("Add a new Failure Definition."),
-                _("Remove the currently selected Failure Definition.")
-            ],
-            callbacks=[self._do_request_insert, self._do_request_delete])
-
     def __set_properties(self) -> None:
         """
         Set properties of the Failure Definition ListView and widgets.
@@ -173,6 +176,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _("Displays the list of failure definitions for the selected "
               "revision."))
@@ -191,22 +195,21 @@ class FailureDefinition(RAMSTKListView):
 
         for _key in tree:
             _entity = tree[_key]
-
-            _attributes: Tuple[int, int, str] = (0, 0, '')
-            if _entity is not None:
-                _attributes = (_entity.revision_id, _entity.definition_id,
-                               _entity.definition)
+            _attributes: Dict[str, Any] = _entity.get_attributes()
             try:
-                _model.append(_attributes)
+                _model.append(None, [
+                    int(_attributes['definition_id']),
+                    _attributes['definition'], _attributes['definition']
+                ])
             #// TODO: Handle exceptions in Revision module views.
             #//
             #// Exceptions in the Revision module views are not being
             #// handled.  They need to be logged and, when appropriate,
             #// provide an informational dialog to the user.  See issue #308.
             except ValueError:
-                pass
+                print(_attributes)
 
-        self.do_expand_tree()
+        super().do_expand_tree()
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -217,14 +220,16 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _prompt = _("You are about to delete Failure Definition {0:d} and "
-                    "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question')
-        _response = _dialog.do_run()
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
+        _dialog = super().do_raise_dialog(user_msg=_(
+            "You are about to delete Failure Definition {0:d} and "
+            "all data associated with it.  Is this really what you "
+            "want to do?").format(self._record_id),
+                                          severity='question',
+                                          parent=_parent)
 
-        if _response == Gtk.ResponseType.YES:
+        if _dialog.do_run() == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_failure_definition',
                             revision_id=self._revision_id,
                             node_id=self._record_id)
@@ -253,11 +258,11 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_failure_definition',
                         revision_id=self._revision_id,
                         node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -268,18 +273,19 @@ class FailureDefinition(RAMSTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_failure_definitions',
                         revision_id=self._revision_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
-    def _on_button_press(self, treeview: RAMSTKTreeView,
+    # pylint: disable=unused-argument
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
         Handle mouse clicks on Failure Definition List View RAMSTKTreeView().
 
-        :param treeview: the Failure Definition ListView Gtk.TreeView().
-        :type treeview: :class:`ramstk.gui.ramstk.TreeView.RAMSTKTreeView`.
+        :param __treeview: the Failure Definition ListView Gtk.TreeView().
+        :type __treeview: :class:`ramstk.gui.ramstk.TreeView.RAMSTKTreeView`.
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -294,29 +300,15 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            self.on_button_press(event,
-                                 icons=['add', 'remove', 'save', 'save-all'],
-                                 labels=[
-                                     _("Add New Definition"),
-                                     _("Remove Selected Definition"),
-                                     _("Save Selected Definition"),
-                                     _("Save All Definitions")
-                                 ],
-                                 callbacks=[
-                                     self._do_request_insert,
-                                     self._do_request_delete,
-                                     self._do_request_update,
-                                     self._do_request_update_all
-                                 ])
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
+            super().on_button_press(event,
+                                    icons=self._lst_icons,
+                                    tooltips=self._lst_tooltips,
+                                    callbacks=self._lst_callbacks)
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
@@ -333,11 +325,23 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        super().on_cell_edit(__cell, path, new_text, '', position)
+        #// TODO: Update Failure Definition GUI after refactoring data manager.
+        #//
+        #// Once the Failure Definition data manager has been created from
+        #// the Revision data manager, the list view for the failure
+        #// definitions needs to be refactored to use common methods.  This
+        #// includes the RAMSTKBaseView.on_cell_edit() and
+        #// RAMSTKBaseView.on_row_change() methods at minimum.
+        self.treeview.do_edit_cell(__cell, path, new_text, position)
+
+        try:
+            _key = self._dic_keys[self._lst_col_order[position]]
+        except (IndexError, KeyError):
+            _key = ''
 
         pub.sendMessage('lvw_editing_failure_definition',
                         node_id=[self._revision_id, self._record_id, ''],
-                        package={'definition': new_text})
+                        package={_key: new_text})
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -351,23 +355,10 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _attributes = {}
+        _attributes: Dict[str, Any] = super().on_row_change(selection)
 
-        selection.handler_block(self.treeview.dic_handler_id['changed'])
-
-        _model, _row = selection.get_selected()
-
-        if _row is not None:
-            _attributes['revision_id'] = _model.get_value(_row, 0)
-            _attributes['definition_id'] = _model.get_value(_row, 1)
-            _attributes['definition'] = _model.get_value(_row, 2)
-
+        if _attributes:
             self._record_id = _attributes['definition_id']
-
-            pub.sendMessage('selected_failure_definition',
-                            attributes=_attributes)
-
-        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
 
 class UsageProfile(RAMSTKListView):
@@ -376,7 +367,87 @@ class UsageProfile(RAMSTKListView):
 
     All attributes of a Usage Profile List View are inherited.
     """
-    def __init__(self, configuration, logger, module='usage_profile') -> None:
+
+    # Define private dict class attributes.
+    _dic_element_keys = {
+        'mission': {
+            2: 'description',
+            4: 'time_units',
+            6: 'mission_time'
+        },
+        'phase': {
+            2: 'name',
+            3: 'description',
+            5: 'phase_start',
+            6: 'phase_end'
+        },
+        'environment': {
+            2: 'name',
+            4: 'units',
+            5: 'minimum',
+            6: 'maximum',
+            7: 'mean',
+            8: 'variance'
+        }
+    }
+    _dic_index_keys = {
+        'mission': {
+            'description': 2,
+            'time_units': 4,
+            'mission_time': 6
+        },
+        'phase': {
+            'name': 2,
+            'description': 3,
+            'phase_start': 5,
+            'phase_end': 6
+        },
+        'environment': {
+            'name': 2,
+            'units': 4,
+            'minimum': 5,
+            'maximum': 6,
+            'mean': 7,
+            'variance': 8
+        }
+    }
+    _dic_headings = {
+        'mission': [
+            _("Mission ID"),
+            _("Mission Description"),
+            _("Units"),
+            _("Start Time"),
+            _("End Time"),
+            _(""),
+            _(""),
+            _("")
+        ],
+        'phase': [
+            _("Phase ID"),
+            _("Phase Description"),
+            _("Units"),
+            _("Start Time"),
+            _("End Time"),
+            _(""),
+            _(""),
+            _("")
+        ],
+        'environment': [
+            _("Environment ID"),
+            _("Condition Description"),
+            _("Units"),
+            _("Minimum Value"),
+            _("Maximum Value"),
+            _("Mean Value"),
+            _("Variance"),
+            _("")
+        ]
+    }
+
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'usage_profile') -> None:
         """
         Initialize the List View for the Usage Profile.
 
@@ -386,14 +457,21 @@ class UsageProfile(RAMSTKListView):
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param str module: the name of the module.
         """
+        #// TODO: Update Usage Profile GUI treeview to use a RAMSTKTreeView.
+        #
+        #// Updating the usage profile GUI treeview will allow the use of
+        #// the RAMSTKBaseView.on_cell_edit() method rather than a local
+        #// method.  After updating to use a RAMSTKTreeView, remove or update
+        #// the local _on_cell_edit(), __make_cell(), __make_treeview()
+        #// methods from the usage profile list view.
         super().__init__(configuration, logger, module)
-
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
             to_tty=False)
 
         # Initialize private dictionary attributes.
+        self._dic_column_keys: Dict[str, int] = {}
         self._dic_icons['mission'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/mission.png')
@@ -403,8 +481,24 @@ class UsageProfile(RAMSTKListView):
         self._dic_icons['environment'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/environment.png')
+        self._dic_key_index: Dict[str, int] = {}
+        self._dic_keys: Dict[str, int] = {}
 
         # Initialize private list attributes.
+        self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        self._lst_icons = ['insert_sibling', 'insert_child', 'remove']
+        self._lst_tooltips = [
+            _("Add a new Usage Profile entity at the same level "
+              "as the currently selected entity."),
+            _("Add a new Usage Profile entity one level below the "
+              "currently selected entity."),
+            _("Remove the currently selected entity from the Usage "
+              "Profile.")
+        ]
+        self._lst_callbacks = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete
+        ]
 
         # Initialize private scalar attributes.
 
@@ -450,86 +544,31 @@ class UsageProfile(RAMSTKListView):
                 _mission: Tree = attributes.subtree(_n.identifier)
                 self._do_load_tree(_mission, row=None)
 
-    @staticmethod
-    def __get_attributes(selection: Gtk.TreeSelection, level: str) -> Dict:
+    def __do_request_delete(self, level: str) -> None:
         """
-        Retrieve the attributes for the line being edited.
+        Send the correct delete message.
 
-        :param selection: the Gtk.TreeSelection that is currently selected.
-        :type selection: :class:`Gtk.TreeSelection`
-        :param str level: the indenture level in the Usage Profile that is
-            selected.
-        :return: a dict of attributes and values.
-        :rtype: dict
+        :param str level: the indenture level of the Usage Profile element to delete.
+        :return: None
+        :rtype: None
         """
-        _attributes = {}
-
-        _model, _row = selection.get_selected()
+        _model, _row = self.treeview.selection.get_selected()
+        _node_id = _model.get_value(_row, 9)
 
         if level == 'mission':
-            _attributes['mission_id'] = _model.get_value(_row, 0)
-            _attributes['description'] = _model.get_value(_row, 2)
-            _attributes['time_units'] = _model.get_value(_row, 4)
-            _attributes['mission_time'] = _model.get_value(_row, 6)
+            pub.sendMessage('request_delete_mission',
+                            revision_id=self._revision_id,
+                            node_id=_node_id)
         elif level == 'phase':
-            _attributes['phase_id'] = _model.get_value(_row, 0)
-            _attributes['name'] = _model.get_value(_row, 2)
-            _attributes['description'] = _model.get_value(_row, 3)
-            _attributes['phase_start'] = _model.get_value(_row, 5)
-            _attributes['phase_end'] = _model.get_value(_row, 6)
+            pub.sendMessage('request_delete_mission_phase',
+                            revision_id=self._revision_id,
+                            mission_id=self._parent_id,
+                            node_id=_node_id)
         elif level == 'environment':
-            _attributes['environment_id'] = _model.get_value(_row, 0)
-            _attributes['name'] = _model.get_value(_row, 2)
-            _attributes['units'] = _model.get_value(_row, 4)
-            _attributes['minimum'] = _model.get_value(_row, 5)
-            _attributes['maximum'] = _model.get_value(_row, 6)
-            _attributes['mean'] = _model.get_value(_row, 7)
-            _attributes['variance'] = _model.get_value(_row, 8)
-
-        return _attributes
-
-    @staticmethod
-    def __get_headings(level):
-        """
-        Get the list of headings for the Usage Profile treeview.
-
-        :param level: the level (mission, phase, environment) to retrieve
-            headers for.
-        :return: list of headings
-        :rtype: list
-        """
-        return {
-            'mission': [
-                _("Mission ID"),
-                _("Description"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ],
-            'phase': [
-                _("Phase ID"),
-                _("  Code\t\tDescription"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ],
-            'environment': [
-                _("Environment ID"),
-                _("Condition"),
-                _("Units"),
-                _("Minimum Value"),
-                _("Maximum Value"),
-                _("Mean Value"),
-                _("Variance"),
-                _("")
-            ]
-        }[level]
+            pub.sendMessage('request_delete_environment',
+                            revision_id=self._revision_id,
+                            phase_id=self._parent_id,
+                            node_id=_node_id)
 
     def __make_cell(self, cell: str, editable: bool,
                     position: int) -> Gtk.CellRenderer:
@@ -633,15 +672,6 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
-                                  + "</span>")
-        self.tab_label.set_xalign(xalign=0.5)
-        self.tab_label.set_yalign(yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays usage profiles for the selected revision."))
-
         super().make_ui(
             icons=['insert_sibling', 'insert_child', 'remove'],
             tooltips=[
@@ -657,6 +687,15 @@ class UsageProfile(RAMSTKListView):
                 self._do_request_delete
             ])
 
+        self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
+                                  + "</span>")
+        self.tab_label.set_xalign(xalign=0.5)
+        self.tab_label.set_yalign(yalign=0.5)
+        self.tab_label.set_justify(Gtk.Justification.CENTER)
+        self.tab_label.show_all()
+        self.tab_label.set_tooltip_text(
+            _("Displays usage profiles for the selected revision."))
+
     def __set_properties(self) -> None:
         """
         Set properties of the Failure Definition ListView and widgets.
@@ -664,6 +703,7 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _("Displays the list of usage profiles for the selected "
               "revision."))
@@ -861,7 +901,7 @@ class UsageProfile(RAMSTKListView):
             _child_tree = tree.subtree(_n.identifier)
             self._do_load_tree(_child_tree, row=_new_row)
 
-        self.do_expand_tree()
+        super().do_expand_tree()
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -876,34 +916,17 @@ class UsageProfile(RAMSTKListView):
         _node_id = _model.get_value(_row, 9)
         _level = _model.get_value(_row, 11)
 
-        _prow = _model.iter_parent(_row)
-        try:
-            _parent_id = _model.get_value(_prow, 9)
-        except TypeError:
-            _parent_id = -1
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
+        _dialog = super().do_raise_dialog(user_msg=_(
+            "You are about to delete {1:s} {0:s} and all data "
+            "associated with it.  Is this really what you want to "
+            "do?").format(_node_id, _level),
+                                          severity='question',
+                                          parent=_parent)
 
-        _prompt = _("You are about to delete {1:s} {0:s} and all data "
-                    "associated with it.  Is this really what you want to "
-                    "do?").format(_node_id, _level)
-        _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                      'question')
-        _response = _dialog.do_run()
-
-        if _response == Gtk.ResponseType.YES:
-            if _level == 'mission':
-                pub.sendMessage('request_delete_mission',
-                                revision_id=self._revision_id,
-                                node_id=_node_id)
-            elif _level == 'phase':
-                pub.sendMessage('request_delete_mission_phase',
-                                revision_id=self._revision_id,
-                                mission_id=_parent_id,
-                                node_id=_node_id)
-            elif _level == 'environment':
-                pub.sendMessage('request_delete_environment',
-                                revision_id=self._revision_id,
-                                phase_id=_parent_id,
-                                node_id=_node_id)
+        if _dialog.do_run() == Gtk.ResponseType.YES:
+            self.__do_request_delete(_level)
 
         _dialog.do_destroy()
 
@@ -933,9 +956,12 @@ class UsageProfile(RAMSTKListView):
                             mission_id=_mission_id,
                             phase_id=_phase_id)
         elif _level == 'environment':
-            _prompt = _("An environmental condition cannot have a child.")
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                          'error')
+            _parent = self.get_parent().get_parent().get_parent().get_parent(
+            ).get_parent()
+            _dialog = super().do_raise_dialog(
+                user_msg=_("An environmental condition cannot have a child."),
+                severity='error',
+                parent=_parent)
             _dialog.do_run()
             _dialog.do_destroy()
 
@@ -1005,13 +1031,15 @@ class UsageProfile(RAMSTKListView):
                         revision_id=self._revision_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _on_button_press(self, treeview: RAMSTKTreeView,
+    # pylint: disable=unused-argument
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the Usage Profile List View RAMSTKTreeView().
 
-        :param treeview: the Usage Profile ListView Gtk.TreeView().
-        :type treeview: :class:`Gtk.TreeView`.
+        :param __treeview: the Usage Profile ListView Gtk.TreeView().
+            Currently unused in this method.
+        :type __treeview: :class:`Gtk.TreeView`.
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -1027,14 +1055,12 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            self.on_button_press(
+            super().on_button_press(
                 event,
                 icons=['insert_sibling', 'insert_child', 'remove', 'save-all'],
                 labels=[
@@ -1049,15 +1075,13 @@ class UsageProfile(RAMSTKListView):
                     self._do_request_update_all
                 ])
 
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
-
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:
         """
         Handle edits of the Usage Profile List View RAMSTKTreeView().
 
         :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
+        :param str __path: the Gtk.TreeView() path of the Gtk.CellRenderer()
             that was edited.
         :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
@@ -1065,43 +1089,24 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _dic_keys = {
-            'mission': {
-                2: 'description',
-                4: 'time_units',
-                6: 'mission_time'
-            },
-            'phase': {
-                2: 'name',
-                3: 'description',
-                5: 'phase_start',
-                6: 'phase_end'
-            },
-            'environment': {
-                2: 'name',
-                4: 'units',
-                5: 'minimum',
-                6: 'maximum',
-                7: 'mean',
-                8: 'variance'
-            }
-        }
+        _model = self.treeview.get_model()
+        _model[path][position] = new_text
 
-        _model, _row = self.treeview.selection.get_selected()
-
-        _node_id = _model.get_value(_row, 9)
-        _level = _model.get_value(_row, 11)
-
+        #// TODO: Update Usage Profile GUI after refactoring data manager.
+        #//
+        #// Once the Failure Definition data manager has been created from
+        #// the Revision data manager, the list view for the failure
+        #// definitions needs to be refactored to use common methods.  This
+        #// includes the RAMSTKBaseView.on_cell_edit() and
+        #// RAMSTKBaseView.on_row_change() methods at minimum.
         try:
-            _key = _dic_keys[_level][position]
-            super().on_cell_edit(__cell, path, new_text, '', position)
-            pub.sendMessage('lvw_editing_usage_profile',
-                            node_id=[self._revision_id, -1, _node_id],
-                            package={_key: new_text})
-        except KeyError:
-            _status = _("Mission start time is always set to 0.0.  Your "
-                        "edits will not be saved.")
-            pub.sendMessage('request_set_status', status=_status)
+            _key = self._dic_column_keys[self._lst_col_order[position]]
+        except (IndexError, KeyError):
+            _key = ''
+
+        pub.sendMessage('lvw_editing_usage_profile',
+                        node_id=[self._revision_id, -1, self._record_id],
+                        package={_key: new_text})
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """
@@ -1118,21 +1123,31 @@ class UsageProfile(RAMSTKListView):
         _headings: List[str] = []
         _level: str = ''
 
-        selection.handler_block(self.treeview.dic_handler_id['changed'])
-
         _model, _row = selection.get_selected()
 
         if _row is not None:
+            self._record_id = _model.get_value(_row, 9)
+            try:
+                _prow = _model.iter_parent(_row)
+                self._parent_id = _model.get_value(_prow, 9)
+            except TypeError:
+                self._parent_id = -1
+
             try:
                 _level = _model.get_value(_row, 11)
+                self._dic_column_keys = self._dic_element_keys[_level]
+                self._dic_keys = self._dic_index_keys[_level]
+                self._dic_key_index = self._dic_index_keys[_level]
             except TypeError:
                 _level = ''
-            _headings = self.__get_headings(_level)
+                self._dic_column_keys = {}
+                self._dic_keys = {}
+                self._dic_key_index = {}
 
             # Change the column headings depending on what is being selected.
             i = 0
             _columns = self.treeview.get_columns()
-            for _heading in _headings:
+            for _heading in super().do_get_headings(_level):
                 _label = Gtk.Label()
                 _label.set_line_wrap(True)
                 _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -1144,8 +1159,3 @@ class UsageProfile(RAMSTKListView):
                 _columns[i].set_widget(_label)
 
                 i += 1
-
-        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
-
-        pub.sendMessage('selected_usage_profile',
-                        attributes=self.__get_attributes(selection, _level))

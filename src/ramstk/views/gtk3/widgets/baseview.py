@@ -1,4 +1,4 @@
-# pylint: disable=non-parent-init-called
+# pylint: disable=non-parent-init-called, too-many-public-methods
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.widgets.view.py is part of the RAMSTK Project
@@ -21,7 +21,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
+from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 
 # RAMSTK Local Imports
 from .button import RAMSTKCheckButton, do_make_buttonbox
@@ -255,58 +255,6 @@ class RAMSTKBaseView(Gtk.HBox):
             + '/32x32/warning.png'
         }
 
-    def _make_toolbar(self,
-                      icons: List[str],
-                      orientation: str = 'horizontal',
-                      height: int = 60,
-                      width: int = 60) -> Tuple[Gtk.Toolbar, int]:
-        """
-        Create the toolbar for RAMSTK Views.
-
-        This method creates the base toolbar used by all RAMSTK Views.  Use a
-        toolbar for an RAMSTK View if there are other than buttons to be added.
-
-        :param list icons: list of icon names to place on the toolbuttons.
-            The items in the list are keys in _dic_icons.
-        :return: _toolbar, _position
-        :rtype: (:class:`Gtk.Toolbar`, int)
-        """
-        _toolbar = Gtk.Toolbar()
-
-        if orientation == 'horizontal':
-            _toolbar.set_orientation(Gtk.Orientation.HORIZONTAL)
-            _scale = 0.58
-        else:
-            _toolbar.set_orientation(Gtk.Orientation.VERTICAL)
-            _scale = 0.4
-
-        _position = 0
-        for _icon in icons:
-            if _icon is None:
-                _toolbar.insert(Gtk.SeparatorToolItem(), _position)
-            else:
-                _image = Gtk.Image()
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons[_icon], int(_scale * height),
-                    int(_scale * width))
-                _image.set_from_pixbuf(_icon)
-
-                _button = Gtk.ToolButton()
-                _button.set_property("height_request", height)
-                _button.set_property("width_request", width)
-                _button.set_icon_widget(_image)
-                _button.show()
-                _toolbar.insert(_button, _position)
-
-            _position += 1
-
-        _toolbar.show()
-
-        # Return the toolbar and the next position to place an Gtk.ToolBar()
-        # item.  The _position variable can be used by derived classes to
-        # add additional items to the Gtk.ToolBar().
-        return _toolbar, _position
-
     def _make_treeview(self, module: str) -> RAMSTKTreeView:
         """
         Make the RAMSTKTreeView instance for this view.
@@ -366,6 +314,22 @@ class RAMSTKBaseView(Gtk.HBox):
             _column = self.treeview.get_column(0)
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
+
+    def do_get_headings(self, level: str) -> List:
+        """
+        Get the list of headings for the Usage Profile treeview.
+
+        :param level: the level (mission, phase, environment) to retrieve
+            headers for.
+        :return: list of headings
+        :rtype: list
+        """
+        try:
+            _headings = self._dic_headings[level]
+        except KeyError:
+            _headings = []
+
+        return _headings
 
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """
@@ -451,12 +415,24 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         try:
-            _dialog = RAMSTKMessageDialog(kwargs['user_msg'],
-                                          self._dic_icons[kwargs['severity']],
-                                          kwargs['severity'],
-                                          parent=self)
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                _dialog.destroy()
+            _user_msg = kwargs['user_msg']
+        except KeyError:
+            _user_msg = "User message not supplied by calling function."
+            _severity = 'error'
+        try:
+            _severity = kwargs['severity']
+        except KeyError:
+            _severity = 'error'
+        try:
+            _parent = kwargs['parent']
+        except KeyError:
+            _parent = None
+
+        try:
+            _dialog = RAMSTKMessageDialog(_user_msg,
+                                          self._dic_icons[_severity],
+                                          _severity,
+                                          parent=_parent)
         except KeyError as _error:
             _debug_msg = ("Failed attempting to raise a RAMSTKMessageDialog "
                           "with either the severity or message missing.")
@@ -469,7 +445,9 @@ class RAMSTKBaseView(Gtk.HBox):
             _debug_msg = ''
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-    def do_refresh_tree(self, package: Dict, keys: Dict) -> None:
+        return _dialog
+
+    def do_refresh_tree(self, package: Dict[str, Any]) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
@@ -495,15 +473,13 @@ class RAMSTKBaseView(Gtk.HBox):
         the proper column of the RAMSTKTreeView with the new data.
 
         :param dict package: the key:value for the data being updated.
-        :param dict keys: the name:index relationship for the work stream
-            module's data keys.
         :return: None
         :rtype: None
         """
         [[_key, _value]] = package.items()
 
         try:
-            _position = self._lst_col_order[keys[_key]]
+            _position = self._lst_col_order[self._dic_key_index[_key]]
 
             _model, _row = self.treeview.get_selection().get_selected()
             _model.set(_row, _position, _value)
@@ -634,10 +610,12 @@ class RAMSTKBaseView(Gtk.HBox):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def do_set_cursor_active(self, node_id: Any) -> None:
+    def do_set_cursor_active(self, node_id: Any = '') -> None:
         """
         Set the active cursor for the Module, List, and Work Book Gdk.Window().
 
+        :keyword node_id: the node ID passed in the PyPubSub message.  Only
+            needed when this method is a PyPubSub subscriber.
         :return: None
         :rtype: None
         """
@@ -671,6 +649,16 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
+        self.treeview.handler_block(self.treeview.dic_handler_id['button-press'])
+
+        #// TODO: Add _lst_icons, _lst_callbacks, and _lst_tooltips to GUIs.
+        #//
+        #// These lists are used in multiple private methods in each GUI
+        #// class as well as several public methods in the GUI meta-classes.
+        #// Having these lists as class attributes will allow simplifying or
+        #// eliminating class methods and likely remove **kwargs from argument
+        #// lists for others.  It will also simplify creation of new GUI
+        #// classes.
         _icons = kwargs['icons']
         _labels = kwargs['labels']
         _callbacks = kwargs['callbacks']
@@ -690,6 +678,8 @@ class RAMSTKBaseView(Gtk.HBox):
                                self.RAMSTK_USER_CONFIGURATION)
             _menu_item.show()
             _menu.append(_menu_item)
+
+        self.treeview.handler_unblock(self.treeview.dic_handler_id['button-press'])
 
     def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      message: str, position: int) -> None:
@@ -896,10 +886,19 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: _attributes; the dict containing the record's attributes.
         :rtype: dict
         """
+        selection.handler_block(self.treeview.dic_handler_id['changed'])
+
         _attributes: Dict[str, Any] = {}
 
         _model, _row = selection.get_selected()
         if _row is not None:
+            #// TODO: Update base view on_row_change() to use _dic_column_keys.
+            #//
+            #// The _dic_key_index and _dic_column_keys are both
+            #// dictionaries with the object's attribute name (str) as the key
+            #// and the associated work flow column number (int) as the
+            #// value.  Only one is needed; the _dic_column_keys is more
+            #// widely used and is more descriptive of what the dict holds.
             for _key in self._dic_key_index:
                 _attributes[_key] = _model.get_value(
                     _row, self._lst_col_order[self._dic_key_index[_key]])
@@ -908,6 +907,8 @@ class RAMSTKBaseView(Gtk.HBox):
             self._record_id = _attributes['hardware_id']
         except KeyError:
             self._record_id = -1
+
+        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
 
         return _attributes
 
@@ -982,27 +983,16 @@ class RAMSTKListView(RAMSTKBaseView):
         self.matrixview: RAMSTKMatrixView = RAMSTKMatrixView(module=module)
         self.tab_label: Gtk.Label = Gtk.Label()
 
-        self.__set_properties()
-
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_matrix, 'succeed_load_matrix')
 
-    def __set_properties(self) -> None:
-        """
-        Set common properties of the ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.treeview.set_rubber_banding(True)
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+    def do_request_update(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type=self._module.lower())
 
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+    def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
         self._do_request_update(__button)
 

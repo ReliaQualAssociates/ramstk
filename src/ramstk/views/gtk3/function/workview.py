@@ -540,7 +540,7 @@ class HazOps(RAMSTKWorkView):
                 except ValueError as _error:
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-            self.do_expand_tree()
+            super().do_expand_tree()
 
     # pylint: disable=unused-argument
     def _do_set_cursor_active(self, error_message: str) -> None:
