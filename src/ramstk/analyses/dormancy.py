@@ -6,6 +6,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Dormancy Calculations Module."""
 
+# Standard Library Imports
+from typing import Union
+
 # Third Party Imports
 import numpy as np
 
@@ -77,13 +80,8 @@ DORMANT_HR_MULT = np.array([[[0.0, 0.08, 0.0, 0.0], [0.0, 0.08, 0.0, 0.0],
                                                          0.02]]])
 
 
-def do_calculate_dormant_hazard_rate(
-        category_id,
-        subcategory_id,
-        environment_active_id,
-        environment_dormant_id,
-        hazard_rate_active
-):
+def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
+                                     env_info: Union[int, int]) -> float:
     r"""
     Calculate the dormant hazard rate for a hardware item.
 
@@ -128,33 +126,28 @@ def do_calculate_dormant_hazard_rate(
     |             4            | Space                   |
     +--------------------------+-------------------------+
 
-    :param int category_id: the component category ID; used as index 0.
-    :param int subcategory_id: the component subcategory ID; used as index
-        3 for semiconductors.
-    :param int environment_active_id: the active environment ID per the
-        table above; used as index 1.
-    :param int environment_dormant_id: the dormant (storage) environment ID
-        per the table above; used as index 2.
-    :param float hazard_rate_active: the active hazard rate of the component.
-    :return: _hr_dormant; the calculated dormant hazard rate.
+    :param list hw_info: the list of information relative to the hardware item
+        to calculate the dormant hazard rate.  Index 0 is the category ID,
+        index 1 is the subcategory ID, and index 3 is the predicted hazard
+        rate.
+    :param list env_info: the list of environment information.  Index 0
+        is the active environment ID per the table above and index 2 is the
+        dormant (storage) environment ID per the table above.
     :rtype: float
     :raise: IndexError if an indexing argument asks for a non-existent index.
     """
-    if category_id == 2:
-        if subcategory_id in [1, 2]:
-            _dormant_hr_mult = DORMANT_HR_MULT[category_id
-                                               - 1][environment_active_id
-                                                    - 1][environment_dormant_id
-                                                         - 1][0]
+    if hw_info[0] == 2:
+        if hw_info[1] in [1, 2]:
+            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0]
+                                                               - 1][env_info[1]
+                                                                    - 1][0]
         else:
-            _dormant_hr_mult = DORMANT_HR_MULT[category_id
-                                               - 1][environment_active_id
-                                                    - 1][environment_dormant_id
-                                                         - 1][1]
+            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0]
+                                                               - 1][env_info[1]
+                                                                    - 1][1]
     else:
-        _dormant_hr_mult = DORMANT_HR_MULT[category_id
-                                           - 1][environment_active_id
-                                                - 1][environment_dormant_id
-                                                     - 1]
+        _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0]
+                                                           - 1][env_info[1]
+                                                                - 1]
 
-    return _dormant_hr_mult * hazard_rate_active
+    return _dormant_hr_mult * hw_info[2]

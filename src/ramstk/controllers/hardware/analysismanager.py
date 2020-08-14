@@ -644,7 +644,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes = allocation.do_calculate_goals(**self._attributes)
 
     # noinspection PyIncorrectDocstring
-    def _do_calculate_hardware(self, node_id: int,
+    def _do_calculate_hardware(self,
+                               node_id: int,
                                system: bool = False) -> None:
         """
         Calculate all metrics for the hardware associated with node ID.
@@ -681,13 +682,17 @@ class AnalysisManager(RAMSTKAnalysisManager):
         else:
             self._request_do_stress_analysis()
             self._request_do_predict_active_hazard_rate()
-            self._attributes['hazard_rate_dormant'] = \
+            self._attributes['hazard_rate_dormant'] = (
                 dormancy.do_calculate_dormant_hazard_rate(
-                    self._attributes['category_id'],
-                    self._attributes['subcategory_id'],
-                    self._attributes['environment_active_id'],
-                    self._attributes['environment_dormant_id'],
-                    self._attributes['hazard_rate_active'])
+                    hw_info=[
+                        self._attributes['category_id'],
+                        self._attributes['subcategory_id'],
+                        self._attributes['hazard_rate_active']
+                    ],
+                    env_info=[
+                        self._attributes['environment_active_id'],
+                        self._attributes['environment_dormant_id']
+                    ]))
 
         self._attributes['add_adj_factor'] = (
             self._attributes['add_adj_factor'] / _hr_multiplier)
