@@ -101,10 +101,11 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        attributes['subcategory_id'],
-        attributes['family_id'],
-        attributes['environment_active_id'],
-    )
+        id_keys={
+            'subcategory_id': attributes['subcategory_id'],
+            'family_id': attributes['family_id'],
+            'environment_active_id': attributes['environment_active_id']
+        })
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -242,8 +243,7 @@ def calculate_temperature_rise_power_loss_weight(power_operating: float,
     return 11.5 * (power_operating / weight**0.6766)
 
 
-def get_part_count_lambda_b(subcategory_id: int, family_id: int,
-                            environment_active_id: int) -> List[float]:
+def get_part_count_lambda_b(id_keys: Dict[str, int]) -> List[float]:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -274,16 +274,16 @@ def get_part_count_lambda_b(subcategory_id: int, family_id: int,
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int environment_active_id: the active environment identifier.
-    :param int family_id: the family identifier.
+    :param dict id_keys: the ID's used as keys when selecting
+        the base hazard rate.  The keys are subcategory_id,
+        environment_active_id, and family_id.
     :return: _base_hr; the list of part count base hazard rate.
     :rtype: list
     :raise: KeyError if passed an unknown subcategory ID or family ID.
     :raise: IndexError if passed an unknown active environment ID.
     """
-    return PART_COUNT_LAMBDA_B[subcategory_id][family_id][environment_active_id
-                                                          - 1]
+    return PART_COUNT_LAMBDA_B[id_keys['subcategory_id']][
+        id_keys['family_id']][id_keys['environment_active_id'] - 1]
 
 
 def get_part_stress_quality_factor(subcategory_id: int, quality_id: int,

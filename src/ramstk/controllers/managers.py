@@ -145,31 +145,6 @@ class RAMSTKDataManager():
                 self._mtx_prefix = self._mtx_prefix.replace(_letter, "")
         self._mtx_prefix = self._mtx_prefix + '_'
 
-    def _do_set_attributes(self, node_id: int, key: str, value: Any,
-                           table: str, poppers: Dict[str, Any]) -> None:
-        """
-        Set the attributes of the record associated with the Module ID.
-
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :param str table: the name of the table whose attributes are being set.
-        :param dict poppers: the key:value pair containing the attribute and
-            its value to set.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        for _field in poppers[table]:
-            _attributes.pop(_field)
-
-        if key in _attributes:
-            _attributes[key] = value
-
-            self.do_select(node_id, table=table).set_attributes(_attributes)
-
     def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
         """
         Set the revision ID for the data manager.

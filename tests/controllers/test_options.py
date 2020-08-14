@@ -16,9 +16,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-)
+from ramstk.configuration import (RAMSTKSiteConfiguration,
+                                  RAMSTKUserConfiguration)
 from ramstk.controllers import dmOptions
 from ramstk.db.base import BaseDatabase
 from ramstk.models.commondb import RAMSTKSiteInfo
@@ -264,15 +263,11 @@ class TestGetterSetter():
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_option_attributes',
-                        node_id='siteinfo',
-                        key='function_enabled',
-                        value=1,
-                        table='siteinfo')
+                        node_id=['siteinfo', ''],
+                        package={'function_enabled': 1})
         pub.sendMessage('request_set_option_attributes',
-                        node_id='siteinfo',
-                        key='requirement_enabled',
-                        value=1,
-                        table='siteinfo')
+                        node_id=['siteinfo', ''],
+                        package={'requirement_enabled': 1})
         assert DUT.do_select('siteinfo',
                              table='siteinfo').function_enabled == 1
         assert DUT.do_select('siteinfo',
@@ -293,15 +288,11 @@ class TestGetterSetter():
         DUT.do_select_all(1)
 
         pub.sendMessage('request_set_option_attributes',
-                        node_id='programinfo',
-                        key='function_active',
-                        value=0,
-                        table='programinfo')
+                        node_id=['programinfo', ''],
+                        package={'function_active': 0})
         pub.sendMessage('request_set_option_attributes',
-                        node_id='programinfo',
-                        key='rcm_active',
-                        value=1,
-                        table='programinfo')
+                        node_id=['programinfo', ''],
+                        package={'rcm_active': 1})
         assert DUT.do_select('programinfo',
                              table='programinfo').function_active == 0
         assert DUT.do_select('programinfo',

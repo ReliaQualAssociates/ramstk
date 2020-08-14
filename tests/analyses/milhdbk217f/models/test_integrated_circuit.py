@@ -48,7 +48,12 @@ ATTRIBUTES = {
 def test_get_part_count_lambda_b_linear(environment_active_id, n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
-        1, environment_active_id, n_elements)
+        n_elements,
+        id_keys={
+            'subcategory_id': 1,
+            'environment_active_id': environment_active_id,
+            'technology_id': -1
+        })
 
     assert isinstance(_lambda_b, float)
     if n_elements == 100:
@@ -85,7 +90,12 @@ def test_get_part_count_lambda_b_logic(technology_id, environment_active_id,
                                        n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
-        2, environment_active_id, n_elements, technology_id=technology_id)
+        n_elements,
+        id_keys={
+            'subcategory_id': 2,
+            'environment_active_id': environment_active_id,
+            'technology_id': technology_id
+        })
 
     assert isinstance(_lambda_b, float)
 
@@ -107,7 +117,12 @@ def test_get_part_count_lambda_b_pal_pla(technology_id, environment_active_id,
     }[technology_id][n_elements_id]
 
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
-        3, environment_active_id, _n_elements, technology_id=technology_id)
+        _n_elements,
+        id_keys={
+            'subcategory_id': 3,
+            'environment_active_id': environment_active_id,
+            'technology_id': technology_id
+        })
 
     assert isinstance(_lambda_b, float)
 
@@ -124,7 +139,12 @@ def test_get_part_count_lambda_b_mup_muc(technology_id, environment_active_id,
                                          n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
-        4, environment_active_id, n_elements, technology_id=technology_id)
+        n_elements,
+        id_keys={
+            'subcategory_id': 4,
+            'environment_active_id': environment_active_id,
+            'technology_id': technology_id
+        })
 
     assert isinstance(_lambda_b, float)
 
@@ -145,10 +165,12 @@ def test_get_part_count_lambda_b_rom_sram(subcategory_id, technology_id,
                                           environment_active_id, n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
-        subcategory_id,
-        environment_active_id,
         n_elements,
-        technology_id=technology_id)
+        id_keys={
+            'subcategory_id': subcategory_id,
+            'environment_active_id': environment_active_id,
+            'technology_id': technology_id
+        })
 
     assert isinstance(_lambda_b, float)
 
@@ -168,7 +190,12 @@ def test_get_part_count_lambda_b_prom_dram(subcategory_id,
                                            environment_active_id, n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
-        subcategory_id, environment_active_id, n_elements, technology_id=2)
+        n_elements,
+        id_keys={
+            'subcategory_id': subcategory_id,
+            'environment_active_id': environment_active_id,
+            'technology_id': 2
+        })
 
     assert isinstance(_lambda_b, float)
 
@@ -189,7 +216,12 @@ def test_get_part_count_lambda_b_gaas(environment_active_id, n_elements_id,
         2: [1000, 10000]
     }[technology_id][n_elements_id]
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
-        9, environment_active_id, _n_elements, technology_id=technology_id)
+        _n_elements,
+        id_keys={
+            'subcategory_id': 9,
+            'environment_active_id': environment_active_id,
+            'technology_id': technology_id
+        })
 
     assert isinstance(_lambda_b, float)
 
@@ -198,8 +230,14 @@ def test_get_part_count_lambda_b_gaas(environment_active_id, n_elements_id,
 @pytest.mark.calculation
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment."""
-    with pytest.raises(IndexError):
-        _lambda_b = integratedcircuit.get_part_count_lambda_b(1, 22, 300)
+    with pytest.raises(ValueError):
+        _lambda_b = integratedcircuit.get_part_count_lambda_b(
+            300,
+            id_keys={
+                'subcategory_id': 3,
+                'environment_active_id': 22,
+                'technology_id': 2
+            })
 
 
 @pytest.mark.unit
@@ -207,10 +245,13 @@ def test_get_part_count_lambda_b_no_environment():
 def test_get_part_count_lambda_b_no_technology():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown technology_id."""
     with pytest.raises(KeyError):
-        _lambda_b = integratedcircuit.get_part_count_lambda_b(3,
-                                                              2,
-                                                              300,
-                                                              technology_id=4)
+        _lambda_b = integratedcircuit.get_part_count_lambda_b(
+            300,
+            id_keys={
+                'subcategory_id': 3,
+                'environment_active_id': 2,
+                'technology_id': 4
+            })
 
 
 @pytest.mark.unit

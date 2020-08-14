@@ -7,7 +7,7 @@
 """Options Package Data Model."""
 
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -96,8 +96,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_options', tree=self.tree)
 
-    def do_set_attributes(self, node_id: int, key: str, value: Any,
-                          table: str) -> None:
+    def do_set_attributes(self, node_id: List[int],
+                          package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -109,10 +109,29 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _poppers = {'siteinfo': ['site_id'], 'programinfo': ['revision_id']}
+        [[_key, _value]] = package.items()
 
-        RAMSTKDataManager._do_set_attributes(self, node_id, key, value, table,
-                                             _poppers)
+        _pkey = {'siteinfo': ['site_id'], 'programinfo': ['revision_id']}
+
+        for _table in ['siteinfo', 'programinfo']:
+            try:
+                _attributes = self.do_select(node_id[0],
+                                             table=_table).get_attributes()
+            except (AttributeError, KeyError):
+                _attributes = {}
+
+            for _field in _pkey[_table]:
+                try:
+                    _attributes.pop(_field)
+                except KeyError:
+                    pass
+
+            if _key in _attributes:
+                _attributes[_key] = _value
+
+                self.do_select(node_id[0],
+                               table=_table).set_attributes(_attributes)
+        self.do_get_tree()
 
     def do_update(self, node_id: int) -> None:
         """

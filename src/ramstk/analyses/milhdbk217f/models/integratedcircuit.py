@@ -365,10 +365,9 @@ def calculate_junction_temperature(temperature_case: float,
     return temperature_case + power_operating * theta_jc
 
 
-def calculate_lambda_cyclic_factors(n_cycles: int, construction_id: int,
-                                    n_elements: int,
-                                    temperature_junction: float
-                                    ) -> Tuple[float, float, float, float]:
+def calculate_lambda_cyclic_factors(
+        n_cycles: int, construction_id: int, n_elements: int,
+        temperature_junction: float) -> Tuple[float, float, float, float]:
     """
     Calculate the write cycle hazard rate A and B factors for EEPROMs.
 
@@ -433,9 +432,9 @@ def calculate_temperature_factor(subcategory_id: int, family_id: int,
         _ref_temp = 296.0
         _ea = ACTIVATION_ENERGY[subcategory_id]
 
-    return 0.1 * exp(
-        (-_ea / 8.617E-5) * ((1.0 / (temperature_junction + 273)) -
-                             (1.0 / _ref_temp)))
+    return 0.1 * exp((-_ea / 8.617E-5) * ((1.0 /
+                                           (temperature_junction + 273)) -
+                                          (1.0 / _ref_temp)))
 
 
 def calculate_eos_hazard_rate(voltage_esd: float) -> float:
@@ -499,10 +498,15 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['subcategory_id'],
-                                   attributes['environment_active_id'],
-                                   attributes['n_elements'],
-                                   technology_id=attributes['technology_id'])
+    return get_part_count_lambda_b(attributes['n_elements'],
+                                   id_keys={
+                                       'subcategory_id':
+                                       attributes['subcategory_id'],
+                                       'environment_active_id':
+                                       attributes['environment_active_id'],
+                                       'technology_id':
+                                       attributes['technology_id']
+                                   })
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -522,8 +526,8 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     attributes['piT'] = calculate_temperature_factor(
         attributes['subcategory_id'], attributes['family_id'],
         attributes['type_id'], attributes['temperature_junction'])
-    attributes['piL'] = 0.01 * exp(5.35 -
-                                   0.35 * attributes['years_in_production'])
+    attributes['piL'] = 0.01 * exp(5.35
+                                   - 0.35 * attributes['years_in_production'])
 
     if attributes['subcategory_id'] in [1, 2, 3, 4]:
         attributes['C1'] = get_die_complexity_factor(
@@ -532,9 +536,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes['C2'] = calculate_package_factor(
             attributes['package_id'], attributes['n_active_pins'])
         attributes['hazard_rate_active'] = (
-            (attributes['C1'] * attributes['piT'] +
-             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
-            attributes['piL'])
+            (attributes['C1'] * attributes['piT']
+             + attributes['C2'] * attributes['piE']) * attributes['piQ']
+            * attributes['piL'])
     elif attributes['subcategory_id'] in [5, 6, 7, 8]:
         attributes['C1'] = get_die_complexity_factor(
             attributes['subcategory_id'], attributes['technology_id'],
@@ -548,15 +552,15 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
                 attributes['n_cycles'], attributes['construction_id'],
                 attributes['n_elements'], attributes['temperature_junction'])
             attributes['lambda_cyc'] = ((_a_1 * _b_1 +
-                                         (_a_2 * _b_2 / attributes['piQ'])) *
-                                        attributes['piECC'])
+                                         (_a_2 * _b_2 / attributes['piQ']))
+                                        * attributes['piECC'])
         else:
             attributes['lambda_cyc'] = 0.0
 
         attributes['hazard_rate_active'] = (
-            (attributes['C1'] * attributes['piT'] +
-             attributes['C2'] * attributes['piE'] + attributes['lambda_cyc']) *
-            attributes['piQ'] * attributes['piL'])
+            (attributes['C1'] * attributes['piT']
+             + attributes['C2'] * attributes['piE'] + attributes['lambda_cyc'])
+            * attributes['piQ'] * attributes['piL'])
 
     elif attributes['subcategory_id'] == 9:
         attributes['C1'] = get_die_complexity_factor(
@@ -567,9 +571,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes['piA'] = get_application_factor(
             attributes['type_id'], attributes['application_id'])
         attributes['hazard_rate_active'] = (
-            (attributes['C1'] * attributes['piT'] * attributes['piA'] +
-             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
-            attributes['piL'])
+            (attributes['C1'] * attributes['piT'] * attributes['piA']
+             + attributes['C2'] * attributes['piE']) * attributes['piQ']
+            * attributes['piL'])
     elif attributes['subcategory_id'] == 10:
         attributes['lambdaBD'] = get_die_base_hazard_rate(
             attributes['type_id'])
@@ -585,9 +589,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes['package_id'])
 
         attributes['hazard_rate_active'] = (
-            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT'] *
-            attributes['piCD'] + attributes['lambdaBP'] * attributes['piE'] *
-            attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS'])
+            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT']
+            * attributes['piCD'] + attributes['lambdaBP'] * attributes['piE']
+            * attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS'])
 
     return attributes
 
@@ -716,10 +720,7 @@ def get_package_type_correction_factor(package_id: int) -> float:
     return PI_PT[package_id]
 
 
-def get_part_count_lambda_b(subcategory_id: int,
-                            environment_active_id: int,
-                            n_elements: int,
-                            technology_id: int = -1) -> float:
+def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
     r"""
     Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -763,11 +764,11 @@ def get_part_count_lambda_b(subcategory_id: int,
     |       10       | VHSIC/VLSI                    |        5.3      |
     +----------------+-------------------------------+-----------------+
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int environment_active_id: the active environment identifier.
     :param int n_elements: the number of elements (transistors/gates) in the
         device.
-    :keyword int technology_id: the technology identifier.
+    :param dict id_keys: the ID's used as keys when selecting
+        the base hazard rate.  The keys are subcategory_id,
+        environment_active_id, and technology_id.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.
@@ -796,17 +797,19 @@ def get_part_count_lambda_b(subcategory_id: int,
         }
     }
 
-    if subcategory_id in [3, 9]:
-        _index = _dic_breakpoints[subcategory_id][technology_id].index(
+    if id_keys['subcategory_id'] in [3, 9]:
+        _index = _dic_breakpoints[id_keys['subcategory_id']][
+            id_keys['technology_id']].index(n_elements) + 1
+    else:
+        _index = _dic_breakpoints[id_keys['subcategory_id']].index(
             n_elements) + 1
-    else:
-        _index = _dic_breakpoints[subcategory_id].index(n_elements) + 1
 
-    if subcategory_id == 1:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][_index][
-            environment_active_id - 1]
+    if id_keys['subcategory_id'] == 1:
+        _base_hr = PART_COUNT_LAMBDA_B[id_keys['subcategory_id']][_index][
+            id_keys['environment_active_id'] - 1]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][technology_id][_index][
-            environment_active_id - 1]
+        _base_hr = PART_COUNT_LAMBDA_B[id_keys['subcategory_id']][
+            id_keys['technology_id']][_index][id_keys['environment_active_id']
+                                              - 1]
 
     return _base_hr
