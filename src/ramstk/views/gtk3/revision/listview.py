@@ -16,9 +16,9 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models.programdb import (RAMSTKEnvironment,
-                                     RAMSTKFailureDefinition, RAMSTKMission,
-                                     RAMSTKMissionPhase)
+from ramstk.models.programdb import (
+    RAMSTKEnvironment, RAMSTKFailureDefinition, RAMSTKMission,
+    RAMSTKMissionPhase)
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
 
@@ -93,6 +93,15 @@ class FailureDefinition(RAMSTKListView):
         self._dic_key_index = {'definition_id': 0, 'definition': 2}
 
         # Initialize private list attributes.
+        self._lst_icons = ['add', 'remove']
+        self._lst_tooltips = [
+            _("Add a new Failure Definition."),
+            _("Remove the currently selected "
+              "Failure Definition.")
+        ]
+        self._lst_callbacks = [
+            self._do_request_insert, self._do_request_delete
+        ]
 
         # Initialize private scalar attributes.
 
@@ -147,13 +156,9 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        super().make_ui(
-            icons=['add', 'remove'],
-            tooltips=[
-                _("Add a new Failure Definition."),
-                _("Remove the currently selected Failure Definition.")
-            ],
-            callbacks=[self._do_request_insert, self._do_request_delete])
+        super().make_ui(icons=self._lst_icons,
+                        tooltips=self._lst_tooltips,
+                        callbacks=self._lst_callbacks)
 
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Failure\nDefinitions") + "</span>")
@@ -191,8 +196,6 @@ class FailureDefinition(RAMSTKListView):
         for _key in tree:
             _entity = tree[_key]
             _attributes: Dict[str, Any] = _entity.get_attributes()
-            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self._dic_icons['cancel'], 22, 22)
             try:
                 _model.append(None, [
                     int(_attributes['definition_id']),
@@ -302,19 +305,10 @@ class FailureDefinition(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            super().on_button_press(
-                event,
-                icons=['add', 'remove', 'save', 'save-all'],
-                labels=[
-                    _("Add New Definition"),
-                    _("Remove Selected Definition"),
-                    _("Save Selected Definition"),
-                    _("Save All Definitions")
-                ],
-                callbacks=[
-                    self._do_request_insert, self._do_request_delete,
-                    self._do_request_update, self._do_request_update_all
-                ])
+            super().on_button_press(event,
+                                    icons=self._lst_icons,
+                                    tooltips=self._lst_tooltips,
+                                    callbacks=self._lst_callbacks)
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
@@ -467,8 +461,9 @@ class UsageProfile(RAMSTKListView):
         #
         #// Updating the usage profile GUI treeview will allow the use of
         #// the RAMSTKBaseView.on_cell_edit() method rather than a local
-        #// method.  After updating to use a RAMSTKTreeView, remove the
-        #// local _on_cell_edit() method from the usage profile list view.
+        #// method.  After updating to use a RAMSTKTreeView, remove or update
+        #// the local _on_cell_edit(), __make_cell(), __make_treeview()
+        #// methods from the usage profile list view.
         super().__init__(configuration, logger, module)
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -491,6 +486,19 @@ class UsageProfile(RAMSTKListView):
 
         # Initialize private list attributes.
         self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        self._lst_icons = ['insert_sibling', 'insert_child', 'remove']
+        self._lst_tooltips = [
+            _("Add a new Usage Profile entity at the same level "
+              "as the currently selected entity."),
+            _("Add a new Usage Profile entity one level below the "
+              "currently selected entity."),
+            _("Remove the currently selected entity from the Usage "
+              "Profile.")
+        ]
+        self._lst_callbacks = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete
+        ]
 
         # Initialize private scalar attributes.
 
@@ -1067,8 +1075,8 @@ class UsageProfile(RAMSTKListView):
                     self._do_request_update_all
                 ])
 
-    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str,
-                      new_text: Any, position: int) -> None:
+    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
+                      position: int) -> None:
         """
         Handle edits of the Usage Profile List View RAMSTKTreeView().
 

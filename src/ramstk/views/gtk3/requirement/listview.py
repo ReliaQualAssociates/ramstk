@@ -17,7 +17,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKListView, RAMSTKTreeView)
+from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
 
 
 class Stakeholders(RAMSTKListView):
@@ -87,6 +87,17 @@ class Stakeholders(RAMSTKListView):
         }
 
         # Initialize private list attributes.
+        self._lst_icons = ['add', 'remove', 'calculate']
+        self._lst_tooltips = [
+            _("Add a new Stakeholder input."),
+            _("Remove the currently selected "
+              "Stakeholder input."),
+            _("Calculate the Stakeholder improvement factors.")
+        ]
+        self._lst_callbacks = [
+            self.do_request_insert_sibling, self._do_request_delete,
+            self._do_request_calculate
+        ]
 
         # Initialize private scalar attributes.
 
@@ -115,17 +126,9 @@ class Stakeholders(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        super().make_ui(icons=['add', 'remove', 'calculate'],
-                        tooltips=[
-                            _("Add a new Stakeholder input."),
-                            _("Remove the currently selected "
-                              "Stakeholder input."),
-                            _("Calculate the Stakeholder improvement factors.")
-                        ],
-                        callbacks=[
-                            self.do_request_insert_sibling,
-                            self._do_request_delete, self._do_request_calculate
-                        ])
+        super().make_ui(icons=self._lst_icons,
+                        tooltips=self._lst_tooltips,
+                        callbacks=self._lst_callbacks)
 
         self.tab_label.set_markup("<span weight='bold'>"
                                   + _("Stakeholder\nInputs") + "</span>")
@@ -365,19 +368,10 @@ class Stakeholders(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            super().on_button_press(
-                event,
-                icons=['add', 'remove', 'calculate'],
-                labels=[
-                    _("Add a new Stakeholder input."),
-                    _("Remove the currently selected "
-                      "Stakeholder input."),
-                    _("Calculate the Stakeholder improvement factors.")
-                ],
-                callbacks=[
-                    self.do_request_insert_sibling, self._do_request_delete,
-                    self._do_request_calculate
-                ])
+            super().on_button_press(event,
+                                    icons=self._lst_icons,
+                                    tooltips=self._lst_tooltips,
+                                    callbacks=self._lst_callbacks)
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """

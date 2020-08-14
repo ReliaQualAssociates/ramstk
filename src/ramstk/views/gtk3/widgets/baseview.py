@@ -651,6 +651,14 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.treeview.handler_block(self.treeview.dic_handler_id['button-press'])
 
+        #// TODO: Add _lst_icons, _lst_callbacks, and _lst_tooltips to GUIs.
+        #//
+        #// These lists are used in multiple private methods in each GUI
+        #// class as well as several public methods in the GUI meta-classes.
+        #// Having these lists as class attributes will allow simplifying or
+        #// eliminating class methods and likely remove **kwargs from argument
+        #// lists for others.  It will also simplify creation of new GUI
+        #// classes.
         _icons = kwargs['icons']
         _labels = kwargs['labels']
         _callbacks = kwargs['callbacks']
