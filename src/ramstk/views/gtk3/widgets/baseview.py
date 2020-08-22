@@ -227,6 +227,11 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mode.png',
             'none':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
+            'opload':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/load.png',
+            'opstress':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/stress.png',
             'partial':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/partial.png',
@@ -250,6 +255,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'save-all':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/save-all.png',
+            'testmethod':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/method.png',
             'warning':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/warning.png'
@@ -649,7 +657,8 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        self.treeview.handler_block(self.treeview.dic_handler_id['button-press'])
+        self.treeview.handler_block(
+            self.treeview.dic_handler_id['button-press'])
 
         #// TODO: Add _lst_icons, _lst_callbacks, and _lst_tooltips to GUIs.
         #//
@@ -679,7 +688,8 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.show()
             _menu.append(_menu_item)
 
-        self.treeview.handler_unblock(self.treeview.dic_handler_id['button-press'])
+        self.treeview.handler_unblock(
+            self.treeview.dic_handler_id['button-press'])
 
     def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      message: str, position: int) -> None:

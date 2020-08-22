@@ -131,7 +131,7 @@ class FMEA(RAMSTKWorkView):
     }
     _dic_column_keys = _dic_keys
 
-    # Define private class list attributes.
+    # Define private list class attributes.
     _lst_control_type: List[bool] = [_("Prevention"), _("Detection")]
     _lst_mode_mask: List[bool] = [
         True, True, True, True, True, True, True, True, True, True, True, True,
@@ -202,6 +202,10 @@ class FMEA(RAMSTKWorkView):
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete, self._do_request_calculate
+        ]
         self._lst_fmea_data: List[Any] = [
             0, "Description", "Mission", "Mission Phase", "Effect, Local",
             "Effect, Next", "Effect, End", "Detection Method", "Other "
@@ -214,7 +218,18 @@ class FMEA(RAMSTKWorkView):
             "Action Closure Date", "RPN New Severity", "RPN New Occurrence",
             "RPN New Detection", 0, 0, 0, 0, "Remarks", None, ""
         ]
+        self._lst_icons = ["insert_sibling", "insert_child", "remove",
+                           "calculate"]
         self._lst_missions: List[str] = [""]
+        self._lst_tooltips = [
+            _("Add a new (D)FME(C)A entity at the same level as the "
+              "currently selected entity."),
+            _("Add a new (D)FME(C)A entity one level below the currently "
+              "selected entity."),
+            _("Remove the selected entity from the (D)FME(C)A."),
+            _("Calculate the Task 102 criticality and/or risk priority "
+              "number (RPN).")
+        ]
 
         # Initialize private scalar attributes.
         self._item_hazard_rate: float = 0.0
@@ -421,20 +436,9 @@ class FMEA(RAMSTKWorkView):
         #  RAMSTKFrame ---+
         # Make the buttons.
         super().make_toolbuttons(
-            icons=["insert_sibling", "insert_child", "remove", "calculate"],
-            tooltips=[
-                _("Add a new (D)FME(C)A entity at the same level as the "
-                  "currently selected entity."),
-                _("Add a new (D)FME(C)A entity one level below the currently "
-                  "selected entity."),
-                _("Remove the selected entity from the (D)FME(C)A."),
-                _("Calculate the Task 102 criticality and/or risk priority "
-                  "number (RPN).")
-            ],
-            callbacks=[
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete, self._do_request_calculate
-            ])
+            icons=self._lst_icons,
+            tooltips=self._lst_tooltips,
+            callbacks=self._lst_callbacks)
         super().make_ui_with_treeview(title=[
             "",
             _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
@@ -1127,15 +1131,16 @@ class FMEA(RAMSTKWorkView):
 
         return _value
 
-    def _on_button_press(self, treeview: RAMSTKTreeView,
+    # noinspection PyUnusedLocal
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the FMEA Work View RAMSTKTreeView().
 
-        :param treeview: the FMEA TreeView RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :param __treeview: the FMEA TreeView RAMSTKTreeView().
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
         :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
+            important attribute is which mouse button was clicked).
 
                       * 1 = left
                       * 2 = scrollwheel
@@ -1149,36 +1154,16 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
-
         if event.button == 3:
-            _icons = [
-                "insert_sibling", "insert_child", "remove", "calculate", "save"
-            ]
-            _labels = [
-                _("Insert Sibling"),
-                _("Insert Child"),
-                _("Remove"),
-                _("Calculate"),
-                _("Save")
-            ]
-            _callbacks = [
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete, self._do_request_calculate,
-                self._do_request_update_all
-            ]
             RAMSTKWorkView.on_button_press(self,
                                            event,
-                                           icons=_icons,
-                                           labels=_labels,
-                                           callbacks=_callbacks)
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
+                                           icons=self._lst_icons,
+                                           tooltips=self._lst_tooltips,
+                                           callbacks=self._lst_callbacks)
 
     def _on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

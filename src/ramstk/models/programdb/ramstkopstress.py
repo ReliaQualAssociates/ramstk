@@ -26,7 +26,7 @@ class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseTable):
         'description': '',
         'load_history': '',
         'measurable_parameter': '',
-        'remarks': b''
+        'remarks': ''
     }
     __tablename__ = 'ramstk_op_stress'
     __table_args__ = (ForeignKeyConstraint(

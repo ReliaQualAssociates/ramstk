@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.PoF.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.pof.workview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK PoF Work View."""
 
+# Standard Library Imports
+from typing import List
+
 # Third Party Imports
+import treelib
 from pubsub import pub
-from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
 #from ramstk.views.gtk3.assistants import AddStressMethod
-from ramstk.views.gtk3.widgets import (RAMSTKFrame, RAMSTKLabel,
-                                       RAMSTKMessageDialog, RAMSTKTreeView)
-
-# RAMSTK Local Imports
-from .WorkView import RAMSTKWorkView
+from ramstk.views.gtk3.widgets import (RAMSTKLabel, RAMSTKMessageDialog,
+                                       RAMSTKTreeView, RAMSTKWorkView)
 
 
 class PoF(RAMSTKWorkView):
@@ -44,162 +44,151 @@ class PoF(RAMSTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    # Define private list attributes.
-    _lst_pof_data = [
-        0,
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        None,
-        "",
-    ]
+    # Define private list class attributes.
+    _lst_labels: List[str] = []
+    _lst_pof_data = [0, "", "", "", "", "", "", "", "", "", "", None, ""]
 
-    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
+    # Define private class scalar attributes.
+    _pixbuf: bool = True
+
+    def __init__(self,
+                 configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager,
+                 module: str = 'pof') -> None:
         """
         Initialize the Work View for the PoF.
 
-        :param configuration: the instance of the RAMSTK Configuration() class.
-        :type controller: :class:`ramstk.Configuration.Configuration`
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param logger: the RAMSTKLogManager class instance.
+        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        RAMSTKWorkView.__init__(self, configuration, module='PoF')
+        super().__init__(configuration, logger, module)
 
-        # Initialize private dictionary attributes.
-        self._dic_icons['mode'] = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
-            '/32x32/mode.png'
-        self._dic_icons['mechanism'] = \
-            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mechanism.png'
-        self._dic_icons['opload'] = \
-            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/load.png'
-        self._dic_icons['opstress'] = \
-            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/stress.png'
-        self._dic_icons['testmethod'] = \
-            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/method.png'
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
+
+        # Initialize private dict attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self.do_request_insert_sibling, self.do_request_insert_child,
+            self._do_request_delete
+        ]
+        self._lst_icons = ['insert_sibling', 'insert_child', 'remove']
+        self._lst_tooltips = [
+            _("Add a new PoF entity at the same level as the "
+              "currently selected entity."),
+            _("Add a new PoF entity one level below the currently "
+              "selected entity."),
+            _("Remove the selected entity from the PoF.")
+        ]
 
         # Initialize private scalar attributes.
-        self._hardware_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-
-        _fmt_file = (self.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-                     + self.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['pof'])
-        _fmt_path = "/root/tree[@name='PoF']/column"
-        self.treeview = RAMSTKTreeView(
-            _fmt_path,
-            0,
-            _fmt_file,
-            '#FFFFFF',
-            '#000000',
-            pixbuf=True,
-            indexed=True,
-        )
-        self._lst_col_order = self.treeview.order
-
+        print(self.treeview)
         self.__set_properties()
         self.__make_ui()
         self.__load_combobox()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'retrieved_pof')
+        pub.subscribe(self._do_clear_page, 'request_clear_workviews')
+        pub.subscribe(self._do_load_tree, 'succeed_retrieve_pof')
 
-    def __load_combobox(self):
+    def __do_load_damage_models(self) -> None:
+        """
+        Load the RAMSTKTreeView() damage model CellRendererCombo().
+
+        :return: None
+        :rtype: None
+        """
+        _model = self._get_cell_model(self._lst_col_order[5])
+        for _item in self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
+            _model.append([
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS[_item][0]
+            ])
+
+    def __do_load_load_history(self) -> None:
+        """
+        Load the RAMSTKTreeView() operating load history CellRendererCombo().
+
+        :return: None
+        :rtype: None
+        """
+        _model = self._get_cell_model(self._lst_col_order[7])
+        for _item in self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY:
+            _model.append(
+                [self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY[_item][0]])
+
+    def __do_load_measureable_parameters(self) -> None:
+        """
+        Load the RAMSTKTreeView() measureable parameters CellRendererCombo().
+
+        :return: None
+        :rtype: None
+        """
+        _model = self._get_cell_model(self._lst_col_order[6])
+        for _item in self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS:
+            _model.append([
+                self.RAMSTK_USER_CONFIGURATION.
+                RAMSTK_MEASURABLE_PARAMETERS[_item][1]
+            ])
+
+    def __load_combobox(self) -> None:
         """
         Load the RAMSTKComboBox() widgets.
 
         :return: None
         :rtype: None
         """
-        # Load the damage models into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[5])
-        _model.append(('', ))
-        for _item in self.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
-            _model.append(
-                (self.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS[_item][0], ))
+        self.__do_load_damage_models()
+        self.__do_load_measureable_parameters()
+        self.__do_load_load_history()
 
-        # Load the measureable parameter into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[6])
-        _model.append(('', ))
-        for _item in self.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS:
-            _model.append(
-                (self.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS[_item]
-                 [1], ))
-
-        # Load the load history into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[7])
-        _model.append(('', ))
-        for _item in self.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY:
-            _model.append(
-                (self.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY[_item][0], ))
-
-    def __make_ui(self):
+    def __make_ui(self) -> None:
         """
         Make the PoF RAMSTKTreeview().
 
         :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
         :rtype: :class:`Gtk.Frame`
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(
-            Gtk.PolicyType.NEVER,
-            Gtk.PolicyType.AUTOMATIC,
-        )
-        _scrolledwindow.add_with_viewport(
-            RAMSTKWorkView._make_buttonbox(
-                self,
-                icons=['insert_sibling', 'insert_child', 'remove'],
-                tooltips=[
-                    _(
-                        "Add a new PoF entity at the same level as the "
-                        "currently selected entity.", ),
-                    _(
-                        "Add a new PoF entity one level below the currently "
-                        "selected entity.", ),
-                    _("Remove the selected entity from the PoF."),
-                ],
-                callbacks=[
-                    self.do_request_insert_sibling,
-                    self.do_request_insert_child,
-                    self._do_request_delete,
-                ],
-            ), )
-        self.pack_start(_scrolledwindow, False, False, 0)
+        # This page has the following layout:
+        #
+        # +-----+---------------------------------------+
+        # |  B  |                                       |
+        # |  U  |                                       |
+        # |  T  |                                       |
+        # |  T  |              SPREAD SHEET             |
+        # |  O  |                                       |
+        # |  N  |                                       |
+        # |  S  |                                       |
+        # +-----+---------------------------------------+
+        #                                    buttons -----+--> self
+        #                                                 |
+        #             Gtk.ScrolledWindow -->RAMSTKFrame --+
+        # Make the buttons.
+        super().make_toolbuttons(icons=self._lst_icons,
+                                 tooltips=self._lst_tooltips,
+                                 callbacks=self._lst_callbacks)
+        super().make_ui_with_treeview(
+            title=["", _("Physics of Failure (PoF) Analysis")])
 
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(
-            Gtk.PolicyType.AUTOMATIC,
-            Gtk.PolicyType.AUTOMATIC,
-        )
-        _scrollwindow.add(self.treeview)
-
-        _frame = RAMSTKFrame(label=_("Physics of Failure (PoF) Analysis"), )
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.pack_end(_frame, True, True, 0)
-
-        _label = RAMSTKLabel(
-            _("Damage\nModeling"),
+        # Set the tab label.
+        _label = RAMSTKLabel(_("PoF"))
+        _label.do_set_properties(
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(
-                "Displays the Physics of Failure (PoF) Analysis for "
-                "the selected hardware item.", ),
-        )
+            tooltip=_("Displays the Physics of Failure (PoF) Analysis for "
+                      "the selected hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
@@ -211,41 +200,18 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row), )
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event',
-                                  self._on_button_press), )
+        self.treeview.dic_handler_id['button-press'] = self.treeview.connect(
+            'button_press_event', self._on_button_press)
 
         for i in self._lst_col_order:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i], ).get_cells()
+                self._lst_col_order[i]).get_cells()
 
             if isinstance(_cell[0], Gtk.CellRendererPixbuf):
                 pass
-            elif isinstance(_cell[0], Gtk.CellRendererToggle):
-                _cell[0].connect(
-                    'toggled',
-                    self._on_cell_edit,
-                    None,
-                    i,
-                    self.treeview.get_model(),
-                )
-            elif isinstance(_cell[0], Gtk.CellRendererCombo):
-                _cell[0].connect(
-                    'edited',
-                    self._on_cell_edit,
-                    i,
-                    self.treeview.get_model(),
-                )
             else:
-                _cell[0].connect(
-                    'edited',
-                    self._on_cell_edit,
-                    i,
-                    self.treeview.get_model(),
-                )
+                _cell[0].connect('edited',
+                                 super().on_cell_edit, 'wvw_editing_pof', i)
 
     def __set_properties(self):
         """
@@ -254,24 +220,23 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # ----- TREEVIEWS
         self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
         self.treeview.set_tooltip_text(
-            _(
-                "Displays the Physics of Failure (PoF) Analysis for the "
-                "currently selected hardware item.", ), )
+            _("Displays the Physics of Failure (PoF) Analysis for the "
+              "currently selected hardware item."))
 
-        for i in [0, 1, 2, 3, 4]:
-            _column = self.treeview.get_column(self._lst_col_order[i])
-            if i == 0:
-                _cell = _column.get_cells()[1]
-            else:
-                _cell = _column.get_cells()[0]
-            _cell.set_property('font', 'normal bold')
+        #for i in [0, 1, 2, 3, 4]:
+        #    _column = self.treeview.get_column(self._lst_col_order[i])
+        #    if i == 0:
+        #        _cell = _column.get_cells()[1]
+        #    else:
+        #        _cell = _column.get_cells()[0]
+        #    _cell.set_property('font', 'normal bold')
 
         # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
-        _cell = self.treeview.get_column(
-            self._lst_col_order[9], ).get_cells()[0]
+        _cell = self.treeview.get_column(self._lst_col_order[9]).get_cells()[0]
         _adjustment = _cell.get_property('adjustment')
         _adjustment.configure(5, 1, 5, -1, 0, 0)
 
@@ -364,12 +329,10 @@ class PoF(RAMSTKWorkView):
 
         i = 0
         for _heading in _headings:
-            _label = RAMSTKLabel(
-                _heading,
-                height=-1,
-                justify=Gtk.Justification.CENTER,
-                wrap=True,
-            )
+            _label = RAMSTKLabel(_heading)
+            _label.do_set_properties(height=-1,
+                                     justify=Gtk.Justification.CENTER,
+                                     wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
             if _heading == '':
@@ -383,161 +346,308 @@ class PoF(RAMSTKWorkView):
 
     def _do_clear_page(self):
         """
-        Clear the contents of the page.
+        Clear the contents of the PoF page.
 
         :return: None
         :rtype: None
         """
         _model = self.treeview.get_model()
-        _columns = self.treeview.get_columns()
-        for _column in _columns:
-            self.treeview.remove_column(_column)
-
         _model.clear()
 
-    def _do_load_page(self, attributes):
+    def _do_load_mechanism(self, node: treelib.Node,
+                           row: Gtk.TreeIter) -> Gtk.TreeIter:
         """
-        Iterate through tree and load the Physics of Failure RAMSTKTreeView().
+        Load a failure mechanism record into the RAMSTKTreeView().
 
-        :param dict attributes: a dict of attribute key:value pairs for the
-        selected PoF.
-        :return: None
-        :rtype: None
+        :param node: the treelib Node() with the mechanism data to load.
+        :type node: :class:`treelib.Node`
+        :param row: the parent row of the mechanism to load into the FMEA form.
+        :type row: :class:`Gtk.TreeIter`
+        :return: _new_row; the row that was just populated with mechanism data.
+        :rtype: :class:`Gtk.TreeIter`
         """
-        _tree = attributes['tree']
-        _row = attributes['row']
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _model = self.treeview.get_model()
 
-        _node = _tree.nodes[list(SortedDict(_tree.nodes).keys())[0]]
-        _entity = _node.data
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons["mechanism"], 22, 22)
+
+        _attributes = [
+            node.identifier, _entity.description, "", "", 0.0, "", "", "", "",
+            0, "", _icon,
+            str(_entity.get_attributes())
+        ]
+
         try:
-            if _entity.is_mode:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['mode'],
-                    22,
-                    22,
-                )
-                self._lst_pof_data[0] = _entity.mode_id
-                self._lst_pof_data[1] = _entity.description
-                self._lst_pof_data[2] = _entity.effect_end
-                self._lst_pof_data[3] = _entity.severity_class
-                self._lst_pof_data[4] = _entity.mode_probability
-                self._lst_pof_data[10] = _entity.remarks
-
-                _row = None
-            elif _entity.is_mechanism:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['mechanism'],
-                    22,
-                    22,
-                )
-                self._lst_pof_data[0] = _entity.mechanism_id
-                self._lst_pof_data[1] = _entity.description
-
-            elif _entity.is_opload:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['opload'],
-                    22,
-                    22,
-                )
-                self._lst_pof_data[0] = _entity.load_id
-                self._lst_pof_data[1] = _entity.description
-                self._lst_pof_data[5] = _entity.damage_model
-                self._lst_pof_data[9] = _entity.priority_id
-
-            elif _entity.is_opstress and _row is not None:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['opstress'],
-                    22,
-                    22,
-                )
-                self._lst_pof_data[0] = _entity.stress_id
-                self._lst_pof_data[1] = _entity.description
-                self._lst_pof_data[6] = _entity.measurable_parameter
-                self._lst_pof_data[7] = _entity.load_history
-                self._lst_pof_data[10] = _entity.remarks
-
-            elif _entity.is_testmethod and _row is not None:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['testmethod'],
-                    22,
-                    22,
-                )
-                self._lst_pof_data[0] = _entity.test_id
-                self._lst_pof_data[1] = _entity.description
-                self._lst_pof_data[8] = _entity.boundary_conditions
-                self._lst_pof_data[10] = _entity.remarks
-
-            self._lst_pof_data[11] = _icon
-            self._lst_pof_data[12] = _node.identifier
-
-            try:
-                _new_row = _model.append(_row, self._lst_pof_data)
-            except TypeError:
-                _error_code = 1
-                _user_msg = _(
-                    "One or more PoF line items had the wrong data "
-                    "type in it's data package and is not "
-                    "displayed in the PoF form.", )
-                _debug_msg = (
-                    "RAMSTK ERROR: Data for PoF ID {0:s} for Hardware "
-                    "ID {1:s} is the wrong type for one or more "
-                    "columns.".format(
-                        str(_node.identifier),
-                        str(self._hardware_id),
-                    ))
-                _new_row = None
-            except ValueError:
-                _error_code = 1
-                _user_msg = _(
-                    "One or more PoF line items was missing some of it's "
-                    "data and is not displayed in the PoF form.", )
-                _debug_msg = (
-                    "RAMSTK ERROR: Too few fields for PoF ID {0:s} for Hardware "
-                    "ID {1:s}.".format(
-                        str(_node.identifier),
-                        str(self._hardware_id),
-                    ))
-                _new_row = None
-
+            _new_row = _model.append(row, _attributes)
         except AttributeError:
-            if _node.identifier != 0:
-                _error_code = 1
-                _user_msg = _(
-                    "One or more PoF line items was missing it's "
-                    "data package and is not displayed in the PoF "
-                    "form.", )
-                _debug_msg = (
-                    "RAMSTK ERROR: There is no data package for PoF ID {0:s} "
-                    "for Hardware ID {1:s}.".format(
-                        str(_node.identifier),
-                        str(self._hardware_id),
-                    ))
+            _debug_msg = _("Failure mechanism {0:s} was missing it's data "
+                           "package.").format(str(_entity.mechanism_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except TypeError:
+            _debug_msg = (
+                "Data for failure mechanism ID {0:s} is the wrong type for "
+                "one or more columns.".format(str(_entity.mechanism_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+        except ValueError:
+            _debug_msg = ("Too few fields in the data package for "
+                          "failure mechanism ID {0:s}.".format(
+                              str(_entity.mechanism_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
-        for _n in _tree.children(_node.identifier):
-            _child_tree = _tree.subtree(_n.identifier)
-            self._do_load_page(attributes={
-                "tree": _child_tree,
-                "row": _new_row,
-            }, )
+        return _new_row
 
-        _row = _model.get_iter_first()
-        self.treeview.expand_all()
+    def _do_load_mode(self, node: treelib.Node,
+                      row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """
+        Load a failure mode record into the RAMSTKTreeView().
 
-        RAMSTKWorkView.on_select(
-            self,
-            title=_(
-                "Analyzing Physics of Failure for Hardware ID {0:d}").format(
-                    self._hardware_id, ),
-        )
+        :param node: the treelib Node() with the mode data to load.
+        :type node: :class:`treelib.Node`
+        :param row: the parent row of the mode to load into the FMEA form.
+        :type row: :class:`Gtk.TreeIter`
+        :return: _new_row; the row that was just populated with mode data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
 
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.treeview.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self._dic_icons["mode"],
+                                                       22, 22)
+
+        _attributes = [
+            node.identifier, _entity.description, _entity.effect_end,
+            _entity.severity_class, _entity.mode_ratio, "", "", "", "", 0, "",
+            _icon,
+            str(_entity.get_attributes())
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("Failure mode {0:s} was missing it's data "
+                           "package.").format(str(_entity.mode_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except TypeError:
+            _debug_msg = ("Data for failure mode ID {0:s} is the wrong "
+                          "type for one or more columns.".format(
+                              str(_entity.mode_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+        except ValueError:
+            _debug_msg = ("Too few fields in the data package for Mode ID "
+                          "{0:s}.".format(str(_entity.mode_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+
+        return _new_row
+
+    def _do_load_opload(self, node: treelib.Node,
+                        row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """
+        Load a failure mechanism record into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mechanism data to load.
+        :type node: :class:`treelib.Node`
+        :param row: the parent row of the mechanism to load into the FMEA form.
+        :type row: :class:`Gtk.TreeIter`
+        :return: _new_row; the row that was just populated with mechanism data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.treeview.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons['opload'], 22, 22)
+
+        _attributes = [
+            node.identifier, _entity.description, "", "", 0.0,
+            _entity.damage_model, "", "", "", _entity.priority_id, "", _icon,
+            str(_entity.get_attributes())
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("Operating load {0:s} was missing it's data "
+                           "package.").format(str(_entity.load_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except TypeError:
+            _debug_msg = (
+                "Data for operating load ID {0:s} is the wrong type for "
+                "one or more columns.".format(str(_entity.load_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+        except ValueError:
+            _debug_msg = ("Too few fields in the data package for "
+                          "operating load ID {0:s}.".format(
+                              str(_entity.load_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+
+        return _new_row
+
+    def _do_load_opstress(self, node: treelib.Node,
+                          row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """
+        Load a failure mechanism record into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mechanism data to load.
+        :type node: :class:`treelib.Node`
+        :param row: the parent row of the mechanism to load into the FMEA form.
+        :type row: :class:`Gtk.TreeIter`
+        :return: _new_row; the row that was just populated with mechanism data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.treeview.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons['opstress'], 22, 22)
+
+        _attributes = [
+            node.identifier, _entity.description, "", "", 0.0, "",
+            _entity.measurable_parameter, _entity.load_history, "", 0,
+            _entity.remarks, _icon,
+            str(_entity.get_attributes())
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("Operating stress ID {0:s} was missing it's "
+                           "data package.").format(str(_entity.stress_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except TypeError:
+            _debug_msg = (
+                "Data for operating stress ID {0:s} is the wrong type for "
+                "one or more columns.".format(str(_entity.stress_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+        except ValueError:
+            _debug_msg = ("Too few fields in the data package for "
+                          "operating stress ID {0:s}.".format(
+                              str(_entity.stress_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+
+        return _new_row
+
+    def _do_load_test_method(self, node: treelib.Node,
+                             row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """
+        Load a failure mechanism record into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mechanism data to load.
+        :type node: :class:`treelib.Node`
+        :param row: the parent row of the mechanism to load into the FMEA form.
+        :type row: :class:`Gtk.TreeIter`
+        :return: _new_row; the row that was just populated with mechanism data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.treeview.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons['testmethod'], 22, 22)
+
+        _attributes = [
+            node.identifier, _entity.description, "", "", 0.0, "", "", "",
+            _entity.boundary_conditions, 0, _entity.remarks, _icon,
+            str(_entity.get_attributes())
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except AttributeError:
+            _debug_msg = _("Test method ID {0:s} was missing it's "
+                           "data package.").format(str(_entity.test_id))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except TypeError:
+            _debug_msg = (
+                "Data for test method ID {0:s} is the wrong type for "
+                "one or more columns.".format(str(_entity.test_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+        except ValueError:
+            _debug_msg = ("Too few fields in the data package for "
+                          "test method ID {0:s}.".format(str(_entity.test_id)))
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+            _new_row = None
+
+        return _new_row
+
+    def _do_load_row(self, node: treelib.Node,
+                     row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """
+        Determines which type of row to load and loads the data.
+
+        :param node: the FMEA treelib Node() whose data is to be loaded.
+        :type nose: :class:`treelib.Node`
+        :param row: the parent row for the row to be loaded.
+        :type row: :class:`Gtk.TreeIter`
+        :return: _new_row; the row that was just added to the FMEA treeview.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        # The root node will have no data package, so this indicates the need
+        # to clear the tree in preparation for the load.
+        if node.tag == 'pof':
+            self._do_clear_page()
+        else:
+            _method = {
+                'mode': self._do_load_mode,
+                'mechanism': self._do_load_mechanism,
+                'opload': self._do_load_opload,
+                'opstress': self._do_load_opstress,
+                'method': self._do_load_test_method
+            }[node.tag]
+            # noinspection PyArgumentList
+            _new_row = _method(node, row)
+
+        return _new_row
+
+    def _do_load_tree(self,
+                      tree: treelib.Tree,
+                      row: Gtk.TreeIter = None) -> None:
+        """
+        Iterate through tree and load the PoF RAMSTKTreeView().
+
+        :param tree: the treelib.Tree() containing the data packages for the
+            PoF analysis.
+        :type tree: :class:`treelib.Tree`
+        :param row: the last row to be loaded with PoF data.
+        :type row: :class:`Gtk.TreeIter`
+        :return: None
+        :rtype: None
+        """
+        _node = tree.nodes[list(tree.nodes.keys())[0]]
+
+        _new_row = self._do_load_row(_node, row)
+
+        for _n in tree.children(_node.identifier):
+            _child_tree = tree.subtree(_n.identifier)
+            self._do_load_tree(_child_tree, row=_new_row)
+
+        super().do_expand_tree()
 
     def _do_request_delete(self, __button):
         """
@@ -605,7 +715,7 @@ class PoF(RAMSTKWorkView):
             _dialog = RAMSTKMessageDialog(
                 _prompt,
                 self._dic_icons['error'],
-                'error',
+                'error'
             )
 
             if _dialog.do_run() == Gtk.ResponseType.OK:
@@ -614,7 +724,15 @@ class PoF(RAMSTKWorkView):
             _return = True
 
         if _choose:
-            _dialog = AddStressMethod()
+            #_dialog = AddStressMethod()
+            _prompt = _(
+                "A Physics of Failure operating stress or test method cannot "
+                "have a child entity.", )
+            _dialog = RAMSTKMessageDialog(
+                _prompt,
+                self._dic_icons['error'],
+                'error'
+            )
 
             if _dialog.do_run() == Gtk.ResponseType.OK:
                 _opstress = _dialog.rdoStress.get_active()
@@ -707,14 +825,16 @@ class PoF(RAMSTKWorkView):
 
         return _level
 
-    def _on_button_press(self, treeview, event):
+    # noinspection PyUnusedLocal
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
+                         event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the PoF Work View RAMSTKTreeView().
 
-        :param treeview: the PoF TreeView RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :param __treeview: the PoF TreeView RAMSTKTreeView().
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
         :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
+            important attribute is which mouse button was clicked).
 
                       * 1 = left
                       * 2 = scrollwheel
@@ -728,75 +848,13 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(self._lst_handler_id[1])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            RAMSTKWorkView.on_button_press(
-                self,
-                event,
-                icons=[
-                    'insert_sibling',
-                    'insert_child',
-                    'remove',
-                    'calculate',
-                ],
-                labels=[
-                    _("Insert Sibling"),
-                    _("Insert Child"),
-                    _("Remove"),
-                ],
-                callbacks=[
-                    self._do_request_insert_sibling,
-                    self._do_request_insert_child,
-                    self._do_request_delete,
-                ],
-            )
-
-        treeview.handler_unblock(self._lst_handler_id[1])
-
-    def _on_cell_edit(self, __cell, path, new_text, position, model):
-        """
-        Handle edits of the PoF RAMSTKTreeview().
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             Gtk.CellRenderer().
-        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
-                                    belongs to.
-        :return: None
-        :rtype: None
-        """
-        if not self.treeview.do_edit_cell(
-                __cell,
-                path,
-                new_text,
-                position,
-                model,
-        ):
-
-            _entity = self._dtc_data_controller.request_do_select(
-                model[path][12], )
-
-            if _entity.is_opload:
-                _entity.description = model[path][self._lst_col_order[1]]
-                _entity.damage_model = model[path][self._lst_col_order[5]]
-                _entity.priority_id = model[path][self._lst_col_order[9]]
-                _entity.remarks = model[path][self._lst_col_order[10]]
-            elif _entity.is_opstress:
-                _entity.description = model[path][self._lst_col_order[1]]
-                _entity.measurable_parameter = model[path][
-                    self._lst_col_order[6]]
-                _entity.load_history = model[path][self._lst_col_order[7]]
-                _entity.remarks = model[path][self._lst_col_order[10]]
-            elif _entity.is_testmethod:
-                _entity.description = model[path][self._lst_col_order[1]]
-                _entity.boundary_conditions = model[path][
-                    self._lst_col_order[8]]
-                _entity.remarks = model[path][self._lst_col_order[10]]
+            RAMSTKWorkView.on_button_press(self,
+                                           event,
+                                           icons=self._lst_icons,
+                                           tooltips=self._lst_tooltips,
+                                           callbacks=self._lst_callbacks)

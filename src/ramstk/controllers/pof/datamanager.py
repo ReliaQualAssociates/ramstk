@@ -107,7 +107,7 @@ class DataManager(RAMSTKDataManager):
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _opload.load_id)
 
-            self.tree.create_node(tag=_opload.description,
+            self.tree.create_node(tag='opload',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'opload': _opload})
@@ -143,7 +143,7 @@ class DataManager(RAMSTKDataManager):
             _identifier = '{0:s}.{1:d}.s'.format(parent_id,
                                                  _opstress.stress_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='opstress',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'opstress': _opstress})
@@ -176,7 +176,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_insert(_method)
 
             _identifier = '{0:s}.{1:d}.t'.format(parent_id, _method.test_id)
-            self.tree.create_node(tag=_method.description,
+            self.tree.create_node(tag='method',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'testmethod': _method})
@@ -204,7 +204,7 @@ class DataManager(RAMSTKDataManager):
             _identifier = '{0:d}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='mechanism',
                                   identifier=_identifier,
                                   parent=str(mode_id),
                                   data={'mechanism': _mechanism})
@@ -229,7 +229,7 @@ class DataManager(RAMSTKDataManager):
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _opload.load_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='opload',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'opload': _opload})
@@ -257,7 +257,7 @@ class DataManager(RAMSTKDataManager):
             _identifier = '{0:s}.{1:d}.s'.format(parent_id,
                                                  _opstress.stress_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='opstress',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'opstress': _opstress})
@@ -281,7 +281,7 @@ class DataManager(RAMSTKDataManager):
 
             _identifier = '{0:s}.{1:d}.t'.format(parent_id, _method.test_id)
 
-            self.tree.create_node(tag=_identifier,
+            self.tree.create_node(tag='method',
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'testmethod': _method})
@@ -314,7 +314,7 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKMode.revision_id == self._revision_id,
                 RAMSTKMode.hardware_id == self._parent_id).all():
 
-            self.tree.create_node(tag=str(_mode.mode_id),
+            self.tree.create_node(tag='mode',
                                   identifier=str(_mode.mode_id),
                                   parent=self._root,
                                   data={'mode': _mode})

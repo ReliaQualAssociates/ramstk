@@ -149,6 +149,12 @@ def the_one_ring() -> None:
         site_configuration.RAMSTK_RPN_OCCURRENCE
     user_configuration.RAMSTK_RPN_DETECTION = \
         site_configuration.RAMSTK_RPN_DETECTION
+    user_configuration.RAMSTK_DAMAGE_MODELS = \
+        site_configuration.RAMSTK_DAMAGE_MODELS
+    user_configuration.RAMSTK_MEASURABLE_PARAMETERS = \
+        site_configuration.RAMSTK_MEASURABLE_PARAMETERS
+    user_configuration.RAMSTK_LOAD_HISTORY = \
+        site_configuration.RAMSTK_LOAD_HISTORY
 
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()
