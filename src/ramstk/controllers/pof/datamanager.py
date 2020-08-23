@@ -79,7 +79,9 @@ class DataManager(RAMSTKDataManager):
             RAMSTKDataManager.do_delete(self, node_id, _table)
 
             self.tree.remove_node(node_id)
-            pub.sendMessage('succeed_delete_pof', node_id=node_id)
+            pub.sendMessage('succeed_delete_pof',
+                            node_id=node_id,
+                            tree=self.tree)
         except AttributeError:
             _error_msg = ("Attempted to delete non-existent PoF element ID "
                           "{0:s}.").format(str(node_id))

@@ -218,8 +218,9 @@ class FMEA(RAMSTKWorkView):
             "Action Closure Date", "RPN New Severity", "RPN New Occurrence",
             "RPN New Detection", 0, 0, 0, 0, "Remarks", None, ""
         ]
-        self._lst_icons = ["insert_sibling", "insert_child", "remove",
-                           "calculate"]
+        self._lst_icons = [
+            "insert_sibling", "insert_child", "remove", "calculate"
+        ]
         self._lst_missions: List[str] = [""]
         self._lst_tooltips = [
             _("Add a new (D)FME(C)A entity at the same level as the "
@@ -435,10 +436,9 @@ class FMEA(RAMSTKWorkView):
         #                 |
         #  RAMSTKFrame ---+
         # Make the buttons.
-        super().make_toolbuttons(
-            icons=self._lst_icons,
-            tooltips=self._lst_tooltips,
-            callbacks=self._lst_callbacks)
+        super().make_toolbuttons(icons=self._lst_icons,
+                                 tooltips=self._lst_tooltips,
+                                 callbacks=self._lst_callbacks)
         super().make_ui_with_treeview(title=[
             "",
             _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
@@ -1227,7 +1227,8 @@ class FMEA(RAMSTKWorkView):
                         package={_key: _new_text})
 
     # pylint: disable=unused-argument
-    def _on_delete_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_delete_insert_fmea(self, node_id: int,
+                               tree: treelib.Tree) -> None:
         """
         Update FMEA worksheet whenever an element is inserted or deleted.
 

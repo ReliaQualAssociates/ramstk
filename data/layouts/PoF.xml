@@ -108,7 +108,7 @@ experience. -->
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
             <position>10</position>
-            <widget>blob</widget>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>

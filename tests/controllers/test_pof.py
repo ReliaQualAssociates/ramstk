@@ -166,31 +166,36 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_mode(self, node_id):
+    def on_succeed_delete_mode(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a failure mode."
         )
 
-    def on_succeed_delete_mechanism(self, node_id):
+    def on_succeed_delete_mechanism(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a failure mechanism."
         )
 
-    def on_succeed_delete_opload(self, node_id):
+    def on_succeed_delete_opload(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1.1'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting an operating load."
         )
 
-    def on_succeed_delete_opstress(self, node_id):
+    def on_succeed_delete_opstress(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1.1.1.s'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting an operating stress."
         )
 
-    def on_succeed_delete_test_method(self, node_id):
+    def on_succeed_delete_test_method(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1.1.1.t'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a test method."
