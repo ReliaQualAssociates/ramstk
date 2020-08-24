@@ -6,6 +6,9 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """PoF Package Data Model."""
 
+# Standard Library Imports
+from typing import Any, Dict, List
+
 # Third Party Imports
 from pubsub import pub
 from treelib.exceptions import NodeIDAbsentError
@@ -53,6 +56,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_insert_testmethod,
                       'request_insert_pof_testmethod')
         pub.subscribe(self.do_update, 'request_update_pof')
+        pub.subscribe(self.do_update_all, 'request_update_all_pof')
         pub.subscribe(self.do_get_attributes, 'request_get_mode_attributes')
         pub.subscribe(self.do_get_attributes,
                       'request_get_mechanism_attributes')
@@ -349,7 +353,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_pof', tree=self.tree)
 
-    def do_set_attributes(self, node_id, key, value, table):
+    def do_set_attributes(self, node_id: List[int], package: Dict[str, Any]):
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -361,10 +365,9 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _poppers = {
-            'mode': ['revision_id', 'hardware_id', 'mode_id'],
-            'mechanism':
-            ['revision_id', 'hardware_id', 'mode_id', 'mechanism_id'],
+        [[_key, _value]] = package.items()
+
+        _pkey = {
             'opload': [
                 'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
                 'load_id'
@@ -378,19 +381,25 @@ class DataManager(RAMSTKDataManager):
                 'load_id', 'test_id'
             ]
         }
-
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        for _field in _poppers[table]:
+        for _table in ['opload', 'opstress', 'testmethod']:
             try:
-                _attributes.pop(_field)
-            except KeyError:
-                pass
+                _attributes = self.do_select(node_id[0],
+                                             table=_table).get_attributes()
+            except (AttributeError, KeyError):
+                _attributes = {}
 
-        if key in _attributes:
-            _attributes[key] = value
+            for _field in _pkey[_table]:
+                try:
+                    _attributes.pop(_field)
+                except KeyError:
+                    pass
 
-            self.do_select(node_id, table=table).set_attributes(_attributes)
+            if _key in _attributes:
+                _attributes[_key] = _value
+
+                self.do_select(node_id[0],
+                               table=_table).set_attributes(_attributes)
+        self.do_get_tree()
 
     def do_update(self, node_id):
         """

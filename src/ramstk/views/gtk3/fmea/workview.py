@@ -1004,9 +1004,9 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_fmea', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1017,9 +1017,9 @@ class FMEA(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_fmea')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor_active()
 
     def _do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """

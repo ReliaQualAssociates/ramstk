@@ -545,7 +545,7 @@ class PoF(RAMSTKWorkView):
         Determines which type of row to load and loads the data.
 
         :param node: the FMEA treelib Node() whose data is to be loaded.
-        :type nose: :class:`treelib.Node`
+        :type node: :class:`treelib.Node`
         :param row: the parent row for the row to be loaded.
         :type row: :class:`Gtk.TreeIter`
         :return: _new_row; the row that was just added to the FMEA treeview.
@@ -594,11 +594,12 @@ class PoF(RAMSTKWorkView):
 
         super().do_expand_tree()
 
-    def _do_request_delete(self, __button):
+    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
         Request to delete the selected entity from the PoF.
 
         :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -664,7 +665,7 @@ class PoF(RAMSTKWorkView):
         pub.sendMessage('request_insert_pof_{0:s}'.format(_level),
                         parent_id=str(_parent_id))
 
-    def _do_request_update(self, __button):
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
         Request to save the currently selected entity in the PoF.
 
@@ -673,14 +674,11 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 0)
-
         self.do_set_cursor_busy()
         pub.sendMessage('request_update_pof', node_id=self._record_id)
         self.do_set_cursor_active()
 
-    def _do_request_update_all(self, __button):
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
         Request to save all the entities in the PoF.
 
@@ -805,8 +803,9 @@ class PoF(RAMSTKWorkView):
 
         This method is called whenever a RAMSTKTreeView() row is activated.
 
-        :param treeview: the PoF RAMSTKTreeView().
-        :type treeview: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
+        :param selection: the TreeSelection() of the currently
+            selected row in the PoF RAMSTKTreeView().
+        :type selection: :class:`Gtk.TreeSelection`
         :return: None
         :rtype: None
         """
@@ -816,7 +815,6 @@ class PoF(RAMSTKWorkView):
             self._record_id = _model.get_value(_row, 0)
         except TypeError:
             self._record_id = '0'
-            _mission = ""
 
         _level = self._get_indenture_level()
         _headings = super().do_get_headings(_level)
@@ -825,6 +823,11 @@ class PoF(RAMSTKWorkView):
         self.treeview.headings[self._lst_col_order[1]] = _headings[1]
 
         _set_visible = self.treeview.visible and self._dic_column_masks[_level]
+        _cell = self.treeview.get_column(self._lst_col_order[1]).get_cells()[0]
+        if _level in ['opload', 'opstress', 'testmethod']:
+            _cell.set_property('editable', True)
+        else:
+            _cell.set_property('editable', False)
 
         _columns = self.treeview.get_columns()
         i = 0
