@@ -18,7 +18,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
-#from ramstk.views.gtk3.assistants import AddStressMethod
+from ramstk.views.gtk3.assistants import AddStressTestMethod
 from ramstk.views.gtk3.widgets import (RAMSTKLabel, RAMSTKTreeView,
                                        RAMSTKWorkView)
 
@@ -651,14 +651,13 @@ class PoF(RAMSTKWorkView):
         try:
             _attributes = _model.get_value(_row, 12).replace("'", '"')
             _attributes = json.loads("{0}".format(_attributes))
-            _prow = _model.iter_parent(_row)
-            _parent_id = _model.get_value(_prow, 0)
+            _parent_id = _model.get_value(_model.iter_parent(_row), 0)
             _level = self._get_indenture_level()
         except TypeError:
             _attributes = {}
             _parent_id = '0'
             _level = 'opload'
-
+        print(_parent_id)
         if _level in ['opstress', 'testmethod']:
             _level = self._on_request_insert_opstress_method()
 
@@ -782,21 +781,21 @@ class PoF(RAMSTKWorkView):
         """
         Raise dialog to select whether to add a stress or test method.
 
-        :return: _level; the level to add, opstress or method.
+        :return: _level; the level to add, opstress or testmethod.
         :rtype: str
         """
         _level = ""
 
-        #_dialog = AddStressMethod(
-        #    parent=self.get_parent().get_parent().get_parent().get_parent())
+        _dialog = AddStressTestMethod(
+            parent=self.get_parent().get_parent().get_parent().get_parent())
 
-        #if _dialog.do_run() == Gtk.ResponseType.OK:
-        #    if _dialog.rdoOpStress.get_active():
-        #        _level = 'opstress'
-        #    elif _dialog.rdoTestMethod.get_active():
-        #        _level = 'testmethod'
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            if _dialog.rdoOpStress.get_active():
+                _level = 'opstress'
+            elif _dialog.rdoTestMethod.get_active():
+                _level = 'testmethod'
 
-        #_dialog.do_destroy()
+        _dialog.do_destroy()
 
         return _level
 

@@ -109,6 +109,8 @@ class DataManager(RAMSTKDataManager):
 
             self.dao.do_insert(_opload)
 
+            self._last_id[0] = max(self._last_id[0], _opload.load_id)
+
             _identifier = '{0:s}.{1:d}'.format(parent_id, _opload.load_id)
 
             self.tree.create_node(tag='opload',
@@ -146,6 +148,8 @@ class DataManager(RAMSTKDataManager):
             _opstress.description = 'New Operating Stress'
 
             self.dao.do_insert(_opstress)
+
+            self._last_id[1] = max(self._last_id[1], _opstress.stress_id)
 
             _identifier = '{0:s}.{1:d}.s'.format(parent_id,
                                                  _opstress.stress_id)
@@ -185,6 +189,8 @@ class DataManager(RAMSTKDataManager):
             _method.description = 'New Test Method'
 
             self.dao.do_insert(_method)
+
+            self._last_id[2] = max(self._last_id[2], _method.test_id)
 
             _identifier = '{0:s}.{1:d}.t'.format(parent_id, _method.test_id)
             self.tree.create_node(tag='method',

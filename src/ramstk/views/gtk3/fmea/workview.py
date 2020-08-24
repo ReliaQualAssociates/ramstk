@@ -983,8 +983,7 @@ class FMEA(RAMSTKWorkView):
         try:
             _attributes = _model.get_value(_row, 43).replace("'", '"')
             _attributes = json.loads("{0}".format(_attributes))
-            _prow = _model.iter_parent(_row)
-            _parent_id = _model.get_value(_prow, 0)
+            _parent_id = _model.get_value(_model.iter_parent(_row), 0)
             _level = self._get_indenture_level()
         except TypeError:
             _attributes = {}

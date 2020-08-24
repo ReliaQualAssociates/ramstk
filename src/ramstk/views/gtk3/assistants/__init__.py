@@ -9,5 +9,6 @@
 
 # RAMSTK Local Imports
 from .fmea import AddControlAction
+from .pof import AddStressTestMethod
 from .project import CreateProject, OpenProject
 from .similaritem import EditFunction
