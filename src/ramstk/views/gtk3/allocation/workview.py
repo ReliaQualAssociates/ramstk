@@ -30,7 +30,7 @@ class Allocation(RAMSTKWorkView):
     """
     # Define private class dict attributes.
     # TMPLT: For each editable WorkView widget, populate this dict with the
-    # TMPLT: keymap for the widgets.  The key is the wdiget's index number on
+    # TMPLT: keymap for the widgets.  The key is the widget's index number on
     # TMPLT: the WorkView.  The value is the name of the key in the datamanager
     # TMPLT: attributes dict.
     _dic_keys = {

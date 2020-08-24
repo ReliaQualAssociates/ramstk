@@ -7,7 +7,8 @@
 """The RAMSTK PoF Work View."""
 
 # Standard Library Imports
-from typing import List
+import json
+from typing import Dict, List
 
 # Third Party Imports
 import treelib
@@ -18,8 +19,8 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
 #from ramstk.views.gtk3.assistants import AddStressMethod
-from ramstk.views.gtk3.widgets import (RAMSTKLabel, RAMSTKMessageDialog,
-                                       RAMSTKTreeView, RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (RAMSTKLabel, RAMSTKTreeView,
+                                       RAMSTKWorkView)
 
 
 class PoF(RAMSTKWorkView):
@@ -29,23 +30,46 @@ class PoF(RAMSTKWorkView):
     The WorkView displays all the attributes for the Physics of Failure
     Analysis (PoF). The attributes of a PoF Work View are:
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each Gtk.Widget() associated with an editable
-                           Functional PoF attribute.
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |      0   | tvw_pof `cursor_changed`                  |
-    +----------+-------------------------------------------+
-    |      1   | tvw_pof `button_press_event`              |
-    +----------+-------------------------------------------+
-    |      2   | tvw_pof `edited`                          |
-    +----------+-------------------------------------------+
+    :cvar dict _dic_column_masks: dict with the list of masking values for
+        the PoF worksheet.  Key is the PoF indenture level, value is a
+        list of True/False values for each column in the worksheet.
+    :cvar dict _dic_headings: the dict with the variable headings for the
+        first two columns.  Key is the name of the PoF indenture level,
+        value is a list of heading text.
+    :cvar dict _dic_keys:
+    :cvar dict _dic_column_keys:
+    :cvar list _lst_labels: the list of labels for the widgets on the work
+        view.  The PoF work stream module has no labels, but an empty list
+        is required to prevent an AttributeError when creating the UI.
+    :cvar bool _pixbuf: indicates whether or icons are displayed in the
+        RAMSTKTreeView.  If true, a GDKPixbuf column will be appended when
+        creating the RAMSTKTreeView.  Default is True.
     """
 
     # Define private class dict attributes.
-    _dic_headings = {
+    _dic_column_masks: Dict[str, List[bool]] = {
+        'mode': [
+            True, True, True, True, True, False, False, False, False, False,
+            False, False, False
+        ],
+        'mechanism': [
+            True, True, True, False, False, False, False, False, False, False,
+            False, False, False
+        ],
+        'opload': [
+            True, True, True, False, False, True, False, False, False, True,
+            True, False, False
+        ],
+        'opstress': [
+            True, True, True, False, False, False, True, True, False, False,
+            True, False, False
+        ],
+        'testmethod': [
+            True, True, True, False, False, False, False, False, True, False,
+            True, False, False
+        ]
+    }
+    _dic_headings: Dict[str, List[str]] = {
         'mode': [_("Mode ID"), _("Failure\nMode")],
         'mechanism': [_("Mechanism ID"),
                       _("Failure\nMechanism")],
@@ -53,30 +77,19 @@ class PoF(RAMSTKWorkView):
         'opstress': [_("Stress ID"), _("Operating\nStress")],
         'testmethod': [_("Test ID"), _("Recommended\nTest")]
     }
+    _dic_keys: Dict[int, str] = {
+        1: 'description',
+        5: 'damage_model',
+        6: 'measurable_parameter',
+        7: 'load_history',
+        8: 'boundary_conditions',
+        9: 'priority_id',
+        10: 'remarks'
+    }
+    _dic_column_keys: Dict[int, str] = _dic_keys
 
     # Define private list class attributes.
     _lst_labels: List[str] = []
-    _lst_mode_mask: List[bool] = [
-        True, True, True, True, True, False, False, False, False, False, False,
-        False, False
-    ]
-    _lst_mechanism_mask: List[bool] = [
-        True, True, True, False, False, False, False, False, False, False,
-        False, False, False
-    ]
-    _lst_opload_mask: List[bool] = [
-        True, True, True, False, False, True, False, False, False, True, True,
-        False, False
-    ]
-    _lst_opstress_mask: List[bool] = [
-        True, True, True, False, False, False, True, True, False, False, True,
-        False, False
-    ]
-    _lst_pof_data = [0, "", "", "", "", "", "", "", "", "", "", None, ""]
-    _lst_test_method_mask: List[bool] = [
-        True, True, True, False, False, False, False, False, True, False, True,
-        False, False
-    ]
 
     # Define private class scalar attributes.
     _pixbuf: bool = True
@@ -101,17 +114,10 @@ class PoF(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dict attributes.
-        self._dic_column_masks = {
-            'mode': self._lst_mode_mask,
-            'mechanism': self._lst_mechanism_mask,
-            'opload': self._lst_opload_mask,
-            'opstress': self._lst_opstress_mask,
-            'testmethod': self._lst_test_method_mask
-        }
 
         # Initialize private list attributes.
         self._lst_callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
+            self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete
         ]
         self._lst_icons = ['insert_sibling', 'insert_child', 'remove']
@@ -139,6 +145,9 @@ class PoF(RAMSTKWorkView):
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_tree, 'succeed_retrieve_pof')
         pub.subscribe(self._on_delete_insert_pof, 'succeed_delete_pof')
+        pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_opload')
+        pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_opstress')
+        pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_test_method')
 
     def __do_load_damage_models(self) -> None:
         """
@@ -230,7 +239,7 @@ class PoF(RAMSTKWorkView):
 
         self.show_all()
 
-    def __set_callbacks(self):
+    def __set_callbacks(self) -> None:
         """
         Set the callback functions and methods for the PoF widgets.
 
@@ -250,7 +259,7 @@ class PoF(RAMSTKWorkView):
                 _cell[0].connect('edited',
                                  super().on_cell_edit, 'wvw_editing_pof', i)
 
-    def __set_properties(self):
+    def __set_properties(self) -> None:
         """
         Set the properties of the PoF widgets.
 
@@ -280,7 +289,7 @@ class PoF(RAMSTKWorkView):
         _adjustment = _cell.get_property('adjustment')
         _adjustment.configure(5, 1, 5, -1, 0, 0)
 
-    def _do_clear_page(self):
+    def _do_clear_page(self) -> None:
         """
         Clear the contents of the PoF page.
 
@@ -598,91 +607,63 @@ class PoF(RAMSTKWorkView):
 
         pub.sendMessage('request_delete_pof', node_id=_node_id)
 
-    def _do_request_insert(self, **kwargs):
+    def _do_request_insert_child(self, __button: Gtk.ToolButton) -> None:
         """
-        Request to insert a new entity to the FMEA.
+        Request to insert a new child entity to the PoF.
 
         :return: None
         :rtype: None
         """
-        _sibling = kwargs['sibling']
-        _choose = False
-        _undefined = False
-
         # Try to get the information needed to add a new entity at the correct
-        # location in the PoF.  If there is nothing in the PoF, by default
-        # add a failure Mode.
+        # location in the PoF.
         _model, _row = self.treeview.get_selection().get_selected()
         try:
-            _node_id = _model.get_value(_row, 12)
-            _level = self._get_level(_node_id)
-            _prow = _model.iter_parent(_row)
+            _parent_id = _model.get_value(_row, 0)
+            _attributes = _model.get_value(_row, 12).replace("'", '"')
+            _attributes = json.loads("{0}".format(_attributes))
+            _level = self._get_indenture_level()
         except TypeError:
-            _node_id = 0
-            _level = 'mode'
-            _prow = None
+            _parent_id = '0'
+            _attributes = {}
+            _level = 'opload'
 
-        if _sibling:
-            if _level in ('opstress', 'testmethod'):
-                _choose = True
-            try:
-                _entity_id = _model.get_value(_prow, 0)
-                _parent_id = _model.get_value(_prow, 12)
-            except TypeError:
-                _entity_id = self._hardware_id
-                _parent_id = _node_id
+        _level = {
+            'mechanism': 'opload',
+            'opload': 'opstress_testmethod'
+        }[_level]
 
-        elif not _sibling:
-            if _level == 'mechanism':
-                _level = 'opload'
-            elif _level == 'opload':
-                _choose = True
-            elif _level in ('opstress', 'testmethod'):
-                _undefined = True
-            _entity_id = _model.get_value(_row, 0)
-            _parent_id = _node_id
+        if _level == 'opstress_testmethod':
+            _level = self._on_request_insert_opstress_method()
 
-        # Insert the new entity into the RAMSTK Program database and then refresh
-        # the TreeView.
-        if _undefined:
-            _prompt = _(
-                "A Physics of Failure operating stress or test method cannot "
-                "have a child entity.", )
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                          'error')
+        pub.sendMessage('request_insert_pof_{0:s}'.format(_level),
+                        parent_id=str(_parent_id))
 
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                _dialog.do_destroy()
+    def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
+        """
+        Request to insert a new sibling entity to the PoF.
 
-            _return = True
+        :return: None
+        :rtype: None
+        """
+        # Try to get the information needed to add a new entity at the correct
+        # location in the PoF.
+        _model, _row = self.treeview.get_selection().get_selected()
+        try:
+            _attributes = _model.get_value(_row, 12).replace("'", '"')
+            _attributes = json.loads("{0}".format(_attributes))
+            _prow = _model.iter_parent(_row)
+            _parent_id = _model.get_value(_prow, 0)
+            _level = self._get_indenture_level()
+        except TypeError:
+            _attributes = {}
+            _parent_id = '0'
+            _level = 'opload'
 
-        if _choose:
-            #_dialog = AddStressMethod()
-            _prompt = _(
-                "A Physics of Failure operating stress or test method cannot "
-                "have a child entity.", )
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                          'error')
+        if _level in ['opstress', 'testmethod']:
+            _level = self._on_request_insert_opstress_method()
 
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                _opstress = _dialog.rdoStress.get_active()
-                _testmethod = _dialog.rdoMethod.get_active()
-
-                if _opstress:
-                    _level = 'opstress'
-                elif _testmethod:
-                    _level = 'testmethod'
-
-            else:
-                _return = True
-
-            _dialog.do_destroy()
-
-        if not _undefined:
-            pub.sendMessage("request_insert_pof",
-                            entity_id=_entity_id,
-                            parent_id=_parent_id,
-                            level=_level)
+        pub.sendMessage('request_insert_pof_{0:s}'.format(_level),
+                        parent_id=str(_parent_id))
 
     def _do_request_update(self, __button):
         """
@@ -796,6 +777,28 @@ class PoF(RAMSTKWorkView):
         :rtype: None
         """
         self._do_load_tree(tree)
+
+    def _on_request_insert_opstress_method(self) -> str:
+        """
+        Raise dialog to select whether to add a stress or test method.
+
+        :return: _level; the level to add, opstress or method.
+        :rtype: str
+        """
+        _level = ""
+
+        #_dialog = AddStressMethod(
+        #    parent=self.get_parent().get_parent().get_parent().get_parent())
+
+        #if _dialog.do_run() == Gtk.ResponseType.OK:
+        #    if _dialog.rdoOpStress.get_active():
+        #        _level = 'opstress'
+        #    elif _dialog.rdoTestMethod.get_active():
+        #        _level = 'testmethod'
+
+        #_dialog.do_destroy()
+
+        return _level
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """

@@ -36,9 +36,10 @@ class TestCreateControllers():
         assert DUT._parent_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_hardware')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_pof')
-        assert pub.isSubscribed(DUT._do_insert_opload, 'request_insert_opload')
+        assert pub.isSubscribed(DUT._do_insert_opload,
+                                'request_insert_pof_opload')
         assert pub.isSubscribed(DUT._do_insert_opstress,
-                                'request_insert_opstress')
+                                'request_insert_pof_opstress')
         assert pub.isSubscribed(DUT._do_insert_testmethod,
                                 'request_insert_pof_testmethod')
         assert pub.isSubscribed(DUT.do_update, 'request_update_pof')
@@ -294,32 +295,35 @@ class TestDeleteMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_opload(self, node_id):
-        assert node_id == '4.1.4'
+    def on_succeed_insert_opload(self, node_id, tree):
+        assert isinstance(tree, Tree)
+        assert node_id == '5.1.2'
         print("\033[36m\nsucceed_insert_opload topic was broadcast.")
 
     def on_fail_insert_opload(self, error_message):
         assert error_message == (
-            'Attempting to add an operating load to unknown '
+            'An error occurred when attempting to add an operating load to '
             'failure mechanism ID 40.')
         print("\033[35m\nfail_insert_opload topic was broadcast.")
 
-    def on_succeed_insert_opstress(self, node_id):
-        assert node_id == '4.1.1.4.s'
+    def on_succeed_insert_opstress(self, node_id, tree):
+        assert isinstance(tree, Tree)
+        assert node_id == '5.1.1.2.s'
         print("\033[36m\nsucceed_insert_opstress topic was broadcast.")
 
     def on_fail_insert_opstress(self, error_message):
-        assert error_message == ('Attempting to add an operating stress to '
-                                 'unknown operating load ID 40.')
+        assert error_message == ('An error occurred when attempting to add an '
+                                 'operating stress to operating load ID 40.')
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
 
-    def on_succeed_insert_test_method(self, node_id):
-        assert node_id == '4.1.1.4.t'
+    def on_succeed_insert_test_method(self, node_id, tree):
+        assert isinstance(tree, Tree)
+        assert node_id == '5.1.1.2.t'
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
 
     def on_fail_insert_test_method(self, error_message):
-        assert error_message == ('Attempting to add a test method to unknown '
-                                 'operating load ID 40.')
+        assert error_message == ('An error occurred when attempting to add a '
+                                 'test method to operating load ID 40.')
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
 
     @pytest.mark.integration
@@ -718,9 +722,12 @@ class TestUpdateMethods():
         DUT.tree.get_node('5').data['mode'].description = 'Test failure mode'
         DUT.tree.get_node('5').data['mode'].operator_actions = (
             'Take evasive actions.')
-        DUT.do_update('5')
         DUT.tree.get_node('5.1').data[
             'mechanism'].description = 'Test failure mechanism, updated'
+        DUT.tree.get_node(
+            '5.1.1').data['opload'].description = 'Test Operating Load'
+        DUT.tree.get_node('5.1.1').data['opload'].damage_model = ''
+        DUT.do_update('5')
 
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         assert DUT.tree.get_node('5').data['mode'].description == (
@@ -729,6 +736,8 @@ class TestUpdateMethods():
             'Take evasive actions.')
         assert DUT.tree.get_node('5.1').data['mechanism'].description == (
             'Test failure mechanism, updated')
+        assert DUT.tree.get_node('5.1.1').data['opload'].description == (
+            'Test Operating Load')
 
         pub.unsubscribe(self.on_succeed_update_pof, 'succeed_update_pof')
 

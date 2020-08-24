@@ -35,6 +35,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._last_id = [0, 0, 0]
 
         # Initialize private scalar attributes.
 
@@ -47,8 +48,8 @@ class DataManager(RAMSTKDataManager):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_all, 'selected_hardware')
         pub.subscribe(self._do_delete, 'request_delete_pof')
-        pub.subscribe(self._do_insert_opload, 'request_insert_opload')
-        pub.subscribe(self._do_insert_opstress, 'request_insert_opstress')
+        pub.subscribe(self._do_insert_opload, 'request_insert_pof_opload')
+        pub.subscribe(self._do_insert_opstress, 'request_insert_pof_opstress')
         pub.subscribe(self._do_insert_testmethod,
                       'request_insert_pof_testmethod')
         pub.subscribe(self.do_update, 'request_update_pof')
@@ -101,8 +102,9 @@ class DataManager(RAMSTKDataManager):
             _opload = RAMSTKOpLoad()
             _opload.revision_id = self._revision_id
             _opload.hardware_id = self._parent_id
-            _opload.mode_id = _mode_id
-            _opload.mechanism_id = _mechanism_id
+            _opload.mode_id = int(_mode_id)
+            _opload.mechanism_id = int(_mechanism_id)
+            _opload.load_id = self._last_id[0] + 1
             _opload.description = 'New Operating Load'
 
             self.dao.do_insert(_opload)
@@ -114,11 +116,13 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opload': _opload})
 
-            pub.sendMessage('succeed_insert_opload', node_id=_identifier)
+            pub.sendMessage('succeed_insert_opload',
+                            node_id=_identifier,
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = (
-                'Attempting to add an operating load to unknown failure '
-                'mechanism ID {0:s}.'.format(_mechanism_id))
+                'An error occurred when attempting to add an operating load '
+                'to failure mechanism ID {0:s}.'.format(_mechanism_id))
             pub.sendMessage("fail_insert_opload", error_message=_error_msg)
 
     def _do_insert_opstress(self, parent_id):
@@ -135,9 +139,10 @@ class DataManager(RAMSTKDataManager):
             _opstress = RAMSTKOpStress()
             _opstress.revision_id = self._revision_id
             _opstress.hardware_id = self._parent_id
-            _opstress.mode_id = _mode_id
-            _opstress.mechanism_id = _mechanism_id
-            _opstress.load_id = _load_id
+            _opstress.mode_id = int(_mode_id)
+            _opstress.mechanism_id = int(_mechanism_id)
+            _opstress.load_id = int(_load_id)
+            _opstress.stress_id = self._last_id[1] + 1
             _opstress.description = 'New Operating Stress'
 
             self.dao.do_insert(_opstress)
@@ -150,10 +155,13 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opstress': _opstress})
 
-            pub.sendMessage('succeed_insert_opstress', node_id=_identifier)
+            pub.sendMessage('succeed_insert_opstress',
+                            node_id=_identifier,
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ('Attempting to add an operating stress to unknown '
-                          'operating load ID {0:s}.'.format(_load_id))
+            _error_msg = ('An error occurred when attempting to add an '
+                          'operating stress to operating load '
+                          'ID {0:s}.'.format(_load_id))
             pub.sendMessage("fail_insert_opstress", error_message=_error_msg)
 
     def _do_insert_testmethod(self, parent_id):
@@ -170,9 +178,10 @@ class DataManager(RAMSTKDataManager):
             _method = RAMSTKTestMethod()
             _method.revision_id = self._revision_id
             _method.hardware_id = self._parent_id
-            _method.mode_id = _mode_id
-            _method.mechanism_id = _mechanism_id
-            _method.load_id = _load_id
+            _method.mode_id = int(_mode_id)
+            _method.mechanism_id = int(_mechanism_id)
+            _method.load_id = int(_load_id)
+            _method.test_id = self._last_id[2] + 1
             _method.description = 'New Test Method'
 
             self.dao.do_insert(_method)
@@ -183,10 +192,13 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'testmethod': _method})
 
-            pub.sendMessage('succeed_insert_test_method', node_id=_identifier)
+            pub.sendMessage('succeed_insert_test_method',
+                            node_id=_identifier,
+                            tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ('Attempting to add a test method to unknown '
-                          'operating load ID {0:s}.'.format(_load_id))
+            _error_msg = ('An error occurred when attempting to add a test '
+                          'method to operating load '
+                          'ID {0:s}.'.format(_load_id))
             pub.sendMessage("fail_insert_test_method",
                             error_message=_error_msg)
 
@@ -224,7 +236,7 @@ class DataManager(RAMSTKDataManager):
         """
         (_mode_id, _mechanism_id) = parent_id.split('.')
         for _opload in self.dao.session.query(RAMSTKOpLoad).filter(
-                RAMSTKMode.revision_id == self._revision_id,
+                RAMSTKOpLoad.revision_id == self._revision_id,
                 RAMSTKOpLoad.hardware_id == self._parent_id,
                 RAMSTKOpLoad.mode_id == int(_mode_id),
                 RAMSTKOpLoad.mechanism_id == int(_mechanism_id)).all():
@@ -235,6 +247,8 @@ class DataManager(RAMSTKDataManager):
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'opload': _opload})
+
+            self._last_id[0] = max(self._last_id[0], _opload.load_id)
 
             self._do_select_all_opstress(_identifier)
             self._do_select_all_testmethod(_identifier)
@@ -250,7 +264,7 @@ class DataManager(RAMSTKDataManager):
         """
         (_mode_id, _mechanism_id, _load_id) = parent_id.split('.')
         for _opstress in self.dao.session.query(RAMSTKOpStress).filter(
-                RAMSTKMode.revision_id == self._revision_id,
+                RAMSTKOpStress.revision_id == self._revision_id,
                 RAMSTKOpStress.hardware_id == self._parent_id,
                 RAMSTKOpStress.mode_id == int(_mode_id),
                 RAMSTKOpStress.mechanism_id == int(_mechanism_id),
@@ -264,6 +278,8 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opstress': _opstress})
 
+            self._last_id[1] = max(self._last_id[1], _opstress.stress_id)
+
     def _do_select_all_testmethod(self, parent_id):
         """
         Retrieve all the test methods for the load ID.
@@ -275,7 +291,7 @@ class DataManager(RAMSTKDataManager):
         """
         (_mode_id, _mechanism_id, _load_id) = parent_id.split('.')
         for _method in self.dao.session.query(RAMSTKTestMethod).filter(
-                RAMSTKMode.revision_id == self._revision_id,
+                RAMSTKTestMethod.revision_id == self._revision_id,
                 RAMSTKTestMethod.hardware_id == self._parent_id,
                 RAMSTKTestMethod.mode_id == int(_mode_id),
                 RAMSTKTestMethod.mechanism_id == int(_mechanism_id),
@@ -287,6 +303,8 @@ class DataManager(RAMSTKDataManager):
                                   identifier=_identifier,
                                   parent=parent_id,
                                   data={'testmethod': _method})
+
+            self._last_id[2] = max(self._last_id[2], _method.test_id)
 
     def do_get_tree(self):
         """

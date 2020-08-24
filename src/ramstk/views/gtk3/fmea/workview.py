@@ -64,19 +64,68 @@ class FMEA(RAMSTKWorkView):
     The WorkView displays all the attributes for the Failure Mode and Effects
     Analysis (FMEA). The attributes of a FMEA Work View are:
 
+    :cvar dict _dic_column_masks: dict with the list of masking values for
+        the FMEA worksheet.  Key is the FMEA indenture level, value is a
+        list of True/False values for each column in the worksheet.
+    :cvar dict _dic_headings: dict with the variable headings for the first two
+        columns.  Key is the name of the FMEA indenture level, value is a list
+        of heading text.
+    :cvar dict _dic_keys:
+    :cvar dict _dic_column_keys:
     :cvar list _lst_control_type: list containing the types of controls that
         can be implemented.
-    :cvar list _lst_fmea_data: list containing the FMEA row data.
+    :cvar list _lst_labels: list containing the label text for each widget
+        label.
+    :cvar bool _pixbuf: indicates whether or icons are displayed in the
+        RAMSTKTreeView.  If true, a GDKPixbuf column will be appended when
+        creating the RAMSTKTreeView.  Default is True.
 
-    :ivar dict _dic_missions: a dict containing all this missions associated
+    :ivar dict _dic_missions: dict containing all this missions associated
         with the selected Revision.
-    :ivar dict _dic_mission_phases: a dict containing all the mission phases
+    :ivar dict _dic_mission_phases: dict containing all the mission phases
         associated with each mission in _dic_missions.
-    :ivar float _item_hazard_rate: the hazard rate of the Function or Hardware
-        item associated with the FMEA.
+    :ivar float _item_hazard_rate: hazard rate of the Hardware item associated
+        with the FMEA.
     """
 
     # Define private class dict attributes.
+    _dic_column_masks: Dict[str, List[bool]] = {
+        'mode': [
+            True, True, True, True, True, True, True, True, True, True,
+            True, True, True, True, True, True, True, True, True, True,
+            False, True, False, False, False, False, False, False, False,
+            False, False, False, False, False, True, False, False, False,
+            True, True, False, True, False, False
+        ],
+        'mechanism': [
+            True, True, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, False, True, True, True, False, False,
+            False, False, False, False, False, False, False, False, True,
+            True, True, False, False, True, True, False, False
+        ],
+        'cause': [
+            True, True, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, False, True, True, True, False, False,
+            False, False, False, False, False, False, False, False, True,
+            True, True, False, False, False, True, False, False
+        ],
+        'control': [
+            True, True, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, True, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, False, False, True, False, False
+        ],
+        'action': [
+            True, True, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, True, True,
+            True, True, True, True, True, True, True, False, False, False,
+            False, False, False, False, True, False, False
+        ]
+    }
     _dic_headings = {
         'mode': [_("Mode ID"), _("Failure\nMode")],
         'mechanism': [_("Mechanism ID"),
@@ -85,11 +134,10 @@ class FMEA(RAMSTKWorkView):
         'control': [_("Control ID"), _("Existing\nControl")],
         'action': [_("Action ID"), _("Recommended\nAction")]
     }
-
     _dic_keys = {
         1: 'description',
         2: 'mission',
-        3: 'mission_phse',
+        3: 'mission_phase',
         4: 'effect_local',
         5: 'effect_next',
         6: 'effect_end',
@@ -133,40 +181,6 @@ class FMEA(RAMSTKWorkView):
 
     # Define private list class attributes.
     _lst_control_type: List[bool] = [_("Prevention"), _("Detection")]
-    _lst_mode_mask: List[bool] = [
-        True, True, True, True, True, True, True, True, True, True, True, True,
-        True, True, True, True, True, True, True, True, False, True, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, True, False, False, False, True, True, False, True, False, False
-    ]
-    _lst_mechanism_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, True, True, True, False, False, False, False, False,
-        False, False, False, False, False, True, True, True, False, False,
-        True, True, False, False
-    ]
-    _lst_cause_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, True, True, True, False, False, False, False, False,
-        False, False, False, False, False, True, True, True, False, False,
-        False, True, False, False
-    ]
-    _lst_control_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        True, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, True, False, False
-    ]
-    _lst_action_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, True, True, True, True, True, True,
-        True, True, True, False, False, False, False, False, False, False,
-        True, False, False
-    ]
     _lst_labels: List[str] = ["", "", _("Item Criticality:")]
 
     # Define private class scalar attributes.
@@ -192,13 +206,6 @@ class FMEA(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_column_masks = {
-            'mode': self._lst_mode_mask,
-            'mechanism': self._lst_mechanism_mask,
-            'cause': self._lst_cause_mask,
-            'control': self._lst_control_mask,
-            'action': self._lst_action_mask
-        }
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
 
         # Initialize private list attributes.
@@ -1227,8 +1234,7 @@ class FMEA(RAMSTKWorkView):
                         package={_key: _new_text})
 
     # pylint: disable=unused-argument
-    def _on_delete_insert_fmea(self, node_id: int,
-                               tree: treelib.Tree) -> None:
+    def _on_delete_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Update FMEA worksheet whenever an element is inserted or deleted.
 
