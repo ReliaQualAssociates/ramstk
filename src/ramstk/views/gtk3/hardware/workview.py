@@ -314,13 +314,13 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(_frame, True, True)
 
         # Make the bottom right side of the page.
-        _frame = super().make_ui(
-            start=20,
-            tablabel=_("General\nData"),
-            title=[_("Miscellaneous Information"), ""],
-            tooltip=_(
-                "Displays general information for the selected Hardware"))
+        _frame = super().make_ui(start=20,
+                                 title=[_("Miscellaneous Information"), ""])
         _vpaned.pack2(_frame, True, True)
+
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_("Displays general information "
+                                         "for the selected Hardware"))
 
         self.show_all()
 
@@ -1008,11 +1008,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Top right quadrant.
         _frame = super().make_ui(start=12,
-                                 tablabel=_("Assessment\nInputs"),
-                                 title=[_("Environmental Inputs"), ""],
-                                 tooltip=_(
-                                     "Displays reliability assessment inputs "
-                                     "for the selected hardware item."))
+                                 title=[_("Environmental Inputs"), ""])
         _vpn_right.pack1(_frame, True, True)
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
@@ -1022,6 +1018,11 @@ class AssessmentInputs(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Operating Stresses"))
         _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
+
+        super().make_tab_label(tablabel=_("Assessment\nInputs"),
+                               tooltip=_(
+                                   "Displays reliability assessment inputs "
+                                   "for the selected hardware item."))
 
         self.show_all()
 
@@ -1752,13 +1753,8 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        _frame = super().make_ui(
-            start=10,
-            tablabel=_("Assessment\nResults"),
-            title=[_("Availability Results"), ""],
-            tooltip=_("Displays reliability, maintainability, "
-                      "and availability assessment results for "
-                      "the selected {0:s}.").format(self._module))
+        _frame = super().make_ui(start=10,
+                                 title=[_("Availability Results"), ""])
         _vpn_right.pack1(_frame, True, True)
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
@@ -1768,6 +1764,12 @@ class AssessmentResults(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Stress Results"))
         _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
+
+        super().make_tab_label(tablabel=_("Assessment\nResults"),
+                               tooltip=_(
+                                   "Displays reliability, maintainability, "
+                                   "and availability assessment results for "
+                                   "the selected {0:s}.").format(self._module))
 
         self.show_all()
 

@@ -448,15 +448,11 @@ class FMEA(RAMSTKWorkView):
         super().make_toolbuttons(icons=self._lst_icons,
                                  tooltips=self._lst_tooltips,
                                  callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(
-            tablabel=_("FMEA"),
-            title=[
-                "",
-                _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
-                  "[(D)FME(C)A]")
-            ],
-            tooltip=_("Displays failure mode and effects analysis (FMEA) "
-                      "information for the selected Hardware"))
+        super().make_ui_with_treeview(title=[
+            "",
+            _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
+              "[(D)FME(C)A]")
+        ])
 
         # Move the item criticality RAMSTKTextView() below it's label.
         _fixed = self.get_children()[1].get_children()[0].get_child()
@@ -464,6 +460,12 @@ class FMEA(RAMSTKWorkView):
         _x_pos = _fixed.child_get_property(_label, 'x')
         _y_pos = _fixed.child_get_property(_label, 'y') + 25
         _fixed.put(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
+
+        super().make_tab_label(tablabel=_("FMEA"),
+                               tooltip=_(
+                                   "Displays failure mode and effects "
+                                   "analysis (FMEA) "
+                                   "information for the selected Hardware"))
 
         self.show_all()
 
@@ -1229,8 +1231,7 @@ class FMEA(RAMSTKWorkView):
                         package={_key: _new_text})
 
     # pylint: disable=unused-argument
-    def _on_delete_insert_fmea(self, node_id: int,
-                               tree: treelib.Tree) -> None:
+    def _on_delete_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Update FMEA worksheet whenever an element is inserted or deleted.
 

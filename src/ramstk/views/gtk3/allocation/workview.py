@@ -188,11 +188,13 @@ class Allocation(RAMSTKWorkView):
             ],
             callbacks=[self._do_request_calculate])
         super().make_ui_with_treeview(
-            tablabel=_("Allocation"),
             title=[_("Allocation Goals and Method"),
-                   _("Allocation Analysis")],
-            tooltip=_("Displays the Allocation analysis for the selected "
-                      "hardware item."))
+                   _("Allocation Analysis")])
+        super().make_tab_label(tablabel=_("Allocation"),
+                               tooltip=_(
+                                   "Displays the Allocation analysis for the "
+                                   "selected "
+                                   "hardware item."))
 
         self.show_all()
 

@@ -16,9 +16,9 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKTextView,
-    RAMSTKTreeView, RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKEntry,
+                                       RAMSTKTextView, RAMSTKTreeView,
+                                       RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -122,13 +122,13 @@ class GeneralData(RAMSTKWorkView):
         super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
         # Layout the widgets.
-        _frame = super().make_ui(tablabel=_("General\nData"),
-                                 title=[_("General Information"), ""],
-                                 tooltip=_(
-                                     "Displays general information for the "
-                                     "selected Function"))
+        _frame = super().make_ui(title=[_("General Information"), ""])
         self.pack_end(_frame, True, True, 0)
 
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_(
+                                   "Displays general information for the "
+                                   "selected Function"))
         self.show_all()
 
     def __set_callbacks(self) -> None:
@@ -414,11 +414,11 @@ class HazOps(RAMSTKWorkView):
                 self._do_request_calculate, self._do_request_insert,
                 self._do_request_delete
             ])
-        super().make_ui_with_treeview(
-            tablabel=_("HazOps"),
-            title=["", _("HazOps Analysis")],
-            tooltip=_(
-                "Displays the HazOps analysis for the selected function."))
+        super().make_ui_with_treeview(title=["", _("HazOps Analysis")])
+        super().make_tab_label(tablabel=_("HazOps"),
+                               tooltip=_(
+                                   "Displays the HazOps analysis for the "
+                                   "selected function."))
 
         self.show_all()
 

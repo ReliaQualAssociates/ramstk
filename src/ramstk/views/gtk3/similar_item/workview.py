@@ -254,12 +254,12 @@ class SimilarItem(RAMSTKWorkView):
                 self._do_request_calculate
             ])
         super().make_ui_with_treeview(
-            tablabel=_("SimilarItem"),
             title=[_("Similar Item Method"),
-                   _("Similar Item Analysis")],
-            tooltip=_("Displays the Similar Item analysis for the selected "
-                      "hardware item."))
-
+                   _("Similar Item Analysis")])
+        super().make_tab_label(tablabel=_("SimilarItem"),
+                               tooltip=_(
+                                   "Displays the Similar Item analysis for "
+                                   "the selected hardware item."))
         self.show_all()
 
     def __set_callbacks(self) -> None:

@@ -236,10 +236,12 @@ class PoF(RAMSTKWorkView):
                                  tooltips=self._lst_tooltips,
                                  callbacks=self._lst_callbacks)
         super().make_ui_with_treeview(
-            tablabel=_("PoF"),
-            title=["", _("Physics of Failure (PoF) Analysis")],
-            tooltip=_("Displays the Physics of Failure (PoF) Analysis for "
-                      "the selected hardware item."))
+            title=["", _("Physics of Failure (PoF) Analysis")])
+        super().make_tab_label(tablabel=_("PoF"),
+                               tooltip=_(
+                                   "Displays the Physics of Failure (PoF) "
+                                   "Analysis for "
+                                   "the selected hardware item."))
 
         self.show_all()
 

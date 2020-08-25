@@ -115,13 +115,13 @@ class GeneralData(RAMSTKWorkView):
         super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
         # Layout the widgets.
-        _frame = super().make_ui(
-            tablabel=_("General\nData"),
-            title=[_("General Information"), ""],
-            tooltip=_(
-                "Displays general information for the selected Revision"))
+        _frame = super().make_ui(title=[_("General Information"), ""])
         self.pack_end(_frame, True, True, 0)
 
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_(
+                                   "Displays general information for the "
+                                   "selected Revision"))
         self.show_all()
 
     def __set_callbacks(self) -> None:

@@ -201,11 +201,7 @@ class GeneralData(RAMSTKWorkView):
                                  callbacks=[self._do_request_create_code])
 
         # Layout the widgets.
-        _frame = super().make_ui(
-            tablabel=_("General\nData"),
-            title=[_("General Information"), ""],
-            tooltip=_(
-                "Displays general information for the selected Requirement"))
+        _frame = super().make_ui(title=[_("General Information"), ""])
         self.pack_end(_frame, True, True, 0)
 
         # Add the validation date dialog launcher button to the right of the
@@ -216,6 +212,10 @@ class GeneralData(RAMSTKWorkView):
         _y_pos = _fixed.child_get_property(_entry, 'y')
         _fixed.put(self.btnValidateDate, _x_pos, _y_pos)
 
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_(
+                                   "Displays general information for the "
+                                   "selected Requirement"))
         self.show_all()
 
     def __set_callbacks(self) -> None:

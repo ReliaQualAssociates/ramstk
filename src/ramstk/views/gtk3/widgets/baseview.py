@@ -640,6 +640,33 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
 
+    def make_tab_label(self, **kwargs: Dict[str, Any]) -> None:
+        """
+        Make the view's tab label.
+
+        :param dict kwargs: the keyword arguments (if any) to apply to the
+            tab label.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _tablabel = kwargs['tablabel']
+        except KeyError:
+            _tablabel = ""
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = ("Missing tooltip, please file a quality type issue to "
+                        "have one added.")
+
+        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
+        _label.do_set_properties(
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_tooltip)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """
         Handle mouse clicks on the View's RTKTreeView().
@@ -1308,7 +1335,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         This may be necessary to re-position or add widgets to the workview.
 
         :return: _frame; the RAMSTKFrame() that contains the Gtk.Fixed()
-            displaying all the widget.s
+            displaying all the widgets.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`)
         """
         try:
@@ -1320,19 +1347,9 @@ class RAMSTKWorkView(RAMSTKBaseView):
         except KeyError:
             _index_start = 0
         try:
-            _tablabel = kwargs['tablabel']
-        except KeyError:
-            _tablabel = ""
-        try:
             _title = kwargs['title']
         except KeyError:
             _title = ["", ""]
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = (
-                "Missing tooltip, please file a quality type issue to "
-                "have one added.")
         try:
             _y_inc = kwargs['y_inc']
         except KeyError:
@@ -1368,14 +1385,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _frame.do_set_properties(title=_title[0])
         _frame.add(_scrollwindow)
 
-        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_tooltip)
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
-
         return _frame
 
     def make_ui_with_treeview(self, **kwargs: Dict[str, Any]) -> None:
@@ -1407,18 +1416,9 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # TMPLT: from the child class' __make_ui() method followed by a call
         # TMPLT: to this method.
         try:
-            _tablabel = kwargs['tablabel']
-        except KeyError:
-            _tablabel = ""
-        try:
             _title = kwargs['title']
         except KeyError:
             _title = ["", ""]
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
 
         _hbox = Gtk.HBox()
 
@@ -1447,15 +1447,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         _hbox.pack_end(_frame, True, True, 0)
         self.pack_end(_hbox, True, True, 0)
-
-        # Set the tab label.
-        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_tooltip)
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

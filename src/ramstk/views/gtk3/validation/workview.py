@@ -26,8 +26,8 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKPlot, RAMSTKSpinButton,
-    RAMSTKTextView, RAMSTKWorkView, do_make_buttonbox)
+    RAMSTKLabel, RAMSTKPlot, RAMSTKSpinButton, RAMSTKTextView, RAMSTKWorkView,
+    do_make_buttonbox)
 
 register_matplotlib_converters()
 
@@ -301,12 +301,7 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Place the LEFT side widgets.
-        _frame = super().make_ui(
-            end=13,
-            tablabel=_("General\nData"),
-            title=[_("Task Description"), ""],
-            tooltip=_(
-                "Displays general information for the selected Validation"))
+        _frame = super().make_ui(end=13, title=[_("Task Description"), ""])
         _hpaned.pack1(_frame, True, True)
 
         # Place the RIGHT side widgets.
@@ -315,6 +310,10 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(self.__make_ui_top_right(), True, True)
         _vpaned.pack2(self.__make_ui_bottom_right(), True, True)
 
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_(
+                                   "Displays general information for the "
+                                   "selected Validation"))
         self.show_all()
 
     def __make_ui_bottom_right(self) -> RAMSTKFrame:
