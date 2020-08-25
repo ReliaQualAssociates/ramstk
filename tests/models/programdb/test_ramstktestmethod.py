@@ -24,7 +24,8 @@ class TestRAMSTKTestMethod():
     @pytest.mark.integration
     def test_ramstkopstress_create(self, test_program_dao):
         """ __init__() should create an RAMSTKTestMethod model."""
-        DUT = test_program_dao.session.query(RAMSTKTestMethod).first()
+        DUT = test_program_dao.session.query(RAMSTKTestMethod).filter(
+            RAMSTKTestMethod.test_id == 1).first()
 
         assert isinstance(DUT, RAMSTKTestMethod)
 
@@ -39,7 +40,8 @@ class TestRAMSTKTestMethod():
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
         """ get_attributes() should return a dict of attribute:value pairs. """
-        DUT = test_program_dao.session.query(RAMSTKTestMethod).first()
+        DUT = test_program_dao.session.query(RAMSTKTestMethod).filter(
+            RAMSTKTestMethod.test_id == 1).first()
 
         _attributes = DUT.get_attributes()
 

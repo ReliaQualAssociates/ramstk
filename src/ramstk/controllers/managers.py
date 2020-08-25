@@ -112,6 +112,7 @@ class RAMSTKDataManager():
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._parent_id: int = 0
         self._revision_id: int = 0
 
         # Initialize public dictionary attributes.

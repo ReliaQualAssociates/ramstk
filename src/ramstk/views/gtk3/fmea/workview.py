@@ -64,19 +64,68 @@ class FMEA(RAMSTKWorkView):
     The WorkView displays all the attributes for the Failure Mode and Effects
     Analysis (FMEA). The attributes of a FMEA Work View are:
 
+    :cvar dict _dic_column_masks: dict with the list of masking values for
+        the FMEA worksheet.  Key is the FMEA indenture level, value is a
+        list of True/False values for each column in the worksheet.
+    :cvar dict _dic_headings: dict with the variable headings for the first two
+        columns.  Key is the name of the FMEA indenture level, value is a list
+        of heading text.
+    :cvar dict _dic_keys:
+    :cvar dict _dic_column_keys:
     :cvar list _lst_control_type: list containing the types of controls that
         can be implemented.
-    :cvar list _lst_fmea_data: list containing the FMEA row data.
+    :cvar list _lst_labels: list containing the label text for each widget
+        label.
+    :cvar bool _pixbuf: indicates whether or icons are displayed in the
+        RAMSTKTreeView.  If true, a GDKPixbuf column will be appended when
+        creating the RAMSTKTreeView.  Default is True.
 
-    :ivar dict _dic_missions: a dict containing all this missions associated
+    :ivar dict _dic_missions: dict containing all this missions associated
         with the selected Revision.
-    :ivar dict _dic_mission_phases: a dict containing all the mission phases
+    :ivar dict _dic_mission_phases: dict containing all the mission phases
         associated with each mission in _dic_missions.
-    :ivar float _item_hazard_rate: the hazard rate of the Function or Hardware
-        item associated with the FMEA.
+    :ivar float _item_hazard_rate: hazard rate of the Hardware item associated
+        with the FMEA.
     """
 
     # Define private class dict attributes.
+    _dic_column_masks: Dict[str, List[bool]] = {
+        'mode': [
+            True, True, True, True, True, True, True, True, True, True, True,
+            True, True, True, True, True, True, True, True, True, False, True,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, True, False, False, False, True, True, False,
+            True, False, False
+        ],
+        'mechanism': [
+            True, True, False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, True, True, True, False, False, False, False,
+            False, False, False, False, False, False, True, True, True, False,
+            False, True, True, False, False
+        ],
+        'cause': [
+            True, True, False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, True, True, True, False, False, False, False,
+            False, False, False, False, False, False, True, True, True, False,
+            False, False, True, False, False
+        ],
+        'control': [
+            True, True, False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, True, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, False, True, False, False
+        ],
+        'action': [
+            True, True, False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, True, True, True, True,
+            True, True, True, True, True, False, False, False, False, False,
+            False, False, True, False, False
+        ]
+    }
     _dic_headings = {
         'mode': [_("Mode ID"), _("Failure\nMode")],
         'mechanism': [_("Mechanism ID"),
@@ -85,11 +134,10 @@ class FMEA(RAMSTKWorkView):
         'control': [_("Control ID"), _("Existing\nControl")],
         'action': [_("Action ID"), _("Recommended\nAction")]
     }
-
     _dic_keys = {
         1: 'description',
         2: 'mission',
-        3: 'mission_phse',
+        3: 'mission_phase',
         4: 'effect_local',
         5: 'effect_next',
         6: 'effect_end',
@@ -131,42 +179,8 @@ class FMEA(RAMSTKWorkView):
     }
     _dic_column_keys = _dic_keys
 
-    # Define private class list attributes.
+    # Define private list class attributes.
     _lst_control_type: List[bool] = [_("Prevention"), _("Detection")]
-    _lst_mode_mask: List[bool] = [
-        True, True, True, True, True, True, True, True, True, True, True, True,
-        True, True, True, True, True, True, True, True, False, True, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, True, False, False, False, True, True, False, True, False, False
-    ]
-    _lst_mechanism_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, True, True, True, False, False, False, False, False,
-        False, False, False, False, False, True, True, True, False, False,
-        True, True, False, False
-    ]
-    _lst_cause_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, True, True, True, False, False, False, False, False,
-        False, False, False, False, False, True, True, True, False, False,
-        False, True, False, False
-    ]
-    _lst_control_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        True, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, True, False, False
-    ]
-    _lst_action_mask: List[bool] = [
-        True, True, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, False, False, False, False, False,
-        False, False, False, False, False, True, True, True, True, True, True,
-        True, True, True, False, False, False, False, False, False, False,
-        True, False, False
-    ]
     _lst_labels: List[str] = ["", "", _("Item Criticality:")]
 
     # Define private class scalar attributes.
@@ -183,6 +197,8 @@ class FMEA(RAMSTKWorkView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :keyword str module: the name of the RAMSTK workstream module this
+            workview is associated with.
         """
         super().__init__(configuration, logger, module)
 
@@ -192,16 +208,13 @@ class FMEA(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_column_masks = {
-            'mode': self._lst_mode_mask,
-            'mechanism': self._lst_mechanism_mask,
-            'cause': self._lst_cause_mask,
-            'control': self._lst_control_mask,
-            'action': self._lst_action_mask
-        }
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete, self._do_request_calculate
+        ]
         self._lst_fmea_data: List[Any] = [
             0, "Description", "Mission", "Mission Phase", "Effect, Local",
             "Effect, Next", "Effect, End", "Detection Method", "Other "
@@ -214,7 +227,19 @@ class FMEA(RAMSTKWorkView):
             "Action Closure Date", "RPN New Severity", "RPN New Occurrence",
             "RPN New Detection", 0, 0, 0, 0, "Remarks", None, ""
         ]
+        self._lst_icons = [
+            "insert_sibling", "insert_child", "remove", "calculate"
+        ]
         self._lst_missions: List[str] = [""]
+        self._lst_tooltips = [
+            _("Add a new (D)FME(C)A entity at the same level as the "
+              "currently selected entity."),
+            _("Add a new (D)FME(C)A entity one level below the currently "
+              "selected entity."),
+            _("Remove the selected entity from the (D)FME(C)A."),
+            _("Calculate the Task 102 criticality and/or risk priority "
+              "number (RPN).")
+        ]
 
         # Initialize private scalar attributes.
         self._item_hazard_rate: float = 0.0
@@ -420,26 +445,18 @@ class FMEA(RAMSTKWorkView):
         #                 |
         #  RAMSTKFrame ---+
         # Make the buttons.
-        super().make_toolbuttons(
-            icons=["insert_sibling", "insert_child", "remove", "calculate"],
-            tooltips=[
-                _("Add a new (D)FME(C)A entity at the same level as the "
-                  "currently selected entity."),
-                _("Add a new (D)FME(C)A entity one level below the currently "
-                  "selected entity."),
-                _("Remove the selected entity from the (D)FME(C)A."),
-                _("Calculate the Task 102 criticality and/or risk priority "
-                  "number (RPN).")
+        super().make_toolbuttons(icons=self._lst_icons,
+                                 tooltips=self._lst_tooltips,
+                                 callbacks=self._lst_callbacks)
+        super().make_ui_with_treeview(
+            tablabel=_("FMEA"),
+            title=[
+                "",
+                _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
+                  "[(D)FME(C)A]")
             ],
-            callbacks=[
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete, self._do_request_calculate
-            ])
-        super().make_ui_with_treeview(title=[
-            "",
-            _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
-              "[(D)FME(C)A]")
-        ])
+            tooltip=_("Displays failure mode and effects analysis (FMEA) "
+                      "information for the selected Hardware"))
 
         # Move the item criticality RAMSTKTextView() below it's label.
         _fixed = self.get_children()[1].get_children()[0].get_child()
@@ -447,16 +464,6 @@ class FMEA(RAMSTKWorkView):
         _x_pos = _fixed.child_get_property(_label, 'x')
         _y_pos = _fixed.child_get_property(_label, 'y') + 25
         _fixed.put(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
-
-        # Set the tab label.
-        _label = RAMSTKLabel(_("FMEA"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_("Displays failure mode and effects analysis (FMEA) "
-                      "information for the selected Hardware"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
@@ -972,8 +979,7 @@ class FMEA(RAMSTKWorkView):
         try:
             _attributes = _model.get_value(_row, 43).replace("'", '"')
             _attributes = json.loads("{0}".format(_attributes))
-            _prow = _model.iter_parent(_row)
-            _parent_id = _model.get_value(_prow, 0)
+            _parent_id = _model.get_value(_model.iter_parent(_row), 0)
             _level = self._get_indenture_level()
         except TypeError:
             _attributes = {}
@@ -994,9 +1000,9 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_fmea', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1007,9 +1013,9 @@ class FMEA(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor_busy()
         pub.sendMessage('request_update_all_fmea')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor_active()
 
     def _do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """
@@ -1127,15 +1133,16 @@ class FMEA(RAMSTKWorkView):
 
         return _value
 
-    def _on_button_press(self, treeview: RAMSTKTreeView,
+    # noinspection PyUnusedLocal
+    def _on_button_press(self, __treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the FMEA Work View RAMSTKTreeView().
 
-        :param treeview: the FMEA TreeView RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :param __treeview: the FMEA TreeView RAMSTKTreeView().
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
         :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
+            important attribute is which mouse button was clicked).
 
                       * 1 = left
                       * 2 = scrollwheel
@@ -1149,36 +1156,16 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
-
         if event.button == 3:
-            _icons = [
-                "insert_sibling", "insert_child", "remove", "calculate", "save"
-            ]
-            _labels = [
-                _("Insert Sibling"),
-                _("Insert Child"),
-                _("Remove"),
-                _("Calculate"),
-                _("Save")
-            ]
-            _callbacks = [
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete, self._do_request_calculate,
-                self._do_request_update_all
-            ]
             RAMSTKWorkView.on_button_press(self,
                                            event,
-                                           icons=_icons,
-                                           labels=_labels,
-                                           callbacks=_callbacks)
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
+                                           icons=self._lst_icons,
+                                           tooltips=self._lst_tooltips,
+                                           callbacks=self._lst_callbacks)
 
     def _on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

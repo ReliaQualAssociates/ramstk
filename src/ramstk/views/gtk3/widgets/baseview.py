@@ -227,6 +227,11 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mode.png',
             'none':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
+            'opload':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/load.png',
+            'opstress':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/stress.png',
             'partial':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/partial.png',
@@ -250,6 +255,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'save-all':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/save-all.png',
+            'testmethod':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/method.png',
             'warning':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/warning.png'
@@ -649,7 +657,8 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        self.treeview.handler_block(self.treeview.dic_handler_id['button-press'])
+        self.treeview.handler_block(
+            self.treeview.dic_handler_id['button-press'])
 
         #// TODO: Add _lst_icons, _lst_callbacks, and _lst_tooltips to GUIs.
         #//
@@ -679,7 +688,8 @@ class RAMSTKBaseView(Gtk.HBox):
             _menu_item.show()
             _menu.append(_menu_item)
 
-        self.treeview.handler_unblock(self.treeview.dic_handler_id['button-press'])
+        self.treeview.handler_unblock(
+            self.treeview.dic_handler_id['button-press'])
 
     def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      message: str, position: int) -> None:
@@ -1332,12 +1342,10 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         return _fixed
 
-    def make_ui_with_treeview(self, title: List[str]) -> None:
+    def make_ui_with_treeview(self, **kwargs: Dict[str, Any]) -> None:
         """
         Build the work view UI containing a RAMSTKTreeView().
 
-        :param list title: the list of titles for the two RAMSTKFrame()s
-            used in this view.
         :return: None
         :rtype: None
         """
@@ -1362,6 +1370,20 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # TMPLT: The overall view is created by a call to make_toolbuttons()
         # TMPLT: from the child class' __make_ui() method followed by a call
         # TMPLT: to this method.
+        try:
+            _tablabel = kwargs['tablabel']
+        except KeyError:
+            _tablabel = ""
+        try:
+            _title = kwargs['title']
+        except KeyError:
+            _title = ["", ""]
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = ("Missing tooltip, please file a quality type issue to "
+                        "have one added.")
+
         _hbox = Gtk.HBox()
 
         _fixed = Gtk.Fixed()
@@ -1373,7 +1395,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _y_pos += 65
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=title[0])
+        _frame.do_set_properties(title=_title[0])
         _frame.add(_fixed)
 
         _hbox.pack_start(_frame, False, True, 0)
@@ -1384,11 +1406,20 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _scrollwindow.add(self.treeview)
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=title[1])
+        _frame.do_set_properties(title=_title[1])
         _frame.add(_scrollwindow)
 
         _hbox.pack_end(_frame, True, True, 0)
         self.pack_end(_hbox, True, True, 0)
+
+        # Set the tab label.
+        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
+        _label.do_set_properties(
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_tooltip)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

@@ -27,7 +27,8 @@ class TestRAMSTKOpStress():
     @pytest.mark.integration
     def test_ramstkopstress_create(self, test_program_dao):
         """ __init__() should create an RAMSTKOpStress model."""
-        DUT = test_program_dao.session.query(RAMSTKOpStress).first()
+        DUT = test_program_dao.session.query(RAMSTKOpStress).filter(
+            RAMSTKOpStress.stress_id == 1).first()
 
         assert isinstance(DUT, RAMSTKOpStress)
 

@@ -20,6 +20,7 @@ from ramstk.views.gtk3.fmea import wvwFMEA
 from ramstk.views.gtk3.function import wvwFunctionGD, wvwHazOps
 from ramstk.views.gtk3.hardware import (wvwHardwareAI, wvwHardwareAR,
                                         wvwHardwareGD)
+from ramstk.views.gtk3.pof import wvwPoF
 from ramstk.views.gtk3.requirement import (wvwRequirementAnalysis,
                                            wvwRequirementGD)
 from ramstk.views.gtk3.revision import wvwRevisionGD
@@ -67,7 +68,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 wvwHardwareAI(configuration, logger),
                 wvwHardwareAR(configuration, logger),
                 wvwFMEA(configuration, logger),
-                # wvwPoF(configuration, logger)
+                wvwPoF(configuration, logger)
             ],
             'validation': [
                 wvwValidationGD(configuration, logger),

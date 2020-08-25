@@ -26,7 +26,8 @@ class TestRAMSTKOpLoad():
     @pytest.mark.integration
     def test_ramstkopload_create(self, test_program_dao):
         """ __init__() should create an RAMSTKOpLoad model. """
-        DUT = test_program_dao.session.query(RAMSTKOpLoad).first()
+        DUT = test_program_dao.session.query(RAMSTKOpLoad).filter(
+            RAMSTKOpLoad.load_id == 1).first()
 
         assert isinstance(DUT, RAMSTKOpLoad)
 
@@ -34,14 +35,15 @@ class TestRAMSTKOpLoad():
         assert DUT.__tablename__ == 'ramstk_op_load'
         assert DUT.mechanism_id == 1
         assert DUT.load_id == 1
-        assert DUT.description == 'Jared Kushner'
-        assert DUT.damage_model == 'Fancy math model'
+        assert DUT.description == 'Test Operating Load'
+        assert DUT.damage_model == ''
         assert DUT.priority_id == 0
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
         """ get_attributes() should return a dict of attribute:value pairs. """
-        DUT = test_program_dao.session.query(RAMSTKOpLoad).first()
+        DUT = test_program_dao.session.query(RAMSTKOpLoad).filter(
+            RAMSTKOpLoad.load_id == 1).first()
 
         _attributes = DUT.get_attributes()
 
@@ -49,8 +51,8 @@ class TestRAMSTKOpLoad():
 
         assert _attributes['mechanism_id'] == 1
         assert _attributes['load_id'] == 1
-        assert _attributes['description'] == 'Jared Kushner'
-        assert _attributes['damage_model'] == 'Fancy math model'
+        assert _attributes['description'] == 'Test Operating Load'
+        assert _attributes['damage_model'] == ''
         assert _attributes['priority_id'] == 0
 
     @pytest.mark.integration

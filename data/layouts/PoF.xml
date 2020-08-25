@@ -4,7 +4,7 @@
       PoF.xml is part of the RAMSTK Project
 
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 -->
 
 <!-- This file contains information used by the RAMSTK application to draw
@@ -12,11 +12,11 @@ various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
 <root>
-    <tree name="PoF">
+    <tree name="Pof">
         <column>
             <defaulttitle>Entity ID</defaulttitle>
             <usertitle>Entity ID</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>0</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -52,7 +52,7 @@ experience. -->
         <column>
             <defaulttitle>Mode Probability</defaulttitle>
             <usertitle>Mode Probability</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gfloat</datatype>
             <position>4</position>
             <widget>text</widget>
             <editable>1</editable>
@@ -97,7 +97,7 @@ experience. -->
         <column>
             <defaulttitle>Priority</defaulttitle>
             <usertitle>Priority</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>9</position>
             <widget>spin</widget>
             <editable>1</editable>
@@ -108,7 +108,7 @@ experience. -->
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
             <position>10</position>
-            <widget>blob</widget>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>

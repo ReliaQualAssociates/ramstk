@@ -34,11 +34,12 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert DUT._parent_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_hardware')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_hardware')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_pof')
-        assert pub.isSubscribed(DUT._do_insert_opload, 'request_insert_opload')
+        assert pub.isSubscribed(DUT._do_insert_opload,
+                                'request_insert_pof_opload')
         assert pub.isSubscribed(DUT._do_insert_opstress,
-                                'request_insert_opstress')
+                                'request_insert_pof_opstress')
         assert pub.isSubscribed(DUT._do_insert_testmethod,
                                 'request_insert_pof_testmethod')
         assert pub.isSubscribed(DUT.do_update, 'request_update_pof')
@@ -72,7 +73,7 @@ class TestSelectMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         assert isinstance(DUT.tree.get_node('4').data['mode'], RAMSTKMode)
 
@@ -83,7 +84,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMode on success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _mode = DUT.do_select('4', table='mode')
 
@@ -96,7 +97,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMechanism on success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _mechanism = DUT.do_select('4.1', table='mechanism')
 
@@ -109,7 +110,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKOpLoad on success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _opload = DUT.do_select('4.1.1', table='opload')
 
@@ -122,7 +123,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKOpStress on success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _opstress = DUT.do_select('4.1.1.1.s', table='opstress')
 
@@ -135,7 +136,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKTestMethod on success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         _method = DUT.do_select('4.1.1.1.t', table='testmethod')
 
@@ -148,7 +149,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select('4', table='scibbidy-bibbidy-doo')
@@ -158,7 +159,7 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent PoF ID is requested."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         assert DUT.do_select(100, table='mode') is None
 
@@ -166,31 +167,36 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_mode(self, node_id):
+    def on_succeed_delete_mode(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a failure mode."
         )
 
-    def on_succeed_delete_mechanism(self, node_id):
+    def on_succeed_delete_mechanism(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a failure mechanism."
         )
 
-    def on_succeed_delete_opload(self, node_id):
+    def on_succeed_delete_opload(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1.1'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting an operating load."
         )
 
-    def on_succeed_delete_opstress(self, node_id):
+    def on_succeed_delete_opstress(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1.1.1.s'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting an operating stress."
         )
 
-    def on_succeed_delete_test_method(self, node_id):
+    def on_succeed_delete_test_method(self, node_id, tree):
+        assert isinstance(tree, Tree)
         assert node_id == '4.1.1.1.t'
         print(
             "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a test method."
@@ -209,7 +215,7 @@ class TestDeleteMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('4.1.1.1.t')
 
         assert DUT.tree.get_node('4.1.1.1.t') is None
@@ -224,7 +230,7 @@ class TestDeleteMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('4.1.1.1.s')
 
         assert DUT.tree.get_node('4.1.1.1.s') is None
@@ -238,7 +244,7 @@ class TestDeleteMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('4.1.1')
 
         assert DUT.tree.get_node('4.1.1') is None
@@ -252,7 +258,7 @@ class TestDeleteMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('4.1')
 
         assert DUT.tree.get_node('4.1') is None
@@ -266,7 +272,7 @@ class TestDeleteMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('4')
 
         assert DUT.tree.get_node('4') is None
@@ -280,7 +286,7 @@ class TestDeleteMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT._do_delete('300')
 
         pub.unsubscribe(self.on_fail_delete_pof, 'fail_delete_pof')
@@ -289,32 +295,35 @@ class TestDeleteMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_opload(self, node_id):
-        assert node_id == '4.1.4'
+    def on_succeed_insert_opload(self, node_id, tree):
+        assert isinstance(tree, Tree)
+        assert node_id == '5.1.2'
         print("\033[36m\nsucceed_insert_opload topic was broadcast.")
 
     def on_fail_insert_opload(self, error_message):
         assert error_message == (
-            'Attempting to add an operating load to unknown '
+            'An error occurred when attempting to add an operating load to '
             'failure mechanism ID 40.')
         print("\033[35m\nfail_insert_opload topic was broadcast.")
 
-    def on_succeed_insert_opstress(self, node_id):
-        assert node_id == '4.1.1.4.s'
+    def on_succeed_insert_opstress(self, node_id, tree):
+        assert isinstance(tree, Tree)
+        assert node_id == '5.1.1.2.s'
         print("\033[36m\nsucceed_insert_opstress topic was broadcast.")
 
     def on_fail_insert_opstress(self, error_message):
-        assert error_message == ('Attempting to add an operating stress to '
-                                 'unknown operating load ID 40.')
+        assert error_message == ('An error occurred when attempting to add an '
+                                 'operating stress to operating load ID 40.')
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
 
-    def on_succeed_insert_test_method(self, node_id):
-        assert node_id == '4.1.1.4.t'
+    def on_succeed_insert_test_method(self, node_id, tree):
+        assert isinstance(tree, Tree)
+        assert node_id == '5.1.1.2.t'
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
 
     def on_fail_insert_test_method(self, error_message):
-        assert error_message == ('Attempting to add a test method to unknown '
-                                 'operating load ID 40.')
+        assert error_message == ('An error occurred when attempting to add a '
+                                 'test method to operating load ID 40.')
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
 
     @pytest.mark.integration
@@ -324,9 +333,9 @@ class TestInsertMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT._do_insert_opload(2, '5.1')
+        DUT._do_insert_opload('5.1')
 
         assert isinstance(
             DUT.tree.get_node('5.1.1').data['opload'], RAMSTKOpLoad)
@@ -342,8 +351,8 @@ class TestInsertMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
-        DUT._do_insert_opload(40, '4.40')
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+        DUT._do_insert_opload('4.40')
 
         assert DUT.tree.get_node('4.40') is None
 
@@ -357,8 +366,8 @@ class TestInsertMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
-        DUT._do_insert_opstress(3, '5.1.1')
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+        DUT._do_insert_opstress('5.1.1')
 
         assert isinstance(
             DUT.tree.get_node('5.1.1.1.s').data['opstress'], RAMSTKOpStress)
@@ -376,8 +385,8 @@ class TestInsertMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
-        DUT._do_insert_opstress(40, '4.1.40')
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+        DUT._do_insert_opstress('4.1.40')
 
         assert DUT.tree.get_node('4.1.40') is None
 
@@ -391,8 +400,8 @@ class TestInsertMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
-        DUT._do_insert_testmethod(3, '5.1.1')
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+        DUT._do_insert_testmethod('5.1.1')
 
         assert isinstance(
             DUT.tree.get_node('5.1.1.1.t').data['testmethod'],
@@ -412,8 +421,8 @@ class TestInsertMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
-        DUT._do_insert_testmethod(40, '4.1.40')
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+        DUT._do_insert_testmethod('4.1.40')
 
         assert DUT.tree.get_node('4.1.40') is None
 
@@ -489,7 +498,7 @@ class TestGetterSetter():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('5', 'mode')
 
         assert isinstance(DUT.tree.get_node('5').data['mode'], RAMSTKMode)
@@ -505,7 +514,7 @@ class TestGetterSetter():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('5.1', 'mechanism')
 
         assert isinstance(
@@ -522,7 +531,7 @@ class TestGetterSetter():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('5.1.1', 'opload')
 
         assert isinstance(
@@ -539,7 +548,7 @@ class TestGetterSetter():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('5.1.1.1.s', 'opstress')
 
         assert isinstance(
@@ -556,7 +565,7 @@ class TestGetterSetter():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_attributes('5.1.1.1.t', 'testmethod')
 
         assert isinstance(
@@ -566,21 +575,21 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_test_method_attrs,
                         'succeed_get_test_method_attributes')
 
-    @pytest.mark.integration
+    # PoF shouldn't be able to alter the attributes of failure modes or
+    # failure mechanisms.  Alter these in the FMEA worksheet.
+    @pytest.mark.skip
     def test_do_set_mode_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mode attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT.do_set_attributes(node_id='5',
-                              key='effect_local',
-                              value='Some really bad shit will happen.',
-                              table='mode')
-        DUT.do_set_attributes(node_id='5',
-                              key='description',
-                              value='Ivanka Trump',
-                              table='mode')
+        DUT.do_set_attributes(
+            node_id=['5', -1],
+            package={'effect_local': 'Some really bad shit will '
+                     'happen.'})
+        DUT.do_set_attributes(node_id=['5', -1],
+                              package={'description': 'Ivanka Trump'})
         assert DUT.do_select('5', table='mode').description == 'Ivanka Trump'
         assert DUT.do_select(
             '5',
@@ -588,21 +597,17 @@ class TestGetterSetter():
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_set_mechanism_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT.do_set_attributes(node_id='5.1',
-                              key='rpn_detection',
-                              value=8,
-                              table='mechanism')
-        DUT.do_set_attributes(node_id='5.1',
-                              key='description',
-                              value='Jared Kushner',
-                              table='mechanism')
+        DUT.do_set_attributes(node_id=['5.1', -1],
+                              package={'rpn_detection': 8})
+        DUT.do_set_attributes(node_id=['5.1', -1],
+                              package={'description': 'Jared Kushner'})
         assert DUT.do_select('5.1',
                              table='mechanism').description == 'Jared Kushner'
         assert DUT.do_select('5.1', table='mechanism').rpn_detection == 8
@@ -614,16 +619,12 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting operating load attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT.do_set_attributes(node_id='5.1.1',
-                              key='damage_model',
-                              value='Fancy math model',
-                              table='opload')
-        DUT.do_set_attributes(node_id='5.1.1',
-                              key='description',
-                              value='Jared Kushner',
-                              table='opload')
+        DUT.do_set_attributes(node_id=['5.1.1', -1],
+                              package={'damage_model': 'Fancy math model'})
+        DUT.do_set_attributes(node_id=['5.1.1', -1],
+                              package={'description': 'Jared Kushner'})
         assert DUT.do_select('5.1.1',
                              table='opload').description == 'Jared Kushner'
         assert DUT.do_select(
@@ -636,16 +637,12 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting control attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT.do_set_attributes(node_id='5.1.1.1.s',
-                              key='load_history',
-                              value='Waterfall histogram',
-                              table='opstress')
-        DUT.do_set_attributes(node_id='5.1.1.1.s',
-                              key='description',
-                              value='Lock and chain',
-                              table='opstress')
+        DUT.do_set_attributes(node_id=['5.1.1.1.s', -1],
+                              package={'load_history': 'Waterfall histogram'})
+        DUT.do_set_attributes(node_id=['5.1.1.1.s', -1],
+                              package={'description': 'Lock and chain'})
         assert DUT.do_select('5.1.1.1.s',
                              table='opstress').description == 'Lock and chain'
         assert DUT.do_select(
@@ -659,16 +656,12 @@ class TestGetterSetter():
         """do_set_attributes() should return None when successfully setting test method attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
-        DUT.do_set_attributes(node_id='5.1.1.1.t',
-                              key='description',
-                              value='Kick his ass',
-                              table='testmethod')
-        DUT.do_set_attributes(node_id='5.1.1.1.t',
-                              key='remarks',
-                              value='Doyle Rowland',
-                              table='testmethod')
+        DUT.do_set_attributes(node_id=['5.1.1.1.t', -1],
+                              package={'description': 'Kick his ass'})
+        DUT.do_set_attributes(node_id=['5.1.1.1.t', -1],
+                              package={'remarks': 'Doyle Rowland'})
         assert DUT.do_select('5.1.1.1.t',
                              table='testmethod').description == 'Kick his ass'
         assert DUT.do_select('5.1.1.1.t',
@@ -683,7 +676,7 @@ class TestGetterSetter():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_pof_tree, 'succeed_get_pof_tree')
@@ -708,22 +701,27 @@ class TestUpdateMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
 
         DUT.tree.get_node('5').data['mode'].description = 'Test failure mode'
         DUT.tree.get_node('5').data['mode'].operator_actions = (
             'Take evasive actions.')
-        DUT.do_update('5')
         DUT.tree.get_node('5.1').data[
             'mechanism'].description = 'Test failure mechanism, updated'
+        DUT.tree.get_node(
+            '5.1.1').data['opload'].description = 'Test Operating Load'
+        DUT.tree.get_node('5.1.1').data['opload'].damage_model = ''
+        DUT.do_update('5')
 
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         assert DUT.tree.get_node('5').data['mode'].description == (
             'Test failure mode')
         assert DUT.tree.get_node('5').data['mode'].operator_actions == (
             'Take evasive actions.')
         assert DUT.tree.get_node('5.1').data['mechanism'].description == (
             'Test failure mechanism, updated')
+        assert DUT.tree.get_node('5.1.1').data['opload'].description == (
+            'Test Operating Load')
 
         pub.unsubscribe(self.on_succeed_update_pof, 'succeed_update_pof')
 
@@ -734,7 +732,7 @@ class TestUpdateMethods():
 
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(parent_id=1)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_update(100)
 
         pub.unsubscribe(self.on_fail_update_pof, 'fail_update_pof')

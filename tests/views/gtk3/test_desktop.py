@@ -55,6 +55,12 @@ class TestRAMSTKBook():
             test_toml_site_configuration.RAMSTK_VALIDATION_TYPE
         test_toml_user_configuration.RAMSTK_WORKGROUPS = \
             test_toml_site_configuration.RAMSTK_WORKGROUPS
+        test_toml_user_configuration.RAMSTK_DAMAGE_MODELS = \
+            test_toml_site_configuration.RAMSTK_DAMAGE_MODELS
+        test_toml_user_configuration.RAMSTK_MEASURABLE_PARAMETERS = \
+            test_toml_site_configuration.RAMSTK_MEASURABLE_PARAMETERS
+        test_toml_user_configuration.RAMSTK_LOAD_HISTORY = \
+            test_toml_site_configuration.RAMSTK_LOAD_HISTORY
 
         DUT = RAMSTKDesktop(
             [test_toml_user_configuration, test_toml_site_configuration],

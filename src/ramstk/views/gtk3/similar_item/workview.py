@@ -19,8 +19,8 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.assistants import EditFunction
-from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKLabel,
-                                       RAMSTKTreeView, RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKTreeView,
+                                       RAMSTKWorkView)
 
 
 class SimilarItem(RAMSTKWorkView):
@@ -254,17 +254,11 @@ class SimilarItem(RAMSTKWorkView):
                 self._do_request_calculate
             ])
         super().make_ui_with_treeview(
+            tablabel=_("SimilarItem"),
             title=[_("Similar Item Method"),
-                   _("Similar Item Analysis")])
-
-        _label = RAMSTKLabel(_("SimilarItem"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
+                   _("Similar Item Analysis")],
             tooltip=_("Displays the Similar Item analysis for the selected "
                       "hardware item."))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 

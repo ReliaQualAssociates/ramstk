@@ -32,7 +32,8 @@ class TestRAMSTKMechanism():
     @pytest.mark.integration
     def test_ramstkmechanism_create(self, test_program_dao):
         """ __init__() should create an RAMSTKMechanism model. """
-        DUT = test_program_dao.session.query(RAMSTKMechanism).first()
+        DUT = test_program_dao.session.query(RAMSTKMechanism).filter(
+            RAMSTKMechanism.mode_id == 6).first()
 
         assert isinstance(DUT, RAMSTKMechanism)
 
@@ -52,7 +53,8 @@ class TestRAMSTKMechanism():
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
         """ get_attributes() should return a dict of attribute:value pairs. """
-        DUT = test_program_dao.session.query(RAMSTKMechanism).first()
+        DUT = test_program_dao.session.query(RAMSTKMechanism).filter(
+            RAMSTKMechanism.mode_id == 6).first()
 
         _attributes = DUT.get_attributes()
 
