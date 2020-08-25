@@ -197,6 +197,8 @@ class FMEA(RAMSTKWorkView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :keyword str module: the name of the RAMSTK workstream module this
+            workview is associated with.
         """
         super().__init__(configuration, logger, module)
 

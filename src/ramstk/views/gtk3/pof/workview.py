@@ -1,3 +1,4 @@
+# noinspection PyPackageRequirements
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.pof.workview.py is part of the RAMSTK Project
@@ -44,6 +45,13 @@ class PoF(RAMSTKWorkView):
     :cvar bool _pixbuf: indicates whether or icons are displayed in the
         RAMSTKTreeView.  If true, a GDKPixbuf column will be appended when
         creating the RAMSTKTreeView.  Default is True.
+
+    :ivar list _lst_callbacks: the list of callback functions/methods to
+        assign to toolbar Gtk.Toolbutton().
+    :ivar list _lst_icons: the list of icons to display on the toolbar
+        Gtk.Toolbutton().
+    :ivar list _lst_tooltips: the list of tooltips to apply to each toolbar
+        Gtk.Toolbutton().
     """
 
     # Define private class dict attributes.
@@ -105,6 +113,8 @@ class PoF(RAMSTKWorkView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
+        :keyword str module: the name of the RAMSTK workstream module this
+            workview is associated with.
         """
         super().__init__(configuration, logger, module)
 
@@ -116,12 +126,14 @@ class PoF(RAMSTKWorkView):
         # Initialize private dict attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
+        self._lst_callbacks: List[object] = [
             self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete
         ]
-        self._lst_icons = ['insert_sibling', 'insert_child', 'remove']
-        self._lst_tooltips = [
+        self._lst_icons: List[str] = [
+            'insert_sibling', 'insert_child', 'remove'
+        ]
+        self._lst_tooltips: List[str] = [
             _("Add a new PoF entity at the same level as the "
               "currently selected entity."),
             _("Add a new PoF entity one level below the currently "
@@ -228,7 +240,7 @@ class PoF(RAMSTKWorkView):
             title=["", _("Physics of Failure (PoF) Analysis")])
 
         # Set the tab label.
-        _label = RAMSTKLabel(_("PoF"))
+        _label: RAMSTKLabel = RAMSTKLabel(_("PoF"))
         _label.do_set_properties(
             height=30,
             width=-1,

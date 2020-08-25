@@ -3,7 +3,7 @@
 #       ramstk.controllers.pof.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """PoF Package Data Model."""
 
 # Standard Library Imports
@@ -31,9 +31,9 @@ class DataManager(RAMSTKDataManager):
     _tag = 'pof'
     _root = 0
 
-    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a PoF data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -69,7 +69,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_set_attributes, 'request_set_pof_attributes')
         pub.subscribe(self.do_set_attributes, 'wvw_editing_pof')
 
-    def _do_delete(self, node_id):
+    def _do_delete(self, node_id: int) -> None:
         """
         Remove a PoF element.
 
@@ -92,7 +92,7 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_pof', error_message=_error_msg)
 
-    def _do_insert_opload(self, parent_id):
+    def _do_insert_opload(self, parent_id: str) -> None:
         """
         Add a new operating to PoF mechanism ID.
 
@@ -131,7 +131,7 @@ class DataManager(RAMSTKDataManager):
                 'to failure mechanism ID {0:s}.'.format(_mechanism_id))
             pub.sendMessage("fail_insert_opload", error_message=_error_msg)
 
-    def _do_insert_opstress(self, parent_id):
+    def _do_insert_opstress(self, parent_id: str) -> None:
         """
         Add a new operating stress to PoF load ID.
 
@@ -172,7 +172,7 @@ class DataManager(RAMSTKDataManager):
                           'ID {0:s}.'.format(_load_id))
             pub.sendMessage("fail_insert_opstress", error_message=_error_msg)
 
-    def _do_insert_testmethod(self, parent_id):
+    def _do_insert_testmethod(self, parent_id: str) -> None:
         """
         Add a new test method to PoF load ID.
 
@@ -212,7 +212,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage("fail_insert_test_method",
                             error_message=_error_msg)
 
-    def _do_select_all_mechanism(self, mode_id):
+    def _do_select_all_mechanism(self, mode_id: int) -> None:
         """
         Retrieve all the failure mechanisms for the mode ID.
 
@@ -235,7 +235,7 @@ class DataManager(RAMSTKDataManager):
 
             self._do_select_all_opload(_identifier)
 
-    def _do_select_all_opload(self, parent_id):
+    def _do_select_all_opload(self, parent_id: str) -> None:
         """
         Retrieve all the operating loads for the mechanism ID.
 
@@ -263,7 +263,7 @@ class DataManager(RAMSTKDataManager):
             self._do_select_all_opstress(_identifier)
             self._do_select_all_testmethod(_identifier)
 
-    def _do_select_all_opstress(self, parent_id):
+    def _do_select_all_opstress(self, parent_id: str) -> None:
         """
         Retrieve all the operating stresses for the load ID.
 
@@ -290,7 +290,7 @@ class DataManager(RAMSTKDataManager):
 
             self._last_id[1] = max(self._last_id[1], _opstress.stress_id)
 
-    def _do_select_all_testmethod(self, parent_id):
+    def _do_select_all_testmethod(self, parent_id: str) -> None:
         """
         Retrieve all the test methods for the load ID.
 
@@ -316,7 +316,7 @@ class DataManager(RAMSTKDataManager):
 
             self._last_id[2] = max(self._last_id[2], _method.test_id)
 
-    def do_get_tree(self):
+    def do_get_tree(self) -> None:
         """
         Retrieve the PoF treelib Tree.
 
@@ -325,12 +325,12 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_pof_tree', dmtree=self.tree)
 
-    def do_select_all(self, attributes):
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the PoF data from the RAMSTK Program database.
 
-        :param int parent_id: the parent (function or hardware) ID to select
-            the PoF for.
+        :param dict attributes: the attributes dict for the selected
+            function or hardware item.
         :return: None
         :rtype: None
         """
@@ -353,7 +353,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_pof', tree=self.tree)
 
-    def do_set_attributes(self, node_id: List[int], package: Dict[str, Any]):
+    def do_set_attributes(self, node_id: List[int],
+                          package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -401,7 +402,7 @@ class DataManager(RAMSTKDataManager):
                                table=_table).set_attributes(_attributes)
         self.do_get_tree()
 
-    def do_update(self, node_id):
+    def do_update(self, node_id: int) -> None:
         """
         Update the record associated with node ID in RAMSTK Program database.
 
@@ -411,19 +412,13 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             _table = list(self.tree.get_node(node_id).data.keys())[0]
+
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
             self.dao.do_update()
-
             pub.sendMessage('succeed_update_pof', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_pof',
                             error_message=('Attempted to save non-existent '
                                            'PoF element with PoF ID '
                                            '{0:s}.').format(str(node_id)))
-        except TypeError:
-            if node_id != 0:
-                pub.sendMessage('fail_update_pof',
-                                error_message=('No data package found for '
-                                               'PoF ID {0:s}.').format(
-                                                   str(node_id)))

@@ -706,7 +706,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        _new_text = self.treeview.do_edit_cell(cell, path, new_text, position)
+        self.treeview.do_edit_cell(cell, path, new_text, position)
 
         try:
             _key = self._dic_column_keys[self._lst_col_order[position]]
@@ -715,7 +715,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         pub.sendMessage(message,
                         node_id=[self._record_id, -1],
-                        package={_key: _new_text})
+                        package={_key: new_text})
 
     def on_combo_changed(self, combo: RAMSTKComboBox, index: int,
                          message: str) -> Dict[Union[str, Any], Any]:
