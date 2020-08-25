@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RASMTK SimilarItem Work View."""
+"""The RAMSTK SimilarItem Work View."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -525,7 +525,7 @@ class SimilarItem(RAMSTKWorkView):
         Handle mouse clicks on the Similar Item Work View RAMSTKTreeView().
 
         :param __treeview: the Similar Item TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 

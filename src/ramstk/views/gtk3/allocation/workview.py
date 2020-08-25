@@ -25,8 +25,9 @@ class Allocation(RAMSTKWorkView):
     """
     Display Allocation attribute data in the RAMSTK Work Book.
 
-    The Allocation Work View displays all the allocation data attributes for the
-    selected hardware item. The attributes of an Allocation General Data Work View are:
+    The Allocation Work View displays all the allocation data attributes for
+    the selected hardware item. The attributes of an Allocation General Data
+    Work View are:
     """
     # Define private class dict attributes.
     # TMPLT: For each editable WorkView widget, populate this dict with the
@@ -494,7 +495,7 @@ class Allocation(RAMSTKWorkView):
         Handle mouse clicks on the Allocation Work View RAMSTKTreeView().
 
         :param __treeview: the Allocation TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
             important attribute is which mouse button was clicked).
 

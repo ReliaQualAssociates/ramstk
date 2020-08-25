@@ -364,6 +364,8 @@ class HazOps(RAMSTKWorkView):
         Wrapper method responds to calculate, delete, insert messages.
 
         :param int node_id: the hazard ID that was deleted or inserted.
+            This argument is broadcast with the PyPubSub message and must
+            remain with it's current spelling.
         :return: None
         :rtype: None
         """
@@ -685,15 +687,13 @@ class HazOps(RAMSTKWorkView):
         """
         Handle edits of the HazOps Work View RAMSTKTreeview().
 
-        :param __cell: the Gtk.CellRenderer() that was edited.
-        :type __cell: :class:`Gtk.CellRenderer`
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :type cell: :class:`Gtk.CellRenderer`
         :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
                              Gtk.CellRenderer().
-        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
-        :type model: :class:`Gtk.TreeModel`
         :return: None
         :rtype: None
         """

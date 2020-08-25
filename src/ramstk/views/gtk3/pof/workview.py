@@ -739,7 +739,7 @@ class PoF(RAMSTKWorkView):
         Handle mouse clicks on the PoF Work View RAMSTKTreeView().
 
         :param __treeview: the PoF TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
             important attribute is which mouse button was clicked).
 

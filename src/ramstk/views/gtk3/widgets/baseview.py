@@ -44,7 +44,7 @@ class RAMSTKBaseView(Gtk.HBox):
         class.
     :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.Configuration.Configuration`
     :cvar dict dic_tab_position: dictionary holding the Gtk.PositionType()s for
-        each of left, right, top, and botton.
+        each of left, right, top, and bottom.
 
     :ivar dict _dic_icons: dictionary containing icon name and absolute path
         key:value pairs.
@@ -396,21 +396,21 @@ class RAMSTKBaseView(Gtk.HBox):
                 self.show_all()
         except TypeError as _error:
             _error_msg = _(
-                "An error occured while loading {1:s} records for Revision ID "
-                "{0:d} into the view.  One or more values from the database "
-                "was the wrong type for the column it was trying to "
+                "An error occurred while loading {1:s} records for Revision "
+                "ID {0:d} into the view.  One or more values from the "
+                "database was the wrong type for the column it was trying to "
                 "load.").format(self._revision_id, _tag)
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
         except ValueError as _error:
             _error_msg = _(
-                "An error occured while loading {1:s} records for Revision ID "
-                "{0:d} into the view.  One or more values from the database "
-                "was missing.").format(self._revision_id, _tag)
+                "An error occurred while loading {1:s} records for Revision "
+                "ID {0:d} into the view.  One or more values from the "
+                "database was missing.").format(self._revision_id, _tag)
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-    def do_raise_dialog(self, **kwargs: Any) -> None:
+    def do_raise_dialog(self, **kwargs: Any) -> RAMSTKMessageDialog:
         """
         Raise a dialog in response to information, warnings, and errors.
 
@@ -419,8 +419,8 @@ class RAMSTKBaseView(Gtk.HBox):
         will also write a message to the RAMSTK debug_log to (hopefully) assist
         in troubleshooting.
 
-        :return: None
-        :rtype: None
+        :return: _dialog
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKMessageDialog`
         """
         try:
             _user_msg = kwargs['user_msg']
@@ -446,6 +446,7 @@ class RAMSTKBaseView(Gtk.HBox):
                           "with either the severity or message missing.")
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
         try:
             _debug_msg = kwargs['debug_msg']
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -1234,8 +1235,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
     This is the meta class for all RAMSTK Work View classes.  Attributes of the
     RAMSTKWorkView are:
 
-    :ivar str _module: the all capitalized name of the RAMSKT module the View
-    is for.
+    :ivar list _lst_widgets: the list of RAMSTK (preferred) and Gtk widgets
+        used to display information on a workview.
     """
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,

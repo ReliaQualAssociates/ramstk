@@ -854,7 +854,7 @@ class FMEA(RAMSTKWorkView):
         Determines which type of row to load and loads the data.
 
         :param node: the FMEA treelib Node() whose data is to be loaded.
-        :type nose: :class:`treelib.Node`
+        :type node: :class:`treelib.Node`
         :param row: the parent row for the row to be loaded.
         :type row: :class:`Gtk.TreeIter`
         :return: _new_row; the row that was just added to the FMEA treeview.
@@ -1106,7 +1106,7 @@ class FMEA(RAMSTKWorkView):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION[
                 entity.rpn_detection_new]['name'])
 
-        return (_occurrence, _detection, _occurrence_new, _detection_new)
+        return _occurrence, _detection, _occurrence_new, _detection_new
 
     def _get_rpn_values(self, position: int, name: str) -> int:
         """
@@ -1140,7 +1140,7 @@ class FMEA(RAMSTKWorkView):
         Handle mouse clicks on the FMEA Work View RAMSTKTreeView().
 
         :param __treeview: the FMEA TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
             important attribute is which mouse button was clicked).
 
@@ -1204,13 +1204,13 @@ class FMEA(RAMSTKWorkView):
                         package={_key: new_text})
 
     # pylint: disable=unused-argument
-    def _on_cell_toggled(self, cell: Gtk.CellRenderer, path: str,
+    def _on_cell_toggled(self, cell: Gtk.CellRenderer, __path: str,
                          position: int) -> None:
         """
         Handle edits of the FMEA Work View RAMSTKTreeview() toggle cells.
 
         :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was toggled.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+        :param str __path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was toggled.
         :param int position: the column position of the toggled
             Gtk.CellRenderer().
@@ -1229,11 +1229,14 @@ class FMEA(RAMSTKWorkView):
                         package={_key: _new_text})
 
     # pylint: disable=unused-argument
-    def _on_delete_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_delete_insert_fmea(self, node_id: int,
+                               tree: treelib.Tree) -> None:
         """
         Update FMEA worksheet whenever an element is inserted or deleted.
 
-        :param int node_id: the ID of the inserted/deleted FMEA element.
+        :param int node_id: the ID of the inserted/deleted FMEA element.  This
+            argument is broadcast with the PyPubSub message and must remain
+            with it's current spelling.
         :param tree: the treelib Tree() containing the FMEA module's data.
         :type tree: :class:`treelib.Tree`
         :return: None
@@ -1277,8 +1280,9 @@ class FMEA(RAMSTKWorkView):
 
         This method is called whenever a RAMSTKTreeView() row is activated.
 
-        :param treeview: the FMEA RAMSTKTreeView().
-        :type treeview: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
+        :param selection: the current Gtk.TreeViewSelection() in the
+            FMEA RAMSTKTreView().
+        :type selection: :class:`Gtk.TreeViewSelection`
         :return: None
         :rtype: None
         """
