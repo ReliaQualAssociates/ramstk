@@ -91,39 +91,39 @@ class FMEA(RAMSTKWorkView):
     # Define private class dict attributes.
     _dic_column_masks: Dict[str, List[bool]] = {
         'mode': [
-            True, True, True, True, True, True, True, True, True, True,
-            True, True, True, True, True, True, True, True, True, True,
-            False, True, False, False, False, False, False, False, False,
-            False, False, False, False, False, True, False, False, False,
-            True, True, False, True, False, False
+            True, True, True, True, True, True, True, True, True, True, True,
+            True, True, True, True, True, True, True, True, True, False, True,
+            False, False, False, False, False, False, False, False, False,
+            False, False, False, True, False, False, False, True, True, False,
+            True, False, False
         ],
         'mechanism': [
-            True, True, False, False, False, False, False, False, False,
+            True, True, False, False, False, False, False, False, False, False,
             False, False, False, False, False, False, False, False, False,
-            False, False, False, False, True, True, True, False, False,
-            False, False, False, False, False, False, False, False, True,
-            True, True, False, False, True, True, False, False
+            False, False, False, True, True, True, False, False, False, False,
+            False, False, False, False, False, False, True, True, True, False,
+            False, True, True, False, False
         ],
         'cause': [
-            True, True, False, False, False, False, False, False, False,
+            True, True, False, False, False, False, False, False, False, False,
             False, False, False, False, False, False, False, False, False,
-            False, False, False, False, True, True, True, False, False,
-            False, False, False, False, False, False, False, False, True,
-            True, True, False, False, False, True, False, False
+            False, False, False, True, True, True, False, False, False, False,
+            False, False, False, False, False, False, True, True, True, False,
+            False, False, True, False, False
         ],
         'control': [
-            True, True, False, False, False, False, False, False, False,
+            True, True, False, False, False, False, False, False, False, False,
             False, False, False, False, False, False, False, False, False,
-            False, False, True, False, False, False, False, False, False,
+            False, True, False, False, False, False, False, False, False,
             False, False, False, False, False, False, False, False, False,
-            False, False, False, False, False, True, False, False
+            False, False, False, False, True, False, False
         ],
         'action': [
-            True, True, False, False, False, False, False, False, False,
+            True, True, False, False, False, False, False, False, False, False,
             False, False, False, False, False, False, False, False, False,
-            False, False, False, False, False, False, False, True, True,
-            True, True, True, True, True, True, True, False, False, False,
-            False, False, False, False, True, False, False
+            False, False, False, False, False, False, True, True, True, True,
+            True, True, True, True, True, False, False, False, False, False,
+            False, False, True, False, False
         ]
     }
     _dic_headings = {
@@ -448,11 +448,15 @@ class FMEA(RAMSTKWorkView):
         super().make_toolbuttons(icons=self._lst_icons,
                                  tooltips=self._lst_tooltips,
                                  callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(title=[
-            "",
-            _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
-              "[(D)FME(C)A]")
-        ])
+        super().make_ui_with_treeview(
+            tablabel=_("FMEA"),
+            title=[
+                "",
+                _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
+                  "[(D)FME(C)A]")
+            ],
+            tooltip=_("Displays failure mode and effects analysis (FMEA) "
+                      "information for the selected Hardware"))
 
         # Move the item criticality RAMSTKTextView() below it's label.
         _fixed = self.get_children()[1].get_children()[0].get_child()
@@ -460,16 +464,6 @@ class FMEA(RAMSTKWorkView):
         _x_pos = _fixed.child_get_property(_label, 'x')
         _y_pos = _fixed.child_get_property(_label, 'y') + 25
         _fixed.put(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
-
-        # Set the tab label.
-        _label = RAMSTKLabel(_("FMEA"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_("Displays failure mode and effects analysis (FMEA) "
-                      "information for the selected Hardware"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 

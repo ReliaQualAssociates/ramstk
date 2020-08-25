@@ -360,9 +360,7 @@ class DataManager(RAMSTKDataManager):
 
         :param int node_id: the ID of the record in the RAMSTK Program
             database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :param str table: the name of the table whose attributes are being set.
+        :param dict package: the attributes dictionary.
         :return: None
         :rtype: None
         """

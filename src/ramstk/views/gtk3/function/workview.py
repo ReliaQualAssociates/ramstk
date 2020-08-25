@@ -421,16 +421,11 @@ class HazOps(RAMSTKWorkView):
                 self._do_request_calculate, self._do_request_insert,
                 self._do_request_delete
             ])
-        super().make_ui_with_treeview(title=["", _("HazOps Analysis")])
-
-        _label = RAMSTKLabel(_("HazOps"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
+        super().make_ui_with_treeview(
+            tablabel=_("HazOps"),
+            title=["", _("HazOps Analysis")],
             tooltip=_(
                 "Displays the HazOps analysis for the selected function."))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 

@@ -1,4 +1,3 @@
-# noinspection PyPackageRequirements
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.pof.workview.py is part of the RAMSTK Project
@@ -237,17 +236,10 @@ class PoF(RAMSTKWorkView):
                                  tooltips=self._lst_tooltips,
                                  callbacks=self._lst_callbacks)
         super().make_ui_with_treeview(
-            title=["", _("Physics of Failure (PoF) Analysis")])
-
-        # Set the tab label.
-        _label: RAMSTKLabel = RAMSTKLabel(_("PoF"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
+            tablabel=_("PoF"),
+            title=["", _("Physics of Failure (PoF) Analysis")],
             tooltip=_("Displays the Physics of Failure (PoF) Analysis for "
                       "the selected hardware item."))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
@@ -703,7 +695,7 @@ class PoF(RAMSTKWorkView):
         pub.sendMessage('request_update_all_pof')
         self.do_set_cursor_active()
 
-    def _get_cell_model(self, column):
+    def _get_cell_model(self, column: Gtk.TreeViewColumn) -> Gtk.TreeModel:
         """
         Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
 
@@ -775,6 +767,7 @@ class PoF(RAMSTKWorkView):
                                            callbacks=self._lst_callbacks)
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def _on_delete_insert_pof(self, node_id: int, tree: treelib.Tree) -> None:
         """
         Update PoF worksheet whenever an element is inserted or deleted.

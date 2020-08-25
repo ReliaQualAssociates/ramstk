@@ -17,8 +17,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKTreeView, RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKEntry,
+                                       RAMSTKTreeView, RAMSTKWorkView)
 
 
 class Allocation(RAMSTKWorkView):
@@ -187,17 +187,11 @@ class Allocation(RAMSTKWorkView):
             ],
             callbacks=[self._do_request_calculate])
         super().make_ui_with_treeview(
+            tablabel=_("Allocation"),
             title=[_("Allocation Goals and Method"),
-                   _("Allocation Analysis")])
-
-        _label = RAMSTKLabel(_("Allocation"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
+                   _("Allocation Analysis")],
             tooltip=_("Displays the Allocation analysis for the selected "
                       "hardware item."))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
