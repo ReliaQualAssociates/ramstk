@@ -23,7 +23,7 @@ from ramstk.configuration import (
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
     RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView)
 
 # RAMSTK Local Imports
@@ -300,42 +300,27 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Make the left side of the page.
-        _fixed = super().make_ui(start=0, end=13)
-
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("General Information"))
-        _frame.add(_scrollwindow)
+        _frame = super().make_ui(start=0,
+                                 end=13,
+                                 title=[_("General Information"), ""])
         _hpaned.pack1(_frame, True, True)
 
         # Make the top right side of the page.
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, True, True)
-        _fixed = super().make_ui(start=13, end=20)
-
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Purchasing Information"))
-        _frame.add(_scrollwindow)
+        _frame = super().make_ui(start=13,
+                                 end=20,
+                                 title=[_("Purchasing Information"), ""])
         _vpaned.pack1(_frame, True, True)
 
         # Make the bottom right side of the page.
-        _fixed = super().make_ui(start=20)
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Miscellaneous Information"))
-        _frame.add(_scrollwindow)
-        _vpaned.pack2(_frame, True, True)
-
-        # Set the tab label.
-        _label = RAMSTKLabel(_("General\nData"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
+        _frame = super().make_ui(
+            start=20,
+            tablabel=_("General\nData"),
+            title=[_("Miscellaneous Information"), ""],
             tooltip=_(
                 "Displays general information for the selected Hardware"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
+        _vpaned.pack2(_frame, True, True)
 
         self.show_all()
 
@@ -1005,12 +990,9 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        _fixed = super().make_ui(start=0, end=12)
-
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Assessment Inputs"))
-        _frame.add(_scrollwindow)
+        _frame = super().make_ui(start=0,
+                                 end=12,
+                                 title=[_("Assessment Inputs"), ""])
         _vpn_left.pack1(_frame, True, True)
 
         # Bottom left quadrant.  This is just an RAMSTKFrame() and will be the
@@ -1025,12 +1007,12 @@ class AssessmentInputs(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        _fixed = super().make_ui(start=12)
-
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Environmental Inputs"))
-        _frame.add(_scrollwindow)
+        _frame = super().make_ui(start=12,
+                                 tablabel=_("Assessment\nInputs"),
+                                 title=[_("Environmental Inputs"), ""],
+                                 tooltip=_(
+                                     "Displays reliability assessment inputs "
+                                     "for the selected hardware item."))
         _vpn_right.pack1(_frame, True, True)
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
@@ -1040,16 +1022,6 @@ class AssessmentInputs(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Operating Stresses"))
         _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
-
-        # Set the tab label.
-        _label = RAMSTKLabel(_("Assessment\nInputs"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_("Displays reliability assessment inputs for the "
-                      "selected hardware item."))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
@@ -1763,12 +1735,9 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack1(_vpn_left, True, True)
 
         # Top left quadrant.
-        _fixed = super().make_ui(start=0, end=10)
-
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Reliability Results"))
-        _frame.add(_scrollwindow)
+        _frame = super().make_ui(start=0,
+                                 end=10,
+                                 title=[_("Reliability Results"), ""])
         _vpn_left.pack1(_frame, True, True)
 
         # Bottom left quadrant.  This is just an RAMSTKFrame() and will be the
@@ -1783,12 +1752,13 @@ class AssessmentResults(RAMSTKWorkView):
         _hpaned.pack2(_vpn_right, True, True)
 
         # Top right quadrant.
-        _fixed = super().make_ui(start=10)
-
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Availability Results"))
-        _frame.add(_scrollwindow)
+        _frame = super().make_ui(
+            start=10,
+            tablabel=_("Assessment\nResults"),
+            title=[_("Availability Results"), ""],
+            tooltip=_("Displays reliability, maintainability, "
+                      "and availability assessment results for "
+                      "the selected {0:s}.").format(self._module))
         _vpn_right.pack1(_frame, True, True)
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
@@ -1798,17 +1768,6 @@ class AssessmentResults(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Stress Results"))
         _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
-
-        # Set the tab label.
-        _label = RAMSTKLabel(_("Assessment\nResults"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_("Displays reliability, maintainability, and "
-                      "availability assessment results for the selected "
-                      "{0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
@@ -2041,8 +2000,8 @@ class AssessmentResults(RAMSTKWorkView):
 
         self.wvwOperatingStress.show_all()
 
-    def _do_load_availability_results(self,
-                                      attributes: Dict[str, Any]) -> None:
+    def _do_load_availability_results(self, attributes: Dict[str,
+                                                             Any]) -> None:
         """
         Load the widgets used to display availability results attributes.
 
@@ -2094,8 +2053,8 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionHtVar.set_text(
             str(self.fmt.format(attributes['hr_mission_variance'])))
 
-    def _do_load_miscellaneous_results(self,
-                                       attributes: Dict[str, Any]) -> None:
+    def _do_load_miscellaneous_results(self, attributes: Dict[str,
+                                                              Any]) -> None:
         """
         Load the widgets used to display miscellaneous results attributes.
 

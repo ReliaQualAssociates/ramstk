@@ -19,7 +19,7 @@ from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton, RAMSTKCheckButton, RAMSTKComboBox, RAMSTKDateSelect,
-    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView)
+    RAMSTKEntry, RAMSTKFrame, RAMSTKTextView, RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -201,28 +201,20 @@ class GeneralData(RAMSTKWorkView):
                                  callbacks=[self._do_request_create_code])
 
         # Layout the widgets.
-        _fixed = super().make_ui()
+        _frame = super().make_ui(
+            tablabel=_("General\nData"),
+            title=[_("General Information"), ""],
+            tooltip=_(
+                "Displays general information for the selected Requirement"))
+        self.pack_end(_frame, True, True, 0)
 
         # Add the validation date dialog launcher button to the right of the
         # validated date RAMSTKEntry.
+        _fixed = _frame.get_children()[0].get_children()[0].get_children()[0]
         _entry = _fixed.get_children()[-1]
         _x_pos = _fixed.child_get_property(_entry, 'x') + 205
         _y_pos = _fixed.child_get_property(_entry, 'y')
         _fixed.put(self.btnValidateDate, _x_pos, _y_pos)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("General Information"))
-        _frame.add(_fixed)
-        self.pack_end(_frame, True, True, 0)
-
-        _label = RAMSTKLabel(_("General\nData"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_(
-                "Displays general information for the selected Requirement"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
@@ -662,8 +654,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
         pub.subscribe(self._do_set_cursor_active, 'fail_update_requirement')
 
-    def __make_treeview(self, index: int
-                        ) -> Tuple[Gtk.ListStore, Gtk.TreeViewColumn]:
+    def __make_treeview(
+            self, index: int) -> Tuple[Gtk.ListStore, Gtk.TreeViewColumn]:
         """
         Build the Gtk.TreeView() for the Requirements Analyses.
 

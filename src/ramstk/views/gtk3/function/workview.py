@@ -17,7 +17,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView,
+    RAMSTKCheckButton, RAMSTKEntry, RAMSTKTextView,
     RAMSTKTreeView, RAMSTKWorkView)
 
 
@@ -122,21 +122,12 @@ class GeneralData(RAMSTKWorkView):
         super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
         # Layout the widgets.
-        _fixed = super().make_ui()
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("General Information"))
-        _frame.add(_fixed)
+        _frame = super().make_ui(tablabel=_("General\nData"),
+                                 title=[_("General Information"), ""],
+                                 tooltip=_(
+                                     "Displays general information for the "
+                                     "selected Function"))
         self.pack_end(_frame, True, True, 0)
-
-        _label = RAMSTKLabel(_("General\nData"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_(
-                "Displays general information for the selected Function"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 

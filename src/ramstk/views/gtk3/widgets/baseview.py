@@ -10,7 +10,7 @@
 # Standard Library Imports
 import datetime
 import locale
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -31,6 +31,7 @@ from .entry import RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
 from .matrixview import RAMSTKMatrixView
+from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
 
 
@@ -1295,14 +1296,20 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-    def make_ui(self, **kwargs: Any) -> Tuple[int, List[int], Gtk.Fixed]:
+    def make_ui(self, **kwargs: Any) -> RAMSTKFrame:
         """
         Common method to create work view Gtk.Notebook() general data pages.
 
-        :return: (_x_pos, _y_pos, _fixed); the x-position of the left edge of
-            each widget, the list of y-positions of the top of each widget, and
-            the Gtk.Fixed() that all the widgets are placed on.
-        :rtype: (int, list, :class:`Gtk.Fixed`)
+        The Gtk.Fixed() can be retrieved by the calling function with the
+        following:
+
+            _frame.get_children()[0].get_children()[0].get_children()[0]
+
+        This may be necessary to re-position or add widgets to the workview.
+
+        :return: _frame; the RAMSTKFrame() that contains the Gtk.Fixed()
+            displaying all the widget.s
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`)
         """
         try:
             _index_end = kwargs['end']
@@ -1312,6 +1319,20 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _index_start = kwargs['start']
         except KeyError:
             _index_start = 0
+        try:
+            _tablabel = kwargs['tablabel']
+        except KeyError:
+            _tablabel = ""
+        try:
+            _title = kwargs['title']
+        except KeyError:
+            _title = ["", ""]
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = (
+                "Missing tooltip, please file a quality type issue to "
+                "have one added.")
         try:
             _y_inc = kwargs['y_inc']
         except KeyError:
@@ -1341,7 +1362,21 @@ class RAMSTKWorkView(RAMSTKBaseView):
                            _y_pos)
                 _y_pos += _minimum.height + 5
 
-        return _fixed
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
+
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(title=_title[0])
+        _frame.add(_scrollwindow)
+
+        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
+        _label.do_set_properties(
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_tooltip)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+        return _frame
 
     def make_ui_with_treeview(self, **kwargs: Dict[str, Any]) -> None:
         """
