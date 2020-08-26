@@ -35,20 +35,16 @@ class RAMSTKDialog(Gtk.Dialog):
                 values.  Default is Gtk.STOCK_OK <==> Gtk.ResponseType.ACCEPT
                 Gtk.STOCK_CANCEL <==> Gtk.ResponseType.CANCEL
         """
-        try:
-            _dlgparent = kwargs['dlgparent']
-        except KeyError:
-            _dlgparent = None
+        _dlgbuttons = kwargs.get('dlgbuttons',
+                                 (Gtk.STOCK_OK, Gtk.ResponseType.OK,
+                                  Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
+        _dlgparent = kwargs.get('dlgparent', None)
 
         super().__init__()
 
         self.set_title(dlgtitle)
         self.set_transient_for(_dlgparent)
-        try:
-            self.add_buttons(kwargs['dlgbuttons'])
-        except KeyError:
-            self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK,
-                             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        self.add_buttons(*_dlgbuttons)
 
         self.set_destroy_with_parent(True)
         self.set_modal(True)
@@ -210,12 +206,8 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         """
         Gtk.FileChooserDialog.__init__(self)
 
-        self.add_buttons(
-            Gtk.STOCK_OK,
-            Gtk.ResponseType.ACCEPT,
-            Gtk.STOCK_CANCEL,
-            Gtk.ResponseType.REJECT
-        )
+        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+                         Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
 
         self.set_title(title)
         self.set_transient_for(parent)

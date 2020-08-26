@@ -423,14 +423,8 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: _dialog
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKMessageDialog`
         """
-        try:
-            _debug_msg = kwargs['debug_msg']
-        except KeyError:
-            _debug_msg = ''
-        try:
-            _parent = kwargs['parent']
-        except KeyError:
-            _parent = None
+        _debug_msg = kwargs.get('debug_msg', '')
+        _parent = kwargs.get('parent', None)
 
         _dialog = RAMSTKMessageDialog(parent=_parent)
 
@@ -630,22 +624,17 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        try:
-            _tablabel = kwargs['tablabel']
-        except KeyError:
-            _tablabel = ""
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
+        _tablabel = kwargs.get('tablabel', "")
+        _tooltip = kwargs.get(
+            'tooltip',
+            _("Missing tooltip, please file a quality type issue to have one "
+              "added."))
 
         _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_tooltip)
+        _label.do_set_properties(height=30,
+                                 width=-1,
+                                 justify=Gtk.Justification.CENTER,
+                                 tooltip=_tooltip)
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
@@ -1037,15 +1026,11 @@ class RAMSTKListView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
-        try:
-            _tab_label = kwargs['tab_label']
-        except KeyError:
-            _tab_label = 'Tab'
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = _("Missing tooltip, please file a quality type issue "
-                         "to have one added.")
+        _tab_label = kwargs.get('tab_label', 'Tab')
+        _tooltip = kwargs.get(
+            'tooltip',
+            _("Missing tooltip, please file a quality type issue to have one "
+              "added."))
 
         self.tab_label.set_markup("<span weight='bold'>" + _tab_label
                                   + "</span>")
@@ -1319,22 +1304,10 @@ class RAMSTKWorkView(RAMSTKBaseView):
             displaying all the widgets.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`)
         """
-        try:
-            _index_end = kwargs['end']
-        except KeyError:
-            _index_end = len(self._lst_labels)
-        try:
-            _index_start = kwargs['start']
-        except KeyError:
-            _index_start = 0
-        try:
-            _title = kwargs['title']
-        except KeyError:
-            _title = ["", ""]
-        try:
-            _y_inc = kwargs['y_inc']
-        except KeyError:
-            _y_inc = 25
+        _index_end = kwargs.get('end', len(self._lst_labels))
+        _index_start = kwargs.get('start', 0)
+        _title = kwargs.get('title', ["", ""])
+        _y_inc = kwargs.get('y_inc', 25)
 
         _fixed = Gtk.Fixed()
 
@@ -1396,10 +1369,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # TMPLT: The overall view is created by a call to make_toolbuttons()
         # TMPLT: from the child class' __make_ui() method followed by a call
         # TMPLT: to this method.
-        try:
-            _title = kwargs['title']
-        except KeyError:
-            _title = ["", ""]
+        _title = kwargs.get('title', ["", ""])
 
         _hbox = Gtk.HBox()
 
