@@ -16,8 +16,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-                                       RAMSTKTextView, RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKTextView,
+                                       RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -115,22 +115,13 @@ class GeneralData(RAMSTKWorkView):
         super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
         # Layout the widgets.
-        _fixed = super().make_ui()
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("General Information"))
-        _frame.add(_fixed)
+        _frame = super().make_ui(title=[_("General Information"), ""])
         self.pack_end(_frame, True, True, 0)
 
-        _label = RAMSTKLabel(_("General\nData"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_(
-                "Displays general information for the selected Revision"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
-
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_(
+                                   "Displays general information for the "
+                                   "selected Revision"))
         self.show_all()
 
     def __set_callbacks(self) -> None:

@@ -16,9 +16,9 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView,
-    RAMSTKTreeView, RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKEntry,
+                                       RAMSTKTextView, RAMSTKTreeView,
+                                       RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -122,22 +122,13 @@ class GeneralData(RAMSTKWorkView):
         super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
 
         # Layout the widgets.
-        _fixed = super().make_ui()
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("General Information"))
-        _frame.add(_fixed)
+        _frame = super().make_ui(title=[_("General Information"), ""])
         self.pack_end(_frame, True, True, 0)
 
-        _label = RAMSTKLabel(_("General\nData"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_(
-                "Displays general information for the selected Function"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
-
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_(
+                                   "Displays general information for the "
+                                   "selected Function"))
         self.show_all()
 
     def __set_callbacks(self) -> None:
@@ -364,6 +355,8 @@ class HazOps(RAMSTKWorkView):
         Wrapper method responds to calculate, delete, insert messages.
 
         :param int node_id: the hazard ID that was deleted or inserted.
+            This argument is broadcast with the PyPubSub message and must
+            remain with it's current spelling.
         :return: None
         :rtype: None
         """
@@ -421,11 +414,11 @@ class HazOps(RAMSTKWorkView):
                 self._do_request_calculate, self._do_request_insert,
                 self._do_request_delete
             ])
-        super().make_ui_with_treeview(
-            tablabel=_("HazOps"),
-            title=["", _("HazOps Analysis")],
-            tooltip=_(
-                "Displays the HazOps analysis for the selected function."))
+        super().make_ui_with_treeview(title=["", _("HazOps Analysis")])
+        super().make_tab_label(tablabel=_("HazOps"),
+                               tooltip=_(
+                                   "Displays the HazOps analysis for the "
+                                   "selected function."))
 
         self.show_all()
 
@@ -685,15 +678,13 @@ class HazOps(RAMSTKWorkView):
         """
         Handle edits of the HazOps Work View RAMSTKTreeview().
 
-        :param __cell: the Gtk.CellRenderer() that was edited.
-        :type __cell: :class:`Gtk.CellRenderer`
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :type cell: :class:`Gtk.CellRenderer`
         :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
                              Gtk.CellRenderer().
-        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
-        :type model: :class:`Gtk.TreeModel`
         :return: None
         :rtype: None
         """

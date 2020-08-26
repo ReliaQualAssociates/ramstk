@@ -448,15 +448,11 @@ class FMEA(RAMSTKWorkView):
         super().make_toolbuttons(icons=self._lst_icons,
                                  tooltips=self._lst_tooltips,
                                  callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(
-            tablabel=_("FMEA"),
-            title=[
-                "",
-                _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
-                  "[(D)FME(C)A]")
-            ],
-            tooltip=_("Displays failure mode and effects analysis (FMEA) "
-                      "information for the selected Hardware"))
+        super().make_ui_with_treeview(title=[
+            "",
+            _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
+              "[(D)FME(C)A]")
+        ])
 
         # Move the item criticality RAMSTKTextView() below it's label.
         _fixed = self.get_children()[1].get_children()[0].get_child()
@@ -464,6 +460,12 @@ class FMEA(RAMSTKWorkView):
         _x_pos = _fixed.child_get_property(_label, 'x')
         _y_pos = _fixed.child_get_property(_label, 'y') + 25
         _fixed.put(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
+
+        super().make_tab_label(tablabel=_("FMEA"),
+                               tooltip=_(
+                                   "Displays failure mode and effects "
+                                   "analysis (FMEA) "
+                                   "information for the selected Hardware"))
 
         self.show_all()
 
@@ -854,7 +856,7 @@ class FMEA(RAMSTKWorkView):
         Determines which type of row to load and loads the data.
 
         :param node: the FMEA treelib Node() whose data is to be loaded.
-        :type nose: :class:`treelib.Node`
+        :type node: :class:`treelib.Node`
         :param row: the parent row for the row to be loaded.
         :type row: :class:`Gtk.TreeIter`
         :return: _new_row; the row that was just added to the FMEA treeview.
@@ -1106,7 +1108,7 @@ class FMEA(RAMSTKWorkView):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION[
                 entity.rpn_detection_new]['name'])
 
-        return (_occurrence, _detection, _occurrence_new, _detection_new)
+        return _occurrence, _detection, _occurrence_new, _detection_new
 
     def _get_rpn_values(self, position: int, name: str) -> int:
         """
@@ -1140,7 +1142,7 @@ class FMEA(RAMSTKWorkView):
         Handle mouse clicks on the FMEA Work View RAMSTKTreeView().
 
         :param __treeview: the FMEA TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
+        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
             important attribute is which mouse button was clicked).
 
@@ -1204,13 +1206,13 @@ class FMEA(RAMSTKWorkView):
                         package={_key: new_text})
 
     # pylint: disable=unused-argument
-    def _on_cell_toggled(self, cell: Gtk.CellRenderer, path: str,
+    def _on_cell_toggled(self, cell: Gtk.CellRenderer, __path: str,
                          position: int) -> None:
         """
         Handle edits of the FMEA Work View RAMSTKTreeview() toggle cells.
 
         :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was toggled.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+        :param str __path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was toggled.
         :param int position: the column position of the toggled
             Gtk.CellRenderer().
@@ -1233,7 +1235,9 @@ class FMEA(RAMSTKWorkView):
         """
         Update FMEA worksheet whenever an element is inserted or deleted.
 
-        :param int node_id: the ID of the inserted/deleted FMEA element.
+        :param int node_id: the ID of the inserted/deleted FMEA element.  This
+            argument is broadcast with the PyPubSub message and must remain
+            with it's current spelling.
         :param tree: the treelib Tree() containing the FMEA module's data.
         :type tree: :class:`treelib.Tree`
         :return: None
@@ -1277,8 +1281,9 @@ class FMEA(RAMSTKWorkView):
 
         This method is called whenever a RAMSTKTreeView() row is activated.
 
-        :param treeview: the FMEA RAMSTKTreeView().
-        :type treeview: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
+        :param selection: the current Gtk.TreeViewSelection() in the
+            FMEA RAMSTKTreView().
+        :type selection: :class:`Gtk.TreeViewSelection`
         :return: None
         :rtype: None
         """

@@ -301,12 +301,12 @@ class Stakeholders(RAMSTKListView):
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent(
         ).get_parent()
-        _dialog = super().do_raise_dialog(user_msg=_(
-            "You are about to delete Stakeholder input {0:d} and "
-            "all data associated with it.  Is this really what you "
-            "want to do?").format(self._record_id),
-                                          severity='question',
-                                          parent=_parent)
+        _dialog = super().do_raise_dialog(parent=_parent)
+        _dialog.do_set_message(
+            message=_("You are about to delete Stakeholder input {0:d} and "
+                      "all data associated with it.  Is this really what you "
+                      "want to do?").format(self._record_id))
+        _dialog.do_set_message_type(message_type='question')
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_stakeholder',

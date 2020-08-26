@@ -58,14 +58,8 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        try:
-            _bold = kwargs['bold']
-        except KeyError:
-            _bold = False
-        try:
-            _editable = kwargs['editable']
-        except KeyError:
-            _editable = True
+        _bold = kwargs.get('bold', False)
+        _editable = kwargs.get('editable', True)
 
         self.set_property('editable', _editable)
 

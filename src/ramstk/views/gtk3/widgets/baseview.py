@@ -10,7 +10,7 @@
 # Standard Library Imports
 import datetime
 import locale
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -31,6 +31,7 @@ from .entry import RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
 from .matrixview import RAMSTKMatrixView
+from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
 
 
@@ -44,7 +45,7 @@ class RAMSTKBaseView(Gtk.HBox):
         class.
     :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.Configuration.Configuration`
     :cvar dict dic_tab_position: dictionary holding the Gtk.PositionType()s for
-        each of left, right, top, and botton.
+        each of left, right, top, and bottom.
 
     :ivar dict _dic_icons: dictionary containing icon name and absolute path
         key:value pairs.
@@ -396,21 +397,21 @@ class RAMSTKBaseView(Gtk.HBox):
                 self.show_all()
         except TypeError as _error:
             _error_msg = _(
-                "An error occured while loading {1:s} records for Revision ID "
-                "{0:d} into the view.  One or more values from the database "
-                "was the wrong type for the column it was trying to "
+                "An error occurred while loading {1:s} records for Revision "
+                "ID {0:d} into the view.  One or more values from the "
+                "database was the wrong type for the column it was trying to "
                 "load.").format(self._revision_id, _tag)
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
         except ValueError as _error:
             _error_msg = _(
-                "An error occured while loading {1:s} records for Revision ID "
-                "{0:d} into the view.  One or more values from the database "
-                "was missing.").format(self._revision_id, _tag)
+                "An error occurred while loading {1:s} records for Revision "
+                "ID {0:d} into the view.  One or more values from the "
+                "database was missing.").format(self._revision_id, _tag)
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-    def do_raise_dialog(self, **kwargs: Any) -> None:
+    def do_raise_dialog(self, **kwargs: Any) -> RAMSTKMessageDialog:
         """
         Raise a dialog in response to information, warnings, and errors.
 
@@ -419,39 +420,15 @@ class RAMSTKBaseView(Gtk.HBox):
         will also write a message to the RAMSTK debug_log to (hopefully) assist
         in troubleshooting.
 
-        :return: None
-        :rtype: None
+        :return: _dialog
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKMessageDialog`
         """
-        try:
-            _user_msg = kwargs['user_msg']
-        except KeyError:
-            _user_msg = "User message not supplied by calling function."
-            _severity = 'error'
-        try:
-            _severity = kwargs['severity']
-        except KeyError:
-            _severity = 'error'
-        try:
-            _parent = kwargs['parent']
-        except KeyError:
-            _parent = None
+        _debug_msg = kwargs.get('debug_msg', '')
+        _parent = kwargs.get('parent', None)
 
-        try:
-            _dialog = RAMSTKMessageDialog(_user_msg,
-                                          self._dic_icons[_severity],
-                                          _severity,
-                                          parent=_parent)
-        except KeyError as _error:
-            _debug_msg = ("Failed attempting to raise a RAMSTKMessageDialog "
-                          "with either the severity or message missing.")
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-        try:
-            _debug_msg = kwargs['debug_msg']
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except KeyError as _error:
-            _debug_msg = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        _dialog = RAMSTKMessageDialog(parent=_parent)
+
+        self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
 
         return _dialog
 
@@ -637,6 +614,28 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
+
+    def make_tab_label(self, **kwargs: Dict[str, Any]) -> None:
+        """
+        Make the view's tab label.
+
+        :param dict kwargs: the keyword arguments (if any) to apply to the
+            tab label.
+        :return: None
+        :rtype: None
+        """
+        _tablabel = kwargs.get('tablabel', "")
+        _tooltip = kwargs.get(
+            'tooltip',
+            _("Missing tooltip, please file a quality type issue to have one "
+              "added."))
+
+        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
+        _label.do_set_properties(height=30,
+                                 width=-1,
+                                 justify=Gtk.Justification.CENTER,
+                                 tooltip=_tooltip)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """
@@ -1027,15 +1026,11 @@ class RAMSTKListView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
-        try:
-            _tab_label = kwargs['tab_label']
-        except KeyError:
-            _tab_label = 'Tab'
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = _("Missing tooltip, please file a quality type issue "
-                         "to have one added.")
+        _tab_label = kwargs.get('tab_label', 'Tab')
+        _tooltip = kwargs.get(
+            'tooltip',
+            _("Missing tooltip, please file a quality type issue to have one "
+              "added."))
 
         self.tab_label.set_markup("<span weight='bold'>" + _tab_label
                                   + "</span>")
@@ -1234,8 +1229,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
     This is the meta class for all RAMSTK Work View classes.  Attributes of the
     RAMSTKWorkView are:
 
-    :ivar str _module: the all capitalized name of the RAMSKT module the View
-    is for.
+    :ivar list _lst_widgets: the list of RAMSTK (preferred) and Gtk widgets
+        used to display information on a workview.
     """
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -1294,27 +1289,24 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-    def make_ui(self, **kwargs: Any) -> Tuple[int, List[int], Gtk.Fixed]:
+    def make_ui(self, **kwargs: Any) -> RAMSTKFrame:
         """
         Common method to create work view Gtk.Notebook() general data pages.
 
-        :return: (_x_pos, _y_pos, _fixed); the x-position of the left edge of
-            each widget, the list of y-positions of the top of each widget, and
-            the Gtk.Fixed() that all the widgets are placed on.
-        :rtype: (int, list, :class:`Gtk.Fixed`)
+        The Gtk.Fixed() can be retrieved by the calling function with the
+        following:
+
+            _frame.get_children()[0].get_children()[0].get_children()[0]
+
+        This may be necessary to re-position or add widgets to the workview.
+
+        :return: _frame; the RAMSTKFrame() that contains the Gtk.Fixed()
+            displaying all the widgets.
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`)
         """
-        try:
-            _index_end = kwargs['end']
-        except KeyError:
-            _index_end = len(self._lst_labels)
-        try:
-            _index_start = kwargs['start']
-        except KeyError:
-            _index_start = 0
-        try:
-            _y_inc = kwargs['y_inc']
-        except KeyError:
-            _y_inc = 25
+        _index_end = kwargs.get('end', len(self._lst_labels))
+        _index_start = kwargs.get('start', 0)
+        _title = kwargs.get('title', ["", ""])
 
         _fixed = Gtk.Fixed()
 
@@ -1340,7 +1332,13 @@ class RAMSTKWorkView(RAMSTKBaseView):
                            _y_pos)
                 _y_pos += _minimum.height + 5
 
-        return _fixed
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
+
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(title=_title[0])
+        _frame.add(_scrollwindow)
+
+        return _frame
 
     def make_ui_with_treeview(self, **kwargs: Dict[str, Any]) -> None:
         """
@@ -1370,19 +1368,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # TMPLT: The overall view is created by a call to make_toolbuttons()
         # TMPLT: from the child class' __make_ui() method followed by a call
         # TMPLT: to this method.
-        try:
-            _tablabel = kwargs['tablabel']
-        except KeyError:
-            _tablabel = ""
-        try:
-            _title = kwargs['title']
-        except KeyError:
-            _title = ["", ""]
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
+        _title = kwargs.get('title', ["", ""])
 
         _hbox = Gtk.HBox()
 
@@ -1411,15 +1397,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         _hbox.pack_end(_frame, True, True, 0)
         self.pack_end(_hbox, True, True, 0)
-
-        # Set the tab label.
-        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_tooltip)
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

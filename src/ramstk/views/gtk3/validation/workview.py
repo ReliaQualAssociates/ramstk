@@ -26,8 +26,8 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKPlot, RAMSTKScrolledWindow, RAMSTKSpinButton,
-    RAMSTKTextView, RAMSTKWorkView, do_make_buttonbox)
+    RAMSTKLabel, RAMSTKPlot, RAMSTKSpinButton, RAMSTKTextView, RAMSTKWorkView,
+    do_make_buttonbox)
 
 register_matplotlib_converters()
 
@@ -301,7 +301,9 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Place the LEFT side widgets.
-        _hpaned.pack1(self.__make_ui_left(), True, True)
+        _frame: RAMSTKFrame = super().make_ui(
+            end=13, title=[_("Task Description"), ""])
+        _hpaned.pack1(_frame, True, True)
 
         # Place the RIGHT side widgets.
         _vpaned: Gtk.VPaned = Gtk.VPaned()
@@ -309,15 +311,10 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(self.__make_ui_top_right(), True, True)
         _vpaned.pack2(self.__make_ui_bottom_right(), True, True)
 
-        _label = RAMSTKLabel(_("General\nData"))
-        _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_(
-                "Displays general information for the selected Validation"))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
-
+        super().make_tab_label(tablabel=_("General\nData"),
+                               tooltip=_(
+                                   "Displays general information for the "
+                                   "selected Validation"))
         self.show_all()
 
     def __make_ui_bottom_right(self) -> RAMSTKFrame:
@@ -328,10 +325,11 @@ class GeneralData(RAMSTKWorkView):
             loaded.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
         """
-        _fixed = super().make_ui(start=21)
+        _frame = super().make_ui(start=21, title=[_("Project Effort"), ""])
 
         # We add the project time and project time UL to the same y position
         # as the project time LL widget.
+        _fixed = _frame.get_children()[0].get_children()[0].get_children()[0]
         _time_entry = _fixed.get_children()[1]
         _cost_entry = _fixed.get_children()[-1]
         _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
@@ -346,26 +344,6 @@ class GeneralData(RAMSTKWorkView):
         _fixed.put(self.txtProjectCost, _x_pos + 175, _y_pos)
         _fixed.put(self.txtProjectCostUL, _x_pos + 350, _y_pos)
 
-        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
-        _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True, title=_("Project Effort"))
-        _frame.add(_scrollwindow)
-
-        return _frame
-
-    def __make_ui_left(self) -> RAMSTKFrame:
-        """
-        Make the left frame of the UI.
-
-        :return: _frame; the frame containing the Gtk.Fixed() with widgets
-            loaded.
-        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
-        """
-        _fixed = super().make_ui(end=13)
-        _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True, title=_("Task Description"))
-        _frame.add(_fixed)
-
         return _frame
 
     def __make_ui_top_right(self) -> RAMSTKFrame:
@@ -376,10 +354,13 @@ class GeneralData(RAMSTKWorkView):
             loaded.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
         """
-        _fixed = super().make_ui(start=13, end=21)
+        _frame = super().make_ui(start=13,
+                                 end=21,
+                                 title=[_("Task Effort"), ""])
 
         # We add the mean time and mean time UL to the same y position as
         # the mean time LL widget.
+        _fixed = _frame.get_children()[0].get_children()[0].get_children()[0]
         _time_entry = _fixed.get_children()[7]
         _cost_entry = _fixed.get_children()[-1]
         _x_pos = _fixed.child_get_property(_time_entry, 'x')
@@ -393,11 +374,6 @@ class GeneralData(RAMSTKWorkView):
         _y_pos = _fixed.child_get_property(_cost_entry, 'y')
         _fixed.put(self.txtMeanCost, _x_pos + 195, _y_pos)
         _fixed.put(self.txtMeanCostUL, _x_pos + 390, _y_pos)
-
-        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
-        _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True, title=_("Task Effort"))
-        _frame.add(_scrollwindow)
 
         return _frame
 
@@ -982,14 +958,14 @@ class BurndownCurve(RAMSTKWorkView):
                                        linestyle='-.')
             self.burndown.axis.annotate(
                 str(
-                    self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), 'upper'])) + "\n"
+                    self.fmt.format(assessed.loc[pd.to_datetime(_date),
+                                                 'upper'])) + "\n"
                 + str(
-                    self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), 'mean'])) + "\n"
+                    self.fmt.format(assessed.loc[pd.to_datetime(_date),
+                                                 'mean'])) + "\n"
                 + str(
-                    self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), 'lower'])),
+                    self.fmt.format(assessed.loc[pd.to_datetime(_date),
+                                                 'lower'])),
                 xy=(_date, 0.9 * _y_max),
                 xycoords='data',
                 xytext=(-55, 0),

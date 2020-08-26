@@ -270,18 +270,9 @@ class RAMSTKPlot():
         :return: matplotlib text instance representing the label.
         :rtype: :class:`matplotlib.text.Text`
         """
-        try:
-            _set_x = kwargs['set_x']
-        except KeyError:
-            _set_x = True
-        try:
-            _fontsize = kwargs['fontsize']
-        except KeyError:
-            _fontsize = 14
-        try:
-            _fontweight = kwargs['fontweight']
-        except KeyError:
-            _fontweight = 'bold'
+        _fontsize = kwargs.get('fontsize', 14)
+        _fontweight = kwargs.get('fontweight', 'bold')
+        _set_x = kwargs.get('set_x', True)
 
         _label = None
 
@@ -349,34 +340,13 @@ class RAMSTKPlot():
         :return: None
         :rtype: None
         """
-        try:
-            _fontsize = kwargs['fontsize']
-        except KeyError:
-            _fontsize = 'small'
-        try:
-            _frameon = kwargs['frameon']
-        except KeyError:
-            _frameon = False
-        try:
-            _location = kwargs['location']
-        except KeyError:
-            _location = 'upper right'
-        try:
-            _ncol = kwargs['ncol']
-        except KeyError:
-            _ncol = 1
-        try:
-            _shadow = kwargs['shadow']
-        except KeyError:
-            _shadow = True
-        try:
-            _title = kwargs['title']
-        except KeyError:
-            _title = ""
-        try:
-            _lwd = kwargs['lwd']
-        except KeyError:
-            _lwd = 0.5
+        _fontsize = kwargs.get('fontsize', 'small')
+        _frameon = kwargs.get('frameon', False)
+        _location = kwargs.get('location', 'upper right')
+        _lwd = kwargs.get('lwd', 0.5)
+        _ncol = kwargs.get('ncol', 1)
+        _shadow = kwargs.get('shadow', True)
+        _title = kwargs.get('title', "")
 
         _legend = self.axis.legend(text,
                                    frameon=_frameon,

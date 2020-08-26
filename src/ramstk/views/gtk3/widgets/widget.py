@@ -11,7 +11,7 @@
 from typing import Any, Dict
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GObject
+from ramstk.views.gtk3 import GObject, _
 
 
 class RAMSTKWidget():
@@ -51,19 +51,12 @@ class RAMSTKWidget():
         :return: None
         :rtype: None
         """
-        try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = self._default_height
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ("Missing tooltip, please file a quality type issue to "
-                        "have one added.")
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = self._default_width
+        _height = kwargs.get('height', self._default_height)
+        _tooltip = kwargs.get(
+            'tooltip',
+            _("Missing tooltip, please file a quality type issue to have one "
+              "added."))
+        _width = kwargs.get('width', self._default_width)
 
         if _height == 0:
             _height = self._default_height

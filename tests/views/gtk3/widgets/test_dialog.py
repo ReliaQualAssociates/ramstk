@@ -69,7 +69,9 @@ class TestRAMSTKMessageDialog():
     @pytest.mark.gui
     def test_create_error_message_dialog(self):
         """__init__() should create an error type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog("Test Prompt", '', 'error')
+        DUT = RAMSTKMessageDialog()
+        DUT.do_set_message("Test Prompt")
+        DUT.do_set_message_type('error')
 
         assert isinstance(DUT, RAMSTKMessageDialog)
         assert DUT.get_destroy_with_parent()
@@ -80,14 +82,18 @@ class TestRAMSTKMessageDialog():
             "<b>Test Prompt  Check the error log for additional information "
             "(if any).  Please e-mail <span foreground='blue' "
             "underline='single'><a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG REPORT: "
-            "<ADD SHORT PROBLEM DESCRIPTION>&amp;body=RAMSTK MODULE:%0d%0a%0d%0aRAMSTK VERSION:%20%0d%0a%0d%0aYOUR HARDWARE:%20%0d%0a%0d%0aYOUR OS:%20%0d%0a%0d%0aDETAILED PROBLEM DESCRIPTION:%20%0d%0a'>bugs@reliaqual.com</a></span> "
+            "<ADD SHORT PROBLEM DESCRIPTION>&amp;body=RAMSTK "
+            "MODULE:%0d%0a%0d%0aRAMSTK VERSION:%20%0d%0a%0d%0aYOUR "
+            "HARDWARE:%20%0d%0a%0d%0aYOUR OS:%20%0d%0a%0d%0aDETAILED PROBLEM DESCRIPTION:%20%0d%0a'>bugs@reliaqual.com</a></span> "
             "with a detailed description of the problem, the workflow you are "
             "using and the error log attached if the problem persists.</b>")
 
     @pytest.mark.gui
     def test_create_warning_message_dialog(self):
         """__init__() should create a warning type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog("Test Warning Prompt", '', 'warning')
+        DUT = RAMSTKMessageDialog()
+        DUT.do_set_message("Test Warning Prompt")
+        DUT.do_set_message_type('warning')
 
         assert isinstance(DUT, RAMSTKMessageDialog)
         assert DUT.get_destroy_with_parent()
@@ -99,7 +105,9 @@ class TestRAMSTKMessageDialog():
     @pytest.mark.gui
     def test_create_info_message_dialog(self):
         """__init__() should create an info type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog("Test Info Prompt", '', 'information')
+        DUT = RAMSTKMessageDialog()
+        DUT.do_set_message("Test Info Prompt")
+        DUT.do_set_message_type('information')
 
         assert isinstance(DUT, RAMSTKMessageDialog)
         assert DUT.get_destroy_with_parent()
@@ -111,7 +119,9 @@ class TestRAMSTKMessageDialog():
     @pytest.mark.gui
     def test_create_question_message_dialog(self):
         """__init__() should create a question type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog("Test Question Prompt", '', 'question')
+        DUT = RAMSTKMessageDialog()
+        DUT.do_set_message("Test Question Prompt")
+        DUT.do_set_message_type('question')
 
         assert isinstance(DUT, RAMSTKMessageDialog)
         assert DUT.get_destroy_with_parent()
