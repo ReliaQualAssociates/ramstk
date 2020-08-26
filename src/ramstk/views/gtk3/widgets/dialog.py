@@ -40,8 +40,10 @@ class RAMSTKDialog(Gtk.Dialog):
         except KeyError:
             _dlgparent = None
 
-        super().__init__(title=dlgtitle, parent=_dlgparent)
+        super().__init__()
 
+        self.set_title(dlgtitle)
+        self.set_transient_for(_dlgparent)
         try:
             self.add_buttons(kwargs['dlgbuttons'])
         except KeyError:
@@ -206,14 +208,17 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         :param str title: the title of the dialog.
         :param object parent: the parent window for the dialog.
         """
-        Gtk.FileChooserDialog.__init__(self, title, parent)
+        Gtk.FileChooserDialog.__init__(self)
 
         self.add_buttons(
             Gtk.STOCK_OK,
             Gtk.ResponseType.ACCEPT,
             Gtk.STOCK_CANCEL,
-            Gtk.ResponseType.REJECT,
+            Gtk.ResponseType.REJECT
         )
+
+        self.set_title(title)
+        self.set_transient_for(parent)
         self.set_destroy_with_parent(True)
         self.set_modal(True)
 
@@ -271,33 +276,43 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
 
     It used for RAMSTK error, warning, and information messages.
     """
-    def __init__(self,
-                 prompt: str,
-                 icon: str,
-                 criticality: str,
-                 parent: Gtk.Window = None) -> None:
+    def __init__(self, parent: Gtk.Window = None) -> None:
         """
         Initialize runtime error, warning, and information dialogs.
-
-        :param str prompt: the prompt to display in the dialog.
-        :param str icon: the absolute path to the icon to display on the
-            dialog.
-        :param str criticality: the criticality level of the dialog.
-            Criticality is one of:
-                * 'error'
-                * 'warning'
-                * 'information'
 
         :keyword Gtk.Window _parent: the parent Gtk.Window(), if any, for the
             dialog.
         """
-        _criticality = ''
-        _image = Gtk.Image()
-        _image.set_from_file(icon)
+        Gtk.MessageDialog.__init__(self)
 
-        Gtk.MessageDialog.__init__(self, parent)
+        self.set_transient_for(parent)
+        self.set_destroy_with_parent(True)
+        self.set_modal(True)
 
-        if criticality == 'error':
+        self.show_all()
+
+    def do_set_message(self, message: str) -> None:
+        """
+        Set the message to display in the dialog.
+
+        :param str message: the message to display.
+        :return: None
+        :rtype: None
+        """
+        self.set_markup(message)
+
+    def do_set_message_type(self, message_type: str = 'error') -> None:
+        """
+        Set RAMSTKMessageDialog message type.
+
+        :param str message_type: the RAMSTKMessageDialog message type.
+            Options are error, warning, information, or question.  Default
+            is error.
+        :return: None
+        :rtype: None
+        """
+        if message_type == 'error':
+            _prompt = self.get_property('text')
             # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
             # e-mail address.
             _hyper = "<a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG " \
@@ -307,8 +322,8 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                      "YOUR HARDWARE:%20%0d%0a%0d%0a" \
                      "YOUR OS:%20%0d%0a%0d%0a" \
                      "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
-            prompt = '<b>' \
-                     + prompt \
+            _prompt = '<b>' \
+                     + _prompt \
                      + _(
                          "  Check the error log for additional information "
                          "(if any).  Please e-mail <span foreground='blue' "
@@ -321,26 +336,21 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                          "using and the error log attached if the problem "
                          "persists.</b>",
                      )
-            _criticality = Gtk.MessageType.ERROR
+            self.set_markup(_prompt)
+            _message_type = Gtk.MessageType.ERROR
             self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif criticality == 'warning':
-            _criticality = Gtk.MessageType.WARNING
+        elif message_type == 'warning':
+            _message_type = Gtk.MessageType.WARNING
             self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif criticality == 'information':
-            _criticality = Gtk.MessageType.INFO
+        elif message_type == 'information':
+            _message_type = Gtk.MessageType.INFO
             self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif criticality == 'question':
-            _criticality = Gtk.MessageType.QUESTION
+        elif message_type == 'question':
+            _message_type = Gtk.MessageType.QUESTION
             self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No",
                              Gtk.ResponseType.NO)
 
-        self.set_destroy_with_parent(True)
-        self.set_modal(True)
-        self.set_image(_image)
-        self.set_markup(prompt)
-        self.set_property('message-type', _criticality)
-
-        self.show_all()
+        self.set_property('message-type', _message_type)
 
     def do_run(self) -> Any:
         """Run the RAMSTK Message Dialog."""

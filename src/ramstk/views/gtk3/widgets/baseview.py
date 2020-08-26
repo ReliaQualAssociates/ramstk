@@ -424,36 +424,17 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKMessageDialog`
         """
         try:
-            _user_msg = kwargs['user_msg']
+            _debug_msg = kwargs['debug_msg']
         except KeyError:
-            _user_msg = "User message not supplied by calling function."
-            _severity = 'error'
-        try:
-            _severity = kwargs['severity']
-        except KeyError:
-            _severity = 'error'
+            _debug_msg = ''
         try:
             _parent = kwargs['parent']
         except KeyError:
             _parent = None
 
-        try:
-            _dialog = RAMSTKMessageDialog(_user_msg,
-                                          self._dic_icons[_severity],
-                                          _severity,
-                                          parent=_parent)
-        except KeyError as _error:
-            _debug_msg = ("Failed attempting to raise a RAMSTKMessageDialog "
-                          "with either the severity or message missing.")
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        _dialog = RAMSTKMessageDialog(parent=_parent)
 
-        try:
-            _debug_msg = kwargs['debug_msg']
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except KeyError as _error:
-            _debug_msg = ''
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
 
         return _dialog
 

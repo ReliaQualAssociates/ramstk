@@ -301,7 +301,8 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(_hpaned, True, True, 0)
 
         # Place the LEFT side widgets.
-        _frame = super().make_ui(end=13, title=[_("Task Description"), ""])
+        _frame: RAMSTKFrame = super().make_ui(
+            end=13, title=[_("Task Description"), ""])
         _hpaned.pack1(_frame, True, True)
 
         # Place the RIGHT side widgets.
