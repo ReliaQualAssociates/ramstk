@@ -346,16 +346,6 @@ class GeneralData(RAMSTKWorkView):
 
         return _frame
 
-    def __make_ui_left(self) -> RAMSTKFrame:
-        """
-        Make the left frame of the UI.
-
-        :return: _frame; the frame containing the Gtk.Fixed() with widgets
-            loaded.
-        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
-        """
-        _frame = super().make_ui(end=13, title=[_("Task Description"), ""])
-
     def __make_ui_top_right(self) -> RAMSTKFrame:
         """
         Make the top right frame of the UI.

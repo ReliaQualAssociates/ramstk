@@ -30,15 +30,9 @@ def do_make_label_group(text: List[str],
     to place the corresponding widget.
 
     :param list text: a list containing the text for each label.
-    :param Gtk.Widget container: the container widget to place the labels in.
-    :param int x_pos: the x position in the container for the left edge of all
-        labels.
-    :param int y_pos: the y position in the container of the first label.
     :param \**kwargs: See below
 
         :Keyword Arguments:
-            * *y_inc* (int) -- the amount to increment the y_pos between each
-                label.
             * *wrap* (bool) -- boolean indicating whether the label text should
                 wrap or not.
 
@@ -47,10 +41,7 @@ def do_make_label_group(text: List[str],
         RAMSTKLabel() instances.
     :rtype: tuple of (integer, list of RAMSTKLabel())
     """
-    try:
-        _wrap = kwargs['wrap']
-    except KeyError:
-        _wrap = True
+    _wrap = kwargs.get('wrap', True)
 
     _lst_labels = []
     _max_x = 0
@@ -126,18 +117,9 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        try:
-            _bold = kwargs['bold']
-        except KeyError:
-            _bold = True
-        try:
-            _justify = kwargs['justify']
-        except KeyError:
-            _justify = Gtk.Justification.LEFT
-        try:
-            _wrap = kwargs['wrap']
-        except KeyError:
-            _wrap = False
+        _bold = kwargs.get('bold', True)
+        _justify = kwargs.get('justify', Gtk.Justification.LEFT)
+        _wrap = kwargs.get('wrap', False)
 
         self.set_property('wrap', _wrap)
         self.set_property('justify', _justify)

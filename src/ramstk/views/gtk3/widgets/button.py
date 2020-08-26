@@ -47,30 +47,12 @@ def do_make_buttonbox(view: Any,
     :return: _buttonbox
     :rtype: :class:`Gtk.ButtonBox`
     """
-    try:
-        _icons = kwargs['icons']
-    except KeyError:
-        _icons = []
-    try:
-        _tooltips = kwargs['tooltips']
-    except KeyError:
-        _tooltips = []
-    try:
-        _callbacks = kwargs['callbacks']
-    except KeyError:
-        _callbacks = []
-    try:
-        _orientation = kwargs['orientation']
-    except KeyError:
-        _orientation = 'vertical'
-    try:
-        _height = kwargs['height']
-    except KeyError:
-        _height = -1
-    try:
-        _width = kwargs['width']
-    except KeyError:
-        _width = -1
+    _callbacks = kwargs.get('callbacks', [])
+    _height = kwargs.get('height', -1)
+    _icons = kwargs.get('icons', [])
+    _orientation = kwargs.get('orientation', 'vertical')
+    _tooltips = kwargs.get('tooltips', [])
+    _width = kwargs.get('width', -1)
 
     # Append the default save and save-all buttons found on all toolbars to
     # List Views, Module Views, and Work Views.
@@ -169,18 +151,12 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        try:
-            _icon = kwargs['icon']
-        except KeyError:
-            _icon = None
+        _icon = kwargs.get('icon', None)
 
         if _icon is not None:
             _image = Gtk.Image()
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                _icon,
-                self.height,
-                self.width,
-            )
+                _icon, self.height, self.width)
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
 
@@ -250,7 +226,8 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
 
 class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
     """This is the RAMSTK Option Button class."""
-    def __init__(self, group: Gtk.RadioButton = None,
+    def __init__(self,
+                 group: Gtk.RadioButton = None,
                  label: str = _("")) -> None:
         """
         Initialize an instance of the RAMSTK OptionButton.
@@ -309,18 +286,9 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        try:
-            _limits = kwargs['limits']
-        except KeyError:
-            _limits = [0, 0, 100, 1, 0.1]
-        try:
-            _numeric = kwargs['numeric']
-        except KeyError:
-            _numeric = True
-        try:
-            _snap_to_ticks = kwargs['ticks']
-        except KeyError:
-            _snap_to_ticks = True
+        _limits = kwargs.get('limits', [0, 0, 100, 1, 0.1])
+        _numeric = kwargs.get('numeric', True)
+        _snap_to_ticks = kwargs.get('ticks', True)
 
         self.set_adjustment(
             Gtk.Adjustment(_limits[0], _limits[1], _limits[2], _limits[3],

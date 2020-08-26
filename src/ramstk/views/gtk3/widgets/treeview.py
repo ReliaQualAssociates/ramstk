@@ -37,14 +37,8 @@ def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
     :return: _column
     :rtype: :class:`Gtk.TreeViewColumn`
     """
-    try:
-        _heading = kwargs['heading']
-    except KeyError:
-        _heading = ""
-    try:
-        _visible = kwargs['visible']
-    except KeyError:
-        _visible = True
+    _heading = kwargs.get('heading', "")
+    _visible = kwargs.get('visible', True)
 
     _column = Gtk.TreeViewColumn("")
 
@@ -75,22 +69,10 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
     :return: None
     :rtype: None
     """
-    try:
-        _bg_color = kwargs['bg_color']
-    except KeyError:
-        _bg_color = '#FFFFFF'
-    try:
-        _editable = kwargs['editable']
-    except KeyError:
-        _editable = False
-    try:
-        _fg_color = kwargs['fg_color']
-    except KeyError:
-        _fg_color = '#000000'
-    try:
-        _visible = kwargs['visible']
-    except KeyError:
-        _visible = True
+    _bg_color = kwargs.get('bg_color', '#FFFFFF')
+    _editable = kwargs.get('editable', False)
+    _fg_color = kwargs.get('fg_color', '#000000')
+    _visible = kwargs.get('visible', True)
 
     if not _editable:
         _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
@@ -518,10 +500,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :return: None
         :rtype: None
         """
-        try:
-            _visible = kwargs['visible']
-        except KeyError:
-            _visible = []
+        _visible = kwargs.get('visible', [])
 
         for _idx, _showit in enumerate(_visible):
             try:

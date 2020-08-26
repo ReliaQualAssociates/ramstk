@@ -1307,7 +1307,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _index_end = kwargs.get('end', len(self._lst_labels))
         _index_start = kwargs.get('start', 0)
         _title = kwargs.get('title', ["", ""])
-        _y_inc = kwargs.get('y_inc', 25)
 
         _fixed = Gtk.Fixed()
 
