@@ -11,6 +11,7 @@ import locale
 from typing import TypeVar
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -19,7 +20,8 @@ from ramstk.configuration import (RAMSTK_FAILURE_PROBABILITY,
                                   RAMSTKUserConfiguration)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
-from ramstk.views.gtk3.assistants import CreateProject, OpenProject
+from ramstk.views.gtk3.assistants import (CreateProject, EditOptions,
+                                          EditPreferences, OpenProject)
 from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
                                      RAMSTKWorkBook)
 
@@ -53,10 +55,11 @@ class RAMSTKDesktop(Gtk.Window):
 
     :cvar RAMSTK_USER_CONFIGURATION: the instance of the RAMSTK
         user configuration class.
-    :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+    :type RAMSTK_USER_CONFIGURATION:
+        :class:`ramstk.configuration.RAMSTKUserConfiguration`
     :cvar dict dic_books: dictionary holding a reference to each RAMSTK book.
     :cvar dict dic_tab_pos: dictionary holding the Gtk.PositionType()s for each
-        of left, right, top, and botton.
+        of left, right, top, and bottom.
     :ivar int _n_screens: the number of monitors attached to the machine
         running RAMSTK.
     :ivar float _height: the height of the monitors attached to the machine
@@ -174,8 +177,8 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_label(_("_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Preferences,
-        # self.RAMSTK_USER_CONFIGURATION)
+        _menu_item.connect('activate', EditPreferences,
+                           self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
@@ -274,8 +277,7 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_label(_("_Options"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Options,
-        # self.RAMSTK_USER_CONFIGURATION)
+        _menu_item.connect('activate', self._do_request_options_assistant)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.MenuItem(label=_("_Tools"), use_underline=True)
@@ -439,8 +441,23 @@ class RAMSTKDesktop(Gtk.Window):
         """
         pub.sendMessage('request_close_project')
 
+    def _do_request_options_assistant(self,
+                                      __widget: Gtk.ImageMenuItem) -> None:
+        """
+        Request the EditOptions assistant be launched.
+
+        :param __widget: the Gtk.ImageMenuItem() that called this class.
+        :type __widget: :class:`Gtk.ImageMenuItem`
+        :return: None
+        :rtype: None
+        """
+        EditOptions(self.RAMSTK_USER_CONFIGURATION)
+
+        pub.sendMessage('request_get_options_tree')
+
     # noinspection PyDeepBugsSwappedArgs
-    def _do_request_save_project(self, widget: Gtk.Widget,
+    def _do_request_save_project(self,
+                                 widget: Gtk.Widget,
                                  end: bool = False) -> None:
         """
         Request to save the open RAMSTK Program.

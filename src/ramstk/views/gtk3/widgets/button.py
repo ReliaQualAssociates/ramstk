@@ -137,15 +137,9 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
 
         :param \**kwargs: See below
 
-        :Keyword Arguments:
-            * *height* (int) -- height of the RAMSTKButton() widget.
-                Default is 30.
+        :Keyword Arguments for the RAMSTKButton:
             * *icon* (str) -- the icon to display on the button.  Default is
                 None.
-            * *tooltip* (str) -- the tooltip, if any, for the button.
-                Default is a message to file a QA-type issue to have one added.
-            * *width* (int) -- width of the RAMSTKButton() widget.
-                Default is 200.
         :return: None
         :rtype: None
         """

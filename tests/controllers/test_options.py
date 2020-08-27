@@ -47,7 +47,7 @@ class TestCreateControllers():
         assert DUT._tag == 'options'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, 'request_select_options')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update, 'request_update_option')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_option_attributes')
@@ -82,7 +82,7 @@ class TestSelectMethods():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
 
         assert isinstance(
             DUT.tree.get_node('programinfo').data['programinfo'],
@@ -102,7 +102,7 @@ class TestSelectMethods():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
 
         _options = DUT.do_select('siteinfo', table='siteinfo')
 
@@ -122,7 +122,7 @@ class TestSelectMethods():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
 
         _options = DUT.do_select('programinfo', table='programinfo')
 
@@ -154,7 +154,7 @@ class TestSelectMethods():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
 
         assert DUT.do_select(100, table='siteinfo') is None
 
@@ -196,12 +196,12 @@ class TestGetterSetter():
             "\033[36m\nsucceed_get_programinfo_attributes topic was broadcast."
         )
 
-    def on_succeed_get_options_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_options_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node('siteinfo').data['siteinfo'], RAMSTKSiteInfo)
+            tree.get_node('siteinfo').data['siteinfo'], RAMSTKSiteInfo)
         assert isinstance(
-            dmtree.get_node('programinfo').data['programinfo'],
+            tree.get_node('programinfo').data['programinfo'],
             RAMSTKProgramInfo)
         print("\033[36m\nsucceed_get_options_tree topic was broadcast")
 
@@ -218,7 +218,7 @@ class TestGetterSetter():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
         DUT.do_get_attributes('siteinfo', 'siteinfo')
 
         assert isinstance(
@@ -240,7 +240,7 @@ class TestGetterSetter():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
         DUT.do_get_attributes('programinfo', 'programinfo')
 
         assert isinstance(
@@ -260,7 +260,7 @@ class TestGetterSetter():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
 
         pub.sendMessage('request_set_option_attributes',
                         node_id=['siteinfo', ''],
@@ -285,7 +285,7 @@ class TestGetterSetter():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
 
         pub.sendMessage('request_set_option_attributes',
                         node_id=['programinfo', ''],
@@ -312,7 +312,7 @@ class TestGetterSetter():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_options_tree,
@@ -344,7 +344,7 @@ class TestUpdateMethods():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
 
         DUT.tree.get_node('siteinfo').data['siteinfo'].hardware_enabled = 1
         DUT.tree.get_node('siteinfo').data['siteinfo'].vandv_enabled = 1
@@ -358,7 +358,7 @@ class TestUpdateMethods():
         DUT.tree.get_node('programinfo').data['programinfo'].vandv_active = 0
         DUT.do_update('programinfo')
 
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
         assert DUT.tree.get_node(
             'siteinfo').data['siteinfo'].hardware_enabled == 1
         assert DUT.tree.get_node(
@@ -379,7 +379,7 @@ class TestUpdateMethods():
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all(1)
+        DUT.do_select_all({'revision_id': 1})
         DUT.do_update('100')
 
         pub.unsubscribe(self.on_fail_update_options, 'fail_update_options')

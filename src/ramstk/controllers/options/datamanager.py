@@ -22,14 +22,14 @@ class DataManager(RAMSTKDataManager):
     """
     Contain the attributes and methods of the Options data manager.
 
-    This class manages the Options data from the RAMSTKMode, RAMSTKMechains,
-    RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod data models.
+    This class manages the user-configurable Preferences and Options data from
+    the Site and Program databases.
     """
 
     _tag = 'options'
     _root = 0
 
-    def __init__(self, **kwargs) -> None:  # pylint: disable=unused-argument
+    def __init__(self, **kwargs) -> None:
         """Initialize a Options data manager instance."""
         RAMSTKDataManager.__init__(self, **kwargs)
 
@@ -50,7 +50,7 @@ class DataManager(RAMSTKDataManager):
         self.user_configuration = kwargs['user_configuration']
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'request_select_options')
+        pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_option')
         pub.subscribe(self.do_get_attributes, 'request_get_option_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_options_tree')
@@ -63,18 +63,18 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_options_tree', dmtree=self.tree)
+        pub.sendMessage('succeed_get_options_tree', tree=self.tree)
 
-    def do_select_all(self, parent_id: int) -> None:  # pylint: disable=arguments-differ
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the Options data from the RAMSTK Program database.
 
-        :param int parent_id: the parent (function or hardware) ID to select
-            the Options for.
+        :param dict attributes: the RAMSTK option attributes for the
+            selected Revision.
         :return: None
         :rtype: None
         """
-        self._revision_id = parent_id
+        self._revision_id = attributes['revision_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -133,21 +133,20 @@ class DataManager(RAMSTKDataManager):
                                table=_table).set_attributes(_attributes)
         self.do_get_tree()
 
-    def do_update(self, node_id: int) -> None:
+    def do_update(self, node_id: str) -> None:
         """
         Update the record associated with node ID in RAMSTK databases.
 
-        :param int node_id: the node ID of the Options item to save.
+        :param str node_id: the node ID of the Options item to save.
         :return: None
         :rtype: None
         """
         try:
-            _table = list(self.tree.get_node(node_id).data.keys())[0]
-            if node_id in ['siteinfo']:
+            if node_id == 'siteinfo':
                 self.common_dao.session.add(
-                    self.tree.get_node(node_id).data[_table])
-            elif node_id in ['programinfo']:
-                self.dao.session.add(self.tree.get_node(node_id).data[_table])
+                    self.tree.get_node(node_id).data[node_id])
+            elif node_id == 'programinfo':
+                self.dao.session.add(self.tree.get_node(node_id).data[node_id])
 
             self.dao.do_update()
 
