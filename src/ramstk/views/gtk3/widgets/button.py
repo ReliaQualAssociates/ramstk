@@ -144,13 +144,15 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
         :rtype: None
         """
         super().do_set_properties(**kwargs)
+        self.set_property('always_show_image', True)
 
         _icon = kwargs.get('icon', None)
 
         if _icon is not None:
-            _image = Gtk.Image()
+            self.set_label('')
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 _icon, self.height, self.width)
+            _image = Gtk.Image()
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
 
