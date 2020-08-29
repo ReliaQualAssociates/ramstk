@@ -110,27 +110,27 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         [[_key, _value]] = package.items()
-
+        print(package)
         _pkey = {'siteinfo': ['site_id'], 'programinfo': ['revision_id']}
 
-        for _table in ['siteinfo', 'programinfo']:
+        try:
+            _attributes = self.do_select(node_id[0],
+                                         table=node_id[0]).get_attributes()
+        except (AttributeError, KeyError):
+            _attributes = {}
+
+        for _field in _pkey[node_id[0]]:
             try:
-                _attributes = self.do_select(node_id[0],
-                                             table=_table).get_attributes()
-            except (AttributeError, KeyError):
-                _attributes = {}
+                _attributes.pop(_field)
+            except KeyError:
+                pass
 
-            for _field in _pkey[_table]:
-                try:
-                    _attributes.pop(_field)
-                except KeyError:
-                    pass
+        if _key in _attributes:
+            _attributes[_key] = _value
 
-            if _key in _attributes:
-                _attributes[_key] = _value
+            self.do_select(node_id[0],
+                           table=node_id[0]).set_attributes(_attributes)
 
-                self.do_select(node_id[0],
-                               table=_table).set_attributes(_attributes)
         self.do_get_tree()
 
     def do_update(self, node_id: str) -> None:
