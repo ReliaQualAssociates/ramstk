@@ -451,9 +451,14 @@ class RAMSTKDesktop(Gtk.Window):
         :return: None
         :rtype: None
         """
-        EditOptions(self.RAMSTK_USER_CONFIGURATION)
+        _dialog = EditOptions(parent=self)
 
         pub.sendMessage('request_get_options_tree')
+
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            pub.sendMessage('request_update_option', node_id='programinfo')
+
+        _dialog.do_destroy()
 
     # noinspection PyDeepBugsSwappedArgs
     def _do_request_save_project(self,
