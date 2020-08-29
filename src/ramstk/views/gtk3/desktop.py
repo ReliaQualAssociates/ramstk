@@ -21,7 +21,7 @@ from ramstk.configuration import (RAMSTK_FAILURE_PROBABILITY,
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (CreateProject, EditOptions,
-                                          EditPreferences, OpenProject)
+                                          OpenProject)
 from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
                                      RAMSTKWorkBook)
 
@@ -177,8 +177,8 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_label(_("_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        _menu_item.connect('activate', EditPreferences,
-                           self.RAMSTK_USER_CONFIGURATION)
+        #_menu_item.connect('activate', EditPreferences,
+        #                   self.RAMSTK_USER_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
