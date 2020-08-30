@@ -44,6 +44,8 @@ class AddControlAction(RAMSTKDialog):
         :return: None
         :rtype: None
         """
+        self.set_default_size(250, -1)
+
         _fixed = Gtk.Fixed()
         self.vbox.pack_start(_fixed, True, True, 0)
 
@@ -68,8 +70,6 @@ class AddControlAction(RAMSTKDialog):
         _fixed.put(self.rdoAction, 10, _y_pos + 35)
 
         _fixed.show_all()
-
-        self.set_default_size(250, -1)
 
     def _cancel(self, __button):
         """

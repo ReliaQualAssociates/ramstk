@@ -96,12 +96,16 @@ class EditOptions(RAMSTKDialog):
         :return: None
         :rtype: None
         """
+
+        self.set_default_size(250, -1)
+
         _fixed = Gtk.Fixed()
 
         _label = RAMSTKLabel(
             _("This is the RAMSTK Program options editor.  This assistant "
               "will allow you to select the work stream modules to use in "
-              "the open RAMSTK Program."))
+              "the open RAMSTK Program.  Keep in mind that the active work "
+              "stream modules are Revision dependent."))
         _label.do_set_properties(width=600, height=-1, wrap=True)
         _fixed.put(_label, 5, 10)
 
@@ -147,7 +151,7 @@ class EditOptions(RAMSTKDialog):
         :param __button: the Gtk.Button() that called this method.
         :type __button: :class:`Gtk.Button`
         """
-        self.destroy()
+        self.do_destroy()
 
     def _do_load_page(self, tree: Tree) -> None:
         """

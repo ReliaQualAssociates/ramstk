@@ -263,10 +263,10 @@ class TestGetterSetter():
         DUT.do_select_all({'revision_id': 1})
 
         pub.sendMessage('request_set_option_attributes',
-                        node_id=['siteinfo', ''],
+                        node_id=['siteinfo'],
                         package={'function_enabled': 1})
         pub.sendMessage('request_set_option_attributes',
-                        node_id=['siteinfo', ''],
+                        node_id=['siteinfo'],
                         package={'requirement_enabled': 1})
         assert DUT.do_select('siteinfo',
                              table='siteinfo').function_enabled == 1
@@ -288,15 +288,34 @@ class TestGetterSetter():
         DUT.do_select_all({'revision_id': 1})
 
         pub.sendMessage('request_set_option_attributes',
-                        node_id=['programinfo', ''],
+                        node_id=['programinfo'],
                         package={'function_active': 0})
         pub.sendMessage('request_set_option_attributes',
-                        node_id=['programinfo', ''],
+                        node_id=['programinfo'],
                         package={'rcm_active': 1})
         assert DUT.do_select('programinfo',
                              table='programinfo').function_active == 0
         assert DUT.do_select('programinfo',
                              table='programinfo').rcm_active == 1
+
+        pub.unsubscribe(DUT.do_set_attributes, 'request_set_option_attributes')
+
+    @pytest.mark.integration
+    def test_do_set_program_info_attributes_no_key(
+            self, test_program_dao, test_common_dao,
+            test_toml_site_configuration, test_toml_user_configuration):
+        """do_set_attributes() should return None when successfully setting program information attributes."""
+        DUT = dmOptions(common_dao=test_common_dao,
+                        site_configuration=test_toml_site_configuration,
+                        user_configuration=test_toml_user_configuration)
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1})
+
+        pub.sendMessage('request_set_option_attributes',
+                        node_id=['programinfo'],
+                        package={'cheesewhiz_active': 0})
+        assert DUT.do_select('programinfo',
+                             table='programinfo').requirement_active == 1
 
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_option_attributes')
 
@@ -329,8 +348,7 @@ class TestUpdateMethods():
         print("\033[36m\nsucceed_update_options topic was broadcast")
 
     def on_fail_update_options(self, error_message):
-        assert error_message == (
-            'Attempted to save non-existent Option with Options ID 100.')
+        assert error_message == ('Error saving 100 Options to the database.')
         print("\033[35m\nfail_update_options topic was broadcast")
 
     @pytest.mark.integration
