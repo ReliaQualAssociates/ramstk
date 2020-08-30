@@ -76,9 +76,11 @@ def do_read_user_configuration() -> RAMSTKUserConfiguration:
 
 def the_one_ring() -> None:
     """Execute the main function for RAMSTK."""
-    # // TODO: Implement splash screen.
-    # //
-    # // Add a splash screen to the launch of RAMSTK.
+    #// TODO: Implement splash screen.
+    #//
+    #// Add a splash screen to the launch of RAMSTK.
+    #//
+    #// labels: globalbacklog, normal
     # splScreen = SplashScreen()
 
     # Read the user configuration file and create a logger.  The user
@@ -163,8 +165,6 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['function']['matrix'] = mmFunction()
     _program_mgr.dic_managers['function']['analysis'] = amFunction(
         user_configuration)
-    # _program_mgr.dic_managers['ffmea']['analysis'] = amFMEA(user_configuration)
-    # _program_mgr.dic_managers['ffmea']['data'] = dmFMEA(functional=True)
     _program_mgr.dic_managers['requirement']['data'] = dmRequirement()
     _program_mgr.dic_managers['requirement']['matrix'] = mmRequirement()
     _program_mgr.dic_managers['stakeholder']['analysis'] = amStakeholder(
@@ -189,6 +189,7 @@ def the_one_ring() -> None:
     _logger.do_log_info(__name__, "Initialized the RAMSTK application.")
 
     _logger.do_log_info(__name__, "Launching RAMSTK GUI.")
+
     # If you don't do this, the splash screen will show, but won't render it's
     # contents
     # while Gtk.events_pending():
