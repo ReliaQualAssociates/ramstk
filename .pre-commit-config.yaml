@@ -1,12 +1,4 @@
 repos:
-    - repo: local
-      hooks:
-          - id: bandit
-            name: bandit
-            entry: bandit
-            args: [--ini, .bandit, -b, .bandit.baseline, -c, .bandit.conf, --recursive, src/]
-            language: system
-            files: .py$
     - repo: https://github.com/pre-commit/mirrors-yapf
       rev: v0.27.0
       hooks:

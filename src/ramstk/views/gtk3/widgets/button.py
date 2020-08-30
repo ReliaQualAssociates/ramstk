@@ -137,26 +137,22 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
 
         :param \**kwargs: See below
 
-        :Keyword Arguments:
-            * *height* (int) -- height of the RAMSTKButton() widget.
-                Default is 30.
+        :Keyword Arguments for the RAMSTKButton:
             * *icon* (str) -- the icon to display on the button.  Default is
                 None.
-            * *tooltip* (str) -- the tooltip, if any, for the button.
-                Default is a message to file a QA-type issue to have one added.
-            * *width* (int) -- width of the RAMSTKButton() widget.
-                Default is 200.
         :return: None
         :rtype: None
         """
         super().do_set_properties(**kwargs)
+        self.set_property('always_show_image', True)
 
         _icon = kwargs.get('icon', None)
 
         if _icon is not None:
-            _image = Gtk.Image()
+            self.set_label('')
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 _icon, self.height, self.width)
+            _image = Gtk.Image()
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
 

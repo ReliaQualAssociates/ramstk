@@ -22,14 +22,14 @@ class DataManager(RAMSTKDataManager):
     """
     Contain the attributes and methods of the Options data manager.
 
-    This class manages the Options data from the RAMSTKMode, RAMSTKMechains,
-    RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod data models.
+    This class manages the user-configurable Preferences and Options data from
+    the Site and Program databases.
     """
 
     _tag = 'options'
     _root = 0
 
-    def __init__(self, **kwargs) -> None:  # pylint: disable=unused-argument
+    def __init__(self, **kwargs) -> None:
         """Initialize a Options data manager instance."""
         RAMSTKDataManager.__init__(self, **kwargs)
 
@@ -50,7 +50,7 @@ class DataManager(RAMSTKDataManager):
         self.user_configuration = kwargs['user_configuration']
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'request_select_options')
+        pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_option')
         pub.subscribe(self.do_get_attributes, 'request_get_option_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_options_tree')
@@ -63,22 +63,23 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_options_tree', dmtree=self.tree)
+        pub.sendMessage('succeed_get_options_tree', tree=self.tree)
 
-    def do_select_all(self, parent_id: int) -> None:  # pylint: disable=arguments-differ
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the Options data from the RAMSTK Program database.
 
-        :param int parent_id: the parent (function or hardware) ID to select
-            the Options for.
+        :param dict attributes: the RAMSTK option attributes for the
+            selected Revision.
         :return: None
         :rtype: None
         """
-        self._revision_id = parent_id
+        self._revision_id = attributes['revision_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
+        # noinspection PyUnresolvedReferences
         for _option in self.common_dao.session.query(RAMSTKSiteInfo).all():
 
             self.tree.create_node(tag='Site Info',
@@ -86,6 +87,7 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data={'siteinfo': _option})
 
+        # noinspection PyUnresolvedReferences
         for _option in self.dao.session.query(RAMSTKProgramInfo).filter(
                 RAMSTKProgramInfo.revision_id == self._revision_id).all():
 
@@ -96,64 +98,55 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_options', tree=self.tree)
 
-    def do_set_attributes(self, node_id: List[int],
+    def do_set_attributes(self, node_id: List[str],
                           package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Module ID.
 
         :param int node_id: the ID of the record in the RAMSTK Program
             database table whose attributes are to be set.
-        :param str key: the key in the attributes dict.
-        :param value: the new value of the attribute to set.
-        :param str table: the name of the table whose attributes are being set.
+        :param dict package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
         [[_key, _value]] = package.items()
 
-        _pkey = {'siteinfo': ['site_id'], 'programinfo': ['revision_id']}
+        _pkey = {'siteinfo': 'site_id', 'programinfo': 'revision_id'}
 
-        for _table in ['siteinfo', 'programinfo']:
-            try:
-                _attributes = self.do_select(node_id[0],
-                                             table=_table).get_attributes()
-            except (AttributeError, KeyError):
-                _attributes = {}
-
-            for _field in _pkey[_table]:
-                try:
-                    _attributes.pop(_field)
-                except KeyError:
-                    pass
+        for _table in node_id:
+            # noinspection PyTypeChecker
+            _attributes = self.do_select(_table,
+                                         table=_table).get_attributes()
 
             if _key in _attributes:
                 _attributes[_key] = _value
 
-                self.do_select(node_id[0],
-                               table=_table).set_attributes(_attributes)
-        self.do_get_tree()
+                _attributes.pop(_pkey[_table])
 
-    def do_update(self, node_id: int) -> None:
+                # noinspection PyTypeChecker
+                self.do_select(_table,
+                               table=_table).set_attributes(_attributes)
+
+    def do_update(self, node_id: str) -> None:
         """
         Update the record associated with node ID in RAMSTK databases.
 
-        :param int node_id: the node ID of the Options item to save.
+        :param str node_id: the node ID of the Options item to save.
         :return: None
         :rtype: None
         """
-        try:
-            _table = list(self.tree.get_node(node_id).data.keys())[0]
-            if node_id in ['siteinfo']:
-                self.common_dao.session.add(
-                    self.tree.get_node(node_id).data[_table])
-            elif node_id in ['programinfo']:
-                self.dao.session.add(self.tree.get_node(node_id).data[_table])
-
+        if node_id == 'siteinfo':
+            # noinspection PyUnresolvedReferences
+            self.common_dao.session.add(
+                self.tree.get_node(node_id).data[node_id])
             self.dao.do_update()
-
             pub.sendMessage('succeed_update_options', node_id=node_id)
-        except AttributeError:
+        elif node_id == 'programinfo':
+            # noinspection PyUnresolvedReferences
+            self.dao.session.add(self.tree.get_node(node_id).data[node_id])
+            self.dao.do_update()
+            pub.sendMessage('succeed_update_options', node_id=node_id)
+        else:
             pub.sendMessage('fail_update_options',
-                            error_message=('Attempted to save non-existent '
-                                           'Option with Options ID '
-                                           '{0:s}.').format(str(node_id)))
+                            error_message=('Error saving {0:s} Options to the '
+                                           'database.').format(node_id))
