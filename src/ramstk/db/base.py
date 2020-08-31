@@ -321,7 +321,7 @@ class BaseDatabase():
                 "were:\n\t{1:s}.".format(str(_error.statement),
                                          str(_error.params)))
             pub.sendMessage('fail_update_record', error_message=_error_message)
-            raise DataAccessError(_error_message)
+            raise DataAccessError(_error_message) from _error
 
     def get_database_list(self, database: Dict[str, str]) -> List:
         """
