@@ -89,7 +89,9 @@ class RAMSTKPlot():
         """
         self.axis.grid(False, which='both')
         # pylint: disable=unused-variable
-        _values, __, __ = self.axis.hist(x_values, bins=y_values, color=marker)
+        _values, _edges, __ = self.axis.hist(x_values,
+                                             bins=y_values,
+                                             color=marker)
         self._lst_min.append(min(_values))
         self._lst_max.append(max(_values) + 1)
 
