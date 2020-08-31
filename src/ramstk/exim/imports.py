@@ -809,7 +809,8 @@ class Import:
         :rtype: None
         """
         _entities = []
-        for _idx, _row in self._df_input_data.iterrows():
+        # pylint: disable=unused-variable
+        for __, _row in self._df_input_data.iterrows():
             if module == 'Function':
                 _entity = self._do_insert_function(_row)
                 _entities.append(_entity)

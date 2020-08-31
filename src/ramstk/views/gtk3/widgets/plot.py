@@ -65,11 +65,11 @@ class RAMSTKPlot():
         :return: None
         :rtype: None
         """
-        _line, = self.axis.plot_date(x_values,
-                                     y_values,
-                                     marker,
-                                     xdate=True,
-                                     linewidth=2)
+        self.axis.plot_date(x_values,
+                            y_values,
+                            marker,
+                            xdate=True,
+                            linewidth=2)
         self._lst_min.append(min(y_values))
         self._lst_max.append(max(y_values))
 
@@ -88,9 +88,8 @@ class RAMSTKPlot():
         :rtype: None
         """
         self.axis.grid(False, which='both')
-        _values, _edges, __ = self.axis.hist(x_values,
-                                             bins=y_values,
-                                             color=marker)
+        # pylint: disable=unused-variable
+        _values, __, __ = self.axis.hist(x_values, bins=y_values, color=marker)
         self._lst_min.append(min(_values))
         self._lst_max.append(max(_values) + 1)
 
