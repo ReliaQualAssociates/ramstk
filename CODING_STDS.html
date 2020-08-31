@@ -3,20 +3,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Coding Conventions &#8212; RAMSTK 2.0.0 documentation</title>
+    <title>Coding Conventions &#8212; RAMSTK 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     
-    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script src="_static/sidebar.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Establishing a Development Environment" href="DEVELOPMENT_ENV.html" />
+    <link rel="prev" title="Contributing to the RAMS ToolKit (RAMSTK)" href="CONTRIBUTING.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
@@ -28,7 +30,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
-        <li><a href="index.html">RAMSTK 2.0.0 documentation</a> &#187;</li> 
+        <li><a href="index.html">RAMSTK 1.0.0 documentation</a> &#187;</li>
+          <li><a href="contributing.html" accesskey="U">Contributing</a> &#187;</li> 
       </ul>
     </div>
     
@@ -79,7 +82,7 @@ included in each section.</p>
 <li><p>All UPPERCASE with spaces replaced by underscores (_).</p></li>
 <li><p>Prefaced by <a href="#id15"><span class="problematic" id="id16">RAMSTK_</span></a> to identify it as an RAMSTK constant.</p></li>
 <li><p>A minimum of twelve characters (<a href="#id17"><span class="problematic" id="id18">RAMSTK_</span></a> is 7) and a maximum of 30 characters.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: const-rgx=RAMSTK_[A-Z_]{12,30}$
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="c">pylintrc: const-rgx=RAMSTK_[A-Z_]{12,30}$</span>
 </pre></div>
 </div>
 </li>
@@ -93,7 +96,7 @@ included in each section.</p>
 <li><p>A descriptive name when used for program flow control (e.g., for or
 while loops).  For example, _index rather than i or _key rather than k.</p></li>
 <li><p>Preceded by a single underscore when private in scope.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: variable-rgx=[a-z_][a-z_]{3,30}$
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="c">pylintrc: variable-rgx=[a-z_][a-z_]{3,30}$</span>
 </pre></div>
 </div>
 </li>
@@ -116,8 +119,8 @@ while loops).  For example, _index rather than i or _key rather than k.</p></li>
 <li><p>Prefaced by RAMSTK.</p></li>
 <li><p>A minimum of eight characters (RAMSTK is 3) and a maximum of 30 characters.</p></li>
 <li><p>Suffixed by ‘Error’ when defining an exception class.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
-pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="c">pylintrc: module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$</span>
+<span class="c">pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$</span>
 </pre></div>
 </div>
 </li>
@@ -139,12 +142,12 @@ pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$
 <li><p>All lowercase with spaces replaced by underscores (_).</p></li>
 <li><p>Prefaced by a single underscore (_).</p></li>
 <li><p>Identified by the data type the attribute holds as follows:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_dic</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="k">dictionary</span>
-<span class="n">_lst</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">list</span>
-<span class="n">_tpl</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">tuple</span>
-<span class="n">_int</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">integer</span>
-<span class="n">_flt</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">float</span>
-<span class="n">_str</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">string</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_dic to indicate a dictionary
+_lst to indicate a list
+_tpl to indicate a tuple
+_int to indicate a scalar integer
+_flt to indicate a scalar float
+_str to indicate a scalar string
 </pre></div>
 </div>
 </li>
@@ -154,15 +157,15 @@ pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$
 <ul>
 <li><p>All lowercase with spaces replaced by underscores (_).</p></li>
 <li><p>Identified by the data type the attribute holds as follows:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">dic</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="k">dictionary</span>
-<span class="n">lst</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">list</span>
-<span class="n">tpl</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">tuple</span>
-<span class="nb">int</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">integer</span>
-<span class="n">flt</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">float</span>
-<span class="n">str</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">string</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>dic to indicate a dictionary
+lst to indicate a list
+tpl to indicate a tuple
+int to indicate a scalar integer
+flt to indicate a scalar float
+str to indicate a scalar string
 </pre></div>
 </div>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: attr-rgx=[_a-z_?][a-z0-9_?]{3,30}$
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="c">pylintrc: attr-rgx=[_a-z_?][a-z0-9_?]{3,30}$</span>
 </pre></div>
 </div>
 </li>
@@ -178,8 +181,8 @@ pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$
 <li><p>All lowercase with underscores (_) replacing spaces.</p></li>
 <li><p>A minimum of five characters and a maximum of 50 characters.</p></li>
 <li><p>Prefaced by a single underscore (_) if not a public function or method.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: function-rgx=[_a-z0-9][_a-z0-9]{5,50}$
-pylintrc: method-rgx=[_a-z0-9][_a-z0-9]{5,50}$
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="c">pylintrc: function-rgx=[_a-z0-9][_a-z0-9]{5,50}$</span>
+<span class="c">pylintrc: method-rgx=[_a-z0-9][_a-z0-9]{5,50}$</span>
 </pre></div>
 </div>
 </li>
@@ -191,7 +194,7 @@ pylintrc: method-rgx=[_a-z0-9][_a-z0-9]{5,50}$
 <li><p>A minimum of five characters and a maximum of 30 characters.</p></li>
 <li><p>Prefaced by a double underscore (__) if it is unused in the function
 or methods (e.g., in widget callback methods).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: argument-rgx=[a-z0-9][_a-z0-9]{5,30}$
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="c">pylintrc: argument-rgx=[a-z0-9][_a-z0-9]{5,30}$</span>
 </pre></div>
 </div>
 </li>
@@ -244,32 +247,32 @@ condition.</p></li>
 <ol class="arabic simple">
 <li><p>All data models shall have the following public methods:</p></li>
 </ol>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="o">```</span>
-<span class="n">do_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">do_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">do_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">get_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">set_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
-<span class="o">```</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>```
+do_delete(self, node_id)
+do_insert(self, **kwargs)
+do_select(self, node_id, **kwargs)
+do_select_all(self, **kwargs)
+do_update(self, node_id)
+do_update_all(self, **kwargs)
+get_attributes(self, node_id)
+set_attributes(self, node_id, attributes)
+```
 </pre></div>
 </div>
 <ol class="arabic">
 <li><p>All data models shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">dao</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>__init__(self, dao)
 </pre></div>
 </div>
 </li>
 <li><p>Data models may have the following public/private methods/functions:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">do_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select_children</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">_do_calculate_availability_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_cost_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_metric_variances</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_reliability_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>do_calculate(self, node_id, **kwargs)
+do_calculate_all(self, **kwargs)
+do_select_children(self, node_id)
+_do_calculate_availability_metrics(attributes)
+_do_calculate_cost_metrics(attributes)
+_do_calculate_metric_variances(attributes)
+_do_calculate_reliability_metrics(attributes)
 </pre></div>
 </div>
 </li>
@@ -278,22 +281,22 @@ naming shall adhere to the following conventions:</p>
 <ul>
 <li><p>If the function or method responds to a user request, it shall begin
 with <a href="#id19"><span class="problematic" id="id20">do_</span></a> (public) or <em>do</em> (private).  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_add_actions</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">cause_id</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">)</span>
-<span class="n">_do_calculate_rpn</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_add_actions(self, cause_id, parent_id)
+_do_calculate_rpn(self)
 </pre></div>
 </div>
 </li>
 <li><p>If the function or method retrieves something, it shall begin with <a href="#id21"><span class="problematic" id="id22">get_</span></a>
 (public) or <em>get</em> (private).  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">get_actual_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">get_assessment_points</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">get_planned_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>get_actual_burndown(self)
+get_assessment_points(self)
+get_planned_burndown(self)
 </pre></div>
 </div>
 </li>
 <li><p>If the function or method does something, it should begin with <a href="#id23"><span class="problematic" id="id24">set_</span></a>
 (public) or <em>set</em> (private).  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_set_assessment_points</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_set_assessment_points(self, **kwargs)
 </pre></div>
 </div>
 </li>
@@ -306,33 +309,33 @@ with <a href="#id19"><span class="problematic" id="id20">do_</span></a> (public)
 <h3>Data Controllers<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p>All data controllers shall have the following public methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">do_handle_results</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="n">pub_msg</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">request_do_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_select_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_get_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_get_last_id</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_set_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>do_handle_results(self, error_code, error_msg, pub_msg=None)
+request_do_delete(self, node_id)
+request_do_insert(self, **kwargs)
+request_do_select(self, node_id, **kwargs)
+request_do_select_all(self, parent_id, **kwargs)
+request_do_update(self, node_id)
+request_do_update_all(self, **kwargs)
+request_get_attributes(self, node_id)
+request_get_last_id(self, **kwargs)
+request_set_attributes(self, node_id, attributes)
 </pre></div>
 </div>
 </li>
 <li><p>All data controllers shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">dao</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>__init__(self, dao, configuration, **kwargs)
 </pre></div>
 </div>
 </li>
 <li><p>Data controllers may have the following public/private methods/functions:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">request_do_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_calculate_availability</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_costs</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_hazard_rate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_mtbf</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_reliability</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_select_children</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>request_do_calculate(self, **kwargs)
+request_do_calculate_all(self, **kwargs)
+request_do_calculate_availability(self, node_id)
+request_do_calculate_costs(self, node_id)
+request_do_calculate_hazard_rate(self, node_id)
+request_do_calculate_mtbf(self, node_id)
+request_do_calculate_reliability(self, node_id)
+request_do_select_children(self, node_id)
 </pre></div>
 </div>
 </li>
@@ -341,8 +344,8 @@ module, naming shall adhere to the following conventions:</p>
 <ul>
 <li><p>All methods should be named the same as the data model method and
 prefaced with <a href="#id25"><span class="problematic" id="id26">request_</span></a>.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">request_do_calculate_rpn</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">request_get_planned_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>request_do_calculate_rpn(self)
+request_get_planned_burndown(self)
 </pre></div>
 </div>
 </li>
@@ -357,22 +360,22 @@ prefaced with <a href="#id25"><span class="problematic" id="id26">request_</span
 <ol class="arabic">
 <li><p>If the function or method creates a simple or aggregate widget, it shall
 begin with make (public) or <em>make</em> (private).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_make_assessment_inputs_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_make_assessment_inputs_page(self)
+_make_buttonbox(self)
 </pre></div>
 </div>
 <p>2, If the function or method is a callback signal that is not a user request,
 it should begin with on (public) or <em>on</em> (private).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_on_focus_out</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_on_focus_out(self, entry, new_text)
+_on_edit(self, __cell, path, new_text, position)
 </pre></div>
 </div>
 </li>
 <li><p>If the function or method is a callback signal that is a user request
 (button press, etc.), it should be begin with do<em>request</em> (public) or
 _do<em>request</em> (private).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_request_calculate(self, __button)
+_do_request_update(self, __button)
 </pre></div>
 </div>
 </li>
@@ -385,19 +388,19 @@ functions and methods and would not be part of the public API.  See paragraph 2.
 <ol class="arabic">
 <li><p>All List Views shall have the following public methods:</p></li>
 <li><p>All List Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_change_row</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_load_page</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="k">row</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_cell</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">editable</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>__init__(self, controller, module=None)
+_do_change_row(self, treeview)
+_do_edit_cell(__cell, path, new_text, position, model)
+_do_load_page(self, tree, row=None)
+_do_request_delete(self, __button)
+_do_request_insert(self, __button)
+_do_request_update(self, __button)
+_do_request_update_all(self, __button)
+_make_buttonbox(self)
+_make_cell(self, cell, editable, position, model)
+_make_treeview(self)
+_on_button_press(self, treeview, event)
+_on_select_revision(self, module_id)
 </pre></div>
 </div>
 </li>
@@ -405,7 +408,7 @@ functions and methods and would not be part of the public API.  See paragraph 2.
 naming shall adhere to the following conventions:</p>
 <ul>
 <li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_request_calculate(self)
 </pre></div>
 </div>
 </li>
@@ -420,10 +423,10 @@ naming shall adhere to the following conventions:</p>
 <ol class="arabic">
 <li><p>All Matrix Views shall have the following public methods:</p></li>
 <li><p>All Matrix Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>__init__(self, controller, **kwargs)
+_do_request_update(self, __button)
+_make_buttonbox(self)
+_on_select_revision(self, module_id)
 </pre></div>
 </div>
 </li>
@@ -431,7 +434,7 @@ naming shall adhere to the following conventions:</p>
 naming shall adhere to the following conventions:</p>
 <ul>
 <li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_request_calculate(self)
 </pre></div>
 </div>
 </li>
@@ -446,26 +449,26 @@ naming shall adhere to the following conventions:</p>
 <ol class="arabic">
 <li><p>All Module Views shall have the following public methods:</p></li>
 <li><p>All Module Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_change_row</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_insert_sibling</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>__init__(self, controller, module=None)
+_do_change_row(self, treeview)
+_do_edit_cell(self, __cell, path, new_text, position, model)
+_do_request_delete(self, __button)
+_do_request_insert(self, **kwargs)
+_do_request_insert_sibling(self, __button, **kwargs)
+_do_request_update(self, __button)
+_do_request_update_all(self, __button)
+_make_buttonbox(self)
+_make_treeview(self)
+_on_button_press(self, treeview, event)
+_on_edit(self, position, new_text)
+_on_select_revision(self, **kwargs)
 </pre></div>
 </div>
 </li>
 <li><p>Module Views may have the following public/private methods/functions:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert_child</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_on_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_request_calculate_all(self, __button)
+_do_request_insert_child(self, __button, **kwargs)
+_on_calculate(self)
 </pre></div>
 </div>
 </li>
@@ -473,7 +476,7 @@ naming shall adhere to the following conventions:</p>
 shall adhere to the following conventions:</p>
 <ul>
 <li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_request_calculate_all(self)
 </pre></div>
 </div>
 </li>
@@ -492,56 +495,56 @@ component-specific work views are embedded into the Hardware BoM Work View)
 require their methods to be public so they can be called by the higher level
 (private) method of the same name.  The following methods may be used by a Work
 View that meets this criterion:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">do_load_comboboxes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">subcategory_id</span><span class="p">)</span>
-<span class="n">do_load_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">do_set_sensitive</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">make_assessment_input_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">make_assessment_results_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">on_combo_changed</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">on_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>do_load_comboboxes(self, subcategory_id)
+do_load_page(self)
+do_set_sensitive(self)
+make_assessment_input_page(self)
+make_assessment_results_page(self)
+on_combo_changed(self, combo, index)
+on_select(self, module_id)
 </pre></div>
 </div>
 </li>
 <li><p>All Work Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_load_page</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_refresh_view</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_on_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>__init__(self, controller, **kwargs)
+_do_load_page(self, **kwargs)
+_do_refresh_view(self)
+_do_request_update(self, __button)
+_do_request_update_all(self, __button)
+_on_select(self, module_id, **kwargs)
 </pre></div>
 </div>
 </li>
 <li><p>Work Views containing or consisting of a RAMSTKTreeView shall have the
 following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_change_row</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_insert_sibling</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_get_cell_model</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="k">column</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_change_row(self, treeview)
+_do_edit_cell(self, __cell, path, new_text, position, model)
+_do_request_delete(self, __button)
+_do_request_insert(self, **kwargs)
+_do_request_insert_sibling(self, __button)
+_get_cell_model(self, column)
+_make_treeview(self)
+_on_button_press(self, treeview, event)
 </pre></div>
 </div>
 </li>
 <li><p>Work Views may contain one or more of the following private methods as
 needed:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_load_comboboxes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_plot</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_select_date</span><span class="p">(</span><span class="n">__button</span><span class="p">,</span> <span class="n">__event</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
-<span class="n">_do_set_sensitive</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_make_assessment_input_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_assessment_results_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_general_data_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_combo_changed</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="k">index</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_focus_out</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">_on_toggled</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">togglebutton</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">_on_value_changed</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">spinbutton</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_load_comboboxes(self, **kwargs)
+_do_request_calculate(self, __button)
+_do_request_calculate_all(self, __button)
+_do_request_plot(self, __button=None)
+_do_select_date(__button, __event, entry)
+_do_set_sensitive(self, **kwargs)
+_make_assessment_input_page(self)
+_make_assessment_results_page(self)
+_make_buttonbox(self)
+_make_general_data_page(self)
+_on_combo_changed(self, combo, index)
+_on_edit(self, index, new_text)
+_on_focus_out(self, entry, index)
+_on_toggled(self, togglebutton, index)
+_on_value_changed(self, spinbutton, index)
 </pre></div>
 </div>
 </li>
@@ -549,14 +552,14 @@ needed:</p>
 naming shall adhere to the following conventions:</p>
 <ul>
 <li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_load_planned_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_load_subcategory</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">category_id</span><span class="p">)</span>
-<span class="n">_do_request_edit_function</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_make_comp_ref_des</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_burndown_curve_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_requirement_analysis_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_stress_input_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_stress_results_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>_do_load_planned_burndown(self, module_id=None)
+_do_load_subcategory(self, category_id)
+_do_request_edit_function(self, __button)
+_do_request_make_comp_ref_des(self, __button)
+_make_burndown_curve_page(self)
+_make_requirement_analysis_page(self)
+_make_stress_input_page(self)
+_make_stress_results_page(self)
 </pre></div>
 </div>
 </li>
@@ -606,6 +609,12 @@ naming shall adhere to the following conventions:</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="CONTRIBUTING.html"
+                        title="previous chapter">Contributing to the RAMS ToolKit (RAMSTK)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="DEVELOPMENT_ENV.html"
+                        title="next chapter">Establishing a Development Environment</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -622,7 +631,7 @@ naming shall adhere to the following conventions:</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -633,12 +642,18 @@ naming shall adhere to the following conventions:</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="DEVELOPMENT_ENV.html" title="Establishing a Development Environment"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="CONTRIBUTING.html" title="Contributing to the RAMS ToolKit (RAMSTK)"
+             accesskey="P">previous</a> |</li>
       </ul>
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007 - 2019, Doyle Rowland.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+        &#169; Copyright 2007 - 2020, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
     </div>
   </body>
 </html>

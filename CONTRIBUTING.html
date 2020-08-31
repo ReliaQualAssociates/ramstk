@@ -3,20 +3,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Contributing to the RAMS ToolKit (RAMSTK) &#8212; RAMSTK 2.0.0 documentation</title>
+    <title>Contributing to the RAMS ToolKit (RAMSTK) &#8212; RAMSTK 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     
-    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script src="_static/sidebar.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Coding Conventions" href="CODING_STDS.html" />
+    <link rel="prev" title="Contributing" href="contributing.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
@@ -28,7 +30,8 @@
       <h3>Navigation</h3>
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
-        <li><a href="index.html">RAMSTK 2.0.0 documentation</a> &#187;</li> 
+        <li><a href="index.html">RAMSTK 1.0.0 documentation</a> &#187;</li>
+          <li><a href="contributing.html" accesskey="U">Contributing</a> &#187;</li> 
       </ul>
     </div>
     
@@ -43,6 +46,7 @@
 <h1>Contributing to the RAMS ToolKit (RAMSTK)<a class="headerlink" href="#contributing-to-the-rams-toolkit-ramstk" title="Permalink to this headline">¶</a></h1>
 <p>Thank you for taking the time to contribute!</p>
 <p>The following is a set of guidelines for contributing to RAMSTK, which is hosted in the <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk">RAMSTK repository</a> on GitHub.  Feel free to propose changes to this document in a pull request.</p>
+<p><a class="reference external" href="#code-of-conduct">Code of Conduct</a></p>
 <p><a class="reference external" href="#how-can-i-contribute">How Can I Contribute?</a></p>
 <ul class="simple">
 <li><p><a class="reference external" href="#for-everyone">For Everyone</a></p>
@@ -59,12 +63,26 @@
 </li>
 </ul>
 <div class="section" id="id1">
-<h2>How Can I Contribute?<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>Code of Conduct<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>The fundamental rules are:</p>
+<ul class="simple">
+<li><p><strong>DON’T be a Gavin Belson.</strong>  You probably are smarter and more successful than everone else, but be humble and helpful.</p></li>
+<li><p><strong>DON’T be a Jian Yang.</strong>  Stealing other people’s IP is lower than a snake’s belly.</p></li>
+<li><p>You <em>CAN</em> be a Bertram Gilfoyle, that’s fundamentally just being an engineer.</p></li>
+<li><p>You <em>CAN</em> be a Big Head, but only if you invite me to all your house parties.</p></li>
+<li><p>You <em>CAN</em> be an Erlich Bachman because the world needs dreamers.</p></li>
+<li><p>You <em>CAN</em> be a Richard Hendricks, because ethical software is a good thing.</p></li>
+<li><p>You <em>CAN</em> be a Dinesh Chugtai because every team needs someone to good-heartedly pick on.</p></li>
+</ul>
+<p>See the Code of Conduct file in the root <code class="docutils literal notranslate"><span class="pre">RAMSTK</span></code> directory.</p>
 </div>
 <div class="section" id="id2">
-<h2>For Everyone<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2>How Can I Contribute?<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="id3">
-<h3>Reporting Issues<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h2>For Everyone<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h3>Reporting Issues<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The only dumb issue is the unreported issue.</p>
 </div></blockquote>
@@ -90,7 +108,7 @@
 </ul>
 <p>In the <strong>Expected Behavior</strong> section, the minimum information needed is to
 complete the user story:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="k">As</span> <span class="n">a</span> <span class="o">&lt;</span><span class="k">type</span> <span class="k">of</span> <span class="n">RAMSTK</span> <span class="n">stakeholder</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">I</span> <span class="n">want</span> <span class="o">&lt;</span><span class="n">goal</span><span class="o">&gt;</span> <span class="n">so</span> <span class="n">that</span> <span class="o">&lt;</span><span class="n">need</span> <span class="k">for</span> <span class="n">goal</span><span class="o">&gt;</span><span class="p">.</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>As a &lt;type of RAMSTK stakeholder&gt;, I want &lt;goal&gt; so that &lt;need for goal&gt;.
 </pre></div>
 </div>
 <p>It is important that the voice of the customer (VOC) be captured up front.  The
@@ -133,8 +151,8 @@ done
 </div>
 </div>
 </div>
-<div class="section" id="id6">
-<h2>For Developers’ Eyes Only<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>For Developers’ Eyes Only<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>As a RAMSTK developer, if you are working on something outside the RAMSTK issue system, you are likely working on the wrong thing.  If an issue doesn’t exist, create it <em>before</em> you start writing.  The issue system is there to facilitate managing the development program and creating schedules.</p>
 <p>Please refer to the RAMSTK <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/blob/develop/docs/CODING_STDS.md">coding conventions</a>.</p>
 <div class="section" id="pull-requests">
@@ -165,14 +183,14 @@ done
 <div class="section" id="todo-comments">
 <h3>TODO Comments<a class="headerlink" href="#todo-comments" title="Permalink to this headline">¶</a></h3>
 <p>When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add a TODO comment using the following format:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="o">#</span> <span class="o">//</span> <span class="n">TODO</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">One</span><span class="o">-</span><span class="n">line</span> <span class="n">description</span> <span class="k">of</span> <span class="n">required</span> <span class="k">work</span><span class="p">.</span>
-<span class="o">#</span> <span class="o">//</span>
-<span class="o">#</span> <span class="o">//</span> <span class="n">Long</span> <span class="k">and</span> <span class="n">detailed</span> <span class="n">description</span> <span class="k">of</span> <span class="k">work</span> <span class="k">to</span> <span class="n">be</span> <span class="n">performed</span><span class="p">.</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span># // TODO: &lt;One-line description of required work.
+# //
+# // Long and detailed description of work to be performed.
 </pre></div>
 </div>
 <p>The github action, dtinth/todo-actions will find these TODO comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.</p>
-<div class="section" id="id7">
-<h4>Process Guidelines<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id8">
+<h4>Process Guidelines<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
 <p>RAMSTK uses:</p>
 <ul class="simple">
 <li><p>SCRUM workflow</p></li>
@@ -241,20 +259,21 @@ done
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Contributing to the RAMS ToolKit (RAMSTK)</a><ul>
-<li><a class="reference internal" href="#id1">How Can I Contribute?</a></li>
-<li><a class="reference internal" href="#id2">For Everyone</a><ul>
-<li><a class="reference internal" href="#id3">Reporting Issues</a></li>
+<li><a class="reference internal" href="#id1">Code of Conduct</a></li>
+<li><a class="reference internal" href="#id2">How Can I Contribute?</a></li>
+<li><a class="reference internal" href="#id3">For Everyone</a><ul>
+<li><a class="reference internal" href="#id4">Reporting Issues</a></li>
 <li><a class="reference internal" href="#before-submitting-an-issue-report">Before Submitting an Issue Report</a></li>
 <li><a class="reference internal" href="#how-to-submit-a-useful-issue-report">How to Submit a Useful Issue Report</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">For Developers’ Eyes Only</a><ul>
+<li><a class="reference internal" href="#id7">For Developers’ Eyes Only</a><ul>
 <li><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 <li><a class="reference internal" href="#git-commit-messages">Git Commit Messages</a></li>
 <li><a class="reference internal" href="#always-add-descriptive-log-messages">Always Add Descriptive Log Messages</a></li>
 <li><a class="reference internal" href="#use-issue-system-numbers">Use Issue System Numbers</a></li>
 <li><a class="reference internal" href="#todo-comments">TODO Comments</a><ul>
-<li><a class="reference internal" href="#id7">Process Guidelines</a></li>
+<li><a class="reference internal" href="#id8">Process Guidelines</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#never-write-a-test-that-doesn-t-have-an-engineering-specification">Never Write a Test That Doesn’t Have an Engineering Specification</a></li>
@@ -271,6 +290,12 @@ done
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="contributing.html"
+                        title="previous chapter">Contributing</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="CODING_STDS.html"
+                        title="next chapter">Coding Conventions</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -287,7 +312,7 @@ done
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -298,12 +323,18 @@ done
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="CODING_STDS.html" title="Coding Conventions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             accesskey="P">previous</a> |</li>
       </ul>
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007 - 2019, Doyle Rowland.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+        &#169; Copyright 2007 - 2020, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
     </div>
   </body>
 </html>

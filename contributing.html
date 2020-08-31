@@ -3,21 +3,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Contributing &#8212; RAMSTK 2.0.0 documentation</title>
+    <title>Contributing &#8212; RAMSTK 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     
-    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script src="_static/sidebar.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="RAMSTK Models" href="api/models/commondb.html" />
+    <link rel="next" title="Contributing to the RAMS ToolKit (RAMSTK)" href="CONTRIBUTING.html" />
     <link rel="prev" title="Usage" href="usage.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="_static/favicon.png" />
@@ -30,7 +30,7 @@
       <h3>Navigation</h3>
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
-        <li><a href="index.html">RAMSTK 2.0.0 documentation</a> &#187;</li> 
+        <li><a href="index.html">RAMSTK 1.0.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     
@@ -43,1000 +43,392 @@
             
   <div class="section" id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="code-of-conduct">
-<h2>Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permalink to this headline">¶</a></h2>
-<p>The fundamental rules are:</p>
-<ul class="simple">
-<li><p><strong>DON’T be a Gavin Belson.</strong>  You probably are smarter and more successful than everone else, but be humble and helpful.</p></li>
-<li><p><strong>DON’T be a Jian Yang.</strong>  Stealing other people’s IP is lower than a snake’s belly.</p></li>
-<li><p>You <em>CAN</em> be a Bertram Gilfoyle, that’s fundamentally just being an engineer.</p></li>
-<li><p>You <em>CAN</em> be a Big Head, but only if you invite me to all your house parties.</p></li>
-<li><p>You <em>CAN</em> be an Erlich Bachman because the world needs dreamers.</p></li>
-<li><p>You <em>CAN</em> be a Richard Hendricks, because ethical software is a good thing.</p></li>
-<li><p>You <em>CAN</em> be a Dinesh Chugtai because every team needs someone to good-heartedly pick on.</p></li>
-</ul>
-<p>See the Code of Conduct file in the root <cite>RAMSTK</cite> directory.</p>
-</div>
 <div class="section" id="how-to-contribute">
 <h2>How to Contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="contributing-to-the-rams-toolkit-ramstk">
-<h2>Contributing to the RAMS ToolKit (RAMSTK)<a class="headerlink" href="#contributing-to-the-rams-toolkit-ramstk" title="Permalink to this headline">¶</a></h2>
-<p>Thank you for taking the time to contribute!</p>
-<p>The following is a set of guidelines for contributing to RAMSTK, which is hosted in the <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk">RAMSTK repository</a> on GitHub.  Feel free to propose changes to this document in a pull request.</p>
-<p><a class="reference external" href="#how-can-i-contribute">How Can I Contribute?</a></p>
-<ul class="simple">
-<li><p><a class="reference external" href="#for-everyone">For Everyone</a></p>
+<div class="toctree-wrapper compound">
 <ul>
-<li><p><a class="reference external" href="#reporting-issues">Reporting Issues</a></p></li>
-<li><p><a class="reference external" href="#suggesting-enhancements">Suggesting Enhancements</a></p></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to the RAMS ToolKit (RAMSTK)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CONTRIBUTING.html#id1">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CONTRIBUTING.html#id2">How Can I Contribute?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CONTRIBUTING.html#id3">For Everyone</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#id4">Reporting Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#before-submitting-an-issue-report">Before Submitting an Issue Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#how-to-submit-a-useful-issue-report">How to Submit a Useful Issue Report</a></li>
 </ul>
 </li>
-<li><p><a class="reference external" href="#for-developers-eyes-only">For Developers’ Eyes Only</a></p>
-<ul>
-<li><p><a class="reference external" href="#style-guidlines">Style Guidelines</a></p></li>
-<li><p><a class="reference external" href="#process-guidelines">Process Guidelines</a></p></li>
+<li class="toctree-l2"><a class="reference internal" href="CONTRIBUTING.html#id7">For Developers’ Eyes Only</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#pull-requests">Pull Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#git-commit-messages">Git Commit Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#always-add-descriptive-log-messages">Always Add Descriptive Log Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#use-issue-system-numbers">Use Issue System Numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#todo-comments">TODO Comments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="CONTRIBUTING.html#id8">Process Guidelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#never-write-a-test-that-doesn-t-have-an-engineering-specification">Never Write a Test That Doesn’t Have an Engineering Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#never-write-code-that-doesn-t-have-a-test">Never Write Code That Doesn’t Have a Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#never-commit-code-that-doesn-t-run">Never Commit Code That Doesn’t Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#always-statically-check-your-code">Always Statically Check Your Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#double-check-before-you-create-a-pull-request">Double Check Before You Create a Pull Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#code-review-by-other-developers">Code Review by Other Developers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#don-t-create-a-pull-request-for-code-you-don-t-understand">Don’t Create a Pull Request for Code You Don’t Understand</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CONTRIBUTING.html#commit-complete-changesets">Commit Complete Changesets</a></li>
 </ul>
 </li>
 </ul>
-<div class="section" id="id1">
-<h3>How Can I Contribute?<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="id2">
-<h3>For Everyone<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id3">
-<h4>Reporting Issues<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
-<blockquote>
-<div><p>The only dumb issue is the unreported issue.</p>
-</div></blockquote>
-<p>The purpose of an issue (or bug, condition, corrective action, FRACA) tracking system is to document <strong>conditions adverse to quality (CAQ)</strong> and their fixes.  A mispelled word in documentation or a docstring is a condition adverse to quality so <em>submit an issue</em>.  This section guides you through submitting an issue report for RAMSTK.  Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.</p>
-<blockquote>
-<div><p><strong>Note:</strong> If you find a <strong>Closed</strong> issue that seems like it is the same thing that you’re experiencing, open a new issue and include a link to the original issue in the body of your new one.</p>
-</div></blockquote>
-</div>
-<div class="section" id="before-submitting-an-issue-report">
-<h4>Before Submitting an Issue Report<a class="headerlink" href="#before-submitting-an-issue-report" title="Permalink to this headline">¶</a></h4>
-<p><strong>Perform a search</strong> to see if the problem has already been reported.  If it has <strong>and the issue is still open</strong>, add a comment to the existing issue instead of opening a new one.</p>
-</div>
-<div class="section" id="how-to-submit-a-useful-issue-report">
-<h4>How to Submit a Useful Issue Report<a class="headerlink" href="#how-to-submit-a-useful-issue-report" title="Permalink to this headline">¶</a></h4>
-<p>Issues are tracked as <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/issues/">GitHub issues</a>.</p>
-<p><strong>Use a clear and descriptive title</strong> for the issue to identify the problem.  When you create a new issue, you will be presented with an <a class="reference external" href="https://github.com/ReliaQualAssociates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE.md">issue template</a>.  Please use the template to report your issue.  If you choose not to, you may be asked to provide the information requested or your issue may simply be closed with no action taken.</p>
-<p>There are four sections in an issue report:</p>
-<ul class="simple">
-<li><p>Expected Behavior</p></li>
-<li><p>Actual Behavior</p></li>
-<li><p>Steps to Reproduce the Problem</p></li>
-<li><p>Operating Environment</p></li>
+</li>
 </ul>
-<p>In the <strong>Expected Behavior</strong> section, the minimum information needed is to
-complete the user story:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="k">As</span> <span class="n">a</span> <span class="o">&lt;</span><span class="k">type</span> <span class="k">of</span> <span class="n">RAMSTK</span> <span class="n">stakeholder</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">I</span> <span class="n">want</span> <span class="o">&lt;</span><span class="n">goal</span><span class="o">&gt;</span> <span class="n">so</span> <span class="n">that</span> <span class="o">&lt;</span><span class="n">need</span> <span class="k">for</span> <span class="n">goal</span><span class="o">&gt;</span><span class="p">.</span>
-</pre></div>
-</div>
-<p>It is important that the voice of the customer (VOC) be captured up front.  The
-VOC statement(s) are converted to engineering requirements.  Engineering
-requirements can be tested to verify the code meets the requirement.  A simple
-way to capture the VOC is to fill in the following statement.  You may include
-multiple, related, user statements in a single issue.</p>
-<p>RAMSTK has been a long time in the making and was originally created to bundle
-together several small (mostly) Excel-based tools and move data storage to a
-database rather than a spreadsheet.  As such, the design process was not very
-rigorous and no engineering specifications were ever created; I knew what I
-wanted my tool to do for me and didn’t need to document that.  You’re welcome
-to call me lazy, but your user story (stakeholder’s input in RAMSTK vernacular)
-will be used to develop engineering specifications for RAMSTK.  In fact, you
-can submit an issure report as a quality type issue and provide nothing more
-than the completed user story (stakeholder input).  Not all users
-(stakeholders) are external users of RAMSTK.</p>
-<p>If submitting an enhancement type issue, provide a step-by-step description of
-the suggested enhancement in as many details as possible.  Explain why this
-enhancement would be useful to most RAMSTK users.</p>
-<p>In the <strong>Actual Behavior</strong> section, <strong>describe the behavior you observed</strong> and
-point out what exactly is the problem with that behavior.  If the problem
-wasn’t triggered by a specific action, describe what you were doing before the
-problem happened.</p>
-<p>The <strong>Steps to Reproduce the Problem</strong> section only needs to be completed for
-an issue classified as a bug.  Quality, enhancement, and question type issues
-by their nature are not reproducible.  When completing this section:</p>
-<ul class="simple">
-<li><p><strong>Describe the exact steps which reproduce the problem</strong> in as many details as possible; <strong>don’t just say what you did, but explain how you did it</strong>. For example, if you moved the cursor to the end of a line, explain if you used the mouse, or a keyboard shortcut.</p></li>
-<li><p><strong>Provide specific examples to demonstrate the steps</strong>. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples.  If you’re providing snippets in the issue, use <a class="reference external" href="https://help.github.com/articles/markdown-basics/#multiple-lines">Markdown code blocks</a>.</p></li>
-<li><p><strong>Include screenshots and animated GIFs</strong> which show you following the described steps and clearly demonstrate the problem.  You can use <a class="reference external" href="https://www.cockos.com/licecap/">this tool</a> to record GIFs on Windows, and <a class="reference external" href="https://github.com/colinkeenan/silentcast">this tool</a> or <a class="reference external" href="https://github.com/GNOME/byzanz">this tool</a> on Linux.</p></li>
-</ul>
-<p>To gather the information required for the <strong>Operating Environment</strong> section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/requirements_run.txt">requirements_run.txt</a> file in the repository.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>for file in $(cat requirements_run.txt | cut -d &#39;=&#39; -f1 | cut -d &#39;&gt;&#39; -f1);
-do
-    version=$(pip show $file | grep Version: | cut -d &#39;:&#39; -f2 | tr -d &#39;[:space:]&#39;);
-    echo &quot;  * &quot;$file==$version;
-done
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="id6">
-<h3>For Developers’ Eyes Only<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<p>As a RAMSTK developer, if you are working on something outside the RAMSTK issue system, you are likely working on the wrong thing.  If an issue doesn’t exist, create it <em>before</em> you start writing.  The issue system is there to facilitate managing the development program and creating schedules.</p>
-<p>Please refer to the RAMSTK <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/blob/develop/docs/CODING_STDS.md">coding conventions</a>.</p>
-<div class="section" id="pull-requests">
-<h4>Pull Requests<a class="headerlink" href="#pull-requests" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><p>Do not include issue numbers in the PR title.</p></li>
-<li><p>Include screenshots and animated GIFs in your pull request whenever possible.</p></li>
-<li><p>Document new engineering specification(s).</p></li>
-<li><p>Document new code.</p></li>
-<li><p>End all files with a newline.</p></li>
-<li><p>Avoid platform-dependent code.</p></li>
-</ul>
-</div>
-<div class="section" id="git-commit-messages">
-<h4>Git Commit Messages<a class="headerlink" href="#git-commit-messages" title="Permalink to this headline">¶</a></h4>
-<p>There is a commit message template in the root directory for RAMSTK named .gitcommitmessage.txt.  Use this template to build commit messages.</p>
-</div>
-<div class="section" id="always-add-descriptive-log-messages">
-<h4>Always Add Descriptive Log Messages<a class="headerlink" href="#always-add-descriptive-log-messages" title="Permalink to this headline">¶</a></h4>
-<p>Log messages should be understandable to someone who sees only the log. They shouldn’t depend on information outside the context of the commit. Try to put the log messages only to those files which are really affected by the change described in the log message.</p>
-<p>In particular put all important information which can’t be seen from the diff in the log message.</p>
-</div>
-<div class="section" id="use-issue-system-numbers">
-<h4>Use Issue System Numbers<a class="headerlink" href="#use-issue-system-numbers" title="Permalink to this headline">¶</a></h4>
-<p>Add the bug number to the log message. In order to keep the issue tracking system in sync with the git repositories, you should reference the issue report in your commits, and close the fixed issues in the issue tracking system.</p>
-<p>This doesn’t mean that you don’t need an understandable log message.  It should be clear from the log message what has been changed without looking at the issue report.</p>
-</div>
-<div class="section" id="todo-comments">
-<h4>TODO Comments<a class="headerlink" href="#todo-comments" title="Permalink to this headline">¶</a></h4>
-<p>When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add a TODO comment using the following format:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="o">#</span> <span class="o">//</span> <span class="n">TODO</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">One</span><span class="o">-</span><span class="n">line</span> <span class="n">description</span> <span class="k">of</span> <span class="n">required</span> <span class="k">work</span><span class="p">.</span>
-<span class="o">#</span> <span class="o">//</span>
-<span class="o">#</span> <span class="o">//</span> <span class="n">Long</span> <span class="k">and</span> <span class="n">detailed</span> <span class="n">description</span> <span class="k">of</span> <span class="k">work</span> <span class="k">to</span> <span class="n">be</span> <span class="n">performed</span><span class="p">.</span>
-</pre></div>
-</div>
-<p>The github action, dtinth/todo-actions will find these TODO comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.</p>
-<div class="section" id="id7">
-<h5>Process Guidelines<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h5>
-<p>RAMSTK uses:</p>
-<ul class="simple">
-<li><p>SCRUM workflow</p></li>
-<li><p>Test driven development</p></li>
-<li><p>Continuous integration</p></li>
-<li><p>The git-flow branching model</p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="never-write-a-test-that-doesn-t-have-an-engineering-specification">
-<h4>Never Write a Test That Doesn’t Have an Engineering Specification<a class="headerlink" href="#never-write-a-test-that-doesn-t-have-an-engineering-specification" title="Permalink to this headline">¶</a></h4>
-<p>It’s not necessary to create a user story (stakeholder input) prior to writing an engineering specification, but it is perfectly acceptable to do so.  As a developer, you may simply write the engineering specification.  If working on an issue reported by a stakeholder, convert their user story to an engineering specification.  Communicate with the stakeholder who reported the issue if you need clarification.  This process helps identify epics versus simple user stories and will result in a better product and happier users (developers will be happier too).</p>
-<p>A test does not need to be code executable by pytest.  It may be a step by step procedure or checklist.  This would be appropriate for GUI design/layout related specifications where it would be more efficient to simply launch RAMSTK and visually inspect that the specification is met.</p>
-</div>
-<div class="section" id="never-write-code-that-doesn-t-have-a-test">
-<h4>Never Write Code That Doesn’t Have a Test<a class="headerlink" href="#never-write-code-that-doesn-t-have-a-test" title="Permalink to this headline">¶</a></h4>
-<p>And make sure the test(s) pass before committing.  If you add functionality to RAMSTK, there should be one or more tests for the new functionality.  There should be a test(s) to ensure the new code works with good inputs.  There should also be test(s) to ensure the code responds properly with bad inputs.</p>
-</div>
-<div class="section" id="never-commit-code-that-doesn-t-run">
-<h4>Never Commit Code That Doesn’t Run<a class="headerlink" href="#never-commit-code-that-doesn-t-run" title="Permalink to this headline">¶</a></h4>
-<p>Run the code and correct all errors before committing.  Make sure that newly added files are committed.  If they are missing your local copy will run fine but nobody else will be able to run RAMSTK.  This is not desirable.</p>
-</div>
-<div class="section" id="always-statically-check-your-code">
-<h4>Always Statically Check Your Code<a class="headerlink" href="#always-statically-check-your-code" title="Permalink to this headline">¶</a></h4>
-<p>Statically check every file you edit between commits.  At a minimum, the following static checkers should be used:</p>
-<ul class="simple">
-<li><p>isort</p></li>
-<li><p>yapf</p></li>
-<li><p>pylint</p></li>
-<li><p>pycodestyle</p></li>
-<li><p>pydocstyle</p></li>
-<li><p>bandit</p></li>
-</ul>
-<p>The RunTests.py file in the tests directory can be used to integrate these checkers with your editor/IDE if needed.  Depending on your editor/IDE and prefered workflow, you might have some or all run automatically as you code.  My preference is code, static check periodically, and fix the errors/warnings raised.  When using pylint, the goal is not to acheive a score of 10/10, it is to create standard, maintainable code.  You are encouraged to aggressively refactor any code.  At a minimum, submit a quality type issue describing the proposed refactoring for you or another developer to work on later.</p>
-</div>
-<div class="section" id="double-check-before-you-create-a-pull-request">
-<h4>Double Check Before You Create a Pull Request<a class="headerlink" href="#double-check-before-you-create-a-pull-request" title="Permalink to this headline">¶</a></h4>
-<p>Do a <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span> <span class="pre">--rebase</span></code> to keep your checkout up-to-date. Invoke <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span></code> before committing. Take messages from git about conflicts, unknown files, etc. seriously. <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span></code> will tell you exactly what you will be committing.  Check if that’s really what you intended to commit.</p>
-</div>
-<div class="section" id="code-review-by-other-developers">
-<h4>Code Review by Other Developers<a class="headerlink" href="#code-review-by-other-developers" title="Permalink to this headline">¶</a></h4>
-<p>Don’t commit changes to the public API of RAMSTK without prior review by other developers.  Requiring a review for these changes is intended to avoid problems for the users of the APIs and to improve the quality of the APIs.  This is ensured by using pull requests when you’re ready to commit; the pull request will be merged by a developer with the authority to merge it.</p>
-</div>
-<div class="section" id="don-t-create-a-pull-request-for-code-you-don-t-understand">
-<h4>Don’t Create a Pull Request for Code You Don’t Understand<a class="headerlink" href="#don-t-create-a-pull-request-for-code-you-don-t-understand" title="Permalink to this headline">¶</a></h4>
-<p>Avoid things like “I don’t know why it crashes, but when I do this, it does not crash anymore.” or “I’m not completely sure if that’s right, but at least it works for me.”.</p>
-<p>If you don’t find a solution to a problem, discuss it with other developers.  Don’t create a pull request if other developers disagree  If there are disagreements over code changes, these should be resolved by discussing them.</p>
-</div>
-<div class="section" id="commit-complete-changesets">
-<h4>Commit Complete Changesets<a class="headerlink" href="#commit-complete-changesets" title="Permalink to this headline">¶</a></h4>
-<p>git has the ability to commit more than one file at a time. Therefore, please commit all related changes in multiple files, even if they span over multiple directories at the same time in the same commit. This way, you ensure that git stays in a runnable state before and after the commit and that the commit history is more helpful.</p>
-<p>Commits should be preferably “atomic” - not splittable. That means that every issuefix, feature, refactoring or reformatting should go into an own commit. This, too, improves the readability of the history.  Additionally, it makes porting changes between branches (cherry-picking) and finding faulty commits (by bisecting) simpler.</p>
-</div>
 </div>
 </div>
 <div class="section" id="coding-standards">
 <h2>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="id8">
-<h2>Coding Conventions<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
-<p>This document describes the coding standards to be adhered to by developers on
-the <a class="reference external" href="https://github.com/weibullguy/ramstk">RAMSTK Project</a>.  It is a working document
-and suggested changes shall be submitted as issues in the RAMSTK GitHub issue
-tracker with an Enhancement label attached.</p>
-<p><a class="reference external" href="#naming-conventions">Naming Conventions</a></p>
-<ul class="simple">
-<li><p><a class="reference external" href="#constants-and-variables">Constants and Variables</a></p></li>
-<li><p><a class="reference external" href="#classes-and-modules">Classes and Modules</a></p></li>
-<li><p><a class="reference external" href="#attributes">Attributes</a></p></li>
-<li><p><a class="reference external" href="#functions-and-methods">Functions and Methods</a></p></li>
-<li><p><a class="reference external" href="#tags">Tags</a>
-<a class="reference external" href="#design-conventions">Design Conventions</a></p></li>
-<li><p><a class="reference external" href="#data-models">Data Models</a></p></li>
-<li><p><a class="reference external" href="#data-controllers">Data Controllers</a></p></li>
-<li><p><a class="reference external" href="#gui-components">GUI Components</a></p>
+<p>The coding standards below are probably out of date so you might review some of the existing code base to see how
+badly I haven’t followed my own standards.  I also open issues to document conventions and standards.  That’d be another
+good place to look.</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li><p><a class="reference external" href="#list-views">List Views</a></p></li>
-<li><p><a class="reference external" href="#matrix-views">Matrix Views</a></p></li>
-<li><p><a class="reference external" href="#module-views">Module Views</a></p></li>
-<li><p><a class="reference external" href="#work-views">Work Views</a></p></li>
+<li class="toctree-l1"><a class="reference internal" href="CODING_STDS.html">Coding Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CODING_STDS.html#id1">Naming Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id2">Constants and Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id3">Classes and Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id4">Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id5">Functions and Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id6">Tags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CODING_STDS.html#id7">Design Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id8">Data Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id9">Data Controllers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CODING_STDS.html#id10">GUI Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="CODING_STDS.html#id11">List Views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="CODING_STDS.html#id12">Matrix Views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="CODING_STDS.html#id13">Module Views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="CODING_STDS.html#id14">Work Views</a></li>
 </ul>
 </li>
 </ul>
-<div class="section" id="id9">
-<h3>Naming Conventions<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
-<p>Naming conventions shall, generally, follow the guidance provided in PEP8.
-Where appropriate, the pylintrc code for checking these conventions is
-included in each section.</p>
-<p>#. All RAMSTK global constants shall be defined in the configuration module.
-#.</p>
-<blockquote>
-<div><p>Constants shall be:</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="development-environment">
+<h2>Development Environment<a class="headerlink" href="#development-environment" title="Permalink to this headline">¶</a></h2>
+<p>Another document that is likely out of date, but might be helpful if you’re interested in hacking on RAMSTK and opening
+pull requests.</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li><p>All UPPERCASE with spaces replaced by underscores (_).</p></li>
-<li><p>Prefaced by <a href="#id15"><span class="problematic" id="id16">RAMSTK_</span></a> to identify it as an RAMSTK constant.</p></li>
-<li><p>A minimum of twelve characters (<a href="#id17"><span class="problematic" id="id18">RAMSTK_</span></a> is 7) and a maximum of 30 characters.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: const-rgx=RAMSTK_[A-Z_]{12,30}$
-</pre></div>
-</div>
-</li>
-</ul>
-</div></blockquote>
-<ol class="arabic">
-<li><p>Variables shall be:</p>
-<ul>
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>A minimum of three characters and a maximum of 30 characters.</p></li>
-<li><p>A descriptive name when used for program flow control (e.g., for or
-while loops).  For example, _index rather than i or _key rather than k.</p></li>
-<li><p>Preceded by a single underscore when private in scope.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: variable-rgx=[a-z_][a-z_]{3,30}$
-</pre></div>
-</div>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_ENV.html">Establishing a Development Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_ENV.html#required-tools">Required Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_ENV.html#create-the-virtual-environment">Create the Virtual Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_ENV.html#install-python-packages">Install Python Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_ENV.html#install-and-test-ramstk">Install and Test RAMSTK</a></li>
 </ul>
 </li>
-</ol>
-<ol class="arabic">
-<li><p>Module names shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
 </ul>
-</li>
-<li><p>Class names shall be:</p>
-<ul>
-<li><p>In the CapWords format.</p></li>
-<li><p>Alpha characters only.</p></li>
-<li><p>Prefaced by RAMSTK.</p></li>
-<li><p>A minimum of eight characters (RAMSTK is 3) and a maximum of 30 characters.</p></li>
-<li><p>Suffixed by ‘Error’ when defining an exception class.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
-pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-</ol>
-<ol class="arabic">
-<li><p>Class attributes shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>Prefaced by a double underscore (__).</p></li>
-</ul>
-</li>
-<li><p>Private instance attribute shall be:</p>
-<ul>
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>Prefaced by a single underscore (_).</p></li>
-<li><p>Identified by the data type the attribute holds as follows:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_dic</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="k">dictionary</span>
-<span class="n">_lst</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">list</span>
-<span class="n">_tpl</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">tuple</span>
-<span class="n">_int</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">integer</span>
-<span class="n">_flt</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">float</span>
-<span class="n">_str</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">string</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-<li><p>Public instance attributes shall be:</p>
-<ul>
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>Identified by the data type the attribute holds as follows:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">dic</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="k">dictionary</span>
-<span class="n">lst</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">list</span>
-<span class="n">tpl</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">tuple</span>
-<span class="nb">int</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">integer</span>
-<span class="n">flt</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">float</span>
-<span class="n">str</span> <span class="k">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">string</span>
-</pre></div>
-</div>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: attr-rgx=[_a-z_?][a-z0-9_?]{3,30}$
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-</ol>
-<ol class="arabic">
-<li><p>Functions and methods shall be:</p>
-<ul>
-<li><p>All lowercase with underscores (_) replacing spaces.</p></li>
-<li><p>A minimum of five characters and a maximum of 50 characters.</p></li>
-<li><p>Prefaced by a single underscore (_) if not a public function or method.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: function-rgx=[_a-z0-9][_a-z0-9]{5,50}$
-pylintrc: method-rgx=[_a-z0-9][_a-z0-9]{5,50}$
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-<li><p>Function and method arguments shall be:</p>
-<ul>
-<li><p>All lowercase with underscores (_) replacing spaces.</p></li>
-<li><p>A minimum of five characters and a maximum of 30 characters.</p></li>
-<li><p>Prefaced by a double underscore (__) if it is unused in the function
-or methods (e.g., in widget callback methods).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pylintrc: argument-rgx=[a-z0-9][_a-z0-9]{5,30}$
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-</ol>
-<ol class="arabic">
-<li><p>Tags may be used to assist in placeholding during development.</p>
-<ul class="simple">
-<li><p>FIXME to indicate non-working code that needs to be re-worked before
-check-in.</p></li>
-<li><p>TODO to indicate missing code/functionality that needs to be added.</p></li>
-<li><p>ISSUE to point to the RAMSTK GitHub project issue tracking the condition.</p></li>
-</ul>
-</li>
-<li><p>FIXME tags shall:</p>
-<ul class="simple">
-<li><p><strong>NOT</strong> be included in any code checked in to the RAMSTK git repository.</p></li>
-<li><p>Be converted to an ISSUE tag when an issue is created to track the
-condition.</p></li>
-</ul>
-</li>
-<li><p>TODO tags shall:</p>
-<ul class="simple">
-<li><p><strong>NOT</strong> be included in any code checked in to the RAMSTK git repository.</p></li>
-<li><p>Be converted to an ISSUE tag when an issue is created to track the
-condition.</p></li>
-</ul>
-</li>
-<li><p>ISSUE tags shall:</p>
-<ul>
-<li><p>Include the issue number and brief decription.  For example,</p>
-<blockquote>
-<div><p>ISSUE 88: Handle Errors in FMEA WorkView _do_load_tree() Method</p>
-</div></blockquote>
-</li>
-<li><p>Be printed to the console when encountered in the code.</p></li>
-</ul>
-</li>
-</ol>
-</div>
-<div class="section" id="id10">
-<h3>Design Conventions<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
-<ol class="arabic simple">
-<li><p>All data models shall have the following public methods:</p></li>
-</ol>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="o">```</span>
-<span class="n">do_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">do_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">do_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">get_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">set_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
-<span class="o">```</span>
-</pre></div>
-</div>
-<ol class="arabic">
-<li><p>All data models shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">dao</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Data models may have the following public/private methods/functions:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">do_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select_children</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">_do_calculate_availability_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_cost_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_metric_variances</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_reliability_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For data model functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul>
-<li><p>If the function or method responds to a user request, it shall begin
-with <a href="#id19"><span class="problematic" id="id20">do_</span></a> (public) or <em>do</em> (private).  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_add_actions</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">cause_id</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">)</span>
-<span class="n">_do_calculate_rpn</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>If the function or method retrieves something, it shall begin with <a href="#id21"><span class="problematic" id="id22">get_</span></a>
-(public) or <em>get</em> (private).  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">get_actual_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">get_assessment_points</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">get_planned_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>If the function or method does something, it should begin with <a href="#id23"><span class="problematic" id="id24">set_</span></a>
-(public) or <em>set</em> (private).  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_set_assessment_points</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Conform with all naming convetions.</p></li>
-</ul>
-</li>
-</ol>
-<ol class="arabic">
-<li><p>All data controllers shall have the following public methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">do_handle_results</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="n">pub_msg</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">request_do_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_select_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_get_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_get_last_id</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_set_attributes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>All data controllers shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">dao</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Data controllers may have the following public/private methods/functions:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">request_do_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_calculate_availability</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_costs</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_hazard_rate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_mtbf</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_reliability</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_select_children</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For data controller functions or methods unique to a particular RAMSTK
-module, naming shall adhere to the following conventions:</p>
-<ul>
-<li><p>All methods should be named the same as the data model method and
-prefaced with <a href="#id25"><span class="problematic" id="id26">request_</span></a>.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">request_do_calculate_rpn</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">request_get_planned_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Shall be public in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
-</li>
-</ol>
-<ol class="arabic">
-<li><p>If the function or method creates a simple or aggregate widget, it shall
-begin with make (public) or <em>make</em> (private).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_make_assessment_inputs_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>2, If the function or method is a callback signal that is not a user request,
-it should begin with on (public) or <em>on</em> (private).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_on_focus_out</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>If the function or method is a callback signal that is a user request
-(button press, etc.), it should be begin with do<em>request</em> (public) or
-_do<em>request</em> (private).</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>View functions and methods should, generally, be “private” (prefaced by a
-single underscore ‘_’) as they would only need to be called by other View
-functions and methods and would not be part of the public API.  See paragraph 2.3.8.2 for an exception.</p></li>
-</ol>
-<div class="section" id="id11">
-<h4>List Views<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
-<ol class="arabic">
-<li><p>All List Views shall have the following public methods:</p></li>
-<li><p>All List Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_change_row</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_load_page</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="k">row</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_cell</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">editable</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For List View functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul>
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
-</li>
-</ol>
-</div>
-<div class="section" id="id12">
-<h4>Matrix Views<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
-<ol class="arabic">
-<li><p>All Matrix Views shall have the following public methods:</p></li>
-<li><p>All Matrix Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For Matrix View functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul>
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
-</li>
-</ol>
-</div>
-<div class="section" id="id13">
-<h4>Module Views<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
-<ol class="arabic">
-<li><p>All Module Views shall have the following public methods:</p></li>
-<li><p>All Module Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_change_row</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_insert_sibling</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Module Views may have the following public/private methods/functions:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert_child</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_on_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Module View functions or methods unique to a particular RAMSTK module, naming
-shall adhere to the following conventions:</p>
-<ul>
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
-</li>
-</ol>
-</div>
-<div class="section" id="id14">
-<h4>Work Views<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
-<ol class="arabic">
-<li><p>All Work Views shall have the following public methods:</p></li>
-<li><p>Work Views that are embedded in a higher-level Work View (e.g.,
-component-specific work views are embedded into the Hardware BoM Work View)
-require their methods to be public so they can be called by the higher level
-(private) method of the same name.  The following methods may be used by a Work
-View that meets this criterion:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">do_load_comboboxes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">subcategory_id</span><span class="p">)</span>
-<span class="n">do_load_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">do_set_sensitive</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">make_assessment_input_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">make_assessment_results_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">on_combo_changed</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">on_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>All Work Views shall have the following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">__init__</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_load_page</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_refresh_view</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_on_select</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Work Views containing or consisting of a RAMSTKTreeView shall have the
-following private methods:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_change_row</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="k">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_insert_sibling</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_get_cell_model</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="k">column</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Work Views may contain one or more of the following private methods as
-needed:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_load_comboboxes</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_plot</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_select_date</span><span class="p">(</span><span class="n">__button</span><span class="p">,</span> <span class="n">__event</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
-<span class="n">_do_set_sensitive</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_make_assessment_input_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_assessment_results_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_general_data_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_on_combo_changed</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="k">index</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_focus_out</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">_on_toggled</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">togglebutton</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-<span class="n">_on_value_changed</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">spinbutton</span><span class="p">,</span> <span class="k">index</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For Work View functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul>
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">_do_load_planned_burndown</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">module_id</span><span class="o">=</span><span class="k">None</span><span class="p">)</span>
-<span class="n">_do_load_subcategory</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">category_id</span><span class="p">)</span>
-<span class="n">_do_request_edit_function</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_make_comp_ref_des</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_burndown_curve_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_requirement_analysis_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_stress_input_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-<span class="n">_make_stress_results_page</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
-</li>
-</ol>
-</div>
 </div>
 </div>
 <div class="section" id="api-documentation">
 <h2>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-</div>
-<div class="section" id="ramstk-module">
-<h3>RAMSTK Module<a class="headerlink" href="#ramstk-module" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="configuration-module">
-<h3>Configuration Module<a class="headerlink" href="#configuration-module" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="utilities-module">
-<h3>Utilities Module<a class="headerlink" href="#utilities-module" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="models-package">
-<h3>Models Package<a class="headerlink" href="#models-package" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/models/commondb.html">RAMSTK Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkcondition">RAMSTKCondition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkgroup">RAMSTKGroup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkmeasurement">RAMSTKMeasurement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkmethod">RAMSTKMethod</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkmodel">RAMSTKModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkstatus">RAMSTKStatus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstktype">RAMSTKType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkuser">RAMSTKUser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/commondb.html#ramstkmatrix">RAMSTKMatrix</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api/models/fmea.html">FMEA Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/models/fmea.html#common-database-models">Common Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/fmea.html#ramstkfailuremode">RAMSTKFailureMode</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/fmea.html#ramstkrpn">RAMSTKRPN</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/fmea.html#program-database-models">Program Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/fmea.html#ramstkaction">RAMSTKAction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/fmea.html#ramstkcause">RAMSTKCause</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/fmea.html#ramstkcontrol">RAMSTKControl</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/fmea.html#ramstkmechanism">RAMSTKMechanism</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/fmea.html#ramstkmode">RAMSTKMode</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api/models/function.html">Function Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/models/function.html#common-database-models">Common Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/function.html#ramstkhazards">RAMSTKHazards</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/function.html#program-database-models">Program Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/function.html#ramstkfunction">RAMSTKFunction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/function.html#ramstkhazardanalysis">RAMSTKHazardAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">ramstk</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/ramstk.html">ramstk package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/ramstk.analyses.html">ramstk.analyses package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.html">ramstk.analyses.milhdbk217f package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html">ramstk.analyses.milhdbk217f.models package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-capacitor-module">ramstk.analyses.milhdbk217f.models.capacitor module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-connection-module">ramstk.analyses.milhdbk217f.models.connection module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-crystal-module">ramstk.analyses.milhdbk217f.models.crystal module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-efilter-module">ramstk.analyses.milhdbk217f.models.efilter module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-fuse-module">ramstk.analyses.milhdbk217f.models.fuse module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-inductor-module">ramstk.analyses.milhdbk217f.models.inductor module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-integratedcircuit-module">ramstk.analyses.milhdbk217f.models.integratedcircuit module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-lamp-module">ramstk.analyses.milhdbk217f.models.lamp module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-meter-module">ramstk.analyses.milhdbk217f.models.meter module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-relay-module">ramstk.analyses.milhdbk217f.models.relay module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-resistor-module">ramstk.analyses.milhdbk217f.models.resistor module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-semiconductor-module">ramstk.analyses.milhdbk217f.models.semiconductor module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#ramstk-analyses-milhdbk217f-models-switch-module">ramstk.analyses.milhdbk217f.models.switch module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.models.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/models/hardware.html">Hardware Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/models/hardware.html#common-database-models">Common Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkcategory">RAMSTKCategory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkloadhistory">RAMSTKLoadHistory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkmanufacturer">RAMSTKManufacturer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstksubcategory">RAMSTKSubCategory</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.html#ramstk-analyses-milhdbk217f-milhdbk217f-module">ramstk.analyses.milhdbk217f.milhdbk217f module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.analyses.milhdbk217f.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/hardware.html#program-database-models">Program Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkallocation">RAMSTKAllocation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkdesignelectric">RAMSTKDesignElectric</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkdesignmechanic">RAMSTKDesignMechanic</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkhardware">RAMSTKHardware</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkmilhdbkf">RAMSTKMilHdbkF</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstknswc">RAMSTKNSWC</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkopload">RAMSTKOpLoad</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkopstress">RAMSTKOpStress</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstkreliability">RAMSTKReliability</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstksimilaritem">RAMSTKSimilarItem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/hardware.html#ramstktestmethod">RAMSTKTestMethod</a></li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.analyses.statistics.html">ramstk.analyses.statistics package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.analyses.statistics.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.analyses.statistics.html#ramstk-analyses-statistics-bounds-module">ramstk.analyses.statistics.bounds module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.analyses.statistics.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/models/requirement.html">Requirement Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/models/requirement.html#common-database-models">Common Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/requirement.html#ramstkstakeholders">RAMSTKStakeholders</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-allocation-module">ramstk.analyses.allocation module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-criticality-module">ramstk.analyses.criticality module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-derating-module">ramstk.analyses.derating module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-dormancy-module">ramstk.analyses.dormancy module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-fha-module">ramstk.analyses.fha module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-improvementfactor-module">ramstk.analyses.improvementfactor module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-similaritem-module">ramstk.analyses.similaritem module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#ramstk-analyses-stress-module">ramstk.analyses.stress module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.analyses.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/models/requirement.html#program-database-models">Program Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/requirement.html#ramstkrequirement">RAMSTKRequirement</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/requirement.html#ramstkstakeholder">RAMSTKStakeholder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ramstk.controllers.html">ramstk.controllers package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.controllers.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.fmea.html">ramstk.controllers.fmea package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.fmea.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.fmea.html#ramstk-controllers-fmea-analysismanager-module">ramstk.controllers.fmea.analysismanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.fmea.html#ramstk-controllers-fmea-datamanager-module">ramstk.controllers.fmea.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.fmea.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.function.html">ramstk.controllers.function package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.function.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.function.html#ramstk-controllers-function-analysismanager-module">ramstk.controllers.function.analysismanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.function.html#ramstk-controllers-function-datamanager-module">ramstk.controllers.function.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.function.html#ramstk-controllers-function-matrixmanager-module">ramstk.controllers.function.matrixmanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.function.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/models/revision.html">Revision Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/models/revision.html#program-database-models">Program Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/revision.html#ramstkenvironment">RAMSTKEnvironment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/revision.html#ramstkfailuredefinition">RAMSTKFailureDefinition</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/revision.html#ramstkmission">RAMSTKMission</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/revision.html#ramstkmissionphase">RAMSTKMissionPhase</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/models/revision.html#ramstkrevision">RAMSTKRevision</a></li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.hardware.html">ramstk.controllers.hardware package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.hardware.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.hardware.html#ramstk-controllers-hardware-analysismanager-module">ramstk.controllers.hardware.analysismanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.hardware.html#ramstk-controllers-hardware-datamanager-module">ramstk.controllers.hardware.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.hardware.html#ramstk-controllers-hardware-matrixmanager-module">ramstk.controllers.hardware.matrixmanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.hardware.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.options.html">ramstk.controllers.options package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.options.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.options.html#ramstk-controllers-options-datamanager-module">ramstk.controllers.options.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.options.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/models/validation.html">Validation Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/models/validation.html#program-database-models">Program Database Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/models/validation.html#ramstkvalidation">RAMSTKValidation</a></li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.pof.html">ramstk.controllers.pof package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.pof.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.pof.html#ramstk-controllers-pof-datamanager-module">ramstk.controllers.pof.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.pof.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.requirement.html">ramstk.controllers.requirement package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.requirement.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.requirement.html#ramstk-controllers-requirement-datamanager-module">ramstk.controllers.requirement.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.requirement.html#ramstk-controllers-requirement-matrixmanager-module">ramstk.controllers.requirement.matrixmanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.requirement.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-</ul>
-</div>
-</div>
-<div class="section" id="controllers-package">
-<h3>Controllers Package<a class="headerlink" href="#controllers-package" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/metaclasses.html">RAMSTK Data Manager</a><ul class="simple">
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.revision.html">ramstk.controllers.revision package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.revision.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.revision.html#ramstk-controllers-revision-datamanager-module">ramstk.controllers.revision.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.revision.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/metaclasses.html#ramstk-matrix-manager">RAMSTK Matrix Manager</a><ul class="simple">
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.stakeholder.html">ramstk.controllers.stakeholder package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.stakeholder.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.stakeholder.html#ramstk-controllers-stakeholder-analysismanager-module">ramstk.controllers.stakeholder.analysismanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.stakeholder.html#ramstk-controllers-stakeholder-datamanager-module">ramstk.controllers.stakeholder.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.stakeholder.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/function.html">Function Controllers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/function.html#analysis-manager">Analysis Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/function.html#data-manager">Data Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/function.html#matrix-manager">Matrix Manager</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/hardware.html">Hardware Controllers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/hardware.html#analysis-manager">Analysis Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/hardware.html#data-manager">Data Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/hardware.html#matrix-manager">Matrix Manager</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/requirement.html">Requirement Controllers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/requirement.html#data-manager">Data Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/requirement.html#matrix-manager">Matrix Manager</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/revision.html">Revision Controllers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/revision.html#data-manager">Data Manager</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/stakeholder.html">Stakeholder Controllers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/stakeholder.html#analysis-manager">Analysis Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/stakeholder.html#data-manager">Data Manager</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api/controllers/validation.html">Validation Controllers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/validation.html#analysis-manager">Analysis Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/validation.html#data-manager">Data Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/controllers/validation.html#matrix-manager">Matrix Manager</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="views-package">
-<h3>Views Package<a class="headerlink" href="#views-package" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api/views.html">PyGobject Interface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gui/gtk.widgets.html">Widgets Package</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/gui/gtk.mwi.html">Multi-Window Interface (MWI) Package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.mwi.html#book-meta-class">Book Meta-Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.mwi.html#lists-and-matrices-book">Lists and Matrices Book</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.mwi.html#module-book">Module Book</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.mwi.html#work-book">Work Book</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/gui/gtk.moduleview.html">Module View Package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.moduleview.html#module-view-meta-class">Module View Meta-Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.moduleview.html#revision-module-view">Revision Module View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.moduleview.html#requirement-module-view">Requirement Module View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.moduleview.html#function-module-view">Function Module View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.moduleview.html#hardware-module-view">Hardware Module View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.moduleview.html#validation-module-view">Validation Module View</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/gui/gtk.listview.html">List View Package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.listview.html#list-view-meta-class-module">List View Meta-Class Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.listview.html#failure-definition-list-view">Failure Definition List View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.listview.html#usage-profile-list-view">Usage Profile List View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.listview.html#stakeholder-list-view">Stakeholder List View</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/gui/gtk.matrixview.html">Matrix View Package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.matrixview.html#matrix-view-meta-class">Matrix View Meta-Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.matrixview.html#function-matrix-views">Function Matrix Views</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.matrixview.html#requirement-matrix-views">Requirement Matrix Views</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.matrixview.html#hardware-matrix-views">Hardware Matrix Views</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.matrixview.html#validation-matrix-views">Validation Matrix Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/gui/gtk.workview.html">Work View Package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.workview.html#work-view-meta-class">Work View Meta-Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.workview.html#revision-work-view">Revision Work View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.workview.html#function-work-view">Function Work View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.workview.html#requirement-work-view">Requirement Work View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.workview.html#hardware-work-view">Hardware Work View</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#component-base-work-view">Component Base Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#capacitor-work-view">Capacitor Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#connection-work-view">Connection Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#inductor-work-view">Inductor Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#integrated-circuit-work-view">Integrated Circuit Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#meter-work-view">Meter Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#miscellaneous-components-work-view">Miscellaneous Components Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#relay-work-view">Relay Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#resistor-work-view">Resistor Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#semiconductor-work-view">Semiconductor Work View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/gui/gtk.workview.html#switch-work-view">Switch Work View</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="api/gui/gtk.workview.html#validation-work-view">Validation Work View</a></li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.controllers.validation.html">ramstk.controllers.validation package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.validation.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.validation.html#ramstk-controllers-validation-analysismanager-module">ramstk.controllers.validation.analysismanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.validation.html#ramstk-controllers-validation-datamanager-module">ramstk.controllers.validation.datamanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.validation.html#ramstk-controllers-validation-matrixmanager-module">ramstk.controllers.validation.matrixmanager module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.controllers.validation.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.controllers.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.controllers.html#ramstk-controllers-managers-module">ramstk.controllers.managers module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.controllers.html#module-contents">Module contents</a></li>
 </ul>
-</div>
-</div>
-<div class="section" id="data-access-package">
-<h3>Data Access Package<a class="headerlink" href="#data-access-package" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api/dao.html">Data Access Object Package</a><ul class="simple">
+</li>
+<li class="toctree-l4"><a class="reference internal" href="api/ramstk.db.html">ramstk.db package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.db.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.db.html#ramstk-db-base-module">ramstk.db.base module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.db.html#ramstk-db-common-module">ramstk.db.common module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.db.html#ramstk-db-program-module">ramstk.db.program module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.db.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="api/ramstk.exim.html">ramstk.exim package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.exim.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.exim.html#ramstk-exim-export-module">ramstk.exim.export module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.exim.html#ramstk-exim-imports-module">ramstk.exim.imports module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.exim.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="api/ramstk.models.html">ramstk.models package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.models.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.models.commondb.html">ramstk.models.commondb package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkcategory-module">ramstk.models.commondb.ramstkcategory module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkcondition-module">ramstk.models.commondb.ramstkcondition module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkfailuremode-module">ramstk.models.commondb.ramstkfailuremode module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkgroup-module">ramstk.models.commondb.ramstkgroup module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkhazards-module">ramstk.models.commondb.ramstkhazards module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkloadhistory-module">ramstk.models.commondb.ramstkloadhistory module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkmanufacturer-module">ramstk.models.commondb.ramstkmanufacturer module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkmeasurement-module">ramstk.models.commondb.ramstkmeasurement module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkmethod-module">ramstk.models.commondb.ramstkmethod module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkmodel-module">ramstk.models.commondb.ramstkmodel module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkrpn-module">ramstk.models.commondb.ramstkrpn module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstksiteinfo-module">ramstk.models.commondb.ramstksiteinfo module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkstakeholders-module">ramstk.models.commondb.ramstkstakeholders module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkstatus-module">ramstk.models.commondb.ramstkstatus module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstksubcategory-module">ramstk.models.commondb.ramstksubcategory module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstktype-module">ramstk.models.commondb.ramstktype module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#ramstk-models-commondb-ramstkuser-module">ramstk.models.commondb.ramstkuser module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.commondb.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.models.programdb.html">ramstk.models.programdb package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkaction-module">ramstk.models.programdb.ramstkaction module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkallocation-module">ramstk.models.programdb.ramstkallocation module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkcause-module">ramstk.models.programdb.ramstkcause module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkcontrol-module">ramstk.models.programdb.ramstkcontrol module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkdesignelectric-module">ramstk.models.programdb.ramstkdesignelectric module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkdesignmechanic-module">ramstk.models.programdb.ramstkdesignmechanic module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkenvironment-module">ramstk.models.programdb.ramstkenvironment module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkfailuredefinition-module">ramstk.models.programdb.ramstkfailuredefinition module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkfunction-module">ramstk.models.programdb.ramstkfunction module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkhardware-module">ramstk.models.programdb.ramstkhardware module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkhazardanalysis-module">ramstk.models.programdb.ramstkhazardanalysis module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkmatrix-module">ramstk.models.programdb.ramstkmatrix module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkmechanism-module">ramstk.models.programdb.ramstkmechanism module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkmilhdbk217f-module">ramstk.models.programdb.ramstkmilhdbk217f module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkmission-module">ramstk.models.programdb.ramstkmission module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkmissionphase-module">ramstk.models.programdb.ramstkmissionphase module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkmode-module">ramstk.models.programdb.ramstkmode module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstknswc-module">ramstk.models.programdb.ramstknswc module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkopload-module">ramstk.models.programdb.ramstkopload module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkopstress-module">ramstk.models.programdb.ramstkopstress module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkprograminfo-module">ramstk.models.programdb.ramstkprograminfo module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkprogramstatus-module">ramstk.models.programdb.ramstkprogramstatus module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkreliability-module">ramstk.models.programdb.ramstkreliability module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkrequirement-module">ramstk.models.programdb.ramstkrequirement module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkrevision-module">ramstk.models.programdb.ramstkrevision module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstksimilaritem-module">ramstk.models.programdb.ramstksimilaritem module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkstakeholder-module">ramstk.models.programdb.ramstkstakeholder module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstktestmethod-module">ramstk.models.programdb.ramstktestmethod module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#ramstk-models-programdb-ramstkvalidation-module">ramstk.models.programdb.ramstkvalidation module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.models.programdb.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
-</div>
-</div>
-<div class="section" id="analyses-package">
-<h3>Analyses Package<a class="headerlink" href="#analyses-package" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api/analyses/allocation.html">Reliability Allocation</a><ul class="simple">
+</li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.models.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.models.html#ramstk-models-tables-module">ramstk.models.tables module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.models.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/analyses/derating.html">Derating</a><ul class="simple">
+<li class="toctree-l4"><a class="reference internal" href="api/ramstk.views.html">ramstk.views package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.views.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="api/ramstk.views.gtk3.html">ramstk.views.gtk3 package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.views.gtk3.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.views.gtk3.assistants.html">ramstk.views.gtk3.assistants package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.assistants.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.assistants.html#ramstk-views-gtk3-assistants-project-module">ramstk.views.gtk3.assistants.project module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.assistants.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/analyses/dormancy.html">Dormancy</a><ul class="simple">
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.views.gtk3.books.html">ramstk.views.gtk3.books package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.books.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.books.html#ramstk-views-gtk3-books-listbook-module">ramstk.views.gtk3.books.listbook module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.books.html#ramstk-views-gtk3-books-modulebook-module">ramstk.views.gtk3.books.modulebook module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.books.html#ramstk-views-gtk3-books-workbook-module">ramstk.views.gtk3.books.workbook module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.books.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/analyses/milhdbk217f.html">MIL-HDBK-217F Reliability Prediction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#capacitor-models">Capacitor Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#connection-models">Connection Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#crystal-models">Crystal Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#filter-models">Filter Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#fuse-models">Fuse Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#inductor-models">Inductor Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#integrated-circuit-models">Integrated Circuit Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#lamp-models">Lamp Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#meter-models">Meter Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#relay-models">Relay Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#resistor-models">Resistor Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#semicondcutor-models">Semicondcutor Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/analyses/milhdbk217f.html#switch-models">Switch Models</a></li>
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.views.gtk3.function.html">ramstk.views.gtk3.function package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.function.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.function.html#ramstk-views-gtk3-function-listview-module">ramstk.views.gtk3.function.listview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.function.html#ramstk-views-gtk3-function-moduleview-module">ramstk.views.gtk3.function.moduleview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.function.html#ramstk-views-gtk3-function-workview-module">ramstk.views.gtk3.function.workview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.function.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/analyses/similaritem.html">Similar Item Analysis</a><ul class="simple">
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.views.gtk3.requirement.html">ramstk.views.gtk3.requirement package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.requirement.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.requirement.html#ramstk-views-gtk3-requirement-listview-module">ramstk.views.gtk3.requirement.listview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.requirement.html#ramstk-views-gtk3-requirement-moduleview-module">ramstk.views.gtk3.requirement.moduleview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.requirement.html#ramstk-views-gtk3-requirement-workview-module">ramstk.views.gtk3.requirement.workview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.requirement.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/analyses/stress.html">Stress Analysis</a><ul class="simple">
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.views.gtk3.revision.html">ramstk.views.gtk3.revision package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.revision.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.revision.html#ramstk-views-gtk3-revision-listview-module">ramstk.views.gtk3.revision.listview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.revision.html#ramstk-views-gtk3-revision-moduleview-module">ramstk.views.gtk3.revision.moduleview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.revision.html#ramstk-views-gtk3-revision-workview-module">ramstk.views.gtk3.revision.workview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.revision.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.views.gtk3.validation.html">ramstk.views.gtk3.validation package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.validation.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.validation.html#ramstk-views-gtk3-validation-listview-module">ramstk.views.gtk3.validation.listview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.validation.html#ramstk-views-gtk3-validation-moduleview-module">ramstk.views.gtk3.validation.moduleview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.validation.html#ramstk-views-gtk3-validation-workview-module">ramstk.views.gtk3.validation.workview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.validation.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l8"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html">ramstk.views.gtk3.widgets package</a><ul>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#submodules">Submodules</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-basebook-module">ramstk.views.gtk3.widgets.basebook module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-baseview-module">ramstk.views.gtk3.widgets.baseview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-button-module">ramstk.views.gtk3.widgets.button module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-combo-module">ramstk.views.gtk3.widgets.combo module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-dialog-module">ramstk.views.gtk3.widgets.dialog module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-entry-module">ramstk.views.gtk3.widgets.entry module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-frame-module">ramstk.views.gtk3.widgets.frame module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-label-module">ramstk.views.gtk3.widgets.label module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-matrixview-module">ramstk.views.gtk3.widgets.matrixview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-plot-module">ramstk.views.gtk3.widgets.plot module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-scrolledwindow-module">ramstk.views.gtk3.widgets.scrolledwindow module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#ramstk-views-gtk3-widgets-treeview-module">ramstk.views.gtk3.widgets.treeview module</a></li>
+<li class="toctree-l9"><a class="reference internal" href="api/ramstk.views.gtk3.widgets.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h3>Indices and Tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.views.gtk3.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.views.gtk3.html#ramstk-views-gtk3-desktop-module">ramstk.views.gtk3.desktop module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/ramstk.views.gtk3.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="api/ramstk.views.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#ramstk-configuration-module">ramstk.configuration module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#ramstk-exceptions-module">ramstk.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#ramstk-logger-module">ramstk.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#ramstk-ramstk-module">ramstk.ramstk module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#ramstk-utilities-module">ramstk.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/ramstk.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1054,61 +446,10 @@ naming shall adhere to the following conventions:</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Contributing</a><ul>
-<li><a class="reference internal" href="#code-of-conduct">Code of Conduct</a></li>
 <li><a class="reference internal" href="#how-to-contribute">How to Contribute</a></li>
-<li><a class="reference internal" href="#contributing-to-the-rams-toolkit-ramstk">Contributing to the RAMS ToolKit (RAMSTK)</a><ul>
-<li><a class="reference internal" href="#id1">How Can I Contribute?</a></li>
-<li><a class="reference internal" href="#id2">For Everyone</a><ul>
-<li><a class="reference internal" href="#id3">Reporting Issues</a></li>
-<li><a class="reference internal" href="#before-submitting-an-issue-report">Before Submitting an Issue Report</a></li>
-<li><a class="reference internal" href="#how-to-submit-a-useful-issue-report">How to Submit a Useful Issue Report</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id6">For Developers’ Eyes Only</a><ul>
-<li><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
-<li><a class="reference internal" href="#git-commit-messages">Git Commit Messages</a></li>
-<li><a class="reference internal" href="#always-add-descriptive-log-messages">Always Add Descriptive Log Messages</a></li>
-<li><a class="reference internal" href="#use-issue-system-numbers">Use Issue System Numbers</a></li>
-<li><a class="reference internal" href="#todo-comments">TODO Comments</a><ul>
-<li><a class="reference internal" href="#id7">Process Guidelines</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#never-write-a-test-that-doesn-t-have-an-engineering-specification">Never Write a Test That Doesn’t Have an Engineering Specification</a></li>
-<li><a class="reference internal" href="#never-write-code-that-doesn-t-have-a-test">Never Write Code That Doesn’t Have a Test</a></li>
-<li><a class="reference internal" href="#never-commit-code-that-doesn-t-run">Never Commit Code That Doesn’t Run</a></li>
-<li><a class="reference internal" href="#always-statically-check-your-code">Always Statically Check Your Code</a></li>
-<li><a class="reference internal" href="#double-check-before-you-create-a-pull-request">Double Check Before You Create a Pull Request</a></li>
-<li><a class="reference internal" href="#code-review-by-other-developers">Code Review by Other Developers</a></li>
-<li><a class="reference internal" href="#don-t-create-a-pull-request-for-code-you-don-t-understand">Don’t Create a Pull Request for Code You Don’t Understand</a></li>
-<li><a class="reference internal" href="#commit-complete-changesets">Commit Complete Changesets</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
-<li><a class="reference internal" href="#id8">Coding Conventions</a><ul>
-<li><a class="reference internal" href="#id9">Naming Conventions</a></li>
-<li><a class="reference internal" href="#id10">Design Conventions</a><ul>
-<li><a class="reference internal" href="#id11">List Views</a></li>
-<li><a class="reference internal" href="#id12">Matrix Views</a></li>
-<li><a class="reference internal" href="#id13">Module Views</a></li>
-<li><a class="reference internal" href="#id14">Work Views</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#api-documentation">API Documentation</a><ul>
-<li><a class="reference internal" href="#ramstk-module">RAMSTK Module</a></li>
-<li><a class="reference internal" href="#configuration-module">Configuration Module</a></li>
-<li><a class="reference internal" href="#utilities-module">Utilities Module</a></li>
-<li><a class="reference internal" href="#models-package">Models Package</a></li>
-<li><a class="reference internal" href="#controllers-package">Controllers Package</a></li>
-<li><a class="reference internal" href="#views-package">Views Package</a></li>
-<li><a class="reference internal" href="#data-access-package">Data Access Package</a></li>
-<li><a class="reference internal" href="#analyses-package">Analyses Package</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and Tables</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#development-environment">Development Environment</a></li>
+<li><a class="reference internal" href="#api-documentation">API Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -1117,8 +458,8 @@ naming shall adhere to the following conventions:</p>
   <p class="topless"><a href="usage.html"
                         title="previous chapter">Usage</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="api/models/commondb.html"
-                        title="next chapter">RAMSTK Models</a></p>
+  <p class="topless"><a href="CONTRIBUTING.html"
+                        title="next chapter">Contributing to the RAMS ToolKit (RAMSTK)</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -1135,7 +476,7 @@ naming shall adhere to the following conventions:</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -1147,7 +488,7 @@ naming shall adhere to the following conventions:</p>
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="api/models/commondb.html" title="RAMSTK Models"
+          <a href="CONTRIBUTING.html" title="Contributing to the RAMS ToolKit (RAMSTK)"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="usage.html" title="Usage"
@@ -1156,8 +497,8 @@ naming shall adhere to the following conventions:</p>
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007 - 2019, Doyle Rowland.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+        &#169; Copyright 2007 - 2020, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
     </div>
   </body>
 </html>
