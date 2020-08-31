@@ -9,17 +9,17 @@
 """Configuration for Sphinx."""
 
 # RAMSTK Package Imports
-import sphinx_py3doc_enhanced_theme
+# import sphinx_py3doc_enhanced_theme
 
 # -- Project information -----------------------------------------------------
 project = u'RAMSTK'
-copyright = u'2007 - 2019, Doyle Rowland'   # pylint: disable=redefined-builtin
+copyright = u'2007 - 2020, Doyle Rowland'   # pylint: disable=redefined-builtin
 author = u'Doyle Rowland'
 
 # The short X.Y version
-version = u'2.0'
+version = u'1.0'
 # The full version, including alpha/beta/rc tags
-release = u'2.0.0'
+release = u'1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be
@@ -32,7 +32,7 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'm2r',
+    'm2r'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -58,8 +58,8 @@ pygments_style = None
 # -- Options for HTML output -------------------------------------------------
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "theme"
-html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path(), "."]
+html_theme = "bizstyle"
+#html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path(), "."]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -88,5 +88,5 @@ intersphinx_mapping = {
     'NumPy': ('http://docs.scipy.org/doc/numpy/', None),
     'SciPy': ('http://docs.scipy.org/doc/scipy/reference', None),
     'matplotlib': ('http://matplotlib.org', None),
-    'treelib': ('https://treelib.readthedocs.io/en/latest', None),
+    'treelib': ('https://treelib.readthedocs.io/en/latest', None)
 }

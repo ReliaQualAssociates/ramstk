@@ -20,7 +20,7 @@ class RAMSTKError(Exception):
             # Set some default useless error message
             msg = "An error occured with RAMSTK."
 
-        super(RAMSTKError, self).__init__(msg)
+        super().__init__(msg)
 
 
 class DataAccessError(RAMSTKError):
@@ -36,7 +36,7 @@ class DataAccessError(RAMSTKError):
         :param str msg: the message to display to the user when this
             exception is raised.
         """
-        super(DataAccessError, self).__init__(msg=msg)
+        super().__init__(msg=msg)
 
         self.msg = msg
 
@@ -50,6 +50,6 @@ class OutOfRangeError(RAMSTKError):
         :param str msg: the message to display to the user when this
             exception is raised.
         """
-        super(OutOfRangeError, self).__init__(msg=msg)
+        super().__init__(msg=msg)
 
         self.msg = msg

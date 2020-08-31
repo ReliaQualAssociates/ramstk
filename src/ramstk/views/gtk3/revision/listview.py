@@ -7,7 +7,7 @@
 """The RAMSTK Failure Definition List View Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -1120,7 +1120,6 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _headings: List[str] = []
         _level: str = ''
 
         _model, _row = selection.get_selected()

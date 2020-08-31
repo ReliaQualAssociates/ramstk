@@ -201,13 +201,11 @@ class ModuleView(RAMSTKModuleView):
         _prompt = _("You are about to delete Hardware {0:d} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(_prompt,
-                                      self._dic_icons['question'],
-                                      'question',
-                                      parent=_parent)
-        _response = _dialog.do_run()
+        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog.do_set_message(_prompt)
+        _dialog.do_set_message_type('question')
 
-        if _response == Gtk.ResponseType.YES:
+        if _dialog.do_run() == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_hardware', node_id=self._record_id)
 
         _dialog.do_destroy()

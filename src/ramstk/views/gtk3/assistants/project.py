@@ -163,12 +163,10 @@ class OpenProject():
                         "be open at a time in RAMSTK.  You must close the "
                         "currently open RAMSTK database before a new "
                         "database can be opened.")
-            _icon = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR +
-                     '/32x32/information.png')
-            _dialog = RAMSTKMessageDialog(_prompt,
-                                          _icon,
-                                          'information',
-                                          parent=self._parent)
+            _dialog = RAMSTKMessageDialog(parent=self._parent)
+            _dialog.do_set_message(_prompt)
+            _dialog.do_set_message_type('information')
+
             if _dialog.run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 

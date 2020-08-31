@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from time import sleep
+from typing import Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -28,101 +29,44 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
 
 
-def do_read_site_configuration(logger: RAMSTKLogManager) -> \
-        RAMSTKSiteConfiguration:
+def do_connect_to_site_db(conn_info, logger) -> BaseDatabase:
     """
-    Create a site configuration instance.
+    Connect to the site (common) database.
 
-    :param logger: the logging.Logger() instance to use for writing to the
-        runtime log file.
-    :type logger: :class:`logging.Logger`
-    :return: _configuration; the RAMSTKSiteConfiguraion() instance to use for
-        this run of RAMSTK.
-    :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
+    :param dict conn_info: the site database connection information.
+    :param logger: the RAMSTKLogManager() to use for logging status.
+    :type logger: :class:`RAMSTKLogManager`
+    :return:
     """
-    def on_fail_create_site_configuration(error_message: str) -> None:
-        logger.do_log_error(__name__, error_message)
-
-    pub.subscribe(on_fail_create_site_configuration,
-                  'fail_create_site_configuration')
-
-    _configuration = RAMSTKSiteConfiguration()
-    _configuration.set_site_directories()
-    _configuration.get_site_configuration()
-
-    return _configuration
-
-
-def do_read_user_configuration() -> RAMSTKUserConfiguration:
-    """
-    Create a user configuration instance.
-
-    :return: _configuration; the RAMSTKUserConfiguraion() instance to use for
-        this run of RAMSTK.
-    :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
-    """
-    def on_fail_create_user_configuration(error_message: str) -> None:
-        print(error_message)
-
-    pub.subscribe(on_fail_create_user_configuration,
-                  'fail_create_user_configuration')
-
-    _configuration = RAMSTKUserConfiguration()
-    _configuration.set_user_directories()
-    _configuration.get_user_configuration()
-
-    return _configuration
-
-
-def the_one_ring() -> None:
-    """Execute the main function for RAMSTK."""
-    #// TODO: Implement splash screen.
-    #//
-    #// Add a splash screen to the launch of RAMSTK.
-    #//
-    #// labels: globalbacklog, normal
-    # splScreen = SplashScreen()
-
-    # Read the user configuration file and create a logger.  The user
-    # configuration file contains information needed to create the logger so
-    # it must come first.
-    user_configuration = do_read_user_configuration()
-    _logger: RAMSTKLogManager = RAMSTKLogManager(
-        user_configuration.RAMSTK_USER_LOG)
-    _logger.do_create_logger(__name__,
-                             user_configuration.RAMSTK_LOGLEVEL,
-                             to_tty=True)
-
-    _logger.do_log_info(__name__, "Reading the site configuration file.")
-    site_configuration = do_read_site_configuration(_logger)
-    _logger.do_log_info(__name__, "Read the site configuration file.")
-
-    _logger.do_log_info(
+    logger.do_log_info(
         __name__, "Connecting to the RAMSTK common database {0:s}.".format(
-            site_configuration.RAMSTK_COM_INFO['database']))
-    _site_db = (site_configuration.RAMSTK_COM_BACKEND + ':///'
-                + site_configuration.RAMSTK_COM_INFO['database'])
-    site_db = BaseDatabase()
-    site_db.do_connect(site_configuration.RAMSTK_COM_INFO)
-    _logger.do_log_info(
+            conn_info['database']))
+    _site_db = BaseDatabase()
+    _site_db.do_connect(conn_info)
+    logger.do_log_info(
         __name__, "Connected to the RAMSTK common database {0:s}.".format(
-            site_configuration.RAMSTK_COM_INFO['database']))
+            conn_info['database']))
 
-    _logger.do_log_debug(__name__, "Validating the RAMSTK license.")
-    _logger.do_log_debug(__name__, "Validated the RAMSTK license.")
+    return _site_db
 
-    _logger.do_log_info(__name__,
-                        "Loading global RAMSTK configuration variables.")
-    do_load_variables(site_db, site_configuration)
-    _logger.do_log_info(__name__,
-                        "Loaded global RAMSTK configuration variables.")
 
-    # Copy some site-level configuration variables to the user-level
-    # configuration.  These are used to load RAMSTKComboBox widgets with
-    # information during initialization.  This is the easiest way to make
-    # this information available without refactoring all the views to pass
-    # the site configuration object in addition to the user configuration
-    # object.
+def do_copy_configuration_values(
+        user_configuration: RAMSTKUserConfiguration,
+        site_configuration: RAMSTKSiteConfiguration
+) -> RAMSTKUserConfiguration:
+    """
+    Copy some values from the site configuration to the user configuration.
+
+    :param user_configuration: the instance of the RAMSTKUserConfiguration()
+    to
+        add volatile data to.
+    :type user_configuration: :class:`RAMSTKUserConfiguration`
+    :param site_configuration: the instance of the RAMSTKSiteConfiguration() to
+        add volatile data from.
+    :type site_configuration: :class:`RAMSTKSiteConfiguration`
+    :return: None
+    :rtype: None
+    """
     user_configuration.RAMSTK_AFFINITY_GROUPS = \
         site_configuration.RAMSTK_AFFINITY_GROUPS
     user_configuration.RAMSTK_REQUIREMENT_TYPE = \
@@ -158,6 +102,116 @@ def the_one_ring() -> None:
     user_configuration.RAMSTK_LOAD_HISTORY = \
         site_configuration.RAMSTK_LOAD_HISTORY
 
+    return user_configuration
+
+
+def do_read_site_configuration(logger: RAMSTKLogManager) -> \
+        RAMSTKSiteConfiguration:
+    """
+    Create a site configuration instance.
+
+    :param logger: the logging.Logger() instance to use for writing to the
+        runtime log file.
+    :type logger: :class:`logging.Logger`
+    :return: _configuration; the RAMSTKSiteConfiguraion() instance to use for
+        this run of RAMSTK.
+    :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
+    """
+    def on_fail_create_site_configuration(error_message: str) -> None:
+        """
+        Logs the error message when there's a failure to create the site conf.
+
+        :param str error_message: the error message raised by the failure.
+        :return: None
+        :rtype: None
+        """
+        logger.do_log_error(__name__, error_message)
+
+    pub.subscribe(on_fail_create_site_configuration,
+                  'fail_create_site_configuration')
+
+    logger.do_log_info(__name__, "Reading the site configuration file.")
+
+    _configuration = RAMSTKSiteConfiguration()
+    _configuration.set_site_directories()
+    _configuration.get_site_configuration()
+
+    logger.do_log_info(__name__, "Read the site configuration file.")
+
+    return _configuration
+
+
+def do_read_user_configuration(
+) -> Tuple[RAMSTKUserConfiguration, RAMSTKLogManager]:
+    """
+    Create a user configuration instance.
+
+    :return: _configuration; the RAMSTKUserConfiguraion() instance to use for
+        this run of RAMSTK.
+    :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+    """
+    def on_fail_create_user_configuration(error_message: str) -> None:
+        """
+        Logs the error message when there's a failure to create the user conf.
+
+        :param str error_message: the error message raised by the failure.
+        :return: None
+        :rtype: None
+        """
+        print(error_message)
+
+    pub.subscribe(on_fail_create_user_configuration,
+                  'fail_create_user_configuration')
+
+    _configuration = RAMSTKUserConfiguration()
+    _configuration.set_user_directories()
+    _configuration.get_user_configuration()
+
+    _logger: RAMSTKLogManager = RAMSTKLogManager(
+        _configuration.RAMSTK_USER_LOG)
+    _logger.do_create_logger(__name__,
+                             _configuration.RAMSTK_LOGLEVEL,
+                             to_tty=True)
+
+    return _configuration, _logger
+
+
+def the_one_ring() -> None:
+    """Execute the main function for RAMSTK."""
+    #// TODO: Implement splash screen.
+    #//
+    #// Add a splash screen to the launch of RAMSTK.
+    #//
+    #// labels: globalbacklog, normal
+    # splScreen = SplashScreen()
+
+    # Read the user configuration file and create a logger.  The user
+    # configuration file contains information needed to create the logger so
+    # it must come first.
+    user_configuration, _logger = do_read_user_configuration()
+    site_configuration = do_read_site_configuration(_logger)
+
+    site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO,
+                                    _logger)
+
+    _logger.do_log_debug(__name__, "Validating the RAMSTK license.")
+    _logger.do_log_debug(__name__, "Validated the RAMSTK license.")
+
+    _logger.do_log_info(__name__,
+                        "Loading global RAMSTK configuration variables.")
+    do_load_variables(site_db, site_configuration)
+    _logger.do_log_info(__name__,
+                        "Loaded global RAMSTK configuration variables.")
+
+    # Copy some site-level configuration variables to the user-level
+    # configuration.  These are used to load RAMSTKComboBox widgets with
+    # information during initialization.  This is the easiest way to make
+    # this information available without refactoring all the views to pass
+    # the site configuration object in addition to the user configuration
+    # object.
+    user_configuration = do_copy_configuration_values(user_configuration,
+                                                      site_configuration)
+
     _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
@@ -181,6 +235,7 @@ def the_one_ring() -> None:
         user_configuration)
     _program_mgr.dic_managers['validation']['data'] = dmValidation()
     _program_mgr.dic_managers['validation']['matrix'] = mmValidation()
+    # noinspection PyTypeChecker
     _program_mgr.dic_managers['options']['data'] = dmOptions(
         common_dao=site_db,
         site_configuration=site_configuration,

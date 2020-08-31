@@ -99,7 +99,7 @@ def do_make_buttonbox(view: Any,
 
         try:
             _button.connect('clicked', _callbacks[i])
-        except IndexError as _error:
+        except IndexError:
             _button.set_sensitive(False)
 
         _buttonbox.pack_start(_button, True, True, 0)

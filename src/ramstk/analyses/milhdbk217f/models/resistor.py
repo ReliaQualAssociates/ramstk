@@ -292,8 +292,8 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     elif _subcategory_id in [9, 11, 13, 14, 15]:
         _hazard_rate_active = (_hazard_rate_active * _pi_taps * _pi_r * _pi_v)
     elif _subcategory_id in [10, 12]:
-        _hazard_rate_active = (_hazard_rate_active * _pi_taps * _pi_c * _pi_r *
-                               _pi_v)
+        _hazard_rate_active = (_hazard_rate_active * _pi_taps * _pi_c * _pi_r
+                               * _pi_v)
     elif _subcategory_id != 8:
         _hazard_rate_active = (_hazard_rate_active * _pi_r)
 
@@ -302,8 +302,8 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def calculate_part_stress_lambda_b(attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -543,8 +543,8 @@ def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
         # set of lists, then the style ID selects the proper list of piR values
         # and then the resistance range breakpoint is used to select
         if _subcategory_id in [6, 7]:
-            _pi_r = PI_R[_subcategory_id][_specification_id - 1][_family_id -
-                                                                 1][_index + 1]
+            _pi_r = PI_R[_subcategory_id][_specification_id
+                                          - 1][_family_id - 1][_index + 1]
         elif _subcategory_id not in [4, 8]:
             _pi_r = PI_R[_subcategory_id][_index + 1]
 

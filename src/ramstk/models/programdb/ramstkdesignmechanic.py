@@ -1,3 +1,4 @@
+# pylint: disable=too-many-instance-attributes
 # -*- coding: utf-8 -*-
 #
 #       ramstk.data.storage.RAMSTKDesignMechanic.py is part of The RAMSTK
