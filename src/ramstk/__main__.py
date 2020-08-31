@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from time import sleep
+from typing import Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -51,7 +52,8 @@ def do_connect_to_site_db(conn_info, logger) -> BaseDatabase:
 
 def do_copy_configuration_values(
         user_configuration: RAMSTKUserConfiguration,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        site_configuration: RAMSTKSiteConfiguration
+) -> RAMSTKUserConfiguration:
     """
     Copy some values from the site configuration to the user configuration.
 
@@ -139,7 +141,8 @@ def do_read_site_configuration(logger: RAMSTKLogManager) -> \
     return _configuration
 
 
-def do_read_user_configuration() -> RAMSTKUserConfiguration:
+def do_read_user_configuration(
+) -> Tuple[RAMSTKUserConfiguration, RAMSTKLogManager]:
     """
     Create a user configuration instance.
 
@@ -232,6 +235,7 @@ def the_one_ring() -> None:
         user_configuration)
     _program_mgr.dic_managers['validation']['data'] = dmValidation()
     _program_mgr.dic_managers['validation']['matrix'] = mmValidation()
+    # noinspection PyTypeChecker
     _program_mgr.dic_managers['options']['data'] = dmOptions(
         common_dao=site_db,
         site_configuration=site_configuration,
