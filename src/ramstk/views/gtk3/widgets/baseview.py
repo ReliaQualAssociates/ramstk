@@ -256,6 +256,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'save-all':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/save-all.png',
+            'save-layout':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/save-layout.png',
             'testmethod':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/method.png',
@@ -636,6 +639,18 @@ class RAMSTKBaseView(Gtk.HBox):
                                  justify=Gtk.Justification.CENTER,
                                  tooltip=_tooltip)
         self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+    def make_toolbuttons(self, **kwargs: Dict[str, Any]) -> None:
+        """
+        Common method to create the RAMSTKBaseView tool buttons.
+
+        :return: None
+        """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
+        self.pack_start(_scrolledwindow, False, False, 0)
 
     def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
         """
@@ -1276,18 +1291,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
             self.treeview.remove_column(_column)
 
         _model.clear()
-
-    def make_toolbuttons(self, **kwargs: Any) -> None:
-        """
-        Common method to create the WorkView tool buttons.
-
-        :return: None
-        """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
-        self.pack_start(_scrolledwindow, False, False, 0)
 
     def make_ui(self, **kwargs: Any) -> RAMSTKFrame:
         """

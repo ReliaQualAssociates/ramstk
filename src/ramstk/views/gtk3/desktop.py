@@ -3,7 +3,7 @@
 #       ramstk.views.gtk3.desktop.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 basebook."""
 
 # Standard Library Imports
@@ -21,7 +21,7 @@ from ramstk.configuration import (RAMSTK_FAILURE_PROBABILITY,
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (CreateProject, EditOptions,
-                                          OpenProject)
+                                          EditPreferences, OpenProject)
 from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
                                      RAMSTKWorkBook)
 
@@ -97,18 +97,19 @@ class RAMSTKDesktop(Gtk.Window):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._logger = logger
         try:
             _screen = Gdk.Screen.get_default()
             _display = _screen.get_display()
             _monitor = _display.get_monitor(0)
-            self._n_screens = _display.get_n_monitors()
             self._height = _monitor.get_geometry().height
+            self._n_screens = _display.get_n_monitors()
             self._width = _monitor.get_geometry().width
         except AttributeError:
             # When running on CI servers, there will be no monitor.  We also
             # don't need one.
-            self._n_screens = 0
             self._height = -1
+            self._n_screens = 0
             self._width = -1
 
         # Initialize public dictionary attributes.
@@ -177,8 +178,8 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_label(_("_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', EditPreferences,
-        #                   self.RAMSTK_USER_CONFIGURATION)
+        _menu_item.connect('activate', EditPreferences,
+                           self.RAMSTK_USER_CONFIGURATION, self._logger, self)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.MenuItem(label=_("_Edit"), use_underline=True)

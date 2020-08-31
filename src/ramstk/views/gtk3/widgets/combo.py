@@ -150,7 +150,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
     def get_value(self, index: int = 0) -> str:
         """
-        Return the value in the RAMSTKComboBox model at the index position.
+        Return the value in the RAMSTKComboBox() model at the index position.
 
         :keyword int index: the column in the RAMSTKComboBox() model whose
             value is to be retrieved.  Defaults to zero which will always

@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 import datetime
-from typing import Any, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 import defusedxml.lxml as lxml
@@ -25,8 +25,33 @@ from .label import RAMSTKLabel
 from .widget import RAMSTKWidget
 
 
-def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
-        Gtk.TreeViewColumn:
+def do_make_cell(
+        widget: str
+) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle, Gtk.CellRendererSpin,
+           Gtk.CellRendererCombo]:
+    """
+    Create the appropriate type of Gtk.CellRenderer().
+
+    :param str widget: the name of the type of cell to create.
+    :return: the Gtk.CellRenderer() created by this method.
+    :rtype: :class:`Gtk.CellRenderer`
+    """
+    if widget == 'combo':
+        _cell = do_make_combo_cell()
+    elif widget == 'spin':
+        _cell = do_make_spin_cell()
+    elif widget == 'toggle':
+        _cell = do_make_toggle_cell()
+    elif widget == 'blob':
+        _cell = do_make_text_cell(True)
+    else:
+        _cell = do_make_text_cell(False)
+
+    return _cell
+
+
+def do_make_column(cells: List[Gtk.CellRenderer],
+                   **kwargs: Dict[str, Any]) -> Gtk.TreeViewColumn:
     """
     Make a Gtk.TreeViewColumn().
 
@@ -60,6 +85,68 @@ def do_make_column(cells: List[Gtk.CellRenderer], **kwargs) -> \
     return _column
 
 
+def do_make_combo_cell() -> Gtk.CellRendererCombo:
+    """
+    Make a Gtk.CellRendererCombo().
+
+    :return: _cell
+    :rtype: :class:`Gtk.CellRendererCombo`
+    """
+    _cell = Gtk.CellRendererCombo()
+    _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
+    _cellmodel.append([""])
+    _cell.set_property('has-entry', False)
+    _cell.set_property('model', _cellmodel)
+    _cell.set_property('text-column', 0)
+
+    return _cell
+
+
+def do_make_spin_cell() -> Gtk.CellRendererSpin:
+    """
+    Make a Gtk.CellRendererCombo().
+
+    :return: _cell
+    :rtype: :class:`Gtk.CellRendererSpin`
+    """
+    _cell = Gtk.CellRendererSpin()
+    _adjustment = Gtk.Adjustment(upper=5.0, step_incr=0.05)
+    _cell.set_property('adjustment', _adjustment)
+    _cell.set_property('digits', 2)
+
+    return _cell
+
+
+def do_make_text_cell(blob: bool = False) -> Gtk.CellRendererText:
+    """
+    Make a Gtk.CellRendererText() or CellRendererML().
+
+    :param bool blob: indicates whether the cell will be displaying a BLOB
+        field.
+    :type model: :class:`Gtk.TreeModel`
+    :return: _cell
+    :rtype: :class:`Gtk.CellRendererText`
+    """
+    if not blob:
+        _cell = Gtk.CellRendererText()
+    else:
+        _cell = CellRendererML()
+
+    return _cell
+
+
+def do_make_toggle_cell() -> Gtk.CellRendererToggle:
+    """
+    Make a Gtk.CellRendererToggle().
+
+    :return: _cell
+    :rtype: :class:`Gtk.CellRendererToggle`
+    """
+    _cell = Gtk.CellRendererToggle()
+
+    return _cell
+
+
 def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
     """
     Set common properties of Gtk.CellRenderers().
@@ -73,6 +160,8 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
     _editable = kwargs.get('editable', False)
     _fg_color = kwargs.get('fg_color', '#000000')
     _visible = kwargs.get('visible', True)
+    _weight = kwargs.get('weight', 400)
+    _weight_set = kwargs.get('weight_set', False)
 
     if not _editable:
         _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
@@ -86,6 +175,8 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
         cell.set_property('background', _bg_color)
         cell.set_property('editable', _editable)
         cell.set_property('foreground', _fg_color)
+        cell.set_property('weight', _weight)
+        cell.set_property('weight-set', _weight_set)
         cell.set_property('wrap-width', 250)
         cell.set_property('wrap-mode', Pango.WrapMode.WORD)
     elif isinstance(cell, Gtk.CellRendererCombo):
@@ -129,93 +220,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self.pixbuf_col: int = -1
         self.index_col: int = 0
         self.selection = self.get_selection()
-
-    def _do_make_cell(
-            self, widget: str
-    ) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle, Gtk.
-               CellRendererSpin, Gtk.CellRendererCombo]:
-        """
-        Create the appropriate type of Gtk.CellRenderer().
-
-        :param str widget: the name of the type of cell to create.
-        :return: the Gtk.CellRenderer created by this method.
-        :rtype: :class:`Gtk.CellRenderer`
-        """
-        if widget == 'combo':
-            _cell = self._do_make_combo_cell()
-        elif widget == 'spin':
-            _cell = self._do_make_spin_cell()
-        elif widget == 'toggle':
-            _cell = self._do_make_toggle_cell()
-        elif widget == 'blob':
-            _cell = self._do_make_text_cell(True)
-        else:
-            _cell = self._do_make_text_cell(False)
-
-        return _cell
-
-    @staticmethod
-    def _do_make_combo_cell() -> Gtk.CellRendererCombo:
-        """
-        Make a Gtk.CellRendererCombo().
-
-        :return: _cell
-        :rtype: :class:`Gtk.CellRendererCombo`
-        """
-        _cell = Gtk.CellRendererCombo()
-        _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
-        _cellmodel.append([""])
-        _cell.set_property('has-entry', False)
-        _cell.set_property('model', _cellmodel)
-        _cell.set_property('text-column', 0)
-
-        return _cell
-
-    @staticmethod
-    def _do_make_spin_cell() -> Gtk.CellRendererSpin:
-        """
-        Make a Gtk.CellRendererCombo().
-
-        :return: _cell
-        :rtype: :class:`Gtk.CellRendererCombo`
-        """
-        _cell = Gtk.CellRendererSpin()
-        _adjustment = Gtk.Adjustment(upper=5.0, step_incr=0.05)
-        _cell.set_property('adjustment', _adjustment)
-        _cell.set_property('digits', 2)
-
-        return _cell
-
-    @staticmethod
-    def _do_make_text_cell(blob: bool = False) -> Gtk.CellRendererText:
-        """
-        Make a Gtk.CellRendererCombo().
-
-        :param bool blob: indicates whether the cell will be displaying a BLOB
-            field.
-        :type model: :class:`Gtk.TreeModel`
-        :return: _cell
-        :rtype: :class:`Gtk.CellRendererCombo`
-        """
-        if not blob:
-            _cell = Gtk.CellRendererText()
-        else:
-            _cell = CellRendererML()
-
-        return _cell
-
-    @staticmethod
-    def _do_make_toggle_cell() -> Gtk.CellRendererToggle:
-        """
-        Make a Gtk.CellRendererCombo().
-
-        :param int editable: indicates whether the cell is editable.
-        :return: _cell
-        :rtype: :class:`Gtk.CellRendererCombo`
-        """
-        _cell = Gtk.CellRendererToggle()
-
-        return _cell
 
     def do_edit_cell(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      position: int) -> Any:
@@ -537,7 +541,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         return _model
 
-    def make_model(self, bg_color: str = '#000000',
+    def make_model(self,
+                   bg_color: str = '#000000',
                    fg_color: str = '#FFFFFF') -> None:
         """
         Make the RAMSTKTreeView() data model.
@@ -564,7 +569,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self.set_model(_model)
 
         for _idx, _widget in enumerate(self.widgets):
-            _cell = self._do_make_cell(_widget)
+            _cell = do_make_cell(_widget)
             do_set_cell_properties(_cell,
                                    bg_color=bg_color,
                                    fg_color=fg_color,

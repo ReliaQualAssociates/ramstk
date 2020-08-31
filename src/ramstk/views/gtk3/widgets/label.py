@@ -8,7 +8,7 @@
 """RAMSTK Label Module."""
 
 # Standard Library Imports
-from typing import Any, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk
@@ -17,8 +17,9 @@ from ramstk.views.gtk3 import Gtk
 from .widget import RAMSTKWidget
 
 
-def do_make_label_group(text: List[str],
-                        **kwargs: Any) -> Tuple[int, List[int]]:
+def do_make_label_group(
+        text: List[str], **kwargs: Dict[str,
+                                        Any]) -> Tuple[int, List[object]]:
     r"""
     Make and place a group of labels.
 
