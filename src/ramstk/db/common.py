@@ -999,9 +999,9 @@ def do_make_commondb_tables(engine: Engine) -> None:
     RAMSTKUser.__table__.create(bind=engine)
 
 
-def _do_load_action_variables(site_db: BaseDatabase,
-                              site_configuration: RAMSTKSiteConfiguration
-                              ) -> None:
+def _do_load_action_variables(
+        site_db: BaseDatabase,
+        site_configuration: RAMSTKSiteConfiguration) -> None:
     """
     Load the RAMSTK_ACTION_CATEGORY variable.
 
@@ -1033,9 +1033,9 @@ def _do_load_action_variables(site_db: BaseDatabase,
         )
 
 
-def _do_load_hardware_variables(site_db: BaseDatabase,
-                                site_configuration: RAMSTKSiteConfiguration
-                                ) -> None:
+def _do_load_hardware_variables(
+        site_db: BaseDatabase,
+        site_configuration: RAMSTKSiteConfiguration) -> None:
     """
     Load variables associated with hardware categories and failure modes.
 
@@ -1085,9 +1085,9 @@ def _do_load_hardware_variables(site_db: BaseDatabase,
         site_configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
 
 
-def _do_load_incident_variables(site_db: BaseDatabase,
-                                site_configuration: RAMSTKSiteConfiguration
-                                ) -> None:
+def _do_load_incident_variables(
+        site_db: BaseDatabase,
+        site_configuration: RAMSTKSiteConfiguration) -> None:
     """
     Load the RAMSTK_INCIDENT_CATEGORY variable.
 
@@ -1173,9 +1173,9 @@ def _do_load_miscellaneous_variables(
             _attributes['type_type'])
 
 
-def _do_load_pof_variables(site_db: BaseDatabase,
-                           site_configuration: RAMSTKSiteConfiguration
-                           ) -> None:
+def _do_load_pof_variables(
+        site_db: BaseDatabase,
+        site_configuration: RAMSTKSiteConfiguration) -> None:
     """
     Load the RAMSTK_DAMAGE_MODELS variable.
 
@@ -1206,9 +1206,9 @@ def _do_load_pof_variables(site_db: BaseDatabase,
                                        _attributes['measurement_type'])
 
 
-def _do_load_requirement_variables(site_db: BaseDatabase,
-                                   site_configuration: RAMSTKSiteConfiguration
-                                   ) -> None:
+def _do_load_requirement_variables(
+        site_db: BaseDatabase,
+        site_configuration: RAMSTKSiteConfiguration) -> None:
     """
     Load variables related to requiremetents and stakeholders.
 
@@ -1240,9 +1240,9 @@ def _do_load_requirement_variables(site_db: BaseDatabase,
             _attributes['stakeholder'])
 
 
-def _do_load_rpn_variables(site_db: BaseDatabase,
-                           site_configuration: RAMSTKSiteConfiguration
-                           ) -> None:
+def _do_load_rpn_variables(
+        site_db: BaseDatabase,
+        site_configuration: RAMSTKSiteConfiguration) -> None:
     """
     Load the RPN detection, occurremce, and severity variables.
 
@@ -1293,9 +1293,9 @@ def _do_load_severity(site_db: BaseDatabase,
             _attributes['category_type'], _attributes['value'])
 
 
-def _do_load_user_workgroups(site_db: BaseDatabase,
-                             site_configuration: RAMSTKSiteConfiguration
-                             ) -> None:
+def _do_load_user_workgroups(
+        site_db: BaseDatabase,
+        site_configuration: RAMSTKSiteConfiguration) -> None:
     """
     Load the RAMSTK_USERS and RAMSTK_WORKGROUPS variables.
 

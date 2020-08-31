@@ -409,9 +409,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 attributes['years_in_production']),
                                                 signal='changed')
 
-    def __do_load_microprocessor_microcontroller(self,
-                                                 attributes: Dict[str, Any]
-                                                 ) -> None:
+    def __do_load_microprocessor_microcontroller(
+            self, attributes: Dict[str, Any]) -> None:
         """
         Load the widgets that display microprocessor information.
 

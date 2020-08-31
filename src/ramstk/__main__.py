@@ -41,6 +41,13 @@ def do_read_site_configuration(logger: RAMSTKLogManager) -> \
     :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     """
     def on_fail_create_site_configuration(error_message: str) -> None:
+        """
+        Logs the error message when there's a failure to create the site conf.
+
+        :param str error_message: the error message raised by the failure.
+        :return: None
+        :rtype: None
+        """
         logger.do_log_error(__name__, error_message)
 
     pub.subscribe(on_fail_create_site_configuration,
@@ -62,6 +69,13 @@ def do_read_user_configuration() -> RAMSTKUserConfiguration:
     :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
     def on_fail_create_user_configuration(error_message: str) -> None:
+        """
+        Logs the error message when there's a failure to create the user conf.
+
+        :param str error_message: the error message raised by the failure.
+        :return: None
+        :rtype: None
+        """
         print(error_message)
 
     pub.subscribe(on_fail_create_user_configuration,
@@ -100,8 +114,6 @@ def the_one_ring() -> None:
     _logger.do_log_info(
         __name__, "Connecting to the RAMSTK common database {0:s}.".format(
             site_configuration.RAMSTK_COM_INFO['database']))
-    _site_db = (site_configuration.RAMSTK_COM_BACKEND + ':///'
-                + site_configuration.RAMSTK_COM_INFO['database'])
     site_db = BaseDatabase()
     site_db.do_connect(site_configuration.RAMSTK_COM_INFO)
     _logger.do_log_info(

@@ -118,8 +118,8 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     return get_part_count_lambda_b(attributes)
 
 
-def calculate_part_stress_lambda_b(attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 

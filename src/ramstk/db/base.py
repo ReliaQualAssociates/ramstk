@@ -104,9 +104,9 @@ class BaseDatabase():
             else:
                 raise DataAccessError('Unknown database dialect in database '
                                       'connection dict.')
-        except TypeError:
+        except TypeError as _error:
             raise DataAccessError('Unknown dialect or non-string value in '
-                                  'database connection dict.')
+                                  'database connection dict.') from _error
 
         if self.database != '':
             self.engine, self.session = do_open_session(self.database)
@@ -184,7 +184,7 @@ class BaseDatabase():
                 "record.  Error returned from database was:\n\t{0:s}.".format(
                     str(_error)))
             pub.sendMessage('fail_delete_record', error_message=_error_message)
-            raise DataAccessError(_error_message)
+            raise DataAccessError(_error_message) from _error
         except exc.ProgrammingError as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
@@ -198,7 +198,7 @@ class BaseDatabase():
                 "record.  Error returned from database was:\n\t{0:s}.".format(
                     str(_error.orig)))
             pub.sendMessage('fail_delete_record', error_message=_error_message)
-            raise DataAccessError(_error_message)
+            raise DataAccessError(_error_message) from _error
 
     def do_disconnect(self) -> None:
         """
@@ -259,22 +259,10 @@ class BaseDatabase():
         :param table: the database table object to select all from.
         :return: a list of table instances; one for each record.
         """
-        try:
-            _key = kwargs['key']
-        except KeyError:
-            _key = None
-        try:
-            _value = kwargs['value']
-        except KeyError:
-            _value = None
-        try:
-            _order = kwargs['order']
-        except KeyError:
-            _order = None
-        try:
-            _all = kwargs['_all']
-        except KeyError:
-            _all = True
+        _key = kwargs.get('key', None)
+        _value = kwargs.get('value', None)
+        _order = kwargs.get('order', None)
+        _all = kwargs.get('_all', True)
 
         _results = []
 

@@ -26,8 +26,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     This class manages the functional analysis for functional hazards analysis
     (FHA).  Attributes of the function Analysis Manager are:
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
+    def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[str, Any]) -> None:
         """
         Initialize an instance of the function analysis manager.
@@ -36,7 +35,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             current instance of the RAMSTK application.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super(AnalysisManager, self).__init__(configuration, **kwargs)
+        super().__init__(configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -91,11 +90,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         self._do_calculate_improvement()
 
-        pub.sendMessage('succeed_calculate_stakeholder',
-                        node_id=node_id,
-                        package={'improvement':
-                                 self._attributes['improvement']})
-        pub.sendMessage('succeed_calculate_stakeholder',
-                        node_id=node_id,
-                        package={'overall_weight':
-                                 self._attributes['overall_weight']})
+        pub.sendMessage(
+            'succeed_calculate_stakeholder',
+            node_id=node_id,
+            package={'improvement': self._attributes['improvement']})
+        pub.sendMessage(
+            'succeed_calculate_stakeholder',
+            node_id=node_id,
+            package={'overall_weight': self._attributes['overall_weight']})

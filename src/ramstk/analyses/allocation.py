@@ -14,9 +14,8 @@ from typing import Any, Dict
 from pubsub import pub
 
 
-def _calculate_agree_apportionment(parent_goal: float,
-                                   attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def _calculate_agree_apportionment(
+        parent_goal: float, attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Perform an AGREE apportionment of a reliability requirement.
 
@@ -64,9 +63,8 @@ def _calculate_agree_apportionment(parent_goal: float,
     return attributes
 
 
-def _calculate_arinc_apportionment(parent_goal: float,
-                                   attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def _calculate_arinc_apportionment(
+        parent_goal: float, attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Perform an ARINC apportionment of the reliability requirement.
 
@@ -100,9 +98,8 @@ def _calculate_arinc_apportionment(parent_goal: float,
     return attributes
 
 
-def _calculate_equal_apportionment(parent_goal: float,
-                                   attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def _calculate_equal_apportionment(
+        parent_goal: float, attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Perform an equal apportionment of the reliability goal.
 

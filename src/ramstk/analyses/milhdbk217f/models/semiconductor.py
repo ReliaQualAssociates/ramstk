@@ -324,8 +324,8 @@ def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def calculate_electrical_stress_factor(attributes: Dict[str, Any]
-                                       ) -> Dict[str, Any]:
+def calculate_electrical_stress_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the electrical stress factor for the semiconductor device.
 
@@ -362,8 +362,8 @@ def calculate_electrical_stress_factor(attributes: Dict[str, Any]
     return attributes
 
 
-def calculate_junction_temperature(attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def calculate_junction_temperature(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the junction temperature of the semiconductor device.
 
@@ -484,8 +484,8 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def calculate_part_stress_lambda_b(attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.
 
@@ -526,14 +526,14 @@ def calculate_part_stress_lambda_b(attributes: Dict[str, Any]
     if _subcategory_id in [3, 5, 6, 10]:
         _lambda_b = _dic_lambdab_scalar[_subcategory_id]
     elif _subcategory_id == 7:
-        _lambda_b = 0.032 * exp(0.354 * _frequency_operating +
-                                0.00558 * _power_operating)
+        _lambda_b = 0.032 * exp(0.354 * _frequency_operating
+                                + 0.00558 * _power_operating)
     elif _subcategory_id == 8:
         if 1.0 < _frequency_operating <= 10.0 and _power_operating < 0.1:
             _lambda_b = 0.052
         else:
-            _lambda_b = 0.0093 * exp(0.429 * _frequency_operating +
-                                     0.486 * _power_operating)
+            _lambda_b = 0.0093 * exp(0.429 * _frequency_operating
+                                     + 0.486 * _power_operating)
     elif _subcategory_id == 12:
         if _application_id in [1, 3]:
             _lambda_b = 0.00043 * _n_elements + 0.000043
@@ -547,8 +547,8 @@ def calculate_part_stress_lambda_b(attributes: Dict[str, Any]
     return attributes
 
 
-def calculate_power_rating_factor(attributes: Dict[str, Any]
-                                  ) -> Dict[str, Any]:
+def calculate_power_rating_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Calculate the power rating factor for the semiconductor device.
 
@@ -706,8 +706,8 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
     return _base_hr
 
 
-def get_part_count_quality_factor(attributes: Dict[str, Any]
-                                  ) -> Dict[str, Any]:
+def get_part_count_quality_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Retrieve the parts count quality factor for the semiconductor device.
 
@@ -737,8 +737,8 @@ def get_part_count_quality_factor(attributes: Dict[str, Any]
     return attributes
 
 
-def get_part_stress_quality_factor(attributes: Dict[str, Any]
-                                   ) -> Dict[str, Any]:
+def get_part_stress_quality_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     Select the part stress quality factor for the semiconductor device.
 
