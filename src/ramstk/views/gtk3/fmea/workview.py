@@ -913,8 +913,6 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
-
         if self.chkCriticality.get_active():
             pub.sendMessage("request_calculate_criticality",
                             item_hr=self._item_hazard_rate)

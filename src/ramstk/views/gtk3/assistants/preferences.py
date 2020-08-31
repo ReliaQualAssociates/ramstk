@@ -531,6 +531,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
         _model = self.tvwFormatFile.get_model()
         _model.clear()
+        # pylint: disable=unused-variable
         for _index, __ in enumerate(_default):
             try:
                 _key = _keys[_index].text
