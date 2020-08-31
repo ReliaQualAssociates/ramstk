@@ -25,7 +25,7 @@ jobs:
           ref: develop
       - name: TODO to Issue
         id: todo
-        uses: alstr/todo-to-issue-action@master
+        uses: alstr/todo-to-issue-action@v2.0
         with:
           REPO: ${{ github.repository }}
           BEFORE: ${{ github.event.before }}
