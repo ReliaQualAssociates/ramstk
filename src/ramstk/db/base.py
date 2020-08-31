@@ -239,7 +239,7 @@ class BaseDatabase():
                 "were:\n\t{1:s}.".format(str(_error.statement),
                                          str(_error.params)))
             pub.sendMessage('fail_insert_record', error_message=_error_message)
-            raise DataAccessError(_error_message)
+            raise DataAccessError(_error_message) from _error
 
     def do_insert_many(self, records: List[object]) -> None:
         """

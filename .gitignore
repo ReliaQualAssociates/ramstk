@@ -56,9 +56,5 @@ devtools/update_docs.txt
 pylintout
 
 # Override settings for some specific files.
-!/license.txt
-!/requirements-dev.txt
-!/requirements-test.txt
-!/requirements.txt
 /.gtm/
 /.project

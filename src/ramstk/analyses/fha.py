@@ -49,10 +49,11 @@ def calculate_hri(probability: str, severity: str) -> int:
     """
     try:
         return PROBABILITY[probability] * SEVERITY[severity]
-    except KeyError:
+    except KeyError as _error:
         raise OutOfRangeError(("calculate_hri() was passed an unknown hazard "
                                "probability ({0:s}) or severity ({1:s}) "
-                               "description.").format(probability, severity))
+                               "description.").format(probability,
+                                                      severity)) from _error
 
 
 def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
