@@ -697,7 +697,7 @@ def test_format_file():
     yield _test_file
 
 
-@pytest.fixture
+@pytest.fixture(scope='class')
 def test_export_dir():
     """Create a directroy for export testing."""
     # This simply creates the base name of the file and directory to create it

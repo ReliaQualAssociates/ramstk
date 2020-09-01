@@ -8,5 +8,5 @@
 """The RAMSTK export-import package."""
 
 # RAMSTK Local Imports
-from .export import COLUMN_HEADERS, Export
+from .export import Export
 from .imports import Import
