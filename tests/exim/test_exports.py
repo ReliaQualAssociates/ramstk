@@ -8,7 +8,6 @@
 """Test class for testing the Exports module."""
 
 # Third Party Imports
-import pandas as pd
 import pytest
 
 # RAMSTK Package Imports
@@ -31,7 +30,8 @@ class TestExport():
         DUT = Export()
 
         assert DUT.do_load_output('Function') is None
-        assert isinstance(DUT._df_output_data, pd.DataFrame)
+        assert isinstance(DUT._dic_output_data, dict)
+        assert isinstance(DUT._dic_output_data['function'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_requirement(self, test_program_dao):
@@ -43,7 +43,8 @@ class TestExport():
         DUT = Export()
 
         assert DUT.do_load_output('requirement') is None
-        assert isinstance(DUT._df_output_data, pd.DataFrame)
+        assert isinstance(DUT._dic_output_data, dict)
+        assert isinstance(DUT._dic_output_data['requirement'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_hardware(self, test_program_dao):
@@ -55,7 +56,8 @@ class TestExport():
         DUT = Export()
 
         assert DUT.do_load_output('Hardware') is None
-        assert isinstance(DUT._df_output_data, pd.DataFrame)
+        assert isinstance(DUT._dic_output_data, dict)
+        assert isinstance(DUT._dic_output_data['hardware'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_validation(self, test_program_dao):
@@ -67,7 +69,8 @@ class TestExport():
         DUT = Export()
 
         assert DUT.do_load_output('Validation') is None
-        assert isinstance(DUT._df_output_data, pd.DataFrame)
+        assert isinstance(DUT._dic_output_data, dict)
+        assert isinstance(DUT._dic_output_data['validation'], dict)
 
     @pytest.mark.unit
     def test_do_export_to_csv(self, test_program_dao, test_export_dir):

@@ -8,9 +8,10 @@
 
 # Standard Library Imports
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import pandas as pd
 from pubsub import pub
 from treelib import Tree
@@ -21,12 +22,12 @@ class Export:
     def __init__(self) -> None:
         """Initialize an Export module instance."""
         # Initialize private dictionary attributes.
-        self._dic_output_data: Dict[str, List[Any]] = {}
+        self._dic_output_data: Dict[str, Dict[int, Dict[Any, Any]]] = {'': {}}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._df_output_data: pd.DataFrame = None
+        self._df_output_data: pd.DataFrame = pd.DataFrame()
 
         # Initialize public dictionary attributes.
 
@@ -55,24 +56,38 @@ class Export:
         :return: None
         :rtype: None
         """
-        if file_type == 'csv':
-            self._df_output_data.to_csv(file_name, sep=';', index=False)
-        elif file_type == 'excel':
-            _file, _extension = os.path.splitext(file_name)
-            if _extension == '.xls':
-                _writer = pd.ExcelWriter(file_name, engine='xlwt')
-            elif _extension == '.xlsx':
-                _writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
-            elif _extension == '.xlsm':
-                _writer = pd.ExcelWriter(file_name, engine='openpyxl')
-            else:
-                file_name = _file + '.xls'
-                _writer = pd.ExcelWriter(file_name, engine='xlwt')
-            self._df_output_data.to_excel(_writer, 'Sheet 1', index=False)
-            _writer.save()
-            _writer.close()
-        elif file_type == 'text':
-            self._df_output_data.to_csv(file_name, sep=' ', index=False)
+        for _key in self._dic_output_data:
+            self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
+            print(self._df_output_data)
+
+            if file_type == 'csv':
+                self._df_output_data.to_csv(file_name, sep=';', index=True)
+            elif file_type == 'excel':
+                self._do_export_to_excel(file_name)
+            elif file_type == 'text':
+                self._df_output_data.to_csv(file_name, sep=' ', index=True)
+
+    def _do_export_to_excel(self, file_name: str) -> None:
+        """
+        Export RAMSTK project data to an Excel file.
+
+        :param str file_name: the name of the file to export data.
+        :return: None
+        :rtype: None
+        """
+        _file, _extension = os.path.splitext(file_name)
+        if _extension == '.xls':
+            _writer = pd.ExcelWriter(file_name, engine='xlwt')
+        elif _extension == '.xlsx':
+            _writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
+        elif _extension == '.xlsm':
+            _writer = pd.ExcelWriter(file_name, engine='openpyxl')
+        else:
+            file_name = _file + '.xls'
+            _writer = pd.ExcelWriter(file_name, engine='xlwt')
+        self._df_output_data.to_excel(_writer, 'Sheet 1', index=True)
+        _writer.save()
+        _writer.close()
 
     @staticmethod
     def do_load_output(module: str) -> None:
@@ -80,8 +95,6 @@ class Export:
         Load the data from the requested RAMSTK module into a Pandas DataFrame.
 
         :param str module: the RAMSTK module to load for export.
-        :param int node_id: the node ID in the Tree() containing the data
-            to load.
         :return: None
         :rtype: None
         """
@@ -96,18 +109,18 @@ class Export:
         :return: None
         :rtype: None
         """
-        _module = dmtree.get_node(0).tag
+        _dic_temp = {}
+        _module = dmtree.get_node(0).tag.lower()
+        self._dic_output_data[_module] = {}
 
+        # pylint: disable=unused-variable
         for __, _node in enumerate(dmtree.nodes):
             try:
                 _attributes = dmtree.nodes[_node].data[_module].get_attributes(
                 )
                 for _key in _attributes:
-                    try:
-                        self._dic_output_data[_key].append(_attributes[_key])
-                    except KeyError:
-                        self._dic_output_data[_key] = [_attributes[_key]]
+                    _dic_temp[_key] = _attributes[_key]
             except TypeError:
                 pass
-
-        self._df_output_data = pd.DataFrame(self._dic_output_data)
+            self._dic_output_data[_module][
+                dmtree.nodes[_node].identifier] = _dic_temp
