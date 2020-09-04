@@ -8,6 +8,7 @@
 """Test class for testing the Exports module."""
 
 # Third Party Imports
+from pubsub import pub
 import pytest
 
 # RAMSTK Package Imports
@@ -29,7 +30,8 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('Function') is None
+        pub.sendMessage('request_load_output', module='function')
+
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['function'], dict)
 
@@ -42,7 +44,8 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('requirement') is None
+        pub.sendMessage('request_load_output', module='requirement')
+
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['requirement'], dict)
 
@@ -55,7 +58,8 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('Hardware') is None
+        pub.sendMessage('request_load_output', module='Hardware')
+
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['hardware'], dict)
 
@@ -68,7 +72,8 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('Validation') is None
+        pub.sendMessage('request_load_output', module='VAlidAtion')
+
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['validation'], dict)
 
@@ -80,7 +85,8 @@ class TestExport():
         _function.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
-        DUT.do_load_output('function')
+
+        pub.sendMessage('request_load_output', module='function')
 
         _test_csv = test_export_dir + 'test_export_function.csv'
         assert DUT._do_export('csv', _test_csv) is None
@@ -94,7 +100,7 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('ReQuiremenT') is None
+        pub.sendMessage('request_load_output', module='ReQuiremenT')
 
         _test_excel = test_export_dir + 'test_export_requirement.xls'
         assert DUT._do_export('excel', _test_excel) is None
@@ -108,7 +114,7 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('Requirement') is None
+        pub.sendMessage('request_load_output', module='Requirement')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlsx'
         assert DUT._do_export('excel', _test_excel) is None
@@ -122,7 +128,7 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('Requirement') is None
+        pub.sendMessage('request_load_output', module='RequiremenT')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlsm'
         assert DUT._do_export('excel', _test_excel) is None
@@ -137,7 +143,7 @@ class TestExport():
 
         DUT = Export()
 
-        assert DUT.do_load_output('Requirement') is None
+        pub.sendMessage('request_load_output', module='requirement')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlbb'
         assert DUT._do_export('excel', _test_excel) is None
@@ -150,7 +156,8 @@ class TestExport():
         _function.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
-        DUT.do_load_output('Function')
+
+        pub.sendMessage('request_load_output', module='Function')
 
         _test_text = test_export_dir + 'test_export_function.txt'
         assert DUT._do_export('text', _test_text) is None

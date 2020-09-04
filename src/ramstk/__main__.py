@@ -25,6 +25,7 @@ from ramstk.controllers import (
     mmValidation)
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
+from ramstk.exim import Export
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
 
@@ -240,6 +241,7 @@ def the_one_ring() -> None:
         common_dao=site_db,
         site_configuration=site_configuration,
         user_configuration=user_configuration)
+    _program_mgr.dic_managers['exim']['export'] = Export()
     _program_mgr.user_configuration = user_configuration
     _logger.do_log_info(__name__, "Initialized the RAMSTK application.")
 

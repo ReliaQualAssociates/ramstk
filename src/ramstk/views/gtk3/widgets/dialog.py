@@ -217,11 +217,6 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         self.set_action(Gtk.FileChooserAction.SAVE)
 
         _filter = Gtk.FileFilter()
-        _filter.set_name(_("RAMSTK Databases"))
-        _filter.add_pattern('*.ramstk')
-        _filter.add_pattern('*.rtk')
-        self.add_filter(_filter)
-        _filter = Gtk.FileFilter()
         _filter.set_name(_("Excel Files"))
         _filter.add_pattern('*.xls')
         _filter.add_pattern('*xlsm')
@@ -259,7 +254,7 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         elif self.run() == Gtk.ResponseType.REJECT:
             self.do_destroy()
 
-        return (_filename, _extension)
+        return _filename, _extension
 
 
 class RAMSTKMessageDialog(Gtk.MessageDialog):

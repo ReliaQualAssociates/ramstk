@@ -13,6 +13,8 @@ from typing import Any, Dict
 # Third Party Imports
 # noinspection PyPackageRequirements
 import pandas as pd
+# noinspection PyPackageRequirements
+from openpyxl import load_workbook
 from pubsub import pub
 from treelib import Tree
 
@@ -22,7 +24,7 @@ class Export:
     def __init__(self) -> None:
         """Initialize an Export module instance."""
         # Initialize private dictionary attributes.
-        self._dic_output_data: Dict[str, Dict[int, Dict[Any, Any]]] = {'': {}}
+        self._dic_output_data: Dict[str, Dict[int, Dict[Any, Any]]] = {}
 
         # Initialize private list attributes.
 
@@ -40,6 +42,7 @@ class Export:
         pub.subscribe(self._do_load_data, 'succeed_get_requirement_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_hardware_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_validation_tree')
+        pub.subscribe(self._do_load_output, 'request_load_output')
         pub.subscribe(self._do_export, 'request_export_data')
 
     def _do_export(self, file_type: str, file_name: str) -> None:
@@ -56,16 +59,26 @@ class Export:
         :return: None
         :rtype: None
         """
+        if file_type == 'csv':
+            self._do_export_to_delimited_text(file_name, separator=';')
+        elif file_type == 'excel':
+            self._do_export_to_excel(file_name)
+        elif file_type == 'text':
+            self._do_export_to_delimited_text(file_name, separator=' ')
+
+    def _do_export_to_delimited_text(self, file_name: str, separator: str):
+        """
+        Export RAMSTK project data to a delimited text file.
+
+        :param str file_name: the name of the file to export data.
+        :param str separator: the field delimiter to use.
+        :return: None
+        :rtype: None
+        """
         for _key in self._dic_output_data:
             self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
-            print(self._df_output_data)
 
-            if file_type == 'csv':
-                self._df_output_data.to_csv(file_name, sep=';', index=True)
-            elif file_type == 'excel':
-                self._do_export_to_excel(file_name)
-            elif file_type == 'text':
-                self._df_output_data.to_csv(file_name, sep=' ', index=True)
+            self._df_output_data.to_csv(file_name, sep=separator, index=True)
 
     def _do_export_to_excel(self, file_name: str) -> None:
         """
@@ -76,21 +89,37 @@ class Export:
         :rtype: None
         """
         _file, _extension = os.path.splitext(file_name)
-        if _extension == '.xls':
-            _writer = pd.ExcelWriter(file_name, engine='xlwt')
-        elif _extension == '.xlsx':
-            _writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
-        elif _extension == '.xlsm':
-            _writer = pd.ExcelWriter(file_name, engine='openpyxl')
-        else:
-            file_name = _file + '.xls'
-            _writer = pd.ExcelWriter(file_name, engine='xlwt')
-        self._df_output_data.to_excel(_writer, 'Sheet 1', index=True)
-        _writer.save()
-        _writer.close()
+
+        for _key in self._dic_output_data:
+            self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
+            if _extension == '.xls':
+                # xlwt can't write each module to a separate sheet so we'll
+                # have to make a separate workbook for each work stream module.
+                _writer = pd.ExcelWriter('{0:s}_{1:s}.xls'.format(_file, _key),
+                                         engine='xlwt')
+            elif _extension in ['.xlsx', '.xlsm']:
+                _writer = pd.ExcelWriter(file_name, engine='openpyxl')
+                # Set the writer workbook if it already exists, otherwise
+                # just continue.  This allows each work stream module to be
+                # written to it's own worksheet.  If the workbook doesn't
+                # exist it will be created when the first module is written.
+                try:
+                    _workbook = load_workbook(file_name)
+                    _writer.book = _workbook
+                except FileNotFoundError:
+                    pass
+            else:
+                file_name = _file + '.xls'
+                _writer = pd.ExcelWriter(file_name, engine='xlwt')
+            self._df_output_data.to_excel(_writer,
+                                          '{0:s}'.format(_key),
+                                          index=True)
+            _writer.save()
+
+            _writer.close()
 
     @staticmethod
-    def do_load_output(module: str) -> None:
+    def _do_load_output(module: str) -> None:
         """
         Load the data from the requested RAMSTK module into a Pandas DataFrame.
 

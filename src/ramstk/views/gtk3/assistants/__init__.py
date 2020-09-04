@@ -8,6 +8,7 @@
 """RAMSTK GTK3 Books Package."""
 
 # RAMSTK Local Imports
+from .export import ExportProject
 from .fmea import AddControlAction
 from .options import EditOptions
 from .pof import AddStressTestMethod
