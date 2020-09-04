@@ -9,6 +9,7 @@
 
 # Third Party Imports
 from pubsub import pub
+import pandas as pd
 import pytest
 
 # RAMSTK Package Imports
@@ -161,3 +162,41 @@ class TestExport():
 
         _test_text = test_export_dir + 'test_export_function.txt'
         assert DUT._do_export('text', _test_text) is None
+
+    @pytest.mark.unit
+    def test_do_export_unknown_type(self, test_program_dao, test_export_dir):
+        """do_export() should return None when exporting to a text file."""
+        _function = dmFunction()
+        _function.do_connect(test_program_dao)
+        _function.do_select_all(attributes={'revision_id': 1})
+
+        DUT = Export()
+
+        pub.sendMessage('request_load_output', module='Function')
+
+        _test_text = test_export_dir + 'test_export_function.txt'
+        assert DUT._do_export('pdf', _test_text) is None
+
+
+    @pytest.mark.unit
+    def test_do_export_multi_sheet(self, test_program_dao, test_export_dir):
+        """do_export() should return None when exporting to a text file."""
+        _function = dmFunction()
+        _function.do_connect(test_program_dao)
+        _function.do_select_all(attributes={'revision_id': 1})
+
+        _requirement = dmRequirement()
+        _requirement.do_connect(test_program_dao)
+        _requirement.do_select_all(attributes={'revision_id': 1})
+
+        DUT = Export()
+
+        pub.sendMessage('request_load_output', module='Function')
+        pub.sendMessage('request_load_output', module='Requirement')
+
+        _test_multi = test_export_dir + 'test_export_multi.xlsx'
+
+        pub.sendMessage('request_export_data', file_type='excel',
+                        file_name=_test_multi)
+
+        assert isinstance(DUT._df_output_data, pd.core.frame.DataFrame)
