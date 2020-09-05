@@ -22,4 +22,4 @@ from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango  # isort:skip
 
 _ = gettext.gettext  # isort:skip
 
-from .desktop import RAMSTKDesktop  # isort:skip
+from ramstk.views.gtk3.desktop import RAMSTKDesktop     # isort: skip

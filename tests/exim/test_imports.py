@@ -4,19 +4,22 @@
 #       tests.exim.test_imports.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle "weibullguy" Rowland doyle.rowland <AT>
+# reliaqual <DOT> com
 """Test class for testing the Imports class."""
 
 # Standard Library Imports
+import math
 from collections import OrderedDict
 
 # Third Party Imports
+import numpy as np
 import pandas as pd
 import pytest
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
-from ramstk.exim import Import
+from ramstk.exim import Import, _do_replace_nan, _get_input_value
 
 
 @pytest.mark.usefixtures('test_csv_file_function', 'test_program_dao')
@@ -26,12 +29,12 @@ class TestImport():
     def test_create_import(self, test_program_dao):
         """__init__() should return an instance of the Import data model."""
         DUT = Import(test_program_dao)
-
+        print(DUT._df_input_data)
         assert isinstance(DUT, Import)
         assert isinstance(DUT._dic_field_map, dict)
         assert isinstance(DUT._lst_format_headers, list)
         assert isinstance(DUT._program_dao, BaseDatabase)
-        assert DUT._df_input_data is None
+        assert isinstance(DUT._df_input_data, pd.DataFrame)
 
     @pytest.mark.unit
     def test_do_read_file_csv(self, test_program_dao, test_csv_file_function):
@@ -78,6 +81,16 @@ class TestImport():
             'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
             0, 0
         ]
+
+    @pytest.mark.unit
+    def test_do_read_file_unsupported_type(self, test_program_dao,
+                                           test_excel_file):
+        """do_read_read_file() should return None when reading an Excel file."""
+        DUT = Import(test_program_dao)
+
+        DUT.do_read_file('pdf', test_excel_file)
+        print(DUT._df_input_data)
+        assert isinstance(DUT._df_input_data, pd.core.frame.DataFrame)
 
     @pytest.mark.unit
     def test_do_map_field_function(self, test_program_dao,
@@ -282,23 +295,39 @@ class TestImport():
         ])
 
     @pytest.mark.unit
+    def test__do_replace_nan_good_value(self):
+        """_do_replace_nan() should return the same value passed if not NaN."""
+        assert _do_replace_nan('Suck It', 'Real Good') == 'Suck It'
+
+    @pytest.mark.unit
+    def test__do_replace_nan_python_nan(self):
+        """_do_replace_nan() should return the default value if passed NaN."""
+        assert _do_replace_nan(math.nan, 'Real Good') == 'Real Good'
+
+    @pytest.mark.unit
+    def test__do_replace_nan_numpy_nan(self):
+        """_do_replace_nan() should return the default value if passed NaN."""
+        assert _do_replace_nan(np.nan,
+                               'Suck It, Real Good') == 'Suck It, Real Good'
+
+    @pytest.mark.unit
     def test__get_input_value(self, test_program_dao, test_csv_file_hardware):
         """_get_input_value() should return the value in the input file."""
         DUT = Import(test_program_dao)
         DUT.do_read_file('csv', test_csv_file_hardware)
 
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0], 'Revision '
-                                                                'ID', 10) == 1
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0], 'Hardware '
-                                                                'ID', 1) == 10
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0], 'Category ID',
-                                    1) == 0
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0],
-                                    'Composite Ref. Des.', '') == 'S1'
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0], 'Revision '
+                                'ID', 10) == 1
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0], 'Hardware '
+                                'ID', 1) == 10
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0], 'Category ID',
+                                1) == 0
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0],
+                                'Composite Ref. Des.', '') == 'S1'
 
     @pytest.mark.unit
     def test__get_input_value_nan(self, test_program_dao,
@@ -307,15 +336,15 @@ class TestImport():
         DUT = Import(test_program_dao)
         DUT.do_read_file('csv', test_csv_file_hardware)
 
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0],
-                                    'Alternate Part Number', 'C2') == 'C2'
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0], 'CAGE Code',
-                                    '') == ''
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0], 'Manufacturer',
-                                    54) == 54
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0],
+                                'Alternate Part Number', 'C2') == 'C2'
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0], 'CAGE Code',
+                                '') == ''
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0], 'Manufacturer',
+                                54) == 54
 
     @pytest.mark.unit
     def test__get_input_value_key_error(self, test_program_dao,
@@ -324,9 +353,9 @@ class TestImport():
         DUT = Import(test_program_dao)
         DUT.do_read_file('csv', test_csv_file_hardware)
 
-        assert DUT._get_input_value(DUT._dic_field_map['Hardware'],
-                                    DUT._df_input_data.iloc[0],
-                                    'Alt. Part Num.', 'C2') == 'C2'
+        assert _get_input_value(DUT._dic_field_map['Hardware'],
+                                DUT._df_input_data.iloc[0], 'Alt. Part Num.',
+                                'C2') == 'C2'
 
     @pytest.mark.unit
     def test_do_insert_function(self, test_program_dao,

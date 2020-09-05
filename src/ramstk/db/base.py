@@ -308,7 +308,7 @@ class BaseDatabase():
         :return: None
         :rtype: None
         """
-        if not record is None:
+        if record is not None:
             self.session.add(record)
 
         try:
@@ -340,8 +340,8 @@ class BaseDatabase():
         _databases = []
 
         if database['dialect'] == 'postgres':
-            _query = self.sqlstatements['select'].format('datname') + \
-                 self.sqlstatements['from'].format('pg_database;')
+            _query = (self.sqlstatements['select'].format('datname')
+                      + self.sqlstatements['from'].format('pg_database;'))
             database = ('postgresql+psycopg2://' + database['user'] + ':'
                         + database['password'] + '@' + database['host'] + ':'
                         + database['port'] + '/' + database['database'])

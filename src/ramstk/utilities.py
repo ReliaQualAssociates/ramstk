@@ -119,6 +119,7 @@ def split_string(string: str) -> List[str]:
 
     return _strlist
 
+
 def boolean_to_integer(boolean: bool) -> int:
     """
     Convert boolean representations of TRUE/FALSE to an integer value.
