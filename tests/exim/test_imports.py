@@ -29,7 +29,7 @@ class TestImport():
     def test_create_import(self, test_program_dao):
         """__init__() should return an instance of the Import data model."""
         DUT = Import(test_program_dao)
-        print(DUT._df_input_data)
+
         assert isinstance(DUT, Import)
         assert isinstance(DUT._dic_field_map, dict)
         assert isinstance(DUT._lst_format_headers, list)
@@ -89,7 +89,7 @@ class TestImport():
         DUT = Import(test_program_dao)
 
         DUT.do_read_file('pdf', test_excel_file)
-        print(DUT._df_input_data)
+
         assert isinstance(DUT._df_input_data, pd.core.frame.DataFrame)
 
     @pytest.mark.unit
@@ -415,7 +415,7 @@ class TestImport():
     @pytest.mark.unit
     def test_do_insert_validation(self, test_program_dao,
                                   test_csv_file_validation):
-        """do_insert() should return a zero error code on success and create a new RAMSTKValidation object with it's attributes set from the external file data."""
+        """do_insert() should return None on success and create a new RAMSTKValidation object with it's attributes set from the external file data."""
         DUT = Import(test_program_dao)
 
         DUT.do_read_file('csv', test_csv_file_validation)
@@ -425,3 +425,17 @@ class TestImport():
                                 list(DUT._df_input_data)[_idx], _key)
 
         assert DUT.do_insert('Validation') is None
+
+    @pytest.mark.unit
+    def test_do_insert_unsupported(self, test_program_dao,
+                                   test_csv_file_validation):
+        """do_insert() should return None when passed a module name that doesn't exist."""
+        DUT = Import(test_program_dao)
+
+        DUT.do_read_file('csv', test_csv_file_validation)
+
+        for _idx, _key in enumerate(DUT._dic_field_map['Validation']):
+            DUT.do_map_to_field('Validation',
+                                list(DUT._df_input_data)[_idx], _key)
+
+        assert DUT.do_insert('Shibboly') is None

@@ -39,14 +39,17 @@ def _do_replace_nan(value: Any, default: Any) -> Any:
     """
     _value = value
 
+    # Check for Python NaN's.
     try:
-        # Check for Python NaN's.
         if math.isnan(value):
             _value = default
+    # Non-numeric values raise a type error, so we can just move along.
     except TypeError:
-        # Check for numpy NaN's.
-        if value is np.nan:
-            _value = default
+        pass
+
+    # Check for numpy NaN's.
+    if value is np.nan:
+        _value = default
 
     return _value
 
