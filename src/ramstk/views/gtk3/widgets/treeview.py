@@ -286,10 +286,58 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             else:
                 _iter = _model.iter_next(_iter)
 
+    def get_aggregate_attributes(self, entity: object) -> List[Any]:
+        """
+
+        :param entity:
+        :return:
+        """
+        _attributes = []
+        try:
+            for _key in self.korder:
+                if _key == 'dict':
+                    _attributes.append(str(entity))
+                else:
+                    try:
+                        entity[_key] = entity[_key].decode('utf-8')
+                    except AttributeError:
+                        pass
+                    _attributes.append(entity[_key])
+        except TypeError:
+            pass
+
+        return _attributes
+
+    def get_simple_attributes(self, entity: object) -> List[Any]:
+        """
+        Gets the attributes for simple
+
+        :param entity: the RAMSTK Program database table whose attributes
+            are to be returned.
+        :return: _attributes; a list of hte attributes values in the order
+            they will be displayed.
+        :rtype: list
+        """
+        _attributes = []
+        _temp = entity.get_attributes()
+        for _key in self.korder:
+            if _key == 'dict':
+                _attributes.append(str(_temp))
+            else:
+                try:
+                    if isinstance(_temp[_key], datetime.date):
+                        _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
+                    _temp[_key] = _temp[_key].decode('utf-8')
+                except (AttributeError, KeyError):
+                    pass
+                _attributes.append(_temp[_key])
+
+        return _attributes
+
     def do_load_tree(self,
                      tree: treelib.Tree,
                      tag: str,
-                     row: Gtk.TreeIter = None) -> bool:
+                     row: Gtk.TreeIter = None) -> None:
         """
         Load the Module View's Gtk.TreeModel() with the Module's tree.
 
@@ -297,10 +345,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :type tree: :class:`treelib.Tree`
         :param row: the parent row in the Gtk.TreeView() to add the new item.
         :type row: :class:`Gtk.TreeIter`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
         _row = None
         _model = self.get_model()
 
@@ -314,42 +361,18 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             # table instance for the data object, the first try
             # statement will create the list of attribute values.
             try:
-                _temp = _entity.get_attributes()
-                for _key in self.korder:
-                    if _key == 'dict':
-                        _attributes.append(str(_temp))
-                    else:
-                        try:
-                            if isinstance(_temp[_key], datetime.date):
-                                _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
-                            _temp[_key] = _temp[_key].decode('utf-8')
-                        except (AttributeError, KeyError):
-                            pass
-                        _attributes.append(_temp[_key])
+                _attributes = self.get_simple_attributes(_entity)
             except AttributeError:
                 # For aggregate data models (Hardware, Software) that
                 # return a dictionary of attributes from ALL associated
                 # RAMSTK database tables, this try statement will create
                 # the list of attribute values.
-                try:
-                    for _key in self.korder:
-                        if _key == 'dict':
-                            _attributes.append(str(_entity))
-                        else:
-                            try:
-                                _entity[_key] = _entity[_key].decode('utf-8')
-                            except AttributeError:
-                                pass
-                            _attributes.append(_entity[_key])
-                except TypeError:
-                    _return = True
+                _attributes = self.get_aggregate_attributes(_entity)
 
             _row = _model.append(row, _attributes)
 
         for _n in tree.children(_node.identifier):
             self.do_load_tree(tree.subtree(_n.identifier), tag, _row)
-
-        return _return
 
     def do_parse_format(self,
                         fmt_path: str,
