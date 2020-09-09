@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 # noinspection PyPackageRequirements
 from dateutil import parser
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
@@ -86,8 +87,9 @@ def _get_input_value(mapper: Dict[str, Any], df_row: pd.Series, field: str,
 class Import:
     """Contains the methods for importing data to a program database."""
 
-    # Ordered dictionaries of RAMSTK inputs field headers.  Must use OrderdDict
-    # to ensure they are always in the same order during program flow.
+    # Ordered dictionaries of RAMSTK inputs field headers.  Must use
+    # OrderedDict to ensure they are always in the same order during program
+    # flow.
     _dic_field_map = {
         'Function':
         OrderedDict([('Revision ID', ''), ('Function ID', ''), ('Level', ''),
@@ -198,20 +200,15 @@ class Import:
                      ('Maximum Task Time', ''), ('Minimum Task Time', '')])
     }
 
-    def __init__(self, dao: BaseDatabase) -> None:
-        """
-        Initialize an Import module instance.
-
-        :param dao: the RAMSTK program database to import the external data to.
-        :type dao: :class:`ramstk.db.base.BaseDatabase`
-        c"""
+    def __init__(self) -> None:
+        """Initialize an ImportProject module instance."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
         self._lst_format_headers: List[str] = []
 
         # Initialize private scalar attributes.
-        self._program_dao: BaseDatabase = dao
+        self._dao: BaseDatabase = BaseDatabase()
         self._df_input_data: pd.DataFrame = pd.DataFrame({})
 
         # Initialize public dictionary attributes.
@@ -219,6 +216,23 @@ class Import:
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_connect, 'succeed_connect_program_database')
+        pub.subscribe(self._do_map_to_field, 'request_map_to_field')
+        pub.subscribe(self._do_read_db_fields, 'request_db_fields')
+        pub.subscribe(self._do_read_file, 'request_read_import_file')
+        pub.subscribe(self.do_insert, 'request_import')
+
+    def _do_connect(self, dao: BaseDatabase) -> None:
+        """
+        Connect data manager to a database.
+
+        :param dao: the BaseDatabase() instance (data access object)
+            representing the connected RAMSTK Program database.
+        :type dao: :class:`ramstk.db.base.BaseDatabase`
+        """
+        self._dao = dao
 
     def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation:
         """
@@ -776,6 +790,7 @@ class Import:
         :rtype: None
         """
         _entities = []
+
         # pylint: disable=unused-variable
         for __, _row in self._df_input_data.iterrows():
             if module == 'Function':
@@ -805,10 +820,14 @@ class Import:
                 _entity = self._do_insert_validation(_row)
                 _entities.append(_entity)
 
-        self._program_dao.do_insert_many(_entities)
+        try:
+            self._dao.do_insert_many(_entities)
+            pub.sendMessage('succeed_import_module', module=module)
+        except AttributeError:
+            pub.sendMessage('fail_import_module', module=module)
 
-    def do_map_to_field(self, module: str, import_field: str,
-                        format_field: str) -> None:
+    def _do_map_to_field(self, module: str, import_field: str,
+                         format_field: str) -> None:
         """
         Map the external column to the RAMSTK database table field.
 
@@ -822,7 +841,22 @@ class Import:
         """
         self._dic_field_map[module][format_field] = import_field
 
-    def do_read_file(self, file_type: str, file_name: str) -> None:
+    def _do_read_db_fields(self, module: str) -> None:
+        """
+        Returns the database field names in a list.
+
+        :param str module: the name of the work stream module to return
+            database field names for.
+        :return: None
+        :rtype: None
+        """
+        _db_fields = []
+        for _field in self._dic_field_map[module]:
+            _db_fields.append(_field)
+
+        pub.sendMessage('succeed_read_db_fields', db_fields=_db_fields)
+
+    def _do_read_file(self, file_type: str, file_name: str) -> None:
         """
         Read contents of input file into a pandas DataFrame().
 
@@ -840,5 +874,14 @@ class Import:
                                               sep=';',
                                               na_values=[''],
                                               parse_dates=True)
+        elif file_type == 'text':
+            self._df_input_data = pd.read_csv(file_name,
+                                              sep=' ',
+                                              na_values=[''],
+                                              parse_dates=True)
         elif file_type == 'excel':
             self._df_input_data = pd.read_excel(file_name)
+
+        pub.sendMessage('succeed_read_import_file',
+                        import_fields=list(
+                            self._df_input_data.axes[1].tolist()[1:]))

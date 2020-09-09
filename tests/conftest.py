@@ -14,7 +14,6 @@ import glob
 import os
 import platform
 import shutil
-import sqlite3
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
@@ -29,8 +28,8 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
-from ramstk.configuration import (RAMSTKSiteConfiguration,
-                                  RAMSTKUserConfiguration)
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -586,6 +585,25 @@ def test_csv_file_function():
 
 
 @pytest.fixture
+def test_text_file_function():
+    """Create and populate a *.txt file for testing Function imports."""
+    _test_file = TMP_DIR + '/test_inputs_functions.txt'
+
+    with open(_test_file, 'w') as _csv_file:
+        filewriter = csv.writer(
+            _csv_file,
+            delimiter=' ',
+            quotechar='"',
+            quoting=csv.QUOTE_MINIMAL,
+        )
+        filewriter.writerow(HEADERS['Function'])
+        filewriter.writerow(ROW_DATA[0])
+        filewriter.writerow(ROW_DATA[1])
+
+    yield _test_file
+
+
+@pytest.fixture
 def test_csv_file_requirement():
     """Create and populate a *.csv file for testing Requirement import mapping."""
     _test_file = TMP_DIR + '/test_inputs_requirements.csv'
@@ -647,15 +665,17 @@ def test_excel_file():
     _book = xlwt.Workbook()
     _sheet = _book.add_sheet('Sheet 1', cell_overwrite_ok=True)
 
-    _col = 0
+    _col_num = 1
     for _header in HEADERS['Function']:
-        _sheet.write(0, _col, _header)
-        _col += 1
+        _sheet.write(0, _col_num, _header)
+        _col_num += 1
 
     _row_num = 1
     for _row in ROW_DATA[:2]:
+        _col_num = 1
         for _data in enumerate(_row):
-            _sheet.write(_row_num, _data[0], _data[1])
+            _sheet.write(_row_num, _col_num, _data[1])
+            _col_num += 1
         _row_num += 1
 
     _book.save(_test_file)
