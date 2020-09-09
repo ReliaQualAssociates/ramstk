@@ -8,84 +8,15 @@
 
 # Standard Library Imports
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import pandas as pd
+# noinspection PyPackageRequirements
+from openpyxl import load_workbook
 from pubsub import pub
-
-# Dictionary of RAMSTK export field headers for each of the workstream modules.
-COLUMN_HEADERS = {
-    'Function': [
-        'revision_id', 'function_id', 'level', 'function_code', 'name',
-        'parent_id', 'remarks', 'safety_critical', 'type_id'
-    ],
-    'Requirement': [
-        'revision_id', 'requirement_id', 'derived', 'description',
-        'figure_number', 'owner', 'page_number', 'parent_id', 'priority',
-        'requirement_code', 'specification', 'requirement_type', 'validated',
-        'validated_date'
-    ],
-    'Hardware': [
-        'revision_id', 'hardware_id', 'alt_part_number', 'cage_code',
-        'category_id', 'comp_ref_des', 'cost', 'cost_type_id', 'description',
-        'duty_cycle', 'figure_number', 'lcn', 'level', 'manufacturer_id',
-        'mission_time', 'name', 'nsn', 'page_number', 'parent_id', 'part',
-        'part_number', 'quantity', 'ref_des', 'remarks', 'repairable',
-        'specification_number', 'subcategory_id', 'tagged_part',
-        'year_of_manufacture'
-    ],
-    'Design Electric': [
-        'hardware_id', 'application_id', 'area', 'capacitance',
-        'configuration_id', 'construction_id', 'contact_form_id',
-        'contact_gauge', 'contact_rating_id', 'current_operating',
-        'current_rated', 'current_ratio', 'environment_active_id',
-        'environment_dormant_id', 'family_id', 'feature_size',
-        'frequency_operating', 'insert_id', 'insulation_id',
-        'manufacturing_id', 'matching_id', 'n_active_pins', 'n_circuit_planes',
-        'n_cycles', 'n_elements', 'n_hand_soldered', 'n_wave_soldered',
-        'operating_life', 'overstress', 'package_id', 'power_operating',
-        'power_rated', 'power_ratio', 'reason', 'resistance',
-        'specification_id', 'technology_id', 'temperature_active',
-        'temperature_case', 'temperature_dormant', 'temperature_hot_spot',
-        'temperature_junction', 'temperature_knee', 'temperature_rated_max',
-        'temperature_rated_min', 'temperature_rise', 'theta_jc', 'type_id',
-        'voltage_ac_operating', 'voltage_dc_operating', 'voltage_esd',
-        'voltage_rated', 'voltage_ratio', 'weight', 'years_in_production'
-    ],
-    'Design Mechanic': [
-        'Hardware ID', 'Altitude, Operating', 'Application ID', 'Balance ID',
-        'Clearance', 'Casing ID', 'Contact Pressure', 'Deflection',
-        'Diameter, Coil', 'Diameter, Inner', 'Diameter, Outer',
-        'Diameter, Wire', 'Filter Size', 'Flow, Design', 'Flow, Operating',
-        'Frequency, Operating', 'Friction', 'Impact ID', 'Allowable Leakage',
-        'Length', 'Length, Compressed', 'Length, Relaxed', 'Design Load',
-        'Load ID', 'Operating Load', 'Lubrication ID', 'Manufacturing ID',
-        'Material ID', 'Meyer Hardness', 'Misalignment Angle', 'N Ten',
-        'N Cycles', 'N Elements', 'Offset', 'Particle Size',
-        'Contact Pressure', 'Differential Pressure', 'Downstream Pressure',
-        'Rated Pressure', 'Upstream Pressure', 'Design RPM', 'Operating RPM',
-        'Service ID', 'Spring Index', 'Surface Finish', 'Technology ID',
-        'Thickness', 'Torque ID', 'Type ID', 'Design Viscosity',
-        'Dynamic Viscosity', '% Water', 'Minimum Width'
-    ],
-    'Reliability': [
-        'hardware_id', 'add_adj_factor', 'failure_distribution_id',
-        'hazard_rate_method_id', 'hazard_rate_model', 'hazard_rate_specified',
-        'hazard_rate_type_id', 'location_parameter', 'mtbf_specified',
-        'mult_adj_factor', 'quality_id', 'reliability_goal',
-        'reliability_goal_measure_id', 'scale_parameter', 'shape_parameter',
-        'survival_analysis_id'
-    ],
-    'Validation': [
-        'revision_id', 'validation_id', 'acceptable_maximum',
-        'acceptable_mean', 'acceptable_minimum', 'acceptable_variance',
-        'confidence', 'cost_average', 'cost_maximum', 'cost_minimum',
-        'date_start', 'date_end', 'description', 'measurement_unit', 'name',
-        'status', 'task_type', 'task_specification', 'time_average',
-        'time_maximum', 'time_minimum'
-    ]
-}
+from treelib import Tree
 
 
 class Export:
@@ -93,12 +24,12 @@ class Export:
     def __init__(self) -> None:
         """Initialize an Export module instance."""
         # Initialize private dictionary attributes.
-        self._dic_output_data: Dict[str, List[Any]] = {}
+        self._dic_output_data: Dict[str, Dict[int, Dict[Any, Any]]] = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._df_output_data: pd.DataFrame = None
+        self._df_output_data: pd.DataFrame = pd.DataFrame()
 
         # Initialize public dictionary attributes.
 
@@ -107,16 +38,14 @@ class Export:
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_data,
-                      'succeed_get_all_function_attributes')
-        pub.subscribe(self._do_load_data,
-                      'succeed_get_all_requirement_attributes')
-        pub.subscribe(self._do_load_data,
-                      'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_data,
-                      'succeed_get_all_validation_attributes')
+        pub.subscribe(self._do_load_data, 'succeed_get_function_tree')
+        pub.subscribe(self._do_load_data, 'succeed_get_requirement_tree')
+        pub.subscribe(self._do_load_data, 'succeed_get_hardware_tree')
+        pub.subscribe(self._do_load_data, 'succeed_get_validation_tree')
+        pub.subscribe(self._do_load_output, 'request_load_output')
+        pub.subscribe(self._do_export, 'request_export_data')
 
-    def do_export(self, file_type: str, file_name: str) -> None:
+    def _do_export(self, file_type: str, file_name: str) -> None:
         """
         Export selected RAMSTK module data to external file.
 
@@ -125,76 +54,102 @@ class Export:
                 - CSV (using a semi-colon (;) delimiter)
                 - Excel
                 - Text (using a blank space delimiter)
-                - PDF [Future]
         :param str file_name: the name, with full path, of the file to export
-            the RAMSTK Progam database data to.
+            the RAMSTK Program database data to.
         :return: None
         :rtype: None
         """
         if file_type == 'csv':
-            self._df_output_data.to_csv(file_name, sep=';', index=False)
+            self._do_export_to_delimited_text(file_name, separator=';')
         elif file_type == 'excel':
-            _file, _extension = os.path.splitext(file_name)
+            self._do_export_to_excel(file_name)
+        elif file_type == 'text':
+            self._do_export_to_delimited_text(file_name, separator=' ')
+
+    def _do_export_to_delimited_text(self, file_name: str, separator: str):
+        """
+        Export RAMSTK project data to a delimited text file.
+
+        :param str file_name: the name of the file to export data.
+        :param str separator: the field delimiter to use.
+        :return: None
+        :rtype: None
+        """
+        for _key in self._dic_output_data:
+            self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
+
+            self._df_output_data.to_csv(file_name, sep=separator, index=True)
+
+    def _do_export_to_excel(self, file_name: str) -> None:
+        """
+        Export RAMSTK project data to an Excel file.
+
+        :param str file_name: the name of the file to export data.
+        :return: None
+        :rtype: None
+        """
+        _file, _extension = os.path.splitext(file_name)
+
+        for _key in self._dic_output_data:
+            self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
             if _extension == '.xls':
-                _writer = pd.ExcelWriter(file_name, engine='xlwt')
-            elif _extension == '.xlsx':
-                _writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
-            elif _extension == '.xlsm':
+                # xlwt can't write each module to a separate sheet so we'll
+                # have to make a separate workbook for each work stream module.
+                _writer = pd.ExcelWriter('{0:s}_{1:s}.xls'.format(_file, _key),
+                                         engine='xlwt')
+            elif _extension in ['.xlsx', '.xlsm']:
                 _writer = pd.ExcelWriter(file_name, engine='openpyxl')
+                # Set the writer workbook if it already exists, otherwise
+                # just continue.  This allows each work stream module to be
+                # written to it's own worksheet.  If the workbook doesn't
+                # exist it will be created when the first module is written.
+                try:
+                    _workbook = load_workbook(file_name)
+                    _writer.book = _workbook
+                except FileNotFoundError:
+                    pass
             else:
                 file_name = _file + '.xls'
                 _writer = pd.ExcelWriter(file_name, engine='xlwt')
-            self._df_output_data.to_excel(_writer, 'Sheet 1', index=False)
+            self._df_output_data.to_excel(_writer,
+                                          '{0:s}'.format(_key),
+                                          index=True)
             _writer.save()
+
             _writer.close()
-        elif file_type == 'text':
-            self._df_output_data.to_csv(file_name, sep=' ', index=False)
-        elif file_type == 'pdf':
-            print("Portable Document Format")
 
     @staticmethod
-    def do_load_output(module: str, node_id: int) -> None:
+    def _do_load_output(module: str) -> None:
         """
         Load the data from the requested RAMSTK module into a Pandas DataFrame.
 
         :param str module: the RAMSTK module to load for export.
-        :param int node_id: the node ID in the Tree() containing the data
-            to load.
         :return: None
         :rtype: None
         """
-        if module == 'Function':
-            pub.sendMessage('request_get_all_function_attributes',
-                            node_id=node_id)
-        elif module == 'Requirement':
-            pub.sendMessage('request_get_all_requirement_attributes',
-                            node_id=node_id)
-        elif module == 'Hardware':
-            pub.sendMessage('request_get_all_hardware_attributes',
-                            node_id=node_id)
-        elif module == 'Validation':
-            pub.sendMessage('request_get_all_validation_attributes',
-                            node_id=node_id)
+        pub.sendMessage('request_get_{0:s}_tree'.format(module.lower()))
 
-    def _do_load_data(self, attributes: Dict[str, Any]) -> None:
+    def _do_load_data(self, dmtree: Tree) -> None:
         """
         Load the attribute data into a Pandas DataFrame.
 
-        :param dict attributes: the attributes dict to export.
+        :param dmtree: the data manager tree for the module to export.
+        :type dmtree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        # Remove the hazards analysis data from the attributes dict if loading
-        # a function.
-        try:
-            attributes.pop('hazards')
-        except KeyError:
-            pass
+        _dic_temp = {}
+        _module = dmtree.get_node(0).tag.lower()
+        self._dic_output_data[_module] = {}
 
-        for _key in attributes:
+        # pylint: disable=unused-variable
+        for __, _node in enumerate(dmtree.nodes):
             try:
-                self._dic_output_data[_key].append(attributes[_key])
-            except KeyError:
-                self._dic_output_data[_key] = [attributes[_key]]
-
-        self._df_output_data = pd.DataFrame(self._dic_output_data)
+                _attributes = dmtree.nodes[_node].data[_module].get_attributes(
+                )
+                for _key in _attributes:
+                    _dic_temp[_key] = _attributes[_key]
+            except TypeError:
+                pass
+            self._dic_output_data[_module][
+                dmtree.nodes[_node].identifier] = _dic_temp

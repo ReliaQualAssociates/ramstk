@@ -17,7 +17,12 @@ class RAMSTKComboBox(Gtk.ComboBox):
     def do_update(self, value: int, handler_id: int=...,
                   signal: str=...) -> None: ...
 
-    def connect(self, param, _on_combo_changed, param1): ...
+    def connect(self, param, _on_combo_changed, param1):
+        """
+
+        :rtype: object
+        """
+        ...
 
     def handler_block(self, param): ...
 

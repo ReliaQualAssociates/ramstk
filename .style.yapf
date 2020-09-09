@@ -1,4 +1,6 @@
 [style]
 based_on_style = pep8
 split_before_arithmetic_operator = true
+split_penalty_arithmetic_operator = 300
+split_before_logical_operator = true
 split_penalty_import_names = 300

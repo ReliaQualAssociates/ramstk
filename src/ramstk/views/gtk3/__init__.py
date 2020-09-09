@@ -22,4 +22,5 @@ from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango  # isort:skip
 
 _ = gettext.gettext  # isort:skip
 
+# RAMSTK Local Imports
 from .desktop import RAMSTKDesktop  # isort:skip

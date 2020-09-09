@@ -44,6 +44,6 @@ jobs:
           use-mypy: true
           use-isort: true
           extra-pylint-options: "-j0 --rcfile=./.pylintrc --dummy-variables-rgx='__'"
-          extra-pycodestyle-options: "--statistics --count"
+          extra-pycodestyle-options: "--statistics --count --ignore=E121,E123,E126,E127,E133,E241,E242,E265,E402,E501,F401,W503,W504,W505"
           extra-mypy-options: ""
           extra-isort-options: "--use-parentheses --balanced --multi-line 5"

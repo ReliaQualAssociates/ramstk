@@ -10,27 +10,86 @@
 import math
 from collections import OrderedDict
 from datetime import date
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import numpy as np
+# noinspection PyPackageRequirements
 import pandas as pd
+# noinspection PyPackageRequirements
 from dateutil import parser
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability,
-    RAMSTKRequirement, RAMSTKSimilarItem, RAMSTKValidation
-)
+    RAMSTKRequirement, RAMSTKSimilarItem, RAMSTKValidation)
+
+
+def _do_replace_nan(value: Any, default: Any) -> Any:
+    """
+    Checks for NaN values and replaces any with the default value.
+
+    :param value: the value to check for NaN.
+    :param default: the default value to replace NaN.
+    :return: _value; the passed value or the default if the passed value
+        was NaN.
+    """
+    _value = value
+
+    # Check for Python NaN's.
+    try:
+        if math.isnan(value):
+            _value = default
+    # Non-numeric values raise a type error, so we can just move along.
+    except TypeError:
+        pass
+
+    # Check for numpy NaN's.
+    if value is np.nan:
+        _value = default
+
+    return _value
+
+
+def _get_input_value(mapper: Dict[str, Any], df_row: pd.Series, field: str,
+                     default: Any) -> Any:
+    """
+    Retrieve the input value for a field from the Pandas dataframe.
+
+    :param dict mapper: the field mapping dict to use as the Rosetta stone.
+    :param df_row: the row from the pandas DataFrame containing the input
+        data.
+    :type df_row: :class:`pandas.Series`
+    :param str field: the name of the RAMSTK database field to retrieve the
+        data for.
+    :param default: the default value to assign to the field.
+    :return: _value
+    :rtype: the value of the requested input field or the default.
+    """
+    try:
+        _value = df_row.at[mapper[field]]
+    except KeyError:
+        _value = default
+
+    _value = _do_replace_nan(_value, default)
+
+    # If it's supposed to be a date, make it a date.
+    if default == date.today():
+        _value = parser.parse(_value)
+
+    return _value
 
 
 class Import:
     """Contains the methods for importing data to a program database."""
 
-    # Ordered dictionaries of RAMSTK inputs field headers.  Must use OrderdDict
-    # to ensure they are always in the same order during program flow.
+    # Ordered dictionaries of RAMSTK inputs field headers.  Must use
+    # OrderedDict to ensure they are always in the same order during program
+    # flow.
     _dic_field_map = {
         'Function':
         OrderedDict([('Revision ID', ''), ('Function ID', ''), ('Level', ''),
@@ -141,21 +200,15 @@ class Import:
                      ('Maximum Task Time', ''), ('Minimum Task Time', '')])
     }
 
-    def __init__(self, dao: BaseDatabase) -> None:
-        """
-        Initialize an Import module instance.
-
-        :param dao: the RAMSTK program database to import the external data to.
-        :type dao: :class:`ramstk.db.base.BaseDatabase`
-        c"""
+    def __init__(self) -> None:
+        """Initialize an ImportProject module instance."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_format_headers: List[str] = []
 
         # Initialize private scalar attributes.
-        self._program_dao = dao
-        self._df_input_data: pd.DataFrame = None
+        self._dao: BaseDatabase = BaseDatabase()
+        self._df_input_data: pd.DataFrame = pd.DataFrame({})
 
         # Initialize public dictionary attributes.
 
@@ -163,644 +216,24 @@ class Import:
 
         # Initialize public scalar attributes.
 
-    def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation:
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_connect, 'succeed_connect_program_database')
+        pub.subscribe(self._do_map_to_field, 'request_map_to_field')
+        pub.subscribe(self._do_read_db_fields, 'request_db_fields')
+        pub.subscribe(self._do_read_file, 'request_read_import_file')
+        pub.subscribe(self._do_import, 'request_import')
+
+    def _do_connect(self, dao: BaseDatabase) -> None:
         """
-        Insert a new Allocation record to the RAMSTK db.
+        Connect data manager to a database.
 
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _allocation; an instance of the RAMSTKAllocation database
-            table record.
-        :rtype: :class:`ramstk.models.programdb.ramstkallocation.RAMSTKAllocation`
+        :param dao: the BaseDatabase() instance (data access object)
+            representing the connected RAMSTK Program database.
+        :type dao: :class:`ramstk.db.base.BaseDatabase`
         """
-        _allocation = RAMSTKAllocation()
-        _map = self._dic_field_map['Hardware']
+        self._dao = dao
 
-        _allocation.revision_id = self._get_input_value(
-            _map, row, 'Revision ID', 1)
-        _allocation.hardware_id = self._get_input_value(
-            _map, row, 'Hardware ID', 1)
-        _allocation.parent_id = self._get_input_value(_map, row,
-                                                      'Parent Assembly', 1)
-
-        return _allocation
-
-    def _do_insert_design_electric(self,
-                                   row: pd.Series) -> RAMSTKDesignElectric:
-        """
-        Insert a new Design Electric entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramskdesignelectric.RAMMSTKDesignElectric`
-        """
-        _design_electric = RAMSTKDesignElectric()
-
-        _map = self._dic_field_map['Hardware']
-        _design_electric.hardware_id = self._get_input_value(
-            _map, row, 'Hardware ID', 1)
-
-        _map = self._dic_field_map['Design Electric']
-        _design_electric.application_id = self._get_input_value(
-            _map, row, 'Application ID', 0)
-        _design_electric.area = self._get_input_value(_map, row, 'Area', 1.0)
-        _design_electric.capacitance = self._get_input_value(
-            _map, row, 'Capacitance', 0.000001)
-        _design_electric.configuration_id = self._get_input_value(
-            _map, row, 'Configuration ID', 0)
-        _design_electric.construction_id = self._get_input_value(
-            _map, row, 'Construction ID', 0)
-        _design_electric.contact_form_id = self._get_input_value(
-            _map, row, 'Contact Form ID', 0)
-        _design_electric.contact_gauge = self._get_input_value(
-            _map, row, 'Contact Gauge', 20)
-        _design_electric.contact_rating_id = self._get_input_value(
-            _map, row, 'Contact Rating ID', 0)
-        _design_electric.current_operating = self._get_input_value(
-            _map, row, 'Current Operating', 0.0)
-        _design_electric.current_rated = self._get_input_value(
-            _map, row, 'Current Rated', 0.0)
-        _design_electric.current_ratio = self._get_input_value(
-            _map, row, 'Current Ratio', 0.0)
-        _design_electric.environment_active_id = self._get_input_value(
-            _map, row, 'Environment Active ID', 0)
-        _design_electric.environment_dormant_id = self._get_input_value(
-            _map, row, 'Environment Dormant ID', 0)
-        _design_electric.family_id = self._get_input_value(
-            _map, row, 'Family ID', 0)
-        _design_electric.feature_size = self._get_input_value(
-            _map, row, 'Feature Size', 1.0)
-        _design_electric.frequency_operating = self._get_input_value(
-            _map, row, 'Frequency Operating', 0.0)
-        _design_electric.insert_id = self._get_input_value(
-            _map, row, 'Insert ID', 0)
-        _design_electric.insulation_id = self._get_input_value(
-            _map, row, 'Insulation ID', 0)
-        _design_electric.manufacturing_id = self._get_input_value(
-            _map, row, 'Manufacturing ID', 0)
-        _design_electric.matching_id = self._get_input_value(
-            _map, row, 'Matching ID', 0)
-        _design_electric.n_active_pins = self._get_input_value(
-            _map, row, 'N Active Pins', 0)
-        _design_electric.n_circuit_planes = self._get_input_value(
-            _map, row, 'N Circuit Planes', 0)
-        _design_electric.n_cycles = self._get_input_value(
-            _map, row, 'N Cycles', 0)
-        _design_electric.n_elements = self._get_input_value(
-            _map, row, 'N Elements', 0)
-        _design_electric.n_hand_soldered = self._get_input_value(
-            _map, row, 'N Hand Soldered', 0)
-        _design_electric.n_wave_soldered = self._get_input_value(
-            _map, row, 'N Wave Soldered', 0)
-        _design_electric.operating_life = self._get_input_value(
-            _map, row, 'Operating Life', 0)
-        _design_electric.overstress = self._get_input_value(
-            _map, row, 'Overstress', 0)
-        _design_electric.package_id = self._get_input_value(
-            _map, row, 'Package ID', 0)
-        _design_electric.power_operating = self._get_input_value(
-            _map, row, 'Power Operating', 0.0)
-        _design_electric.power_rated = self._get_input_value(
-            _map, row, 'Power Rated', 0.0)
-        _design_electric.power_ratio = self._get_input_value(
-            _map, row, 'Power Ratio', 0.0)
-        _design_electric.reason = self._get_input_value(
-            _map, row, 'Reason', '')
-        _design_electric.resistance = self._get_input_value(
-            _map, row, 'Resistance', 0.0)
-        _design_electric.specification_id = self._get_input_value(
-            _map, row, 'Specification ID', 0)
-        _design_electric.technology_id = self._get_input_value(
-            _map, row, 'Technology ID', 0)
-        _design_electric.temperature_active = self._get_input_value(
-            _map, row, 'Temperature, Active', 30.0)
-        _design_electric.temperature_case = self._get_input_value(
-            _map, row, 'Temperature, Case', 0.0)
-        _design_electric.temperature_dormant = self._get_input_value(
-            _map, row, 'Temperature, Dormant', 25.0)
-        _design_electric.temperature_hot_spot = self._get_input_value(
-            _map, row, 'Temperature, Hot Spot', 0.0)
-        _design_electric.temperature_junction = self._get_input_value(
-            _map, row, 'Temperature, Junction', 0.0)
-        _design_electric.temperature_knee = self._get_input_value(
-            _map, row, 'Temperature, Knee', 0.0)
-        _design_electric.temperature_rated_max = self._get_input_value(
-            _map, row, 'Temperature, Rated Max', 0.0)
-        _design_electric.temperature_rated_min = self._get_input_value(
-            _map, row, 'Temperature, Rated Min', 0.0)
-        _design_electric.temperature_rise = self._get_input_value(
-            _map, row, 'Temperature Rise', 0.0)
-        _design_electric.theta_jc = self._get_input_value(
-            _map, row, 'Theta JC', 0.0)
-        _design_electric.type_id = self._get_input_value(
-            _map, row, 'Type ID', 0)
-        _design_electric.voltage_ac_operating = self._get_input_value(
-            _map, row, 'Voltage, AC Operating', 0.0)
-        _design_electric.voltage_dc_operating = self._get_input_value(
-            _map, row, 'Voltage, DC Operating', 0.0)
-        _design_electric.voltage_esd = self._get_input_value(
-            _map, row, 'Voltage ESD', 0.0)
-        _design_electric.voltage_rated = self._get_input_value(
-            _map, row, 'Voltage, Rated', 0.0)
-        _design_electric.voltage_ratio = self._get_input_value(
-            _map, row, 'Voltage Ratio', 0.0)
-        _design_electric.weight = self._get_input_value(
-            _map, row, 'Weight', 1.0)
-        _design_electric.years_in_production = self._get_input_value(
-            _map, row, 'Years in Production', 2)
-
-        return _design_electric
-
-    def _do_insert_design_mechanic(self,
-                                   row: pd.Series) -> RAMSTKDesignMechanic:
-        """
-        Insert a new Design Mechanic entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramskdesignmechanic.RAMMSTKDesignMechanic`
-        """
-        # ISSUE: See issue #141 at https://github.com/ReliaQualAssociates/ramstk/issues/141 and add NSWC support to this method.
-        _design_mechanic = RAMSTKDesignMechanic()
-
-        _map = self._dic_field_map['Hardware']
-        _design_mechanic.hardware_id = self._get_input_value(
-            _map, row, 'Hardware ID', 1)
-
-        _map = self._dic_field_map['Design Mechanic']
-        _design_mechanic.altitude_operating = self._get_input_value(
-            _map, row, 'Altitude, Operating', 0.0)
-        _design_mechanic.application_id = self._get_input_value(
-            _map, row, 'Application ID', 0)
-        _design_mechanic.balance_id = self._get_input_value(
-            _map, row, 'Balance ID', 0)
-        _design_mechanic.clearance = self._get_input_value(
-            _map, row, 'Clearance', 0.0)
-        _design_mechanic.casing_id = self._get_input_value(
-            _map, row, 'Casing ID', 0)
-        _design_mechanic.contact_pressure = self._get_input_value(
-            _map, row, 'Contact Pressure', 0.0)
-        _design_mechanic.deflection = self._get_input_value(
-            _map, row, 'Deflection', 0.0)
-        _design_mechanic.diameter_coil = self._get_input_value(
-            _map, row, 'Diameter, Coil', 0.0)
-        _design_mechanic.diameter_inner = self._get_input_value(
-            _map, row, 'Diameter, Inner', 0.0)
-        _design_mechanic.diameter_outer = self._get_input_value(
-            _map, row, 'Diameter, Outer', 0.0)
-        _design_mechanic.diameter_wire = self._get_input_value(
-            _map, row, 'Diameter, Wire', 0.0)
-        _design_mechanic.filter_size = self._get_input_value(
-            _map, row, 'Filter Size', 0.0)
-        _design_mechanic.flow_design = self._get_input_value(
-            _map, row, 'Flow, Design', 0.0)
-        _design_mechanic.flow_operating = self._get_input_value(
-            _map, row, 'Flow, Operating', 0.0)
-        _design_mechanic.frequency_operating = self._get_input_value(
-            _map, row, 'Frequency, Operating', 0.0)
-        _design_mechanic.friction = self._get_input_value(
-            _map, row, 'Friction', 0.0)
-        _design_mechanic.impact_id = self._get_input_value(
-            _map, row, 'Impact ID', 0)
-        _design_mechanic.leakage_allowable = self._get_input_value(
-            _map, row, 'Allowable Leakage', 0.0)
-        _design_mechanic.length = self._get_input_value(
-            _map, row, 'Length', 0.0)
-        _design_mechanic.length_compressed = self._get_input_value(
-            _map, row, 'Length, Compressed', 0.0)
-        _design_mechanic.length_relaxed = self._get_input_value(
-            _map, row, 'Length, Relaxed', 0.0)
-        _design_mechanic.load_design = self._get_input_value(
-            _map, row, 'Design Load', 0.0)
-        _design_mechanic.load_id = self._get_input_value(
-            _map, row, 'Load ID', 0)
-        _design_mechanic.load_operating = self._get_input_value(
-            _map, row, 'Operating Load', 0.0)
-        _design_mechanic.lubrication_id = self._get_input_value(
-            _map, row, 'Lubrication ID', 0)
-        _design_mechanic.manufacturing_id = self._get_input_value(
-            _map, row, 'Manufacturing ID', 0)
-        _design_mechanic.material_id = self._get_input_value(
-            _map, row, 'Material ID', 0)
-        _design_mechanic.meyer_hardness = self._get_input_value(
-            _map, row, 'Meyer Hardness', 0.0)
-        _design_mechanic.misalignment_angle = self._get_input_value(
-            _map, row, 'Misalignment Angle', 0.0)
-        _design_mechanic.n_ten = self._get_input_value(_map, row, 'N Ten', 0)
-        _design_mechanic.n_cycles = self._get_input_value(
-            _map, row, 'N Cycles', 0.0)
-        _design_mechanic.n_elements = self._get_input_value(
-            _map, row, 'N Elements', 0)
-        _design_mechanic.offset = self._get_input_value(
-            _map, row, 'Offset', 0.0)
-        _design_mechanic.particle_size = self._get_input_value(
-            _map, row, 'Particle Size', 0.0)
-        _design_mechanic.pressure_contact = self._get_input_value(
-            _map, row, 'Contact Pressure', 0.0)
-        _design_mechanic.pressure_delta = self._get_input_value(
-            _map, row, 'Differential Pressure', 0.0)
-        _design_mechanic.pressure_downstream = self._get_input_value(
-            _map, row, 'Downstream Pressure', 0.0)
-        _design_mechanic.pressure_rated = self._get_input_value(
-            _map, row, 'Rated Pressure', 0.0)
-        _design_mechanic.pressure_upstream = self._get_input_value(
-            _map, row, 'Upstream Pressure', 0.0)
-        _design_mechanic.rpm_design = self._get_input_value(
-            _map, row, 'Design RPM', 0.0)
-        _design_mechanic.rpm_operating = self._get_input_value(
-            _map, row, 'Operating RPM', 0.0)
-        _design_mechanic.service_id = self._get_input_value(
-            _map, row, 'Service ID', 0)
-        _design_mechanic.spring_index = self._get_input_value(
-            _map, row, 'Spring Index', 0)
-        _design_mechanic.surface_finish = self._get_input_value(
-            _map, row, 'Surface Finish', 0.0)
-        _design_mechanic.technology_id = self._get_input_value(
-            _map, row, 'Technology ID', 0)
-        _design_mechanic.thickness = self._get_input_value(
-            _map, row, 'Thickness', 0.0)
-        _design_mechanic.torque_id = self._get_input_value(
-            _map, row, 'Torque ID', 0)
-        _design_mechanic.type_id = self._get_input_value(
-            _map, row, 'Type ID', 0)
-        _design_mechanic.viscosity_design = self._get_input_value(
-            _map, row, 'Design Viscosity', 0.0)
-        _design_mechanic.viscosity_dynamic = self._get_input_value(
-            _map, row, 'Dynamic Viscosity', 0.0)
-        _design_mechanic.water_per_cent = self._get_input_value(
-            _map, row, '% Water', 0.0)
-        _design_mechanic.width_minimum = self._get_input_value(
-            _map, row, 'Minimum Width', 0.0)
-
-        return _design_mechanic
-
-    def _do_insert_function(self, row: pd.Series) -> RAMSTKFunction:
-        """
-        Insert a new Function entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramskfunction.RAMSTKFunction`
-        """
-        _function = RAMSTKFunction()
-        _map = self._dic_field_map['Function']
-
-        _function.revision_id = self._get_input_value(_map, row, 'Revision ID',
-                                                      1)
-        _function.function_id = self._get_input_value(_map, row, 'Function ID',
-                                                      1)
-        _function.function_code = self._get_input_value(
-            _map, row, 'Function Code', '')
-        _function.level = self._get_input_value(_map, row, 'Level', 0)
-        _function.name = self._get_input_value(_map, row, 'Function Name', '')
-        _function.parent_id = self._get_input_value(_map, row, 'Parent', 1)
-        _function.remarks = self._get_input_value(_map, row, 'Remarks', '')
-        _function.safety_critical = self._get_input_value(
-            _map, row, 'Safety Critical', 0)
-        _function.type_id = self._get_input_value(_map, row, 'Type', '')
-
-        # Ensure the remarks are a byte-object.
-        try:
-            _function.remarks = _function.remarks.encode('utf-8')
-        except AttributeError:
-            _function.remarks = ''
-
-        return _function
-
-    def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardware:
-        """
-        Insert a new Hardware entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramstkhardware.RAMSTKHardware`
-        """
-        _hardware = RAMSTKHardware()
-        _map = self._dic_field_map['Hardware']
-
-        _hardware.revision_id = self._get_input_value(_map, row, 'Revision ID',
-                                                      1)
-        _hardware.hardware_id = self._get_input_value(_map, row, 'Hardware ID',
-                                                      1)
-        _hardware.alt_part_number = self._get_input_value(
-            _map, row, 'Alternate Part Number', '')
-        _hardware.cage_code = self._get_input_value(_map, row, 'CAGE Code', '')
-        _hardware.category_id = self._get_input_value(_map, row, 'Category ID',
-                                                      0)
-        _hardware.comp_ref_des = self._get_input_value(_map, row,
-                                                       'Composite Ref. Des.',
-                                                       '')
-        _hardware.cost = self._get_input_value(_map, row, 'Cost', 0.0)
-        _hardware.cost_type_id = self._get_input_value(_map, row, 'Cost Type',
-                                                       0)
-        _hardware.description = self._get_input_value(_map, row, 'Description',
-                                                      '')
-        _hardware.duty_cycle = self._get_input_value(_map, row, 'Duty Cycle',
-                                                     100.0)
-        _hardware.figure_number = self._get_input_value(
-            _map, row, 'Figure Number', '')
-        _hardware.lcn = self._get_input_value(_map, row, 'LCN', '')
-        _hardware.level = self._get_input_value(_map, row, 'Level', 0)
-        _hardware.manufacturer_id = self._get_input_value(
-            _map, row, 'Manufacturer', 0)
-        _hardware.mission_time = self._get_input_value(_map, row,
-                                                       'Mission Time', 24.0)
-        _hardware.name = self._get_input_value(_map, row, 'Name', '')
-        _hardware.nsn = self._get_input_value(_map, row, 'NSN', '')
-        _hardware.page_number = self._get_input_value(_map, row, 'Page Number',
-                                                      '')
-        _hardware.parent_id = self._get_input_value(_map, row,
-                                                    'Parent Assembly', 1)
-        _hardware.part = self._get_input_value(_map, row, 'Part', 0)
-        _hardware.part_number = self._get_input_value(_map, row, 'Part Number',
-                                                      '')
-        _hardware.quantity = self._get_input_value(_map, row, 'Quantity', 1)
-        _hardware.ref_des = self._get_input_value(_map, row,
-                                                  'Reference Designator', '')
-        _hardware.remarks = self._get_input_value(_map, row, 'Remarks', '')
-        _hardware.repairable = self._get_input_value(_map, row, 'Repairable',
-                                                     1)
-        _hardware.specification_number = self._get_input_value(
-            _map, row, 'Specification', '')
-        _hardware.subcategory_id = self._get_input_value(
-            _map, row, 'Subcategory ID', 0)
-        _hardware.tagged_part = self._get_input_value(_map, row, 'Tagged Part',
-                                                      0)
-        _hardware.year_of_manufacture = self._get_input_value(
-            _map, row, 'Year of Manufacture', 1900)
-
-        # Ensure the remarks are a byte-like object.
-        try:
-            _hardware.remarks = _hardware.remarks.encode('utf-8')
-        except AttributeError:
-            _hardware.remarks = ''
-
-        return _hardware
-
-    def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbkF:
-        """
-        Insert a new MIL-HDBK-217F entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramstkmilhdbk217f.RAMSTKMilHdbkF`
-        """
-        _mil_hdbk_f = RAMSTKMilHdbkF()
-
-        _map = self._dic_field_map['Hardware']
-        _mil_hdbk_f.hardware_id = self._get_input_value(
-            _map, row, 'Hardware ID', 1)
-
-        return _mil_hdbk_f
-
-    def _do_insert_nswc(self, row: pd.Series) -> RAMSTKNSWC:
-        """
-        Insert a new NSWC entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramstknswc.RAMSTKNSWC`
-        """
-        _nswc = RAMSTKNSWC()
-
-        _map = self._dic_field_map['Hardware']
-        _nswc.hardware_id = self._get_input_value(_map, row, 'Hardware ID', 1)
-
-        return _nswc
-
-    def _do_insert_reliability(self, row: pd.Series) -> RAMSTKReliability:
-        """
-        Insert a new Reliability entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramstkreliability.RAMSTKReliability`
-        """
-        _reliability = RAMSTKReliability()
-
-        _map = self._dic_field_map['Hardware']
-        _reliability.hardware_id = self._get_input_value(
-            _map, row, 'Hardware ID', 1)
-
-        _map = self._dic_field_map['Reliability']
-        _reliability.add_adj_factor = self._get_input_value(
-            _map, row, 'Additive Adjustment Factor', 0.0)
-        _reliability.failure_distribution_id = self._get_input_value(
-            _map, row, 'Failure Distribution ID', 0)
-        _reliability.hazard_rate_method_id = self._get_input_value(
-            _map, row, 'Failure Rate Method ID', 0)
-        _reliability.hazard_rate_model = self._get_input_value(
-            _map, row, 'Failure Rate Model', '')
-        _reliability.hazard_rate_specified = self._get_input_value(
-            _map, row, 'Specified Failure Rate', 0.0)
-        _reliability.hazard_rate_type_id = self._get_input_value(
-            _map, row, 'Failure Rate Type ID', 0)
-        _reliability.location_parameter = self._get_input_value(
-            _map, row, 'Location Parameter', 0.0)
-        _reliability.mtbf_specified = self._get_input_value(
-            _map, row, 'Specified MTBF', 0.0)
-        _reliability.mult_adj_factor = self._get_input_value(
-            _map, row, 'Multiplicative Adjustment Factor', 1.0)
-        _reliability.quality_id = self._get_input_value(
-            _map, row, 'Quality ID', 0)
-        _reliability.reliability_goal = self._get_input_value(
-            _map, row, 'Reliability Goal', 100.0)
-        _reliability.reliability_goal_measure_id = self._get_input_value(
-            _map, row, 'Reliability Goal Measure ID', 0)
-        _reliability.scale_parameter = self._get_input_value(
-            _map, row, 'Scale Parameter', 0.0)
-        _reliability.shape_parameter = self._get_input_value(
-            _map, row, 'Shape Parameter', 0.0)
-        _reliability.survival_analysis_id = self._get_input_value(
-            _map, row, 'Survival Analysis ID', 0)
-
-        return _reliability
-
-    def _do_insert_requirement(self, row: pd.Series) -> RAMSTKRequirement:
-        """
-        Insert a new Requirement entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramstkrequirement.RAMSTKRequirement`
-        """
-        _requirement = RAMSTKRequirement()
-        _map = self._dic_field_map['Requirement']
-
-        _requirement.revision_id = self._get_input_value(
-            _map, row, 'Revision ID', 1)
-        _requirement.requirement_id = self._get_input_value(
-            _map, row, 'Requirement ID', 1)
-        _requirement.derived = self._get_input_value(_map, row, 'Derived?', 0)
-        _requirement.description = self._get_input_value(
-            _map, row, 'Requirement', '')
-        _requirement.figure_number = self._get_input_value(
-            _map, row, 'Figure Number', '')
-        _requirement.owner = self._get_input_value(_map, row, 'Owner', '')
-        _requirement.page_number = self._get_input_value(
-            _map, row, 'Page Number', '')
-        _requirement.parent_id = self._get_input_value(_map, row, 'Parent ID',
-                                                       1)
-        _requirement.priority = self._get_input_value(_map, row, 'Priority', 1)
-        _requirement.requirement_code = self._get_input_value(
-            _map, row, 'Requirement Code', '')
-        _requirement.specification = self._get_input_value(
-            _map, row, 'Specification', '')
-        _requirement.requirement_type = self._get_input_value(
-            _map, row, 'Requirement Type', '')
-        _requirement.validated = self._get_input_value(_map, row, 'Validated?',
-                                                       0)
-        _requirement.validated_date = self._get_input_value(
-            _map, row, 'Validated Date', date.today())
-
-        # Ensure the description is a byte-like object.
-        try:
-            _requirement.description = _requirement.description.encode('utf-8')
-        except AttributeError:
-            _requirement.description = ''
-
-        return _requirement
-
-    def _do_insert_similar_item(self, row: pd.Series) -> RAMSTKSimilarItem:
-        """
-        Insert a new Similar Item record to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _similar_item; an instance of the RAMSTKSimilarItem database
-            table record.
-        :rtype: :class:`ramstk.models.programdb.ramstksimilaritem.RAMSTKSimilarItem`
-        """
-        _similar_item = RAMSTKSimilarItem()
-        _map = self._dic_field_map['Hardware']
-
-        _similar_item.revision_id = self._get_input_value(
-            _map, row, 'Revision ID', 1)
-        _similar_item.hardware_id = self._get_input_value(
-            _map, row, 'Hardware ID', 1)
-        _similar_item.parent_id = self._get_input_value(
-            _map, row, 'Parent Assembly', 1)
-
-        return _similar_item
-
-    def _do_insert_validation(self, row: pd.Series) -> RAMSTKValidation:
-        """
-        Insert a new Validation entity to the RAMSTK db.
-
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :return: _entity
-        :rtype: :class:`ramstk.dao.programdb.RAMSTKValidation.RAMSTKValidation`
-        """
-        _validation = RAMSTKValidation()
-        _map = self._dic_field_map['Validation']
-
-        _validation.revision_id = self._get_input_value(
-            _map, row, 'Revision ID', 1)
-        _validation.validation_id = self._get_input_value(
-            _map, row, 'Validation ID', 1)
-        _validation.acceptable_maximum = self._get_input_value(
-            _map, row, 'Acceptable Maximum', 0.0)
-        _validation.acceptable_mean = self._get_input_value(
-            _map, row, 'Acceptable Mean', 0.0)
-        _validation.acceptable_minimum = self._get_input_value(
-            _map, row, 'Acceptable Minimum', 0.0)
-        _validation.acceptable_variance = self._get_input_value(
-            _map, row, 'Acceptable Variance', 0.0)
-        _validation.confidence = self._get_input_value(_map, row,
-                                                       's-Confidence', 75.0)
-        _validation.cost_average = self._get_input_value(
-            _map, row, 'Average Task Cost', 0.0)
-        _validation.cost_maximum = self._get_input_value(
-            _map, row, 'Maximum Task Cost', 0.0)
-        _validation.cost_minimum = self._get_input_value(
-            _map, row, 'Minimum Task Cost', 0.0)
-        _validation.date_start = self._get_input_value(_map, row, 'Start Date',
-                                                       date.today())
-        _validation.date_end = self._get_input_value(_map, row, 'End Date',
-                                                     date.today())
-        _validation.description = self._get_input_value(
-            _map, row, 'Task Description', '')
-        _validation.measurement_unit = self._get_input_value(
-            _map, row, 'Unit of Measure', '')
-        _validation.name = self._get_input_value(_map, row, 'Name', '')
-        _validation.status = self._get_input_value(_map, row, 'Task Status',
-                                                   0.0)
-        _validation.task_type = self._get_input_value(_map, row, 'Task Type',
-                                                      '')
-        _validation.task_specification = self._get_input_value(
-            _map, row, 'Task Specification', '')
-        _validation.time_average = self._get_input_value(
-            _map, row, 'Average Task Time', 0.0)
-        _validation.time_maximum = self._get_input_value(
-            _map, row, 'Maximum Task Time', 0.0)
-        _validation.time_minimum = self._get_input_value(
-            _map, row, 'Minimum Task Time', 0.0)
-
-        # Ensure the description is a byte-like object, not 'str'.
-        try:
-            _validation.description = _validation.description.encode('utf-8')
-        except AttributeError:
-            _validation.description = ''
-
-        return _validation
-
-    @staticmethod
-    def _get_input_value(mapper: Dict[str, Any], row: pd.Series, field: str,
-                         default: Any) -> Any:
-        """
-        Retrieve the input value for a field from the Pandas dataframe.
-
-        :param dict mapper: the field mapping dict to use as the Rosetta stone.
-        :param row: the row from the pandas DataFrame containing the input
-            data.
-        :type row: :class:`pandas.Series`
-        :param str field: the name of the RAMSTK database field to retrieve the
-            data for.
-        :param default: the default value to assign to the field.
-        :return: _value
-        :rtype: the value of the requested input field or the default.
-        """
-        try:
-            _value = row.at[mapper[field]]
-        except KeyError:
-            _value = default
-
-        try:
-            # Check for Python NaN's.
-            if math.isnan(_value):
-                _value = default
-        except TypeError:
-            # Check for numpy NaN's.
-            if _value is np.nan:
-                _value = default
-
-        # If it's supposed to be a date, make it a date.
-        if default == date.today():
-            _value = parser.parse(_value)
-
-        return _value
-
-    def do_insert(self, module: str) -> None:
+    def _do_import(self, module: str) -> None:
         """
         Insert a new entity to the RAMSTK db with values from external file.
 
@@ -809,6 +242,7 @@ class Import:
         :rtype: None
         """
         _entities = []
+
         # pylint: disable=unused-variable
         for __, _row in self._df_input_data.iterrows():
             if module == 'Function':
@@ -838,10 +272,576 @@ class Import:
                 _entity = self._do_insert_validation(_row)
                 _entities.append(_entity)
 
-        self._program_dao.do_insert_many(_entities)
+        try:
+            self._dao.do_insert_many(_entities)
+            pub.sendMessage('succeed_import_module', module=module)
+        except AttributeError:
+            pub.sendMessage('fail_import_module', module=module)
 
-    def do_map_to_field(self, module: str, import_field: str,
-                        format_field: str) -> None:
+    def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation:
+        """
+        Insert a new Allocation record to the RAMSTK database.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _allocation; an instance of the RAMSTKAllocation database
+            table record.
+        :rtype: :class:`ramstk.models.programdb.RAMSTKAllocation`
+        """
+        _allocation = RAMSTKAllocation()
+        _map = self._dic_field_map['Hardware']
+
+        _allocation.revision_id = _get_input_value(_map, row, 'Revision ID', 1)
+        _allocation.hardware_id = _get_input_value(_map, row, 'Hardware ID', 1)
+        _allocation.parent_id = _get_input_value(_map, row, 'Parent Assembly',
+                                                 1)
+
+        return _allocation
+
+    def _do_insert_design_electric(self,
+                                   row: pd.Series) -> RAMSTKDesignElectric:
+        """
+        Insert a new Design Electric entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.RAMMSTKDesignElectric`
+        """
+        _design_electric = RAMSTKDesignElectric()
+
+        _map = self._dic_field_map['Hardware']
+
+        _design_electric.hardware_id = _get_input_value(
+            _map, row, 'Hardware ID', 1)
+
+        _map = self._dic_field_map['Design Electric']
+        _design_electric.set_attributes({
+            'application_id':
+            _get_input_value(_map, row, 'Application ID', 0),
+            'area':
+            _get_input_value(_map, row, 'Area', 0.0),
+            'capacitance':
+            _get_input_value(_map, row, 'Capacitance', 0.000001),
+            'configuration_id':
+            _get_input_value(_map, row, 'Configuration ID', 0),
+            'construction_id':
+            _get_input_value(_map, row, 'Construction ID', 0),
+            'contact_form_id':
+            _get_input_value(_map, row, 'Contact Form ID', 0),
+            'contact_gauge':
+            _get_input_value(_map, row, 'Contact Gauge', 20),
+            'contact_rating_id':
+            _get_input_value(_map, row, 'Contact Rating ID', 0),
+            'current_operating':
+            _get_input_value(_map, row, 'Current Operating', 0.0),
+            'current_rated':
+            _get_input_value(_map, row, 'Current Rated', 0.0),
+            'current_ratio':
+            _get_input_value(_map, row, 'Current Ratio', 0.0),
+            'environment_active_id':
+            _get_input_value(_map, row, 'Environment Active ID', 0),
+            'environment_dormant_id':
+            _get_input_value(_map, row, 'Environment Dormant ID', 0),
+            'family_id':
+            _get_input_value(_map, row, 'Family ID', 0),
+            'feature_size':
+            _get_input_value(_map, row, 'Feature Size', 1.0),
+            'frequency_operating':
+            _get_input_value(_map, row, 'Frequency Operating', 0.0),
+            'insert_id':
+            _get_input_value(_map, row, 'Insert ID', 0),
+            'insulation_id':
+            _get_input_value(_map, row, 'Insulation ID', 0),
+            'manufacturing_id':
+            _get_input_value(_map, row, 'Manufacturing ID', 0),
+            'matching_id':
+            _get_input_value(_map, row, 'Matching ID', 0),
+            'n_active_pins':
+            _get_input_value(_map, row, 'N Active Pins', 0),
+            'n_circuit_planes':
+            _get_input_value(_map, row, 'N Circuit Planes', 1),
+            'n_cycles':
+            _get_input_value(_map, row, 'N Cycles', 0),
+            'n_elements':
+            _get_input_value(_map, row, 'N Elements', 0),
+            'n_hand_soldered':
+            _get_input_value(_map, row, 'N Hand Soldered', 0),
+            'n_wave_soldered':
+            _get_input_value(_map, row, 'N Wave Soldered', 0),
+            'operating_life':
+            _get_input_value(_map, row, 'Operating Life', 0.0),
+            'overstress':
+            _get_input_value(_map, row, 'Overstress', 0),
+            'package_id':
+            _get_input_value(_map, row, 'Package ID', 0),
+            'power_operating':
+            _get_input_value(_map, row, 'Power Operating', 0.0),
+            'power_rated':
+            _get_input_value(_map, row, 'Power Rated', 0.0),
+            'power_ratio':
+            _get_input_value(_map, row, 'Power Ratio', 0.0),
+            'reason':
+            _get_input_value(_map, row, 'Reason', ''),
+            'resistance':
+            _get_input_value(_map, row, 'Resistance', 0.0),
+            'specification_id':
+            _get_input_value(_map, row, 'Specification ID', 0),
+            'technology_id':
+            _get_input_value(_map, row, 'Technology ID', 0),
+            'temperature_active':
+            _get_input_value(_map, row, 'Temperature, Active', 30.0),
+            'temperature_case':
+            _get_input_value(_map, row, 'Temperature, Case', 0.0),
+            'temperature_dormant':
+            _get_input_value(_map, row, 'Temperature, Dormant', 25.0),
+            'temperature_hot_spot':
+            _get_input_value(_map, row, 'Temperature, Hot Spot', 0.0),
+            'temperature_junction':
+            _get_input_value(_map, row, 'Temperature, Junction', 0.0),
+            'temperature_knee':
+            _get_input_value(_map, row, 'Temperature, Knee', 25.0),
+            'temperature_rated_max':
+            _get_input_value(_map, row, 'Temperature, Rated Max', 0.0),
+            'temperature_rated_min':
+            _get_input_value(_map, row, 'Temperature, Rated Min', 0.0),
+            'temperature_rise':
+            _get_input_value(_map, row, 'Temperature Rise', 0.0),
+            'theta_jc':
+            _get_input_value(_map, row, 'Theta JC', 0.0),
+            'type_id':
+            _get_input_value(_map, row, 'Type ID', 0),
+            'voltage_ac_operating':
+            _get_input_value(_map, row, 'Voltage, AC Operating', 0.0),
+            'voltage_dc_operating':
+            _get_input_value(_map, row, 'Voltage, DC Operating', 0.0),
+            'voltage_esd':
+            _get_input_value(_map, row, 'Voltage ESD', 0.0),
+            'voltage_rated':
+            _get_input_value(_map, row, 'Voltage, Rated', 0.0),
+            'voltage_ratio':
+            _get_input_value(_map, row, 'Voltage Ratio', 0.0),
+            'weight':
+            _get_input_value(_map, row, 'Weight', 1.0),
+            'years_in_production':
+            _get_input_value(_map, row, 'Years in Production', 2)
+        })
+
+        return _design_electric
+
+    def _do_insert_design_mechanic(self,
+                                   row: pd.Series) -> RAMSTKDesignMechanic:
+        """
+        Insert a new Design Mechanic entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.RAMMSTKDesignMechanic`
+        """
+        _design_mechanic = RAMSTKDesignMechanic()
+
+        _map = self._dic_field_map['Hardware']
+        _design_mechanic.hardware_id = _get_input_value(
+            _map, row, 'Hardware ID', 1)
+
+        _map = self._dic_field_map['Design Mechanic']
+        _design_mechanic.set_attributes({
+            'altitude_operating':
+            _get_input_value(_map, row, 'Altitude, Operating', 0.0),
+            'application_id':
+            _get_input_value(_map, row, 'Application ID', 0),
+            'balance_id':
+            _get_input_value(_map, row, 'Balance ID', 0),
+            'clearance':
+            _get_input_value(_map, row, 'Clearance', 0.0),
+            'casing_id':
+            _get_input_value(_map, row, 'Casing ID', 0),
+            'contact_pressure':
+            _get_input_value(_map, row, 'Contact Pressure', 0.0),
+            'deflection':
+            _get_input_value(_map, row, 'Deflection', 0.0),
+            'diameter_coil':
+            _get_input_value(_map, row, 'Diameter, Coil', 0.0),
+            'diameter_inner':
+            _get_input_value(_map, row, 'Diameter, Inner', 0.0),
+            'diameter_outer':
+            _get_input_value(_map, row, 'Diameter, Outer', 0.0),
+            'diameter_wire':
+            _get_input_value(_map, row, 'Diameter, Wire', 0.0),
+            'filter_size':
+            _get_input_value(_map, row, 'Filter Size', 0.0),
+            'flow_design':
+            _get_input_value(_map, row, 'Flow, Design', 0.0),
+            'flow_operating':
+            _get_input_value(_map, row, 'Flow, Operating', 0.0),
+            'frequency_operating':
+            _get_input_value(_map, row, 'Frequency, Operating', 0.0),
+            'friction':
+            _get_input_value(_map, row, 'Friction', 0.0),
+            'impact_id':
+            _get_input_value(_map, row, 'Impact ID', 0),
+            'leakage_allowable':
+            _get_input_value(_map, row, 'Allowable Leakage', 0.0),
+            'length':
+            _get_input_value(_map, row, 'Length', 0.0),
+            'length_compressed':
+            _get_input_value(_map, row, 'Length, Compressed', 0.0),
+            'length_relaxed':
+            _get_input_value(_map, row, 'Length, Relaxed', 0.0),
+            'load_design':
+            _get_input_value(_map, row, 'Design Load', 0.0),
+            'load_id':
+            _get_input_value(_map, row, 'Load ID', 0),
+            'load_operating':
+            _get_input_value(_map, row, 'Operating Load', 0.0),
+            'lubrication_id':
+            _get_input_value(_map, row, 'Lubrication ID', 0),
+            'manufacturing_id':
+            _get_input_value(_map, row, 'Manufacturing ID', 0),
+            'material_id':
+            _get_input_value(_map, row, 'Material ID', 0),
+            'meyer_hardness':
+            _get_input_value(_map, row, 'Meyer Hardness', 0.0),
+            'misalignment_angle':
+            _get_input_value(_map, row, 'Misalignment Angle', 0.0),
+            'n_ten':
+            _get_input_value(_map, row, 'N Ten', 0),
+            'n_cycles':
+            _get_input_value(_map, row, 'N Cycles', 0.0),
+            'n_elements':
+            _get_input_value(_map, row, 'N Elements', 0),
+            'offset':
+            _get_input_value(_map, row, 'Offset', 0.0),
+            'particle_size':
+            _get_input_value(_map, row, 'Particle Size', 0.0),
+            'pressure_contact':
+            _get_input_value(_map, row, 'Contact Pressure', 0.0),
+            'pressure_delta':
+            _get_input_value(_map, row, 'Differential Pressure', 0.0),
+            'pressure_downstream':
+            _get_input_value(_map, row, 'Downstream Pressure', 0.0),
+            'pressure_rated':
+            _get_input_value(_map, row, 'Rated Pressure', 0.0),
+            'pressure_upstream':
+            _get_input_value(_map, row, 'Upstream Pressure', 0.0),
+            'rpm_design':
+            _get_input_value(_map, row, 'Design RPM', 0.0),
+            'rpm_operating':
+            _get_input_value(_map, row, 'Operating RPM', 0.0),
+            'service_id':
+            _get_input_value(_map, row, 'Service ID', 0),
+            'spring_index':
+            _get_input_value(_map, row, 'Spring Index', 0),
+            'surface_finish':
+            _get_input_value(_map, row, 'Surface Finish', 0.0),
+            'technology_id':
+            _get_input_value(_map, row, 'Technology ID', 0),
+            'thickness':
+            _get_input_value(_map, row, 'Thickness', 0.0),
+            'torque_id':
+            _get_input_value(_map, row, 'Torque ID', 0),
+            'type_id':
+            _get_input_value(_map, row, 'Type ID', 0),
+            'viscosity_design':
+            _get_input_value(_map, row, 'Design Viscosity', 0.0),
+            'viscosity_dynamic':
+            _get_input_value(_map, row, 'Dynamic Viscosity', 0.0),
+            'water_per_cent':
+            _get_input_value(_map, row, '% Water', 0.0),
+            'width_minimum':
+            _get_input_value(_map, row, 'Minimum Width', 0.0)
+        })
+
+        return _design_mechanic
+
+    def _do_insert_function(self, row: pd.Series) -> RAMSTKFunction:
+        """
+        Insert a new Function entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.ramskfunction.RAMSTKFunction`
+        """
+        _function = RAMSTKFunction()
+        _map = self._dic_field_map['Function']
+
+        _function.revision_id = _get_input_value(_map, row, 'Revision ID', 1)
+        _function.function_id = _get_input_value(_map, row, 'Function ID', 1)
+        _function.function_code = _get_input_value(_map, row, 'Function Code',
+                                                   '')
+        _function.level = _get_input_value(_map, row, 'Level', 0)
+        _function.name = _get_input_value(_map, row, 'Function Name', '')
+        _function.parent_id = _get_input_value(_map, row, 'Parent', 1)
+        _function.remarks = _get_input_value(_map, row, 'Remarks', '')
+        _function.safety_critical = _get_input_value(_map, row,
+                                                     'Safety Critical', 0)
+        _function.type_id = _get_input_value(_map, row, 'Type', '')
+
+        return _function
+
+    def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardware:
+        """
+        Insert a new Hardware entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.ramstkhardware.RAMSTKHardware`
+        """
+        _hardware = RAMSTKHardware()
+        _map = self._dic_field_map['Hardware']
+
+        _hardware.revision_id = _get_input_value(_map, row, 'Revision ID', 1)
+        _hardware.hardware_id = _get_input_value(_map, row, 'Hardware ID', 1)
+        _hardware.alt_part_number = _get_input_value(_map, row,
+                                                     'Alternate Part Number',
+                                                     '')
+        _hardware.cage_code = _get_input_value(_map, row, 'CAGE Code', '')
+        _hardware.category_id = _get_input_value(_map, row, 'Category ID', 0)
+        _hardware.comp_ref_des = _get_input_value(_map, row,
+                                                  'Composite Ref. Des.', '')
+        _hardware.cost = _get_input_value(_map, row, 'Cost', 0.0)
+        _hardware.cost_type_id = _get_input_value(_map, row, 'Cost Type', 0)
+        _hardware.description = _get_input_value(_map, row, 'Description', '')
+        _hardware.duty_cycle = _get_input_value(_map, row, 'Duty Cycle', 100.0)
+        _hardware.figure_number = _get_input_value(_map, row, 'Figure Number',
+                                                   '')
+        _hardware.lcn = _get_input_value(_map, row, 'LCN', '')
+        _hardware.level = _get_input_value(_map, row, 'Level', 0)
+        _hardware.manufacturer_id = _get_input_value(_map, row, 'Manufacturer',
+                                                     0)
+        _hardware.mission_time = _get_input_value(_map, row, 'Mission Time',
+                                                  24.0)
+        _hardware.name = _get_input_value(_map, row, 'Name', '')
+        _hardware.nsn = _get_input_value(_map, row, 'NSN', '')
+        _hardware.page_number = _get_input_value(_map, row, 'Page Number', '')
+        _hardware.parent_id = _get_input_value(_map, row, 'Parent Assembly', 1)
+        _hardware.part = _get_input_value(_map, row, 'Part', 0)
+        _hardware.part_number = _get_input_value(_map, row, 'Part Number', '')
+        _hardware.quantity = _get_input_value(_map, row, 'Quantity', 1)
+        _hardware.ref_des = _get_input_value(_map, row, 'Reference Designator',
+                                             '')
+        _hardware.remarks = _get_input_value(_map, row, 'Remarks', '')
+        _hardware.repairable = _get_input_value(_map, row, 'Repairable', 1)
+        _hardware.specification_number = _get_input_value(
+            _map, row, 'Specification', '')
+        _hardware.subcategory_id = _get_input_value(_map, row,
+                                                    'Subcategory ID', 0)
+        _hardware.tagged_part = _get_input_value(_map, row, 'Tagged Part', 0)
+        _hardware.year_of_manufacture = _get_input_value(
+            _map, row, 'Year of Manufacture', 1900)
+
+        return _hardware
+
+    def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbkF:
+        """
+        Insert a new MIL-HDBK-217F entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.RAMSTKMilHdbkF`
+        """
+        _mil_hdbk_f = RAMSTKMilHdbkF()
+
+        _map = self._dic_field_map['Hardware']
+        _mil_hdbk_f.hardware_id = _get_input_value(_map, row, 'Hardware ID', 1)
+
+        return _mil_hdbk_f
+
+    def _do_insert_nswc(self, row: pd.Series) -> RAMSTKNSWC:
+        """
+        Insert a new NSWC entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.ramstknswc.RAMSTKNSWC`
+        """
+        _nswc = RAMSTKNSWC()
+
+        _map = self._dic_field_map['Hardware']
+        _nswc.hardware_id = _get_input_value(_map, row, 'Hardware ID', 1)
+
+        return _nswc
+
+    def _do_insert_reliability(self, row: pd.Series) -> RAMSTKReliability:
+        """
+        Insert a new Reliability entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.RAMSTKReliability`
+        """
+        _reliability = RAMSTKReliability()
+
+        _map = self._dic_field_map['Hardware']
+        _reliability.hardware_id = _get_input_value(_map, row, 'Hardware ID',
+                                                    1)
+
+        _map = self._dic_field_map['Reliability']
+        _reliability.add_adj_factor = _get_input_value(
+            _map, row, 'Additive Adjustment Factor', 0.0)
+        _reliability.failure_distribution_id = _get_input_value(
+            _map, row, 'Failure Distribution ID', 0)
+        _reliability.hazard_rate_method_id = _get_input_value(
+            _map, row, 'Failure Rate Method ID', 0)
+        _reliability.hazard_rate_model = _get_input_value(
+            _map, row, 'Failure Rate Model', '')
+        _reliability.hazard_rate_specified = _get_input_value(
+            _map, row, 'Specified Failure Rate', 0.0)
+        _reliability.hazard_rate_type_id = _get_input_value(
+            _map, row, 'Failure Rate Type ID', 0)
+        _reliability.location_parameter = _get_input_value(
+            _map, row, 'Location Parameter', 0.0)
+        _reliability.mtbf_specified = _get_input_value(_map, row,
+                                                       'Specified MTBF', 0.0)
+        _reliability.mult_adj_factor = _get_input_value(
+            _map, row, 'Multiplicative Adjustment Factor', 1.0)
+        _reliability.quality_id = _get_input_value(_map, row, 'Quality ID', 0)
+        _reliability.reliability_goal = _get_input_value(
+            _map, row, 'Reliability Goal', 100.0)
+        _reliability.reliability_goal_measure_id = _get_input_value(
+            _map, row, 'Reliability Goal Measure ID', 0)
+        _reliability.scale_parameter = _get_input_value(
+            _map, row, 'Scale Parameter', 0.0)
+        _reliability.shape_parameter = _get_input_value(
+            _map, row, 'Shape Parameter', 0.0)
+        _reliability.survival_analysis_id = _get_input_value(
+            _map, row, 'Survival Analysis ID', 0)
+
+        return _reliability
+
+    def _do_insert_requirement(self, row: pd.Series) -> RAMSTKRequirement:
+        """
+        Insert a new Requirement entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.models.programdb.RAMSTKRequirement`
+        """
+        _requirement = RAMSTKRequirement()
+        _map = self._dic_field_map['Requirement']
+
+        _requirement.revision_id = _get_input_value(_map, row, 'Revision ID',
+                                                    1)
+        _requirement.requirement_id = _get_input_value(_map, row,
+                                                       'Requirement ID', 1)
+        _requirement.derived = _get_input_value(_map, row, 'Derived?', 0)
+        _requirement.description = _get_input_value(_map, row, 'Requirement',
+                                                    '')
+        _requirement.figure_number = _get_input_value(_map, row,
+                                                      'Figure Number', '')
+        _requirement.owner = _get_input_value(_map, row, 'Owner', '')
+        _requirement.page_number = _get_input_value(_map, row, 'Page Number',
+                                                    '')
+        _requirement.parent_id = _get_input_value(_map, row, 'Parent ID', 1)
+        _requirement.priority = _get_input_value(_map, row, 'Priority', 1)
+        _requirement.requirement_code = _get_input_value(
+            _map, row, 'Requirement Code', '')
+        _requirement.specification = _get_input_value(_map, row,
+                                                      'Specification', '')
+        _requirement.requirement_type = _get_input_value(
+            _map, row, 'Requirement Type', '')
+        _requirement.validated = _get_input_value(_map, row, 'Validated?', 0)
+        _requirement.validated_date = _get_input_value(_map, row,
+                                                       'Validated Date',
+                                                       date.today())
+
+        return _requirement
+
+    def _do_insert_similar_item(self, row: pd.Series) -> RAMSTKSimilarItem:
+        """
+        Insert a new Similar Item record to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _similar_item; an instance of the RAMSTKSimilarItem database
+            table record.
+        :rtype: :class:`ramstk.models.programdb.RAMSTKSimilarItem`
+        """
+        _similar_item = RAMSTKSimilarItem()
+        _map = self._dic_field_map['Hardware']
+
+        _similar_item.revision_id = _get_input_value(_map, row, 'Revision ID',
+                                                     1)
+        _similar_item.hardware_id = _get_input_value(_map, row, 'Hardware ID',
+                                                     1)
+        _similar_item.parent_id = _get_input_value(_map, row,
+                                                   'Parent Assembly', 1)
+
+        return _similar_item
+
+    def _do_insert_validation(self, row: pd.Series) -> RAMSTKValidation:
+        """
+        Insert a new Validation entity to the RAMSTK db.
+
+        :param row: the row from the pandas DataFrame containing the input
+            data.
+        :type row: :class:`pandas.Series`
+        :return: _entity
+        :rtype: :class:`ramstk.dao.programdb.RAMSTKValidation.RAMSTKValidation`
+        """
+        _validation = RAMSTKValidation()
+        _map = self._dic_field_map['Validation']
+
+        _validation.revision_id = _get_input_value(_map, row, 'Revision ID', 1)
+        _validation.validation_id = _get_input_value(_map, row,
+                                                     'Validation ID', 1)
+        _validation.acceptable_maximum = _get_input_value(
+            _map, row, 'Acceptable Maximum', 0.0)
+        _validation.acceptable_mean = _get_input_value(_map, row,
+                                                       'Acceptable Mean', 0.0)
+        _validation.acceptable_minimum = _get_input_value(
+            _map, row, 'Acceptable Minimum', 0.0)
+        _validation.acceptable_variance = _get_input_value(
+            _map, row, 'Acceptable Variance', 0.0)
+        _validation.confidence = _get_input_value(_map, row, 's-Confidence',
+                                                  75.0)
+        _validation.cost_average = _get_input_value(_map, row,
+                                                    'Average Task Cost', 0.0)
+        _validation.cost_maximum = _get_input_value(_map, row,
+                                                    'Maximum Task Cost', 0.0)
+        _validation.cost_minimum = _get_input_value(_map, row,
+                                                    'Minimum Task Cost', 0.0)
+        _validation.date_start = _get_input_value(_map, row, 'Start Date',
+                                                  date.today())
+        _validation.date_end = _get_input_value(_map, row, 'End Date',
+                                                date.today())
+        _validation.description = _get_input_value(_map, row,
+                                                   'Task Description', '')
+        _validation.measurement_unit = _get_input_value(
+            _map, row, 'Unit of Measure', '')
+        _validation.name = _get_input_value(_map, row, 'Name', '')
+        _validation.status = _get_input_value(_map, row, 'Task Status', 0.0)
+        _validation.task_type = _get_input_value(_map, row, 'Task Type', '')
+        _validation.task_specification = _get_input_value(
+            _map, row, 'Task Specification', '')
+        _validation.time_average = _get_input_value(_map, row,
+                                                    'Average Task Time', 0.0)
+        _validation.time_maximum = _get_input_value(_map, row,
+                                                    'Maximum Task Time', 0.0)
+        _validation.time_minimum = _get_input_value(_map, row,
+                                                    'Minimum Task Time', 0.0)
+
+        return _validation
+
+    def _do_map_to_field(self, module: str, import_field: str,
+                         format_field: str) -> None:
         """
         Map the external column to the RAMSTK database table field.
 
@@ -855,7 +855,22 @@ class Import:
         """
         self._dic_field_map[module][format_field] = import_field
 
-    def do_read_file(self, file_type: str, file_name: str) -> None:
+    def _do_read_db_fields(self, module: str) -> None:
+        """
+        Returns the database field names in a list.
+
+        :param str module: the name of the work stream module to return
+            database field names for.
+        :return: None
+        :rtype: None
+        """
+        _db_fields = []
+        for _field in self._dic_field_map[module]:
+            _db_fields.append(_field)
+
+        pub.sendMessage('succeed_read_db_fields', db_fields=_db_fields)
+
+    def _do_read_file(self, file_type: str, file_name: str) -> None:
         """
         Read contents of input file into a pandas DataFrame().
 
@@ -864,16 +879,23 @@ class Import:
                 - CSV (using a semi-colon (;) delimiter)
                 - Excel
         :param str file_name: the name, with full path, of the file to export
-            the RAMSTK Progam database data to.
+            the RAMSTK Program database data to.
         :return: None
         :rtype: None
         """
         if file_type == 'csv':
-            self._df_input_data = pd.read_csv(
-                file_name,
-                sep=';',
-                na_values=[''],
-                parse_dates=True,
-            )
+            self._df_input_data = pd.read_csv(file_name,
+                                              sep=';',
+                                              na_values=[''],
+                                              parse_dates=True)
+        elif file_type == 'text':
+            self._df_input_data = pd.read_csv(file_name,
+                                              sep=' ',
+                                              na_values=[''],
+                                              parse_dates=True)
         elif file_type == 'excel':
             self._df_input_data = pd.read_excel(file_name)
+
+        pub.sendMessage('succeed_read_import_file',
+                        import_fields=list(
+                            self._df_input_data.axes[1].tolist()[1:]))
