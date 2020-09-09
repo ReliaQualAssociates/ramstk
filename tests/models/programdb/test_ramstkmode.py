@@ -59,7 +59,7 @@ class TestRAMSTKMode():
         assert DUT.mode_id == 6
         assert DUT.critical_item == 0
         assert DUT.description == 'New Failure Mode'
-        assert DUT.design_provisions == '\\x'
+        assert DUT.design_provisions == ''
         assert DUT.detection_method == ''
         assert DUT.effect_end == ''
         assert DUT.effect_local == ''
@@ -74,9 +74,9 @@ class TestRAMSTKMode():
         assert DUT.mode_op_time == 0.0
         assert DUT.mode_probability == ''
         assert DUT.mode_ratio == 0.0
-        assert DUT.operator_actions == '\\x'
+        assert DUT.operator_actions == ''
         assert DUT.other_indications == ''
-        assert DUT.remarks == '\\x'
+        assert DUT.remarks == ''
         assert DUT.rpn_severity == 1
         assert DUT.rpn_severity_new == 1
         assert DUT.severity_class == ''
@@ -94,7 +94,7 @@ class TestRAMSTKMode():
         assert _attributes['mode_id'] == 6
         assert _attributes['critical_item'] == 0
         assert _attributes['description'] == 'New Failure Mode'
-        assert _attributes['design_provisions'] == '\\x'
+        assert _attributes['design_provisions'] == ''
         assert _attributes['detection_method'] == ''
         assert _attributes['effect_end'] == ''
         assert _attributes['effect_local'] == ''
@@ -109,9 +109,9 @@ class TestRAMSTKMode():
         assert _attributes['mode_op_time'] == 0.0
         assert _attributes['mode_probability'] == ''
         assert _attributes['mode_ratio'] == 0.0
-        assert _attributes['operator_actions'] == '\\x'
+        assert _attributes['operator_actions'] == ''
         assert _attributes['other_indications'] == ''
-        assert _attributes['remarks'] == '\\x'
+        assert _attributes['remarks'] == ''
         assert _attributes['rpn_severity'] == 1
         assert _attributes['rpn_severity_new'] == 1
         assert _attributes['severity_class'] == ''
