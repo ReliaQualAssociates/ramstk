@@ -21,7 +21,8 @@ from ramstk.configuration import (RAMSTK_FAILURE_PROBABILITY,
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (
-    CreateProject, EditOptions, EditPreferences, ExportProject, OpenProject)
+    CreateProject, EditOptions, EditPreferences, ExportProject,
+    ImportProject, OpenProject)
 from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
                                      RAMSTKWorkBook)
 
@@ -222,6 +223,17 @@ class RAMSTKDesktop(Gtk.Window):
         _image = Gtk.Image()
         _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                              + '/16x16/import.png')
+        _menu_item.set_label(_("_Import Project"))
+        _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
+        _menu_item.connect('activate', ImportProject,
+                           self.RAMSTK_USER_CONFIGURATION, self)
+        _menu.append(_menu_item)
+
+        _menu_item = Gtk.ImageMenuItem()
+        _image = Gtk.Image()
+        _image.set_from_file(self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                             + '/16x16/export.png')
         _menu_item.set_label(_("_Export Project"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
