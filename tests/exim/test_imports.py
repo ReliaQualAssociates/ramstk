@@ -61,7 +61,6 @@ class TestImport():
 
         assert isinstance(DUT, Import)
         assert isinstance(DUT._dic_field_map, dict)
-        assert isinstance(DUT._lst_format_headers, list)
         assert isinstance(DUT._dao, BaseDatabase)
         assert isinstance(DUT._df_input_data, pd.DataFrame)
         assert pub.isSubscribed(DUT._do_connect,
@@ -441,8 +440,7 @@ class TestImport():
                         'succeed_import_module')
 
     @pytest.mark.unit
-    def test_fail_insert_function(self, test_program_dao,
-                                test_csv_file_function):
+    def test_fail_insert_function(self, test_csv_file_function):
         """do_insert() should return a zero error code on success and create a new RAMSTKFunction object with it's attributes set from the external file data."""
         pub.subscribe(self.on_fail_import_function, 'fail_import_module')
 
@@ -456,8 +454,7 @@ class TestImport():
 
         pub.sendMessage('request_import', module='Function')
 
-        pub.unsubscribe(self.on_fail_import_function,
-                        'fail_import_module')
+        pub.unsubscribe(self.on_fail_import_function, 'fail_import_module')
 
     @pytest.mark.unit
     def test_do_insert_requirement(self, test_program_dao,
@@ -516,7 +513,7 @@ class TestImport():
         pub.sendMessage('request_import', module='Hardware')
 
         pub.unsubscribe(self.on_succeed_import_hardware,
-                       'succeed_import_module')
+                        'succeed_import_module')
 
     @pytest.mark.unit
     def test_do_insert_validation(self, test_program_dao,
@@ -538,7 +535,7 @@ class TestImport():
         pub.sendMessage('request_import', module='Validation')
 
         pub.unsubscribe(self.on_succeed_import_validation,
-                      'succeed_import_module')
+                        'succeed_import_module')
 
     @pytest.mark.unit
     def test_do_insert_unsupported(self, test_program_dao,
@@ -554,4 +551,4 @@ class TestImport():
             DUT._do_map_to_field('Validation',
                                  list(DUT._df_input_data)[_idx], _key)
 
-        assert DUT.do_insert('Shibboly') is None
+        assert DUT._do_import('Shibboly') is None

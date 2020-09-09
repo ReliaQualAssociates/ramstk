@@ -312,6 +312,7 @@ class ImportProject(Gtk.Assistant):
         _cellmodel.clear()
         _cellmodel.append([''])
 
+        # pylint: disable=unused-variable
         for __, _field in enumerate(import_fields):
             _cellmodel.append([_field])
 
@@ -350,6 +351,7 @@ class ImportProject(Gtk.Assistant):
         _page = self.get_nth_page(1)
 
         _file = filechooser.get_filename()
+        # pylint: disable=unused-variable
         __, _extension = os.path.splitext(_file)
 
         if _extension == '.csv':

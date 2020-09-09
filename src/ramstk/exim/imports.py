@@ -10,7 +10,7 @@
 import math
 from collections import OrderedDict
 from datetime import date
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -205,7 +205,6 @@ class Import:
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_format_headers: List[str] = []
 
         # Initialize private scalar attributes.
         self._dao: BaseDatabase = BaseDatabase()
@@ -222,7 +221,7 @@ class Import:
         pub.subscribe(self._do_map_to_field, 'request_map_to_field')
         pub.subscribe(self._do_read_db_fields, 'request_db_fields')
         pub.subscribe(self._do_read_file, 'request_read_import_file')
-        pub.subscribe(self.do_insert, 'request_import')
+        pub.subscribe(self._do_import, 'request_import')
 
     def _do_connect(self, dao: BaseDatabase) -> None:
         """
@@ -233,6 +232,51 @@ class Import:
         :type dao: :class:`ramstk.db.base.BaseDatabase`
         """
         self._dao = dao
+
+    def _do_import(self, module: str) -> None:
+        """
+        Insert a new entity to the RAMSTK db with values from external file.
+
+        :param str module: the name of the RAMSTK module to import.
+        :return: None
+        :rtype: None
+        """
+        _entities = []
+
+        # pylint: disable=unused-variable
+        for __, _row in self._df_input_data.iterrows():
+            if module == 'Function':
+                _entity = self._do_insert_function(_row)
+                _entities.append(_entity)
+            elif module == 'Requirement':
+                _entity = self._do_insert_requirement(_row)
+                _entities.append(_entity)
+            elif module == 'Hardware':
+                _entity = self._do_insert_hardware(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_allocation(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_similar_item(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_design_electric(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_mil_hdbk_f(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_design_mechanic(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_nswc(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_reliability(_row)
+                _entities.append(_entity)
+            elif module == 'Validation':
+                _entity = self._do_insert_validation(_row)
+                _entities.append(_entity)
+
+        try:
+            self._dao.do_insert_many(_entities)
+            pub.sendMessage('succeed_import_module', module=module)
+        except AttributeError:
+            pub.sendMessage('fail_import_module', module=module)
 
     def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation:
         """
@@ -269,113 +313,121 @@ class Import:
         _design_electric = RAMSTKDesignElectric()
 
         _map = self._dic_field_map['Hardware']
+
         _design_electric.hardware_id = _get_input_value(
             _map, row, 'Hardware ID', 1)
 
         _map = self._dic_field_map['Design Electric']
-        _design_electric.application_id = _get_input_value(
-            _map, row, 'Application ID', 0)
-        _design_electric.area = _get_input_value(_map, row, 'Area', 1.0)
-        _design_electric.capacitance = _get_input_value(
-            _map, row, 'Capacitance', 0.000001)
-        _design_electric.configuration_id = _get_input_value(
-            _map, row, 'Configuration ID', 0)
-        _design_electric.construction_id = _get_input_value(
-            _map, row, 'Construction ID', 0)
-        _design_electric.contact_form_id = _get_input_value(
-            _map, row, 'Contact Form ID', 0)
-        _design_electric.contact_gauge = _get_input_value(
-            _map, row, 'Contact Gauge', 20)
-        _design_electric.contact_rating_id = _get_input_value(
-            _map, row, 'Contact Rating ID', 0)
-        _design_electric.current_operating = _get_input_value(
-            _map, row, 'Current Operating', 0.0)
-        _design_electric.current_rated = _get_input_value(
-            _map, row, 'Current Rated', 0.0)
-        _design_electric.current_ratio = _get_input_value(
-            _map, row, 'Current Ratio', 0.0)
-        _design_electric.environment_active_id = _get_input_value(
-            _map, row, 'Environment Active ID', 0)
-        _design_electric.environment_dormant_id = _get_input_value(
-            _map, row, 'Environment Dormant ID', 0)
-        _design_electric.family_id = _get_input_value(_map, row, 'Family ID',
-                                                      0)
-        _design_electric.feature_size = _get_input_value(
-            _map, row, 'Feature Size', 1.0)
-        _design_electric.frequency_operating = _get_input_value(
-            _map, row, 'Frequency Operating', 0.0)
-        _design_electric.insert_id = _get_input_value(_map, row, 'Insert ID',
-                                                      0)
-        _design_electric.insulation_id = _get_input_value(
-            _map, row, 'Insulation ID', 0)
-        _design_electric.manufacturing_id = _get_input_value(
-            _map, row, 'Manufacturing ID', 0)
-        _design_electric.matching_id = _get_input_value(
-            _map, row, 'Matching ID', 0)
-        _design_electric.n_active_pins = _get_input_value(
-            _map, row, 'N Active Pins', 0)
-        _design_electric.n_circuit_planes = _get_input_value(
-            _map, row, 'N Circuit Planes', 0)
-        _design_electric.n_cycles = _get_input_value(_map, row, 'N Cycles', 0)
-        _design_electric.n_elements = _get_input_value(_map, row, 'N Elements',
-                                                       0)
-        _design_electric.n_hand_soldered = _get_input_value(
-            _map, row, 'N Hand Soldered', 0)
-        _design_electric.n_wave_soldered = _get_input_value(
-            _map, row, 'N Wave Soldered', 0)
-        _design_electric.operating_life = _get_input_value(
-            _map, row, 'Operating Life', 0)
-        _design_electric.overstress = _get_input_value(_map, row, 'Overstress',
-                                                       0)
-        _design_electric.package_id = _get_input_value(_map, row, 'Package ID',
-                                                       0)
-        _design_electric.power_operating = _get_input_value(
-            _map, row, 'Power Operating', 0.0)
-        _design_electric.power_rated = _get_input_value(
-            _map, row, 'Power Rated', 0.0)
-        _design_electric.power_ratio = _get_input_value(
-            _map, row, 'Power Ratio', 0.0)
-        _design_electric.reason = _get_input_value(_map, row, 'Reason', '')
-        _design_electric.resistance = _get_input_value(_map, row, 'Resistance',
-                                                       0.0)
-        _design_electric.specification_id = _get_input_value(
-            _map, row, 'Specification ID', 0)
-        _design_electric.technology_id = _get_input_value(
-            _map, row, 'Technology ID', 0)
-        _design_electric.temperature_active = _get_input_value(
-            _map, row, 'Temperature, Active', 30.0)
-        _design_electric.temperature_case = _get_input_value(
-            _map, row, 'Temperature, Case', 0.0)
-        _design_electric.temperature_dormant = _get_input_value(
-            _map, row, 'Temperature, Dormant', 25.0)
-        _design_electric.temperature_hot_spot = _get_input_value(
-            _map, row, 'Temperature, Hot Spot', 0.0)
-        _design_electric.temperature_junction = _get_input_value(
-            _map, row, 'Temperature, Junction', 0.0)
-        _design_electric.temperature_knee = _get_input_value(
-            _map, row, 'Temperature, Knee', 0.0)
-        _design_electric.temperature_rated_max = _get_input_value(
-            _map, row, 'Temperature, Rated Max', 0.0)
-        _design_electric.temperature_rated_min = _get_input_value(
-            _map, row, 'Temperature, Rated Min', 0.0)
-        _design_electric.temperature_rise = _get_input_value(
-            _map, row, 'Temperature Rise', 0.0)
-        _design_electric.theta_jc = _get_input_value(_map, row, 'Theta JC',
-                                                     0.0)
-        _design_electric.type_id = _get_input_value(_map, row, 'Type ID', 0)
-        _design_electric.voltage_ac_operating = _get_input_value(
-            _map, row, 'Voltage, AC Operating', 0.0)
-        _design_electric.voltage_dc_operating = _get_input_value(
-            _map, row, 'Voltage, DC Operating', 0.0)
-        _design_electric.voltage_esd = _get_input_value(
-            _map, row, 'Voltage ESD', 0.0)
-        _design_electric.voltage_rated = _get_input_value(
-            _map, row, 'Voltage, Rated', 0.0)
-        _design_electric.voltage_ratio = _get_input_value(
-            _map, row, 'Voltage Ratio', 0.0)
-        _design_electric.weight = _get_input_value(_map, row, 'Weight', 1.0)
-        _design_electric.years_in_production = _get_input_value(
-            _map, row, 'Years in Production', 2)
+        _design_electric.set_attributes({
+            'application_id':
+            _get_input_value(_map, row, 'Application ID', 0),
+            'area':
+            _get_input_value(_map, row, 'Area', 0.0),
+            'capacitance':
+            _get_input_value(_map, row, 'Capacitance', 0.000001),
+            'configuration_id':
+            _get_input_value(_map, row, 'Configuration ID', 0),
+            'construction_id':
+            _get_input_value(_map, row, 'Construction ID', 0),
+            'contact_form_id':
+            _get_input_value(_map, row, 'Contact Form ID', 0),
+            'contact_gauge':
+            _get_input_value(_map, row, 'Contact Gauge', 20),
+            'contact_rating_id':
+            _get_input_value(_map, row, 'Contact Rating ID', 0),
+            'current_operating':
+            _get_input_value(_map, row, 'Current Operating', 0.0),
+            'current_rated':
+            _get_input_value(_map, row, 'Current Rated', 0.0),
+            'current_ratio':
+            _get_input_value(_map, row, 'Current Ratio', 0.0),
+            'environment_active_id':
+            _get_input_value(_map, row, 'Environment Active ID', 0),
+            'environment_dormant_id':
+            _get_input_value(_map, row, 'Environment Dormant ID', 0),
+            'family_id':
+            _get_input_value(_map, row, 'Family ID', 0),
+            'feature_size':
+            _get_input_value(_map, row, 'Feature Size', 1.0),
+            'frequency_operating':
+            _get_input_value(_map, row, 'Frequency Operating', 0.0),
+            'insert_id':
+            _get_input_value(_map, row, 'Insert ID', 0),
+            'insulation_id':
+            _get_input_value(_map, row, 'Insulation ID', 0),
+            'manufacturing_id':
+            _get_input_value(_map, row, 'Manufacturing ID', 0),
+            'matching_id':
+            _get_input_value(_map, row, 'Matching ID', 0),
+            'n_active_pins':
+            _get_input_value(_map, row, 'N Active Pins', 0),
+            'n_circuit_planes':
+            _get_input_value(_map, row, 'N Circuit Planes', 1),
+            'n_cycles':
+            _get_input_value(_map, row, 'N Cycles', 0),
+            'n_elements':
+            _get_input_value(_map, row, 'N Elements', 0),
+            'n_hand_soldered':
+            _get_input_value(_map, row, 'N Hand Soldered', 0),
+            'n_wave_soldered':
+            _get_input_value(_map, row, 'N Wave Soldered', 0),
+            'operating_life':
+            _get_input_value(_map, row, 'Operating Life', 0.0),
+            'overstress':
+            _get_input_value(_map, row, 'Overstress', 0),
+            'package_id':
+            _get_input_value(_map, row, 'Package ID', 0),
+            'power_operating':
+            _get_input_value(_map, row, 'Power Operating', 0.0),
+            'power_rated':
+            _get_input_value(_map, row, 'Power Rated', 0.0),
+            'power_ratio':
+            _get_input_value(_map, row, 'Power Ratio', 0.0),
+            'reason':
+            _get_input_value(_map, row, 'Reason', ''),
+            'resistance':
+            _get_input_value(_map, row, 'Resistance', 0.0),
+            'specification_id':
+            _get_input_value(_map, row, 'Specification ID', 0),
+            'technology_id':
+            _get_input_value(_map, row, 'Technology ID', 0),
+            'temperature_active':
+            _get_input_value(_map, row, 'Temperature, Active', 30.0),
+            'temperature_case':
+            _get_input_value(_map, row, 'Temperature, Case', 0.0),
+            'temperature_dormant':
+            _get_input_value(_map, row, 'Temperature, Dormant', 25.0),
+            'temperature_hot_spot':
+            _get_input_value(_map, row, 'Temperature, Hot Spot', 0.0),
+            'temperature_junction':
+            _get_input_value(_map, row, 'Temperature, Junction', 0.0),
+            'temperature_knee':
+            _get_input_value(_map, row, 'Temperature, Knee', 25.0),
+            'temperature_rated_max':
+            _get_input_value(_map, row, 'Temperature, Rated Max', 0.0),
+            'temperature_rated_min':
+            _get_input_value(_map, row, 'Temperature, Rated Min', 0.0),
+            'temperature_rise':
+            _get_input_value(_map, row, 'Temperature Rise', 0.0),
+            'theta_jc':
+            _get_input_value(_map, row, 'Theta JC', 0.0),
+            'type_id':
+            _get_input_value(_map, row, 'Type ID', 0),
+            'voltage_ac_operating':
+            _get_input_value(_map, row, 'Voltage, AC Operating', 0.0),
+            'voltage_dc_operating':
+            _get_input_value(_map, row, 'Voltage, DC Operating', 0.0),
+            'voltage_esd':
+            _get_input_value(_map, row, 'Voltage ESD', 0.0),
+            'voltage_rated':
+            _get_input_value(_map, row, 'Voltage, Rated', 0.0),
+            'voltage_ratio':
+            _get_input_value(_map, row, 'Voltage Ratio', 0.0),
+            'weight':
+            _get_input_value(_map, row, 'Weight', 1.0),
+            'years_in_production':
+            _get_input_value(_map, row, 'Years in Production', 2)
+        })
 
         return _design_electric
 
@@ -397,105 +449,112 @@ class Import:
             _map, row, 'Hardware ID', 1)
 
         _map = self._dic_field_map['Design Mechanic']
-        _design_mechanic.altitude_operating = _get_input_value(
-            _map, row, 'Altitude, Operating', 0.0)
-        _design_mechanic.application_id = _get_input_value(
-            _map, row, 'Application ID', 0)
-        _design_mechanic.balance_id = _get_input_value(_map, row, 'Balance ID',
-                                                       0)
-        _design_mechanic.clearance = _get_input_value(_map, row, 'Clearance',
-                                                      0.0)
-        _design_mechanic.casing_id = _get_input_value(_map, row, 'Casing ID',
-                                                      0)
-        _design_mechanic.contact_pressure = _get_input_value(
-            _map, row, 'Contact Pressure', 0.0)
-        _design_mechanic.deflection = _get_input_value(_map, row, 'Deflection',
-                                                       0.0)
-        _design_mechanic.diameter_coil = _get_input_value(
-            _map, row, 'Diameter, Coil', 0.0)
-        _design_mechanic.diameter_inner = _get_input_value(
-            _map, row, 'Diameter, Inner', 0.0)
-        _design_mechanic.diameter_outer = _get_input_value(
-            _map, row, 'Diameter, Outer', 0.0)
-        _design_mechanic.diameter_wire = _get_input_value(
-            _map, row, 'Diameter, Wire', 0.0)
-        _design_mechanic.filter_size = _get_input_value(
-            _map, row, 'Filter Size', 0.0)
-        _design_mechanic.flow_design = _get_input_value(
-            _map, row, 'Flow, Design', 0.0)
-        _design_mechanic.flow_operating = _get_input_value(
-            _map, row, 'Flow, Operating', 0.0)
-        _design_mechanic.frequency_operating = _get_input_value(
-            _map, row, 'Frequency, Operating', 0.0)
-        _design_mechanic.friction = _get_input_value(_map, row, 'Friction',
-                                                     0.0)
-        _design_mechanic.impact_id = _get_input_value(_map, row, 'Impact ID',
-                                                      0)
-        _design_mechanic.leakage_allowable = _get_input_value(
-            _map, row, 'Allowable Leakage', 0.0)
-        _design_mechanic.length = _get_input_value(_map, row, 'Length', 0.0)
-        _design_mechanic.length_compressed = _get_input_value(
-            _map, row, 'Length, Compressed', 0.0)
-        _design_mechanic.length_relaxed = _get_input_value(
-            _map, row, 'Length, Relaxed', 0.0)
-        _design_mechanic.load_design = _get_input_value(
-            _map, row, 'Design Load', 0.0)
-        _design_mechanic.load_id = _get_input_value(_map, row, 'Load ID', 0)
-        _design_mechanic.load_operating = _get_input_value(
-            _map, row, 'Operating Load', 0.0)
-        _design_mechanic.lubrication_id = _get_input_value(
-            _map, row, 'Lubrication ID', 0)
-        _design_mechanic.manufacturing_id = _get_input_value(
-            _map, row, 'Manufacturing ID', 0)
-        _design_mechanic.material_id = _get_input_value(
-            _map, row, 'Material ID', 0)
-        _design_mechanic.meyer_hardness = _get_input_value(
-            _map, row, 'Meyer Hardness', 0.0)
-        _design_mechanic.misalignment_angle = _get_input_value(
-            _map, row, 'Misalignment Angle', 0.0)
-        _design_mechanic.n_ten = _get_input_value(_map, row, 'N Ten', 0)
-        _design_mechanic.n_cycles = _get_input_value(_map, row, 'N Cycles',
-                                                     0.0)
-        _design_mechanic.n_elements = _get_input_value(_map, row, 'N Elements',
-                                                       0)
-        _design_mechanic.offset = _get_input_value(_map, row, 'Offset', 0.0)
-        _design_mechanic.particle_size = _get_input_value(
-            _map, row, 'Particle Size', 0.0)
-        _design_mechanic.pressure_contact = _get_input_value(
-            _map, row, 'Contact Pressure', 0.0)
-        _design_mechanic.pressure_delta = _get_input_value(
-            _map, row, 'Differential Pressure', 0.0)
-        _design_mechanic.pressure_downstream = _get_input_value(
-            _map, row, 'Downstream Pressure', 0.0)
-        _design_mechanic.pressure_rated = _get_input_value(
-            _map, row, 'Rated Pressure', 0.0)
-        _design_mechanic.pressure_upstream = _get_input_value(
-            _map, row, 'Upstream Pressure', 0.0)
-        _design_mechanic.rpm_design = _get_input_value(_map, row, 'Design RPM',
-                                                       0.0)
-        _design_mechanic.rpm_operating = _get_input_value(
-            _map, row, 'Operating RPM', 0.0)
-        _design_mechanic.service_id = _get_input_value(_map, row, 'Service ID',
-                                                       0)
-        _design_mechanic.spring_index = _get_input_value(
-            _map, row, 'Spring Index', 0)
-        _design_mechanic.surface_finish = _get_input_value(
-            _map, row, 'Surface Finish', 0.0)
-        _design_mechanic.technology_id = _get_input_value(
-            _map, row, 'Technology ID', 0)
-        _design_mechanic.thickness = _get_input_value(_map, row, 'Thickness',
-                                                      0.0)
-        _design_mechanic.torque_id = _get_input_value(_map, row, 'Torque ID',
-                                                      0)
-        _design_mechanic.type_id = _get_input_value(_map, row, 'Type ID', 0)
-        _design_mechanic.viscosity_design = _get_input_value(
-            _map, row, 'Design Viscosity', 0.0)
-        _design_mechanic.viscosity_dynamic = _get_input_value(
-            _map, row, 'Dynamic Viscosity', 0.0)
-        _design_mechanic.water_per_cent = _get_input_value(
-            _map, row, '% Water', 0.0)
-        _design_mechanic.width_minimum = _get_input_value(
-            _map, row, 'Minimum Width', 0.0)
+        _design_mechanic.set_attributes({
+            'altitude_operating':
+            _get_input_value(_map, row, 'Altitude, Operating', 0.0),
+            'application_id':
+            _get_input_value(_map, row, 'Application ID', 0),
+            'balance_id':
+            _get_input_value(_map, row, 'Balance ID', 0),
+            'clearance':
+            _get_input_value(_map, row, 'Clearance', 0.0),
+            'casing_id':
+            _get_input_value(_map, row, 'Casing ID', 0),
+            'contact_pressure':
+            _get_input_value(_map, row, 'Contact Pressure', 0.0),
+            'deflection':
+            _get_input_value(_map, row, 'Deflection', 0.0),
+            'diameter_coil':
+            _get_input_value(_map, row, 'Diameter, Coil', 0.0),
+            'diameter_inner':
+            _get_input_value(_map, row, 'Diameter, Inner', 0.0),
+            'diameter_outer':
+            _get_input_value(_map, row, 'Diameter, Outer', 0.0),
+            'diameter_wire':
+            _get_input_value(_map, row, 'Diameter, Wire', 0.0),
+            'filter_size':
+            _get_input_value(_map, row, 'Filter Size', 0.0),
+            'flow_design':
+            _get_input_value(_map, row, 'Flow, Design', 0.0),
+            'flow_operating':
+            _get_input_value(_map, row, 'Flow, Operating', 0.0),
+            'frequency_operating':
+            _get_input_value(_map, row, 'Frequency, Operating', 0.0),
+            'friction':
+            _get_input_value(_map, row, 'Friction', 0.0),
+            'impact_id':
+            _get_input_value(_map, row, 'Impact ID', 0),
+            'leakage_allowable':
+            _get_input_value(_map, row, 'Allowable Leakage', 0.0),
+            'length':
+            _get_input_value(_map, row, 'Length', 0.0),
+            'length_compressed':
+            _get_input_value(_map, row, 'Length, Compressed', 0.0),
+            'length_relaxed':
+            _get_input_value(_map, row, 'Length, Relaxed', 0.0),
+            'load_design':
+            _get_input_value(_map, row, 'Design Load', 0.0),
+            'load_id':
+            _get_input_value(_map, row, 'Load ID', 0),
+            'load_operating':
+            _get_input_value(_map, row, 'Operating Load', 0.0),
+            'lubrication_id':
+            _get_input_value(_map, row, 'Lubrication ID', 0),
+            'manufacturing_id':
+            _get_input_value(_map, row, 'Manufacturing ID', 0),
+            'material_id':
+            _get_input_value(_map, row, 'Material ID', 0),
+            'meyer_hardness':
+            _get_input_value(_map, row, 'Meyer Hardness', 0.0),
+            'misalignment_angle':
+            _get_input_value(_map, row, 'Misalignment Angle', 0.0),
+            'n_ten':
+            _get_input_value(_map, row, 'N Ten', 0),
+            'n_cycles':
+            _get_input_value(_map, row, 'N Cycles', 0.0),
+            'n_elements':
+            _get_input_value(_map, row, 'N Elements', 0),
+            'offset':
+            _get_input_value(_map, row, 'Offset', 0.0),
+            'particle_size':
+            _get_input_value(_map, row, 'Particle Size', 0.0),
+            'pressure_contact':
+            _get_input_value(_map, row, 'Contact Pressure', 0.0),
+            'pressure_delta':
+            _get_input_value(_map, row, 'Differential Pressure', 0.0),
+            'pressure_downstream':
+            _get_input_value(_map, row, 'Downstream Pressure', 0.0),
+            'pressure_rated':
+            _get_input_value(_map, row, 'Rated Pressure', 0.0),
+            'pressure_upstream':
+            _get_input_value(_map, row, 'Upstream Pressure', 0.0),
+            'rpm_design':
+            _get_input_value(_map, row, 'Design RPM', 0.0),
+            'rpm_operating':
+            _get_input_value(_map, row, 'Operating RPM', 0.0),
+            'service_id':
+            _get_input_value(_map, row, 'Service ID', 0),
+            'spring_index':
+            _get_input_value(_map, row, 'Spring Index', 0),
+            'surface_finish':
+            _get_input_value(_map, row, 'Surface Finish', 0.0),
+            'technology_id':
+            _get_input_value(_map, row, 'Technology ID', 0),
+            'thickness':
+            _get_input_value(_map, row, 'Thickness', 0.0),
+            'torque_id':
+            _get_input_value(_map, row, 'Torque ID', 0),
+            'type_id':
+            _get_input_value(_map, row, 'Type ID', 0),
+            'viscosity_design':
+            _get_input_value(_map, row, 'Design Viscosity', 0.0),
+            'viscosity_dynamic':
+            _get_input_value(_map, row, 'Dynamic Viscosity', 0.0),
+            'water_per_cent':
+            _get_input_value(_map, row, '% Water', 0.0),
+            'width_minimum':
+            _get_input_value(_map, row, 'Minimum Width', 0.0)
+        })
 
         return _design_mechanic
 
@@ -780,51 +839,6 @@ class Import:
                                                     'Minimum Task Time', 0.0)
 
         return _validation
-
-    def do_insert(self, module: str) -> None:
-        """
-        Insert a new entity to the RAMSTK db with values from external file.
-
-        :param str module: the name of the RAMSTK module to import.
-        :return: None
-        :rtype: None
-        """
-        _entities = []
-
-        # pylint: disable=unused-variable
-        for __, _row in self._df_input_data.iterrows():
-            if module == 'Function':
-                _entity = self._do_insert_function(_row)
-                _entities.append(_entity)
-            elif module == 'Requirement':
-                _entity = self._do_insert_requirement(_row)
-                _entities.append(_entity)
-            elif module == 'Hardware':
-                _entity = self._do_insert_hardware(_row)
-                _entities.append(_entity)
-                _entity = self._do_insert_allocation(_row)
-                _entities.append(_entity)
-                _entity = self._do_insert_similar_item(_row)
-                _entities.append(_entity)
-                _entity = self._do_insert_design_electric(_row)
-                _entities.append(_entity)
-                _entity = self._do_insert_mil_hdbk_f(_row)
-                _entities.append(_entity)
-                _entity = self._do_insert_design_mechanic(_row)
-                _entities.append(_entity)
-                _entity = self._do_insert_nswc(_row)
-                _entities.append(_entity)
-                _entity = self._do_insert_reliability(_row)
-                _entities.append(_entity)
-            elif module == 'Validation':
-                _entity = self._do_insert_validation(_row)
-                _entities.append(_entity)
-
-        try:
-            self._dao.do_insert_many(_entities)
-            pub.sendMessage('succeed_import_module', module=module)
-        except AttributeError:
-            pub.sendMessage('fail_import_module', module=module)
 
     def _do_map_to_field(self, module: str, import_field: str,
                          format_field: str) -> None:
