@@ -9,7 +9,7 @@
 """The RAMSTK Configuration Preferences Module."""
 
 # Standard Library Imports
-from os.path import basename
+from datetime import datetime
 from shutil import copyfile
 
 # Third Party Imports
@@ -19,7 +19,7 @@ import toml
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.utilities import string_to_boolean
+from ramstk.utilities import integer_to_boolean, string_to_boolean
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKBaseView, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
@@ -206,7 +206,8 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         _model = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
                                GObject.TYPE_INT, GObject.TYPE_INT,
                                GObject.TYPE_INT, GObject.TYPE_STRING,
-                               GObject.TYPE_STRING, GObject.TYPE_STRING)
+                               GObject.TYPE_STRING, GObject.TYPE_STRING,
+                               GObject.TYPE_STRING)
         self.tvwFormatFile.set_model(_model)
 
         for _idx, _text in enumerate([
@@ -514,9 +515,10 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         for _key in _default:
             _data = [
                 _default[_key], _user[_key],
-                int(_position[_key]), string_to_boolean(_editable[_key]),
-                string_to_boolean(_visible[_key]),
-                _datatypes[_key], _widgets[_key], _key
+                int(_position[_key]),
+                string_to_boolean(_editable[_key]),
+                string_to_boolean(_visible[_key]), _datatypes[_key],
+                _widgets[_key], _keys[_key], _key
             ]
             _model.append(_data)
 
@@ -639,57 +641,45 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Get the format file for the Gtk.TreeView to be edited.  Strip the
-        # last four (.xml) characters to variable _name.
-        _basename = basename(self._fmt_file)
-        _name = _basename[:-4]
+        _layout = {
+            'pixbuf': 'False',
+            'defaulttitle': {},
+            'usertitle': {},
+            'datatype': {},
+            'position': {},
+            'widget': {},
+            'editable': {},
+            'visible': {},
+            'key': {}
+        }
+
+        # Get the format file for the Gtk.TreeView to be edited.  Make a
+        # backup copy by appending the current date.
+        _now = datetime.today().strftime('%Y%m%d')
+        _bak_file = '{0:s}_bak_{1:s}.toml'.format(self._fmt_file[:-5], _now)
+        copyfile(self._fmt_file, _bak_file)
 
         # Open the format file for writing.
         _file = open(self._fmt_file, 'w')
 
-        # Create the new format file.
-        _file.write("<!--\n")
-        _file.write("-*- coding: utf-8 -*-\n\n")
-        _file.write(
-            "{0:s} is part of the RAMSTK Project\n\n".format(_basename))
-        _file.write('Copyright 2011-2020 Doyle "weibullguy" Rowland '
-                    '<doyle DOT rowland AT reliaqual DOT com>\n\n')
-        _file.write("All rights reserved.-->\n\n")
-        _file.write("<!-- This file contains information used by the RAMSTK "
-                    "application to draw\n")
-        _file.write("various widgets.  These values can be changed by the "
-                    "user to personalize\n")
-        _file.write("their experience. -->\n\n")
-
-        _file.write("<root>\n")
-        _file.write('<tree name="{0:s}">\n'.format(_name))
-
         _model = self.tvwFormatFile.get_model()
         _row = _model.get_iter_first()
         while _row is not None:
-            _file.write("<column>\n")
-            _file.write("<defaulttitle>{0:s}</defaulttitle>\n".format(
-                _model.get_value(_row, 0)))
-            _file.write("<usertitle>{0:s}</usertitle>\n".format(
-                _model.get_value(_row, 1)))
-            _file.write("<datatype>{0:s}</datatype>\n".format(
-                _model.get_value(_row, 5)))
-            _file.write("<position>{0:d}</position>\n".format(
-                _model.get_value(_row, 2)))
-            _file.write("<widget>{0:s}</widget>\n".format(
-                _model.get_value(_row, 6)))
-            _file.write("<editable>{0:d}</editable>\n".format(
-                _model.get_value(_row, 3)))
-            _file.write("<visible>{0:d}</visible>\n".format(
-                _model.get_value(_row, 4)))
-            _file.write("<key>{0:s}</key>\n".format(_model.get_value(_row, 7)))
-            _file.write("</column>\n")
+            _key = _model.get_value(_row, 8)
+            _layout['defaulttitle'][_key] = _model.get_value(_row, 0)
+            _layout['usertitle'][_key] = _model.get_value(_row, 1)
+            _layout['position'][_key] = _model.get_value(_row, 2)
+            _layout['editable'][_key] = integer_to_boolean(
+                _model.get_value(_row, 3))
+            _layout['visible'][_key] = integer_to_boolean(
+                _model.get_value(_row, 4))
+            _layout['datatype'][_key] = _model.get_value(_row, 5)
+            _layout['widget'][_key] = _model.get_value(_row, 6)
+            _layout['key'][_key] = _model.get_value(_row, 7)
 
             _row = _model.iter_next(_row)
 
-        _file.write("</tree>\n")
-        _file.write("</root>")
-        _file.close()
+        toml.dump(_layout, _file)
 
     def _do_select_path(self, button: Gtk.FileChooserButton,
                         index: int) -> None:
