@@ -1,7 +1,17 @@
 <profile version="1.0">
   <option name="myName" value="Default" />
   <inspection_tool class="PyArgumentEqualDefaultInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+  <inspection_tool class="PyArgumentListInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
   <inspection_tool class="PyClassicStyleClassInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+  <inspection_tool class="PyCompatibilityInspection" enabled="true" level="WARNING" enabled_by_default="true">
+    <option name="ourVersions">
+      <value>
+        <list size="1">
+          <item index="0" class="java.lang.String" itemvalue="3.8" />
+        </list>
+      </value>
+    </option>
+  </inspection_tool>
   <inspection_tool class="PyMissingOrEmptyDocstringInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
   <inspection_tool class="PyMissingTypeHintsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
   <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
@@ -15,14 +25,21 @@
       </value>
     </option>
   </inspection_tool>
-  <inspection_tool class="PyProtectedMemberInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+  <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+    <option name="ignoredErrors">
+      <list>
+        <option value="E501" />
+      </list>
+    </option>
+  </inspection_tool>
+  <inspection_tool class="PyProtectedMemberInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">
     <option name="ignoreAnnotations" value="true" />
   </inspection_tool>
   <inspection_tool class="PyRedundantParenthesesInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
     <option name="myIgnoreTupleInReturn" value="true" />
     <option name="myIgnoreEmptyBaseClasses" value="true" />
   </inspection_tool>
-  <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+  <inspection_tool class="PyUnresolvedReferencesInspection" enabled="false" level="WARNING" enabled_by_default="false">
     <option name="ignoredIdentifiers">
       <list>
         <option value="gi.repository.GObject.*" />

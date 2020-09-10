@@ -1,7 +1,10 @@
 <application>
   <component name="DeepBugsPy">
-    <option name="binOperatorThreshold" value="0.85" />
-    <option name="binOperandThreshold" value="0.86" />
-    <option name="swappedArgsThreshold" value="0.8" />
+    <option name="userDisabledChecks">
+      <set>
+        <option value="LIT:8 == ID:category_id" />
+        <option value="ID:category_id == LIT:8" />
+      </set>
+    </option>
   </component>
 </application>
