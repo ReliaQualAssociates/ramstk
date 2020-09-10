@@ -1,25 +1,19 @@
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 template: |
-  ## Changes
+  ## What Is Changing
 
   $CHANGES
 categories:
-  - title: 'Features'
-    labels:
-      - 'feature'
-      - 'feat'
   - title: 'Bug Fixes'
     labels:
-      - 'fix'
+      - 'type:bug'
+  - title: 'Features'
+    labels:
+      - 'type:enhancement'
   - title: 'Maintenance'
     labels:
-      - 'refactor'
-      - 'chore'
-      - 'test'
-  - title: 'Documentation'
-    labels:
-      - 'docs'
+      - 'type:quality'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
@@ -33,4 +27,3 @@ version-resolver:
     labels:
       - 'patch'
   default: patch
-

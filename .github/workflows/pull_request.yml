@@ -1,0 +1,49 @@
+name: Pull Request QA Workflow
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+jobs:
+  good_pr_title:
+    name: Ensure Semantic PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aslafy-z/conventional-pr-title-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bandit:
+    name: Check for Security Vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run bandit against repository
+        uses: jpetrucciani/bandit-check@master
+        with:
+          path: 'src/ramstk'
+
+  lint-it:
+    name: Lint Code and Style Check Repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Lint files using pylint, pycodestyle, mypy, and isort
+        uses: ricardochaves/python-lint@v1.1.0
+        with:
+          python-root-list: "src/ramstk"
+          use-pylint: true
+          use-pycodestyle: true
+          use-mypy: true
+          use-isort: true
+          extra-pylint-options: "-j0 --rcfile=./.pylintrc --dummy-variables-rgx='__'"
+          extra-pycodestyle-options: "--statistics --count --ignore=E121,E123,E126,E127,E133,E241,E242,E265,E402,E501,F401,W503,W504,W505"
+          extra-mypy-options: ""
+          extra-isort-options: "--use-parentheses --balanced --multi-line 5"

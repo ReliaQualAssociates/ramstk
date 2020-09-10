@@ -3,7 +3,7 @@
 The following checklist must be completed before a pull request will be merged.
 With the exception of the first item, you may create the pull request before
 all items are satisfied and work towards 100% compliance.
-- [ ] Add link in this PR (below) to the issue or issues it is addressing.  If 
+- [ ] Add link in this PR (below) to the issue or issues it is addressing.  If
   an issue doesn't currently exist, write one before this pull request.
 - [ ] Ensure the driving issue(s) include a comment containing one or more
   requirement and/or coding standard.
@@ -32,7 +32,7 @@ Check the type of change this PR introduces:
 - [ ] Fix
 - [ ] Feature
 - [ ] Refactor (including code style change)
-- [ ] Test 
+- [ ] Test
 - [ ] Doc
 - [ ] Chore
 

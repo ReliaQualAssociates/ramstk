@@ -1,9 +1,9 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: status:newissue, type:bug
-assignees: ''
+name: Bug Report
+about: Create a bug report to help us improve RAMSTK.
+labels:
+  - status:newissue
+  - type:bug
 
 ---
 
@@ -25,7 +25,7 @@ assignees: ''
 
 **Logs**
 
-> Please provide your RAMSTK logs if any were generated in $HOME/.config/RAMSTK/logs.
+> Please provide your deployment logs and a link to your workflow file.
 
 **Additional Comments**
 
