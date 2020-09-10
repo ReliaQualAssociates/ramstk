@@ -405,22 +405,22 @@ class TestCreateConfiguration():
         assert path.isdir(make_home_config_dir + '/logs')
         assert path.isdir(make_home_config_dir + '/icons/16x16')
         assert path.isdir(make_home_config_dir + '/icons/32x32')
-        assert path.isfile(make_home_config_dir + '/layouts/Allocation.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/FMEA.xml')
+        assert path.isfile(make_home_config_dir + '/layouts/allocation.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/fmea.toml')
         assert path.isfile(make_home_config_dir
-                           + '/layouts/FailureDefinition.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Function.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Hardware.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/HazOps.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Incident.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/PoF.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Requirement.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Revision.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Similar_Item.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Software.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Stakeholder.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Testing.xml')
-        assert path.isfile(make_home_config_dir + '/layouts/Validation.xml')
+                           + '/layouts/failure_definition.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/function.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/hardware.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/hazops.toml')
+        # assert path.isfile(make_home_config_dir + '/layouts/incident.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/pof.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/requirement.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/revision.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/similar_item.toml')
+        # assert path.isfile(make_home_config_dir + '/layouts/Software.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/stakeholder.toml')
+        # assert path.isfile(make_home_config_dir + '/layouts/Testing.toml')
+        assert path.isfile(make_home_config_dir + '/layouts/validation.toml')
 
         pub.unsubscribe(self.on_create_user_configuration,
                         'succeed_create_user_configuration')
@@ -600,18 +600,18 @@ class TestGetterSetter():
             'validationfg': '#000000'
         }
         assert DUT.RAMSTK_FORMAT_FILE == {
-            'allocation': 'Allocation.xml',
-            'failure_definition': 'FailureDefinition.xml',
-            'fmea': 'FMEA.xml',
-            'function': 'Function.xml',
-            'hardware': 'Hardware.xml',
-            'hazard': 'HazOps.xml',
-            'pof': 'PoF.xml',
-            'requirement': 'Requirement.xml',
-            'revision': 'Revision.xml',
-            'similar_item': 'Similar_Item.xml',
-            'stakeholder': 'Stakeholder.xml',
-            'validation': 'Validation.xml',
+            'allocation': 'allocation.toml',
+            'failure_definition': 'failure_definition.toml',
+            'fmea': 'fmea.toml',
+            'function': 'function.toml',
+            'hardware': 'hardware.toml',
+            'hazard': 'hazops.toml',
+            'pof': 'pof.toml',
+            'requirement': 'requirement.toml',
+            'revision': 'revision.toml',
+            'similar_item': 'similar_item.toml',
+            'stakeholder': 'stakeholder.toml',
+            'validation': 'validation.toml',
         }
         assert DUT.RAMSTK_STRESS_LIMITS == {
             1: [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],

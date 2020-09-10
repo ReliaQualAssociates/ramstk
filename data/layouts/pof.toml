@@ -1,0 +1,97 @@
+pixbuf='True'
+
+defaulttitle.col0='Entity ID'
+defaulttitle.col1='Description'
+defaulttitle.col2='End Effect'
+defaulttitle.col3='Severity'
+defaulttitle.col4='Mode Probability'
+defaulttitle.col5='Damage Model'
+defaulttitle.col6='Measureable Parameter'
+defaulttitle.col7='Load history'
+defaulttitle.col8='Boundary Conditions'
+defaulttitle.col9='Priority'
+defaulttitle.col10='Remarks'
+
+usertitle.col0='Entity ID'
+usertitle.col1='Description'
+usertitle.col2='End Effect'
+usertitle.col3='Severity'
+usertitle.col4='Mode Probability'
+usertitle.col5='Damage Model'
+usertitle.col6='Measureable Parameter'
+usertitle.col7='Load history'
+usertitle.col8='Boundary Conditions'
+usertitle.col9='Priority'
+usertitle.col10='Remarks'
+
+datatype.col0='gchararray'
+datatype.col1='gchararray'
+datatype.col2='gchararray'
+datatype.col3='gchararray'
+datatype.col4='gfloat'
+datatype.col5='gchararray'
+datatype.col6='gchararray'
+datatype.col7='gchararray'
+datatype.col8='gchararray'
+datatype.col9='gint'
+datatype.col10='gchararray'
+
+position.col0=0
+position.col1=1
+position.col2=2
+position.col3=3
+position.col4=4
+position.col5=5
+position.col6=6
+position.col7=7
+position.col8=8
+position.col9=9
+position.col10=10
+
+widget.col0='text'
+widget.col1='text'
+widget.col2='text'
+widget.col3='combo'
+widget.col4='text'
+widget.col5='combo'
+widget.col6='combo'
+widget.col7='combo'
+widget.col8='text'
+widget.col9='spin'
+widget.col10='text'
+
+editable.col0='False'
+editable.col1='False'
+editable.col2='False'
+editable.col3='False'
+editable.col4='False'
+editable.col5='True'
+editable.col6='True'
+editable.col7='True'
+editable.col8='True'
+editable.col9='True'
+editable.col10='True'
+
+visible.col0='False'
+visible.col1='True'
+visible.col2='True'
+visible.col3='True'
+visible.col4='True'
+visible.col5='True'
+visible.col6='True'
+visible.col7='True'
+visible.col8='True'
+visible.col9='True'
+visible.col10='True'
+
+key.col0='entity_id'
+key.col1='description'
+key.col2='effect_end'
+key.col3='severity_class'
+key.col4='mode_probability'
+key.col5='damage_model'
+key.col6='measurable_parameter'
+key.col7='load_history'
+key.col8='boundary_conditions'
+key.col9='priority_id'
+key.col10='remarks'

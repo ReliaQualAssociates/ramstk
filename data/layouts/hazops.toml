@@ -1,3 +1,5 @@
+pixbuf='False'
+
 defaulttitle.col0='Revision ID'
 defaulttitle.col1='Function ID'
 defaulttitle.col2='Hazard ID'

@@ -1,3 +1,5 @@
+pixbuf='False'
+
 defaulttitle.col0='Revision ID'
 defaulttitle.col1='Availability, Predicted'
 defaulttitle.col2='Availability, Mission'
@@ -83,7 +85,7 @@ datatype.col25='gfloat'
 datatype.col26='gfloat'
 
 position.col0=0
-position.col1=26
+position.col1=1
 position.col2=2
 position.col3=3
 position.col4=4
@@ -108,7 +110,7 @@ position.col22=22
 position.col23=23
 position.col24=24
 position.col25=25
-position.col26=1
+position.col26=26
 
 widget.col0='text'
 widget.col1='text'

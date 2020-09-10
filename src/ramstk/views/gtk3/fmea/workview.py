@@ -573,8 +573,7 @@ class FMEA(RAMSTKWorkView):
             _entity.action_approve_date.strftime('%Y-%m-%d'),
             _entity.action_closed,
             _entity.action_close_date.strftime('%Y-%m-%d'), "", "", "", 0, 0,
-            0, 0, "", _icon,
-            str(_entity.get_attributes())
+            0, 0, "", _icon
         ]
 
         try:
@@ -626,8 +625,7 @@ class FMEA(RAMSTKWorkView):
             "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
             _occurrence, _detection, _entity.rpn, "", "", "", "", "", 0, "", 0,
             "", "", _occurrence_new, _detection_new, _entity.rpn_new, 0, 0, 0,
-            "", _icon,
-            str(_entity.get_attributes())
+            "", _icon
         ]
 
         try:
@@ -675,8 +673,7 @@ class FMEA(RAMSTKWorkView):
             node.identifier, _entity.description, "", "", "", "", "", "", "",
             "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, _entity.type_id,
             "", "", "", 0, "", "", "", "", "", 0, "", 0, "", "", "", "", 0, 0,
-            0, 0, "", _icon,
-            str(_entity.get_attributes())
+            0, 0, "", _icon
         ]
 
         try:
@@ -728,8 +725,7 @@ class FMEA(RAMSTKWorkView):
             "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
             _occurrence, _detection, _entity.rpn, "", "", "", "", "", 0, "", 0,
             "", "", _occurrence_new, _detection_new, _entity.rpn_new, 0, 0,
-            _entity.pof_include, "", _icon,
-            str(_entity.get_attributes())
+            _entity.pof_include, "", _icon
         ]
 
         try:
@@ -826,8 +822,7 @@ class FMEA(RAMSTKWorkView):
             _entity.mode_ratio, _entity.mode_hazard_rate, _entity.mode_op_time,
             _entity.mode_criticality, "", _severity, "", "", 0, "", "", "", "",
             "", 0, "", 0, "", _severity_new, "", "", 0, _entity.critical_item,
-            _entity.single_point, 0, _entity.remarks, _icon,
-            str(_entity.get_attributes())
+            _entity.single_point, 0, _entity.remarks, _icon
         ]
 
         try:
@@ -1295,22 +1290,20 @@ class FMEA(RAMSTKWorkView):
             _mission = ""
 
         _level = self._get_indenture_level()
-        _headings = super().do_get_headings(_level)
-        self.treeview.headings[self._lst_col_order[0]] = _headings[0]
-        self.treeview.headings[self._lst_col_order[1]] = _headings[1]
+        (self.treeview.headings['col0'],
+         self.treeview.headings['col1']) = super().do_get_headings(_level)
 
         self._do_load_mission_phases(_mission)
-        _set_visible = self.treeview.visible and self._dic_column_masks[_level]
 
         _columns = self.treeview.get_columns()
         i = 0
-        for _heading in self.treeview.headings:
-            _label = RAMSTKLabel(_heading)
+        for _key in self.treeview.headings:
+            _label = RAMSTKLabel(self.treeview.headings[_key])
             _label.do_set_properties(height=-1,
                                      justify=Gtk.Justification.CENTER,
                                      wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
-            _columns[i].set_visible(_set_visible[self._lst_col_order[i]])
+            _columns[i].set_visible(self.treeview.visible[_key])
 
             i += 1

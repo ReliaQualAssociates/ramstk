@@ -26,7 +26,7 @@ class RAMSTKTestMethod(RAMSTK_BASE, RAMSTKBaseTable):
     __defaults__ = {
         'description': '',
         'boundary_conditions': '',
-        'remarks': b''
+        'remarks': ''
     }
     __tablename__ = 'ramstk_test_method'
     __table_args__ = (ForeignKeyConstraint(

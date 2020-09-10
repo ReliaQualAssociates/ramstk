@@ -510,18 +510,18 @@ def test_toml_user_configuration(make_home_config_dir):
             "progdir": _user_config.RAMSTK_PROG_DIR
         },
         "layouts": {
-            "allocation": "Allocation.xml",
-            "failure_definition": "FailureDefinition.xml",
-            "fmea": "FMEA.xml",
-            "function": "Function.xml",
-            "hardware": "Hardware.xml",
-            "hazard": "HazOps.xml",
-            "pof": "PoF.xml",
-            "requirement": "Requirement.xml",
-            "revision": "Revision.xml",
-            "similar_item": "Similar_Item.xml",
-            "stakeholder": "Stakeholder.xml",
-            "validation": "Validation.xml"
+            "allocation": "allocation.toml",
+            "failure_definition": "failure_definition.toml",
+            "fmea": "fmea.toml",
+            "function": "function.toml",
+            "hardware": "hardware.toml",
+            "hazard": "hazops.toml",
+            "pof": "pof.toml",
+            "requirement": "requirement.toml",
+            "revision": "revision.toml",
+            "similar_item": "similar_item.toml",
+            "stakeholder": "stakeholder.toml",
+            "validation": "validation.toml"
         },
         "colors": {
             "functionbg": "#FFFFFF",

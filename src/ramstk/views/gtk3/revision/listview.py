@@ -198,8 +198,9 @@ class FailureDefinition(RAMSTKListView):
             _attributes: Dict[str, Any] = _entity.get_attributes()
             try:
                 _model.append(None, [
+                    int(_attributes['revision_id']),
                     int(_attributes['definition_id']),
-                    _attributes['definition'], _attributes['definition']
+                    _attributes['definition']
                 ])
             #// TODO: Handle exceptions in Revision module views.
             #//

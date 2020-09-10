@@ -146,7 +146,8 @@ class Stakeholders(RAMSTKListView):
         :rtype: None
         """
         # Load the Affinity Group Gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(self._lst_col_order[4]).get_cells()[0]
+        _cell = self.treeview.get_column(
+            self.treeview.position['col4']).get_cells()[0]
         _cell.set_property('has-entry', True)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -161,7 +162,7 @@ class Stakeholders(RAMSTKListView):
 
         # Load the Stakeholders Gtk.CellRendererCombo()
         _cell = self.treeview.get_column(
-            self._lst_col_order[10]).get_cells()[0]
+            self.treeview.position['col10']).get_cells()[0]
         _cell.set_property('has-entry', True)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -172,28 +173,25 @@ class Stakeholders(RAMSTKListView):
             _cellmodel.append([_group])
 
         # Set the CellRendererSpin() columns to [1, 5] step 1.
-        for i in [2, 7, 8]:
-            _column = self.treeview.get_column(self._lst_col_order[i])
+        for _key in ['col2', 'col7', 'col8']:
+            _column = self.treeview.get_column(self.treeview.position[_key])
             _cell = _column.get_cells()[0]
             _adjustment = _cell.get_property('adjustment')
             _adjustment.set_lower(1)
             _adjustment.set_step_increment(1)
             _adjustment.set_upper(5)
 
-        for i in [
-                self._lst_col_order[2], self._lst_col_order[3],
-                self._lst_col_order[4], self._lst_col_order[5],
-                self._lst_col_order[6], self._lst_col_order[7],
-                self._lst_col_order[8], self._lst_col_order[9],
-                self._lst_col_order[10], self._lst_col_order[11],
-                self._lst_col_order[12], self._lst_col_order[13],
-                self._lst_col_order[14], self._lst_col_order[15]
+        _idx = 2
+        for _key in [
+                'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9',
+                'col10', 'col11', 'col12', 'col13', 'col14', 'col15'
         ]:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cells()
-            _cell[0].connect('edited',
-                             super().on_cell_edit, 'lvw_editing_stakeholder',
-                             i)
+                self.treeview.position[_key]).get_cells()[0]
+            _cell.connect('edited',
+                          super().on_cell_edit, 'lvw_editing_stakeholder',
+                          _idx)
+            _idx += 1
 
         self.treeview.set_rubber_banding(True)
 

@@ -630,7 +630,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         # Copy format files from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_CONF_DIR.
         for _file in glob.glob(self._INSTALL_PREFIX
-                               + "/share/RAMSTK/layouts/*.xml"):
+                               + "/share/RAMSTK/layouts/*.toml"):
             file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
 
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
@@ -677,18 +677,18 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "progdir": self.RAMSTK_PROG_DIR
             },
             "layouts": {
-                "allocation": "Allocation.xml",
-                "failure_definition": "FailureDefinition.xml",
-                "fmea": "FMEA.xml",
-                "function": "Function.xml",
-                "hardware": "Hardware.xml",
-                "hazard": "HazOps.xml",
-                "pof": "PoF.xml",
-                "requirement": "Requirement.xml",
-                "revision": "Revision.xml",
-                "similar_item": "Similar_Item.xml",
-                "stakeholder": "Stakeholder.xml",
-                "validation": "Validation.xml"
+                "allocation": "allocation.toml",
+                "failure_definition": "failure_definition.toml",
+                "fmea": "fmea.toml",
+                "function": "function.toml",
+                "hardware": "hardware.toml",
+                "hazard": "hazops.toml",
+                "pof": "pof.toml",
+                "requirement": "requirement.toml",
+                "revision": "revision.toml",
+                "similar_item": "similar_item.toml",
+                "stakeholder": "stakeholder.toml",
+                "validation": "validation.toml"
             },
             "colors": {
                 "functionbg": "#FFFFFF",

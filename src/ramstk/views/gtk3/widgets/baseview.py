@@ -281,10 +281,9 @@ class RAMSTKBaseView(Gtk.HBox):
             _fmt_file = (
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
                 + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
-            _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
-            _treeview.do_parse_format(_fmt_path, _fmt_file, self._pixbuf)
 
-            self._lst_col_order = _treeview.order
+            _treeview.do_parse_format(_fmt_file)
+            self._lst_col_order = list(_treeview.position.values())
             try:
                 _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
                     module + 'bg']
@@ -296,7 +295,12 @@ class RAMSTKBaseView(Gtk.HBox):
                 if module in self._lst_layouts:
                     self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-            _treeview.make_model(_bg_color, _fg_color)
+            _treeview.do_make_model()
+            _treeview.do_make_columns(colors={
+                'bg_color': _bg_color,
+                'fg_color': _fg_color
+            })
+            _treeview.do_set_editable_columns(_treeview.do_edit_cell)
         except KeyError as _error:
             _treeview = Gtk.TreeView()
             _treeview.selection = _treeview.get_selection()
@@ -360,10 +364,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         _data = []
         for _key in self.treeview.korder:
-            if _key == 'dict':
-                _data.append(str(attributes))
-            else:
-                _data.append(attributes[_key])
+            _data.append(attributes[self.treeview.korder[_key]])
 
         # Only load items that are immediate children of the selected item and
         # prevent loading the selected item itself in the worksheet.
