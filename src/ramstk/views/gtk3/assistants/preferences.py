@@ -14,11 +14,12 @@ from shutil import copyfile
 
 # Third Party Imports
 # noinspection PyPackageRequirements
-import defusedxml.lxml as lxml
+import toml
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import string_to_boolean
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKBaseView, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
@@ -495,54 +496,27 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         self._fmt_file = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
             + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[module])
-        _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
 
-        # Retrieve the default heading text from the format file.
-        _path = _fmt_path + '/defaulttitle'
-        _default = lxml.parse(self._fmt_file).xpath(_path)
+        _format = toml.load(self._fmt_file)
 
-        # Retrieve the default heading text from the format file.
-        _path = _fmt_path + '/usertitle'
-        _user = lxml.parse(self._fmt_file).xpath(_path)
-
-        # Retrieve the column position from the format file.
-        _path = _fmt_path + '/position'
-        _position = lxml.parse(self._fmt_file).xpath(_path)
-
-        # Retrieve whether or not the column is editable from the format file.
-        _path = _fmt_path + '/editable'
-        _editable = lxml.parse(self._fmt_file).xpath(_path)
-
-        # Retrieve whether or not the column is visible from the format file.
-        _path = _fmt_path + '/visible'
-        _visible = lxml.parse(self._fmt_file).xpath(_path)
-
-        # Retrieve datatypes from the format file.
-        _path = _fmt_path + '/datatype'
-        _datatype = lxml.parse(self._fmt_file).xpath(_path)
-
-        # Retrieve widget types from the format file.
-        _path = _fmt_path + '/widget'
-        _widget = lxml.parse(self._fmt_file).xpath(_path)
-
-        # Retrieve attribute keys from the format file.
-        _path = _fmt_path + '/key'
-        _keys = lxml.parse(self._fmt_file).xpath(_path)
+        _datatypes = _format['datatype']
+        _default = _format['defaulttitle']
+        _editable = _format['editable']
+        _user = _format['usertitle']
+        _keys = _format['key']
+        _position = _format['position']
+        _visible = _format['visible']
+        _widgets = _format['widget']
 
         _model = self.tvwFormatFile.get_model()
         _model.clear()
         # pylint: disable=unused-variable
-        for _index, __ in enumerate(_default):
-            try:
-                _key = _keys[_index].text
-            except IndexError:
-                _key = ''
+        for _key in _default:
             _data = [
-                _default[_index].text, _user[_index].text,
-                int(_position[_index].text),
-                int(_editable[_index].text),
-                int(_visible[_index].text), _datatype[_index].text,
-                _widget[_index].text, _key
+                _default[_key], _user[_key],
+                int(_position[_key]), string_to_boolean(_editable[_key]),
+                string_to_boolean(_visible[_key]),
+                _datatypes[_key], _widgets[_key], _key
             ]
             _model.append(_data)
 
