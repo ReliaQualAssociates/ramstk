@@ -328,8 +328,7 @@ class PoF(RAMSTKWorkView):
 
         _attributes = [
             node.identifier, _entity.description, "", "", 0.0, "", "", "", "",
-            0, "", _icon,
-            str(_entity.get_attributes())
+            0, "", _icon
         ]
 
         try:
@@ -377,8 +376,7 @@ class PoF(RAMSTKWorkView):
         _attributes = [
             node.identifier, _entity.description, _entity.effect_end,
             _entity.severity_class, _entity.mode_ratio, "", "", "", "", 0, "",
-            _icon,
-            str(_entity.get_attributes())
+            _icon
         ]
 
         try:
@@ -424,8 +422,7 @@ class PoF(RAMSTKWorkView):
 
         _attributes = [
             node.identifier, _entity.description, "", "", 0.0,
-            _entity.damage_model, "", "", "", _entity.priority_id, "", _icon,
-            str(_entity.get_attributes())
+            _entity.damage_model, "", "", "", _entity.priority_id, "", _icon
         ]
 
         try:
@@ -473,8 +470,7 @@ class PoF(RAMSTKWorkView):
         _attributes = [
             node.identifier, _entity.description, "", "", 0.0, "",
             _entity.measurable_parameter, _entity.load_history, "", 0,
-            _entity.remarks, _icon,
-            str(_entity.get_attributes())
+            _entity.remarks, _icon
         ]
 
         try:
@@ -521,8 +517,7 @@ class PoF(RAMSTKWorkView):
 
         _attributes = [
             node.identifier, _entity.description, "", "", 0.0, "", "", "",
-            _entity.boundary_conditions, 0, _entity.remarks, _icon,
-            str(_entity.get_attributes())
+            _entity.boundary_conditions, 0, _entity.remarks, _icon
         ]
 
         try:
@@ -826,10 +821,9 @@ class PoF(RAMSTKWorkView):
         _level = self._get_indenture_level()
         _headings = super().do_get_headings(_level)
 
-        self.treeview.headings[self._lst_col_order[0]] = _headings[0]
-        self.treeview.headings[self._lst_col_order[1]] = _headings[1]
+        self.treeview.headings['col0'] = _headings[0]
+        self.treeview.headings['col1'] = _headings[1]
 
-        _set_visible = self.treeview.visible and self._dic_column_masks[_level]
         _cell = self.treeview.get_column(self._lst_col_order[1]).get_cells()[0]
         if _level in ['opload', 'opstress', 'testmethod']:
             _cell.set_property('editable', True)
@@ -838,13 +832,13 @@ class PoF(RAMSTKWorkView):
 
         _columns = self.treeview.get_columns()
         i = 0
-        for _heading in self.treeview.headings:
-            _label = RAMSTKLabel(_heading)
+        for _key in self.treeview.headings:
+            _label = RAMSTKLabel(self.treeview.headings[_key])
             _label.do_set_properties(height=-1,
                                      justify=Gtk.Justification.CENTER,
                                      wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
-            _columns[i].set_visible(_set_visible[self._lst_col_order[i]])
+            _columns[i].set_visible(self.treeview.visible[_key])
 
             i += 1
