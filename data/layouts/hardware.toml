@@ -1,3 +1,5 @@
+pixbuf='False'
+
 defaulttitle.col0='Revision ID'
 defaulttitle.col1='Hardware ID'
 defaulttitle.col2='Alternate Part Number'
@@ -125,7 +127,6 @@ position.col18=18
 position.col19=19
 position.col20=20
 position.col21=21
-position.col21=21
 position.col22=22
 position.col23=23
 position.col24=24
@@ -135,8 +136,9 @@ position.col27=27
 position.col28=28
 position.col29=29
 position.col30=30
-position.col31=32
-position.col32=33
+position.col31=31
+position.col32=32
+position.col33=33
 
 widget.col0='text'
 widget.col1='text'

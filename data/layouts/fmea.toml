@@ -1,3 +1,5 @@
+pixbuf='True'
+
 defaulttitle.col0='Entity ID'
 defaulttitle.col1='Description'
 defaulttitle.col2='Mission'
@@ -40,7 +42,6 @@ defaulttitle.col38='Critical Item'
 defaulttitle.col39='Single Point of Failure'
 defaulttitle.col40='Include in PoF'
 defaulttitle.col41='Remarks'
-defaulttitle.col42='icon'
 
 usertitle.col0='Entity ID'
 usertitle.col1='Description'
@@ -84,7 +85,6 @@ usertitle.col38='Critical Item'
 usertitle.col39='Single Point of Failure'
 usertitle.col40='Include in PoF'
 usertitle.col41='Remarks'
-usertitle.col42='icon'
 
 datatype.col0='gchararray'
 datatype.col1='gchararray'
@@ -128,7 +128,6 @@ datatype.col38='gint'
 datatype.col39='gint'
 datatype.col40='gint'
 datatype.col41='gchararray'
-datatype.col42='pixbuf'
 
 position.col0=0
 position.col1=1
@@ -172,8 +171,6 @@ position.col38=38
 position.col39=39
 position.col40=40
 position.col41=41
-position.col42=42
-
 
 widget.col0='text'
 widget.col1='text'
@@ -217,7 +214,6 @@ widget.col38='toggle'
 widget.col39='toggle'
 widget.col40='toggle'
 widget.col41='text'
-widget.col42='pixbuf'
 
 editable.col0='False'
 editable.col1='True'
@@ -261,7 +257,6 @@ editable.col38='True'
 editable.col39='True'
 editable.col40='True'
 editable.col41='True'
-editable.col42='False'
 
 visible.col0='True'
 visible.col1='True'
@@ -305,7 +300,6 @@ visible.col38='False'
 visible.col39='True'
 visible.col40='True'
 visible.col41='True'
-visible.col42='True'
 
 key.col0='entity_id'
 key.col1='description'
@@ -349,4 +343,3 @@ key.col38='critical_item'
 key.col39='single_point'
 key.col40='pof_include'
 key.col41='remarks'
-key.col42='icon'

@@ -1,3 +1,5 @@
+pixbuf='False'
+
 defaulttitle.col0='Revision ID'
 defaulttitle.col1='Availability, Predicted'
 defaulttitle.col2='Availability, Mission'

@@ -1,3 +1,5 @@
+pixbuf='True'
+
 defaulttitle.col0='Entity ID'
 defaulttitle.col1='Description'
 defaulttitle.col2='End Effect'
@@ -9,7 +11,6 @@ defaulttitle.col7='Load history'
 defaulttitle.col8='Boundary Conditions'
 defaulttitle.col9='Priority'
 defaulttitle.col10='Remarks'
-defaulttitle.col1='icon'
 
 usertitle.col0='Entity ID'
 usertitle.col1='Description'
@@ -22,7 +23,6 @@ usertitle.col7='Load history'
 usertitle.col8='Boundary Conditions'
 usertitle.col9='Priority'
 usertitle.col10='Remarks'
-usertitle.col11='icon'
 
 datatype.col0='gchararray'
 datatype.col1='gchararray'
@@ -35,7 +35,6 @@ datatype.col7='gchararray'
 datatype.col8='gchararray'
 datatype.col9='gint'
 datatype.col10='gchararray'
-datatype.col11='pixbuf'
 
 position.col0=0
 position.col1=1
@@ -48,7 +47,6 @@ position.col7=7
 position.col8=8
 position.col9=9
 position.col10=10
-position.col11=11
 
 widget.col0='text'
 widget.col1='text'
@@ -61,7 +59,6 @@ widget.col7='combo'
 widget.col8='text'
 widget.col9='spin'
 widget.col10='text'
-widget.col11='pixbuf'
 
 editable.col0='False'
 editable.col1='False'
@@ -74,7 +71,6 @@ editable.col7='True'
 editable.col8='True'
 editable.col9='True'
 editable.col10='True'
-editable.col11='True'
 
 visible.col0='False'
 visible.col1='True'
@@ -87,7 +83,6 @@ visible.col7='True'
 visible.col8='True'
 visible.col9='True'
 visible.col10='True'
-visible.col11='True'
 
 key.col0='entity_id'
 key.col1='description'
@@ -100,4 +95,3 @@ key.col7='load_history'
 key.col8='boundary_conditions'
 key.col9='priority_id'
 key.col10='remarks'
-key.col11=''

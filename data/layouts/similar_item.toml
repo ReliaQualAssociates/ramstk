@@ -1,3 +1,5 @@
+pixbuf='False'
+
 defaulttitle.col0='Revision ID'
 defaulttitle.col1='Hardware ID'
 defaulttitle.col2='Assembly'
@@ -168,7 +170,6 @@ datatype.col52='gint'
 datatype.col53='gint'
 datatype.col54='gint'
 datatype.col55='gint'
-
 
 position.col0=0
 position.col1=1

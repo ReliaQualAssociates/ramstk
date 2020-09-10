@@ -1,3 +1,5 @@
+pixbuf='False'
+
 defaulttitle.col0='Revision ID'
 defaulttitle.col1='Validation ID'
 defaulttitle.col2='V and V Activity'
@@ -100,7 +102,6 @@ datatype.col30='gfloat'
 datatype.col31='gfloat'
 datatype.col32='gchararray'
 
-
 position.col0=0
 position.col1=1
 position.col2=2
@@ -191,7 +192,7 @@ editable.col18='True'
 editable.col19='True'
 editable.col20='True'
 editable.col21='False'
-editable.col22='False
+editable.col22='False'
 editable.col23='True'
 editable.col24='False'
 editable.col25='False'
