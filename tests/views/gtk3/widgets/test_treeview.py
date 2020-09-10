@@ -22,12 +22,10 @@ class TestRAMSTKTreeView():
         DUT = RAMSTKTreeView()
 
         assert isinstance(DUT, RAMSTKTreeView)
-        assert DUT.datatypes == []
-        assert DUT.editable == []
-        assert DUT.headings == []
-        assert DUT.korder == []
-        assert DUT.order == []
-        assert DUT.visible == []
-        assert DUT.widgets == []
-        assert DUT.pixbuf_col == -1
-        assert DUT.index_col == 0
+        assert DUT.datatypes == {}
+        assert DUT.editable == {}
+        assert DUT.headings == {}
+        assert DUT.korder == {}
+        assert DUT.position == {}
+        assert DUT.visible == {}
+        assert DUT.widgets == {}
