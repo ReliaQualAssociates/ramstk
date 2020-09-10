@@ -203,6 +203,12 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         :return: None
         :rtype: None
         """
+        _bg_color = [
+            'light gray', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF',
+            'light gray', 'light gray', 'light gray', 'light gray'
+        ]
+        _editable = [False, True, True, True, True, False, False, False, False]
+        _visible = [True, True, True, True, True, False, False, False, False]
         _model = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
                                GObject.TYPE_INT, GObject.TYPE_INT,
                                GObject.TYPE_INT, GObject.TYPE_STRING,
@@ -217,38 +223,25 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
                 _("Can\nEdit?"),
                 _("Is\nVisible?")
         ]):
-            if _idx == 0:
-                _cell = do_make_text_cell(False)
-                do_set_cell_properties(_cell,
-                                       bg_color='light gray',
-                                       editable=False,
-                                       fg_color='#000000',
-                                       weight=700,
-                                       weight_set=True)
-                _column = do_make_column([_cell], heading=_text)
-                _column.set_attributes(_cell, text=_idx)
-            elif _idx in [1, 2]:
-                _cell = do_make_text_cell(False)
-                do_set_cell_properties(_cell,
-                                       bg_color='#FFFFFF',
-                                       editable=True,
-                                       fg_color='#000000')
-                _cell.connect('edited', self._do_edit_cell, _idx, _model)
-                _column = do_make_column([_cell], heading=_text)
-                _column.set_attributes(_cell, text=_idx)
-            elif _idx > 4:
-                _cell = do_make_text_cell(False)
-                do_set_cell_properties(_cell,
-                                       bg_color='light gray',
-                                       editable=False,
-                                       fg_color='#000000')
-                _column = do_make_column([_cell], heading=_text, visible=False)
-            else:
+            if _idx in [3, 4]:
                 _cell = do_make_toggle_cell()
-                do_set_cell_properties(_cell, editable=True)
                 _cell.connect('toggled', self._do_toggle_cell, _idx, _model)
-                _column = do_make_column([_cell], heading=_text)
+                _column = do_make_column([_cell],
+                                         heading=_text,
+                                         visible=_visible[_idx])
                 _column.set_attributes(_cell, active=_idx)
+            else:
+                _cell = do_make_text_cell(False)
+                _cell.connect('edited', self._do_edit_cell, _idx, _model)
+                _column = do_make_column([_cell],
+                                         heading=_text,
+                                         visible=_visible[_idx])
+                _column.set_attributes(_cell, text=_idx)
+
+            do_set_cell_properties(_cell,
+                                   bg_color=_bg_color[_idx],
+                                   editable=_editable[_idx],
+                                   fg_color='#000000')
 
             self.tvwFormatFile.append_column(_column)
 
