@@ -1,0 +1,21 @@
+repos:
+    - repo: https://github.com/pre-commit/mirrors-yapf
+      rev: v0.27.0
+      hooks:
+          - id: yapf
+            args: [--style, pep8, --recursive, --parallel]
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v2.2.3
+      hooks:
+          - id: check-docstring-first
+          - id: check-merge-conflict
+          - id: check-xml
+          - id: debug-statements
+          - id: end-of-file-fixer
+          - id: no-commit-to-branch
+          - id: trailing-whitespace
+    - repo: https://github.com/pre-commit/mirrors-pylint
+      rev: v2.3.1
+      hooks:
+          - id: pylint
+            args: [-d, E0401, -f, colorized, --ignore-patterns, 'test_*?.py']

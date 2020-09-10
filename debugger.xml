@@ -1,0 +1,13 @@
+<application>
+  <component name="XDebuggerSettings">
+    <data-views />
+    <general />
+    <debuggers>
+      <debugger id="python">
+        <configuration>
+          <option name="librariesFilterEnabled" value="true" />
+        </configuration>
+      </debugger>
+    </debuggers>
+  </component>
+</application>

@@ -1,0 +1,10 @@
+<application>
+  <component name="DeepBugsPy">
+    <option name="userDisabledChecks">
+      <set>
+        <option value="LIT:8 == ID:category_id" />
+        <option value="ID:category_id == LIT:8" />
+      </set>
+    </option>
+  </component>
+</application>

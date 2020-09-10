@@ -1,9 +1,9 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: status:newissue, type:enhancement
-assignees: ''
+name: Feature Request
+about: If you'd like to make a suggestion please fill out the form below.
+labels:
+  - status:newissue
+  - type:enhancement
 
 ---
 

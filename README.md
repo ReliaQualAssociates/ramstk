@@ -19,7 +19,7 @@
     - [Download](#download)
     - [Running the Tests](#running-the-tests)
 - [Usage](#-usage)
-- [Docs](#-docs)
+- [Documentation](#-docs)
 - [Examples](#-examples)
 - [Contributing](#-contributing)
 - [Authors](#-authors)
@@ -62,21 +62,29 @@ RAMSTK is built on the concept of modules where a module is a collection of rela
 
 ## 💾 Installing
 
-These instructions will get RAMSTK up and running on your local machine.
+These instructions will get RAMSTK up and running on your local machine.  Note that the Makefile contains all the commands needed to install or work with RAMSTK.  You should consult the help output for more information.
 
 ### Prerequisites
 
-RAMSTK requires PyGTK to be installed.  If you plan to install RAMSTK in a virtual environment (not a terrible idea if you're just giving RAMSTK a spin), please see [DEVELOPMENT_ENV.md](https://github.com/weibullguy/ramstk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on installing RAMSTK dependencies.  Otherwise, simply use your package manager to install PyGTK and one of the options below to install the remaining dependencies.
-
-### Using pip
-
-To install from PyPI using pip, simply issue the following command:
+I use [pip-tools](https://github.com/jazzband/pip-tools) to manage the dependencies for RAMSTK while I'm developing so the requirements.txt file is formated for use with the pip-sync command.  However, it will also work with pip.
 
 ```sh
-$ pip install ramstk
+$ pip install -r requirements.txt
 ```
 
-With the exception of PyGTK, pip will install any missing runtime dependencies automatically.
+should get all the needed runtime requirements installed if they're not already.
+
+If you're planning to do some development work on RAMSTK, the following would be the better approach:
+
+```sh
+$ pip install pyenv
+$ make mkvenv
+$ make usevenv ramstk-venv
+$ pip install pip-tools
+$ make depends
+```
+
+This will install [pyenv](https://github.com/pyenv/pyenv), create a virtual environment with the default name of ramstk-venv, activate that virtual environment, install pip-tools, and then install all the RAMSTK dependencies needed for testing, development, and runtime.
 
 ### Download
 
@@ -85,15 +93,17 @@ Install any missing RAMSTK dependencies using pip, your package manager, and/or 
 ```sh
 $ tar -xf ramstk-<version>.tar.gz
 $ cd ramstk-<version>
-$ python setup.py install
+$ make install
 ```
+
+The install target recognizes PREFIX=<non-default install path> so you can install RAMSTK in your $HOME or a virtual environment.
 
 ### Running the Tests
 
 To run the entire test suite for RAMSTK after installing, simply execute:
 
 ```
-$ python setup.py test
+$ make test
 ```
 
 To run specific tests or groups of tests, use pytest:
@@ -101,14 +111,6 @@ To run specific tests or groups of tests, use pytest:
 ```
 $ pytest -m integration tests/modules/test_allocation.py
 $ pytest -m calculation tests/analyses/prediction
-```
-
-#### Coding Style Tests
-
-The test directory contains a script named RunTests.py.  This is for executing static checkers such as pylint and is intended for developers.  It makes it easier to integrate into an IDE.  You can execute the following to see what RunTests.py wraps:
-
-```
-$ tests/RunTests.py --help
 ```
 
 ## 🔨 Usage
@@ -122,6 +124,10 @@ $ ramstk
 This is a good option if you need to file an issue as the output should be included in your report.
 
 RAMSTK installs a *.desktop file and can be found where ever applications in the category Math or Science are listed.
+
+## Documentation
+
+Documentation for RAMSTK can be found [here](https://reliaqualassociates.github.io/ramstk/).  You should check it out!
 
 ## 💬 Contributing
 

@@ -13,17 +13,21 @@
 *.tox
 *.e5s
 *.geany
+*:p
+0
+tags
 
 # Python specific directories and files to ignore
 build/
 dist/
+.mypy_cache/
 .pytest_cache/
 target/
 *.egg*
 *.pyc
 *.pyo
 
-# Sphinx and LaTeX intermediatei, working, and output directories and files to ignore.
+# Sphinx and LaTeX intermediate, working, and output directories and files to ignore.
 *.aux
 *.dot
 *.log
@@ -35,21 +39,22 @@ _templates/
 
 # RAMSTK specific directories and files to ignore
 .gtm/
+.reports/
+node_modules/
+out/
 *.csv
 *.glade
 *.html
+*.json
 *.log
 *.txt
 *.xls*
-.coverage
+*coverage*
+.python-version
 _temp/
-Makefile
+devtools/update_docs.txt
 pylintout
-coverage.xml
 
 # Override settings for some specific files.
-!/license.txt
-!/requirements_dev.txt
-!/requirements_doc.txt
-!/requirements_run.txt
 /.gtm/
+/.project
