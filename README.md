@@ -3,13 +3,12 @@
 
 [![Github](https://img.shields.io/github/release/ReliaQualAssociates/ramstk/all.svg)](https://github.com/ReliaQualAssociates/ramstk/releases)
 [![PyPI](https://img.shields.io/pypi/v/RAMSTK.svg)](https://pypi.python.org/pypi/RAMSTK/)
-[![Develop Build Status](https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=develop)](https://travis-ci.org/ReliaQualAssociates/ramstk)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/ReliaQualAssociates/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ReliaQualAssociates/ramstk&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/ReliaQualAssociates/ramstk?utm_source=github.com&utm_medium=referral&utm_content=ReliaQualAssociates/ramstk&utm_campaign=Badge_Coverage)
+[![Build Status](https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=master)](https://travis-ci.org/ReliaQualAssociates/ramstk)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/20d0c5f5a2a844fea078b1e9105efdec)](https://www.codacy.com/gh/ReliaQualAssociates/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ReliaQualAssociates/ramstk&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master)](https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master)
 [![codecov](https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg)](https://codecov.io/gh/ReliaQualAssociates/ramstk)
 [![CodeFactor](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge)](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk)
-[![BCH Compliance](https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master)](https://bettercodehub.com/)
+[![BCH compliance](https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master)](https://bettercodehub.com/)
 
 ## 🚩 Table of Contents
 - [Features](#-features)
