@@ -40,7 +40,6 @@ and models.
 # Standard Library Imports
 import sys
 import unittest
-from collections import OrderedDict
 from functools import reduce
 from os.path import dirname
 
@@ -48,7 +47,6 @@ from os.path import dirname
 import numpy as np
 
 # RAMSTK Package Imports
-import dao.DAO as _dao
 from analyses.survival.MCF import *
 from nose.plugins.attrib import attr
 from survival.Record import Model as Record
@@ -119,7 +117,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         """
 
         _data = {1: [5, 8], 3: [1, 8, 16]}
-        _times = reduce(lambda x, y: x + y, list(_data.values()))
+        _times = reduce(lambda x, y: x + y, _data.values())
         _times = set([float(f) for f in _times if isinstance(f, int)])
         _times = sorted(list(_times))
 
@@ -150,7 +148,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         """
 
         _data = {1: [5, 8], 3: [1, 8, 16]}
-        _times = reduce(lambda x, y: x + y, list(_data.values()))
+        _times = reduce(lambda x, y: x + y, _data.values())
         _times = set([float(f) for f in _times if isinstance(f, int)])
         _times = sorted(list(_times))
 
@@ -166,7 +164,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         """
 
         _data = {1: [5, 8, '12+'], 2: ['16+'], 3: [1, 8, 16, '20+']}
-        _times = reduce(lambda x, y: x + y, list(_data.values()))
+        _times = reduce(lambda x, y: x + y, _data.values())
         _times = set([float(f) for f in _times if isinstance(f, int)])
         _times = sorted(list(_times))
 

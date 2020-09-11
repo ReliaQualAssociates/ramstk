@@ -15,7 +15,6 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
-from ramstk.exceptions import DataAccessError
 from ramstk.ramstk import RAMSTKProgramManager
 
 
@@ -214,7 +213,7 @@ class TestProgramManager():
                         'fail_connect_program_database')
 
     @pytest.mark.unit
-    def test_do_close_program(self, test_program_dao):
+    def test_do_close_program(self):
         """do_close_program() should disconnect from the test program database and broadcast the success message."""
         pub.subscribe(self.on_succeed_close_program,
                       'succeed_disconnect_program_database')
@@ -253,7 +252,7 @@ class TestProgramManager():
                         'fail_disconnect_program_database')
 
     @pytest.mark.unit
-    def test_save_program(self, test_program_dao):
+    def test_save_program(self):
         """do_save_program() should cause all workstream modules to execute their save_all() method."""
         pub.subscribe(self.on_request_update_revision,
                       'request_update_all_revisions')

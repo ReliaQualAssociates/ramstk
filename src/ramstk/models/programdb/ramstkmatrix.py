@@ -60,6 +60,7 @@ class RAMSTKMatrix(RAMSTK_BASE, RAMSTKBaseTable):
         'row_item_id': 0,
         'value': 0
     }
+
     __tablename__ = 'ramstk_matrix'
     __table_args__ = {'extend_existing': True}
 

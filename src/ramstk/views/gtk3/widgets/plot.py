@@ -242,7 +242,7 @@ class RAMSTKPlot():
             _window.set_default_size(800, 400)
             _window.set_border_width(5)
             _window.set_position(Gtk.WindowPosition.NONE)
-            _window.set_title(_("RAMSTK Plot"))
+            _window.set_title(_(u"RAMSTK Plot"))
 
             _window.connect('delete_event', self.do_close_plot, _parent)
 
