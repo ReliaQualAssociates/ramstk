@@ -1,6 +1,0 @@
-<application>
-  <component name="NotificationConfiguration">
-    <notification groupId="File Watcher Messages" displayType="STICKY_BALLOON" shouldLog="false" />
-    <notification groupId="Find Problems" displayType="STICKY_BALLOON" />
-  </component>
-</application>
