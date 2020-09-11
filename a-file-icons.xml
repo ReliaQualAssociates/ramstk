@@ -1,8 +1,0 @@
-<application>
-  <component name="AtomFileIconsConfig">
-    <option name="monochromeColor" value="546e7a" />
-    <option name="isHideFileIcons" value="true" />
-    <option name="arrowsStyle" value="Plus-Minus" />
-    <option name="accentColor" value="b8cfe5" />
-  </component>
-</application>

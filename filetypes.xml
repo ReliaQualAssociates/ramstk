@@ -1,8 +1,0 @@
-<application>
-  <component name="FileTypeManager" version="17">
-    <extensionMap>
-      <mapping pattern="codacy-coverage-reporter" type="PLAIN_TEXT" />
-      <mapping pattern="0" type="PLAIN_TEXT" />
-    </extensionMap>
-  </component>
-</application>

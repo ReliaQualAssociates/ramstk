@@ -1,8 +1,0 @@
-<application>
-  <component name="UISettings">
-    <option name="FULL_PATHS_IN_TITLE_BAR" value="true" />
-    <option name="OVERRIDE_NONIDEA_LAF_FONTS" value="true" />
-    <option name="showTreeIndentGuides" value="true" />
-    <option name="CONTRAST_SCROLLBARS" value="true" />
-  </component>
-</application>
