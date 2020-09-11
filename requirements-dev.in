@@ -1,0 +1,32 @@
+-r requirements-test.txt
+
+# Packaging
+bump2version
+check-manifest
+
+# Code formatting
+add-trailing-comma
+isort
+pep8
+pre-commit
+pre-commit-hooks
+seed-isort-config
+yapf
+
+# Static code checking
+bandit
+flake8
+mccabe
+mypy
+pycodestyle
+pydocstyle
+pylint
+radon
+
+# Documentation
+Babel
+sphinx
+sphinx_py3doc_enhanced_theme
+sphinxcontrib-issuetracker
+sphinxcontrib-spelling
+m2r

@@ -1,0 +1,5 @@
+codacy-coverage
+coveralls
+pytest
+pytest-cov
+mock
