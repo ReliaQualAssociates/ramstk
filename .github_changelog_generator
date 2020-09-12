@@ -1,4 +1,3 @@
-since-tag=v1.0.0.rc1
 bug-labels=type:bug
 enhancement-labels=type:enhancement,type:quality
 include-labels=type:bug,type:enhancement,type:quality,status:closed,severity:blocker,severity:major,severity:normal

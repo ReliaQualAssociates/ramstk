@@ -13,6 +13,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import mtxFunctionHardware
+from ramstk.views.gtk3.hardware import (mtxHardwareRequirement,
+                                        mtxHardwareValidation)
 from ramstk.views.gtk3.requirement import (lvwStakeholders,
                                            mtxRequirementHardware)
 from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
@@ -54,12 +56,11 @@ class RAMSTKListBook(RAMSTKBaseBook):
             'function': [mtxFunctionHardware(configuration, logger)],
             'requirement': [
                 lvwStakeholders(configuration, logger),
-                mtxRequirementHardware(configuration, logger),
-                # mtxRequirement(configuration, matrix_type='rqrmnt_vldtn'),
+                mtxRequirementHardware(configuration, logger)
             ],
             'hardware': [
-                # mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
-                # mtxHardware(configuration, matrix_type='hrdwr_vldtn')
+                mtxHardwareRequirement(configuration, logger),
+                mtxHardwareValidation(configuration, logger)
             ],
             'validation': [mtxValidationRequirement(configuration, logger)]
         }
