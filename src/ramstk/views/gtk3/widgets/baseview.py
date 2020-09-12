@@ -144,6 +144,8 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_matrix')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_matrix')
 
     def __set_callbacks(self) -> None:
         """
@@ -206,6 +208,9 @@ class RAMSTKBaseView(Gtk.HBox):
             + '/32x32/charts.png',
             'edit':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/edit.png',
+            'environment':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/environment.png',
             'error':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/error.png',
@@ -224,6 +229,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'mechanism':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/mechanism.png',
+            'mission':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/mission.png',
             'mode':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mode.png',
             'none':
@@ -236,6 +244,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'partial':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/partial.png',
+            'phase':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/phase.png',
             'question':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/question.png',
@@ -594,17 +605,36 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor))
-        Gdk.flush()
+        try:
+            self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor))
+            Gdk.flush()
+        except AttributeError:
+            # There is no parent window.
+            pass
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def do_set_cursor_active(self, node_id: Any = '') -> None:
+    def do_set_cursor_active(self, node_id: Any = '', tree: Any = '') -> None:
         """
         Set the active cursor for the Module, List, and Work Book Gdk.Window().
 
         :keyword node_id: the node ID passed in the PyPubSub message.  Only
             needed when this method is a PyPubSub subscriber.
+        :keyword tree: the treelib Tree() passed in the PyPubSub message.  Only
+            needed when this method is a PyPubSub subscriber.
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_set_cursor_active_on_fail(self, error_message: str = '') -> None:
+        """
+        Set the active cursor for the Module, List, and Work Book Gdk.Window().
+
+        :keyword str error_message: the error message broadcast with the
+        'fail' message.  Only needed when this method is a PyPubSub subscriber.
         :return: None
         :rtype: None
         """

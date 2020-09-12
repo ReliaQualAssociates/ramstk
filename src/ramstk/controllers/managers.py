@@ -139,6 +139,7 @@ class RAMSTKDataManager():
         pub.subscribe(self.do_select_matrix, 'request_select_matrix')
         pub.subscribe(self.do_update_matrix, 'request_update_matrix')
         pub.subscribe(self.do_connect, 'succeed_connect_program_database')
+        pub.subscribe(self.do_update_all, 'request_save_project')
 
         self._mtx_prefix = self._tag
         for _letter in self._tag.lower():

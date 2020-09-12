@@ -713,6 +713,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # If we're calculating the entire system, we suppress this and make the
         # equivalent *all* calls.
         if not system:
+            pub.sendMessage('succeed_calculate_hardware_2',
+                            node_id=node_id)
             pub.sendMessage('succeed_calculate_hardware',
                             attributes=self._attributes)
             pub.sendMessage('request_update_hardware', node_id=node_id)

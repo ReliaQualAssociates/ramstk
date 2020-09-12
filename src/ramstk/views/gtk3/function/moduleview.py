@@ -90,11 +90,21 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_delete, 'succeed_delete_function')
         pub.subscribe(self._on_insert, 'succeed_insert_function')
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_functions')
         pub.subscribe(self._do_refresh_tree, 'wvw_editing_function')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+
+        pub.subscribe(self.do_load_tree, 'succeed_retrieve_functions')
+        pub.subscribe(self.on_delete, 'succeed_delete_function')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_function')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_function')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_function')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_function')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_function')
 
     def __make_ui(self) -> None:
         """

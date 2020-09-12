@@ -114,10 +114,22 @@ class Stakeholders(RAMSTKListView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_requirements,
                       'succeed_retrieve_requirements')
-        pub.subscribe(self.on_delete, 'succeed_delete_stakeholder')
         pub.subscribe(self._on_insert, 'succeed_insert_stakeholder')
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_stakeholders')
         pub.subscribe(self._do_refresh_tree, 'succeed_calculate_stakeholder')
+
+        pub.subscribe(self.do_load_tree, 'succeed_retrieve_stakeholders')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_delete_stakeholder_2')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_insert_stakeholder_2')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_stakeholder')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_stakeholder')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_stakeholder')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_stakeholder')
+        pub.subscribe(self.on_delete, 'succeed_delete_stakeholder')
 
     def __make_ui(self) -> None:
         """
@@ -307,6 +319,7 @@ class Stakeholders(RAMSTKListView):
         _dialog.do_set_message_type(message_type='question')
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
+            super().do_set_cursor_busy()
             pub.sendMessage('request_delete_stakeholder',
                             node_id=self._record_id)
 
@@ -323,7 +336,6 @@ class Stakeholders(RAMSTKListView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_stakeholder', node_id=self._record_id)
-        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -336,7 +348,6 @@ class Stakeholders(RAMSTKListView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_stakeholders')
-        super().do_set_cursor_active()
 
     # pylint: disable=unused-argument
     def _on_button_press(self, __treeview: RAMSTKTreeView,
@@ -457,7 +468,6 @@ class RequirementHardware(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='rqrmnt_hrdwr')
-        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.Button) -> None:
         """
@@ -472,4 +482,3 @@ class RequirementHardware(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='rqrmnt_hrdwr')
-        super().do_set_cursor_active()

@@ -131,13 +131,18 @@ class GeneralData(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_requirement')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
-
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_requirement')
         pub.subscribe(self._do_load_code, 'succeed_create_requirement_code')
-        pub.subscribe(self._do_set_cursor_active, 'fail_update_requirement')
+
+        pub.subscribe(self.on_edit, 'mvw_editing_requirement')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_create_code')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_create_requirement_code')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_requirement')
 
     def __load_combobox(self):
         """
@@ -371,11 +376,10 @@ class GeneralData(RAMSTKWorkView):
         """
         _prefix = self.cmbRequirementType.get_value()
 
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_create_requirement_code',
                         node_id=self._record_id,
                         prefix=_prefix)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -386,9 +390,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_requirement', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -399,9 +402,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_requirements')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     @staticmethod
     def _do_select_date(__button: RAMSTKButton, __event: Gdk.Event,
@@ -428,24 +430,6 @@ class GeneralData(RAMSTKWorkView):
         entry.set_text(str(_date))
 
         return _date
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_set_cursor_active(self, error_message: str) -> None:
-        """
-        Returns the cursor to the active cursor on a fail message.
-
-        The meta-class do_set_active() method expects node_id as the data
-        package, but the fail messages carry an error message as the package.
-        This method simply calls the meta-class method in response to fail
-        messages.
-
-        :param str error_message: the error message associated with the fail
-            message.
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_active(node_id=self._record_id)
 
     def _on_combo_changed(self, combo: Gtk.CellRendererCombo,
                           index: int) -> None:
@@ -652,7 +636,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         pub.subscribe(self._do_load_page, 'selected_requirement')
 
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
-        pub.subscribe(self._do_set_cursor_active, 'fail_update_requirement')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_requirement')
 
     def __make_treeview(
             self, index: int) -> Tuple[Gtk.ListStore, Gtk.TreeViewColumn]:
@@ -958,7 +943,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_requirement', node_id=self._record_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -970,27 +955,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_requirements')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_set_cursor_active(self, error_message: str) -> None:
-        """
-        Returns the cursor to the active cursor on a fail message.
-
-        The meta-class do_set_active() method expects node_id as the data
-        package, but the fail messages carry an error message as the package.
-        This method simply calls the meta-class method in response to fail
-        messages.
-
-        :param str error_message: the error message associated with the fail
-            message.
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_active(node_id=self._record_id)
 
     def _on_cell_edit(self, cell: Gtk.CellRendererToggle, path: str,
                       model: Gtk.TreeModel, position: int) -> None:

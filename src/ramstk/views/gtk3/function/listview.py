@@ -69,7 +69,6 @@ class FunctionHardware(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='fnctn_hrdwr')
-        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.Button) -> None:
         """
@@ -84,4 +83,3 @@ class FunctionHardware(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='fnctn_hrdwr')
-        super().do_set_cursor_active()

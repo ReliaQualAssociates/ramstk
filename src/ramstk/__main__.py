@@ -172,7 +172,7 @@ def do_read_user_configuration(
         _configuration.RAMSTK_USER_LOG)
     _logger.do_create_logger(__name__,
                              _configuration.RAMSTK_LOGLEVEL,
-                             to_tty=True)
+                             to_tty=False)
 
     return _configuration, _logger
 

@@ -69,7 +69,6 @@ class ValidationRequirement(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='vldtn_rqrmnt')
-        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.Button) -> None:
         """
@@ -84,4 +83,3 @@ class ValidationRequirement(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='vldtn_rqrmnt')
-        super().do_set_cursor_active()

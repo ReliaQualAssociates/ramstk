@@ -65,6 +65,7 @@ class HardwareRequirement(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_rqrmnt')
@@ -78,6 +79,7 @@ class HardwareRequirement(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_rqrmnt')
@@ -136,7 +138,6 @@ class HardwareValidation(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_vldtn')
-        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.Button) -> None:
         """
@@ -151,4 +152,3 @@ class HardwareValidation(RAMSTKListView):
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_vldtn')
-        super().do_set_cursor_active()

@@ -283,6 +283,17 @@ class FMEA(RAMSTKWorkView):
         pub.subscribe(self._do_update_item_criticality,
                       'succeed_calculate_fmea_criticality')
 
+        # pub.subscribe(self.do_set_cursor_active, 'succeed_delete_fmea')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_fmea')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_fmea')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_delete_fmea')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_action')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_cause')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_control')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_mechanism')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_mode')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_fmea')
+
     def __do_load_action_category(self) -> None:
         """
         Load the action category Gtk.CellRendererCombo().
@@ -926,7 +937,9 @@ class FMEA(RAMSTKWorkView):
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 0)
 
+        super().do_set_cursor_busy()
         pub.sendMessage("request_delete_fmea", node_id=_node_id)
+        super().do_set_cursor_active()
 
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> None:
         """
@@ -958,6 +971,7 @@ class FMEA(RAMSTKWorkView):
         if _level == 'control_action':
             _level = self._on_request_insert_control_action()
 
+        super().do_set_cursor_busy()
         do_request_insert(_attributes, _level, _parent_id)
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
@@ -984,6 +998,7 @@ class FMEA(RAMSTKWorkView):
         if _level in ['control', 'action']:
             _level = self._on_request_insert_control_action()
 
+        super().do_set_cursor_busy()
         do_request_insert(_attributes, _level, _parent_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -995,9 +1010,8 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_fmea', node_id=self._record_id)
-        self.do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1008,9 +1022,8 @@ class FMEA(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_fmea')
-        self.do_set_cursor_active()
 
     def _do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """

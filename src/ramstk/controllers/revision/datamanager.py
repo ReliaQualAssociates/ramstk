@@ -141,6 +141,7 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_delete_failure_definition',
                             tree=_dic_definitions)
+            pub.sendMessage('succeed_delete_failure_definition_2')
         except KeyError:
             pub.sendMessage('fail_delete_failure_definition',
                             error_message=("Attempted to delete non-existent "
@@ -160,6 +161,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _profile_tree = self._do_delete_profile(revision_id, node_id)
             pub.sendMessage('succeed_delete_mission', tree=_profile_tree)
+            pub.sendMessage('succeed_delete_usage_profile', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_delete_mission',
                             error_message=("Attempted to delete non-existent "
@@ -181,6 +183,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _profile_tree = self._do_delete_profile(revision_id, node_id)
             pub.sendMessage('succeed_delete_mission_phase', tree=_profile_tree)
+            pub.sendMessage('succeed_delete_usage_profile', node_id=node_id)
         except AttributeError:
             pub.sendMessage(
                 'fail_delete_mission_phase',
@@ -204,6 +207,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _profile_tree: Tree = self._do_delete_profile(revision_id, node_id)
             pub.sendMessage('succeed_delete_environment', tree=_profile_tree)
+            pub.sendMessage('succeed_delete_usage_profile', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_delete_environment',
                             error_message=("Attempted to delete non-existent "
@@ -576,6 +580,7 @@ class DataManager(RAMSTKDataManager):
             _profile_tree = RAMSTKDataManager.do_select(
                 self, revision_id, 'usage_profile')
             pub.sendMessage("succeed_insert_environment", tree=_profile_tree)
+            pub.sendMessage('succeed_insert_usage_profile')
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_environment", error_message=_error)
 
@@ -604,6 +609,7 @@ class DataManager(RAMSTKDataManager):
                 _failure_definition.definition_id
             pub.sendMessage("succeed_insert_failure_definition",
                             tree=_dic_definitions)
+            pub.sendMessage("succeed_insert_failure_definition_2")
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_failure_definition",
                             error_message=_error)
@@ -633,6 +639,7 @@ class DataManager(RAMSTKDataManager):
                 self, revision_id, 'usage_profile')
             self._last_id['mission'] = _mission.mission_id
             pub.sendMessage("succeed_insert_mission", tree=_profile_tree)
+            pub.sendMessage('succeed_insert_usage_profile')
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_mission", error_message=_error)
 
@@ -665,6 +672,7 @@ class DataManager(RAMSTKDataManager):
             _profile_tree = RAMSTKDataManager.do_select(
                 self, revision_id, 'usage_profile')
             pub.sendMessage("succeed_insert_mission_phase", tree=_profile_tree)
+            pub.sendMessage('succeed_insert_usage_profile')
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_mission_phase", error_message=_error)
 

@@ -136,6 +136,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.sendMessage('request_set_validation_attributes',
                         node_id=[task_id, -1],
                         package={'cost_ul': _node.data['validation'].cost_ul})
+        pub.sendMessage('succeed_calculate_validation_task', node_id=[task_id, -1])
 
     def _do_request_trees(self, tree: treelib.Tree) -> None:
         """
@@ -275,3 +276,4 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _dic_plan['actual'] = self._do_select_actuals()
 
         pub.sendMessage('succeed_calculate_plan', plan=_dic_plan)
+        pub.sendMessage('succeed_calculate_validation_plan')

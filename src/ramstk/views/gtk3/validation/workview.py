@@ -201,6 +201,13 @@ class GeneralData(RAMSTKWorkView):
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_validation')
 
+        pub.subscribe(self.do_set_cursor_active, 'succeed_calculate_validation_task')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_validation')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_calculate_validation_task')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_validation')
+
     def __do_make_task_code(self, task_type: str) -> str:
         """
         Create the validation task code.
@@ -672,10 +679,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_validation_task',
                         task_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -686,9 +692,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_validation_tasks')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -699,9 +704,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_validation', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -712,9 +716,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_validations')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     @staticmethod
     def _do_select_date(__button: Gtk.ToolButton, __event: Gdk.Event,
@@ -891,6 +894,12 @@ class BurndownCurve(RAMSTKWorkView):
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'succeed_calculate_plan')
 
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_calculate_validation_plan')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_validation')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_validation')
+
     def __make_ui(self) -> None:
         """
         Make the Validation class Gtk.Notebook() burndown curve page.
@@ -1046,7 +1055,8 @@ class BurndownCurve(RAMSTKWorkView):
              _("Minimum Expected Time"), _("Actual Remaining Time")))
         self.burndown.figure.canvas.draw()
 
-    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
+    @staticmethod
+    def _do_request_calculate_all(__button: Gtk.ToolButton) -> None:
         """
         Request to calculate program cost and time.
 
@@ -1055,9 +1065,8 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super.do_set_cursor_busy()
         pub.sendMessage('request_calculate_plan')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1068,11 +1077,11 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super.do_set_cursor_busy()
         pub.sendMessage('request_update_validation', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+    @staticmethod
+    def _do_request_update_all(__button: Gtk.ToolButton) -> None:
         """
         Request to save all Validation tasks and program results.
 
@@ -1081,6 +1090,5 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super.do_set_cursor_busy()
         pub.sendMessage('request_update_all_validations')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)

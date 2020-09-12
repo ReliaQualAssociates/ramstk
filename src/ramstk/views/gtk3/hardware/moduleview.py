@@ -102,12 +102,25 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_delete, 'succeed_delete_hardware')
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_hardware')
-
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
         pub.subscribe(self._do_refresh_hardware_tree, 'wvw_editing_hardware')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+
+        pub.subscribe(self.on_delete, 'succeed_delete_hardware')
+        pub.subscribe(self.do_load_tree, 'succeed_retrieve_hardware')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_calculate_hardware_2')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_hardware')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_hardware')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_calculate_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_hardware')
 
     def __make_ui(self) -> None:
         """
@@ -169,9 +182,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_calculate_all_hardware(self,
                                            __button: Gtk.ToolButton) -> None:
@@ -183,9 +195,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -219,6 +230,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('request_insert_hardware',
                         parent_id=self._record_id,
                         part=0)
@@ -232,11 +244,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_insert_hardware',
                         parent_id=self._record_id,
                         part=1)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         """
@@ -247,11 +258,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_insert_hardware',
                         parent_id=self._parent_id,
                         part=0)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -262,9 +272,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -275,9 +284,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:
