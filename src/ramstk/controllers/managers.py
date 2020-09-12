@@ -309,6 +309,7 @@ class RAMSTKDataManager():
         """
         self.tree = module_tree
 
+    # noinspection PyUnresolvedReferences
     def do_update_all(self) -> None:
         """
         Update all MODULE data table records in the RAMSTK Program database.

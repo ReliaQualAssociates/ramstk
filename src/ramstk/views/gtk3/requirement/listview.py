@@ -406,9 +406,9 @@ class Stakeholders(RAMSTKListView):
 
 class RequirementHardware(RAMSTKListView):
     """
-    Display all the Requirement-Hardware matrix for the selected Revision.
+    Display all the Requirement::Hardware matrix for the selected Revision.
 
-    The attributes of the Requirement-Hardware Matrix View are:
+    The attributes of the Requirement::Hardware Matrix View are:
     """
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -438,8 +438,38 @@ class RequirementHardware(RAMSTKListView):
         # Initialize public scalar attributes.
 
         super().make_ui(vtype='matrix',
-                        tab_label=_("Requirement-Hardware\nMatrix"),
-                        tooltip=_("Displays the Requirement-Hardware matrix "
+                        tab_label=_("Requirement::Hardware\nMatrix"),
+                        tooltip=_("Displays the Requirement::Hardware matrix "
                                   "for the selected revision."))
 
         # Subscribe to PyPubSub messages.
+
+    def _do_request_update(self, __button: Gtk.Button) -> None:
+        """
+        Sends message to request updating the Requirement::Hardware matrix.
+
+        :param __button: the Gtk.Button() that call this method.
+        :type __button: :class:`Gtk.Button`
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('do_request_update_matrix',
+                        revision_id=self._revision_id,
+                        matrix_type='rqrmnt_hrdwr')
+        super().do_set_cursor_active()
+
+    def _do_request_update_all(self, __button: Gtk.Button) -> None:
+        """
+        Sends message to request updating the Requirement::Hardware matrix.
+
+        :param __button: the Gtk.Button() that call this method.
+        :type __button: :class:`Gtk.Button`
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('do_request_update_matrix',
+                        revision_id=self._revision_id,
+                        matrix_type='rqrmnt_hrdwr')
+        super().do_set_cursor_active()
