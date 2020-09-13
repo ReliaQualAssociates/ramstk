@@ -40,35 +40,19 @@ ATTRIBUTES = {
     "environment_active_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
-def test_get_part_count_lambda_b(
-        subcategory_id,
-        type_id,
-        environment_active_id,
-):
+def test_get_part_count_lambda_b(subcategory_id, type_id,
+                                 environment_active_id):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
     _lambda_b = relay.get_part_count_lambda_b(
-        subcategory_id,
-        type_id,
-        environment_active_id,
-    )
+        subcategory_id=subcategory_id,
+        type_id=type_id,
+        environment_active_id=environment_active_id)
 
     assert isinstance(_lambda_b, float)
     if subcategory_id == 1 and type_id == 1:
         assert _lambda_b == [
-            0.13,
-            0.28,
-            2.1,
-            1.1,
-            3.8,
-            1.1,
-            1.4,
-            1.9,
-            2.0,
-            7.0,
-            0.66,
-            3.5,
-            10.0,
-            0.0,
+            0.13, 0.28, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0, 7.0, 0.66, 3.5,
+            10.0, 0.0
         ][environment_active_id - 1]
 
 
@@ -77,7 +61,9 @@ def test_get_part_count_lambda_b(
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = relay.get_part_count_lambda_b(1.3, 1, 2)
+        _lambda_b = relay.get_part_count_lambda_b(subcategory_id=1.3,
+                                                  type_id=1,
+                                                  environment_active_id=2)
 
 
 @pytest.mark.unit
@@ -85,7 +71,9 @@ def test_get_part_count_lambda_b_no_subcategory():
 def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = relay.get_part_count_lambda_b(1, 11, 2)
+        _lambda_b = relay.get_part_count_lambda_b(subcategory_id=1,
+                                                  type_id=11,
+                                                  environment_active_id=2)
 
 
 @pytest.mark.unit
@@ -93,7 +81,9 @@ def test_get_part_count_lambda_b_no_type():
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = relay.get_part_count_lambda_b(1, 1, 21)
+        _lambda_b = relay.get_part_count_lambda_b(subcategory_id=1,
+                                                  type_id=1,
+                                                  environment_active_id=21)
 
 
 @pytest.mark.unit
