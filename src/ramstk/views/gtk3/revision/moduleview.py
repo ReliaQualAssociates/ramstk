@@ -7,7 +7,7 @@
 """RAMSTK Revision GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -16,9 +16,8 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKMessageDialog, RAMSTKModuleView,
-                                       RAMSTKTreeView)
+from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKModuleView
 
 
 class ModuleView(RAMSTKModuleView):
@@ -83,6 +82,23 @@ class ModuleView(RAMSTKModuleView):
             + '/32x32/revision.png')
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self.do_request_insert_sibling, self._do_request_delete,
+            self._do_request_update, self._do_request_update_all
+        ]
+        self._lst_icons = ['add', 'remove', 'save', 'save-all']
+        self._lst_mnu_labels = [
+            _("Add Revision"),
+            _("Delete Selected Revision"),
+            _("Save Selected Revision"),
+            _("Save All Revisions")
+        ]
+        self._lst_tooltips = [
+            _("Add a new revision."),
+            _("Remove the currently selected revision."),
+            _("Save changes to the currently selected revision."),
+            _("Save changes to all revisions.")
+        ]
 
         # Initialize private scalar attributes.
 
@@ -96,11 +112,10 @@ class ModuleView(RAMSTKModuleView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert, 'succeed_insert_revision')
-        pub.subscribe(self._do_refresh_tree, 'wvw_editing_revision')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
-        pub.subscribe(self.on_delete, 'succeed_delete_revision')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_revision')
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_revision')
         pub.subscribe(self.do_set_cursor_active, 'succeed_insert_revision')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_revision')
@@ -110,6 +125,7 @@ class ModuleView(RAMSTKModuleView):
                       'fail_insert_revision')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_revision')
+        #pub.subscribe(self.on_delete, 'succeed_delete_revision')
 
     def __make_ui(self) -> None:
         """
@@ -118,44 +134,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        super().make_ui(icons=['add', 'remove'],
-                        tooltips=[
-                            _("Add a new revision."),
-                            _("Remove the currently selected revision.")
-                        ],
-                        callbacks=[
-                            self.do_request_insert_sibling,
-                            self._do_request_delete
-                        ])
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
-        """
-        Update the module view RAMSTKTreeView() with attribute changes.
-
-        This method is called by other views when the Revision data model
-        attributes are edited via their gtk.Widgets().
-
-        The calling method is passes a dict containing the database field name
-        as key.  The dict's value is the data to write to the database.
-
-        `package` key: `package` value
-        database field name: database field new value
-
-        This method passes that `package` of data and a second dict
-        containing the database field name as key.  The value of this second
-        dict is the TreeModel's default column position for that data.
-
-        `keys` key: `keys` value
-        database field name: TreeModel column position
-
-        :param list node_id: unused in this method.
-        :param dict package: the key:value for the data being updated.
-        :return: None
-        :rtype: None
-        """
-        self.do_refresh_tree(package)
+        super().make_ui(icons=self._lst_icons,
+                        tooltips=self._lst_tooltips,
+                        callbacks=self._lst_callbacks)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
@@ -205,46 +186,6 @@ class ModuleView(RAMSTKModuleView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_revisions')
-
-    def _on_button_press(self, treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the Revision Module View RAMSTKTreeView().
-
-        :param treeview: the Revision class Gtk.TreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the Gdk.Event() that called this method (the
-            important attribute is which mouse button was clicked).
-                * 1 = left
-                * 2 = scrollwheel
-                * 3 = right
-                * 4 = forward
-                * 5 = backward
-                * 8 =
-                * 9 =
-
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(event,
-                                    icons=['add'],
-                                    labels=[
-                                        _("Add Revision"),
-                                        _("Remove Selected Revision"),
-                                        _("Save Selected Revision"),
-                                        _("Save All Revisions")
-                                    ],
-                                    callbacks=[self.do_request_insert_sibling])
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

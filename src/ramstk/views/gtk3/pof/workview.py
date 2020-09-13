@@ -17,10 +17,9 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
+from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddStressTestMethod
-from ramstk.views.gtk3.widgets import (RAMSTKLabel, RAMSTKTreeView,
-                                       RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import RAMSTKLabel, RAMSTKWorkView
 
 
 class PoF(RAMSTKWorkView):
@@ -131,6 +130,11 @@ class PoF(RAMSTKWorkView):
         ]
         self._lst_icons: List[str] = [
             'insert_sibling', 'insert_child', 'remove'
+        ]
+        self._lst_mnu_labels: List[str] = [
+            _("Insert Sibling"),
+            _("Insert Child"),
+            _("Delete Selected")
         ]
         self._lst_tooltips: List[str] = [
             _("Add a new PoF entity at the same level as the "
@@ -264,7 +268,7 @@ class PoF(RAMSTKWorkView):
         :rtype: None
         """
         self.treeview.dic_handler_id['button-press'] = self.treeview.connect(
-            'button_press_event', self._on_button_press)
+            "button_press_event", self.on_button_press)
 
         for i in self._lst_col_order:
             _cell = self.treeview.get_column(
@@ -740,40 +744,6 @@ class PoF(RAMSTKWorkView):
             _level = 'testmethod'
 
         return _level
-
-    # noinspection PyUnusedLocal
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the PoF Work View RAMSTKTreeView().
-
-        :param __treeview: the PoF TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the Gdk.Event() that called this method (the
-            important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backwards
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`.
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            RAMSTKWorkView.on_button_press(self,
-                                           event,
-                                           icons=self._lst_icons,
-                                           tooltips=self._lst_tooltips,
-                                           callbacks=self._lst_callbacks)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

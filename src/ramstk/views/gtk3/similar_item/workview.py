@@ -17,10 +17,9 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, Gtk, _
+from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import EditFunction
-from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKTreeView,
-                                       RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKWorkView
 
 
 class SimilarItem(RAMSTKWorkView):
@@ -130,6 +129,21 @@ class SimilarItem(RAMSTKWorkView):
         self._dic_hardware: Dict[str, Any] = {}
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_edit_function, self._do_request_rollup,
+            self._do_request_calculate
+        ]
+        self._lst_icons = ['edit', 'rollup', 'calculate']
+        self._lst_mnu_labels = [
+            _("Edit Function"),
+            _("Roll-Up Descriptions"),
+            _("Calculate Similar Item")
+        ]
+        self._lst_tooltips = [
+            _("Edit the Similar Item analysis functions."),
+            _("Roll up descriptions to next higher level assembly."),
+            _("Calculate the Similar Item analysis.")
+        ]
 
         # Initialize private scalar attributes.
         self._similar_item_tree: treelib.Tree = treelib.Tree()
@@ -242,17 +256,9 @@ class SimilarItem(RAMSTKWorkView):
         #  Scrollwindow --->RAMSTKFrame ---+
         #  w/ self.treeview
         # Make the buttons.
-        super().make_toolbuttons(
-            icons=['edit', 'rollup', 'calculate'],
-            tooltips=[
-                _("Edit the Similar Item analysis functions."),
-                _("Roll up descriptions to next higher level assembly."),
-                _("Calculate the Similar Item analysis.")
-            ],
-            callbacks=[
-                self._do_request_edit_function, self._do_request_rollup,
-                self._do_request_calculate
-            ])
+        super().make_toolbuttons(icons=self._lst_icons,
+                                 tooltips=self._lst_tooltips,
+                                 callbacks=self._lst_callbacks)
         super().make_ui_with_treeview(
             title=[_("Similar Item Method"),
                    _("Similar Item Analysis")])
@@ -517,42 +523,6 @@ class SimilarItem(RAMSTKWorkView):
                 ]
             except TypeError:
                 pass
-
-    # pylint: disable=unused-argument
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the Similar Item Work View RAMSTKTreeView().
-
-        :param __treeview: the Similar Item TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backwards
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`.
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(
-                event,
-                icons=['edit', 'calculate'],
-                labels=[_("Edit Function"), _("Calculate")],
-                callbacks=[
-                    self._do_request_edit_function, self._do_request_calculate
-                ])
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """

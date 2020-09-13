@@ -16,11 +16,9 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models.programdb import (RAMSTKEnvironment,
-                                     RAMSTKFailureDefinition, RAMSTKMission,
-                                     RAMSTKMissionPhase)
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
-from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
+from ramstk.models.programdb import RAMSTKFailureDefinition
+from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, Pango, _
+from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 def _do_make_column(header: str, index: int,
@@ -93,14 +91,22 @@ class FailureDefinition(RAMSTKListView):
         self._dic_key_index = {'definition_id': 0, 'definition': 2}
 
         # Initialize private list attributes.
-        self._lst_icons = ['add', 'remove']
-        self._lst_tooltips = [
-            _("Add a new Failure Definition."),
-            _("Remove the currently selected "
-              "Failure Definition.")
-        ]
         self._lst_callbacks = [
-            self._do_request_insert, self._do_request_delete
+            self._do_request_insert, self._do_request_delete,
+            self._do_request_update, self._do_request_update_all
+        ]
+        self._lst_icons = ['add', 'remove', 'save', 'save-all']
+        self._lst_mnu_labels = [
+            _("Add Definition"),
+            _("Delete Selected"),
+            _("Save Definition"),
+            _("Save All Definitions")
+        ]
+        self._lst_tooltips = [
+            _("Add a new failure definition."),
+            _("Delete the currently selected failure definition."),
+            _("Save changes to the currently selected failure definition"),
+            _("Save changes to all failure definitions.")
         ]
 
         # Initialize private scalar attributes.
@@ -215,7 +221,7 @@ class FailureDefinition(RAMSTKListView):
                     int(_attributes['definition_id']),
                     _attributes['definition']
                 ])
-            #// TODO: Handle exceptions in Revision module views.
+            #// TODO: Handle exceptions in Revision list views.
             #//
             #// Exceptions in the Revision module views are not being
             #// handled.  They need to be logged and, when appropriate,
@@ -291,38 +297,6 @@ class FailureDefinition(RAMSTKListView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_failure_definitions',
                         revision_id=self._revision_id)
-
-    # pylint: disable=unused-argument
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on Failure Definition List View RAMSTKTreeView().
-
-        :param __treeview: the Failure Definition ListView Gtk.TreeView().
-        :type __treeview: :class:`ramstk.gui.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backward
-                      * 8 =
-                      * 9 =
-        :type event: :py:class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(event,
-                                    icons=self._lst_icons,
-                                    tooltips=self._lst_tooltips,
-                                    callbacks=self._lst_callbacks)
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
@@ -490,19 +464,31 @@ class UsageProfile(RAMSTKListView):
         self._dic_keys: Dict[str, int] = {}
 
         # Initialize private list attributes.
-        self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        self._lst_icons = ['insert_sibling', 'insert_child', 'remove']
-        self._lst_tooltips = [
-            _("Add a new Usage Profile entity at the same level "
-              "as the currently selected entity."),
-            _("Add a new Usage Profile entity one level below the "
-              "currently selected entity."),
-            _("Remove the currently selected entity from the Usage "
-              "Profile.")
-        ]
         self._lst_callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete
+            self._do_request_delete, self._do_request_update,
+            self._do_request_update_all
+        ]
+        self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        self._lst_icons = [
+            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+        ]
+        self._lst_mnu_labels = [
+            _("Add Sibling"),
+            _("Add Child"),
+            _("Delete Selected"),
+            _("Save Selected"),
+            _("Save Profile")
+        ]
+        self._lst_tooltips = [
+            _("Add a new usage profile entity at the same level "
+              "as the currently selected entity."),
+            _("Add a new usage profile entity one level below the "
+              "currently selected entity."),
+            _("Delete the currently selected entity from the usage profile."),
+            _("Save changes to the currently selected entity in the usage "
+              "profile."),
+            _("Save changes to all entities in the usage profile.")
         ]
 
         # Initialize private scalar attributes.
@@ -697,20 +683,9 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        super().make_ui(
-            icons=['insert_sibling', 'insert_child', 'remove'],
-            tooltips=[
-                _("Add a new Usage Profile entity at the same level "
-                  "as the currently selected entity."),
-                _("Add a new Usage Profile entity one level below the "
-                  "currently selected entity."),
-                _("Remove the curently selected entity from the Usage "
-                  "Profile.")
-            ],
-            callbacks=[
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete
-            ])
+        super().make_ui(icons=self._lst_icons,
+                        tooltips=self._lst_tooltips,
+                        callbacks=self._lst_callbacks)
 
         self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
                                   + "</span>")
@@ -733,8 +708,7 @@ class UsageProfile(RAMSTKListView):
             _("Displays the list of usage profiles for the selected "
               "revision."))
 
-    def _do_load_environment(self, entity: RAMSTKEnvironment, identifier: int,
-                             row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def _do_load_environment(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
         """
         Load an environmental condition into the RAMSTK TreeView.
 
@@ -745,18 +719,22 @@ class UsageProfile(RAMSTKListView):
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         :rtype: :class:`Gtk.TreeIter`
         """
+        _entity = kwargs.get('entity', None)
+        _identifier = kwargs.get('identifier', 0)
+        _row = kwargs.get('row', None)
+
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons['environment'], 22, 22)
         _attributes = [
-            _icon, entity.environment_id, entity.name, '', entity.units,
-            entity.minimum, entity.maximum, entity.mean, entity.variance,
-            identifier, 1, 'environment'
+            _icon, _entity.environment_id, _entity.name, '', _entity.units,
+            _entity.minimum, _entity.maximum, _entity.mean, _entity.variance,
+            _identifier, 1, 'environment'
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = _model.append(_row, _attributes)
         except TypeError:
             _user_msg = _("One or more Environments for revision ID {0:d} had "
                           "the wrong data type in it's data package and was "
@@ -765,7 +743,7 @@ class UsageProfile(RAMSTKListView):
             _debug_msg = (
                 "RAMSTK ERROR: Data for Environment ID {0:s} for Revision ID "
                 "{1:s} is the wrong type for one or more columns.".format(
-                    str(entity.environment_id), str(self._revision_id)))
+                    str(_entity.environment_id), str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -775,7 +753,7 @@ class UsageProfile(RAMSTKListView):
                           "the Usage Profile.".format(self._revision_id))
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Environment ID {0:s} for "
-                "Revision ID {1:s}.".format(str(entity.environment_id),
+                "Revision ID {1:s}.".format(str(_entity.environment_id),
                                             str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -783,8 +761,7 @@ class UsageProfile(RAMSTKListView):
 
         return _new_row
 
-    def _do_load_mission(self, entity: RAMSTKMission, identifier: int,
-                         row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def _do_load_mission(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
         """
         Load a mission into the RAMSTK TreeView.
 
@@ -794,25 +771,29 @@ class UsageProfile(RAMSTKListView):
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         :rtype: :class:`Gtk.Iter`
         """
+        _entity = kwargs.get('entity', None)
+        _identifier = kwargs.get('identifier', 0)
+        _row = kwargs.get('row', None)
+
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons['mission'], 22, 22)
         _attributes = [
-            _icon, entity.mission_id, entity.description, '',
-            entity.time_units, 0.0, entity.mission_time, 0.0, 0.0, identifier,
-            0, 'mission'
+            _icon, _entity.mission_id, _entity.description, '',
+            _entity.time_units, 0.0, _entity.mission_time, 0.0, 0.0,
+            _identifier, 0, 'mission'
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = _model.append(_row, _attributes)
         except TypeError:
             _user_msg = _("One or more Missions had the wrong data type in "
                           "it's data package and is not displayed in the "
                           "Usage Profile.")
             _debug_msg = (
                 "Data for Mission ID {0:s} for Revision ID {1:s} is the wrong "
-                "type for one or more columns.".format(str(entity.mission_id),
+                "type for one or more columns.".format(str(_entity.mission_id),
                                                        str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -822,7 +803,7 @@ class UsageProfile(RAMSTKListView):
                           "and is not displayed in the Usage Profile.")
             _debug_msg = (
                 "Too few fields for Mission ID {0:s} for Revision ID "
-                "{1:s}.".format(str(entity.mission_id),
+                "{1:s}.".format(str(_entity.mission_id),
                                 str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -830,8 +811,7 @@ class UsageProfile(RAMSTKListView):
 
         return _new_row
 
-    def _do_load_phase(self, entity: RAMSTKMissionPhase, identifier: int,
-                       row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def _do_load_phase(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
         """
         Load a mission phase into the RAMSTK TreeView.
 
@@ -842,18 +822,22 @@ class UsageProfile(RAMSTKListView):
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         :rtype: :class:`Gtk.Iter`
         """
+        _entity = kwargs.get('entity', None)
+        _identifier = kwargs.get('identifier', 0)
+        _row = kwargs.get('row', None)
+
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons['phase'], 22, 22)
         _attributes = [
-            _icon, entity.phase_id, entity.name, entity.description, '',
-            entity.phase_start, entity.phase_end, 0.0, 0.0, identifier, 0,
+            _icon, _entity.phase_id, _entity.name, _entity.description, '',
+            _entity.phase_start, _entity.phase_end, 0.0, 0.0, _identifier, 0,
             'phase'
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = _model.append(_row, _attributes)
         except TypeError:
             _user_msg = _("One or more Mission Phases had the wrong data type "
                           "in it's data package and is not displayed in the "
@@ -861,7 +845,7 @@ class UsageProfile(RAMSTKListView):
             _debug_msg = (
                 "RAMSTK ERROR: Data for Mission Phase ID {0:s} for Revision "
                 "ID {1:s} is the wrong type for one or more columns.".format(
-                    str(entity.phase_id), str(self._revision_id)))
+                    str(_entity.phase_id), str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -871,7 +855,7 @@ class UsageProfile(RAMSTKListView):
                           "Profile.")
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s} for "
-                "Revision ID {1:s}.".format(str(entity.phase_id),
+                "Revision ID {1:s}.".format(str(_entity.phase_id),
                                             str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -903,13 +887,16 @@ class UsageProfile(RAMSTKListView):
 
         try:
             if _entity.is_mission:
-                _new_row = self._do_load_mission(_entity, _node.identifier,
-                                                 row)
+                _new_row = self._do_load_mission(entity=_entity,
+                                                 identifier=_node.identifier,
+                                                 row=row)
             elif _entity.is_phase:
-                _new_row = self._do_load_phase(_entity, _node.identifier, row)
+                _new_row = self._do_load_phase(entity=_entity,
+                                               identifier=_node.identifier,
+                                               row=row)
             elif _entity.is_env:
-                _new_row = self._do_load_environment(_entity, _node.identifier,
-                                                     row)
+                _new_row = self._do_load_environment(
+                    entity=_entity, identifier=_node.identifier, row=row)
         except AttributeError:
             _user_msg = _("One or more Usage Profile line items was "
                           "missing it's data package and is not "
@@ -1055,50 +1042,6 @@ class UsageProfile(RAMSTKListView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_usage_profiles',
                         revision_id=self._revision_id)
-
-    # pylint: disable=unused-argument
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the Usage Profile List View RAMSTKTreeView().
-
-        :param __treeview: the Usage Profile ListView Gtk.TreeView().
-            Currently unused in this method.
-        :type __treeview: :class:`Gtk.TreeView`.
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backward
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(
-                event,
-                icons=['insert_sibling', 'insert_child', 'remove', 'save-all'],
-                labels=[
-                    _("Add Sibling Entity"),
-                    _("Add Child Entity"),
-                    _("Remove Selected Entity"),
-                    _("Save Usage Profile")
-                ],
-                callbacks=[
-                    self.do_request_insert_sibling,
-                    self.do_request_insert_child, self._do_request_delete,
-                    self._do_request_update_all
-                ])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:

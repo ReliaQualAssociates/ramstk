@@ -54,24 +54,6 @@ def do_make_buttonbox(view: Any,
     _tooltips = kwargs.get('tooltips', [])
     _width = kwargs.get('width', -1)
 
-    # Append the default save and save-all buttons found on all toolbars to
-    # List Views, Module Views, and Work Views.
-    try:
-        _icons.extend(['save', 'save-all'])
-        _tooltips.extend(
-            [_("Save the currently selected item."),
-             _("Save all items.")])
-        _callbacks.extend(
-            [view._do_request_update, view._do_request_update_all])
-    except AttributeError as _error:
-        #// TODO: Handle AttributeError in do_make_buttonbox().
-        #//
-        #// This error is a programming error not a runtime error.  It would
-        #// be the result of a view not having an icon or callback function in
-        #// the default list.  The solution should be to ensure the icons and
-        #// functions lists above are in the base view for each type of view.
-        print(_error)
-
     if _orientation == 'horizontal':
         _buttonbox = Gtk.HButtonBox()
     else:

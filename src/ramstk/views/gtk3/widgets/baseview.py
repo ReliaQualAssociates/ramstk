@@ -98,7 +98,8 @@ class RAMSTKBaseView(Gtk.HBox):
         self.RAMSTK_USER_CONFIGURATION = configuration
         self.RAMSTK_LOGGER = logger
         self.RAMSTK_LOGGER.do_create_logger(
-            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL)
+            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
 
         # Initialize private dictionary attributes.
         self._dic_icons = self.__set_icons()
@@ -167,7 +168,7 @@ class RAMSTKBaseView(Gtk.HBox):
         try:
             self.treeview.dic_handler_id[
                 'button-press'] = self.treeview.connect(
-                    'button_press_event', self._on_button_press)
+                    'button_press_event', self.on_button_press)
         except AttributeError as _error:
             if self._module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -247,6 +248,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'phase':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/phase.png',
+            'plot':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/charts.png',
             'question':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/question.png',
@@ -447,7 +451,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return _dialog
 
-    def do_refresh_tree(self, package: Dict[str, Any]) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
@@ -472,6 +478,7 @@ class RAMSTKBaseView(Gtk.HBox):
         Since both dicts contain the same key values, this method can refresh
         the proper column of the RAMSTKTreeView with the new data.
 
+        :param list node_id: unused in this method.
         :param dict package: the key:value for the data being updated.
         :return: None
         :rtype: None
@@ -683,7 +690,8 @@ class RAMSTKBaseView(Gtk.HBox):
         _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-    def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
+    def on_button_press(self, __treeview: RAMSTKTreeView,
+                        event: Gdk.Event) -> None:
         """
         Handle mouse clicks on the View's RTKTreeView().
 
@@ -713,22 +721,18 @@ class RAMSTKBaseView(Gtk.HBox):
         #// eliminating class methods and likely remove **kwargs from argument
         #// lists for others.  It will also simplify creation of new GUI
         #// classes.
-        _icons = kwargs['icons']
-        _labels = kwargs['labels']
-        _callbacks = kwargs['callbacks']
-
         _menu = Gtk.Menu()
         _menu.popup_at_pointer(event)
 
         # pylint: disable=unused-variable
-        for _idx, __ in enumerate(_icons):
+        for _idx, __ in enumerate(self._lst_icons):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons[_icons[_idx]])
-            _menu_item.set_label(_labels[_idx])
+            _image.set_from_file(self._dic_icons[self._lst_icons[_idx]])
+            _menu_item.set_label(self._lst_mnu_labels[_idx])
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', _callbacks[_idx],
+            _menu_item.connect('activate', self._lst_callbacks[_idx],
                                self.RAMSTK_USER_CONFIGURATION)
             _menu_item.show()
             _menu.append(_menu_item)
@@ -1170,17 +1174,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
         """
         self.treeview.set_rubber_banding(True)
 
-    def do_request_export(self, module: str) -> None:
-        """
-        Launch the Export assistant.
-
-        :return: None
-        :rtype: None
-        """
-        # _tree = self._dtc_data_controller.request_do_select_all(
-        #     revision_id=self._revision_id)
-        # ExportModule(self._mdcRAMSTK, module, _tree)
-
     def make_ui(self, icons: List[str], tooltips: List[str],
                 callbacks: List[object]) -> None:
         """
@@ -1228,44 +1221,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self.show_all()
 
         self.treeview.do_set_editable_columns(self.on_cell_edit)
-
-    def on_button_press(self, event: Gdk.Event, **kwargs: Any) -> None:
-        """
-        Handle mouse clicks on the Module View RAMSTKTreeView().
-
-        :param event: the Gdk.Event() that called this method (the
-            important attribute is which mouse button was clicked).
-                * 1 = left
-                * 2 = scrollwheel
-                * 3 = right
-                * 4 = forward
-                * 5 = backward
-                * 8 =
-                * 9 =
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        _icons = kwargs['icons']
-        _labels = kwargs['labels']
-        _callbacks = kwargs['callbacks']
-
-        # Append the default save and save-all buttons found on all Module View
-        # pop-up menus.
-        try:
-            _icons.extend(['remove', 'save', 'save-all'])
-            _callbacks.extend([
-                self._do_request_delete, self._do_request_update,
-                self._do_request_update_all
-            ])
-        except AttributeError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        RAMSTKBaseView.on_button_press(self,
-                                       event,
-                                       icons=_icons,
-                                       labels=_labels,
-                                       callbacks=_callbacks)
 
 
 class RAMSTKWorkView(RAMSTKBaseView):
