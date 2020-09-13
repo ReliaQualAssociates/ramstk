@@ -95,11 +95,21 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_delete, 'succeed_delete_revision')
         pub.subscribe(self._on_insert, 'succeed_insert_revision')
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
         pub.subscribe(self._do_refresh_tree, 'wvw_editing_revision')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+
+        pub.subscribe(self.on_delete, 'succeed_delete_revision')
+        pub.subscribe(self.do_load_tree, 'succeed_retrieve_revisions')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_revision')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_revision')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_revision')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_revision')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_revision')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_revision')
 
     def __make_ui(self) -> None:
         """
@@ -166,6 +176,7 @@ class ModuleView(RAMSTKModuleView):
         _dialog.do_set_message_type('question')
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
+            super().do_set_cursor_busy()
             pub.sendMessage('request_delete_revision',
                             node_id=self._revision_id)
 
@@ -180,9 +191,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_revision', node_id=self._revision_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -193,9 +203,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_revisions')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
                          event: Gdk.Event) -> None:

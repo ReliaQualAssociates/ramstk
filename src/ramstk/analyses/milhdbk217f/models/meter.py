@@ -62,9 +62,10 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['subcategory_id'],
-                                   attributes['type_id'],
-                                   attributes['environment_active_id'])
+    return get_part_count_lambda_b(
+        subcategory_id=attributes['subcategory_id'],
+        type_id=attributes['type_id'],
+        environment_active_id=attributes['environment_active_id'])
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -102,8 +103,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def get_part_count_lambda_b(subcategory_id: int, type_id: int,
-                            environment_active_id: int) -> float:
+def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     r"""
     Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -138,8 +138,12 @@ def get_part_count_lambda_b(subcategory_id: int, type_id: int,
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
-    return PART_COUNT_LAMBDA_B[subcategory_id][type_id][environment_active_id
-                                                        - 1]
+    _subcategory_id = kwargs.get('subcategory_id', 0)
+    _type_id = kwargs.get('type_id', 0)
+    _environment_active_id = kwargs.get('environment_active_id', 0)
+
+    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
+        _environment_active_id - 1]
 
 
 def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:

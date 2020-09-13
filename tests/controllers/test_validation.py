@@ -450,8 +450,8 @@ class TestInsertMethods():
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_validation topic was broadcast.")
 
-    def on_fail_insert_validation(self, error_msg):
-        assert error_msg == ('Attempting to add a validation as a child of '
+    def on_fail_insert_validation(self, error_message):
+        assert error_message == ('Attempting to add a validation as a child of '
                              'non-existent parent node 40.')
         print("\033[35m\nfail_insert_validation topic was broadcast.")
 
@@ -746,14 +746,14 @@ class TestUpdateMethods():
         assert node_id == 1
         print("\033[36m\nsucceed_update_validation topic was broadcast")
 
-    def on_fail_update_validation(self, error_msg):
-        assert error_msg == (
+    def on_fail_update_validation(self, error_message):
+        assert error_message == (
             'Attempted to save non-existent validation task with validation '
             'ID 100.')
         print("\033[35m\nfail_update_validation topic was broadcast")
 
-    def on_fail_update_validation2(self, error_msg):
-        assert error_msg == ('No data package found for validation task ID 1.')
+    def on_fail_update_validation2(self, error_message):
+        assert error_message == ('No data package found for validation task ID 1.')
         print("\033[35m\nfail_update_validation topic was broadcast")
 
     def on_succeed_update_status(self, attributes):

@@ -21,8 +21,8 @@ from ramstk.configuration import (RAMSTK_FAILURE_PROBABILITY,
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (
-    CreateProject, EditOptions, EditPreferences, ExportProject,
-    ImportProject, OpenProject)
+    CreateProject, EditOptions, EditPreferences, ExportProject, ImportProject,
+    OpenProject)
 from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
                                      RAMSTKWorkBook)
 
@@ -486,13 +486,11 @@ class RAMSTKDesktop(Gtk.Window):
         :return: None
         :rtype: None
         """
-        _message = _("Saving Program Database {0:s}"). \
-            format(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'])
+        _message = _("Saving Program Database {0:s}").format(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'])
         self.statusbar.push(2, _message)
 
         pub.sendMessage('request_save_project')
-
-        self.dic_books['modulebook'].statusbar.pop(2)
 
         if end:
             destroy(widget)

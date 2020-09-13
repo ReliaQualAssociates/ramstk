@@ -77,6 +77,8 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
+            pub.sendMessage('succeed_delete_stakeholder_',
+                            node_id=node_id)
             pub.sendMessage('succeed_delete_stakeholder',
                             node_id=node_id,
                             tree=self.tree)
@@ -139,6 +141,8 @@ class DataManager(RAMSTKDataManager):
                                   identifier=self.last_id,
                                   parent=0,
                                   data={'stakeholder': _stakeholder})
+            pub.sendMessage('succeed_insert_stakeholder_2',
+                            node_id=self.last_id)
             pub.sendMessage('succeed_insert_stakeholder',
                             node_id=self.last_id,
                             tree=self.tree)

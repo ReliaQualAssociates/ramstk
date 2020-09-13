@@ -235,12 +235,14 @@ class GeneralData(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
-
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_hardware')
         pub.subscribe(self._do_load_subcategory, 'changed_category')
+
+        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_hardware')
 
     def __load_combobox(self) -> None:
         """
@@ -596,9 +598,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_make_comp_ref_des', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+        super().do_set_cursor_active()
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -610,7 +612,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
 
     # TODO: Make this public per convention 303.3.  Do this for all workviews.
@@ -623,7 +625,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:

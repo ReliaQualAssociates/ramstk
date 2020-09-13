@@ -120,6 +120,7 @@ class DataManager(RAMSTKDataManager):
             _requirement = self.tree.get_node(node_id).data['requirement']
             _requirement.create_code(prefix=prefix)
 
+            pub.sendMessage('succeed_create_code')
             pub.sendMessage('succeed_create_requirement_code',
                             requirement_code=_requirement.get_attributes()
                             ['requirement_code'])
@@ -160,7 +161,6 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
-    # pylint: disable=arguments-differ
     def do_insert_requirement(self, parent_id: int = 0) -> None:
         """
         Add a new requirement.
@@ -195,6 +195,7 @@ class DataManager(RAMSTKDataManager):
                                "{0:d}.").format(parent_id))
 
     # pylint: disable=arguments-differ
+    # noinspection PyUnresolvedReferences
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """
         Retrieve all the Requirement data from the RAMSTK Program database.

@@ -160,6 +160,17 @@ class PoF(RAMSTKWorkView):
         pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_opstress')
         pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_test_method')
 
+        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_pof_2')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_pof')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_pof')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_delete_pof')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_opload')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_opstress')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_test_method')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_pof')
+
     def __do_load_damage_models(self) -> None:
         """
         Load the RAMSTKTreeView() damage model CellRendererCombo().
@@ -607,6 +618,7 @@ class PoF(RAMSTKWorkView):
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 0)
 
+        super().do_set_cursor_busy()
         pub.sendMessage('request_delete_pof', node_id=_node_id)
 
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> None:
@@ -637,6 +649,7 @@ class PoF(RAMSTKWorkView):
         if _level == 'opstress_testmethod':
             _level = self._on_request_insert_opstress_method()
 
+        super().do_set_cursor_busy()
         pub.sendMessage('request_insert_pof_{0:s}'.format(_level),
                         parent_id=str(_parent_id))
 
@@ -659,10 +672,11 @@ class PoF(RAMSTKWorkView):
             _attributes = {}
             _parent_id = '0'
             _level = 'opload'
-        print(_parent_id)
+
         if _level in ['opstress', 'testmethod']:
             _level = self._on_request_insert_opstress_method()
 
+        super().do_set_cursor_busy()
         pub.sendMessage('request_insert_pof_{0:s}'.format(_level),
                         parent_id=str(_parent_id))
 
@@ -675,9 +689,8 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_pof', node_id=self._record_id)
-        self.do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -688,9 +701,8 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_pof')
-        self.do_set_cursor_active()
 
     def _get_cell_model(self, column: Gtk.TreeViewColumn) -> Gtk.TreeModel:
         """

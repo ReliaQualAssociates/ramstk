@@ -91,6 +91,7 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id[0] = max(self.tree.nodes.keys())
 
+            pub.sendMessage('succeed_delete_validation_2', node_id=node_id)
             pub.sendMessage('succeed_delete_validation',
                             node_id=node_id,
                             tree=self.tree)
@@ -242,6 +243,8 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data=_data_package)
 
+            pub.sendMessage('succeed_insert_validation_2',
+                            node_id=self.last_id[0])
             pub.sendMessage('succeed_insert_validation',
                             node_id=self.last_id[0],
                             tree=self.tree)
@@ -297,8 +300,7 @@ class DataManager(RAMSTKDataManager):
             self.do_set_attributes([attributes['validation_id']],
                                    package={_key: attributes[_key]})
 
-    def do_set_attributes(self,
-                          node_id: List[int],
+    def do_set_attributes(self, node_id: List[int],
                           package: Dict[str, Any]) -> None:
         """
         Set the attributes of the record associated with the Nonee ID.
@@ -340,13 +342,15 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_update_validation', node_id=node_id)
         except AttributeError:
-            pub.sendMessage('fail_update_validation',
-                            error_msg=('Attempted to save non-existent '
-                                       'validation task with validation ID '
-                                       '{0:s}.').format(str(node_id)))
+            pub.sendMessage(
+                'fail_update_validation',
+                error_message=('Attempted to save non-existent '
+                               'validation task with validation ID '
+                               '{0:s}.').format(str(node_id)))
         except (KeyError, TypeError):
             if node_id != 0:
-                pub.sendMessage('fail_update_validation',
-                                error_msg=('No data package found for '
-                                           'validation task ID {0:s}.').format(
-                                               str(node_id)))
+                pub.sendMessage(
+                    'fail_update_validation',
+                    error_message=('No data package found for '
+                                   'validation task ID {0:s}.').format(
+                                       str(node_id)))

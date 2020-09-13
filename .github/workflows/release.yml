@@ -20,3 +20,21 @@ jobs:
         env:
           GITHUB_PR_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bump_semantic_version:
+    name: Bump Semantic Version
+    steps:
+      - uses: actions/checkout@v2
+      - id: lrb
+        uses: jessicalostinspace/github-action-get-regex-branch@v1.0.8
+        with:
+          regex-string: 'release/v'
+      - id: current_version
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: MAJOR, MINOR, PATCH
+      - id: bsv
+        uses: jessicalostinspace/bump-semantic-version-action@v1.0.1
+        with:
+          semantic-version: ${{ steps.lrb.outputs.last-semver }}
+          version-type: ${{ steps.current_version.match }}

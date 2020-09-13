@@ -8,7 +8,6 @@ from typing import Any, List
 
 def do_make_column(cells: List[object], **kwargs) -> \
         Gtk.TreeViewColumn: ...
-    pass
 
 def do_set_cell_properties(cell: object, **kwargs) -> None: ...
     pass

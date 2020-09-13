@@ -114,10 +114,22 @@ class Stakeholders(RAMSTKListView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_requirements,
                       'succeed_retrieve_requirements')
-        pub.subscribe(self.on_delete, 'succeed_delete_stakeholder')
         pub.subscribe(self._on_insert, 'succeed_insert_stakeholder')
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_stakeholders')
         pub.subscribe(self._do_refresh_tree, 'succeed_calculate_stakeholder')
+
+        pub.subscribe(self.do_load_tree, 'succeed_retrieve_stakeholders')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_delete_stakeholder_2')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_insert_stakeholder_2')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_stakeholder')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_stakeholder')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_stakeholder')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_stakeholder')
+        pub.subscribe(self.on_delete, 'succeed_delete_stakeholder')
 
     def __make_ui(self) -> None:
         """
@@ -307,6 +319,7 @@ class Stakeholders(RAMSTKListView):
         _dialog.do_set_message_type(message_type='question')
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
+            super().do_set_cursor_busy()
             pub.sendMessage('request_delete_stakeholder',
                             node_id=self._record_id)
 
@@ -323,7 +336,6 @@ class Stakeholders(RAMSTKListView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_stakeholder', node_id=self._record_id)
-        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -336,7 +348,6 @@ class Stakeholders(RAMSTKListView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_stakeholders')
-        super().do_set_cursor_active()
 
     # pylint: disable=unused-argument
     def _on_button_press(self, __treeview: RAMSTKTreeView,
@@ -406,9 +417,9 @@ class Stakeholders(RAMSTKListView):
 
 class RequirementHardware(RAMSTKListView):
     """
-    Display all the Requirement-Hardware matrix for the selected Revision.
+    Display all the Requirement::Hardware matrix for the selected Revision.
 
-    The attributes of the Requirement-Hardware Matrix View are:
+    The attributes of the Requirement::Hardware Matrix View are:
     """
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
@@ -438,8 +449,36 @@ class RequirementHardware(RAMSTKListView):
         # Initialize public scalar attributes.
 
         super().make_ui(vtype='matrix',
-                        tab_label=_("Requirement-Hardware\nMatrix"),
-                        tooltip=_("Displays the Requirement-Hardware matrix "
+                        tab_label=_("Requirement::Hardware\nMatrix"),
+                        tooltip=_("Displays the Requirement::Hardware matrix "
                                   "for the selected revision."))
 
         # Subscribe to PyPubSub messages.
+
+    def _do_request_update(self, __button: Gtk.Button) -> None:
+        """
+        Sends message to request updating the Requirement::Hardware matrix.
+
+        :param __button: the Gtk.Button() that call this method.
+        :type __button: :class:`Gtk.Button`
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('do_request_update_matrix',
+                        revision_id=self._revision_id,
+                        matrix_type='rqrmnt_hrdwr')
+
+    def _do_request_update_all(self, __button: Gtk.Button) -> None:
+        """
+        Sends message to request updating the Requirement::Hardware matrix.
+
+        :param __button: the Gtk.Button() that call this method.
+        :type __button: :class:`Gtk.Button`
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('do_request_update_matrix',
+                        revision_id=self._revision_id,
+                        matrix_type='rqrmnt_hrdwr')

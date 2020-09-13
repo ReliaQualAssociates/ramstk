@@ -84,6 +84,8 @@ class DataManager(RAMSTKDataManager):
             RAMSTKDataManager.do_delete(self, node_id, _table)
 
             self.tree.remove_node(node_id)
+            pub.sendMessage('succeed_delete_pof_2',
+                            node_id=node_id)
             pub.sendMessage('succeed_delete_pof',
                             node_id=node_id,
                             tree=self.tree)
@@ -125,6 +127,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_insert_opload',
                             node_id=_identifier,
                             tree=self.tree)
+            pub.sendMessage('succeed_insert_pof', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = (
                 'An error occurred when attempting to add an operating load '
@@ -166,6 +169,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_insert_opstress',
                             node_id=_identifier,
                             tree=self.tree)
+            pub.sendMessage('succeed_insert_pof', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('An error occurred when attempting to add an '
                           'operating stress to operating load '
@@ -205,6 +209,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('succeed_insert_test_method',
                             node_id=_identifier,
                             tree=self.tree)
+            pub.sendMessage('succeed_insert_pof', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('An error occurred when attempting to add a test '
                           'method to operating load '

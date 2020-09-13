@@ -88,7 +88,11 @@ class GeneralData(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'selected_revision')
+
         pub.subscribe(self.on_edit, 'mvw_editing_revision')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_revision')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_revision')
 
     def __make_ui(self) -> None:
         """
@@ -193,9 +197,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_revision', node_id=self._revision_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -206,9 +209,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_revisions')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # pylint: disable=unused-argument
     def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,

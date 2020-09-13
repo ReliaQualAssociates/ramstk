@@ -141,6 +141,9 @@ class Allocation(RAMSTKWorkView):
                       'succeed_calculate_allocation_goals')
         pub.subscribe(self._do_refresh_tree, 'succeed_allocate_reliability')
         pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_hardware')
 
     def __load_combobox(self) -> None:
         """
@@ -389,10 +392,10 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_allocate_reliability',
                         node_id=self._record_id)
-        self.do_set_cursor_active(node_id=self._record_id)
+        super().do_set_cursor_active()
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """
@@ -403,9 +406,8 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor_active(node_id=self._record_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -416,9 +418,8 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor_active(node_id=self._record_id)
 
     def _do_set_columns_editable(self) -> None:
         """

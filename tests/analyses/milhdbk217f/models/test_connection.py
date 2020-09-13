@@ -54,11 +54,9 @@ def test_get_part_count_lambda_b(subcategory_id, environment_active_id,
                                  type_id):
     """get_part_count_lambda_b() should return a float value for the base hazard rates on success."""
     _lambda_b = connection.get_part_count_lambda_b(
-        id_keys={
-            'subcategory_id': subcategory_id,
-            'environment_active_id': environment_active_id,
-            'type_id': type_id
-        })
+        subcategory_id=subcategory_id,
+        environment_active_id=environment_active_id,
+        type_id=type_id)
     assert isinstance(_lambda_b, float)
 
     # Verify a sampling of base hazard rates.
@@ -70,11 +68,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
         _lambda_b = connection.get_part_count_lambda_b(
-            id_keys={
-                'subcategory_id': 88,
-                'environment_active_id': 12,
-                'type_id': 2
-            })
+            subcategory_id=88, environment_active_id=12, type_id=2)
 
 
 @pytest.mark.unit
@@ -83,11 +77,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b_list() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
         _lambda_b = connection.get_part_count_lambda_b(
-            id_keys={
-                'subcategory_id': 3,
-                'environment_active_id': 22,
-                'type_id': -1
-            })
+            subcategory_id=3, environment_active_id=22, type_id=-1)
 
 
 @pytest.mark.unit
@@ -95,12 +85,9 @@ def test_get_part_count_lambda_b_no_environment():
 def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = connection.get_part_count_lambda_b(
-            id_keys={
-                'subcategory_id': 1,
-                'environment_active_id': 2,
-                'type_id': 22
-            })
+        _lambda_b = connection.get_part_count_lambda_b(subcategory_id=1,
+                                                       environment_active_id=2,
+                                                       type_id=22)
 
 
 @pytest.mark.unit

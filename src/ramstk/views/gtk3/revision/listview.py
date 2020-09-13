@@ -116,10 +116,23 @@ class FailureDefinition(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_tree, 'succeed_delete_failure_definition')
-        pub.subscribe(self._do_load_tree, 'succeed_insert_failure_definition')
         pub.subscribe(self.__do_load_tree,
                       'succeed_get_failure_definitions_attributes')
+        pub.subscribe(self._do_load_tree, 'succeed_delete_failure_definition')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_failure_definition')
+
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_delete_failure_definition_2')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_insert_failure_definition_2')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_update_failure_definition')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_failure_definition')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_failure_definition')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_failure_definition')
 
     def __do_load_tree(self, attributes: Dict[int, Any]) -> None:
         """
@@ -231,6 +244,7 @@ class FailureDefinition(RAMSTKListView):
         _dialog.do_set_message_type(message_type='question')
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
+            super().do_set_cursor_busy()
             pub.sendMessage('request_delete_failure_definition',
                             revision_id=self._revision_id,
                             node_id=self._record_id)
@@ -247,6 +261,7 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('request_insert_failure_definition',
                         revision_id=self._revision_id)
 
@@ -263,7 +278,6 @@ class FailureDefinition(RAMSTKListView):
         pub.sendMessage('request_update_failure_definition',
                         revision_id=self._revision_id,
                         node_id=self._record_id)
-        super().do_set_cursor_active()
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -277,7 +291,6 @@ class FailureDefinition(RAMSTKListView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_failure_definitions',
                         revision_id=self._revision_id)
-        super().do_set_cursor_active()
 
     # pylint: disable=unused-argument
     def _on_button_press(self, __treeview: RAMSTKTreeView,
@@ -473,15 +486,6 @@ class UsageProfile(RAMSTKListView):
 
         # Initialize private dictionary attributes.
         self._dic_column_keys: Dict[str, int] = {}
-        self._dic_icons['mission'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/mission.png')
-        self._dic_icons['phase'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/phase.png')
-        self._dic_icons['environment'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/environment.png')
         self._dic_key_index: Dict[str, int] = {}
         self._dic_keys: Dict[str, int] = {}
 
@@ -514,14 +518,33 @@ class UsageProfile(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.__do_load_tree,
+                      'succeed_get_usage_profile_attributes')
         pub.subscribe(self._do_load_tree, 'succeed_delete_environment')
         pub.subscribe(self._do_load_tree, 'succeed_delete_mission')
         pub.subscribe(self._do_load_tree, 'succeed_delete_mission_phase')
         pub.subscribe(self._do_load_tree, 'succeed_insert_environment')
         pub.subscribe(self._do_load_tree, 'succeed_insert_mission')
         pub.subscribe(self._do_load_tree, 'succeed_insert_mission_phase')
-        pub.subscribe(self.__do_load_tree,
-                      'succeed_get_usage_profile_attributes')
+
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_delete_usage_profile')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_insert_usage_profile')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_update_usage_profile')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_environment')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_delete_mission')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_mission_phase')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_environment')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_mission')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_mission_phase')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_usage_profile')
 
     def __do_load_tree(self, attributes: Tree) -> None:
         """
@@ -556,6 +579,7 @@ class UsageProfile(RAMSTKListView):
         _model, _row = self.treeview.selection.get_selected()
         _node_id = _model.get_value(_row, 9)
 
+        super().do_set_cursor_busy()
         if level == 'mission':
             pub.sendMessage('request_delete_mission',
                             revision_id=self._revision_id,
@@ -944,6 +968,7 @@ class UsageProfile(RAMSTKListView):
         _level = _model.get_value(_row, 11)
         _prow = _model.iter_parent(_row)
 
+        super().do_set_cursor_busy()
         if _level == 'mission':
             _mission_id = _model.get_value(_row, 9)
             pub.sendMessage('request_insert_mission_phase',
@@ -983,6 +1008,7 @@ class UsageProfile(RAMSTKListView):
             _level = 'mission'
             _prow = None
 
+        super().do_set_cursor_busy()
         if _level == 'mission':
             pub.sendMessage('request_insert_mission',
                             revision_id=self._revision_id)
@@ -1012,11 +1038,10 @@ class UsageProfile(RAMSTKListView):
         _model, _row = self.treeview.selection.get_selected()
         _node_id = _model.get_value(_row, 9)
 
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_usage_profile',
                         revision_id=self._revision_id,
                         node_id=_node_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -1027,10 +1052,9 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_usage_profiles',
                         revision_id=self._revision_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # pylint: disable=unused-argument
     def _on_button_press(self, __treeview: RAMSTKTreeView,

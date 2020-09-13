@@ -65,6 +65,7 @@ class HardwareRequirement(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_rqrmnt')
@@ -78,6 +79,7 @@ class HardwareRequirement(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_rqrmnt')
@@ -132,6 +134,7 @@ class HardwareValidation(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_vldtn')
@@ -145,6 +148,7 @@ class HardwareValidation(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        super().do_set_cursor_busy()
         pub.sendMessage('do_request_update_matrix',
                         revision_id=self._revision_id,
                         matrix_type='hrdwr_vldtn')

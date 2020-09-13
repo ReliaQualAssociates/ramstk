@@ -28,8 +28,8 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration, RAMSTKUserConfiguration)
+from ramstk.configuration import (RAMSTKSiteConfiguration,
+                                  RAMSTKUserConfiguration)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -570,13 +570,11 @@ def test_csv_file_function():
     """Create and populate a *.csv file for testing Function imports."""
     _test_file = TMP_DIR + '/test_inputs_functions.csv'
 
-    with open(_test_file, 'w') as _csv_file:
-        filewriter = csv.writer(
-            _csv_file,
-            delimiter=';',
-            quotechar='|',
-            quoting=csv.QUOTE_MINIMAL,
-        )
+    with open(_test_file, 'w', newline='') as _csv_file:
+        filewriter = csv.writer(_csv_file,
+                                delimiter=';',
+                                quotechar='|',
+                                quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Function'])
         filewriter.writerow(ROW_DATA[0])
         filewriter.writerow(ROW_DATA[1])
@@ -590,12 +588,10 @@ def test_text_file_function():
     _test_file = TMP_DIR + '/test_inputs_functions.txt'
 
     with open(_test_file, 'w') as _csv_file:
-        filewriter = csv.writer(
-            _csv_file,
-            delimiter=' ',
-            quotechar='"',
-            quoting=csv.QUOTE_MINIMAL,
-        )
+        filewriter = csv.writer(_csv_file,
+                                delimiter=' ',
+                                quotechar='"',
+                                quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Function'])
         filewriter.writerow(ROW_DATA[0])
         filewriter.writerow(ROW_DATA[1])
@@ -609,12 +605,10 @@ def test_csv_file_requirement():
     _test_file = TMP_DIR + '/test_inputs_requirements.csv'
 
     with open(_test_file, 'w') as _csv_file:
-        filewriter = csv.writer(
-            _csv_file,
-            delimiter=';',
-            quotechar='|',
-            quoting=csv.QUOTE_MINIMAL,
-        )
+        filewriter = csv.writer(_csv_file,
+                                delimiter=';',
+                                quotechar='|',
+                                quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Requirement'])
         filewriter.writerow(ROW_DATA[2])
 
@@ -627,12 +621,10 @@ def test_csv_file_hardware():
     _test_file = TMP_DIR + '/test_inputs_hardware.csv'
 
     with open(_test_file, 'w') as _csv_file:
-        filewriter = csv.writer(
-            _csv_file,
-            delimiter=';',
-            quotechar='|',
-            quoting=csv.QUOTE_MINIMAL,
-        )
+        filewriter = csv.writer(_csv_file,
+                                delimiter=';',
+                                quotechar='|',
+                                quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Hardware'])
         filewriter.writerow(ROW_DATA[3])
 
@@ -645,12 +637,10 @@ def test_csv_file_validation():
     _test_file = TMP_DIR + '/test_inputs_validation.csv'
 
     with open(_test_file, 'w') as _csv_file:
-        filewriter = csv.writer(
-            _csv_file,
-            delimiter=';',
-            quotechar='|',
-            quoting=csv.QUOTE_MINIMAL,
-        )
+        filewriter = csv.writer(_csv_file,
+                                delimiter=';',
+                                quotechar='|',
+                                quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Validation'])
         filewriter.writerow(ROW_DATA[4])
 

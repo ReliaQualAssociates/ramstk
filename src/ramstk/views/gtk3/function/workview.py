@@ -92,10 +92,13 @@ class GeneralData(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_function')
-
         pub.subscribe(self._do_clear_page, 'request_clear_workviews')
         pub.subscribe(self._do_load_page, 'selected_function')
+
+        pub.subscribe(self.on_edit, 'mvw_editing_function')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_function')
 
     def __make_ui(self) -> None:
         """
@@ -211,9 +214,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_function', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -224,9 +226,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_functions')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     # pylint: disable=unused-argument
     def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
@@ -332,22 +333,21 @@ class HazOps(RAMSTKWorkView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self.__do_set_parent, 'selected_function')
         pub.subscribe(self.__do_load_tree, 'succeed_calculate_hazard')
         pub.subscribe(self.__do_load_tree, 'succeed_delete_hazard')
-        pub.subscribe(self._do_load_tree, 'succeed_get_hazards_attributes')
         pub.subscribe(self.__do_load_tree, 'succeed_insert_hazard')
+        pub.subscribe(self.__do_set_parent, 'selected_function')
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_load_tree, 'succeed_get_hazards_attributes')
 
-        # These subscriptions cause the cursor to change to/from busy when
-        # certain actions are performed.
         pub.subscribe(self.do_set_cursor_active, 'succeed_calculate_hazard')
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_hazard')
         pub.subscribe(self.do_set_cursor_active, 'succeed_insert_hazard')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
-        pub.subscribe(self._do_set_cursor_active, 'fail_insert_hazard')
-        pub.subscribe(self._do_set_cursor_active, 'fail_delete_hazard')
-        pub.subscribe(self._do_set_cursor_active, 'fail_update_function')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_delete_hazard')
+        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_hazard')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_function')
 
     # pylint: disable=unused-argument
     def __do_load_tree(self, node_id: int) -> None:
@@ -530,23 +530,6 @@ class HazOps(RAMSTKWorkView):
 
             super().do_expand_tree()
 
-    # pylint: disable=unused-argument
-    def _do_set_cursor_active(self, error_message: str) -> None:
-        """
-        Returns the cursor to the active cursor on a fail message.
-
-        The meta-class do_set_active() method expects node_id as the data
-        package, but the fail messages carry an error message as the package.
-        This method simply calls the meta-class method in response to fail
-        messages.
-
-        :param str error_message: the error message associated with the fail
-            message.
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_active(node_id=self._record_id)
-
     def _get_cell_model(self, column: int) -> Gtk.TreeModel:
         """
         Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
@@ -573,7 +556,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_fha', node_id=self._parent_id)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -585,7 +568,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_delete_hazard',
                         function_id=self._parent_id,
                         node_id=self._record_id)
@@ -599,7 +582,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_insert_hazard', function_id=self._parent_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -611,7 +594,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_hazard', node_id=self._parent_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -623,7 +606,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_hazops')
 
     def _on_button_press(self, treeview: RAMSTKTreeView,
