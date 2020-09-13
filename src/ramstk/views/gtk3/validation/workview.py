@@ -762,6 +762,14 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        #// TODO: Store Validation task type as integer not string
+        #//
+        #// This will make this field consistent with others that hold
+        #// similar information.  Additionally, it will allow the use of the
+        #// RAMSTKBaseView.on_combo_changed() method in the Validation
+        #// workview.
+        #//
+        #// labels: type:enhancement, status:globalbacklog, module:validation
         _new_text = ''
         try:
             _key = self._dic_keys[self._lst_col_order[index]]
