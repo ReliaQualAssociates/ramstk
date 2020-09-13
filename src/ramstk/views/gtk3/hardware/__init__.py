@@ -1,14 +1,15 @@
 # pylint: disable=unused-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.function.__init__.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.hardware.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 revision package."""
 
 # RAMSTK Local Imports
-# from .listview import FunctionHardware as mtxFunctionHardware
+from .listview import HardwareRequirement as mtxHardwareRequirement
+from .listview import HardwareValidation as mtxHardwareValidation
 from .moduleview import ModuleView as mvwHardware
 from .workview import AssessmentInputs as wvwHardwareAI
 from .workview import AssessmentResults as wvwHardwareAR

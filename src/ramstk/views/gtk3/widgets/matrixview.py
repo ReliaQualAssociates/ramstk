@@ -112,11 +112,8 @@ class RAMSTKMatrixView(Gtk.TreeView):
         cell.set_property('wrap-width', _width)
 
     # pylint: disable=too-many-arguments
-    def do_edit_cell(self,
-                     cell: Gtk.CellRenderer,
-                     path: str,
-                     row: Gtk.TreeIter,
-                     position: int,
+    def do_edit_cell(self, cell: Gtk.CellRenderer, path: str,
+                     row: Gtk.TreeIter, position: int,
                      idx_column: str) -> None:
         """
         Respond to `changed` signals for the Gtk.CellRendererCombo()s.
@@ -165,11 +162,13 @@ class RAMSTKMatrixView(Gtk.TreeView):
         self._n_columns = len(self.matrix.columns)
         self._n_rows = len(self.matrix.index) - 1
 
-        _model = self.get_model()
-        try:
-            _model.clear()
-        except AttributeError:
-            _model = Gtk.ListStore()
+        for _column in self.get_columns():
+            self.remove_column(_column)
+
+        # Remove the old Gtk.TreeModel() and add a new Gtk.ListStore() with
+        # the correct number and type of columns for the matrix to be loaded.
+        self.set_model(None)
+        _model = Gtk.ListStore()
         _model.set_column_types([GObject.TYPE_INT, GObject.TYPE_STRING]
                                 + [GdkPixbuf.Pixbuf, GObject.TYPE_STRING]
                                 * (self._n_columns - 2)
@@ -233,11 +232,14 @@ class RAMSTKMatrixView(Gtk.TreeView):
                 self.matrix.loc[i, 'id'], "<span weight='bold'>"
                 + self.matrix.loc[i, 'display_name'] + "</span>"
             ]
+
+            #print(self.matrix.loc[i][2:])
             for j in list(self.matrix.loc[i][2:]):
                 _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self.dic_icons[['none', 'partial', 'complete'][j]], 22, 22)
                 _data.append(_pixbuf)
                 _data.append(['', 'Partial', 'Complete'][j])
+
             _data.append('')
 
             _model.append(_data)

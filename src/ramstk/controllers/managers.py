@@ -610,13 +610,18 @@ class RAMSTKMatrixManager():
         :return: None
         :rtype: None
         """
-        if matrix_type in self.dic_matrices:
-            for _col in matrix:
-                self.dic_matrices[matrix_type].iloc[_col[1], _col[0]] = _col[2]
-
-            pub.sendMessage('succeed_load_matrix',
-                            matrix_type=matrix_type,
-                            matrix=self.dic_matrices[matrix_type])
+        # If the matrix type exists in the dict of matrices, then build it.
+        # Otherwise just keep going.
+        try:
+            _n_columns = len(self.dic_matrices[matrix_type].columns)
+            if _n_columns > 2:
+                for _col in matrix:
+                    self.dic_matrices[matrix_type].iloc[_col[1], _col[0]] = _col[2]
+                pub.sendMessage('succeed_load_matrix',
+                                matrix_type=matrix_type,
+                                matrix=self.dic_matrices[matrix_type])
+        except KeyError:
+            pass
 
     def do_request_update(self, revision_id: int, matrix_type: str) -> None:
         """
