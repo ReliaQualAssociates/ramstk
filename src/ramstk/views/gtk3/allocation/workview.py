@@ -18,7 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKEntry,
-                                       RAMSTKTreeView, RAMSTKWorkView)
+                                       RAMSTKWorkView)
 
 
 class Allocation(RAMSTKWorkView):
@@ -101,6 +101,12 @@ class Allocation(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks = [self._do_request_calculate]
+        self._lst_icons = ['calculate']
+        self._lst_mnu_labels = [_("Calculate")]
+        self._lst_tooltips = [
+            _("Calculate the currently selected child hardware item.")
+        ]
 
         # Initialize private scalar attributes.
         self._allocation_tree: treelib.Tree = treelib.Tree()
@@ -184,12 +190,9 @@ class Allocation(RAMSTKWorkView):
         #  Scrollwindow --->RAMSTKFrame ---+
         #  w/ self.treeview
         # Make the buttons.
-        super().make_toolbuttons(
-            icons=['calculate'],
-            tooltips=[
-                _("Calculate the currently selected child hardware item.")
-            ],
-            callbacks=[self._do_request_calculate])
+        super().make_toolbuttons(icons=self._lst_icons,
+                                 tooltips=self._lst_tooltips,
+                                 callbacks=self._lst_callbacks)
         super().make_ui_with_treeview(
             title=[_("Allocation Goals and Method"),
                    _("Allocation Analysis")])
@@ -490,40 +493,6 @@ class Allocation(RAMSTKWorkView):
         :rtype: None
         """
         self._allocation_tree = dmtree
-
-    # pylint: disable=unused-argument
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the Allocation Work View RAMSTKTreeView().
-
-        :param __treeview: the Allocation TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the Gdk.Event() that called this method (the
-            important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backwards
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`.
-        :return: None
-        :rtype: None
-        """
-        # TMPLT: The cursor-changed signal will call the _on_change_row.  If
-        # TMPLT: _on_change_row is called from here, it gets called twice.
-        # TMPLT: Once on the currently selected row and once on the newly
-        # TMPLT: selected row.  Thus, we don't need (or want) to respond to
-        # TMPLT: left button clicks.
-        if event.button == 3:
-            super().on_button_press(event,
-                                    icons=['calculate'],
-                                    labels=[_("Calculate")],
-                                    callbacks=[self._do_request_calculate])
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """

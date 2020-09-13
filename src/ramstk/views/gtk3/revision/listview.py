@@ -17,8 +17,8 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models.programdb import RAMSTKFailureDefinition
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
-from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
+from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, Pango, _
+from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 def _do_make_column(header: str, index: int,
@@ -91,14 +91,22 @@ class FailureDefinition(RAMSTKListView):
         self._dic_key_index = {'definition_id': 0, 'definition': 2}
 
         # Initialize private list attributes.
-        self._lst_icons = ['add', 'remove']
-        self._lst_tooltips = [
-            _("Add a new Failure Definition."),
-            _("Remove the currently selected "
-              "Failure Definition.")
-        ]
         self._lst_callbacks = [
-            self._do_request_insert, self._do_request_delete
+            self._do_request_insert, self._do_request_delete,
+            self._do_request_update, self._do_request_update_all
+        ]
+        self._lst_icons = ['add', 'remove', 'save', 'save-all']
+        self._lst_mnu_labels = [
+            _("Add Definition"),
+            _("Delete Selected"),
+            _("Save Definition"),
+            _("Save All Definitions")
+        ]
+        self._lst_tooltips = [
+            _("Add a new failure definition."),
+            _("Delete the currently selected failure definition."),
+            _("Save changes to the currently selected failure definition"),
+            _("Save changes to all failure definitions.")
         ]
 
         # Initialize private scalar attributes.
@@ -290,38 +298,6 @@ class FailureDefinition(RAMSTKListView):
         pub.sendMessage('request_update_all_failure_definitions',
                         revision_id=self._revision_id)
 
-    # pylint: disable=unused-argument
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on Failure Definition List View RAMSTKTreeView().
-
-        :param __treeview: the Failure Definition ListView Gtk.TreeView().
-        :type __treeview: :class:`ramstk.gui.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backward
-                      * 8 =
-                      * 9 =
-        :type event: :py:class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(event,
-                                    icons=self._lst_icons,
-                                    tooltips=self._lst_tooltips,
-                                    callbacks=self._lst_callbacks)
-
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
         """
@@ -488,19 +464,31 @@ class UsageProfile(RAMSTKListView):
         self._dic_keys: Dict[str, int] = {}
 
         # Initialize private list attributes.
-        self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        self._lst_icons = ['insert_sibling', 'insert_child', 'remove']
-        self._lst_tooltips = [
-            _("Add a new Usage Profile entity at the same level "
-              "as the currently selected entity."),
-            _("Add a new Usage Profile entity one level below the "
-              "currently selected entity."),
-            _("Remove the currently selected entity from the Usage "
-              "Profile.")
-        ]
         self._lst_callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete
+            self._do_request_delete, self._do_request_update,
+            self._do_request_update_all
+        ]
+        self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        self._lst_icons = [
+            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+        ]
+        self._lst_mnu_labels = [
+            _("Add Sibling"),
+            _("Add Child"),
+            _("Delete Selected"),
+            _("Save Selected"),
+            _("Save Profile")
+        ]
+        self._lst_tooltips = [
+            _("Add a new usage profile entity at the same level "
+              "as the currently selected entity."),
+            _("Add a new usage profile entity one level below the "
+              "currently selected entity."),
+            _("Delete the currently selected entity from the usage profile."),
+            _("Save changes to the currently selected entity in the usage "
+              "profile."),
+            _("Save changes to all entities in the usage profile.")
         ]
 
         # Initialize private scalar attributes.
@@ -695,20 +683,9 @@ class UsageProfile(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        super().make_ui(
-            icons=['insert_sibling', 'insert_child', 'remove'],
-            tooltips=[
-                _("Add a new Usage Profile entity at the same level "
-                  "as the currently selected entity."),
-                _("Add a new Usage Profile entity one level below the "
-                  "currently selected entity."),
-                _("Remove the curently selected entity from the Usage "
-                  "Profile.")
-            ],
-            callbacks=[
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete
-            ])
+        super().make_ui(icons=self._lst_icons,
+                        tooltips=self._lst_tooltips,
+                        callbacks=self._lst_callbacks)
 
         self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
                                   + "</span>")
@@ -1065,50 +1042,6 @@ class UsageProfile(RAMSTKListView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_usage_profiles',
                         revision_id=self._revision_id)
-
-    # pylint: disable=unused-argument
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the Usage Profile List View RAMSTKTreeView().
-
-        :param __treeview: the Usage Profile ListView Gtk.TreeView().
-            Currently unused in this method.
-        :type __treeview: :class:`Gtk.TreeView`.
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backward
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(
-                event,
-                icons=['insert_sibling', 'insert_child', 'remove', 'save-all'],
-                labels=[
-                    _("Add Sibling Entity"),
-                    _("Add Child Entity"),
-                    _("Remove Selected Entity"),
-                    _("Save Usage Profile")
-                ],
-                callbacks=[
-                    self.do_request_insert_sibling,
-                    self.do_request_insert_child, self._do_request_delete,
-                    self._do_request_update_all
-                ])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:

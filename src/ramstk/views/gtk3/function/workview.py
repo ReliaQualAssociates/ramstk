@@ -17,8 +17,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKEntry,
-                                       RAMSTKTextView, RAMSTKTreeView,
-                                       RAMSTKWorkView)
+                                       RAMSTKTextView, RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -319,6 +318,28 @@ class HazOps(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[object] = [
+            self._do_request_insert, self._do_request_delete,
+            self._do_request_calculate, self._do_request_update,
+            self._do_request_update_all
+        ]
+        self._lst_icons: List[str] = [
+            'add', 'remove', 'calculate', 'save', 'save-all'
+        ]
+        self._lst_mnu_labels: List[str] = [
+            _("Add Hazard"),
+            _("Delete Selected"),
+            _("Calculate HazOp"),
+            _("Save Selected Hazard"),
+            _("Save All Hazards")
+        ]
+        self._lst_tooltips: List[str] = [
+            _("Add a new hazard to the HazOps analysis."),
+            _("Delete the selected hazard from the selected function."),
+            _("Calculate the HazOps analysis."),
+            _("Save changes to the selected hazard."),
+            _("Save changes to all hazards.")
+        ]
 
         # Initialize private scalar attributes.
 
@@ -402,18 +423,9 @@ class HazOps(RAMSTKWorkView):
         #                 |
         #  RAMSTKFrame ---+
         # Make the buttons.
-        super().make_toolbuttons(
-            icons=['calculate', 'add', 'remove'],
-            tooltips=[
-                _("Calculate the HazOps analysis."),
-                _("Add a hazard to the HazOps analysis."),
-                _("Remove the selected hazard and all associated data "
-                  "from the HazOps analysis.")
-            ],
-            callbacks=[
-                self._do_request_calculate, self._do_request_insert,
-                self._do_request_delete
-            ])
+        super().make_toolbuttons(icons=self._lst_icons,
+                                 tooltips=self._lst_tooltips,
+                                 callbacks=self._lst_callbacks)
         super().make_ui_with_treeview(title=["", _("HazOps Analysis")])
         super().make_tab_label(tablabel=_("HazOps"),
                                tooltip=_(
@@ -608,53 +620,6 @@ class HazOps(RAMSTKWorkView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_hazops')
-
-    def _on_button_press(self, treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the HazOps Work View RAMSTKTreeView().
-
-        :param treeview: the HazOps TreeView RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backwards
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`.
-        :return: None
-        :rtype: None
-        """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            RAMSTKWorkView.on_button_press(
-                self,
-                event,
-                icons=['add', 'remove', 'calculate'],
-                labels=[
-                    _("Add Hazard"),
-                    _("Remove Selected Hazard"),
-                    _("Calculate HazOp"),
-                ],
-                callbacks=[
-                    self._do_request_insert_sibling,
-                    self._do_request_delete,
-                    self._do_request_calculate,
-                ],
-            )
-
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

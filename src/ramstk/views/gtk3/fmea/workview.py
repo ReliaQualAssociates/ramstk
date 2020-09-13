@@ -20,11 +20,10 @@ from ramstk.configuration import (RAMSTK_CONTROL_TYPES, RAMSTK_CRITICALITY,
                                   RAMSTKUserConfiguration)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import boolean_to_integer
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, Gtk, _
+from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddControlAction
 from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKLabel,
-                                       RAMSTKTextView, RAMSTKTreeView,
-                                       RAMSTKWorkView)
+                                       RAMSTKTextView, RAMSTKWorkView)
 
 
 def do_request_insert(attributes: Dict[str, Any], level: str,
@@ -211,9 +210,10 @@ class FMEA(RAMSTKWorkView):
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
+        self._lst_callbacks: List[object] = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_calculate
+            self._do_request_delete, self._do_request_calculate,
+            self._do_request_update, self._do_request_update_all
         ]
         self._lst_fmea_data: List[Any] = [
             0, "Description", "Mission", "Mission Phase", "Effect, Local",
@@ -227,18 +227,28 @@ class FMEA(RAMSTKWorkView):
             "Action Closure Date", "RPN New Severity", "RPN New Occurrence",
             "RPN New Detection", 0, 0, 0, 0, "Remarks", None, ""
         ]
-        self._lst_icons = [
-            "insert_sibling", "insert_child", "remove", "calculate"
+        self._lst_icons: List[str] = [
+            "insert_sibling", "insert_child", "remove", "calculate", 'save',
+            'save-all'
         ]
         self._lst_missions: List[str] = [""]
-        self._lst_tooltips = [
+        self._lst_mnu_labels: List[str] = [
+            _("Add Sibling"),
+            _("Add Child"),
+            _("Delete Selected"),
+            _("Save Selected"),
+            _("Save (D)FME(C)A")
+        ]
+        self._lst_tooltips: List[str] = [
             _("Add a new (D)FME(C)A entity at the same level as the "
               "currently selected entity."),
             _("Add a new (D)FME(C)A entity one level below the currently "
               "selected entity."),
-            _("Remove the selected entity from the (D)FME(C)A."),
+            _("Delete the selected entity from the (D)FME(C)A."),
             _("Calculate the Task 102 criticality and/or risk priority "
-              "number (RPN).")
+              "number (RPN)."),
+            _("Save changes to the selected entity in the (D)FME(C)A."),
+            _("Save changes to all entities in the (D)FME(C)A.")
         ]
 
         # Initialize private scalar attributes.
@@ -290,7 +300,8 @@ class FMEA(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_action')
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_cause')
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_control')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_mechanism')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_mechanism')
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_mode')
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_fmea')
 
@@ -490,7 +501,7 @@ class FMEA(RAMSTKWorkView):
         self.txtItemCriticality.dic_handler_id['changed'] = 0
 
         self.treeview.dic_handler_id['button-press'] = self.treeview.connect(
-            "button_press_event", self._on_button_press)
+            "button_press_event", self.on_button_press)
 
         # CellRendererToggle columns.
         for _column in [30, 32, 38, 39, 40]:
@@ -1140,40 +1151,6 @@ class FMEA(RAMSTKWorkView):
                 _value = int(_item[1]['value'])
 
         return _value
-
-    # noinspection PyUnusedLocal
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the FMEA Work View RAMSTKTreeView().
-
-        :param __treeview: the FMEA TreeView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the Gdk.Event() that called this method (the
-            important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backwards
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`.
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            RAMSTKWorkView.on_button_press(self,
-                                           event,
-                                           icons=self._lst_icons,
-                                           tooltips=self._lst_tooltips,
-                                           callbacks=self._lst_callbacks)
 
     def _on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

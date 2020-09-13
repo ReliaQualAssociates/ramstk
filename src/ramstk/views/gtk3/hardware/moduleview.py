@@ -7,7 +7,7 @@
 """RAMSTK Hardware GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -16,9 +16,8 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKMessageDialog, RAMSTKModuleView,
-                                       RAMSTKTreeView)
+from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKModuleView
 
 
 class ModuleView(RAMSTKModuleView):
@@ -90,6 +89,41 @@ class ModuleView(RAMSTKModuleView):
         }
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[object] = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_insert_part, self._do_request_delete,
+            self._do_request_calculate_hardware,
+            self._do_request_calculate_all_hardware, self._do_request_update,
+            self._do_request_update_all
+        ]
+        self._lst_icons: List[str] = [
+            'insert_sibling', 'insert_child', 'insert_part', 'remove',
+            'calculate', 'calculate_all', 'save', 'save-all'
+        ]
+        self._lst_mnu_labels: List[str] = [
+            _("Add Sibling Assembly"),
+            _("Add Child Assembly"),
+            _("Add Piece Part"),
+            _("Delete Selected"),
+            _("Calculate the Selected"),
+            _("Calculate the System"),
+            _("Save Selected Hardware"),
+            _("Save All Hardware")
+        ]
+        self._lst_tooltips: List[str] = [
+            _("Adds a new Hardware assembly at the same "
+              "hierarchy level as the selected Hardware "
+              "(i.e., a sibling hardware item)."),
+            _("Adds a new Hardware assembly one level "
+              "subordinate to the selected Hardware (i.e., a "
+              "child hardware item)."),
+            _("Adds a new hardware component/piece-part "
+              "to the the selected hardware assembly."),
+            _("Remove the currently selected hardware item "
+              "and any children."),
+            _("Calculate the selected hardware item."),
+            _("Calculate the entire system.")
+        ]
 
         # Initialize private scalar attributes.
 
@@ -129,32 +163,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        super().make_ui(icons=[
-            'insert_sibling', 'insert_child', 'insert_part', 'remove',
-            'calculate', 'calculate_all'
-        ],
-                        tooltips=[
-                            _("Adds a new Hardware assembly at the same "
-                              "hierarchy level as the selected Hardware "
-                              "(i.e., a sibling hardware item)."),
-                            _("Adds a new Hardware assembly one level "
-                              "subordinate to the selected Hardware (i.e., a "
-                              "child hardware item)."),
-                            _("Adds a new hardware component/piece-part "
-                              "to the the selected hardware assembly."),
-                            _("Remove the currently selected hardware item "
-                              "and any children."),
-                            _("Calculate the selected hardware item."),
-                            _("Calculate the entire system.")
-                        ],
-                        callbacks=[
-                            self._do_request_insert_sibling,
-                            self._do_request_insert_child,
-                            self._do_request_insert_part,
-                            self._do_request_delete,
-                            self._do_request_calculate_hardware,
-                            self._do_request_calculate_all_hardware
-                        ])
+        super().make_ui(icons=self._lst_icons,
+                        tooltips=self._lst_tooltips,
+                        callbacks=self._lst_callbacks)
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """
@@ -269,61 +280,6 @@ class ModuleView(RAMSTKModuleView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-
-    def _on_button_press(self, treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the Hardware Module View RAMSTKTreeView().
-
-        :param treeview: the Hardware class Gtk.TreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the Gdk.Event() that called this method (the
-            important attribute is which mouse button was clicked).
-                * 1 = left
-                * 2 = scrollwheel
-                * 3 = right
-                * 4 = forward
-                * 5 = backward
-                * 8 =
-                * 9 =
-
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        treeview.handler_block(treeview.dic_handler_id['button-press'])
-
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(
-                event,
-                icons=[
-                    'insert_sibling', 'insert_child', 'insert_part',
-                    'calculate', 'calculate_all'
-                ],
-                labels=[
-                    _("Add Sibling Assembly"),
-                    _("Add Child Assembly"),
-                    _("Add Piece Part"),
-                    _("Calculate the Selected Hardware"),
-                    _("Calculate the System"),
-                    _("Remove Selected Hardware Item"),
-                    _("Save Selected Hardware Item"),
-                    _("Save All Hardware Items")
-                ],
-                callbacks=[
-                    self._do_request_insert_sibling,
-                    self._do_request_insert_child,
-                    self._do_request_insert_part,
-                    self._do_request_calculate_hardware,
-                    self._do_request_calculate_all_hardware,
-                    self._do_request_delete, self._do_request_update,
-                    self._do_request_update_all
-                ])
-        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:

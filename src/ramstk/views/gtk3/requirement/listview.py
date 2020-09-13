@@ -16,8 +16,8 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
+from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 class Stakeholders(RAMSTKListView):
@@ -87,16 +87,24 @@ class Stakeholders(RAMSTKListView):
         }
 
         # Initialize private list attributes.
-        self._lst_icons = ['add', 'remove', 'calculate']
+        self._lst_callbacks = [
+            self.do_request_insert_sibling, self._do_request_delete,
+            self._do_request_calculate, self._do_request_update,
+            self._do_request_update_all
+        ]
+        self._lst_icons = ['add', 'remove', 'calculate', 'save', 'save-all']
+        self._lst_mnu_labels = [
+            _("Add Input"),
+            _("Delete Selected Input"),
+            _("Calculate Inputs"),
+            _("Update Input"),
+            _("Update All Inputs")
+        ]
         self._lst_tooltips = [
             _("Add a new Stakeholder input."),
             _("Remove the currently selected "
               "Stakeholder input."),
             _("Calculate the Stakeholder improvement factors.")
-        ]
-        self._lst_callbacks = [
-            self.do_request_insert_sibling, self._do_request_delete,
-            self._do_request_calculate
         ]
 
         # Initialize private scalar attributes.
@@ -331,39 +339,6 @@ class Stakeholders(RAMSTKListView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_stakeholders')
-
-    # pylint: disable=unused-argument
-    def _on_button_press(self, __treeview: RAMSTKTreeView,
-                         event: Gdk.Event) -> None:
-        """
-        Handle mouse clicks on the Stakeholder List View RAMSTKTreeView().
-
-        :param __treeview: the Stakeholder ListView RAMSTKTreeView().
-        :type __treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backward
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
-        if event.button == 3:
-            super().on_button_press(event,
-                                    icons=self._lst_icons,
-                                    tooltips=self._lst_tooltips,
-                                    callbacks=self._lst_callbacks)
 
     def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
         """

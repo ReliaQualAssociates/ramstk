@@ -1092,21 +1092,11 @@ class AssessmentInputs(RAMSTKWorkView):
 
     def __set_properties(self) -> None:
         """
-        Set the properties of the General Data Work View and widgets.
+        Set the properties of the Assessment Inputs Work View and widgets.
 
         :return: None
         :rtype: None
         """
-
-        self._lst_widgets = [
-            self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
-            self.txtSpecifiedHtVar, self.txtSpecifiedMTBF,
-            self.txtSpecifiedMTBFVar, self.cmbFailureDist, self.txtFailScale,
-            self.txtFailShape, self.txtFailLocation, self.txtAddAdjFactor,
-            self.txtMultAdjFactor, self.cmbActiveEnviron, self.txtActiveTemp,
-            self.cmbDormantEnviron, self.txtDormantTemp, self.txtMissionTime,
-            self.txtDutyCycle
-        ]
         _lst_width = [
             200, 200, 125, 125, 125, 125, 200, 125, 125, 125, 125, 125, 200,
             125, 200, 125, 125, 125
