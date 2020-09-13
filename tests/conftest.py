@@ -570,7 +570,7 @@ def test_csv_file_function():
     """Create and populate a *.csv file for testing Function imports."""
     _test_file = TMP_DIR + '/test_inputs_functions.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file,
             delimiter=';',
@@ -608,7 +608,7 @@ def test_csv_file_requirement():
     """Create and populate a *.csv file for testing Requirement import mapping."""
     _test_file = TMP_DIR + '/test_inputs_requirements.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file,
             delimiter=';',
@@ -626,7 +626,7 @@ def test_csv_file_hardware():
     """Create and populate a *.csv file for testing Hardware import mapping."""
     _test_file = TMP_DIR + '/test_inputs_hardware.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file,
             delimiter=';',
@@ -644,7 +644,7 @@ def test_csv_file_validation():
     """Create and populate a *.csv file for testing Validation import mapping."""
     _test_file = TMP_DIR + '/test_inputs_validation.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file,
             delimiter=';',
