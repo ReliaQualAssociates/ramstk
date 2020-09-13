@@ -16,9 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models.programdb import (RAMSTKEnvironment,
-                                     RAMSTKFailureDefinition, RAMSTKMission,
-                                     RAMSTKMissionPhase)
+from ramstk.models.programdb import RAMSTKFailureDefinition
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKTreeView
 
@@ -215,7 +213,7 @@ class FailureDefinition(RAMSTKListView):
                     int(_attributes['definition_id']),
                     _attributes['definition']
                 ])
-            #// TODO: Handle exceptions in Revision module views.
+            #// TODO: Handle exceptions in Revision list views.
             #//
             #// Exceptions in the Revision module views are not being
             #// handled.  They need to be logged and, when appropriate,
@@ -733,8 +731,7 @@ class UsageProfile(RAMSTKListView):
             _("Displays the list of usage profiles for the selected "
               "revision."))
 
-    def _do_load_environment(self, entity: RAMSTKEnvironment, identifier: int,
-                             row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def _do_load_environment(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
         """
         Load an environmental condition into the RAMSTK TreeView.
 
@@ -745,18 +742,22 @@ class UsageProfile(RAMSTKListView):
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         :rtype: :class:`Gtk.TreeIter`
         """
+        _entity = kwargs.get('entity', None)
+        _identifier = kwargs.get('identifier', 0)
+        _row = kwargs.get('row', None)
+
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons['environment'], 22, 22)
         _attributes = [
-            _icon, entity.environment_id, entity.name, '', entity.units,
-            entity.minimum, entity.maximum, entity.mean, entity.variance,
-            identifier, 1, 'environment'
+            _icon, _entity.environment_id, _entity.name, '', _entity.units,
+            _entity.minimum, _entity.maximum, _entity.mean, _entity.variance,
+            _identifier, 1, 'environment'
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = _model.append(_row, _attributes)
         except TypeError:
             _user_msg = _("One or more Environments for revision ID {0:d} had "
                           "the wrong data type in it's data package and was "
@@ -765,7 +766,7 @@ class UsageProfile(RAMSTKListView):
             _debug_msg = (
                 "RAMSTK ERROR: Data for Environment ID {0:s} for Revision ID "
                 "{1:s} is the wrong type for one or more columns.".format(
-                    str(entity.environment_id), str(self._revision_id)))
+                    str(_entity.environment_id), str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -775,7 +776,7 @@ class UsageProfile(RAMSTKListView):
                           "the Usage Profile.".format(self._revision_id))
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Environment ID {0:s} for "
-                "Revision ID {1:s}.".format(str(entity.environment_id),
+                "Revision ID {1:s}.".format(str(_entity.environment_id),
                                             str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -783,8 +784,7 @@ class UsageProfile(RAMSTKListView):
 
         return _new_row
 
-    def _do_load_mission(self, entity: RAMSTKMission, identifier: int,
-                         row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def _do_load_mission(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
         """
         Load a mission into the RAMSTK TreeView.
 
@@ -794,25 +794,29 @@ class UsageProfile(RAMSTKListView):
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         :rtype: :class:`Gtk.Iter`
         """
+        _entity = kwargs.get('entity', None)
+        _identifier = kwargs.get('identifier', 0)
+        _row = kwargs.get('row', None)
+
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons['mission'], 22, 22)
         _attributes = [
-            _icon, entity.mission_id, entity.description, '',
-            entity.time_units, 0.0, entity.mission_time, 0.0, 0.0, identifier,
-            0, 'mission'
+            _icon, _entity.mission_id, _entity.description, '',
+            _entity.time_units, 0.0, _entity.mission_time, 0.0, 0.0,
+            _identifier, 0, 'mission'
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = _model.append(_row, _attributes)
         except TypeError:
             _user_msg = _("One or more Missions had the wrong data type in "
                           "it's data package and is not displayed in the "
                           "Usage Profile.")
             _debug_msg = (
                 "Data for Mission ID {0:s} for Revision ID {1:s} is the wrong "
-                "type for one or more columns.".format(str(entity.mission_id),
+                "type for one or more columns.".format(str(_entity.mission_id),
                                                        str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -822,7 +826,7 @@ class UsageProfile(RAMSTKListView):
                           "and is not displayed in the Usage Profile.")
             _debug_msg = (
                 "Too few fields for Mission ID {0:s} for Revision ID "
-                "{1:s}.".format(str(entity.mission_id),
+                "{1:s}.".format(str(_entity.mission_id),
                                 str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -830,8 +834,7 @@ class UsageProfile(RAMSTKListView):
 
         return _new_row
 
-    def _do_load_phase(self, entity: RAMSTKMissionPhase, identifier: int,
-                       row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def _do_load_phase(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
         """
         Load a mission phase into the RAMSTK TreeView.
 
@@ -842,18 +845,22 @@ class UsageProfile(RAMSTKListView):
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         :rtype: :class:`Gtk.Iter`
         """
+        _entity = kwargs.get('entity', None)
+        _identifier = kwargs.get('identifier', 0)
+        _row = kwargs.get('row', None)
+
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._dic_icons['phase'], 22, 22)
         _attributes = [
-            _icon, entity.phase_id, entity.name, entity.description, '',
-            entity.phase_start, entity.phase_end, 0.0, 0.0, identifier, 0,
+            _icon, _entity.phase_id, _entity.name, _entity.description, '',
+            _entity.phase_start, _entity.phase_end, 0.0, 0.0, _identifier, 0,
             'phase'
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = _model.append(_row, _attributes)
         except TypeError:
             _user_msg = _("One or more Mission Phases had the wrong data type "
                           "in it's data package and is not displayed in the "
@@ -861,7 +868,7 @@ class UsageProfile(RAMSTKListView):
             _debug_msg = (
                 "RAMSTK ERROR: Data for Mission Phase ID {0:s} for Revision "
                 "ID {1:s} is the wrong type for one or more columns.".format(
-                    str(entity.phase_id), str(self._revision_id)))
+                    str(_entity.phase_id), str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -871,7 +878,7 @@ class UsageProfile(RAMSTKListView):
                           "Profile.")
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s} for "
-                "Revision ID {1:s}.".format(str(entity.phase_id),
+                "Revision ID {1:s}.".format(str(_entity.phase_id),
                                             str(self._revision_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
@@ -903,13 +910,16 @@ class UsageProfile(RAMSTKListView):
 
         try:
             if _entity.is_mission:
-                _new_row = self._do_load_mission(_entity, _node.identifier,
-                                                 row)
+                _new_row = self._do_load_mission(entity=_entity,
+                                                 identifier=_node.identifier,
+                                                 row=row)
             elif _entity.is_phase:
-                _new_row = self._do_load_phase(_entity, _node.identifier, row)
+                _new_row = self._do_load_phase(entity=_entity,
+                                               identifier=_node.identifier,
+                                               row=row)
             elif _entity.is_env:
-                _new_row = self._do_load_environment(_entity, _node.identifier,
-                                                     row)
+                _new_row = self._do_load_environment(
+                    entity=_entity, identifier=_node.identifier, row=row)
         except AttributeError:
             _user_msg = _("One or more Usage Profile line items was "
                           "missing it's data package and is not "
