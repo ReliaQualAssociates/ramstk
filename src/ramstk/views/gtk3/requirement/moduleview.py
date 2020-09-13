@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Requirement GTK3 module view."""
 
 # Standard Library Imports
@@ -26,13 +26,29 @@ class ModuleView(RAMSTKModuleView):
     Display Requirement attribute data in the RAMSTK Module Book.
 
     The Requirement Module View displays all the Requirements associated with
-    the connected RAMSTK Program in a flat list.  All attributes of a
-    Requirement Module View are inherited.
+    the connected RAMSTK Program in a flat list.  The attributes of a
+    Requirement Module View are:
+
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
+
+    # Define private scalar class attributes.
+    _module: str = 'requirement'
+
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module='requirement') -> None:
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Requirement Module View.
 
@@ -41,7 +57,7 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
