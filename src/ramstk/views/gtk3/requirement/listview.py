@@ -25,8 +25,21 @@ class Stakeholders(RAMSTKListView):
     Display all the Stakeholder Inputs associated with the selected Revision.
 
     The Stakeholder List View displays all the stakeholder inputs associated
-    with the selected Stakeholder.  The attributes of the Stakeholder List View
+    with the selected Requriement.  The attributes of the Stakeholder List View
     are:
+
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
     # Define private dict class attributes.
     _dic_keys = {
@@ -47,10 +60,11 @@ class Stakeholders(RAMSTKListView):
     }
     _dic_column_keys = _dic_keys
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'stakeholder') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'stakeholder'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the List View for the Requirement package.
 
@@ -58,9 +72,9 @@ class Stakeholders(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param module: the name of the module.
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -101,10 +115,11 @@ class Stakeholders(RAMSTKListView):
             _("Update All Inputs")
         ]
         self._lst_tooltips = [
-            _("Add a new Stakeholder input."),
-            _("Remove the currently selected "
-              "Stakeholder input."),
-            _("Calculate the Stakeholder improvement factors.")
+            _("Add a new stakeholder input."),
+            _("Remove the currently selected stakeholder input."),
+            _("Calculate the stakeholder improvement factors."),
+            _("Save changes to the selected stakeholder input."),
+            _("Save change to all stakeholder inputs.")
         ]
 
         # Initialize private scalar attributes.
@@ -378,11 +393,26 @@ class RequirementHardware(RAMSTKListView):
     Display all the Requirement::Hardware matrix for the selected Revision.
 
     The attributes of the Requirement::Hardware Matrix View are:
+
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'rqrmnt_hrdwr') -> None:
+
+    # Define private scalar class attributes.
+    _module: str = 'rqrmnt_hrdwr'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the List View for the Requirement package.
 
@@ -392,11 +422,17 @@ class RequirementHardware(RAMSTKListView):
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param module: the name of the module.
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks = [self.do_request_update]
+        self._lst_icons = ['save']
+        self._lst_mnu_labels = [_("Save Matrix")]
+        self._lst_tooltips = [
+            _("Save changes to the Requirement::Hardware matrix.")
+        ]
 
         # Initialize private scalar attributes.
 
