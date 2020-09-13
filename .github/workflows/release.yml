@@ -29,7 +29,7 @@ jobs:
       - id: lrb
         uses: jessicalostinspace/github-action-get-regex-branch@v1.0.8
         with:
-          regex-string: 'release/v'
+          regex-string: 'release'
       - id: current_version
         uses: zwaldowski/match-label-action@v1
         with:
