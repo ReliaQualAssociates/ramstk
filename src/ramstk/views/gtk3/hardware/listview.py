@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Hardware GTK3 list view."""
+"""The RAMSTK Hardware List View Module."""
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration

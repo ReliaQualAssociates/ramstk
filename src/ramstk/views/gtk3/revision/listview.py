@@ -3,8 +3,8 @@
 #       ramstk.views.gtk3.revision.listview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Failure Definition List View Module."""
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Revision List View Module."""
 
 # Standard Library Imports
 from typing import Any, Dict
