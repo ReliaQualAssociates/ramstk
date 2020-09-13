@@ -8,7 +8,7 @@
 """RAMSTK Validation GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -99,10 +99,10 @@ class ModuleView(RAMSTKModuleView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert, 'succeed_insert_validation')
-        pub.subscribe(self._do_refresh_tree, 'wvw_editing_validation')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_validations')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_validation')
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_validation_2')
         pub.subscribe(self.do_set_cursor_active, 'succeed_insert_validation_2')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_validation')
@@ -130,35 +130,6 @@ class ModuleView(RAMSTKModuleView):
                             self.do_request_insert_sibling,
                             self._do_request_delete
                         ])
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
-        """
-        Update the module view RAMSTKTreeView() with attribute changes.
-
-        This method is called by other views when the Validation data model
-        attributes are edited via their gtk.Widgets().
-
-        The calling method is passes a dict containing the database field name
-        as key.  The dict's value is the data to write to the database.
-
-        `package` key: `package` value
-        database field name: database field new value
-
-        This method passes that `package` of data and a second dict
-        containing the database field name as key.  The value of this second
-        dict is the TreeModel's default column position for that data.
-
-        `keys` key: `keys` value
-        database field name: TreeModel column position
-
-        :param list node_id: unused in this method.
-        :param dict package: the key:value for the data being updated.
-        :return: None
-        :rtype: None
-        """
-        self.do_refresh_tree(package)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """

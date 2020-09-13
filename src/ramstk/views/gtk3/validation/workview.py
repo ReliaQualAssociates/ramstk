@@ -110,9 +110,6 @@ class GeneralData(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['calculate-all'] = \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
-            '/32x32/calculate-all.png'
 
         # Initialize private list attributes.
 
@@ -289,7 +286,7 @@ class GeneralData(RAMSTKWorkView):
         #                             |
         #  Gtk.Fixed --> RAMSTKFrame -+
         # Make the buttons.
-        super().make_toolbuttons(icons=['calculate', 'calculate-all'],
+        super().make_toolbuttons(icons=['calculate', 'calculate_all'],
                                  tooltips=[
                                      _("Calculate the expected cost and "
                                        "time of the selected Validation "
@@ -878,12 +875,6 @@ class BurndownCurve(RAMSTKWorkView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['calculate-all'] = \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
-            '/32x32/calculate-all.png'
-        self._dic_icons['plot'] = \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + \
-            '/32x32/charts.png'
 
         # Initialize private list attributes.
 

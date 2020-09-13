@@ -115,9 +115,9 @@ class Stakeholders(RAMSTKListView):
         pub.subscribe(self._do_load_requirements,
                       'succeed_retrieve_requirements')
         pub.subscribe(self._on_insert, 'succeed_insert_stakeholder')
-        pub.subscribe(self._do_refresh_tree, 'succeed_calculate_stakeholder')
 
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_stakeholders')
+        pub.subscribe(self.do_refresh_tree, 'succeed_calculate_stakeholder')
         pub.subscribe(self.do_set_cursor_active,
                       'succeed_delete_stakeholder_2')
         pub.subscribe(self.do_set_cursor_active,
@@ -255,23 +255,6 @@ class Stakeholders(RAMSTKListView):
                 _model.append([
                     str(tree.nodes[_node].data['requirement'].requirement_id)
                 ])
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_refresh_tree(self, node_id: int, package: Dict) -> None:
-        """
-        Refresh the Stakeholder tree whenever the Stakeholders are calculated.
-
-        :param int node_id: the ID of the Stakeholder input that is to be
-            refreshed.
-        :param dict package: the key:value for the data being updated.
-        :return: None
-        :rtype: None
-        """
-        self.do_refresh_tree(package)
-        pub.sendMessage('lvw_editing_stakeholder',
-                        node_id=[self._record_id, -1],
-                        package=package)
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """

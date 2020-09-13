@@ -7,7 +7,7 @@
 """RAMSTK Function GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -91,11 +91,10 @@ class ModuleView(RAMSTKModuleView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert, 'succeed_insert_function')
-        pub.subscribe(self._do_refresh_tree, 'wvw_editing_function')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_functions')
-        pub.subscribe(self.on_delete, 'succeed_delete_function')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_function')
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_function')
         pub.subscribe(self.do_set_cursor_active, 'succeed_insert_function')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
@@ -105,6 +104,7 @@ class ModuleView(RAMSTKModuleView):
                       'fail_insert_function')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_function')
+        pub.subscribe(self.on_delete, 'succeed_delete_function')
 
     def __make_ui(self) -> None:
         """
@@ -124,22 +124,6 @@ class ModuleView(RAMSTKModuleView):
                             self.do_request_insert_child,
                             self._do_request_delete
                         ])
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_refresh_tree(self, node_id: List, package: Dict) -> None:
-        """
-        Update the module view RAMSTKTreeView() with attribute changes.
-
-        This method is called by other views when the Function data model
-        attributes are edited via their gtk.Widgets().
-
-        :param list node_id: unused in this method.
-        :param dict package: the key:value for the data being updated.
-        :return: None
-        :rtype: None
-        """
-        self.do_refresh_tree(package)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """

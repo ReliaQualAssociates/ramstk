@@ -23,6 +23,7 @@ jobs:
 
   bump_semantic_version:
     name: Bump Semantic Version
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - id: lrb

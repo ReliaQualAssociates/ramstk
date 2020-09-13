@@ -98,7 +98,8 @@ class RAMSTKBaseView(Gtk.HBox):
         self.RAMSTK_USER_CONFIGURATION = configuration
         self.RAMSTK_LOGGER = logger
         self.RAMSTK_LOGGER.do_create_logger(
-            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL)
+            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False)
 
         # Initialize private dictionary attributes.
         self._dic_icons = self.__set_icons()
@@ -247,6 +248,9 @@ class RAMSTKBaseView(Gtk.HBox):
             'phase':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/phase.png',
+            'plot':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/charts.png',
             'question':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/question.png',
@@ -447,7 +451,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return _dialog
 
-    def do_refresh_tree(self, package: Dict[str, Any]) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
         """
         Update the module view RAMSTKTreeView() with attribute changes.
 
@@ -472,6 +478,7 @@ class RAMSTKBaseView(Gtk.HBox):
         Since both dicts contain the same key values, this method can refresh
         the proper column of the RAMSTKTreeView with the new data.
 
+        :param list node_id: unused in this method.
         :param dict package: the key:value for the data being updated.
         :return: None
         :rtype: None
@@ -1169,17 +1176,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
         :rtype: None
         """
         self.treeview.set_rubber_banding(True)
-
-    def do_request_export(self, module: str) -> None:
-        """
-        Launch the Export assistant.
-
-        :return: None
-        :rtype: None
-        """
-        # _tree = self._dtc_data_controller.request_do_select_all(
-        #     revision_id=self._revision_id)
-        # ExportModule(self._mdcRAMSTK, module, _tree)
 
     def make_ui(self, icons: List[str], tooltips: List[str],
                 callbacks: List[object]) -> None:

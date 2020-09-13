@@ -7,7 +7,7 @@
 """RAMSTK Hardware GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -103,11 +103,10 @@ class ModuleView(RAMSTKModuleView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
-        pub.subscribe(self._do_refresh_hardware_tree, 'wvw_editing_hardware')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
-        pub.subscribe(self.on_delete, 'succeed_delete_hardware')
         pub.subscribe(self.do_load_tree, 'succeed_retrieve_hardware')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_hardware')
         pub.subscribe(self.do_set_cursor_active,
                       'succeed_calculate_hardware_2')
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_hardware')
@@ -121,6 +120,7 @@ class ModuleView(RAMSTKModuleView):
                       'fail_insert_hardware')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_hardware')
+        pub.subscribe(self.on_delete, 'succeed_delete_hardware')
 
     def __make_ui(self) -> None:
         """
@@ -155,23 +155,6 @@ class ModuleView(RAMSTKModuleView):
                             self._do_request_calculate_hardware,
                             self._do_request_calculate_all_hardware
                         ])
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_refresh_hardware_tree(self, node_id: List, package: Dict) -> None:
-        """
-        Update the module view RAMSTKTreeView() with attribute changes.
-
-        This method is called by other views when the Hardware data model
-        attributes are edited via their gtk.Widgets().
-
-        :param list node_id: list of record IDs for the database tables
-            being displayed.
-        :param dict package: the key:value for the data being updated.
-        :return: None
-        :rtype: None
-        """
-        self.do_refresh_tree(package)
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """
