@@ -16,7 +16,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, Gtk, _
+from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKModuleView
 
 
@@ -157,6 +157,7 @@ class ModuleView(RAMSTKModuleView):
         _dialog.do_set_message_type('question')
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
+            super().do_set_cursor_busy()
             pub.sendMessage('request_delete_function', node_id=self._record_id)
 
         _dialog.do_destroy()
@@ -170,9 +171,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_function', node_id=self._record_id)
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """
@@ -183,9 +183,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(Gdk.CursorType.WATCH)
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_functions')
-        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
