@@ -3,11 +3,11 @@
 #       ramstk.views.gtk3.allocation.workview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 Function Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -28,13 +28,30 @@ class Allocation(RAMSTKWorkView):
     The Allocation Work View displays all the allocation data attributes for
     the selected hardware item. The attributes of an Allocation General Data
     Work View are:
+
+    :cvar dict _dic_keys: the index:database table field dictionary.
+    :cvar list _lst_labels: the list of label text.
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+
     """
-    # Define private class dict attributes.
+    # Define private dict class attributes.
     # TMPLT: For each editable WorkView widget, populate this dict with the
     # TMPLT: keymap for the widgets.  The key is the widget's index number on
     # TMPLT: the WorkView.  The value is the name of the key in the datamanager
     # TMPLT: attributes dict.
-    _dic_keys = {
+    _dic_keys: Dict[int, List[str]] = {
         0: 'allocation_method_id',
         1: 'goal_measure_id',
         2: ['reliability_goal', 'float'],
@@ -45,7 +62,7 @@ class Allocation(RAMSTKWorkView):
     # TMPLT: the keymap for the columns.  The key is the column number in the
     # TMPLT: RAMSTKTreeView. The value is the name of the key in the datamanger
     # TMPLT: attributes dict.
-    _dic_column_keys = {
+    _dic_column_keys: Dict[int, str] = {
         0: 'revision_id',
         1: 'hardware_id',
         3: 'included',
@@ -65,13 +82,13 @@ class Allocation(RAMSTKWorkView):
         21: 'availability_alloc'
     }
 
-    # Define private class list attributes.
+    # Define private list class attributes.
     # TMPLT: This list is the text of the labels that will be placed on the
     # TMPLT: WorkView.  They should be entered in the list in the order they
     # TMPLT: and their associated widget will appear on the form.  The list can
     # TMPLT: be sliced if there are multiple views over which the data is
     # TMPLT: displayed.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Select Allocation Method"),
         _("Select Goal Metric"),
         _("R(t) Goal"),
@@ -79,10 +96,11 @@ class Allocation(RAMSTKWorkView):
         _("MTBF Goal")
     ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'allocation') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'allocation'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Allocation Work View general data page.
 
@@ -91,7 +109,7 @@ class Allocation(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,

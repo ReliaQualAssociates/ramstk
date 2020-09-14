@@ -37,10 +37,24 @@ class GeneralData(RAMSTKWorkView):
     Display general Validation attribute data in the RAMSTK Work Book.
 
     The Validation Work View displays all the general data attributes for the
-    selected Validation. The attributes of a Validation General Data Work View are:
+    selected Validation. The attributes of a Validation General Data Work View
+    are:
 
     :cvar dict _dic_keys:
     :cvar list _lst_labels: the list of label text.
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
     # Define private dict class attributes.
     _dic_keys = {
@@ -90,10 +104,11 @@ class GeneralData(RAMSTKWorkView):
         _("Project Cost (95% Confidence):")
     ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'validation') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'validation'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Validation Work View general data page.
 
@@ -102,7 +117,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -198,7 +213,8 @@ class GeneralData(RAMSTKWorkView):
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_validation')
 
-        pub.subscribe(self.do_set_cursor_active, 'succeed_calculate_validation_task')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_calculate_validation_task')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_validation')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_calculate_validation_task')
@@ -852,22 +868,37 @@ class BurndownCurve(RAMSTKWorkView):
     line) for all tasks in the V&V plan as well as the actual progress
     (points).  The attributes of a Validation Burndown Curve View are:
 
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     :ivar int _record_id: the ID of the Validation task currently being
                               displayed.
     :ivar burndown: the RAMSTKPlot() widget to display the burndown curve of
                     program V&V task effort.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'validation') -> None:
+
+    # Define private scalar class attributes.
+    _module: str = 'validation'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Work View for the Validation package.
 
         :param configuration: the RAMSTK configuration instance.
         :type configuration: :class:`ramstk.RAMSTK.Configuration`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -1064,7 +1095,7 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_plan')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -1076,7 +1107,7 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_validation', node_id=self._record_id)
 
     @staticmethod
@@ -1089,5 +1120,5 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_validations')

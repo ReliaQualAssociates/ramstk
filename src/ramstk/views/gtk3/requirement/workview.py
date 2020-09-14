@@ -27,7 +27,21 @@ class GeneralData(RAMSTKWorkView):
     Display general Requirement attribute data in the RAMSTK Work Book.
 
     The Requirement Work View displays all the general data attributes for the
-    selected Requirement.
+    selected Requirement.  The attributes of a requirement Work View are:
+
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
     # Define private dict class attributes.
     _dic_keys = {
@@ -56,10 +70,11 @@ class GeneralData(RAMSTKWorkView):
         _("Validated Date:")
     ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'requirement') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'requirement'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Requirement Work View general data page.
 
@@ -68,7 +83,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -136,8 +151,7 @@ class GeneralData(RAMSTKWorkView):
         pub.subscribe(self._do_load_code, 'succeed_create_requirement_code')
 
         pub.subscribe(self.on_edit, 'mvw_editing_requirement')
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_create_code')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_create_code')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_create_requirement_code')
@@ -492,6 +506,19 @@ class RequirementAnalysis(RAMSTKWorkView):
     answers for the selected Requirement. The attributes of a Requirement
     Analysis Work View are:
 
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     :ivar list _lst_clear_a: the list of integers [0, 1] corresponding to the
         answers to the Clarity questions.
     :ivar list _lst_complete_a: the list of integers [0, 1] corresponding to
@@ -590,10 +617,11 @@ class RequirementAnalysis(RAMSTKWorkView):
           "the validation plan (e.g., DVP)")
     ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'requirement') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'requirement'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Requirements analysis work view.
 
@@ -602,7 +630,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,

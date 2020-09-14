@@ -78,7 +78,19 @@ class FMEA(RAMSTKWorkView):
     :cvar bool _pixbuf: indicates whether or icons are displayed in the
         RAMSTKTreeView.  If true, a GDKPixbuf column will be appended when
         creating the RAMSTKTreeView.  Default is True.
+    :cvar str _module: the name of the module.
 
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     :ivar dict _dic_missions: dict containing all this missions associated
         with the selected Revision.
     :ivar dict _dic_mission_phases: dict containing all the mission phases
@@ -183,12 +195,12 @@ class FMEA(RAMSTKWorkView):
     _lst_labels: List[str] = ["", "", _("Item Criticality:")]
 
     # Define private class scalar attributes.
+    _module: str = 'fmea'
     _pixbuf: bool = True
 
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'fmea') -> None:
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Work View for the FMEA.
 
@@ -196,10 +208,8 @@ class FMEA(RAMSTKWorkView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :keyword str module: the name of the RAMSTK workstream module this
-            workview is associated with.
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,

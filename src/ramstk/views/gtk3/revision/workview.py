@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Revision Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -29,21 +29,39 @@ class GeneralData(RAMSTKWorkView):
 
     :cvar dict _dic_keys: the index:database table field dictionary.
     :cvar list _lst_labels: the list of label text.
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
     # Define private dict class attributes.
-    _dic_keys = {
+    _dic_keys: Dict[int, List[str]] = {
         0: ['name', 'string'],
         1: ['remarks', 'string'],
         2: ['revision_code', 'string']
     }
 
     # Define private list class attributes.
-    _lst_labels = [_("Revision Code:"), _("Revision Name:"), _("Remarks:")]
+    _lst_labels: List[str] = [
+        _("Revision Code:"),
+        _("Revision Name:"),
+        _("Remarks:")
+    ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'revision') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'revision'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Revision Work View general data page.
 
@@ -52,7 +70,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,

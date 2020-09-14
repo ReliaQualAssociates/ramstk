@@ -26,10 +26,24 @@ class GeneralData(RAMSTKWorkView):
 
     The Function Work View displays all the general data attributes for the
     selected Function. The attributes of a Function General Data Work View are:
+
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
 
     # Define private dict class attributes.
-    _dic_keys = {
+    _dic_keys: Dict[int, List[str]] = {
         0: ['function_code', 'string'],
         1: ['name', 'string'],
         2: ['remarks', 'string'],
@@ -37,12 +51,17 @@ class GeneralData(RAMSTKWorkView):
     }
 
     # Define private list class attributes.
-    _lst_labels = [_("Function Code:"), _("Function Name:"), _("Remarks:"), '']
+    _lst_labels: List[str] = [
+        _("Function Code:"),
+        _("Function Name:"),
+        _("Remarks:"), ''
+    ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'function') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'function'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Function Work View general data page.
 
@@ -51,7 +70,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -272,10 +291,23 @@ class HazOps(RAMSTKWorkView):
     The WorkView displays all the attributes for the Hazards Analysis (HazOps).
     The attributes of a HazOps Work View are:
 
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     :ivar int _hazard_id: the ID of the currently selected hazard.
     """
     # Define private dict class attributes.
-    _dic_keys = {
+    _dic_keys: Dict[int, str] = {
         3: 'potential_hazard',
         4: 'potential_cause',
         5: 'assembly_effect',
@@ -294,12 +326,13 @@ class HazOps(RAMSTKWorkView):
     }
 
     # Define private list class attributes.
-    _lst_labels = []
+    _lst_labels: List[str] = []
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'hazard') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'hazard'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Work View for the HazOps.
 
@@ -308,7 +341,7 @@ class HazOps(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,

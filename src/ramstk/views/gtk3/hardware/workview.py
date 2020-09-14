@@ -78,7 +78,22 @@ class GeneralData(RAMSTKWorkView):
     Display general Hardware attribute data in the RAMSTK Work Book.
 
     The Hardware Work View displays all the general data attributes for the
-    selected Hardware.
+    selected Hardware.  The attributes of a Hardware General Data Work View
+    are:
+
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
     # Define private dict class attributes.
     _dic_keys = {
@@ -132,10 +147,11 @@ class GeneralData(RAMSTKWorkView):
         _("Remarks:"), ""
     ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'hardware') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'hardware'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Hardware Work View general data page.
 
@@ -144,7 +160,7 @@ class GeneralData(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -744,6 +760,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
     :cvar list _lst_labels: the text to use for the assessment input widget
         labels.
+    :cvar str _module: the name of the module.
 
     :ivar dict _dic_assessment_input: dictionary of component-specific
         AssessmentInputs classes.
@@ -751,7 +768,17 @@ class AssessmentInputs(RAMSTKWorkView):
         displayed.
     :ivar int _hazard_rate_method_id: the ID of the hazard rate method used for
         Hardware item.
-
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     :ivar cmbActiveEnviron: the operating environment for the hardware item.
     :ivar cmbDormantEnviron: the storage environment for the hardware item.
     :ivar cmbFailureDist: the statistical failure distribution of the hardware
@@ -826,10 +853,11 @@ class AssessmentInputs(RAMSTKWorkView):
         _("Duty Cycle:")
     ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'hardware') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'hardware'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Hardware assessment input view.
 
@@ -837,9 +865,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -1514,11 +1541,22 @@ class AssessmentResults(RAMSTKWorkView):
 
     :cvar list _lst_labels: the text to use for the reliability assessment
         results widget labels.
+    :cvar str _module: the name of the module.
 
     :ivar dict _dic_assessment_results: dictionary of component-specific
         AssessmentResults classes.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     :ivar int _hardware_id: the ID of the Hardware currently being displayed.
-
     :ivar txtActiveHt: displays the active failure intensity for the selected
         hardware item.
     :ivar txtActiveHtVar: displays the active failure intensity variance.
@@ -1571,7 +1609,7 @@ class AssessmentResults(RAMSTKWorkView):
         selected hardware item.
     """
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [
         _("Active Failure Intensity [\u03BB(t)]:"),
         _("Dormant \u03BB(t):"),
@@ -1590,6 +1628,9 @@ class AssessmentResults(RAMSTKWorkView):
         _("Cost/Hour:"),
         _("Total # of Parts:")
     ]
+
+    # Define private scalar class attributes.
+    _module: str = 'hardware'
 
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,

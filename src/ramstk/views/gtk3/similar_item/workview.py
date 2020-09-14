@@ -33,9 +33,21 @@ class SimilarItem(RAMSTKWorkView):
         a Topic 633 analysis.
     :cvar dict _dic_environment: the environments and associated index to use
         in a Topic 633 analysis.
+    :cvar str _module: the name of the module.
 
     :ivar dict _dic_hardware: dict to hold information from the Hardware
         module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     :ivar int _hardware_id: the Hardware ID of the selected Similar Item.
     :ivar int _method_id: the ID of the similar item method to use.
     :ivar cmbSimilarItemMethod: the method (Topic 633 or user-defined) to use
@@ -103,13 +115,14 @@ class SimilarItem(RAMSTKWorkView):
         6: 'Space, Flight'
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
     _lst_labels = [_("Select Method")]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'similar_item') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'similar_item'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Hardware Work View general data page.
 
@@ -118,7 +131,7 @@ class SimilarItem(RAMSTKWorkView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
