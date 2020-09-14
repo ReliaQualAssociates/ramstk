@@ -46,8 +46,7 @@ class ModuleView(RAMSTKModuleView):
     # Define private scalar class attributes.
     _module: str = 'requirement'
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
+    def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
         Initialize the Requirement Module View.
@@ -150,7 +149,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert, 'succeed_insert_requirement')
@@ -170,17 +169,6 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_requirement')
         pub.subscribe(self.on_delete, 'succeed_delete_requirement')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface for the Requirement work stream module.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
