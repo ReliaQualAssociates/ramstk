@@ -133,7 +133,10 @@ class FailureDefinition(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui(tab_label=("<span weight='bold'>"
+                                   + _("Failure\nDefinitions") + "</span>"),
+                        tooltip=_("Displays failure definitions for the "
+                                  "selected revision."))
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.__do_load_tree,
@@ -188,26 +191,6 @@ class FailureDefinition(RAMSTKListView):
         _cell.set_property('editable', True)
         self._lst_handler_id.append(
             _cell.connect('edited', self._on_cell_edit, 2))
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
-
-        self.tab_label.set_markup("<span weight='bold'>"
-                                  + _("Failure\nDefinitions") + "</span>")
-        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays failure definitions for the "
-              "selected revision."))
 
     def __set_properties(self) -> None:
         """
@@ -513,7 +496,10 @@ class UsageProfile(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui(
+            tab_label=("<span weight='bold'>" + _("Usage\nProfiles")
+                       + "</span>"),
+            tooltip=_("Displays usage profiles for the selected revision."))
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.__do_load_tree,
@@ -687,26 +673,6 @@ class UsageProfile(RAMSTKListView):
 
             _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
             self.treeview.append_column(_column)
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
-
-        self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
-                                  + "</span>")
-        self.tab_label.set_xalign(xalign=0.5)
-        self.tab_label.set_yalign(yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays usage profiles for the selected revision."))
 
     def __set_properties(self) -> None:
         """

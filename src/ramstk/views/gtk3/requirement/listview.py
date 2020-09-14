@@ -132,7 +132,11 @@ class Stakeholders(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui(
+            tab_label=("<span weight='bold'>" + _("Stakeholder\nInputs")
+                       + "</span>"),
+            tooltip=_(
+                "Displays stakeholder inputs for the selected revision."))
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_requirements,
@@ -153,25 +157,6 @@ class Stakeholders(RAMSTKListView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_stakeholder')
         pub.subscribe(self.on_delete, 'succeed_delete_stakeholder')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
-
-        self.tab_label.set_markup("<span weight='bold'>"
-                                  + _("Stakeholder\nInputs") + "</span>")
-        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays stakeholder inputs for the selected revision."))
 
     def __make_treeview(self) -> None:
         """
