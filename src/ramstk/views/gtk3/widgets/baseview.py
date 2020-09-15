@@ -10,7 +10,7 @@
 # Standard Library Imports
 import datetime
 import locale
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -80,10 +80,8 @@ class RAMSTKBaseView(Gtk.HBox):
     # Define public class scalar attributes.
     RAMSTK_USER_CONFIGURATION = None
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = '') -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the RAMSTK Base View.
 
@@ -118,9 +116,6 @@ class RAMSTKBaseView(Gtk.HBox):
         # Initialize private scalar attributes.
         self._mission_time: float = float(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
-        if module != '':
-            print("MODULE: {0:s}".format(module))
-            self._module: str = module
         self._notebook: Gtk.Notebook = Gtk.Notebook()
         self._parent_id: int = 0
         self._record_id: int = -1
@@ -433,6 +428,227 @@ class RAMSTKBaseView(Gtk.HBox):
                 "database was missing.").format(self._revision_id, _tag)
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+    def do_make_layout_lr(self) -> Gtk.HPaned:
+        """
+        Generates a view with the following layout:
+
+        +-----+---------------------------------------+
+        |  B  |      L. SIDE      |      R. SIDE      |
+        |  U  |                   |                   |
+        |  T  |                   |                   |
+        |  T  |                   |                   |
+        |  O  |                   |                   |
+        |  N  |                   |                   |
+        |  S  |                   |                   |
+        +-----+-------------------+-------------------+
+        self.make_toolbuttons -----+--> self
+                                   |
+                      _hpaned -----+
+
+        :return: _hpaned; the Gtk.HPaned() that creates the left and right
+            sides for further population.
+        :rtype: :class:`Gtk.Hpaned`
+        """
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
+                              tooltips=self._lst_tooltips,
+                              callbacks=self._lst_callbacks)
+
+        _hpaned: Gtk.HPaned = Gtk.HPaned()
+
+        self.pack_start(_hpaned, True, True, 0)
+
+        return _hpaned
+
+    def do_make_layout_lrr(self) -> Tuple[Gtk.HPaned, Gtk.VPaned]:
+        """
+        Creates a view with the following layout:
+
+        +-----+-------------------+-------------------+
+        |  B  |      L. SIDE      |      R. TOP       |
+        |  U  |                   |                   |
+        |  T  |                   |                   |
+        |  T  |                   +-------------------+
+        |  O  |                   |     R. BOTTOM     |
+        |  N  |                   |                   |
+        |  S  |                   |                   |
+        +-----+-------------------+-------------------+
+           self.make_toolbuttons  -----+--> self
+                                       |
+        _vpaned_right -----> _hpaned --+
+
+        :return: (_hpaned, _vpaned_right); the Gtk.HPaned() and Gtk.Vpaned()
+            that create the left and right sections for further population.
+        :rtype: tuple
+        """
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
+                              tooltips=self._lst_tooltips,
+                              callbacks=self._lst_callbacks)
+
+        _hpaned: Gtk.HPaned = Gtk.HPaned()
+        _vpaned_right: Gtk.VPaned = Gtk.VPaned()
+
+        _hpaned.pack2(_vpaned_right, True, True)
+
+        self.pack_start(_hpaned, True, True, 0)
+
+        return _hpaned, _vpaned_right
+
+    def do_make_layout_llr(self) -> Tuple[Gtk.HPaned, Gtk.VPaned]:
+        """
+        Creates a view with the following layout:
+
+        +-----+-------------------+-------------------+
+        |  B  |       L. TOP      |     R. SIDE       |
+        |  U  |                   |                   |
+        |  T  |                   |                   |
+        |  T  +-------------------+                   |
+        |  O  |     L. BOTTOM     |                   |
+        |  N  |                   |                   |
+        |  S  |                   |                   |
+        +-----+-------------------+-------------------+
+           self.make_toolbuttons  -----+--> self
+                                       |
+         _vpaned_left -----> _hpaned --+
+
+        :return: (_hpaned, _vpaned_left); the Gtk.HPaned() and Gtk.Vpaned()
+            that create the left and right sections for further population.
+        :rtype: tuple
+        """
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
+                              tooltips=self._lst_tooltips,
+                              callbacks=self._lst_callbacks)
+
+        _hpaned: Gtk.HPaned = Gtk.HPaned()
+        _vpaned_left: Gtk.VPaned = Gtk.VPaned()
+
+        _hpaned.pack1(_vpaned_left, True, True)
+
+        self.pack_start(_hpaned, True, True, 0)
+
+        return _hpaned, _vpaned_left
+
+    def do_make_layout_llrr(self) -> Tuple[Gtk.VPaned, Gtk.VPaned]:
+        """
+        Creates a view with the following layout:
+
+        +-----+-------------------+-------------------+
+        |  B  |       L. TOP      |      R. TOP       |
+        |  U  |                   |                   |
+        |  T  |                   |                   |
+        |  T  +-------------------+-------------------+
+        |  O  |     L. BOTTOM     |     R. BOTTOM     |
+        |  N  |                   |                   |
+        |  S  |                   |                   |
+        +-----+-------------------+-------------------+
+           self.make_toolbuttons  -----+--> self
+                                       |
+         _vpaned_left --+--> _hpaned --+
+                        |
+        _vpaned_right --+
+
+        :return: (_vpaned_left, _vpaned_right); the two Gtk.Vpaned()
+            that create the left and right sections for further population.
+        :rtype: tuple
+        """
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
+                              tooltips=self._lst_tooltips,
+                              callbacks=self._lst_callbacks)
+
+        _hpaned: Gtk.HPaned = Gtk.HPaned()
+        _vpaned_left: Gtk.VPaned = Gtk.VPaned()
+        _vpaned_right: Gtk.VPaned = Gtk.VPaned()
+
+        _hpaned.pack1(_vpaned_left, True, True)
+        _hpaned.pack2(_vpaned_right, True, True)
+
+        self.pack_start(_hpaned, True, True, 0)
+
+        return _vpaned_left, _vpaned_right
+
+    def do_make_panel_fixed(self, start: int, end: int) -> RAMSTKFrame:
+        """
+        Places the labels and widgets on a Gtk.Fixed() to embed in a panel.
+
+        :param int start: the starting index in the label and widget list
+            attributes for the first widget to display.
+        :param int end: the ending index in the label and widget list
+            attributes for the last widget to display.
+        :return: RAMSTKFrame holding the Gtk.Fixed() the widgets were placed
+            on.
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
+        """
+        _fixed: Gtk.Fixed = Gtk.Fixed()
+
+        _y_pos: int = 5
+        (_x_pos,
+         _lst_labels) = do_make_label_group(self._lst_labels[start:end],
+                                            x_pos=5,
+                                            y_pos=5)
+        for _idx, _label in enumerate(_lst_labels):
+            _fixed.put(_label, 5, _y_pos)
+
+            _minimum: Gtk.Requisition = self._lst_widgets[
+                _idx + start].get_preferred_size()[0]
+            if _minimum.height == 0:
+                _minimum.height = self._lst_widgets[_idx + start].height
+
+            # RAMSTKTextViews are placed inside a scrollwindow so that's
+            # what needs to be placed on the container.
+            if isinstance(self._lst_widgets[_idx + start], RAMSTKTextView):
+                _fixed.put(self._lst_widgets[_idx + start].scrollwindow,
+                           _x_pos + 5, _y_pos)
+                _y_pos += _minimum.height + 30
+            else:
+                _fixed.put(self._lst_widgets[_idx + start], _x_pos + 5, _y_pos)
+                _y_pos += _minimum.height + 5
+
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
+
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.add(_scrollwindow)
+
+        return _frame
+
+    def do_make_panel_plot(self) -> RAMSTKFrame:
+        """
+        Places the view's RAMSTKPlot() in a RAMSTKFrame() to embed in a panel.
+
+        :return: RAMSTKFrame holding the view's RAMSTKTreeView().
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
+        :return:
+        """
+        _frame = RAMSTKFrame()
+
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.plot)
+        _frame.add(_scrollwindow)
+
+        return _frame
+
+    def do_make_panel_treeview(self) -> RAMSTKFrame:
+        """
+        Places the view's RAMSTKTreeView() in a RAMSTKFrame() to embed.
+
+        :return: RAMSTKFrame holding the view's RAMSTKTreeView().
+        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
+        :return:
+        """
+        _frame = RAMSTKFrame()
+
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+        _frame.add(_scrollwindow)
+
+        return _frame
 
     def do_raise_dialog(self, **kwargs: Any) -> RAMSTKMessageDialog:
         """
@@ -1192,10 +1408,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
         used to display information on a workview.
     """
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = '') -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the RAMSTKWorkView meta-class.
 
@@ -1205,7 +1419,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
@@ -1260,37 +1474,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
                               tooltips=self._lst_tooltips,
                               callbacks=self._lst_callbacks)
 
-        _fixed = Gtk.Fixed()
-
-        _y_pos = 5
-        (_x_pos, _lst_labels) = do_make_label_group(
-            self._lst_labels[_index_start:_index_end], x_pos=5, y_pos=5)
-        for _idx, _label in enumerate(_lst_labels):
-            _minimum: Gtk.Requisition = self._lst_widgets[
-                _idx + _index_start].get_preferred_size()[0]
-            if _minimum.height == 0:
-                _minimum.height = self._lst_widgets[_idx + _index_start].height
-
-            _fixed.put(_label, 5, _y_pos)
-            # RAMSTKTextViews are placed inside a scrollwindow so that's
-            # what needs to be placed on the container.
-            if isinstance(self._lst_widgets[_idx + _index_start],
-                          RAMSTKTextView):
-                _fixed.put(self._lst_widgets[_idx + _index_start].scrollwindow,
-                           _x_pos + 5, _y_pos)
-                _y_pos += _minimum.height + 30
-            else:
-                _fixed.put(self._lst_widgets[_idx + _index_start], _x_pos + 5,
-                           _y_pos)
-                _y_pos += _minimum.height + 5
-
-        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
-
-        _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(title=self._lst_title[0])
-        _frame.add(_scrollwindow)
-
-        return _frame
+        return self.do_make_panel_fixed(_index_start, _index_end)
 
     def make_ui_with_treeview(self) -> None:
         """

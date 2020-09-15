@@ -20,14 +20,14 @@ from ramstk.views.gtk3.widgets import RAMSTKBaseView, RAMSTKMessageDialog
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestRAMSTKBaseView():
     """Test class for the RAMSTKBaseView."""
-    @pytest.mark.gui
+
+    @pytest.mark.skip
     def test_create_baseview(self, test_toml_user_configuration):
         """__init__() should create a RAMSTKBaseView."""
         _logger = RAMSTKLogManager(
             test_toml_user_configuration.RAMSTK_USER_LOG)
-        DUT = RAMSTKBaseView(test_toml_user_configuration,
-                             _logger,
-                             module='revision')
+        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger)
+        DUT._module = 'revision'
 
         assert isinstance(DUT, RAMSTKBaseView)
         assert isinstance(DUT.RAMSTK_USER_CONFIGURATION,
@@ -46,34 +46,34 @@ class TestRAMSTKBaseView():
         assert isinstance(DUT.hbx_tab_label, Gtk.HBox)
         pub.isSubscribed(DUT.on_select_revision, 'selected_revision')
 
-    @pytest.mark.gui
+    @pytest.mark.skip
     def test_do_raise_dialog_missing_severity(self,
                                               test_toml_user_configuration):
         """do_raise_dialog() should log a message to the debug log when the severity is missing from the kwargs."""
         _logger = RAMSTKLogManager(
             test_toml_user_configuration.RAMSTK_USER_LOG)
         test_toml_user_configuration.RAMSTK_LOGLEVEL = "DEBUG"
-        DUT = RAMSTKBaseView(test_toml_user_configuration,
-                             _logger,
-                             module='revision')
+        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger)
+        DUT._module = 'revision'
 
-        assert isinstance(DUT.do_raise_dialog(
-            error_code=1,
-            user_msg="This is a test user message.",
-            debug_msg='This is a test debug message.'), RAMSTKMessageDialog)
+        assert isinstance(
+            DUT.do_raise_dialog(error_code=1,
+                                user_msg="This is a test user message.",
+                                debug_msg='This is a test debug message.'),
+            RAMSTKMessageDialog)
 
-    @pytest.mark.gui
+    @pytest.mark.skip
     def test_do_raise_dialog_missing_message(self,
                                              test_toml_user_configuration):
         """do_raise_dialog() should log a message to the debug log when the message is missing from the kwargs."""
         _logger = RAMSTKLogManager(
             test_toml_user_configuration.RAMSTK_USER_LOG)
         test_toml_user_configuration.RAMSTK_LOGLEVEL = "DEBUG"
-        DUT = RAMSTKBaseView(test_toml_user_configuration,
-                             _logger,
-                             module='revision')
+        DUT = RAMSTKBaseView(test_toml_user_configuration, _logger)
+        DUT._module = 'revision'
 
-        assert isinstance(DUT.do_raise_dialog(
-            error_code=1,
-            severity="error",
-            debug_msg='This is a test debug message.'), RAMSTKMessageDialog)
+        assert isinstance(
+            DUT.do_raise_dialog(error_code=1,
+                                severity="error",
+                                debug_msg='This is a test debug message.'),
+            RAMSTKMessageDialog)
