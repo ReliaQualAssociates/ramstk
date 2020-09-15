@@ -18,7 +18,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKEntry,
-                                       RAMSTKWorkView)
+                                       RAMSTKFrame, RAMSTKWorkView)
 
 
 class Allocation(RAMSTKWorkView):
@@ -126,11 +126,25 @@ class Allocation(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [self._do_request_calculate]
-        self._lst_icons = ['calculate']
-        self._lst_mnu_labels = [_("Calculate")]
+        self._lst_callbacks = [
+            self._do_request_calculate,
+            self._do_request_update,
+            self._do_request_update_all,
+        ]
+        self._lst_icons = [
+            'calculate',
+            'save',
+            'save-all',
+        ]
+        self._lst_mnu_labels = [
+            _("Calculate"),
+            _("Save"),
+            _("Save All"),
+        ]
         self._lst_tooltips = [
-            _("Calculate the currently selected child hardware item.")
+            _("Calculate the currently selected Allocation line item."),
+            _("Save changes to the currently selected Allocation line item."),
+            _("Save changes to all Allocation line items."),
         ]
 
         # Initialize private scalar attributes.
@@ -159,7 +173,7 @@ class Allocation(RAMSTKWorkView):
         ]
 
         self.__set_properties()
-        super().make_ui_with_treeview()
+        self.__make_ui()
         self.__load_combobox()
         self.__set_callbacks()
 
@@ -190,6 +204,34 @@ class Allocation(RAMSTKWorkView):
             [[_("Equal Apportionment"), 0], [_("AGREE Apportionment"), 1],
              [_("ARINC Apportionment"), 2],
              [_("Feasibility of Objectives"), 3]])
+
+    def __make_ui(self) -> None:
+        """
+        Build the user interface for the Allocation tab.
+
+        :return: None
+        :rtype: None
+        """
+        _hpaned: Gtk.HPaned = super().do_make_layout_lr()
+
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=0,
+            end=len(self._lst_labels),
+        )
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[0],
+        )
+        _hpaned.pack1(_frame, True, True)
+
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(self.treeview)
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[1],
+        )
+        _hpaned.pack2(_frame, True, True)
+
+        self.show_all()
 
     def __set_callbacks(self) -> None:
         """

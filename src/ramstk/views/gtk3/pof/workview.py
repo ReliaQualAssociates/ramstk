@@ -19,7 +19,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddStressTestMethod
-from ramstk.views.gtk3.widgets import RAMSTKLabel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKFrame, RAMSTKLabel, RAMSTKWorkView
 
 
 class PoF(RAMSTKWorkView):
@@ -132,23 +132,34 @@ class PoF(RAMSTKWorkView):
 
         # Initialize private list attributes.
         self._lst_callbacks: List[object] = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete
+            self._do_request_insert_sibling,
+            self._do_request_insert_child,
+            self._do_request_delete,
+            self._do_request_update,
+            self._do_request_update_all,
         ]
         self._lst_icons: List[str] = [
-            'insert_sibling', 'insert_child', 'remove'
+            'insert_sibling',
+            'insert_child',
+            'remove',
+            'save',
+            'save-all',
         ]
         self._lst_mnu_labels: List[str] = [
             _("Insert Sibling"),
             _("Insert Child"),
-            _("Delete Selected")
+            _("Delete Selected"),
+            _("Save"),
+            _("Save All"),
         ]
         self._lst_tooltips: List[str] = [
             _("Add a new PoF entity at the same level as the "
               "currently selected entity."),
             _("Add a new PoF entity one level below the currently "
               "selected entity."),
-            _("Remove the selected entity from the PoF.")
+            _("Remove the selected entity from the PoF."),
+            _("Save changes to the currently selected PoF line."),
+            _("Save changes to all PoF lines."),
         ]
 
         # Initialize private scalar attributes.
@@ -159,7 +170,7 @@ class PoF(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.__set_properties()
-        super().make_ui_with_treeview()
+        self.__make_ui()
         self.__load_combobox()
         self.__set_callbacks()
 
@@ -231,6 +242,32 @@ class PoF(RAMSTKWorkView):
         self.__do_load_damage_models()
         self.__do_load_measureable_parameters()
         self.__do_load_load_history()
+
+    def __make_ui(self) -> None:
+        """
+        Build the user interface for the PoF tab.
+
+        :return: None
+        :rtype: None
+        """
+        super().make_tab_label(
+            tablabel=self._tablabel,
+            tooltip=self._tabtooltip,
+        )
+        super().make_toolbuttons(
+            icons=self._lst_icons,
+            tooltips=self._lst_tooltips,
+            callbacks=self._lst_callbacks,
+        )
+
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(self.treeview)
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[1],
+        )
+        self.pack_end(_frame, True, True, 0)
+
+        self.show_all()
 
     def __set_callbacks(self) -> None:
         """

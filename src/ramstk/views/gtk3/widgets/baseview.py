@@ -614,38 +614,42 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return _frame
 
-    def do_make_panel_plot(self) -> RAMSTKFrame:
+    @staticmethod
+    def do_make_panel_plot(plot: object) -> RAMSTKFrame:
         """
         Places the view's RAMSTKPlot() in a RAMSTKFrame() to embed in a panel.
 
+        :param plot: the plot to embed.
         :return: RAMSTKFrame holding the view's RAMSTKTreeView().
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
         :return:
         """
-        _frame = RAMSTKFrame()
+        _frame: RAMSTKFrame = RAMSTKFrame()
 
-        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
                                  Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.plot)
+        _scrollwindow.add(plot)
         _frame.add(_scrollwindow)
 
         return _frame
 
-    def do_make_panel_treeview(self) -> RAMSTKFrame:
+    @staticmethod
+    def do_make_panel_treeview(treeview: RAMSTKTreeView) -> RAMSTKFrame:
         """
         Places the view's RAMSTKTreeView() in a RAMSTKFrame() to embed.
 
+        :param treeview: the RAMSTKTreeView() to emded in the panel.
         :return: RAMSTKFrame holding the view's RAMSTKTreeView().
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
         :return:
         """
-        _frame = RAMSTKFrame()
+        _frame: RAMSTKFrame = RAMSTKFrame()
 
-        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
                                  Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
+        _scrollwindow.add(treeview)
         _frame.add(_scrollwindow)
 
         return _frame

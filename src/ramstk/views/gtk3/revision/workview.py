@@ -16,8 +16,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKTextView,
-                                       RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (RAMSTKEntry, RAMSTKFrame,
+                                       RAMSTKTextView, RAMSTKWorkView)
 
 
 class GeneralData(RAMSTKWorkView):
@@ -120,27 +120,29 @@ class GeneralData(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Create the Revision Work View general data page.
+        Build the user interface for the Revision General Data tab.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        #
-        # +-----+---------------------------------------+
-        # |  B  |                                       |
-        # |  U  |                                       |
-        # |  T  |                                       |
-        # |  T  |                WIDGETS                |
-        # |  O  |                                       |
-        # |  N  |                                       |
-        # |  S  |                                       |
-        # +-----+---------------------------------------+
-        #                           buttons ----+--> self
-        #                                       |
-        #      RAMSTKFixed ------>RAMSTKFrame --+
-        # Layout the widgets.
-        _frame = super().make_ui()
+        super().make_tab_label(
+            tablabel=self._tablabel,
+            tooltip=self._tabtooltip,
+        )
+        super().make_toolbuttons(
+            icons=self._lst_icons,
+            tooltips=self._lst_tooltips,
+            callbacks=self._lst_callbacks,
+        )
+
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=0,
+            end=len(self._lst_labels),
+        )
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[0],
+        )
         self.pack_end(_frame, True, True, 0)
 
         self.show_all()

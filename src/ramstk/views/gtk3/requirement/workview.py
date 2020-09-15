@@ -200,36 +200,40 @@ class GeneralData(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Create the Requirement Work View general data page.
+        Build the user interface for the Requirement General Data tab.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        #
-        # +-----+---------------------------------------+
-        # |  B  |                                       |
-        # |  U  |                                       |
-        # |  T  |                                       |
-        # |  T  |                WIDGETS                |
-        # |  O  |                                       |
-        # |  N  |                                       |
-        # |  S  |                                       |
-        # +-----+---------------------------------------+
-        #                           buttons ----+--> self
-        #                                       |
-        #      RAMSTKFixed ------>RAMSTKFrame --+
-        # Layout the widgets.
-        _frame = super().make_ui()
-        self.pack_end(_frame, True, True, 0)
+        super().make_tab_label(
+            tablabel=self._tablabel,
+            tooltip=self._tabtooltip,
+        )
+        super().make_toolbuttons(
+            icons=self._lst_icons,
+            tooltips=self._lst_tooltips,
+            callbacks=self._lst_callbacks,
+        )
+
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=0,
+            end=len(self._lst_labels),
+        )
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[0],
+        )
 
         # Add the validation date dialog launcher button to the right of the
         # validated date RAMSTKEntry.
-        _fixed = _frame.get_children()[0].get_children()[0].get_children()[0]
-        _entry = _fixed.get_children()[-1]
-        _x_pos = _fixed.child_get_property(_entry, 'x') + 205
-        _y_pos = _fixed.child_get_property(_entry, 'y')
+        _fixed: Gtk.Fixed = _frame.get_children()[0].get_children(
+        )[0].get_children()[0]
+        _entry: RAMSTKEntry = _fixed.get_children()[-1]
+        _x_pos: int = _fixed.child_get_property(_entry, 'x') + 205
+        _y_pos: int = _fixed.child_get_property(_entry, 'y')
         _fixed.put(self.btnValidateDate, _x_pos, _y_pos)
+
+        self.pack_end(_frame, True, True, 0)
 
         self.show_all()
 
@@ -615,6 +619,8 @@ class RequirementAnalysis(RAMSTKWorkView):
 
     # Define private scalar class attributes.
     _module: str = 'requirement'
+    _tablabel: str = "<span weight='bold'>" + _("Analysis") + "</span>"
+    _tabtooltip: str = _("Analyzes the selected requirement.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -636,6 +642,10 @@ class RequirementAnalysis(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[object] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
+
         self._lst_clear_a: List = []
         self._lst_complete_a: List = []
         self._lst_consistent_a: List = []
@@ -707,61 +717,17 @@ class RequirementAnalysis(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Build the Requirement Analysis Work View page.
+        Build the user interface for the Requirement Analysis tab.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        #
-        # +-----+--------------------+-------------------+
-        # |  B  |                    |                   |
-        # |  U  |                    |                   |
-        # |  T  |                    |                   |
-        # |  T  +--------------------+-------------------+
-        # |  O  |                    |                   |
-        # |  N  |                    |                   |
-        # |  S  |                    |                   |
-        # +-----+--------------------+-------------------+
-        #                                          buttons --+--> self
-        #                                                    |
-        #    RAMSTKFrame --+-->Gtk.VPaned --+-->Gtk.HPaned --+
-        #                  |                |
-        #    RAMSTKFrame --+                |
-        #                                   |
-        #    RAMSTKFrame --+-->Gtk.VPaned --+
-        #                  |
-        #    RAMSTKFrame --+
-        # Make the buttons.
-        super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
+        _vpaned_left, _vpaned_right = super().do_make_layout_llrr()
 
-        _hpaned = Gtk.HPaned()
-
-        # Create quadrant #1 (upper left) for determining if the
-        # requirement is clear.
-        _vpaned = Gtk.VPaned()
-        _hpaned.pack1(_vpaned, False)
-
-        _vpaned.pack1(self.__make_ui_clear(), False)
-        _vpaned.pack2(self.__make_ui_complete(), False)
-
-        # Create quadrant #2 (upper right) for determining if the
-        # requirement is consistent.
-        _vpaned = Gtk.VPaned()
-        _hpaned.pack2(_vpaned, False)
-
-        _vpaned.pack1(self.__make_ui_consistent(), False)
-        _vpaned.pack2(self.__make_ui_verifiable(), False)
-
-        self.pack_start(_hpaned, True, True, 0)
-
-        _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _("Analysis") + "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.set_tooltip_text(_("Analyzes the selected requirement."))
-        _label.show_all()
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
+        _vpaned_left.pack1(self.__make_ui_clear(), False)
+        _vpaned_left.pack2(self.__make_ui_complete(), False)
+        _vpaned_right.pack1(self.__make_ui_consistent(), False)
+        _vpaned_right.pack2(self.__make_ui_verifiable(), False)
 
         self.show_all()
 
@@ -772,14 +738,11 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: _frame; the RAMSTK Frame() containing the clarity questions.
         :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
         """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwClear)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True, title=_("Clarity of Requirement"))
-        _frame.add(_scrollwindow)
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(self.tvwClear, )
+        _frame.do_set_properties(
+            bold=True,
+            title=_("Clarity of Requirement"),
+        )
 
         (_model, _column) = self.__make_treeview(0)
         self.tvwClear.set_model(_model)
@@ -800,15 +763,12 @@ class RequirementAnalysis(RAMSTKWorkView):
                          questions.
         :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
         """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwComplete)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True,
-                                 title=_("Completeness of Requirement"))
-        _frame.add(_scrollwindow)
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(
+            self.tvwComplete, )
+        _frame.do_set_properties(
+            bold=True,
+            title=_("Completeness of Requirement"),
+        )
 
         (_model, _column) = self.__make_treeview(1)
         self.tvwComplete.set_model(_model)
@@ -829,15 +789,12 @@ class RequirementAnalysis(RAMSTKWorkView):
                          questions.
         :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
         """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwConsistent)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True,
-                                 title=_("Consistency of Requirement"))
-        _frame.add(_scrollwindow)
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(
+            self.tvwConsistent, )
+        _frame.do_set_properties(
+            bold=True,
+            title=_("Consistency of Requirement"),
+        )
 
         (_model, _column) = self.__make_treeview(2)
         self.tvwConsistent.set_model(_model)
@@ -858,15 +815,12 @@ class RequirementAnalysis(RAMSTKWorkView):
                          questions.
         :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
         """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwVerifiable)
-
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(bold=True,
-                                 title=_("Verifiability of Requirement"))
-        _frame.add(_scrollwindow)
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(
+            self.tvwVerifiable, )
+        _frame.do_set_properties(
+            bold=True,
+            title=_("Verifiability of Requirement"),
+        )
 
         (_model, _column) = self.__make_treeview(3)
         self.tvwVerifiable.set_model(_model)

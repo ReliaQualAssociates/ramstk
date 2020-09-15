@@ -19,7 +19,8 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import EditFunction
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKFrame,
+                                       RAMSTKWorkView)
 
 
 class SimilarItem(RAMSTKWorkView):
@@ -116,10 +117,12 @@ class SimilarItem(RAMSTKWorkView):
     }
 
     # Define private list class attributes.
-    _lst_labels: List[str] = [_("Select Method")]
+    _lst_labels: List[str] = [
+        _("Select Method"),
+    ]
     _lst_title: List[str] = [
         _("Similar Item Method"),
-        _("Similar Item Analysis")
+        _("Similar Item Analysis"),
     ]
 
     # Define private scalar class attributes.
@@ -186,7 +189,7 @@ class SimilarItem(RAMSTKWorkView):
         self._lst_widgets = [self.cmbSimilarItemMethod]
 
         self.__set_properties()
-        super().make_ui_with_treeview()
+        self.__make_ui()
         self.__set_callbacks()
         self.__load_combobox()
 
@@ -251,6 +254,34 @@ class SimilarItem(RAMSTKWorkView):
         # Load the method combobox.
         self.cmbSimilarItemMethod.do_load_combo(
             [[_("Topic 633"), 0], [_("User-Defined"), 1]], signal='changed')
+
+    def __make_ui(self) -> None:
+        """
+        Build the user interface for the Similar Item tab.
+
+        :return: None
+        :rtype: None
+        """
+        _hpaned: Gtk.HPaned = super().do_make_layout_lr()
+
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=0,
+            end=len(self._lst_labels),
+        )
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[0],
+        )
+        _hpaned.pack1(_frame, True, True)
+
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(self.treeview)
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[1],
+        )
+        _hpaned.pack2(_frame, True, True)
+
+        self.show_all()
 
     def __set_callbacks(self) -> None:
         """

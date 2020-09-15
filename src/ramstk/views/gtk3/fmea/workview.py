@@ -22,8 +22,9 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddControlAction
-from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKLabel,
-                                       RAMSTKTextView, RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton, RAMSTKFrame, RAMSTKLabel, RAMSTKTextView, RAMSTKWorkView
+)
 
 
 def do_request_insert(attributes: Dict[str, Any], level: str,
@@ -463,35 +464,38 @@ class FMEA(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Make the FMEA Work View page.
+        Build the user interface for the FMEA tab.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        #
-        # +-----+-----+---------------------------------+
-        # |  B  |  W  |                                 |
-        # |  U  |  I  |                                 |
-        # |  T  |  D  |                                 |
-        # |  T  |  G  |          SPREAD SHEET           |
-        # |  O  |  E  |                                 |
-        # |  N  |  T  |                                 |
-        # |  S  |  S  |                                 |
-        # +-----+-----+---------------------------------+
-        #                                    buttons -----+--> self
-        #                                                 |
-        #  RAMSTKFixed ---+-->Gtk.VPaned -->RAMSTKFrame --+
-        #                 |
-        #  RAMSTKFrame ---+
-        super().make_ui_with_treeview()
+        _hpaned: Gtk.HPaned = super().do_make_layout_lr()
+
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=0,
+            end=len(self._lst_labels),
+        )
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[0],
+        )
 
         # Move the item criticality RAMSTKTextView() below it's label.
-        _fixed = self.get_children()[1].get_children()[0].get_child()
-        _label = _fixed.get_children()[-1]
-        _x_pos = _fixed.child_get_property(_label, 'x')
-        _y_pos = _fixed.child_get_property(_label, 'y') + 25
-        _fixed.put(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
+        _fixed: Gtk.Fixed = _frame.get_children()[0].get_children(
+        )[0].get_child()
+        _label: RAMSTKLabel = _fixed.get_children()[-2]
+        _x_pos: int = _fixed.child_get_property(_label, 'x')
+        _y_pos: int = _fixed.child_get_property(_label, 'y') + 25
+        _fixed.move(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
+
+        _hpaned.pack1(_frame, True, True)
+
+        _frame: RAMSTKFrame = super().do_make_panel_treeview(self.treeview)
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[1],
+        )
+        _hpaned.pack2(_frame, True, True)
 
         self.show_all()
 

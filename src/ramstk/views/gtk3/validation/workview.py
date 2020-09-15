@@ -26,8 +26,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKPlot, RAMSTKSpinButton, RAMSTKTextView, RAMSTKWorkView,
-    do_make_buttonbox)
+    RAMSTKPlot, RAMSTKSpinButton, RAMSTKTextView, RAMSTKWorkView)
 
 register_matplotlib_converters()
 
@@ -103,7 +102,11 @@ class GeneralData(RAMSTKWorkView):
         _("Project Time (95% Confidence):"),
         _("Project Cost (95% Confidence):")
     ]
-    _lst_title: List[str] = [_("Task Description"), ""]
+    _lst_title: List[str] = [
+        _("Task Description"),
+        _("Task Effort"),
+        _("Project Effort"),
+    ]
 
     # Define private scalar class attributes.
     _module: str = 'validation'
@@ -295,41 +298,24 @@ class GeneralData(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Create the Validation Work View general data page.
+        Build the user interface for the Validation General Data tab.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        # +-----+-------------------+-------------------+
-        # |  B  |      L. SIDE      |      R. TOP       |
-        # |  U  |                   |                   |
-        # |  T  |                   |                   |
-        # |  T  |                   +-------------------+
-        # |  O  |                   |     R. BOTTOM     |
-        # |  N  |                   |                   |
-        # |  S  |                   |                   |
-        # +-----+-------------------+-------------------+
-        #                                                     buttons -+-> self
-        #                                                              |
-        #                  Gtk.Fixed --> RAMSTKFrame -+-> Gtk.HPaned --+
-        #                                             |
-        #  Gtk.Fixed --> RAMSTKFrame -+-> Gtk.VPaned -+
-        #                             |
-        #  Gtk.Fixed --> RAMSTKFrame -+
-        # Build out the containers for the page.
-        _hpaned: Gtk.HPaned = Gtk.HPaned()
-        self.pack_start(_hpaned, True, True, 0)
+        _hpaned, _vpaned_right = super().do_make_layout_lrr()
 
         # Place the LEFT side widgets.
-        _frame: RAMSTKFrame = super().make_ui(end=13)
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=0,
+            end=13,
+        )
+        _frame.do_set_properties(bold=True, title=self._lst_title[0])
         _hpaned.pack1(_frame, True, True)
 
         # Place the RIGHT side widgets.
-        _vpaned: Gtk.VPaned = Gtk.VPaned()
-        _hpaned.pack2(_vpaned, True, True)
-        _vpaned.pack1(self.__make_ui_top_right(), True, True)
-        _vpaned.pack2(self.__make_ui_bottom_right(), True, True)
+        _vpaned_right.pack1(self.__make_ui_top_right(), True, True)
+        _vpaned_right.pack2(self.__make_ui_bottom_right(), True, True)
 
         self.show_all()
 
@@ -341,13 +327,21 @@ class GeneralData(RAMSTKWorkView):
             loaded.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
         """
-        _frame = super().make_ui(start=21, title=[_("Project Effort"), ""])
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=21,
+            end=len(self._lst_labels),
+        )
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[1],
+        )
 
         # We add the project time and project time UL to the same y position
         # as the project time LL widget.
-        _fixed = _frame.get_children()[0].get_children()[0].get_children()[0]
-        _time_entry = _fixed.get_children()[1]
-        _cost_entry = _fixed.get_children()[-1]
+        _fixed: Gtk.Fixed = _frame.get_children()[0].get_children(
+        )[0].get_children()[0]
+        _time_entry: RAMSTKEntry = _fixed.get_children()[1]
+        _cost_entry: RAMSTKEntry = _fixed.get_children()[-1]
         _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
         _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
         _fixed.put(self.txtProjectTime, _x_pos + 175, _y_pos)
@@ -370,24 +364,30 @@ class GeneralData(RAMSTKWorkView):
             loaded.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
         """
-        _frame = super().make_ui(start=13,
-                                 end=21,
-                                 title=[_("Task Effort"), ""])
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=13,
+            end=21,
+        )
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[2],
+        )
 
         # We add the mean time and mean time UL to the same y position as
         # the mean time LL widget.
-        _fixed = _frame.get_children()[0].get_children()[0].get_children()[0]
-        _time_entry = _fixed.get_children()[7]
-        _cost_entry = _fixed.get_children()[-1]
-        _x_pos = _fixed.child_get_property(_time_entry, 'x')
-        _y_pos = _fixed.child_get_property(_time_entry, 'y')
+        _fixed: Gtk.Fixed = _frame.get_children()[0].get_children(
+        )[0].get_children()[0]
+        _time_entry: RAMSTKEntry = _fixed.get_children()[7]
+        _cost_entry: RAMSTKEntry = _fixed.get_children()[-1]
+        _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
+        _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
         _fixed.put(self.txtMeanTime, _x_pos + 175, _y_pos)
         _fixed.put(self.txtMeanTimeUL, _x_pos + 350, _y_pos)
 
         # We add the mean cost and mean cost UL to the same y position as
         # the mean cost LL widget.
-        _x_pos = _fixed.child_get_property(_cost_entry, 'x')
-        _y_pos = _fixed.child_get_property(_cost_entry, 'y')
+        _x_pos: int = _fixed.child_get_property(_cost_entry, 'x')
+        _y_pos: int = _fixed.child_get_property(_cost_entry, 'y')
         _fixed.put(self.txtMeanCost, _x_pos + 195, _y_pos)
         _fixed.put(self.txtMeanCostUL, _x_pos + 390, _y_pos)
 
@@ -883,8 +883,18 @@ class BurndownCurve(RAMSTKWorkView):
                     program V&V task effort.
     """
 
+    # Define private list class attributes.
+    _lst_title = [
+        _("Program Validation Effort"),
+    ]
+
     # Define private scalar class attributes.
     _module: str = 'validation'
+    _tablabel = "<span weight='bold'>" + _(
+        "Program\nValidation\nProgress") + "</span>"
+    _tabtooltip = _(
+        "Shows a plot of the total expected time to complete all V&amp;V "
+        "tasks and the current progress.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -904,6 +914,17 @@ class BurndownCurve(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_calculate_all,
+        ]
+        self._lst_icons = [
+            'chart',
+        ]
+        self._lst_tooltips = [
+            _("Plot the overall Validation program plan "
+              "(i.e., all Validation tasks) and current "
+              "status."),
+        ]
 
         # Initialize private scalar attributes.
 
@@ -928,44 +949,27 @@ class BurndownCurve(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Make the Validation class Gtk.Notebook() burndown curve page.
+        Build the user interface for the Validation Status tab.
 
         :return: None
         :rtype: None
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            do_make_buttonbox(self,
-                              icons=['chart'],
-                              tooltips=[
-                                  _("Plot the overall Validation program plan "
-                                    "(i.e., all Validation tasks) and current "
-                                    "status.")
-                              ],
-                              callbacks=[self._do_request_calculate_all]))
-        self.pack_start(_scrolledwindow, False, False, 0)
+        super().make_tab_label(
+            tablabel=self._tablabel,
+            tooltip=self._tabtooltip,
+        )
+        super().make_toolbuttons(
+            icons=self._lst_icons,
+            tooltips=self._lst_tooltips,
+            callbacks=self._lst_callbacks,
+        )
 
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Program Validation Effort"))
-        _frame.add(self.burndown.plot)
-        _frame.show_all()
-
+        _frame: RAMSTKFrame = super().do_make_panel_plot(self.burndown.plot)
+        _frame.do_set_properties(
+            bold=True,
+            title=self._lst_title[0],
+        )
         self.pack_start(_frame, True, True, 0)
-
-        # Insert the tab.
-        _label = RAMSTKLabel(
-            _("<span weight='bold'>" + _("Program\nValidation\nProgress")
-              + "</span>"))
-        _label.do_set_properties(height=30,
-                                 width=-1,
-                                 justify=Gtk.Justification.CENTER,
-                                 tooltip=_("Shows a plot of the total "
-                                           "expected time to complete all "
-                                           "V&amp;V tasks and the current "
-                                           "progress."))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
 
@@ -1081,8 +1085,7 @@ class BurndownCurve(RAMSTKWorkView):
              _("Minimum Expected Time"), _("Actual Remaining Time")))
         self.burndown.figure.canvas.draw()
 
-    @staticmethod
-    def _do_request_calculate_all(__button: Gtk.ToolButton) -> None:
+    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
         """
         Request to calculate program cost and time.
 

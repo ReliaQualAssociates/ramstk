@@ -297,54 +297,25 @@ class GeneralData(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Create the Hardware WorkView general data page.
+        Build the user interface for the Hardware General Data tab.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        # +-----+-------------------+-------------------+
-        # |  B  |      L. SIDE      |      R. TOP       |
-        # |  U  |                   |                   |
-        # |  T  |                   |                   |
-        # |  T  |                   +-------------------+
-        # |  O  |                   |     R. BOTTOM     |
-        # |  N  |                   |                   |
-        # |  S  |                   |                   |
-        # +-----+-------------------+-------------------+
-        #                                      buttons -----+--> Gtk.HBox
-        #                                                   |
-        #                   RAMSTKFrame ---+-->Gtk.HPaned --+
-        #                                  |
-        # RAMSTKFrame ---+-->Gtk.VPaned ---+
-        #                |
-        # RAMSTKFrame ---+
-        # Make the buttons.
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
+        _hpaned, _vpaned_right = super().do_make_layout_lrr()
 
-        _hpaned = Gtk.HPaned()
-        self.pack_start(_hpaned, True, True, 0)
-
-        # Make the left side of the page.
-        _frame = super().make_ui(start=0,
-                                 end=13,
-                                 title=[_("General Information"), ""])
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(start=0, end=13)
+        _frame.do_set_properties(bold=True, title=self._lst_title[0])
         _hpaned.pack1(_frame, True, True)
 
-        # Make the top right side of the page.
-        _vpaned = Gtk.VPaned()
-        _hpaned.pack2(_vpaned, True, True)
-        _frame = super().make_ui(start=13,
-                                 end=20,
-                                 title=[_("Purchasing Information"), ""])
-        _vpaned.pack1(_frame, True, True)
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(start=13, end=20)
+        _frame.do_set_properties(bold=True, title=self._lst_title[1])
+        _vpaned_right.pack1(_frame, True, True)
 
-        # Make the bottom right side of the page.
-        _frame = super().make_ui(start=20,
-                                 title=[_("Miscellaneous Information"), ""])
-        _vpaned.pack2(_frame, True, True)
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=20, end=len(self._lst_labels))
+        _frame.do_set_properties(bold=True, title=self._lst_title[2])
+        _vpaned_right.pack2(_frame, True, True)
 
         self.show_all()
 
@@ -858,7 +829,12 @@ class AssessmentInputs(RAMSTKWorkView):
         _("Mission Time:"),
         _("Duty Cycle:")
     ]
-    _lst_title: List[str] = [_("Assessment Inputs"), ""]
+    _lst_title: List[str] = [
+        _("Assessment Inputs"),
+        _("Design Ratings"),
+        _("Environmental Inputs"),
+        _("Operating Stresses")
+    ]
 
     # Define private scalar class attributes.
     _module: str = 'hardware'
@@ -898,6 +874,11 @@ class AssessmentInputs(RAMSTKWorkView):
         }
 
         # Initialize private list attributes.
+        self._lst_callbacks = [self._do_request_calculate_hardware]
+        self._lst_icons = ['calculate']
+        self._lst_tooltips = [
+            _("Calculate the currently selected Hardware item."),
+        ]
 
         # Initialize private scalar attributes.
         self._hazard_rate_method_id: int = 0
@@ -993,75 +974,39 @@ class AssessmentInputs(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Make the Hardware class Gtk.Notebook() assessment input page.
+        Build the user interface for the Hardware Assessment Input tab.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        # +-----+-------------------+-------------------+
-        # |  B  |      L. TOP       |      R. TOP       |
-        # |  U  |                   |                   |
-        # |  T  |                   |                   |
-        # |  T  +-------------------+-------------------+
-        # |  O  |     L. BOTTOM     |     R. BOTTOM     |
-        # |  N  |                   |                   |
-        # |  S  |                   |                   |
-        # +-----+-------------------+-------------------+
-        #                                        buttons -----+--> Gtk.HBox
-        #                                                     |
-        # RAMSTKFrame ---+--> Gtk.VPaned ---+--> Gtk.HPaned --+
-        #                |                  |
-        # RAMSTKFrame ---+                  |
-        #                                   |
-        # RAMSTKFrame ---+--> Gtk.VPaned ---+
-        #                |
-        # RAMSTKFrame ---+
-
-        # Make the buttons.
-        super().make_toolbuttons(
-            icons=['calculate'],
-            tooltips=[
-                _("Calculate the currently selected Hardware item."),
-            ],
-            callbacks=[self._do_request_calculate_hardware])
-
-        _hpaned = Gtk.HPaned()
-        self.pack_start(_hpaned, True, True, 0)
-
-        # Make the left side of the page.
-        _vpn_left = Gtk.VPaned()
-        _hpaned.pack1(_vpn_left, True, True)
+        _vpaned_left, _vpaned_right = super().do_make_layout_llrr()
 
         # Top left quadrant.
-        _frame = super().make_ui(start=0,
-                                 end=12,
-                                 title=[_("Assessment Inputs"), ""])
-        _vpn_left.pack1(_frame, True, True)
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(start=0, end=12)
+        _frame.do_set_properties(bold=True, title=self._lst_title[0])
+        _vpaned_left.pack1(_frame, True, True)
 
         # Bottom left quadrant.  This is just an RAMSTKFrame() and will be the
         # container for component-specific design attributes.
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Design Ratings"))
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(bold=True, title=self._lst_title[1])
         _frame.add(self.scwDesignRatings)
-        _vpn_left.pack2(_frame, True, True)
-
-        # Make the right side of the page.
-        _vpn_right = Gtk.VPaned()
-        _hpaned.pack2(_vpn_right, True, True)
+        _vpaned_left.pack2(_frame, True, True)
 
         # Top right quadrant.
-        _frame = super().make_ui(start=12,
-                                 title=[_("Environmental Inputs"), ""])
-        _vpn_right.pack1(_frame, True, True)
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=12, end=len(self._lst_labels))
+        _frame.do_set_properties(bold=True, title=self._lst_title[2])
+        _vpaned_right.pack1(_frame, True, True)
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
         # container for component-specific design attributes.
-        _scrollwindow = RAMSTKScrolledWindow(self.wvwOperatingStress)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Operating Stresses"))
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
+            self.wvwOperatingStress)
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(title=self._lst_title[3])
         _frame.add(_scrollwindow)
-        _vpn_right.pack2(_frame, True, True)
+        _vpaned_right.pack2(_frame, True, True)
 
         self.show_all()
 
@@ -1638,7 +1583,12 @@ class AssessmentResults(RAMSTKWorkView):
         _("Cost/Hour:"),
         _("Total # of Parts:")
     ]
-    _lst_title: List[str] = [_("Reliability Results"), ""]
+    _lst_title = [
+        _("Reliability Results"),
+        _("Assessment Model Results"),
+        _("Availability Results"),
+        _("Stress Results")
+    ]
 
     # Define private scalar class attributes.
     _module: str = 'hardware'
@@ -1672,11 +1622,11 @@ class AssessmentResults(RAMSTKWorkView):
         }
 
         # Initialize private list attributes.
+        self._lst_callbacks = [self._do_request_calculate_hardware]
         self._lst_icons = ['calculate']
         self._lst_tooltips = [
             _("Calculate the currently selected Hardware item."),
         ]
-        self._lst_callbacks = [self._do_request_calculate_hardware]
 
         # Initialize private scalar attributes.
         self._subcategory_id: int = 0
@@ -1746,75 +1696,39 @@ class AssessmentResults(RAMSTKWorkView):
 
     def __make_ui(self) -> None:
         """
-        Make the Hardware class Gtk.Notebook() assessment results page.
+        Build the user interface for the Hardware Assessment Results tab.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # This page has the following layout:
-        # +-----+-------------------+-------------------+
-        # |  B  |      L. TOP       |      R. TOP       |
-        # |  U  |                   |                   |
-        # |  T  |                   |                   |
-        # |  T  +-------------------+-------------------+
-        # |  O  |     L. BOTTOM     |     R. BOTTOM     |
-        # |  N  |                   |                   |
-        # |  S  |                   |                   |
-        # +-----+-------------------+-------------------+
-        #                                        buttons -----+--> Gtk.HBox
-        #                                                     |
-        # RAMSTKFrame ---+--> Gtk.VPaned ---+--> Gtk.HPaned --+
-        #                |                  |
-        # RAMSTKFrame ---+                  |
-        #                                   |
-        # RAMSTKFrame ---+--> Gtk.VPaned ---+
-        #                |
-        # RAMSTKFrame ---+
-
-        # Make the buttons.
-        super().make_toolbuttons(
-            icons=['calculate'],
-            tooltips=[
-                _("Calculate the currently selected Hardware item."),
-            ],
-            callbacks=[self._do_request_calculate_hardware])
-
-        _hpaned = Gtk.HPaned()
-        self.pack_start(_hpaned, True, True, 0)
-
-        # Make the left side of the page.
-        _vpn_left = Gtk.VPaned()
-        _hpaned.pack1(_vpn_left, True, True)
+        _vpaned_left, _vpaned_right = super().do_make_layout_llrr()
 
         # Top left quadrant.
-        _frame = super().make_ui(start=0,
-                                 end=10,
-                                 title=[_("Reliability Results"), ""])
-        _vpn_left.pack1(_frame, True, True)
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(start=0, end=10)
+        _frame.do_set_properties(bold=True, title=self._lst_title[0])
+        _vpaned_left.pack1(_frame, True, True)
 
         # Bottom left quadrant.  This is just an RAMSTKFrame() and will be the
         # container for component-specific design attributes.
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Assessment Model Results"))
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(bold=True, title=self._lst_title[1])
         _frame.add(self.scwReliability)
-        _vpn_left.pack2(_frame, True, True)
-
-        # Make the right side of the page.
-        _vpn_right = Gtk.VPaned()
-        _hpaned.pack2(_vpn_right, True, True)
+        _vpaned_left.pack2(_frame, True, True)
 
         # Top right quadrant.
-        _frame = super().make_ui(start=10,
-                                 title=[_("Availability Results"), ""])
-        _vpn_right.pack1(_frame, True, True)
+        _frame: RAMSTKFrame = super().do_make_panel_fixed(
+            start=10, end=len(self._lst_labels))
+        _frame.do_set_properties(bold=True, title=self._lst_title[2])
+        _vpaned_right.pack1(_frame, True, True)
 
         # Bottom right quadrant.  This is just an RAMSTKFrame() and will be the
         # container for component-specific design attributes.
-        _scrollwindow = RAMSTKScrolledWindow(self.wvwOperatingStress)
-        _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Stress Results"))
+        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
+            self.wvwOperatingStress)
+        _frame: RAMSTKFrame = RAMSTKFrame()
+        _frame.do_set_properties(bold=True, title=self._lst_title[3])
         _frame.add(_scrollwindow)
-        _vpn_right.pack2(_frame, True, True)
+        _vpaned_right.pack2(_frame, True, True)
 
         self.show_all()
 
