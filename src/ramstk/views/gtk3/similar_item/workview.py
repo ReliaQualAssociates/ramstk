@@ -116,10 +116,17 @@ class SimilarItem(RAMSTKWorkView):
     }
 
     # Define private list class attributes.
-    _lst_labels = [_("Select Method")]
+    _lst_labels: List[str] = [_("Select Method")]
+    _lst_title: List[str] = [
+        _("Similar Item Method"),
+        _("Similar Item Analysis")
+    ]
 
     # Define private scalar class attributes.
     _module: str = 'similar_item'
+    _tablabel: str = _("SimilarItem")
+    _tabtooltip: str = _(
+        "Displays the Similar Item analysis for the selected hardware item.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -179,7 +186,7 @@ class SimilarItem(RAMSTKWorkView):
         self._lst_widgets = [self.cmbSimilarItemMethod]
 
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui_with_treeview()
         self.__set_callbacks()
         self.__load_combobox()
 
@@ -244,42 +251,6 @@ class SimilarItem(RAMSTKWorkView):
         # Load the method combobox.
         self.cmbSimilarItemMethod.do_load_combo(
             [[_("Topic 633"), 0], [_("User-Defined"), 1]], signal='changed')
-
-    def __make_ui(self) -> None:
-        """
-        Make the Similar Item RAMSTKTreeview().
-
-        :return: None
-        :rtype: None
-        """
-        # This page has the following layout:
-        # +-----+-----+---------------------------------+
-        # |  B  |  W  |                                 |
-        # |  U  |  I  |                                 |
-        # |  T  |  D  |                                 |
-        # |  T  |  G  |          SPREAD SHEET           |
-        # |  O  |  E  |                                 |
-        # |  N  |  T  |                                 |
-        # |  S  |  S  |                                 |
-        # +-----+-----+---------------------------------+
-        #                                      buttons -----+--> self
-        #                                                   |
-        #     Gtk.Fixed --->RAMSTKFrame ---+-->Gtk.HBox ----+
-        #                                  |
-        #  Scrollwindow --->RAMSTKFrame ---+
-        #  w/ self.treeview
-        # Make the buttons.
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(
-            title=[_("Similar Item Method"),
-                   _("Similar Item Analysis")])
-        super().make_tab_label(tablabel=_("SimilarItem"),
-                               tooltip=_(
-                                   "Displays the Similar Item analysis for "
-                                   "the selected hardware item."))
-        self.show_all()
 
     def __set_callbacks(self) -> None:
         """

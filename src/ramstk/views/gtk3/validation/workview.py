@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Validation Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -103,9 +103,13 @@ class GeneralData(RAMSTKWorkView):
         _("Project Time (95% Confidence):"),
         _("Project Cost (95% Confidence):")
     ]
+    _lst_title: List[str] = [_("Task Description"), ""]
 
     # Define private scalar class attributes.
     _module: str = 'validation'
+    _tablabel: str = _("General\nData")
+    _tabtooltip: str = _(
+        "Displays general information for the selected Verification task.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -127,6 +131,18 @@ class GeneralData(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_calculate, self._do_request_calculate_all
+        ]
+        self._lst_icons = ['calculate', 'calculate_all']
+        self._lst_tooltips = [
+            _("Calculate the expected cost and "
+              "time of the selected Validation "
+              "task."),
+            _("Calculate the cost and time "
+              "of the program (i.e., all "
+              "Validation tasks).")
+        ]
 
         # Initialize private scalar attributes.
 
@@ -301,28 +317,12 @@ class GeneralData(RAMSTKWorkView):
         #  Gtk.Fixed --> RAMSTKFrame -+-> Gtk.VPaned -+
         #                             |
         #  Gtk.Fixed --> RAMSTKFrame -+
-        # Make the buttons.
-        super().make_toolbuttons(icons=['calculate', 'calculate_all'],
-                                 tooltips=[
-                                     _("Calculate the expected cost and "
-                                       "time of the selected Validation "
-                                       "task."),
-                                     _("Calculate the cost and time "
-                                       "of the program (i.e., all "
-                                       "Validation tasks).")
-                                 ],
-                                 callbacks=[
-                                     self._do_request_calculate,
-                                     self._do_request_calculate_all
-                                 ])
-
         # Build out the containers for the page.
         _hpaned: Gtk.HPaned = Gtk.HPaned()
         self.pack_start(_hpaned, True, True, 0)
 
         # Place the LEFT side widgets.
-        _frame: RAMSTKFrame = super().make_ui(
-            end=13, title=[_("Task Description"), ""])
+        _frame: RAMSTKFrame = super().make_ui(end=13)
         _hpaned.pack1(_frame, True, True)
 
         # Place the RIGHT side widgets.
@@ -331,10 +331,6 @@ class GeneralData(RAMSTKWorkView):
         _vpaned.pack1(self.__make_ui_top_right(), True, True)
         _vpaned.pack2(self.__make_ui_bottom_right(), True, True)
 
-        super().make_tab_label(tablabel=_("General\nData"),
-                               tooltip=_(
-                                   "Displays general information for the "
-                                   "selected Validation"))
         self.show_all()
 
     def __make_ui_bottom_right(self) -> RAMSTKFrame:
@@ -997,14 +993,14 @@ class BurndownCurve(RAMSTKWorkView):
                                        linestyle='-.')
             self.burndown.axis.annotate(
                 str(
-                    self.fmt.format(assessed.loc[pd.to_datetime(_date),
-                                                 'upper'])) + "\n"
+                    self.fmt.format(
+                        assessed.loc[pd.to_datetime(_date), 'upper'])) + "\n"
                 + str(
-                    self.fmt.format(assessed.loc[pd.to_datetime(_date),
-                                                 'mean'])) + "\n"
+                    self.fmt.format(
+                        assessed.loc[pd.to_datetime(_date), 'mean'])) + "\n"
                 + str(
-                    self.fmt.format(assessed.loc[pd.to_datetime(_date),
-                                                 'lower'])),
+                    self.fmt.format(
+                        assessed.loc[pd.to_datetime(_date), 'lower'])),
                 xy=(_date, 0.9 * _y_max),
                 xycoords='data',
                 xytext=(-55, 0),

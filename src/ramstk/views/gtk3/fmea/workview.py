@@ -193,13 +193,21 @@ class FMEA(RAMSTKWorkView):
     # Define private list class attributes.
     _lst_control_type: List[bool] = [_("Prevention"), _("Detection")]
     _lst_labels: List[str] = ["", "", _("Item Criticality:")]
+    _lst_title: List[str] = [
+        "",
+        _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
+          "[(D)FME(C)A]")
+    ]
 
     # Define private class scalar attributes.
     _module: str = 'fmea'
     _pixbuf: bool = True
+    _tablabel: str = _("FMEA")
+    _tabtooltip: str = _("Displays failure mode and effects "
+                         "analysis (FMEA) information for the selected "
+                         "Hardware item.")
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
+    def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
         Initialize the Work View for the FMEA.
@@ -476,15 +484,7 @@ class FMEA(RAMSTKWorkView):
         #  RAMSTKFixed ---+-->Gtk.VPaned -->RAMSTKFrame --+
         #                 |
         #  RAMSTKFrame ---+
-        # Make the buttons.
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(title=[
-            "",
-            _("(Design) Failure Mode, Effects, (and Criticality) Analysis "
-              "[(D)FME(C)A]")
-        ])
+        super().make_ui_with_treeview()
 
         # Move the item criticality RAMSTKTextView() below it's label.
         _fixed = self.get_children()[1].get_children()[0].get_child()
@@ -492,12 +492,6 @@ class FMEA(RAMSTKWorkView):
         _x_pos = _fixed.child_get_property(_label, 'x')
         _y_pos = _fixed.child_get_property(_label, 'y') + 25
         _fixed.put(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
-
-        super().make_tab_label(tablabel=_("FMEA"),
-                               tooltip=_(
-                                   "Displays failure mode and effects "
-                                   "analysis (FMEA) "
-                                   "information for the selected Hardware"))
 
         self.show_all()
 
@@ -908,8 +902,7 @@ class FMEA(RAMSTKWorkView):
 
         return _new_row
 
-    def _do_load_tree(self,
-                      tree: treelib.Tree,
+    def _do_load_tree(self, tree: treelib.Tree,
                       row: Gtk.TreeIter = None) -> None:
         """
         Iterate through tree and load the FMEA RAMSTKTreeView().

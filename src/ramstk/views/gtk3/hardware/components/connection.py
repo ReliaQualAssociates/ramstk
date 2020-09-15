@@ -8,7 +8,7 @@
 """Connection Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -175,11 +175,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Number of Hand Soldered PTH:"),
         _("Number of Circuit Planes:")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'connection') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'connection'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Connection assessment input view.
 
@@ -187,11 +191,14 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration:
         :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
 
@@ -561,17 +568,23 @@ class AssessmentResults(RAMSTKAssessmentResults):
     :ivar txtPiP: displays the configuration factor for the connection.
     :ivar txtPiC: displays the construction factor for the connection.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'connection') -> None:
+    # Define private list attributes.
+    _lst_title: List[str] = ["", ""]
+
+    # Define private scalar class attributes.
+    _module: str = 'connection'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Connection assessment result view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`Configuration.Configuration`
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dict attributes.
         self._dic_part_stress = {
@@ -588,6 +601,10 @@ class AssessmentResults(RAMSTKAssessmentResults):
         }
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
+
         self._lst_labels.append("\u03C0<sub>K</sub>:")
         self._lst_labels.append("\u03C0<sub>P</sub>:")
         self._lst_labels.append("\u03C0<sub>C</sub>:")

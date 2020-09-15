@@ -102,10 +102,14 @@ class PoF(RAMSTKWorkView):
 
     # Define private list class attributes.
     _lst_labels: List[str] = []
+    _lst_title = ["", _("Physics of Failure (PoF) Analysis")]
 
     # Define private class scalar attributes.
     _module: str = 'pof'
     _pixbuf: bool = True
+    _tablabel = _("PoF")
+    _tabtooltip = _("Displays the Physics of Failure (PoF) Analysis for "
+                    "the selected hardware item.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -155,7 +159,7 @@ class PoF(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui_with_treeview()
         self.__load_combobox()
         self.__set_callbacks()
 
@@ -227,41 +231,6 @@ class PoF(RAMSTKWorkView):
         self.__do_load_damage_models()
         self.__do_load_measureable_parameters()
         self.__do_load_load_history()
-
-    def __make_ui(self) -> None:
-        """
-        Make the PoF RAMSTKTreeview().
-
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
-        """
-        # This page has the following layout:
-        #
-        # +-----+---------------------------------------+
-        # |  B  |                                       |
-        # |  U  |                                       |
-        # |  T  |                                       |
-        # |  T  |              SPREAD SHEET             |
-        # |  O  |                                       |
-        # |  N  |                                       |
-        # |  S  |                                       |
-        # +-----+---------------------------------------+
-        #                                    buttons -----+--> self
-        #                                                 |
-        #             Gtk.ScrolledWindow -->RAMSTKFrame --+
-        # Make the buttons.
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(
-            title=["", _("Physics of Failure (PoF) Analysis")])
-        super().make_tab_label(tablabel=_("PoF"),
-                               tooltip=_(
-                                   "Displays the Physics of Failure (PoF) "
-                                   "Analysis for "
-                                   "the selected hardware item."))
-
-        self.show_all()
 
     def __set_callbacks(self) -> None:
         """
@@ -589,8 +558,7 @@ class PoF(RAMSTKWorkView):
 
         return _new_row
 
-    def _do_load_tree(self,
-                      tree: treelib.Tree,
+    def _do_load_tree(self, tree: treelib.Tree,
                       row: Gtk.TreeIter = None) -> None:
         """
         Iterate through tree and load the PoF RAMSTKTreeView().

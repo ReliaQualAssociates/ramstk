@@ -35,6 +35,11 @@ class HardwareRequirement(RAMSTKListView):
 
     # Define private scalar class attributes.
     _module: str = 'hrdwr_rqrmnt'
+    _tablabel = "<span weight='bold'>" + _(
+        "Hardware::Requirement\nMatrix") + "</span>"
+    _tabtooltip = _("Displays the Hardware::Requirement matrix "
+                    "for the selected revision.")
+    _view_type: str = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -66,10 +71,7 @@ class HardwareRequirement(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui(vtype='matrix',
-                        tab_label=_("Hardware::Requirement\nMatrix"),
-                        tooltip=_("Displays the Hardware::Requirement matrix "
-                                  "for the selected revision."))
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
 
@@ -96,6 +98,11 @@ class HardwareValidation(RAMSTKListView):
 
     # Define private scalar class attributes.
     _module: str = 'hrdwr_vldtn'
+    _tablabel = "<span weight='bold'>" + _(
+        "Hardware::Validation\nMatrix") + "</span>"
+    _tabtooltip = _("Displays the Hardware::Validation matrix "
+                    "for the selected revision.")
+    _view_type: str = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -127,9 +134,6 @@ class HardwareValidation(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui(vtype='matrix',
-                        tab_label=_("Hardware::Validation\nMatrix"),
-                        tooltip=_("Displays the Hardware::Validation matrix "
-                                  "for the selected revision."))
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.

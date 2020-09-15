@@ -8,7 +8,7 @@
 """Meter Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -62,11 +62,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
     # Define private list class attributes.
     _lst_labels = [_("Quality Level:"), _("Meter Type:"), _("Meter Function:")]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'meter') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'meter'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Meter assessment input view.
 
@@ -74,9 +78,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
@@ -244,20 +247,15 @@ class AssessmentResults(RAMSTKAssessmentResults):
     }
 
     # Define private class list class attributes.
-    _lst_tooltips = [
-        _("The assessment model used to calculate the meter failure rate."),
-        _("The base hazard rate of the meter."),
-        _("The quality factor for the meter."),
-        _("The environment factor for the meter."),
-        _("The application factor for the meter."),
-        _("The function factor for the meter."),
-        _("The temperature stress factor for the meter.")
-    ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'meter') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'meter'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Meter assessment result view.
 
@@ -265,13 +263,22 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_tooltips = [
+            _("The assessment model used to calculate the meter failure "
+              "rate."),
+            _("The base hazard rate of the meter."),
+            _("The quality factor for the meter."),
+            _("The environment factor for the meter."),
+            _("The application factor for the meter."),
+            _("The function factor for the meter."),
+            _("The temperature stress factor for the meter.")
+        ]
         self._lst_labels.append("\u03C0<sub>A</sub>:")
         self._lst_labels.append("\u03C0<sub>F</sub>:")
         self._lst_labels.append("\u03C0<sub>T</sub>:")

@@ -8,7 +8,7 @@
 """Relay Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -146,11 +146,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Construction:"),
         _("Number of Cycles/Hour:")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'relay') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'relay'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Relay assessment input view.
 
@@ -158,9 +162,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
@@ -478,21 +481,15 @@ class AssessmentResults(RAMSTKAssessmentResults):
     }
 
     # Define private list class attributes.
-    _lst_tooltips = [
-        _("The assessment model used to calculate the relay's failure rate."),
-        _("The base hazard rate of the relay."),
-        _("The quality factor for the relay."),
-        _("The environment factor for the relay."),
-        _("The contact form factor for the relay."),
-        _("The cycling factor for the relay."),
-        _("The application and construction factor for the relay."),
-        _("The load stress factor for the relay.")
-    ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'relay') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'relay'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Relay assessment result view.
 
@@ -500,13 +497,24 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_tooltips = [
+            _("The assessment model used to calculate the relay's failure "
+              "rate."),
+            _("The base hazard rate of the relay."),
+            _("The quality factor for the relay."),
+            _("The environment factor for the relay."),
+            _("The contact form factor for the relay."),
+            _("The cycling factor for the relay."),
+            _("The application and construction factor for the relay."),
+            _("The load stress factor for the relay.")
+        ]
+
         self._lst_labels.append("\u03C0<sub>C</sub>:")
         self._lst_labels.append("\u03C0<sub>CYC</sub>:")
         self._lst_labels.append("\u03C0<sub>F</sub>:")

@@ -8,7 +8,7 @@
 """Semiconductor Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -159,7 +159,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                      ["PH-13"], ["PH-16"], ["PH-56"], ["PY-58"], ["PY-373"]]
 
     # Define private list attributes.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Quality Level:"),
         _("Package:"),
         _("Type:"),
@@ -169,11 +169,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Operating Frequency (GHz):"),
         _("Number of Characters:"), "\u03B8<sub>JC</sub>:"
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'semiconductor') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'semiconductor'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Semiconductor assessment input view.
 
@@ -181,13 +185,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
 
@@ -622,26 +628,15 @@ class AssessmentResults(RAMSTKAssessmentResults):
     }
 
     # Define private list class attributes.
-    _lst_tooltips = [
-        _("The assessment model used to calculate the semiconductor failure "
-          "rate."),
-        _("The base hazard rate of the semiconductor."),
-        _("The quality factor for the semiconductor."),
-        _("The environment factor for the semiconductor."),
-        _("The temperature factor for the semiconductor."),
-        _("The application factor for the semiconductor."),
-        _("The construction factor for the semiconductor."),
-        _("The power rating factor for the semiconductor."),
-        _("The matching network factor for the semiconductor."),
-        _("The forward current factor for the semiconductor."),
-        _("The power degradation factor for the semiconductor."),
-        _("The electrical stress factor for the semiconductor.")
-    ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'semiconductor') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'semiconductor'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Semiconductor assessment result view.
 
@@ -649,13 +644,30 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the semiconductor "
+              "failure "
+              "rate."),
+            _("The base hazard rate of the semiconductor."),
+            _("The quality factor for the semiconductor."),
+            _("The environment factor for the semiconductor."),
+            _("The temperature factor for the semiconductor."),
+            _("The application factor for the semiconductor."),
+            _("The construction factor for the semiconductor."),
+            _("The power rating factor for the semiconductor."),
+            _("The matching network factor for the semiconductor."),
+            _("The forward current factor for the semiconductor."),
+            _("The power degradation factor for the semiconductor."),
+            _("The electrical stress factor for the semiconductor.")
+        ]
         self._lst_labels.append("\u03C0<sub>T</sub>:")
         self._lst_labels.append("\u03C0<sub>A</sub>:")
         self._lst_labels.append("\u03C0<sub>C</sub>:")

@@ -3,7 +3,7 @@ repos:
       rev: v0.27.0
       hooks:
           - id: yapf
-            args: [--style, pep8, --recursive, --parallel]
+            args: [--style, .style.yapf, --recursive, --parallel, --in-place]
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:

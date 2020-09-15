@@ -8,7 +8,7 @@
 """Integrated Circuit Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -110,7 +110,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     }
 
     # Define private list class attributes.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Quality Level:"),
         _("Package:"),
         _("Die Area:"),
@@ -129,11 +129,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Manufacturing Process:"),
         _("ESD Threshold Voltage:")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'integrated_circuit') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'integrated_circuit'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the IC assessment input view.
 
@@ -141,13 +145,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
 
@@ -409,8 +415,9 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                 attributes['years_in_production']),
                                                 signal='changed')
 
-    def __do_load_microprocessor_microcontroller(
-            self, attributes: Dict[str, Any]) -> None:
+    def __do_load_microprocessor_microcontroller(self,
+                                                 attributes: Dict[str, Any]
+                                                 ) -> None:
         """
         Load the widgets that display microprocessor information.
 
@@ -935,32 +942,16 @@ class AssessmentResults(RAMSTKAssessmentResults):
     }
 
     # Define private class list class attributes.
-    _lst_tooltips = [
-        _("The assessment model used to calculate the integrated circuit "
-          "failure rate."),
-        _("The base hazard rate of the integrated circuit."),
-        _("The quality factor for the integrated circuit."),
-        _("The environment factor for the integrated circuit."),
-        _("The die complexity hazard rate of the integrated circuit."),
-        _("The temperature factor for the integrated circuit."),
-        _("The package hazard rate for the integrated circuit."),
-        _("The construction factor for the integrated circuit."),
-        _("The learning factor for the integrated circuit."),
-        _("The read/write cycling induced hazard rate for the EEPROM."),
-        _("The die base hazard rate for the VLSI device."),
-        _("The manufacturing process correction factor for the VLSI "
-          "device."),
-        _("The die complexity correction factor for the VLSI device."),
-        _("The package base hazard rate for the VLSI device."),
-        _("The package type correction factor for the VLSI device."),
-        _("The electrical overstress hazard rate for the VLSI device."),
-        _("The application correction factor for the GaAs device.")
-    ]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'integrated_circuit') -> None:
+    _lst_title: List[str] = ["", ""]
+
+    # Define private scalar class attributes.
+    _module: str = 'integrated_circuit'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the IC assessment result view.
 
@@ -968,13 +959,35 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the integrated circuit "
+              "failure rate."),
+            _("The base hazard rate of the integrated circuit."),
+            _("The quality factor for the integrated circuit."),
+            _("The environment factor for the integrated circuit."),
+            _("The die complexity hazard rate of the integrated circuit."),
+            _("The temperature factor for the integrated circuit."),
+            _("The package hazard rate for the integrated circuit."),
+            _("The construction factor for the integrated circuit."),
+            _("The learning factor for the integrated circuit."),
+            _("The read/write cycling induced hazard rate for the EEPROM."),
+            _("The die base hazard rate for the VLSI device."),
+            _("The manufacturing process correction factor for the VLSI "
+              "device."),
+            _("The die complexity correction factor for the VLSI device."),
+            _("The package base hazard rate for the VLSI device."),
+            _("The package type correction factor for the VLSI device."),
+            _("The electrical overstress hazard rate for the VLSI device."),
+            _("The application correction factor for the GaAs device.")
+        ]
         self._lst_labels.append("C1:")
         self._lst_labels.append("\u03C0<sub>T</sub>:")
         self._lst_labels.append("C2:")

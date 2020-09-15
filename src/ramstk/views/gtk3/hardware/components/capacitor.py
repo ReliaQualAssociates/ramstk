@@ -8,7 +8,7 @@
 """Capacitor Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -203,7 +203,7 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     }
 
     # Define private list attributes.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Quality Level:"),
         _("Capacitance (F):"),
         _("Specification:"),
@@ -212,11 +212,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Construction:"),
         _("Equivalent Series Resistance (\u03A9):")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'capacitor') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'capacitor'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Capacitor assessment input view.
 
@@ -224,9 +228,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
@@ -574,17 +577,23 @@ class AssessmentResults(RAMSTKAssessmentResults):
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CF</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'capacitor') -> None:
+    # Define private list attributes.
+    _lst_title: List[str] = ["", ""]
+
+    # Define private scalar class attributes.
+    _module: str = 'capacitor'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Capacitor assessment result view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 

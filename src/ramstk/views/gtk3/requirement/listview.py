@@ -62,6 +62,9 @@ class Stakeholders(RAMSTKListView):
 
     # Define private scalar class attributes.
     _module: str = 'stakeholder'
+    _tablabel = "<span weight='bold'>" + _("Stakeholder\nInputs") + "</span>"
+    _tabtooltip = _("Displays stakeholder inputs for the selected revision.")
+    _view_type: str = 'list'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -132,11 +135,7 @@ class Stakeholders(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        super().make_ui(
-            tab_label=("<span weight='bold'>" + _("Stakeholder\nInputs")
-                       + "</span>"),
-            tooltip=_(
-                "Displays stakeholder inputs for the selected revision."))
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_requirements,
@@ -395,6 +394,11 @@ class RequirementHardware(RAMSTKListView):
 
     # Define private scalar class attributes.
     _module: str = 'rqrmnt_hrdwr'
+    _tablabel = "<span weight='bold'>" + _(
+        "Requirement::Hardware\nMatrix") + "</span>"
+    _tabtooltip = _("Displays the Requirement::Hardware matrix "
+                    "for the selected revision.")
+    _view_type: str = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -427,10 +431,7 @@ class RequirementHardware(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui(vtype='matrix',
-                        tab_label=_("Requirement::Hardware\nMatrix"),
-                        tooltip=_("Displays the Requirement::Hardware matrix "
-                                  "for the selected revision."))
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
 

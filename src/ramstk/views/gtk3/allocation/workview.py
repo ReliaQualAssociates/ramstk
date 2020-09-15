@@ -95,9 +95,16 @@ class Allocation(RAMSTKWorkView):
         _("h(t) Goal"),
         _("MTBF Goal")
     ]
+    _lst_title: List[str] = [
+        _("Allocation Goals and Method"),
+        _("Allocation Analysis")
+    ]
 
     # Define private scalar class attributes.
     _module: str = 'allocation'
+    _tablabel: str = _("Allocation")
+    _tabtooltip: str = _("Displays the Allocation analysis for "
+                         "the selected hardware item.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -152,7 +159,7 @@ class Allocation(RAMSTKWorkView):
         ]
 
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui_with_treeview()
         self.__load_combobox()
         self.__set_callbacks()
 
@@ -183,44 +190,6 @@ class Allocation(RAMSTKWorkView):
             [[_("Equal Apportionment"), 0], [_("AGREE Apportionment"), 1],
              [_("ARINC Apportionment"), 2],
              [_("Feasibility of Objectives"), 3]])
-
-    def __make_ui(self) -> None:
-        """
-        Create the Function Work View general data page.
-
-        :return: None
-        :rtype: None
-        """
-        # This page has the following layout:
-        # +-----+-----+---------------------------------+
-        # |  B  |  W  |                                 |
-        # |  U  |  I  |                                 |
-        # |  T  |  D  |                                 |
-        # |  T  |  G  |          SPREAD SHEET           |
-        # |  O  |  E  |                                 |
-        # |  N  |  T  |                                 |
-        # |  S  |  S  |                                 |
-        # +-----+-----+---------------------------------+
-        #                                      buttons -----+--> self
-        #                                                   |
-        #     Gtk.Fixed --->RAMSTKFrame ---+-->Gtk.HBox ----+
-        #                                  |
-        #  Scrollwindow --->RAMSTKFrame ---+
-        #  w/ self.treeview
-        # Make the buttons.
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(
-            title=[_("Allocation Goals and Method"),
-                   _("Allocation Analysis")])
-        super().make_tab_label(tablabel=_("Allocation"),
-                               tooltip=_(
-                                   "Displays the Allocation analysis for the "
-                                   "selected "
-                                   "hardware item."))
-
-        self.show_all()
 
     def __set_callbacks(self) -> None:
         """

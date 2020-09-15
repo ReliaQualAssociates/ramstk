@@ -56,9 +56,13 @@ class GeneralData(RAMSTKWorkView):
         _("Function Name:"),
         _("Remarks:"), ''
     ]
+    _lst_title = [_("General Information"), ""]
 
     # Define private scalar class attributes.
     _module: str = 'function'
+    _tablabel = _("General\nData")
+    _tabtooltip = _("Displays general information for the "
+                    "selected Function")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -80,6 +84,9 @@ class GeneralData(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks = []
+        self._lst_icons = []
+        self._lst_tooltips = []
 
         # Initialize private scalar attributes.
 
@@ -139,17 +146,10 @@ class GeneralData(RAMSTKWorkView):
         #                           buttons ----+--> self
         #                                       |
         #      RAMSTKFixed ------>RAMSTKFrame --+
-        # Make the buttons.
-        super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
-
         # Layout the widgets.
-        _frame = super().make_ui(title=[_("General Information"), ""])
+        _frame = super().make_ui()
         self.pack_end(_frame, True, True, 0)
 
-        super().make_tab_label(tablabel=_("General\nData"),
-                               tooltip=_(
-                                   "Displays general information for the "
-                                   "selected Function"))
         self.show_all()
 
     def __set_callbacks(self) -> None:
@@ -327,9 +327,13 @@ class HazOps(RAMSTKWorkView):
 
     # Define private list class attributes.
     _lst_labels: List[str] = []
+    _lst_title: List[str] = ["", _("HazOps Analysis")]
 
     # Define private scalar class attributes.
     _module: str = 'hazard'
+    _tablabel: str = _("HazOps")
+    _tabtooltip: str = _("Displays the HazOps analysis for the "
+                         "selected function.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -383,7 +387,7 @@ class HazOps(RAMSTKWorkView):
         # Initialize public scalar attributes.
 
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui_with_treeview()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -431,41 +435,6 @@ class HazOps(RAMSTKWorkView):
             self._parent_id = attributes['function_id']
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-    def __make_ui(self) -> None:
-        """
-        Make the HazOps RAMSTKTreeview().
-
-        :return: None
-        :rtype: None
-        """
-        # This page has the following layout:
-        #
-        # +-----+---------------------------------------+
-        # |  B  |                                       |
-        # |  U  |                                       |
-        # |  T  |                                       |
-        # |  T  |              SPREAD SHEET             |
-        # |  O  |                                       |
-        # |  N  |                                       |
-        # |  S  |                                       |
-        # +-----+---------------------------------------+
-        #                          buttons -----+--> self
-        #                                       |
-        #  RAMSTKFixed ---+-->Gtk.VPaned -->RAMSTKFrame --+
-        #                 |
-        #  RAMSTKFrame ---+
-        # Make the buttons.
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(title=["", _("HazOps Analysis")])
-        super().make_tab_label(tablabel=_("HazOps"),
-                               tooltip=_(
-                                   "Displays the HazOps analysis for the "
-                                   "selected function."))
-
-        self.show_all()
 
     def __set_callbacks(self) -> None:
         """

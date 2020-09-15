@@ -78,7 +78,11 @@ class FailureDefinition(RAMSTKListView):
     _dic_column_keys = {'definition': 2}
 
     # Define private scalar class attributes.
-    _module = 'failure_definition'
+    _module: str = 'failure_definition'
+    _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
+    _tabtooltip = _("Displays failure definitions for the "
+                    "selected revision.")
+    _view_type: str = 'list'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -133,10 +137,7 @@ class FailureDefinition(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        super().make_ui(tab_label=("<span weight='bold'>"
-                                   + _("Failure\nDefinitions") + "</span>"),
-                        tooltip=_("Displays failure definitions for the "
-                                  "selected revision."))
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.__do_load_tree,
@@ -427,7 +428,10 @@ class UsageProfile(RAMSTKListView):
     }
 
     # Define private scalar class attributes.
-    _module = 'usage_profile'
+    _module: str = 'usage_profile'
+    _tablabel = "<span weight='bold'>" + _("Usage\nProfiles") + "</span>"
+    _tabtooltip = _("Displays usage profiles for the selected revision.")
+    _view_type: str = 'list'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -496,10 +500,7 @@ class UsageProfile(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        super().make_ui(
-            tab_label=("<span weight='bold'>" + _("Usage\nProfiles")
-                       + "</span>"),
-            tooltip=_("Displays usage profiles for the selected revision."))
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.__do_load_tree,

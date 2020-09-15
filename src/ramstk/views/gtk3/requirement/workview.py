@@ -58,7 +58,7 @@ class GeneralData(RAMSTKWorkView):
     }
 
     # Define private list class attributes.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Requirement Code:"),
         _("Requirement Description:"),
         _("Requirement Type:"), "",
@@ -69,9 +69,13 @@ class GeneralData(RAMSTKWorkView):
         _("Owner:"), "",
         _("Validated Date:")
     ]
+    _lst_title: List[str] = [_("General Information"), ""]
 
     # Define private scalar class attributes.
     _module: str = 'requirement'
+    _tablabel: str = _("General\nData")
+    _tabtooltip: str = _(
+        "Displays general information for the selected Requirement.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -96,6 +100,11 @@ class GeneralData(RAMSTKWorkView):
             + '/32x32/create_code.png')
 
         # Initialize private list attributes.
+        self._lst_icons = ['create_code']
+        self._lst_tooltips = [
+            _("Automatically create code for the selected requirement.")
+        ]
+        self._lst_callbacks = [self._do_request_create_code]
 
         # Initialize private scalar attributes.
 
@@ -210,17 +219,8 @@ class GeneralData(RAMSTKWorkView):
         #                           buttons ----+--> self
         #                                       |
         #      RAMSTKFixed ------>RAMSTKFrame --+
-        # Make the buttons.
-        super().make_toolbuttons(icons=['create_code'],
-                                 tooltips=[
-                                     _('Automatically create code '
-                                       'for the selected '
-                                       'requirement.')
-                                 ],
-                                 callbacks=[self._do_request_create_code])
-
         # Layout the widgets.
-        _frame = super().make_ui(title=[_("General Information"), ""])
+        _frame = super().make_ui()
         self.pack_end(_frame, True, True, 0)
 
         # Add the validation date dialog launcher button to the right of the
@@ -231,10 +231,6 @@ class GeneralData(RAMSTKWorkView):
         _y_pos = _fixed.child_get_property(_entry, 'y')
         _fixed.put(self.btnValidateDate, _x_pos, _y_pos)
 
-        super().make_tab_label(tablabel=_("General\nData"),
-                               tooltip=_(
-                                   "Displays general information for the "
-                                   "selected Requirement"))
         self.show_all()
 
     def __set_callbacks(self) -> None:
@@ -667,8 +663,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_requirement')
 
-    def __make_treeview(
-            self, index: int) -> Tuple[Gtk.ListStore, Gtk.TreeViewColumn]:
+    def __make_treeview(self, index: int
+                        ) -> Tuple[Gtk.ListStore, Gtk.TreeViewColumn]:
         """
         Build the Gtk.TreeView() for the Requirements Analyses.
 

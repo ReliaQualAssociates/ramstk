@@ -8,7 +8,7 @@
 """Miscellaneous Parts Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -59,11 +59,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Operating Frequency:"),
         _("Utilization:")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'miscellaneous') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'miscellaneous'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Miscellaneous assessment input view.
 
@@ -71,9 +75,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
@@ -393,20 +396,15 @@ class AssessmentResults(RAMSTKAssessmentResults):
     }
 
     # Define private class list class attributes.
-    _lst_tooltips = [
-        _("The assessment model used to calculate the miscellaneous item "
-          "failure rate."),
-        _("The base hazard rate of the miscellaneous item."),
-        _("The quality factor for the miscellaneous item."),
-        _("The environment factor for the miscellaneous item."),
-        _("The utilization factor for the lamp."),
-        _("The application factor for the lamp.")
-    ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'miscellaneous') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'miscellaneous'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Miscellaneous assessment result view.
 
@@ -414,13 +412,21 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_tooltips = [
+            _("The assessment model used to calculate the miscellaneous item "
+              "failure rate."),
+            _("The base hazard rate of the miscellaneous item."),
+            _("The quality factor for the miscellaneous item."),
+            _("The environment factor for the miscellaneous item."),
+            _("The utilization factor for the lamp."),
+            _("The application factor for the lamp.")
+        ]
         self._lst_labels.append("\u03C0<sub>U</sub>:")
         self._lst_labels.append("\u03C0<sub>A</sub>:")
 

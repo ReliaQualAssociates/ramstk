@@ -7,7 +7,7 @@
 """Switch Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -88,11 +88,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Number of Cycles/Hour:"),
         _("Number of Active Contacts:")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'switch') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'switch'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Switch assessment input view.
 
@@ -100,9 +104,8 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
@@ -414,22 +417,15 @@ class AssessmentResults(RAMSTKAssessmentResults):
     }
 
     # Define private list class attributes.
-    _lst_tooltips = [
-        _("The assessment model used to calculate the switch failure rate."),
-        _("The base hazard rate of the switch."),
-        _("The quality factor for the switch."),
-        _("The environment factor for the switch."),
-        _("The cycling factor for the switch."),
-        _("The load stress factor for the switch."),
-        _("The contact form and quantity factor for the switch."),
-        _("The number of active contacts factor for the switch."),
-        _("The use factor for the circuit breaker.")
-    ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'switch') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'switch'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Switch assessment result view.
 
@@ -437,13 +433,25 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_tooltips = [
+            _("The assessment model used to calculate the switch failure "
+              "rate."),
+            _("The base hazard rate of the switch."),
+            _("The quality factor for the switch."),
+            _("The environment factor for the switch."),
+            _("The cycling factor for the switch."),
+            _("The load stress factor for the switch."),
+            _("The contact form and quantity factor for the switch."),
+            _("The number of active contacts factor for the switch."),
+            _("The use factor for the circuit breaker.")
+        ]
+
         self._lst_labels.append("\u03C0<sub>CYC</sub>:")
         self._lst_labels.append("\u03C0<sub>L</sub>:")
         self._lst_labels.append("\u03C0<sub>C</sub>:")

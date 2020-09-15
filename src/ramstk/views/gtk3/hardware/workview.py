@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import locale
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -123,7 +123,7 @@ class GeneralData(RAMSTKWorkView):
     }
 
     # Define private list class attributes.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Reference Designator:"),
         _("Composite Ref. Des."),
         _("Name:"),
@@ -146,9 +146,17 @@ class GeneralData(RAMSTKWorkView):
         _("Attachments:"),
         _("Remarks:"), ""
     ]
+    _lst_title: List[str] = [
+        _("General Information"),
+        _("Purchasing Information"),
+        _("Miscellaneous Information")
+    ]
 
     # Define private scalar class attributes.
     _module: str = 'hardware'
+    _tablabel: str = _("General\nData")
+    _tabtooltip: str = _(
+        "Displays general information for the selected Hardware")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -234,6 +242,12 @@ class GeneralData(RAMSTKWorkView):
             'year_of_manufacture': [self.txtYearMade.do_update, 'changed']
         }
 
+        self._lst_callbacks = [self._do_request_make_comp_ref_des]
+        self._lst_icons = ['comp_ref_des']
+        self._lst_tooltips = [
+            _("Creates the composite reference designator for the "
+              "selected hardware item.")
+        ]
         self._lst_widgets = [
             self.txtRefDes, self.txtCompRefDes, self.txtName,
             self.txtDescription, self.txtPartNumber, self.txtAltPartNum,
@@ -306,13 +320,9 @@ class GeneralData(RAMSTKWorkView):
         #                |
         # RAMSTKFrame ---+
         # Make the buttons.
-        super().make_toolbuttons(
-            icons=['comp_ref_des'],
-            tooltips=[
-                _("Creates the composite reference designator for the "
-                  "selected hardware item.")
-            ],
-            callbacks=[self._do_request_make_comp_ref_des])
+        super().make_toolbuttons(icons=self._lst_icons,
+                                 tooltips=self._lst_tooltips,
+                                 callbacks=self._lst_callbacks)
 
         _hpaned = Gtk.HPaned()
         self.pack_start(_hpaned, True, True, 0)
@@ -335,10 +345,6 @@ class GeneralData(RAMSTKWorkView):
         _frame = super().make_ui(start=20,
                                  title=[_("Miscellaneous Information"), ""])
         _vpaned.pack2(_frame, True, True)
-
-        super().make_tab_label(tablabel=_("General\nData"),
-                               tooltip=_("Displays general information "
-                                         "for the selected Hardware"))
 
         self.show_all()
 
@@ -832,7 +838,7 @@ class AssessmentInputs(RAMSTKWorkView):
     }
 
     # Define private list attributes.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Assessment Type:"),
         _("Assessment Method:"),
         _("Stated Hazard Rate [h(t)]:"),
@@ -852,9 +858,13 @@ class AssessmentInputs(RAMSTKWorkView):
         _("Mission Time:"),
         _("Duty Cycle:")
     ]
+    _lst_title: List[str] = [_("Assessment Inputs"), ""]
 
     # Define private scalar class attributes.
     _module: str = 'hardware'
+    _tablabel: str = _("Assessment\nInputs")
+    _tabtooltip: str = _("Displays reliability assessment inputs "
+                         "for the selected hardware item.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -924,16 +934,6 @@ class AssessmentInputs(RAMSTKWorkView):
         self.wvwOperatingStress: RAMSTKStressInputs = RAMSTKStressInputs(
             configuration, logger)
 
-        self._lst_widgets = [
-            self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
-            self.txtSpecifiedHtVar, self.txtSpecifiedMTBF,
-            self.txtSpecifiedMTBFVar, self.cmbFailureDist, self.txtFailScale,
-            self.txtFailShape, self.txtFailLocation, self.txtAddAdjFactor,
-            self.txtMultAdjFactor, self.cmbActiveEnviron, self.txtActiveTemp,
-            self.cmbDormantEnviron, self.txtDormantTemp, self.txtMissionTime,
-            self.txtDutyCycle
-        ]
-
         self._dic_switch: Dict[str, Union[object, str]] = {
             'add_adj_factor': [self.txtAddAdjFactor.do_update, 'changed'],
             'scale_parameter': [self.txtFailScale.do_update, 'changed'],
@@ -950,6 +950,21 @@ class AssessmentInputs(RAMSTKWorkView):
             'duty_cycle': [self.txtDutyCycle.do_update, 'changed'],
             'mission_time': [self.txtMissionTime.do_update, 'changed']
         }
+
+        self._lst_icons = ['calculate']
+        self._lst_tooltips = [
+            _("Calculate the currently selected Hardware item."),
+        ]
+        self._lst_callbacks = [self._do_request_calculate_hardware]
+        self._lst_widgets = [
+            self.cmbHRType, self.cmbHRMethod, self.txtSpecifiedHt,
+            self.txtSpecifiedHtVar, self.txtSpecifiedMTBF,
+            self.txtSpecifiedMTBFVar, self.cmbFailureDist, self.txtFailScale,
+            self.txtFailShape, self.txtFailLocation, self.txtAddAdjFactor,
+            self.txtMultAdjFactor, self.cmbActiveEnviron, self.txtActiveTemp,
+            self.cmbDormantEnviron, self.txtDormantTemp, self.txtMissionTime,
+            self.txtDutyCycle
+        ]
 
         self.__set_properties()
         self.__load_combobox()
@@ -1047,11 +1062,6 @@ class AssessmentInputs(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Operating Stresses"))
         _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
-
-        super().make_tab_label(tablabel=_("Assessment\nInputs"),
-                               tooltip=_(
-                                   "Displays reliability assessment inputs "
-                                   "for the selected hardware item."))
 
         self.show_all()
 
@@ -1610,7 +1620,7 @@ class AssessmentResults(RAMSTKWorkView):
     """
 
     # Define private list class attributes.
-    _lst_labels = [
+    _lst_labels: List[str] = [
         _("Active Failure Intensity [\u03BB(t)]:"),
         _("Dormant \u03BB(t):"),
         _("Software \u03BB(t):"),
@@ -1628,21 +1638,24 @@ class AssessmentResults(RAMSTKWorkView):
         _("Cost/Hour:"),
         _("Total # of Parts:")
     ]
+    _lst_title: List[str] = [_("Reliability Results"), ""]
 
     # Define private scalar class attributes.
     _module: str = 'hardware'
+    _tablabel: str = _("Assessment\nResults")
+    _tabtooltip: str = _("Displays reliability, maintainability, "
+                         "and availability assessment results for "
+                         "the selected Hardware item.")
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'hardware') -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Hardware assessment output view.
 
         :param configuration: the RAMSTK User Configuration class instance.
         :type configuration: :class:`ramstk.configuration.UserConfiguration`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
         self._dic_assessment_results = {
@@ -1659,6 +1672,11 @@ class AssessmentResults(RAMSTKWorkView):
         }
 
         # Initialize private list attributes.
+        self._lst_icons = ['calculate']
+        self._lst_tooltips = [
+            _("Calculate the currently selected Hardware item."),
+        ]
+        self._lst_callbacks = [self._do_request_calculate_hardware]
 
         # Initialize private scalar attributes.
         self._subcategory_id: int = 0
@@ -1797,12 +1815,6 @@ class AssessmentResults(RAMSTKWorkView):
         _frame.do_set_properties(title=_("Stress Results"))
         _frame.add(_scrollwindow)
         _vpn_right.pack2(_frame, True, True)
-
-        super().make_tab_label(tablabel=_("Assessment\nResults"),
-                               tooltip=_(
-                                   "Displays reliability, maintainability, "
-                                   "and availability assessment results for "
-                                   "the selected {0:s}.").format(self._module))
 
         self.show_all()
 
@@ -2035,8 +2047,8 @@ class AssessmentResults(RAMSTKWorkView):
 
         self.wvwOperatingStress.show_all()
 
-    def _do_load_availability_results(self, attributes: Dict[str,
-                                                             Any]) -> None:
+    def _do_load_availability_results(self,
+                                      attributes: Dict[str, Any]) -> None:
         """
         Load the widgets used to display availability results attributes.
 
@@ -2088,8 +2100,8 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionHtVar.set_text(
             str(self.fmt.format(attributes['hr_mission_variance'])))
 
-    def _do_load_miscellaneous_results(self, attributes: Dict[str,
-                                                              Any]) -> None:
+    def _do_load_miscellaneous_results(self,
+                                       attributes: Dict[str, Any]) -> None:
         """
         Load the widgets used to display miscellaneous results attributes.
 

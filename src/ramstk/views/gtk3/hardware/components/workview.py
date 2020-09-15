@@ -43,23 +43,30 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
 
     # Define private list class attributes.
     _lst_labels: List[str] = []
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'component') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'component'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Hardware assessment input view.
 
         :param configuration: the RAMSTK User Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.RAMSTKUserConfiguration`
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
         self._dic_switch: Dict[str, Union[object, str]] = {}
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
         self._lst_widgets: List[object] = []
 
         # Initialize private scalar attributes.
@@ -104,6 +111,7 @@ class RAMSTKAssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+
     def do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the component common widgets.
@@ -220,22 +228,29 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         _("Operating ac Voltage (V):"),
         _("Operating DC Voltage (V):")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'component') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'component'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Hardware stress input view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
         self._record_id: int = -1
@@ -393,6 +408,7 @@ class RAMSTKStressInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """
         Load the Component stress input widgets.
@@ -501,10 +517,15 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
     :ivar txtPiQ: displays the quality factor for the hardware item.
     :ivar txtPiE: displays the environment factor for the hardware item.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'component') -> None:
+    _lst_title: List[str] = ["", ""]
+
+    # Define private scalar class attributes.
+    _module: str = 'component'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Hardware assessment result view.
 
@@ -512,9 +533,8 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
@@ -523,6 +543,9 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
             "", "\u03BB<sub>b</sub>:", "\u03C0<sub>Q</sub>:",
             "\u03C0<sub>E</sub>:"
         ]
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
         self._record_id: int = -1
@@ -608,6 +631,7 @@ class RAMSTKAssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+
     def _do_set_model_label(self) -> None:
         """
         Sets the text displayed in the hazard rate model RAMSTKLabel().
@@ -737,24 +761,31 @@ class RAMSTKStressResults(RAMSTKWorkView):
         _("Voltage Ratio:"), "",
         _("Overstress Reason:")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'component') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'component'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Hardware stress result view.
 
         :param configuration: the RAMSTK Configuration class instance.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
         self._lst_derate_criteria: List[List[float]] = [[0.6, 0.6, 0.0],
                                                         [0.9, 0.9, 0.0]]
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
         self._record_id: int = -1
@@ -869,6 +900,7 @@ class RAMSTKStressResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+
     def _do_load_derating_curve(self, attributes: Dict[str, Any]) -> None:
         """
         Load the benign and harsh environment derating curves.

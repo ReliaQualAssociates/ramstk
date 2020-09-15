@@ -103,7 +103,8 @@ class RAMSTKBaseView(Gtk.HBox):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_icons = self.__set_icons()
+        self._dic_icons: Dict[str, str] = self.__set_icons()
+        self._img_tab: Gtk.Image = Gtk.Image()
 
         # Initialize private list attributes.
         self._lst_col_order: List[int] = []
@@ -118,6 +119,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self._mission_time: float = float(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         if module != '':
+            print("MODULE: {0:s}".format(module))
             self._module: str = module
         self._notebook: Gtk.Notebook = Gtk.Notebook()
         self._parent_id: int = 0
@@ -175,7 +177,7 @@ class RAMSTKBaseView(Gtk.HBox):
             if self._module in self._lst_layouts:
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-    def __set_icons(self) -> Dict:
+    def __set_icons(self) -> Dict[str, str]:
         """
         Set the dict of icons.
 
@@ -667,18 +669,20 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        _tablabel = kwargs.get('tablabel', "")
-        _tooltip = kwargs.get(
-            'tooltip',
-            _("Missing tooltip, please file a quality type issue to have one "
-              "added."))
+        try:
+            self._img_tab.set_from_file(self._dic_icons['tab'])
+            self.hbx_tab_label.pack_start(self._img_tab, True, True, 0)
+        except KeyError:
+            # There is no icon to display on the tab.  Just move along.
+            pass
 
-        _label: RAMSTKLabel = RAMSTKLabel(_tablabel)
+        _label: RAMSTKLabel = RAMSTKLabel(self._tablabel)
         _label.do_set_properties(height=30,
                                  width=-1,
                                  justify=Gtk.Justification.CENTER,
-                                 tooltip=_tooltip)
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
+                                 tooltip=self._tabtooltip)
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
+        self.hbx_tab_label.show_all()
 
     def make_toolbuttons(self, **kwargs: Dict[str, Any]) -> None:
         """
@@ -1003,6 +1007,7 @@ class RAMSTKListView(RAMSTKBaseView):
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
     :type tab_label: :class:`Gtk.Label`
     """
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
@@ -1068,46 +1073,17 @@ class RAMSTKListView(RAMSTKBaseView):
         if matrix_type.capitalize() == self._module.capitalize():
             self.matrixview.do_load_matrix(matrix)
 
-    def make_ui(self, vtype: str = 'list', **kwargs) -> None:
+    def make_ui(self) -> None:
         """
         Build the list view user interface.
 
-        :param str vtype: the type of view to create; 'list' (default) or
-            'matrix'.
         :return: None
         :rtype: None
         """
-        self._view_type = vtype
-
-        _tab_label = kwargs.get('tab_label', 'Tab')
-        _tooltip = kwargs.get(
-            'tooltip',
-            _("Missing tooltip, please file a quality type issue to have one "
-              "added."))
-
-        self.tab_label.set_markup("<span weight='bold'>" + _tab_label
-                                  + "</span>")
-        self.tab_label.set_xalign(0.5)
-        self.tab_label.set_yalign(0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(_tooltip)
-
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        try:
-            _scrolledwindow.add(
-                do_make_buttonbox(self,
-                                  icons=self._lst_icons,
-                                  tooltips=self._lst_tooltips,
-                                  callbacks=self._lst_callbacks))
-        except AttributeError:
-            _scrolledwindow.add(do_make_buttonbox(self, **kwargs))
-        self.pack_start(_scrolledwindow, False, False, 0)
-
-        self.hbx_tab_label.pack_end(self.tab_label, True, True, 0)
-        self.hbx_tab_label.show_all()
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
+                              tooltips=self._lst_tooltips,
+                              callbacks=self._lst_callbacks)
 
         _scrolledwindow = Gtk.ScrolledWindow()
         if self._view_type == 'matrix':
@@ -1122,10 +1098,10 @@ class RAMSTKListView(RAMSTKBaseView):
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + '/32x32/partial.png'
             }
-            self.matrixview.set_tooltip_text(_tooltip)
+            self.matrixview.set_tooltip_text(self._tabtooltip)
             _scrolledwindow.add(self.matrixview)
         else:
-            self.treeview.set_tooltip_text(_tooltip)
+            self.treeview.set_tooltip_text(self._tabtooltip)
             _scrolledwindow.add(self.treeview)
 
         self.pack_end(_scrolledwindow, True, True, 0)
@@ -1142,6 +1118,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
     :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
     """
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
@@ -1163,7 +1140,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._img_tab = Gtk.Image()
 
         # Initialize public dictionary attributes.
 
@@ -1189,34 +1165,16 @@ class RAMSTKModuleView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            do_make_buttonbox(self,
-                              icons=self._lst_icons,
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
                               tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks))
-        self.pack_start(_scrolledwindow, False, False, 0)
+                              callbacks=self._lst_callbacks)
 
-        self.treeview.set_tooltip_text(
-            _("Displays the list of {0:s}s.").format(self._module))
-
-        self._img_tab.set_from_file(self._dic_icons['tab'])
+        self.treeview.set_tooltip_text(self._tabtooltip)
 
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
         self.pack_end(_scrolledwindow, True, True, 0)
-
-        self.hbx_tab_label.pack_start(self._img_tab, True, True, 0)
-        self.hbx_tab_label.show_all()
-
-        _label = RAMSTKLabel(_("{0:s}").format(self._module.capitalize()))
-        _label.do_set_properties(width=-1,
-                                 height=-1,
-                                 tooltip=_("Displays the program "
-                                           "{0:s}s.").format(self._module))
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
 
@@ -1233,6 +1191,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
     :ivar list _lst_widgets: the list of RAMSTK (preferred) and Gtk widgets
         used to display information on a workview.
     """
+
     def __init__(self,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager,
@@ -1295,7 +1254,11 @@ class RAMSTKWorkView(RAMSTKBaseView):
         """
         _index_end = kwargs.get('end', len(self._lst_labels))
         _index_start = kwargs.get('start', 0)
-        _title = kwargs.get('title', ["", ""])
+
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
+                              tooltips=self._lst_tooltips,
+                              callbacks=self._lst_callbacks)
 
         _fixed = Gtk.Fixed()
 
@@ -1324,12 +1287,12 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
 
         _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(title=_title[0])
+        _frame.do_set_properties(title=self._lst_title[0])
         _frame.add(_scrollwindow)
 
         return _frame
 
-    def make_ui_with_treeview(self, **kwargs: Dict[str, Any]) -> None:
+    def make_ui_with_treeview(self) -> None:
         """
         Build the work view UI containing a RAMSTKTreeView().
 
@@ -1357,7 +1320,10 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # TMPLT: The overall view is created by a call to make_toolbuttons()
         # TMPLT: from the child class' __make_ui() method followed by a call
         # TMPLT: to this method.
-        _title = kwargs.get('title', ["", ""])
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(icons=self._lst_icons,
+                              tooltips=self._lst_tooltips,
+                              callbacks=self._lst_callbacks)
 
         _hbox = Gtk.HBox()
 
@@ -1370,7 +1336,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
             _y_pos += 65
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_title[0])
+        _frame.do_set_properties(title=self._lst_title[0])
         _frame.add(_fixed)
 
         _hbox.pack_start(_frame, False, True, 0)
@@ -1381,7 +1347,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _scrollwindow.add(self.treeview)
 
         _frame = RAMSTKFrame()
-        _frame.do_set_properties(title=_title[1])
+        _frame.do_set_properties(title=self._lst_title[1])
         _frame.add(_scrollwindow)
 
         _hbox.pack_end(_frame, True, True, 0)

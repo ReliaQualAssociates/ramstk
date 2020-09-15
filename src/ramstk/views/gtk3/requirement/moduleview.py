@@ -45,6 +45,9 @@ class ModuleView(RAMSTKModuleView):
 
     # Define private scalar class attributes.
     _module: str = 'requirement'
+    _tablabel: str = 'Requirement'
+    _tabtooltip: str = _("Displays the RAMS requirements hierarchy for the "
+                         "selected Revision.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:

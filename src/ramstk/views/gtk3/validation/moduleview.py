@@ -45,6 +45,9 @@ class ModuleView(RAMSTKModuleView):
 
     # Define private scalar class attributes.
     _module: str = 'validation'
+    _tablabel: str = 'Verification'
+    _tabtooltip: str = _("Displays the list of verification tasks for the "
+                         "selected Revision.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -159,7 +162,7 @@ class ModuleView(RAMSTKModuleView):
         _prompt = _("You are about to delete Validation {0:d} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog: RAMSTKMessageDialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type('question')
 

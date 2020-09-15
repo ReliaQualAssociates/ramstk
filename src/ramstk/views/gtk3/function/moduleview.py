@@ -44,6 +44,9 @@ class ModuleView(RAMSTKModuleView):
 
     # Define private scalar class attributes.
     _module: str = 'function'
+    _tablabel: str = 'Function'
+    _tabtooltip: str = _("Displays the functional hierarchy for the selected "
+                         "Revision.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:

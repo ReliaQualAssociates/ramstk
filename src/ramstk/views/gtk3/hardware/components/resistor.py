@@ -8,7 +8,7 @@
 """Resistor Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -134,11 +134,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         _("Construction:"),
         _("Number of Elements:")
     ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'resistor') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'resistor'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Resistor assessment input view.
 
@@ -146,13 +150,15 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
 
@@ -550,23 +556,15 @@ class AssessmentResults(RAMSTKAssessmentResults):
     }
 
     # Define private list class attributes.
-    _lst_tooltips = [
-        _("The assessment model used to calculate the resistor failure rate."),
-        _("The base hazard rate of the resistor."),
-        _("The quality factor for the resistor."),
-        _("The environment factor for the resistor."),
-        _("The resistance factor for the resistor."),
-        _("The temperature factor for the resistor."),
-        _("The number of resistors factor for the resistor."),
-        _("The potentiometer taps factor for the resistor."),
-        _("The voltage factor for the resistor."),
-        _("The construction class factor for the resistor.")
-    ]
+    _lst_title: List[str] = ["", ""]
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'resistor') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'resistor'
+    _tablabel: str = ""
+    _tabtooltip: str = ""
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize an instance of the Resistor assessment result view.
 
@@ -574,13 +572,27 @@ class AssessmentResults(RAMSTKAssessmentResults):
         :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
-        super().__init__(configuration, logger, module=module)
+        super().__init__(configuration, logger)
 
         # Initialize private dict attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[str] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips = [
+            _("The assessment model used to calculate the resistor failure "
+              "rate."),
+            _("The base hazard rate of the resistor."),
+            _("The quality factor for the resistor."),
+            _("The environment factor for the resistor."),
+            _("The resistance factor for the resistor."),
+            _("The temperature factor for the resistor."),
+            _("The number of resistors factor for the resistor."),
+            _("The potentiometer taps factor for the resistor."),
+            _("The voltage factor for the resistor."),
+            _("The construction class factor for the resistor.")
+        ]
         self._lst_labels.append("\u03C0<sub>R</sub>:")
         self._lst_labels.append("\u03C0<sub>T</sub>:")
         self._lst_labels.append("\u03C0<sub>NR</sub>:")

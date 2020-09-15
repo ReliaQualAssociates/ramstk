@@ -35,9 +35,13 @@ class FunctionHardware(RAMSTKListView):
 
     # Define private scalar class attributes.
     _module: str = 'fnctn_hrdwr'
+    _tablabel = "<span weight='bold'>" + _(
+        "Function::Hardware\nMatrix") + "</span>"
+    _tabtooltip = _("Displays the Function::Hardware matrix "
+                    "for the selected revision.")
+    _view_type: str = 'matrix'
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
+    def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """
         Initialize the List View for the Function package.
@@ -68,9 +72,6 @@ class FunctionHardware(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui(vtype='matrix',
-                        tab_label=_("Function::Hardware\nMatrix"),
-                        tooltip=_("Displays the Function::Hardware matrix for "
-                                  "the selected revision."))
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.

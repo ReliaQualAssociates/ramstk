@@ -56,9 +56,12 @@ class GeneralData(RAMSTKWorkView):
         _("Revision Name:"),
         _("Remarks:")
     ]
+    _lst_title = [_("General Information"), ""]
 
     # Define private scalar class attributes.
     _module: str = 'revision'
+    _tablabel = _("General\nData")
+    _tabtooltip = _("Displays general information for the selected Revision")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -80,6 +83,9 @@ class GeneralData(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[object] = []
+        self._lst_icons: List[str] = []
+        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
 
@@ -133,17 +139,10 @@ class GeneralData(RAMSTKWorkView):
         #                           buttons ----+--> self
         #                                       |
         #      RAMSTKFixed ------>RAMSTKFrame --+
-        # Make the buttons.
-        super().make_toolbuttons(icons=[], tooltips=[], callbacks=[])
-
         # Layout the widgets.
-        _frame = super().make_ui(title=[_("General Information"), ""])
+        _frame = super().make_ui()
         self.pack_end(_frame, True, True, 0)
 
-        super().make_tab_label(tablabel=_("General\nData"),
-                               tooltip=_(
-                                   "Displays general information for the "
-                                   "selected Revision"))
         self.show_all()
 
     def __set_callbacks(self) -> None:

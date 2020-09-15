@@ -44,6 +44,9 @@ class ModuleView(RAMSTKModuleView):
 
     # Define private scalar class attributes.
     _module: str = 'revision'
+    _tablabel: str = 'Revision'
+    _tabtooltip: str = _("Displays the list of Revisions for the open RAMSTK "
+                         "Project.")
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
