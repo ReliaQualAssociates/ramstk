@@ -26,12 +26,18 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
     _default_width = 200
 
     def __init__(self) -> None:
-        """
-        Create a RAMSTK Entry widget.
-        """
+        """Create a RAMSTK Entry widget."""
         RAMSTKWidget.__init__(self)
 
         self.show()
+
+    def do_get_text(self):
+        """Wrap the Gtk.Entry().get_text() method for consistent calls.
+
+        :return: the text in the RAMSTKEntry().
+        :rtype: str
+        """
+        return self.get_text()
 
     def do_set_properties(self, **kwargs: Any) -> None:
         r"""
@@ -67,8 +73,7 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
             self.modify_font(Pango.FontDescription('bold'))
 
     def do_update(self, value: str, signal: str = '') -> None:
-        """
-        Update the RAMSTK Entry with a new value.
+        """Update the RAMSTK Entry with a new value.
 
         :param str value: the information to update the RAMSTKEntry() to
             display.
@@ -95,8 +100,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
     _default_width = 200
 
     def __init__(self, txvbuffer: Gtk.TextBuffer = None) -> None:
-        """
-        Create RAMSTK TextView() widgets.
+        """Create RAMSTK TextView() widgets.
 
         Returns a Gtk.TextView() embedded in a Gtk.ScrolledWindow().
 
@@ -123,8 +127,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
 
     def do_get_buffer(self) -> Gtk.TextBuffer:
-        """
-        Return the Gtk.TextBuffer() emedded in the RAMSTK TextView.
+        """Return the Gtk.TextBuffer() emedded in the RAMSTK TextView.
 
         :return: buffer; the embedded Gtk.TextBuffer()
         :rtype: :class:`Gtk.TextBuffer`
@@ -132,8 +135,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         return self.get_buffer()
 
     def do_get_text(self) -> Any:
-        """
-        Retrieve the text from the embedded Gtk.TextBuffer().
+        """Retrieve the text from the embedded Gtk.TextBuffer().
 
         :return: text; the text in the Gtk.TextBuffer().
         :rtype: str
@@ -165,8 +167,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
     def do_update(self, value: str, signal: str = '') -> None:
-        """
-        Update the RAMSTK TextView with a new value.
+        """Update the RAMSTK TextView with a new value.
 
         :param str value: the information to update the RAMSTKTextView() to
             display.

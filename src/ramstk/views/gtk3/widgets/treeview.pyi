@@ -10,7 +10,6 @@ def do_make_column(cells: List[object], **kwargs) -> \
         Gtk.TreeViewColumn: ...
 
 def do_set_cell_properties(cell: object, **kwargs) -> None: ...
-    pass
 
 
 class RAMSTKTreeView(Gtk.TreeView):

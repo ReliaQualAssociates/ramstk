@@ -8,9 +8,10 @@
 """The RAMSTK GTK3 widgets package."""
 
 # RAMSTK Local Imports
+from .widget import RAMSTKWidget
 from .basebook import RAMSTKBaseBook
 from .baseview import (RAMSTKBaseView, RAMSTKListView, RAMSTKModuleView,
-                       RAMSTKWorkView)
+                       RAMSTKWorkView, _do_make_panel_fixed)
 from .button import (RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton,
                      RAMSTKSpinButton, do_make_buttonbox)
 from .combo import RAMSTKComboBox
@@ -25,4 +26,4 @@ from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import (RAMSTKTreeView, do_make_column, do_make_combo_cell,
                        do_make_spin_cell, do_make_text_cell,
                        do_make_toggle_cell, do_set_cell_properties)
-from .widget import RAMSTKWidget
+from .panel import RAMSTKPanel
