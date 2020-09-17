@@ -75,7 +75,7 @@ class GeneralDataPanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_edit, 'mvw_editing_revision')
 
-        pub.subscribe(self._do_clear_panel, 'closed_program')
+        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
         pub.subscribe(self._do_load_panel, 'selected_revision')
 
     def _do_clear_panel(self) -> None:
@@ -140,8 +140,9 @@ class GeneralData(RAMSTKWorkView):
     The Revision Work View displays all the general data attributes for the
     selected Revision. The attributes of a Revision General Data Work View are:
 
-    :cvar dict _dic_keys: the index:database table field dictionary.
     :cvar str _module: the name of the module.
+    :cvar str _tablabel: the text to display on the tab's label.
+    :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
     :ivar list _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -194,9 +195,12 @@ class GeneralData(RAMSTKWorkView):
             'save',
             'save-all',
         ]
+        self._lst_mnu_labels: List[str] = [
+            _("Save"),
+            _("Save All"),
+        ]
         self._lst_tooltips: List[str] = [
-            _("Save changes to the currently "
-              "selected Revision."),
+            _("Save changes to the currently selected Revision."),
             _("Save changes to all Revisions."),
         ]
 

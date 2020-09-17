@@ -17,7 +17,9 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import (RAMSTKSiteConfiguration,
-                                  RAMSTKUserConfiguration)
+                                  RAMSTKUserConfiguration,
+RAMSTK_CRITICALITY, RAMSTK_FAILURE_PROBABILITY)
+
 from ramstk.controllers import (
     amFMEA, amFunction, amHardware, amStakeholder, amValidation, dmFMEA,
     dmFunction, dmHardware, dmOptions, dmPoF, dmRequirement, dmRevision,
@@ -59,8 +61,7 @@ def do_copy_configuration_values(
     Copy some values from the site configuration to the user configuration.
 
     :param user_configuration: the instance of the RAMSTKUserConfiguration()
-    to
-        add volatile data to.
+        to add volatile data to.
     :type user_configuration: :class:`RAMSTKUserConfiguration`
     :param site_configuration: the instance of the RAMSTKSiteConfiguration() to
         add volatile data from.
@@ -68,40 +69,43 @@ def do_copy_configuration_values(
     :return: None
     :rtype: None
     """
-    user_configuration.RAMSTK_AFFINITY_GROUPS = \
-        site_configuration.RAMSTK_AFFINITY_GROUPS
-    user_configuration.RAMSTK_REQUIREMENT_TYPE = \
-        site_configuration.RAMSTK_REQUIREMENT_TYPE
-    user_configuration.RAMSTK_STAKEHOLDERS = \
-        site_configuration.RAMSTK_STAKEHOLDERS
-    user_configuration.RAMSTK_WORKGROUPS = site_configuration.RAMSTK_WORKGROUPS
-    user_configuration.RAMSTK_VALIDATION_TYPE = \
-        site_configuration.RAMSTK_VALIDATION_TYPE
-    user_configuration.RAMSTK_MEASUREMENT_UNITS = \
-        site_configuration.RAMSTK_MEASUREMENT_UNITS
-    user_configuration.RAMSTK_CATEGORIES = \
-        site_configuration.RAMSTK_CATEGORIES
-    user_configuration.RAMSTK_SUBCATEGORIES = \
-        site_configuration.RAMSTK_SUBCATEGORIES
-    user_configuration.RAMSTK_MANUFACTURERS = \
-        site_configuration.RAMSTK_MANUFACTURERS
-    user_configuration.RAMSTK_USERS = site_configuration.RAMSTK_USERS
     user_configuration.RAMSTK_ACTION_CATEGORY = \
         site_configuration.RAMSTK_ACTION_CATEGORY
     user_configuration.RAMSTK_ACTION_STATUS = \
         site_configuration.RAMSTK_ACTION_STATUS
-    user_configuration.RAMSTK_RPN_SEVERITY = \
-        site_configuration.RAMSTK_RPN_SEVERITY
-    user_configuration.RAMSTK_RPN_OCCURRENCE = \
-        site_configuration.RAMSTK_RPN_OCCURRENCE
-    user_configuration.RAMSTK_RPN_DETECTION = \
-        site_configuration.RAMSTK_RPN_DETECTION
+    user_configuration.RAMSTK_AFFINITY_GROUPS = \
+        site_configuration.RAMSTK_AFFINITY_GROUPS
+    user_configuration.RAMSTK_CATEGORIES = \
+        site_configuration.RAMSTK_CATEGORIES
+    user_configuration.RAMSTK_CRITICALITY = RAMSTK_CRITICALITY
     user_configuration.RAMSTK_DAMAGE_MODELS = \
         site_configuration.RAMSTK_DAMAGE_MODELS
-    user_configuration.RAMSTK_MEASURABLE_PARAMETERS = \
-        site_configuration.RAMSTK_MEASURABLE_PARAMETERS
+    user_configuration.RAMSTK_FAILURE_PROBABILITY = RAMSTK_FAILURE_PROBABILITY
+    user_configuration.RAMSTK_HAZARDS = site_configuration.RAMSTK_HAZARDS
     user_configuration.RAMSTK_LOAD_HISTORY = \
         site_configuration.RAMSTK_LOAD_HISTORY
+    user_configuration.RAMSTK_MANUFACTURERS = \
+        site_configuration.RAMSTK_MANUFACTURERS
+    user_configuration.RAMSTK_MEASURABLE_PARAMETERS = \
+        site_configuration.RAMSTK_MEASURABLE_PARAMETERS
+    user_configuration.RAMSTK_MEASUREMENT_UNITS = \
+        site_configuration.RAMSTK_MEASUREMENT_UNITS
+    user_configuration.RAMSTK_REQUIREMENT_TYPE = \
+        site_configuration.RAMSTK_REQUIREMENT_TYPE
+    user_configuration.RAMSTK_RPN_DETECTION = \
+        site_configuration.RAMSTK_RPN_DETECTION
+    user_configuration.RAMSTK_RPN_OCCURRENCE = \
+        site_configuration.RAMSTK_RPN_OCCURRENCE
+    user_configuration.RAMSTK_RPN_SEVERITY = \
+        site_configuration.RAMSTK_RPN_SEVERITY
+    user_configuration.RAMSTK_STAKEHOLDERS = \
+        site_configuration.RAMSTK_STAKEHOLDERS
+    user_configuration.RAMSTK_SUBCATEGORIES = \
+        site_configuration.RAMSTK_SUBCATEGORIES
+    user_configuration.RAMSTK_USERS = site_configuration.RAMSTK_USERS
+    user_configuration.RAMSTK_VALIDATION_TYPE = \
+        site_configuration.RAMSTK_VALIDATION_TYPE
+    user_configuration.RAMSTK_WORKGROUPS = site_configuration.RAMSTK_WORKGROUPS
 
     return user_configuration
 

@@ -16,7 +16,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk, Gtk
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKPlot,
     RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKTreeView, do_make_label_group
 )
 
@@ -41,6 +41,42 @@ class RAMSTKPanel(RAMSTKFrame):
     _do_load_panel() to load the attribute data into the widgets in the
         panel.  Connect this as a listener for the 'selected_<module>' for
         the work stream module the panel is associated with.
+
+    There are three types of panels that can be created.  These are:
+
+        * fixed: a panel containing a Gtk.Fixed() populated with labels
+            and widgets.
+        * plot: a panel containing a RAMSTKPlot().
+        * treeview: a panel containing a RAMSTKTreeView().
+
+    The attributes of a RAMSTKPanel are:
+
+    :ivar dict _dic_attribute_keys: contains key:value pairs where the key is
+    the index of the widget displaying the associated attribute and the value
+    is a list with the name of the attribute in position 0 and the attribute's
+    data type in position 1.  An example entry in this dict might be:
+
+        0: ['name', 'string']
+
+    :ivar dict _dic_attribute_updater: contains key:value pairs where the
+        key is the name of the attribute and the value is a list with the
+        method used to update a widget's display in position 0 and the name of
+        the signal to block while updating the widget in position 1.  An
+        example entry in this dict might be:
+
+        'name': [self.txtName.do_update, 'changed']
+
+    :ivar list _lst_labels: the list of text to display in the labels
+        for each widget in a panel.
+    :ivar list _lst_widgets: the list of widgets to display in a panel.
+    :ivar int _record_id: the work stream module ID whose attributes
+        this panel is displaying.
+    :ivar str _title: the title to place on the RAMSTKFrame() that is
+        this panel's container.
+
+    :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
+        treeview.
+    :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
     """
 
     # Define private dict class attributes.
@@ -57,39 +93,6 @@ class RAMSTKPanel(RAMSTKFrame):
 
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTKPanel.
-
-        There are three types of panels that can be creates.  These are:
-
-            * fixed: a panel containing a Gtk.Fixed() populated with labels
-                and widgets.
-            * plot: a panel containing a RAMSTKPlot().
-            * treeview: a panel containing a RAMSTKTreeView().
-
-        The attributes of a RAMSTKPanel are:
-
-        :ivar dict _dic_attribute_keys: contains key:value pairs where the
-        key is the index of the widget displaying the associated attribute
-        and the value is a list with the name of the attribute in position 0
-        and the attribute's data type in position 1.  An example entry in this
-        dict might be:
-
-            0: ['name', 'string']
-
-        :ivar dict _dic_attribute_updater: contains key:value pairs where the
-            key is the name of the attribute and the value is a list with the
-            method used to update a widget's display in position 0 and the
-            name of the signal to block while updating the widget in
-            position 1.  An example entry in this dict might be:
-
-            'name': [self.txtName.do_update, 'changed']
-
-        :ivar list _lst_labels: the list of text to display in the labels
-            for each widget in a panel.
-        :ivar list _lst_widgets: the list of widgets to display in a panel.
-        :ivar int _record_id: the work stream module ID whose attributes
-            this panel is displaying.
-        :ivar str _title: the title to place on the RAMSTKFrame() that is
-            this panel's container.
 
         :return: None
         :rtype: None
@@ -113,6 +116,8 @@ class RAMSTKPanel(RAMSTKFrame):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.pltPlot: RAMSTKPlot = RAMSTKPlot()
+        self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
     def do_make_panel_fixed(self) -> None:
         """Create a panel with the labels and widgets on a Gtk.Fixed().
@@ -151,12 +156,9 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.add(_scrollwindow)
 
-    @staticmethod
-    def do_make_panel_plot(plot: object) -> Gtk.ScrolledWindow:
+    def do_make_panel_plot(self) -> None:
         """Create a panel with a RAMSTKPlot().
 
-        :param plot: the RAMSTKPlot() to embed.
-        :type plot: :class:`ramstk.views.gtk3.widgets.RAMSTKPlot`
         :return: None
         :rtype: None
         """
@@ -165,12 +167,11 @@ class RAMSTKPanel(RAMSTKFrame):
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
                                  Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(plot)
+        _scrollwindow.add(self.pltPlot)
 
-        return _scrollwindow
+        self.add(_scrollwindow)
 
-    @staticmethod
-    def do_make_panel_treeview(treeview: RAMSTKTreeView) -> Gtk.ScrolledWindow:
+    def do_make_panel_treeview(self) -> None:
         """Create a panel with a RAMSTKTreeView().
 
         :param treeview: the RAMSTKTreeView() to embed in the panel.
@@ -178,14 +179,43 @@ class RAMSTKPanel(RAMSTKFrame):
         :return: None
         :rtype: None
         """
+        self._lst_widgets.append(self.tvwTreeView)
+
         _frame: RAMSTKFrame = RAMSTKFrame()
 
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
                                  Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(treeview)
+        _scrollwindow.add(self.tvwTreeView)
 
-        return _scrollwindow
+        self.add(_scrollwindow)
+
+    def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
+                     position: int, message: str) -> None:
+        """Handle edits of the RAMSTKTreeview() in a treeview panel.
+
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :type cell: :class:`Gtk.CellRenderer`
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param int position: the column position of the edited
+            Gtk.CellRenderer().
+        :param str message: the PyPubSub message to publish.
+        :return: None
+        :rtype: None
+        """
+        _lst_column_order: List[int] = list(self.tvwTreeView.position.values())
+
+        try:
+            _key = self._dic_attribute_keys[_lst_column_order[position]]
+            if not self.tvwTreeView.do_edit_cell(cell, path, new_text,
+                                                 position):
+                pub.sendMessage(message,
+                                node_id=[self.parent_id, self._record_id, ''],
+                                package={_key: new_text})
+        except KeyError:
+            pass
 
     def on_changed_combo(self, combo: RAMSTKComboBox, index: int,
                          message: str) -> Dict[Union[str, Any], Any]:
@@ -324,7 +354,7 @@ class RAMSTKPanel(RAMSTKFrame):
             returned when a KeyError or ValueError is raised by this method.
         :rtype: dict
         """
-        return self.on_changed(entry, index, message)
+        return self.on_changed_text(entry, index, message)
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    message: str) -> Dict[Union[str, Any], Any]:

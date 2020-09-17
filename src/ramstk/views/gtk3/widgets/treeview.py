@@ -218,6 +218,20 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         # Initialize public scalar instance attributes.
         self.selection = self.get_selection()
 
+    def do_build_treeview(self,
+                          format_file: str,
+                          colors: Dict[str, str]) -> None:
+        """Build the instance of a RAMSTKTreeView().
+
+        :
+        :return: None
+        :rtype: None
+        """
+        self.do_parse_format(format_file)
+        self.do_make_model()
+        self.do_make_columns(colors=colors)
+        self.do_set_editable_columns(self.do_edit_cell)
+
     @staticmethod
     def _do_format_cell(__column: Gtk.TreeViewColumn, cell: Gtk.CellRenderer,
                         model: Gtk.TreeModel, row: Gtk.TreeIter,
@@ -390,6 +404,23 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         return _attributes
 
+    def do_expand_tree(self) -> None:
+        """
+        Expands the RAMSTKTreeView().
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.get_model()
+        _row = _model.get_iter_first()
+
+        self.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.get_column(0)
+            self.set_cursor(_path, None, False)
+            self.row_activated(_path, _column)
+
     def do_load_tree(self,
                      tree: treelib.Tree,
                      tag: str,
@@ -527,7 +558,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         :param int column: the column number to retrieve the cell's model.
         :param bool clear: whether or not to clear the Gtk.TreeModel().
-        Default is True.
+            Default is True.
         :return: _model
         :rtype: :class:`Gtk.TreeModel`
         """
