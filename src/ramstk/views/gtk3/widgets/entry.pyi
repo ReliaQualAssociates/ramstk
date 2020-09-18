@@ -33,7 +33,7 @@ class RAMSTKEntry(Gtk.Entry):
     def show(self):
         pass
 
-    def connect(self, param, _on_focus_out, param1):
+    def connect(self, param, _on_focus_out, param1, param2):
         pass
 
 

@@ -119,16 +119,20 @@ class RAMSTKPanel(RAMSTKFrame):
         self.pltPlot: RAMSTKPlot = RAMSTKPlot()
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
-    def do_make_panel_fixed(self) -> None:
+    def do_make_panel_fixed(self, **kwargs: Dict[str, Any]) -> None:
         """Create a panel with the labels and widgets on a Gtk.Fixed().
 
         :return: None
         :rtype: None
         """
+        _justify = kwargs.get('justify', Gtk.Justification.RIGHT)
+
         _fixed: Gtk.Fixed = Gtk.Fixed()
 
         _y_pos: int = 5
         (_x_pos, _labels) = do_make_label_group(self._lst_labels,
+                                                bold=False,
+                                                justify=_justify,
                                                 x_pos=5,
                                                 y_pos=5)
         for _idx, _label in enumerate(_labels):
@@ -180,8 +184,6 @@ class RAMSTKPanel(RAMSTKFrame):
         :rtype: None
         """
         self._lst_widgets.append(self.tvwTreeView)
-
-        _frame: RAMSTKFrame = RAMSTKFrame()
 
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,

@@ -40,7 +40,8 @@ class GeneralDataPanel(RAMSTKPanel):
         self._lst_labels: List[str] = [
             _("Function Code:"),
             _("Function Name:"),
-            _("Remarks:"), ''
+            _("Remarks:"),
+            '',
         ]
 
         # Initialize private scalar instance attributes.
@@ -72,9 +73,8 @@ class GeneralDataPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        self.do_make_panel_fixed()
-
         self.__do_set_properties()
+        self.do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -118,13 +118,17 @@ class GeneralDataPanel(RAMSTKPanel):
         :rtype: None
         """
         self.txtCode.dic_handler_id['changed'] = (self.txtCode.connect(
-            'changed', self.on_changed_text, 0, 'wvw_editing_function'))
+            'changed',
+            super().on_changed_text, 0, 'wvw_editing_function'))
         self.txtName.dic_handler_id['changed'] = (self.txtName.connect(
-            'changed', self.on_changed_text, 1, 'wvw_editing_function'))
+            'changed',
+            super().on_changed_text, 1, 'wvw_editing_function'))
         self.txtRemarks.dic_handler_id['changed'] = (self.txtRemarks.connect(
-            'focus-out-event', self.on_focus_out, 2, 'wvw_editing_function'))
+            'focus-out-event',
+            super().on_focus_out, 2, 'wvw_editing_function'))
         self.chkSafetyCritical.dic_handler_id['toggled'] = (
-            self.chkSafetyCritical.connect('toggled', self.on_toggled, 3,
+            self.chkSafetyCritical.connect('toggled',
+                                           super().on_toggled, 3,
                                            'wvw_editing_function'))
 
     def __do_set_properties(self) -> None:
@@ -133,6 +137,8 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
+        self.do_set_properties(bold=True, title=self._title)
+
         # ----- BUTTONS
         self.chkSafetyCritical.do_set_properties(
             tooltip=_("Indicates whether or not the selected function is "
@@ -244,10 +250,6 @@ class HazOpsPanel(RAMSTKPanel):
         :rtype: None
         """
         _model = self.tvwTreeView.get_model()
-        _columns = self.tvwTreeView.get_columns()
-        for _column in _columns:
-            self.tvwTreeView.remove_column(_column)
-
         _model.clear()
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
@@ -324,6 +326,8 @@ class HazOpsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
+        self.do_set_properties(bold=True, title=self._title)
+
         self.tvwTreeView.set_enable_tree_lines(True)
         self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
         self.tvwTreeView.set_level_indentation(2)
@@ -333,7 +337,7 @@ class HazOpsPanel(RAMSTKPanel):
 
     # pylint: disable=unused-argument
     def __do_load_panel(self, node_id: int) -> None:
-        """Wrapper method responds to calculate, delete, insert messages.
+        """Wrap method responds to calculate, delete, insert messages.
 
         This is necessary for now because the Hazards are carried around in
         the Function tree.  This method simply calls another method that
@@ -396,7 +400,8 @@ class GeneralData(RAMSTKWorkView):
         """Initialize the Function Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration:
+            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
@@ -515,7 +520,8 @@ class HazOps(RAMSTKWorkView):
         """Initialize the Work View for the HazOps.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration:
+            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
@@ -593,7 +599,7 @@ class HazOps(RAMSTKWorkView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_delete_hazard',
                         function_id=self._parent_id,
-                        node_id=self._pnlHazOps._record_id) # pylint: disable=protected-access
+                        node_id=self._pnlHazOps._record_id)  # pylint: disable=protected-access
 
     def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """Request to insert a new hazard for the selected function.

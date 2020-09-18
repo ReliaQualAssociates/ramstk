@@ -19,9 +19,8 @@ from .widget import RAMSTKWidget
 
 def do_make_label_group(
         text: List[str], **kwargs: Dict[str,
-                                        Any]) -> Tuple[int, List[object]]:
-    r"""
-    Make and place a group of labels.
+                                        Any]) -> Tuple[int, List[RAMSTKLabel]]:
+    """Make and place a group of labels.
 
     The width of each label is set using a natural request.  This ensures the
     label doesn't cut off letters.  The maximum size of the labels is
@@ -31,17 +30,13 @@ def do_make_label_group(
     to place the corresponding widget.
 
     :param list text: a list containing the text for each label.
-    :param \**kwargs: See below
-
-        :Keyword Arguments:
-            * *wrap* (bool) -- boolean indicating whether the label text should
-                wrap or not.
-
     :return: (_max_x, _lst_labels)
         the width of the label with the longest text and a list of the
         RAMSTKLabel() instances.
     :rtype: tuple of (integer, list of RAMSTKLabel())
     """
+    _bold = kwargs.get('bold', True)
+    _justify = kwargs.get('justify', Gtk.Justification.RIGHT)
     _wrap = kwargs.get('wrap', True)
 
     _lst_labels = []
@@ -52,10 +47,11 @@ def do_make_label_group(
     # pylint: disable=unused-variable
     for __, _label_text in enumerate(text):
         _label = RAMSTKLabel(_label_text)
-        _label.do_set_properties(width=-1,
+        _label.do_set_properties(bold=_bold,
                                  height=-1,
-                                 wrap=_wrap,
-                                 justify=Gtk.Justification.RIGHT)
+                                 justify=_justify,
+                                 width=-1,
+                                 wrap=_wrap)
         _label.set_width_chars(_char_width)
         _max_x = max(_max_x, _label.get_attribute('width'))
         _lst_labels.append(_label)
@@ -64,15 +60,14 @@ def do_make_label_group(
 
 
 class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
-    """This is the RAMSTK Label class."""
+    """The RAMSTK Label class."""
 
     # Define private class scalar attributes.
     _default_height = 25
     _default_width = 190
 
     def __init__(self, text: str) -> None:
-        """
-        Create RAMSTKLabel widget.
+        """Create RAMSTKLabel widget.
 
         :param str text: the text to display in the label.
         """
@@ -82,8 +77,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         self.show_all()
 
     def get_attribute(self, attribute: str) -> Any:
-        """
-        Get the value of the requested attribute.
+        """Get the value of the requested attribute.
 
         :param str attribute: the name of the attribute to retrieve.
         :return: the value of the requested attribute.
@@ -97,8 +91,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         return _attributes[attribute]
 
     def do_set_properties(self, **kwargs: Any) -> None:
-        """
-        Set the RAMSTKFrame properties.
+        """Set the RAMSTKFrame properties.
 
         :Keyword Arguments:
             * *width* (int) -- width of the Gtk.Label() widget.  Default is
