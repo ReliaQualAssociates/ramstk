@@ -1140,8 +1140,8 @@ class BurndownCurve(RAMSTKWorkView):
 
         self.pltPlot.do_make_title(_("Total Validation Effort"))
         self.pltPlot.do_make_labels(_("Total Time [hours]"),
-                                    -0.5,
-                                    0,
+                                    x_pos=-0.5,
+                                    y_pos=0,
                                     set_x=False)
         # noinspection PyTypeChecker
         self.pltPlot.do_make_legend(
