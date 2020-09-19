@@ -17,48 +17,6 @@ from ramstk.views.gtk3 import Gtk
 from .widget import RAMSTKWidget
 
 
-def do_make_label_group(
-        text: List[str], **kwargs: Dict[str,
-                                        Any]) -> Tuple[int, List[RAMSTKLabel]]:
-    """Make and place a group of labels.
-
-    The width of each label is set using a natural request.  This ensures the
-    label doesn't cut off letters.  The maximum size of the labels is
-    determined and used to set the left position of widget displaying the data
-    described by the label.  This ensures everything lines up.  It also returns
-    a list of y-coordinates indicating the placement of each label that is used
-    to place the corresponding widget.
-
-    :param list text: a list containing the text for each label.
-    :return: (_max_x, _lst_labels)
-        the width of the label with the longest text and a list of the
-        RAMSTKLabel() instances.
-    :rtype: tuple of (integer, list of RAMSTKLabel())
-    """
-    _bold = kwargs.get('bold', True)
-    _justify = kwargs.get('justify', Gtk.Justification.RIGHT)
-    _wrap = kwargs.get('wrap', True)
-
-    _lst_labels = []
-    _max_x = 0
-
-    _char_width = max([len(_label_text) for _label_text in text])
-
-    # pylint: disable=unused-variable
-    for __, _label_text in enumerate(text):
-        _label = RAMSTKLabel(_label_text)
-        _label.do_set_properties(bold=_bold,
-                                 height=-1,
-                                 justify=_justify,
-                                 width=-1,
-                                 wrap=_wrap)
-        _label.set_width_chars(_char_width)
-        _max_x = max(_max_x, _label.get_attribute('width'))
-        _lst_labels.append(_label)
-
-    return _max_x, _lst_labels
-
-
 class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
     """The RAMSTK Label class."""
 
@@ -131,3 +89,45 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
             _text = self.get_property('label')
             _text = '<b>' + _text + '</b>'
             self.set_markup(_text)
+
+
+def do_make_label_group(
+        text: List[str], **kwargs: Dict[str,
+                                        Any]) -> Tuple[int, List[RAMSTKLabel]]:
+    """Make and place a group of labels.
+
+    The width of each label is set using a natural request.  This ensures the
+    label doesn't cut off letters.  The maximum size of the labels is
+    determined and used to set the left position of widget displaying the data
+    described by the label.  This ensures everything lines up.  It also returns
+    a list of y-coordinates indicating the placement of each label that is used
+    to place the corresponding widget.
+
+    :param list text: a list containing the text for each label.
+    :return: (_max_x, _lst_labels)
+        the width of the label with the longest text and a list of the
+        RAMSTKLabel() instances.
+    :rtype: tuple of (integer, list of RAMSTKLabel())
+    """
+    _bold = kwargs.get('bold', True)
+    _justify = kwargs.get('justify', Gtk.Justification.RIGHT)
+    _wrap = kwargs.get('wrap', True)
+
+    _lst_labels = []
+    _max_x = 0
+
+    _char_width = max([len(_label_text) for _label_text in text])
+
+    # pylint: disable=unused-variable
+    for __, _label_text in enumerate(text):
+        _label = RAMSTKLabel(_label_text)
+        _label.do_set_properties(bold=_bold,
+                                 height=-1,
+                                 justify=_justify,
+                                 width=-1,
+                                 wrap=_wrap)
+        _label.set_width_chars(_char_width)
+        _max_x = max(_max_x, _label.get_attribute('width'))
+        _lst_labels.append(_label)
+
+    return _max_x, _lst_labels

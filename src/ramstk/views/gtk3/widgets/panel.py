@@ -11,6 +11,9 @@
 from typing import Any, Dict, List, Union
 
 # Third Party Imports
+# pylint: disable=ungrouped-imports
+# noinspection PyPackageValidations
+from pandas.plotting import register_matplotlib_converters
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -19,6 +22,8 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKPlot,
     RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKTreeView, do_make_label_group
 )
+
+register_matplotlib_converters()
 
 
 class RAMSTKPanel(RAMSTKFrame):
@@ -166,12 +171,12 @@ class RAMSTKPanel(RAMSTKFrame):
         :return: None
         :rtype: None
         """
-        _frame: RAMSTKFrame = RAMSTKFrame()
+        self._lst_widgets.append(self.pltPlot)
 
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
                                  Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.pltPlot)
+        _scrollwindow.add(self.pltPlot.canvas)
 
         self.add(_scrollwindow)
 
