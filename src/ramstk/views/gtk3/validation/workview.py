@@ -102,7 +102,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.txtEndDate: RAMSTKEntry = RAMSTKEntry()
         self.txtStartDate: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_switch: Dict[str, Union[object, str]] = {
+        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
             'description': [self.txtTask.do_update, 'changed'],
             'task_type': [self.cmbTaskType.do_update, 'changed'],
             'task_specification': [self.txtSpecification.do_update, 'changed'],
@@ -139,7 +139,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_Validation')
+        pub.subscribe(self.on_edit, 'mvw_editing_validation')
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
         pub.subscribe(self._do_load_panel, 'selected_validation')
@@ -193,7 +193,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.cmbTaskType.do_load_combo(entries=_task_types)
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Validation General Data page widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -308,7 +308,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         return _date
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -370,7 +370,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
             super().on_changed_text, 10, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the task description panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
@@ -528,7 +528,7 @@ class TaskEffortPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_validation')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Validation General Data page widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -667,7 +667,7 @@ class TaskEffortPanel(RAMSTKPanel):
         _fixed.put(self.txtMeanCostUL, _x_pos + 390, _y_pos)
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -686,7 +686,7 @@ class TaskEffortPanel(RAMSTKPanel):
             'changed', self.on_changed_text, 16, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the task description panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
@@ -774,7 +774,7 @@ class ProgramEffortPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_validation')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Validation General Data page widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -821,7 +821,7 @@ class ProgramEffortPanel(RAMSTKPanel):
         _fixed.put(self.txtProjectCostUL, _x_pos + 350, _y_pos)
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the task description panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None

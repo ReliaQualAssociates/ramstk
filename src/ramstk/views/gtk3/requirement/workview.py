@@ -158,7 +158,7 @@ class GeneralDataPanel(RAMSTKPanel):
         self.cmbOwner.do_load_combo(_owners)
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Requirement General Data page widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -248,7 +248,7 @@ class GeneralDataPanel(RAMSTKPanel):
         return _date
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -299,7 +299,7 @@ class GeneralDataPanel(RAMSTKPanel):
                 super().on_changed_text, 10, 'wvw_editing_requirement')
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the general data panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
@@ -426,7 +426,7 @@ class ClarityPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_requirement')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Requirement clarity panel widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -448,7 +448,7 @@ class ClarityPanel(RAMSTKPanel):
                                    signal='toggled')    # noqa
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -459,7 +459,7 @@ class ClarityPanel(RAMSTKPanel):
                 super().on_toggled, _index, 'wvw_editing_requirement'))
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the Requirement clarity panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
@@ -568,7 +568,7 @@ class CompletenessPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_requirement')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Requirement clarity panel widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -590,7 +590,7 @@ class CompletenessPanel(RAMSTKPanel):
                                    signal='toggled')    # noqa
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -601,7 +601,7 @@ class CompletenessPanel(RAMSTKPanel):
                 super().on_toggled, _index, 'wvw_editing_requirement'))
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the Requirement completeness panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
@@ -707,7 +707,7 @@ class ConsistencyPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_requirement')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Requirement clarity panel widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -729,7 +729,7 @@ class ConsistencyPanel(RAMSTKPanel):
                                    signal='toggled')    # noqa
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -740,7 +740,7 @@ class ConsistencyPanel(RAMSTKPanel):
                 super().on_toggled, _index, 'wvw_editing_requirement'))
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the Requirement completeness panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
@@ -829,7 +829,7 @@ class VerifiabilityPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_requirement')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Requirement clarity panel widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -851,7 +851,7 @@ class VerifiabilityPanel(RAMSTKPanel):
                                    signal='toggled')    # noqa
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -862,7 +862,7 @@ class VerifiabilityPanel(RAMSTKPanel):
                 super().on_toggled, _index, 'wvw_editing_requirement'))
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the Requirement completeness panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None

@@ -79,7 +79,7 @@ class GeneralDataPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_revision')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Revision General Data page widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -104,7 +104,7 @@ class GeneralDataPanel(RAMSTKPanel):
                                signal='changed')
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -117,7 +117,7 @@ class GeneralDataPanel(RAMSTKPanel):
             'changed', self.on_changed_text, 2, 'wvw_editing_revision')
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the general data panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None

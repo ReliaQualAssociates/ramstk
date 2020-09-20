@@ -84,7 +84,7 @@ class GeneralDataPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel, 'selected_function')
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Function General Data page widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -112,7 +112,7 @@ class GeneralDataPanel(RAMSTKPanel):
                                          signal='toggled')
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -132,7 +132,7 @@ class GeneralDataPanel(RAMSTKPanel):
                                            'wvw_editing_function'))
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the general data panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
@@ -244,7 +244,7 @@ class HazOpsPanel(RAMSTKPanel):
                 _model.append((_probability[0], ))
 
     def _do_clear_panel(self) -> None:
-        """Clear the contents of the Function Hazard Analysis page widgets.
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -299,7 +299,7 @@ class HazOpsPanel(RAMSTKPanel):
         selection.handler_unblock(self.tvwTreeView.dic_handler_id['changed'])
 
     def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions.
+        """Set the callback methods and functions for the panel widgets.
 
         :return: None
         :rtype: None
@@ -321,7 +321,7 @@ class HazOpsPanel(RAMSTKPanel):
                                  'wvw_editing_hazard')
 
     def __do_set_properties(self) -> None:
-        """Set the properties of the Hazard Analysis panel widgets.
+        """Set the properties of the panel widgets.
 
         :return: None
         :rtype: None
