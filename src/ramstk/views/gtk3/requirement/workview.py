@@ -280,8 +280,7 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
             super().on_changed_text, 0, 'wvw_editing_requirement')
-        self.txtName.dic_handler_id['changed'] = self.txtName.do_get_buffer(
-        ).connect('changed',
+        self.txtName.dic_handler_id['changed'] = self.txtName.connect('focus-out-event',
                   super().on_changed_text, 1, 'wvw_editing_requirement')
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(

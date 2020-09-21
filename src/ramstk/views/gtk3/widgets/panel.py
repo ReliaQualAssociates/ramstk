@@ -278,15 +278,13 @@ class RAMSTKPanel(RAMSTKFrame):
         This method is called by:
 
             * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
 
         This method publishes the PyPubSub message that it is passed.  This
         is usually sufficient to ensure the attributes are updated by the
         datamanager.  This method also return a dict with {_key: _new_text}
         if this information is needed by the child class.
 
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-            method.
+        :param entry: the RAMSTKEntry() that called the method.
         :type entry: :class:`ramstk.views.gtk3.widgets.RAMSTKEntry` or
         :class:`ramstk.views.gtk3.widgets.RAMSTKTextView`
         :param int index: the position in the class' Gtk.TreeModel() associated
@@ -349,13 +347,17 @@ class RAMSTKPanel(RAMSTKFrame):
     # pylint: disable=unused-argument
     def on_focus_out(self, entry: object, __event: Gdk.EventFocus, index: int,
                      message: str) -> Dict[Union[str, Any], Any]:
-        """Wrap the on_changed() method for the RAMSTKTextView().
+        """Retrieve changes made in RAMSTKTextView() widgets.
 
-        :param entry: the RAMSTKTextView() calling this method.
+        This method is called by:
+
+            * RAMSTKTextView() 'focus-out-event' signal
+
+        :param entry: the Gtk.TextBuffer() calling this method.
         :param __event: the Gdk.Event() that occurred in the RAMSTKTextView().
-        :param int index: the position in the class' Gtk.TreeModel() associated
+        :param index: the position in the class' Gtk.TreeModel() associated
             with the data from the calling RAMSTKTextView().
-        :param str message: the pypubsub message to broadcast.
+        :param message: the pypubsub message to broadcast.
         :return: {_key: _new_text}; the child module attribute name and the
             new value from the RAMSTKTextView(). The value {'': ''} will be
             returned when a KeyError or ValueError is raised by this method.
