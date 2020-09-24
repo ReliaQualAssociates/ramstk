@@ -21,7 +21,7 @@ from ramstk.views.gtk3.widgets import (
 )
 
 
-class AssessmentInputs(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKPanel):
     """Displays connection assessment input attribute data.
 
     The Connection assessment input view displays all the assessment inputs for
@@ -321,7 +321,7 @@ class AssessmentInputs(RAMSTKPanel):
         self.do_load_comboboxes(attributes['subcategory_id'])
         self._do_set_sensitive()
 
-        self.cmbQuality.set_active(attributes['quality_id'], signal='changed')
+        self.cmbQuality.set_active(attributes['quality_id'])
 
         # We don't block the callback signal otherwise the specification
         # RAMSTKComboBox() will not be loaded and set.
@@ -550,7 +550,7 @@ class AssessmentInputs(RAMSTKPanel):
                                           width=125)  # noqa
 
 
-class AssessmentResults(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKPanel):
     """Displays connection assessment results attribute data.
 
     The connection assessment result view displays all the assessment results

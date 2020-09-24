@@ -507,7 +507,7 @@ class AssessmentInputPanel(RAMSTKPanel):
             width=125)
 
 
-class AssessmentResultsPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKPanel):
     """Displays capacitor assessment results attribute data.
 
     The capacitor assessment result view displays all the assessment results
