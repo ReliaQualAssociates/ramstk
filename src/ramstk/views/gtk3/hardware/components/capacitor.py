@@ -436,10 +436,10 @@ class AssessmentInputPanel(RAMSTKPanel):
         # RAMSTKComboBox().
         if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
             _idx = int(combo.get_active()) - 1
-            _data = self._dic_styles[self._subcategory_id][_idx]
+            _styles = self._dic_styles[self._subcategory_id][_idx]
         else:
-            _data = self._dic_styles[self._subcategory_id]
-        self.cmbStyle.do_load_combo(entries=_data, signal='changed')
+            _styles = self._dic_styles[self._subcategory_id]
+        self.cmbStyle.do_load_combo(entries=_styles, signal='changed')
 
     def __set_callbacks(self) -> None:
         """Set callback methods for Capacitor assessment input widgets.
