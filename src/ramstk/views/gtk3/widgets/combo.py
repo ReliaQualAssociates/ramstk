@@ -108,11 +108,14 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         :rtype: None
         :raise: TypeError if attempting to load other than string values.
         """
-        _handler_id = self.dic_handler_id[signal]
-        self.handler_block(_handler_id)
-
         _model = self.get_model()
         _model.clear()
+
+        try:
+            _handler_id = self.dic_handler_id[signal]
+            self.handler_block(_handler_id)
+        except KeyError:
+            _handler_id = -1
 
         if not simple:
             _model.append(["", "", ""])
