@@ -55,7 +55,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     :ivar _title: the text to put on the RAMSTKFrame() holding the
         assessment input widgets.
 
-    :ivar fmt: the formatting to use when displaying float values.
     :ivar cmbConfiguration: select and display the configuration of the
         capacitor.
     :ivar cmbConstruction: select and display the method of construction of the
@@ -224,7 +223,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
-        self._dic_attribute_keys = {
+        self._dic_attribute_keys: Dict[int, List[str]] = {
             0: ['quality_id', 'integer'],
             1: ['specification_id', 'integer'],
             2: ['type_id', 'integer'],
@@ -524,7 +523,6 @@ class AssessmentResultPanel(RAMSTKPanel):
         the Hardware item's hazard rate.
     :ivar _subcategory_id: the ID of the Hardware item's subcategory.
 
-    :ivar fmt: the formatting to use when displaying float values.
     :ivar lblModel: displays the hazard rate model use to estimate the
         Hardware item's hazard rate.
     :ivar self.txtLambdaB: displays the base hazard rate for the Hardware

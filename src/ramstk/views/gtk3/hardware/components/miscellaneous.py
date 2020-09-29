@@ -8,25 +8,21 @@
 """Miscellaneous Parts Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
-from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
-
-# RAMSTK Local Imports
-from .workview import RAMSTKAssessmentInputs, RAMSTKAssessmentResults
+from ramstk.views.gtk3 import _
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
+)
 
 
-class AssessmentInputs(RAMSTKAssessmentInputs):
-    """
-    Display Miscellaneous assessment input attribute data in RAMSTK WorkBook.
+class AssessmentInputPanel(RAMSTKPanel):
+    """Display Miscellaneous assessment input attribute data.
 
     The Miscellaneous hardware assessment input view displays all the
     assessment inputs for the selected miscellaneous hardware item.  This
@@ -43,46 +39,43 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
     """
 
     # Define private dict class attributes.
-    _dic_keys = {
-        0: 'quality_id',
-        1: 'application_id',
-        2: 'type_id',
-        3: 'frequency_operating',
-        4: 'duty_cycle'
-    }
 
     # Define private list class attributes.
-    _lst_labels = [
-        _("Quality Level:"),
-        _("Application:"),
-        _("Type:"),
-        _("Operating Frequency:"),
-        _("Utilization:")
-    ]
-    _lst_title: List[str] = ["", ""]
 
     # Define private scalar class attributes.
-    _module: str = 'miscellaneous'
-    _tablabel: str = ""
-    _tabtooltip: str = ""
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
-        """
-        Initialize an instance of the Miscellaneous assessment input view.
+    # Define public dictionary class attributes.
 
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
-        :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        """
-        super().__init__(configuration, logger)
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize instance of the Miscellaneous assessment input view."""
+        super().__init__()
 
         # Initialize private dictionary attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            0: ['quality_id', 'integer'],
+            1: ['application_id', 'integer'],
+            2: ['type_id', 'integer'],
+            3: ['frequency_operating', 'float'],
+            4: ['duty_cycle', 'float'],
+        }
 
         # Initialize private list attributes.
+        self._lst_labels: List[str] = [
+            _("Quality Level:"),
+            _("Application:"),
+            _("Type:"),
+            _("Operating Frequency:"),
+            _("Utilization:"),
+        ]
 
         # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = -1
+        self._subcategory_id: int = -1
+        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -90,256 +83,44 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
 
         # Initialize public scalar attributes.
         self.cmbApplication: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtFrequency: RAMSTKEntry = RAMSTKEntry()
         self.txtUtilization: RAMSTKEntry = RAMSTKEntry()
 
+        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
+            'quality_id': [self.cmbQuality.do_update, 'changed'],
+            'application_id': [self.cmbApplication.do_update, 'changed'],
+            'type_id': [self.cmbType.do_update, 'changed'],
+            'frequency_operating': [self.txtFrequency.do_update, 'changed'],
+            'duty_cycle': [self.txtUtilization.do_update, 'changed'],
+        }
         self._lst_widgets = [
-            self.cmbQuality, self.cmbApplication, self.cmbType,
-            self.txtFrequency, self.txtUtilization
+            self.cmbQuality,
+            self.cmbApplication,
+            self.cmbType,
+            self.txtFrequency,
+            self.txtUtilization,
         ]
 
         self.__set_properties()
+        self.do_make_panel_fixed()
         self.__set_callbacks()
-        self.make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_comboboxes, 'changed_subcategory')
 
-        pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
-
-    def __do_load_crystal(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Crystal assessment input widgets.
-
-        :param dict attributes: the attributes dictionary for the selected
-            Miscellaneous item.
-        :return: None
-        :rtype: None
-        """
-
-        if self._hazard_rate_method_id == 2:
-            self.txtFrequency.do_update(str(
-                self.fmt.format(attributes['frequency_operating'])),
-                                        signal='changed')
-
-    def __do_load_filter(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Filter assessment input widgets.
-
-        :param dict attributes: the attributes dictionary for the selected
-            Miscellaneous item.
-        :return: None
-        :rtype: None
-        """
-        self.cmbType.do_update(attributes['type_id'], signal='changed')
-
-    def __do_load_lamp(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Lamp assessment input widgets.
-
-        :param dict attributes: the attributes dictionary for the selected
-            Miscellaneous item.
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.do_update(attributes['application_id'],
-                                      signal='changed')
-
-        if self._hazard_rate_method_id == 2:
-            self.txtUtilization.do_update(str(
-                self.fmt.format(attributes['duty_cycle'])),
-                                          signal='changed')
-
-    def __do_set_crystal_sensitive(self) -> None:
-        """
-        Set the widget sensitivity as needed for a Crystal.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbType.set_sensitive(True)
-        self.cmbQuality.set_sensitive(True)
-
-        if self._hazard_rate_method_id == 2:
-            self.txtFrequency.set_sensitive(True)
-
-    def __do_set_filter_sensitive(self) -> None:
-        """
-        Set the widget sensitivity as needed for a Filter.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbQuality.set_sensitive(True)
-
-    def __do_set_lamp_sensitive(self) -> None:
-        """
-        Set the widget sensitivity as needed for a Lamp.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.set_sensitive(True)
-
-        if self._hazard_rate_method_id == 2:
-            self.txtUtilization.set_sensitive(True)
-
-    def __set_callbacks(self) -> None:
-        """
-        Set callback methods for Misc hardware assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
-            'changed', self._on_combo_changed, 0)
-        self.cmbApplication.dic_handler_id[
-            'changed'] = self.cmbApplication.connect('changed',
-                                                     self._on_combo_changed, 1)
-        self.cmbType.dic_handler_id['changed'] = self.cmbType.connect(
-            'changed', self._on_combo_changed, 2)
-        self.txtFrequency.dic_handler_id[
-            'changed'] = self.txtFrequency.connect('focus-out-event',
-                                                   self._on_focus_out, 3)
-        self.txtUtilization.dic_handler_id[
-            'changed'] = self.txtUtilization.connect('focus-out-event',
-                                                     self._on_focus_out, 4)
-
-    def __set_properties(self) -> None:
-        """
-        Set properties for Misc hardware assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.do_set_properties(
-            tooltip=_("The application of the lamp."))
-        self.cmbType.do_set_properties(
-            tooltip=_("The type of electronic filter."))
-
-        self.txtFrequency.do_set_properties(
-            width=125, tooltip=_("The operating frequency of the crystal."))
-        self.txtUtilization.do_set_properties(
-            width=125,
-            tooltip=_("The utilization factor (illuminate hours / equipment "
-                      "operate hours) of the lamp."))
-
-    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Miscellaneous assessment input widgets.
-
-        :param dict attributes: the attributes dictionary for the selected
-            Miscellaneous item.
-        :return: None
-        :rtype: None
-        """
-        super().do_load_page(attributes)
-
-        _dic_method = {
-            1: self.__do_load_crystal,
-            2: self.__do_load_filter,
-            4: self.__do_load_lamp
-        }
-        try:
-            _dic_method[self._subcategory_id](attributes)
-        except KeyError:
-            pass
-
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """
-        Set widget sensitivity as needed for the selected Miscellaneous item.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.set_sensitive(False)
-        self.cmbType.set_sensitive(False)
-        self.txtFrequency.set_sensitive(False)
-        self.txtUtilization.set_sensitive(False)
-
-        _dic_method = {
-            1: self.__do_set_crystal_sensitive,
-            2: self.__do_set_filter_sensitive,
-            4: self.__do_set_lamp_sensitive
-        }
-        try:
-            _dic_method[self._subcategory_id]
-        except KeyError:
-            pass
-
-    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
-        """
-        Retrieve RAMSTKCombo() changes and assign to Miscellaneous attribute.
-
-        This method is called by:
-
-            * Gtk.Combo() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-            with the calling RAMSTKComboBox().  Indices are:
-
-            +---------+------------------+---------+------------------+
-            |  Index  | Widget           |  Index  | Widget           |
-            +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    2    | cmbType          |
-            +---------+------------------+---------+------------------+
-            |    1    | cmbApplication   |         |                  |
-            +---------+------------------+---------+------------------+
-
-        :return: None
-        :rtype: None
-        """
-        super().on_combo_changed(combo, index, 'wvw_editing_component')
-
-    def _on_focus_out(
-            self,
-            entry: object,
-            __event: Gdk.EventFocus,  # pylint: disable=unused-argument
-            index: int) -> None:
-        """
-        Retrieve changes made in RAMSTKEntry() widgets.
-
-        This method is called by:
-
-            * RAMSTKEntry() 'on-focus-out' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param object entry: the RAMSTKEntry() or RAMSTKTextView() that
-            called this method.
-        :param __event: the Gdk.EventFocus that triggered the signal.
-        :type __event: :class:`Gdk.EventFocus`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-            associated with the data from the calling Gtk.Widget().  Indices
-            are:
-
-            +-------+----------------------+-------+----------------------+
-            | Index | Widget               | Index | Widget               |
-            +=======+======================+=======+======================+
-            |   3   | txtFrequency         |   4   | txtUtilization       |
-            +-------+----------------------+-------+----------------------+
-
-        :return: None
-        :rtype: None
-        """
-        super().on_focus_out(entry, index, 'wvw_editing_component')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """
-        Load the miscellaneous RKTComboBox()s.
+        """Load the miscellaneous assessment input RKTComboBox()s.
 
-        This method is used to load the specification RAMSTKComboBox() whenever
-        the miscellaneous subcategory is changed.
-
-        :param int subcategory_id: the newly selected miscellaneous hardware
-            item subcategory ID.
+        :param subcategory_id: the subcategory ID of the selected capacitor.
+            This is unused in this method but required because this method is a
+            PyPubSub listener.
         :return: None
         :rtype: None
         """
@@ -366,10 +147,177 @@ class AssessmentInputs(RAMSTKAssessmentInputs):
                  [_("MIL-F-18327 Discrete LC and Crystal Components")]],
                 signal='changed')
 
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Miscellaneous assessment input widgets.
 
-class AssessmentResults(RAMSTKAssessmentResults):
-    """
-    Display Misc assessment results attribute data in the RAMSTK Work Book.
+        :param dict attributes: the attributes dictionary for the selected
+            Miscellaneous item.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['hardware_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
+        self._subcategory_id = attributes['subcategory_id']
+
+        self.do_load_comboboxes(attributes['subcategory_id'])
+        self._do_set_sensitive()
+
+        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+
+        _dic_method = {
+            1: self.__do_load_crystal,
+            2: self.__do_load_filter,
+            4: self.__do_load_lamp
+        }
+        try:
+            _dic_method[self._subcategory_id](attributes)
+        except KeyError:
+            pass
+
+    def _do_set_sensitive(self) -> None:
+        """Set widget sensitivity for the selected Miscellaneous item.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbApplication.set_sensitive(False)
+        self.cmbQuality.set_sensitive(True)
+        self.cmbType.set_sensitive(False)
+        self.txtFrequency.set_sensitive(False)
+        self.txtUtilization.set_sensitive(False)
+
+        _dic_method = {
+            1: self.__do_set_crystal_sensitive,
+            2: self.__do_set_filter_sensitive,
+            4: self.__do_set_lamp_sensitive
+        }
+        try:
+            _dic_method[self._subcategory_id]
+        except KeyError:
+            pass
+
+    def __do_load_crystal(self, attributes: Dict[str, Any]) -> None:
+        """Load the Crystal assessment input widgets.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Miscellaneous item.
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 2:
+            self.txtFrequency.do_update(str(
+                self.fmt.format(attributes['frequency_operating'])),
+                                        signal='changed')  # noqa
+
+    def __do_load_filter(self, attributes: Dict[str, Any]) -> None:
+        """Load the Filter assessment input widgets.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Miscellaneous item.
+        :return: None
+        :rtype: None
+        """
+        self.cmbType.do_update(attributes['type_id'], signal='changed')
+
+    def __do_load_lamp(self, attributes: Dict[str, Any]) -> None:
+        """Load the Lamp assessment input widgets.
+
+        :param dict attributes: the attributes dictionary for the selected
+            Miscellaneous item.
+        :return: None
+        :rtype: None
+        """
+        self.cmbApplication.do_update(attributes['application_id'],
+                                      signal='changed')
+
+        if self._hazard_rate_method_id == 2:
+            self.txtUtilization.do_update(str(
+                self.fmt.format(attributes['duty_cycle'])),
+                                          signal='changed')  # noqa
+
+    def __do_set_crystal_sensitive(self) -> None:
+        """Set the widget sensitivity as needed for a Crystal.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbType.set_sensitive(True)
+        self.cmbQuality.set_sensitive(True)
+
+        if self._hazard_rate_method_id == 2:
+            self.txtFrequency.set_sensitive(True)
+
+    def __do_set_filter_sensitive(self) -> None:
+        """Set the widget sensitivity as needed for a Filter.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbQuality.set_sensitive(True)
+
+    def __do_set_lamp_sensitive(self) -> None:
+        """Set the widget sensitivity as needed for a Lamp.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbApplication.set_sensitive(True)
+
+        if self._hazard_rate_method_id == 2:
+            self.txtUtilization.set_sensitive(True)
+
+    def __set_callbacks(self) -> None:
+        """Set callback methods for Misc hardware assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        # ----- COMBOBOXES
+        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
+            'changed', self.on_changed_combo, 0, 'wvw_editing_hardware')
+        self.cmbApplication.dic_handler_id[
+            'changed'] = self.cmbApplication.connect('changed',
+                                                     self.on_changed_combo, 1,
+                                                     'wvw_editing_hardware')
+        self.cmbType.dic_handler_id['changed'] = self.cmbType.connect(
+            'changed', self.on_changed_combo, 2, 'wvw_editing_hardware')
+
+        # ----- ENTRIES
+        self.txtFrequency.dic_handler_id[
+            'changed'] = self.txtFrequency.connect('changed',
+                                                   self.on_changed_text, 3,
+                                                   'wvw_editing_hardware')
+        self.txtUtilization.dic_handler_id[
+            'changed'] = self.txtUtilization.connect('changed',
+                                                     self.on_changed_text, 4,
+                                                     'wvw_editing_hardware')
+
+    def __set_properties(self) -> None:
+        """Set properties for Misc hardware assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.do_set_properties(bold=True, title=self._title)
+
+        # ----- COMBOBOXES
+        self.cmbApplication.do_set_properties(
+            tooltip=_("The application of the lamp."))
+        self.cmbQuality.do_set_properties(tooltip=_('The quality level.'))
+        self.cmbType.do_set_properties(
+            tooltip=_("The type of electronic filter."))
+
+        # ----- ENTRIES
+        self.txtFrequency.do_set_properties(
+            width=125, tooltip=_("The operating frequency of the crystal."))
+        self.txtUtilization.do_set_properties(
+            width=125,
+            tooltip=_("The utilization factor (illuminate hours / equipment "
+                      "operate hours) of the lamp."))
+
+
+class AssessmentResultPanel(RAMSTKPanel):
+    """Display Misc assessment results attribute data in the RAMSTK Work Book.
 
     The Miscellaneous hardware item assessment result view displays all the
     assessment results for the selected miscellaneous hardware item.  This
@@ -386,130 +334,123 @@ class AssessmentResults(RAMSTKAssessmentResults):
     # Define private dict class attributes.
     _dic_part_stress = {
         1:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         3:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        "\u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
         4:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        "\u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E"
+        "</sub></span> "
     }
 
     # Define private class list class attributes.
-    _lst_title: List[str] = ["", ""]
 
     # Define private scalar class attributes.
-    _module: str = 'miscellaneous'
-    _tablabel: str = ""
-    _tabtooltip: str = ""
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
-        """
-        Initialize an instance of the Miscellaneous assessment result view.
+    # Define public dictionary class attributes.
 
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
-        :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        """
-        super().__init__(configuration, logger)
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize instance of the Miscellaneous assessment result view."""
+        super().__init__()
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_tooltips = [
-            _("The assessment model used to calculate the miscellaneous item "
-              "failure rate."),
-            _("The base hazard rate of the miscellaneous item."),
-            _("The quality factor for the miscellaneous item."),
-            _("The environment factor for the miscellaneous item."),
-            _("The utilization factor for the lamp."),
-            _("The application factor for the lamp.")
+        self._lst_labels = [
+            "",
+            "\u03BB<sub>b</sub>:",
+            "\u03C0<sub>Q</sub>:",
+            "\u03C0<sub>E</sub>:",
+            '\u03C0<sub>U</sub>:',
+            '\u03C0<sub>A</sub>:',
         ]
-        self._lst_labels.append("\u03C0<sub>U</sub>:")
-        self._lst_labels.append("\u03C0<sub>A</sub>:")
 
         # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = -1
+        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiU: RAMSTKEntry = RAMSTKEntry()
+        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
+
+        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiA: RAMSTKEntry = RAMSTKEntry()
+        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
+        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
+        self.txtPiU: RAMSTKEntry = RAMSTKEntry()
 
-        self._lst_widgets.append(self.txtPiU)
-        self._lst_widgets.append(self.txtPiA)
+        self._lst_widgets = [
+            self.lblModel,
+            self.txtLambdaB,
+            self.txtPiQ,
+            self.txtPiE,
+            self.txtPiA,
+            self.txtPiU,
+        ]
 
+        self.do_make_panel_fixed()
         self.set_properties()
-        self.make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_page, 'loaded_hardware_results')
-        pub.subscribe(self._do_load_page, 'succeed_calculate_hardware')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
-    def __do_set_crystal_sensitive(self) -> None:
-        """
-        Set sensitive the widgets for displaying Crystal assessment results.
-
-        :return: None
-        :rtype: None
-        """
-        self.txtPiQ.set_sensitive(True)
-
-    def __do_set_filter_sensitive(self) -> None:
-        """
-        Set sensitive the widgets for displaying Filter assessment results.
-
-        :return: None
-        :rtype: None
-        """
-        self.txtPiQ.set_sensitive(True)
-
-    def __do_set_lamp_sensitive(self) -> None:
-        """
-        Set sensitive the widgets for displaying Filter assessment results.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2:
-            self.txtPiU.set_sensitive(True)
-            self.txtPiA.set_sensitive(True)
-
-    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the miscellaneous devices assessment results page.
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the miscellaneous devices assessment results page.
 
         :param dict attributes: the attributes dictionary for the selected
             Miscellaneous item.
         :return: None
         :rtype: None
         """
-        super().do_load_page(attributes)
+        self._record_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        self.txtPiU.do_update(str(self.fmt.format(attributes['piU'])))
-        self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
-
+        # Display the correct calculation model.
         if (self._hazard_rate_method_id == 1
                 and self._subcategory_id in [3, 4]):
             self._lblModel.set_markup(
                 "<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
                 "\u03BB<sub>g</sub></span>")
 
+        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
+            try:
+                self.lblModel.set_markup(
+                    self._dic_part_stress[self._subcategory_id])
+            except KeyError:
+                self.lblModel.set_markup("No Model")
+        else:
+            self.lblModel.set_markup("No Model")
+
+        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
+        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
+        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+
+        self.txtPiU.do_update(str(self.fmt.format(attributes['piU'])))
+        self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
+
         self._do_set_sensitive()
 
     def _do_set_sensitive(self) -> None:
-        """
-        Set widget sensitivity as needed for the selected Misc hardware.
+        """Set widget sensitivity as needed for the selected Misc hardware.
 
         :return: None
         :rtype: None
         """
-        super().do_set_sensitive()
-
         self.txtPiU.set_sensitive(False)
         self.txtPiA.set_sensitive(False)
         self.txtPiQ.set_sensitive(False)
@@ -528,3 +469,29 @@ class AssessmentResults(RAMSTKAssessmentResults):
             _dic_method[self._subcategory_id]
         except KeyError:
             pass
+
+    def __do_set_crystal_sensitive(self) -> None:
+        """Set sensitive the widgets for displaying Crystal assessment results.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtPiQ.set_sensitive(True)
+
+    def __do_set_filter_sensitive(self) -> None:
+        """Set sensitive the widgets for displaying Filter assessment results.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtPiQ.set_sensitive(True)
+
+    def __do_set_lamp_sensitive(self) -> None:
+        """Set sensitive the widgets for displaying Filter assessment results.
+
+        :return: None
+        :rtype: None
+        """
+        if self._hazard_rate_method_id == 2:
+            self.txtPiU.set_sensitive(True)
+            self.txtPiA.set_sensitive(True)
