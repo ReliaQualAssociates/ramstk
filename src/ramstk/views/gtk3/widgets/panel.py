@@ -121,6 +121,8 @@ class RAMSTKPanel(RAMSTKFrame):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.fmt: str = '{0:0.6}'
+
         self.pltPlot: RAMSTKPlot = RAMSTKPlot()
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 

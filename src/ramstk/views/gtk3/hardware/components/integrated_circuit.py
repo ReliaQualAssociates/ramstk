@@ -151,7 +151,6 @@ class AssessmentInputPanel(RAMSTKPanel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt: str = '{0:0.6}'
         self.cmbApplication: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbECC: RAMSTKComboBox = RAMSTKComboBox()
@@ -968,8 +967,6 @@ class AssessmentResultPanel(RAMSTKPanel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt: str = '{0:0.6}'
-
         self.lblModel: RAMSTKLabel = RAMSTKLabel('')
 
         self.txtC1: RAMSTKEntry = RAMSTKEntry()
