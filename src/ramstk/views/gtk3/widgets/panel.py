@@ -312,7 +312,7 @@ class RAMSTKPanel(RAMSTKFrame):
                 'float': float(entry.do_get_text()),
                 'integer': int(entry.do_get_text()),
                 'string': str(entry.do_get_text()),
-            }
+            }[_type]
 
             pub.sendMessage(message,
                             node_id=[self._record_id, -1, -1],
