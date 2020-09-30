@@ -280,8 +280,9 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
             super().on_changed_text, 0, 'wvw_editing_requirement')
-        self.txtName.dic_handler_id['changed'] = self.txtName.connect('focus-out-event',
-                  super().on_changed_text, 1, 'wvw_editing_requirement')
+        self.txtName.dic_handler_id['changed'] = self.txtName.connect(
+            'focus-out-event',
+            super().on_changed_text, 1, 'wvw_editing_requirement')
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
@@ -444,7 +445,7 @@ class ClarityPanel(RAMSTKPanel):
         for _index, _checkbutton in enumerate(self._lst_widgets):
             _checkbutton.do_update(int(
                 attributes['q_clarity_{0:d}'.format(_index)]),
-                                   signal='toggled')    # noqa
+                                   signal='toggled')  # noqa
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -586,7 +587,7 @@ class CompletenessPanel(RAMSTKPanel):
         for _index, _checkbutton in enumerate(self._lst_widgets):
             _checkbutton.do_update(int(
                 attributes['q_complete_{0:d}'.format(_index)]),
-                                   signal='toggled')    # noqa
+                                   signal='toggled')  # noqa
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -725,7 +726,7 @@ class ConsistencyPanel(RAMSTKPanel):
         for _index, _checkbutton in enumerate(self._lst_widgets):
             _checkbutton.do_update(int(
                 attributes['q_complete_{0:d}'.format(_index)]),
-                                   signal='toggled')    # noqa
+                                   signal='toggled')  # noqa
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -847,7 +848,7 @@ class VerifiabilityPanel(RAMSTKPanel):
         for _index, _checkbutton in enumerate(self._lst_widgets):
             _checkbutton.do_update(int(
                 attributes['q_complete_{0:d}'.format(_index)]),
-                                   signal='toggled')    # noqa
+                                   signal='toggled')  # noqa
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.

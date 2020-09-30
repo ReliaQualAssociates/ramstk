@@ -4,7 +4,6 @@ repos:
       hooks:
           - id: check-docstring-first
           - id: check-merge-conflict
-          - id: check-xml
           - id: debug-statements
           - id: end-of-file-fixer
           - id: no-commit-to-branch

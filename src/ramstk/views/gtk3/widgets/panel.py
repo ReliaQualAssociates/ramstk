@@ -13,11 +13,12 @@ from typing import Any, Dict, List, Union
 # Third Party Imports
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
+import treelib
 from pandas.plotting import register_matplotlib_converters
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import Gdk, Gtk
+from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKPlot,
     RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKTreeView, do_make_label_group
@@ -109,12 +110,14 @@ class RAMSTKPanel(RAMSTKFrame):
         self._dic_attribute_updater: Dict[str, Union[object, str]] = {}
 
         # Initialize private list instance attributes.
+        self._lst_col_order: List[int] = []
         self._lst_labels: List[str] = []
         self._lst_widgets: List[object] = []
 
         # Initialize private scalar instance attributes.
         self._record_id: int = -1
         self._title: str = ''
+        self._tree_loaded: bool = False
 
         # Initialize public dict instance attributes.
 
@@ -125,6 +128,69 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.pltPlot: RAMSTKPlot = RAMSTKPlot()
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
+
+    def do_clear_tree(self) -> None:
+        """Clear the contents of a RAMSTKTreeView().
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.tvwTreeView.get_model()
+        _model.clear()
+
+    def do_load_row(self, attributes: Dict[str, Any]) -> None:
+        """Load the data into a RAMSTKTreeView row.
+
+        :param attributes: the Hardware attributes dict for the row to be
+            loaded in the WorkView worksheet.
+        :return: None
+        :rtype: None
+        """
+        _model = self.tvwTreeView.get_model()
+
+        _data = []
+        for _key in self.tvwTreeView.korder:
+            _data.append(attributes[self.tvwTreeView.korder[_key]])
+
+        # Only load items that are immediate children of the selected item and
+        # prevent loading the selected item itself in the worksheet.
+        if not _data[1] == self._record_id and not self._tree_loaded:
+            _model.append(None, _data)
+
+    def do_load_tree(self, tree: treelib.Tree) -> None:
+        """Load the RAMSTKTreeView().
+
+        :param tree: the treelib Tree containing the module to load.
+        :return: None
+        :rtype: None
+        """
+        _model = self.tvwTreeView.get_model()
+        _model.clear()
+
+        try:
+            _tag = tree.get_node(0).tag
+        except AttributeError as _error:
+            _tag = "UNK"
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        try:
+            self.tvwTreeView.do_load_tree(tree, _tag)
+            self.tvwTreeView.expand_all()
+            _row = _model.get_iter_first()
+            if _row is not None:
+                self.tvwTreeView.selection.select_iter(_row)
+                self.show_all()
+        except TypeError as _error:
+            _error_msg = _(
+                "An error occurred while loading {1:s} data for Record "
+                "ID {0:d} into the view.  One or more values from the "
+                "database was the wrong type for the column it was trying to "
+                "load.").format(self._record_id, _tag)
+        except ValueError as _error:
+            _error_msg = _(
+                "An error occurred while loading {1:s} data for Record "
+                "ID {0:d} into the view.  One or more values from the "
+                "database was missing.").format(self._record_id, _tag)
 
     def do_make_panel_fixed(self, **kwargs: Dict[str, Any]) -> None:
         """Create a panel with the labels and widgets on a Gtk.Fixed().
@@ -185,8 +251,6 @@ class RAMSTKPanel(RAMSTKFrame):
     def do_make_panel_treeview(self) -> None:
         """Create a panel with a RAMSTKTreeView().
 
-        :param treeview: the RAMSTKTreeView() to embed in the panel.
-        :type treeview: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
         :return: None
         :rtype: None
         """
@@ -199,18 +263,55 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.add(_scrollwindow)
 
+    def do_make_treeview(self, **kwargs: Dict[str, Any]) -> None:
+        """Make the RAMSTKTreeView() instance for this panel.
+
+        :return: None
+        :rtype: None
+        """
+        _bg_color: str = kwargs.get('bg_color', '#FFFFFF')  # type: ignore
+        _fg_color: str = kwargs.get('fg_color', '#000000')  # type: ignore
+        _fmt_file: str = kwargs.get('fmt_file', '')  # type: ignore
+
+        self.tvwTreeView.do_parse_format(_fmt_file)
+        self.tvwTreeView.do_make_model()
+        self.tvwTreeView.do_make_columns(colors={
+            'bg_color': _bg_color,
+            'fg_color': _fg_color
+        })
+
+        self._lst_col_order = list(self.tvwTreeView.position.values())
+
+    def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
+        """Set the callback methods for RAMSTKTreeView() cells.
+
+        :param str message: the PyPubSub message to broadcast on a
+            successful edit.
+        :param list columns: the list of column numbers whose cells should
+            have a callback function assigned.
+        :return: None
+        :rtype: None
+        """
+        for _idx in columns:
+            _cell = self.tvwTreeView.get_column(
+                self._lst_col_order[_idx]).get_cells()
+            try:
+                _cell[0].connect('edited', self.on_cell_edit, message, _idx)
+            except TypeError:
+                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
+                                 message, _idx)
+
     def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      position: int, message: str) -> None:
         """Handle edits of the RAMSTKTreeview() in a treeview panel.
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :type cell: :class:`Gtk.CellRenderer`
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
+        :param new_text: the new text in the edited Gtk.CellRenderer().
+        :param position: the column position of the edited
             Gtk.CellRenderer().
-        :param str message: the PyPubSub message to publish.
+        :param message: the PyPubSub message to publish.
         :return: None
         :rtype: None
         """
@@ -236,10 +337,9 @@ class RAMSTKPanel(RAMSTKFrame):
         if this information is needed by the child class.
 
         :param combo: the RAMSTKComboBox() that called the method.
-        :type combo: :class:`ramstk.views.gtk3.widgets.RAMSTKComboBox`
-        :param int index: the position in the class' Gtk.TreeModel() associated
+        :param index: the position in the class' Gtk.TreeModel() associated
             with the attribute from the calling Gtk.Widget().
-        :param str message: the PyPubSub message to publish.
+        :param message: the PyPubSub message to publish.
         :return: {_key: _new_text}; the work stream module's attribute name
             and the new value from the RAMSTKComboBox().  The value {'': -1}
             will be returned when a KeyError or ValueError is raised by this
@@ -287,11 +387,9 @@ class RAMSTKPanel(RAMSTKFrame):
         if this information is needed by the child class.
 
         :param entry: the RAMSTKEntry() that called the method.
-        :type entry: :class:`ramstk.views.gtk3.widgets.RAMSTKEntry` or
-        :class:`ramstk.views.gtk3.widgets.RAMSTKTextView`
-        :param int index: the position in the class' Gtk.TreeModel() associated
+        :param index: the position in the class' Gtk.TreeModel() associated
             with the data from the calling RAMSTKEntry() or RAMSTKTextView().
-        :param str message: the PyPubSub message to publish.
+        :param message: the PyPubSub message to publish.
         :return: {_key: _new_text}; the child module attribute name and the
             new value from the RAMSTKEntry() or RAMSTKTextView(). The value
             {'': ''} will be returned when a KeyError or ValueError is raised
@@ -331,11 +429,11 @@ class RAMSTKPanel(RAMSTKFrame):
         This method is called whenever an attribute is edited in the module
         view.
 
-        :param list node_id: the list of IDs of the work stream module item
+        :param node_id: the list of IDs of the work stream module item
             being edited.  This unused parameter is part of the PyPubSub
             message data package that this method responds to so it must
             remain in the argument list.
-        :param dict package: a dict containing the attribute name as key and
+        :param package: a dict containing the attribute name as key and
             the new attribute value as the value.
         :return: None
         :rtype: None
@@ -372,10 +470,9 @@ class RAMSTKPanel(RAMSTKFrame):
         """Retrieve changes made in RAMSTKCheckButton() widgets.
 
         :param checkbutton: the RAMSTKCheckButton() that was toggled.
-        :type checkbutton: :class:`ramstk.views.gtk3.widgets.RAMSTKCheckButton`
-        :param int index: the position in the class' Gtk.TreeModel() associated
+        :param index: the position in the class' Gtk.TreeModel() associated
             with the data from the calling RAMSTKCheckButton().
-        :param str message: the PyPubSub message to broadcast.
+        :param message: the PyPubSub message to broadcast.
         :return: {_key: _new_text}; the child module attribute name and the
             new value from the RAMSTKEntry() or RAMSTKTextView(). The value
             {'': -1} will be returned when a KeyError is raised by this method.

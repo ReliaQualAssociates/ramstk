@@ -662,27 +662,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>")
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
         self.txtPiK.do_update(str(self.fmt.format(attributes['piK'])))

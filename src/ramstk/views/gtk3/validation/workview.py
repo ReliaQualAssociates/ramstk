@@ -330,8 +330,9 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.cmbTaskType.connect('changed', self._do_make_task_code)
 
         # ----- ENTRIES
-        self.txtTask.dic_handler_id['changed'] = self.txtTask.connect('focus-out-event',
-                  super().on_focus_out, 0, 'wvw_editing_validation')
+        self.txtTask.dic_handler_id['changed'] = self.txtTask.connect(
+            'focus-out-event',
+            super().on_focus_out, 0, 'wvw_editing_validation')
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
@@ -361,7 +362,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
             super().on_changed_text, 9, 'wvw_editing_validation')
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
-                  super().on_changed_text, 11, 'wvw_editing_validation')
+            super().on_changed_text, 11, 'wvw_editing_validation')
 
         # ----- SPINBUTTONS
         self.spnStatus.dic_handler_id['changed'] = self.spnStatus.connect(
