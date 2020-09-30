@@ -16,12 +16,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Display Meter assessment input attribute data in the RAMSTK Work Book.
 
     The Meter assessment input view displays all the assessment inputs for
@@ -45,12 +46,12 @@ class AssessmentInputPanel(RAMSTKPanel):
     # Define private dict class attributes.
 
     # Quality levels; key is the subcategory ID.
-    _dic_quality = {
+    _dic_quality: Dict[int, List[List[str]]] = {
         2: [["MIL-SPEC"], [_("Lower")]],
         1: [["MIL-SPEC"], [_("Lower")]]
     }
     # Meter types; key is the subcategory ID.
-    _dic_types = {
+    _dic_types: Dict[int, List[List[str]]] = {
         1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
         2: [[_("Direct Current")], [_("Alternating Current")]]
     }
@@ -82,11 +83,13 @@ class AssessmentInputPanel(RAMSTKPanel):
             _("Meter Type:"),
             _("Meter Function:"),
         ]
+        self._lst_tooltips: List[str] = [
+            _('The quality level of the meter.'),
+            _("The type of meter."),
+            _("The application of the panel meter."),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -94,7 +97,6 @@ class AssessmentInputPanel(RAMSTKPanel):
 
         # Initialize public scalar attributes.
         self.cmbApplication: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
 
         self._dic_attribute_updater: Dict[str, Union[object, str]] = {
@@ -108,8 +110,8 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.cmbApplication,
         ]
 
-        self.__set_properties()
-        self.do_make_panel_fixed()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -157,14 +159,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_set_sensitive()
-
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        super().do_load_panel(attributes)
 
         self.cmbApplication.do_update(attributes['application_id'],
                                       signal='changed')
@@ -198,20 +193,8 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.cmbType.dic_handler_id['changed'] = self.cmbType.connect(
             'changed', self.on_changed_combo, 2, 'wvw_editing_hardware')
 
-    def __set_properties(self) -> None:
-        """Set properties for Meter assessment input widgets.
 
-        :return: None
-        :rtype: None
-        """
-        self.do_set_properties(bold=True, title=self._title)
-
-        self.cmbApplication.do_set_properties(
-            tooltip=_("The application of the panel meter."))
-        self.cmbType.do_set_properties(tooltip=_("The type of meter."))
-
-
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Display Meter assessment results attribute data in the RAMSTK Work Book.
 
     The Meter assessment result view displays all the assessment results
@@ -263,23 +246,25 @@ class AssessmentResultPanel(RAMSTKPanel):
             '\u03C0<sub>F</sub>:',
             '\u03C0<sub>T</sub>:',
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the meter hazard rate."),
+            _('The base hazard rate for the meter.'),
+            _('The quality factor for the meter.'),
+            _('The environment factor for the meter.'),
+            _('The application factor for the meter.'),
+            _('The function factor for the meter.'),
+            _('The temperature stress factor for the elapsed time meter.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiA: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
         self.txtPiF: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiT: RAMSTKEntry = RAMSTKEntry()
 
         self._lst_widgets = [
@@ -292,8 +277,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiT,
         ]
 
-        self.do_make_panel_fixed()
-        self.__set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -308,27 +293,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>")
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
         self.txtPiF.do_update(str(self.fmt.format(attributes['piF'])))
@@ -364,45 +329,3 @@ class AssessmentResultPanel(RAMSTKPanel):
             elif self._subcategory_id == 2:
                 self.txtPiA.set_sensitive(True)
                 self.txtPiF.set_sensitive(True)
-
-    def __set_properties(self) -> None:
-        """Set properties for Capacitor assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the meter failure "
-              "rate."))
-
-        self.txtLambdaB.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The base hazard rate for the meter.'))
-        self.txtPiA.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The application factor for the meter.'))
-        self.txtPiE.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The environment factor for the meter.'))
-        self.txtPiF.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The function factor for the meter.'))
-        self.txtPiQ.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the meter.'))
-        self.txtPiT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The temperature stress factor for the elapsed time '
-                      'meter.'))

@@ -8,7 +8,7 @@
 """The RAMSTK GTK3 frame Module."""
 
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GObject, Gtk
@@ -18,23 +18,18 @@ from .label import RAMSTKLabel
 
 
 class RAMSTKFrame(Gtk.Frame):
-    """This is the RAMSTK Frame class."""
+    """The RAMSTK Frame class."""
     def __init__(self) -> None:
-        """
-        Initialize an instance of the RAMSTK Frame.
-
-        :keyword str label: the text to display in the RAMSTK Frame label.
-            Default is an empty string.
-        """
+        """Initialize an instance of the RAMSTK Frame."""
         GObject.GObject.__init__(self)
 
-    def do_set_properties(self, **kwargs: Any) -> None:
+    def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
         """Set the RAMSTKFrame properties."""
-        _bold = kwargs.get('bold', False)
+        _bold: Union[Dict[str, Any], bool] = kwargs.get('bold', False)
         _shadow = kwargs.get('shadow', Gtk.ShadowType.ETCHED_OUT)
-        _title = kwargs.get('title', "")
+        _title: Union[Dict[str, Any], str] = kwargs.get('title', "")
 
-        _label = RAMSTKLabel(_title)
+        _label: RAMSTKLabel = RAMSTKLabel(_title)   # type: ignore
         _label.do_set_properties(bold=_bold)
         _label.show_all()
         self.set_label_widget(_label)

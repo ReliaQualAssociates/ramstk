@@ -16,12 +16,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Display IC assessment input attribute data in the RAMSTK Work Book.
 
     The Integrated Circuit assessment input view displays all the assessment
@@ -61,7 +62,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         of the integrated circuit.
     :ivar txtVoltageESD: enter and display the ESD threshold voltage of the
         VLSI.
-    :ivar txtYearsProduction: enter and display the number of years the
+    :ivar txtYearsInProduction: enter and display the number of years the
         integrated circuit type has been in production.
     """
 
@@ -100,7 +101,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
-        self._dic_attribute_keys = {
+        self._dic_attribute_keys: Dict[int, List[str]] = {
             0: ['quality_id', 'integer'],
             1: ['application_id', 'integer'],
             2: ['construction_id', 'integer'],
@@ -142,9 +143,6 @@ class AssessmentInputPanel(RAMSTKPanel):
         ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -155,7 +153,6 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbECC: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbManufacturing: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbPackage: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbTechnology: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
@@ -207,9 +204,29 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.cmbManufacturing,
             self.txtVoltageESD,
         ]
+        self._lst_tooltips: List[str] = [
+            _("The quality level of the integrated circuit."),
+            _("The method of construction of the integrated circuit."),
+            _("The die area (in mil<sup>2</sup>) of the integrated circuit."),
+            _("The number of active elements in the integrated circuit."),
+            _("The junction to case thermal resistance."),
+            _("The number of active pins on the integrated circuit."),
+            _("The technology used to construct the integrated circuit."),
+            _("The number of years the generic device type has been in "
+              "production."),
+            _("The integrated circuit method of construction."),
+            _("The total number of programming cycles over the EEPROM life."),
+            _("The system lifetime operating hours."),
+            _("The error correction code used by the EEPROM."),
+            _("The application of the integrated circuit."),
+            _("The type of GaAs or VLSI device."),
+            _("The feature size (in microns) of the VLSI device."),
+            _("The manufacturing process for the VLSI device."),
+            _("The ESD susceptibility threshold voltage of the VLSI device."),
+        ]
 
+        super().do_make_panel_fixed()
         self.__set_properties()
-        self.do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -284,15 +301,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_load_application_combo(attributes)
-        self._do_set_sensitive()
-
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        super().do_load_panel(attributes)
 
         _dic_method = {
             1: self.__do_load_linear,
@@ -560,8 +569,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_dram_sensitive(self) -> None:
         """Set the widgets that display DRAM information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -576,8 +583,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_eeprom_sensitive(self) -> None:
         """Set the widgets that display EEPROM information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -597,8 +602,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_gaas_sensitive(self) -> None:
         """Set the widgets that display GaAs IC information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -614,8 +617,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_linear_sensitive(self) -> None:
         """Set the widgets that display linear (analog) information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -630,8 +631,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_logic_sensitive(self) -> None:
         """Set the widgets that display digital IC information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -658,8 +657,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_pal_pla_sensitive(self) -> None:
         """Set the widgets that display DRAM information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -673,8 +670,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_rom_sensitive(self) -> None:
         """Set the widgets that display ROM information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -685,8 +680,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_sram_sensitive(self) -> None:
         """Set the widgets that display SRAM information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -697,8 +690,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     def __do_set_vhsic_vlsi_sensitive(self) -> None:
         """Set the widgets that display VHSIC/VLSI information sensitive.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -790,57 +781,30 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
-
-        # ----- COMBOBOXES
-        self.cmbApplication.do_set_properties(
-            tooltip=_("The application of the integrated circuit."))
-        self.cmbConstruction.do_set_properties(
-            tooltip=_("The integrated circuit method of construction."))
-        self.cmbECC.do_set_properties(
-            tooltip=_("The error correction code used by the EEPROM."))
-        self.cmbManufacturing.do_set_properties(
-            tooltip=_("The manufacturing process for the VLSI device."))
-        self.cmbPackage.do_set_properties(
-            tooltip=_("The method of construction of the integrated circuit."))
-        self.cmbQuality.do_set_properties(
-            tooltip=_("The quality level of the integrated circuit."))
-        self.cmbTechnology.do_set_properties(tooltip=_(
-            "The technology used to construct the integrated circuit."))
-        self.cmbType.do_set_properties(
-            tooltip=_("The type of GaAs or VLSI device."))
+        super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtArea.do_set_properties(tooltip=_(
-            "The die area (in mil<sup>2</sup>) of the integrated "
-            "circuit."),
-                                       width=125)  # noqa
-        self.txtFeatureSize.do_set_properties(
-            tooltip=_("The feature size (in microns) of the VLSI device."),
-            width=125)
-        self.txtNActivePins.do_set_properties(
-            tooltip=_("The number of active pins on the integrated circuit."),
-            width=125)
-        self.txtNCycles.do_set_properties(tooltip=_(
-            "The total number of programming cycles over the EEPROM life."),
-                                          width=125)  # noqa
-        self.txtNElements.do_set_properties(tooltip=_(
-            "The number of active elements in the integrated circuit."),
-                                            width=125)  # noqa
-        self.txtOperatingLife.do_set_properties(
-            tooltip=_("The system lifetime operating hours."), width=125)
-        self.txtThetaJC.do_set_properties(
-            tooltip=_("The junction to case thermal resistance."), width=125)
-        self.txtVoltageESD.do_set_properties(tooltip=_(
-            "The ESD susceptibility threshold voltage of the VLSI device."),
-                                             width=125)  # noqa
-        self.txtYearsInProduction.do_set_properties(tooltip=_(
-            "The number of years the generic device type has been in "
-            "production."),
-                                                    width=125)  # noqa
+        self.txtArea.do_set_properties(tooltip=self._lst_tooltips[2],
+                                       width=125)
+        self.txtFeatureSize.do_set_properties(tooltip=self._lst_tooltips[14],
+                                              width=125)
+        self.txtNActivePins.do_set_properties(tooltip=self._lst_tooltips[5],
+                                              width=125)
+        self.txtNCycles.do_set_properties(tooltip=self._lst_tooltips[9],
+                                          width=125)
+        self.txtNElements.do_set_properties(tooltip=self._lst_tooltips[3],
+                                            width=125)
+        self.txtOperatingLife.do_set_properties(tooltip=self._lst_tooltips[10],
+                                                width=125)
+        self.txtThetaJC.do_set_properties(tooltip=self._lst_tooltips[4],
+                                          width=125)
+        self.txtVoltageESD.do_set_properties(tooltip=self._lst_tooltips[16],
+                                             width=125)
+        self.txtYearsInProduction.do_set_properties(
+            tooltip=self._lst_tooltips[7], width=125)
 
 
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Display IC assessment results attribute data in the RAMSTK Work Book.
 
     The Integrated Circuit assessment result view displays all the assessment
@@ -853,8 +817,6 @@ class AssessmentResultPanel(RAMSTKPanel):
         circuit.
     :ivar txtPiT: displays the temperature factor for the integrated circuit.
     :ivar txtC2: displays the package failure rate for the integrated circuit.
-    :ivar txtPiE: displays the environment factor for the integrated circuit.
-    :ivar txtPiQ: displays the quality factor for the integrated circuit.
     :ivar txtPiL: displays the learning factor for the integrated circuit.
     :ivar txtLambdaCYC: displays the read/write cycling induced hazard rate for
         the EEPROM.
@@ -957,31 +919,47 @@ class AssessmentResultPanel(RAMSTKPanel):
             '\u03C0<sub>EOS</sub>:',
             '\u03C0<sub>A</sub>:',
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the integrated circuit "
+              "hazard rate."),
+            _('The base hazard rate for the integrated circuit.'),
+            _('The quality factor for the integrated circuit.'),
+            _('The environment factor for the integrated circuit.'),
+            _('The die complexity factor for the integrated circuit.'),
+            _('The temperature correction factor for the integrated circuit.'),
+            _('The package hazard rate for the integrated circuit.'),
+            _('The learning factor for the integrated circuit.'),
+            _('The read/write cycling induced hazard rate for the integrated '
+              'circuit.'),
+            _('The die base hazard rate for the integrated circuit.'),
+            _('The manufacturing process correction factor for the integrated '
+              'circuit.'),
+            _('The die complexity correction factor for the integrated '
+              'circuit.'),
+            _('The package base hazard rate for the integrated circuit.'),
+            _('The package type factor for the integrated circuit.'),
+            _('The electrical overstress hazard rate for the integrated '
+              'circuit.'),
+            _('The application factor for the integrated circuit.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
         self.txtC1: RAMSTKEntry = RAMSTKEntry()
         self.txtC2: RAMSTKEntry = RAMSTKEntry()
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtLambdaBD: RAMSTKEntry = RAMSTKEntry()
         self.txtLambdaBP: RAMSTKEntry = RAMSTKEntry()
         self.txtLambdaCYC: RAMSTKEntry = RAMSTKEntry()
         self.txtLambdaEOS: RAMSTKEntry = RAMSTKEntry()
         self.txtPiA: RAMSTKEntry = RAMSTKEntry()
         self.txtPiCD: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
         self.txtPiL: RAMSTKEntry = RAMSTKEntry()
         self.txtPiMFG: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiPT: RAMSTKEntry = RAMSTKEntry()
         self.txtPiT: RAMSTKEntry = RAMSTKEntry()
 
@@ -1004,8 +982,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiA,
         ]
 
-        self.do_make_panel_fixed()
-        self.__set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -1020,27 +998,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>")
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtC1.do_update(str(self.fmt.format(attributes['C1'])))
         self.txtPiT.do_update(str(self.fmt.format(attributes['piT'])))
@@ -1120,95 +1078,3 @@ class AssessmentResultPanel(RAMSTKPanel):
 
         if self._subcategory_id == 9:
             self.txtPiA.set_sensitive(True)
-
-    def __set_properties(self) -> None:
-        """Set properties for Capacitor assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the integrated circuit "
-              "failure rate."))
-
-        self.txtC1.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The die complexity factor for the integrated circuit.'))
-        self.txtC2.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The package hazard rate for the integrated circuit.'))
-        self.txtLambdaB.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The base hazard rate for the integrated circuit.'))
-        self.txtLambdaBD.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The die base hazard rate for the integrated circuit.'))
-        self.txtLambdaBP.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The package base hazard rate for the integrated '
-                      'circuit.'))
-        self.txtLambdaCYC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The read/write cycling induced hazard rate for the '
-                      'integrated circuit.'))
-        self.txtLambdaEOS.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The electrical overstress hazard rate for the '
-                      'integrated circuit.'))
-        self.txtPiA.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The application factor for the integrated circuit.'))
-        self.txtPiCD.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The die complexity correction factor for the '
-                      'integrated circuit.'))
-        self.txtPiE.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The environment factor for the integrated circuit.'))
-        self.txtPiL.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The learning factor for the integrated circuit.'))
-        self.txtPiMFG.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The manufacturing process correction factor for the '
-                      'integrated circuit.'))
-        self.txtPiQ.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the integrated circuit.'))
-        self.txtPiPT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The package type factor for the integrated circuit.'))
-        self.txtPiT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The temperature correction factor for the integrated '
-                      'circuit.'))

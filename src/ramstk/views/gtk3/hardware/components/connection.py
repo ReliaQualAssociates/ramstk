@@ -16,12 +16,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Displays connection assessment input attribute data.
 
     The Connection assessment input view displays all the assessment inputs for
@@ -209,11 +210,22 @@ class AssessmentInputPanel(RAMSTKPanel):
             _("Number of Hand Soldered PTH:"),
             _("Number of Circuit Planes:"),
         ]
+        self._lst_tooltips: List[str] = [
+            _("The quality level of the connector/connection."),
+            _("The type of connector/connection."),
+            _("The governing specification for the connection."),
+            _("The connector insert material."),
+            _("The gauge of the contacts in the connector."),
+            _("The number of active pins in the connector."),
+            _("The amperes per active contact."),
+            _("The number of connector mate and unmate cycles per 1000 hours "
+              "of operation."),
+            _("The number of wave soldered PTH connections."),
+            _("The number of hand soldered PTH connections."),
+            _("The number of circuit planes for wave soldered connections."),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -313,14 +325,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_set_sensitive()
-
-        self.cmbQuality.set_active(attributes['quality_id'])
+        super().do_load_panel(attributes)
 
         # We don't block the callback signal otherwise the specification
         # RAMSTKComboBox() will not be loaded and set.
@@ -350,55 +355,6 @@ class AssessmentInputPanel(RAMSTKPanel):
                 self.txtNPlanes.do_update(str(attributes['n_circuit_planes']),
                                           signal='changed')
 
-    def _do_set_circular_sensitive(self) -> None:
-        """Set the widgets for circular connectors sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id == 1:
-            self.cmbInsert.set_sensitive(True)
-            self.cmbSpecification.set_sensitive(True)
-            self.cmbType.set_sensitive(True)
-
-            self.txtActivePins.set_sensitive(True)
-            self.txtAmpsContact.set_sensitive(True)
-            self.txtContactGauge.set_sensitive(True)
-            self.txtMating.set_sensitive(True)
-
-    def _do_set_ic_socket_sensitive(self) -> None:
-        """Set the widgets for IC socket connectors sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id == 3:
-            self.cmbQuality.set_sensitive(False)
-            self.txtActivePins.set_sensitive(True)
-
-    def _do_set_pwa_edge_sensitive(self) -> None:
-        """Set the widgets for PCB/PWA edge connectors sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id == 2:
-            self.txtAmpsContact.set_sensitive(True)
-            self.txtContactGauge.set_sensitive(True)
-            self.txtMating.set_sensitive(True)
-            self.txtActivePins.set_sensitive(True)
-
-    def _do_set_pth_sensitive(self) -> None:
-        """Set the widgets for PTH connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id == 4:
-            self.txtNWave.set_sensitive(True)
-            self.txtNHand.set_sensitive(True)
-            self.txtNPlanes.set_sensitive(True)
-
     def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected connection.
 
@@ -420,10 +376,10 @@ class AssessmentInputPanel(RAMSTKPanel):
         if self._hazard_rate_method_id == 1:
             self.cmbType.set_sensitive(True)
         else:
-            self._do_set_circular_sensitive()
-            self._do_set_ic_socket_sensitive()
-            self._do_set_pwa_edge_sensitive()
-            self._do_set_pth_sensitive()
+            self.__do_set_circular_sensitive()
+            self.__do_set_ic_socket_sensitive()
+            self.__do_set_pwa_edge_sensitive()
+            self.__do_set_pth_sensitive()
 
     def _do_load_insert(self, combo: RAMSTKComboBox) -> None:
         """Load the insert RAMSTKComboBox() when the specification changes.
@@ -455,6 +411,55 @@ class AssessmentInputPanel(RAMSTKPanel):
             _specifications = []
         self.cmbSpecification.do_load_combo(entries=_specifications,
                                             signal='changed')
+
+    def __do_set_circular_sensitive(self) -> None:
+        """Set the widgets for circular connectors sensitive or not.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 1:
+            self.cmbInsert.set_sensitive(True)
+            self.cmbSpecification.set_sensitive(True)
+            self.cmbType.set_sensitive(True)
+
+            self.txtActivePins.set_sensitive(True)
+            self.txtAmpsContact.set_sensitive(True)
+            self.txtContactGauge.set_sensitive(True)
+            self.txtMating.set_sensitive(True)
+
+    def __do_set_ic_socket_sensitive(self) -> None:
+        """Set the widgets for IC socket connectors sensitive or not.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 3:
+            self.cmbQuality.set_sensitive(False)
+            self.txtActivePins.set_sensitive(True)
+
+    def __do_set_pwa_edge_sensitive(self) -> None:
+        """Set the widgets for PCB/PWA edge connectors sensitive or not.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 2:
+            self.txtAmpsContact.set_sensitive(True)
+            self.txtContactGauge.set_sensitive(True)
+            self.txtMating.set_sensitive(True)
+            self.txtActivePins.set_sensitive(True)
+
+    def __do_set_pth_sensitive(self) -> None:
+        """Set the widgets for PTH connections sensitive or not.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 4:
+            self.txtNWave.set_sensitive(True)
+            self.txtNHand.set_sensitive(True)
+            self.txtNPlanes.set_sensitive(True)
 
     def __set_callbacks(self) -> None:
         """Set callback methods for Connection assessment input widgets.
@@ -512,44 +517,26 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
-
-        # ----- COMBOBOXES
-        self.cmbInsert.do_set_properties(
-            tooltip=_("The connector insert material."))
-        self.cmbQuality.do_set_properties(
-            tooltip=_("The quality level of the connector/connection."))
-        self.cmbSpecification.do_set_properties(
-            tooltip=_("The governing specification for the connection."))
-        self.cmbType.do_set_properties(
-            tooltip=_("The type of connector/connection."))
+        super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtContactGauge.do_set_properties(
-            tooltip=_("The gauge of the contacts in the connector."),
-            width=125)
-        self.txtActivePins.do_set_properties(
-            tooltip=_("The number of active pins in the connector."),
-            width=125)
-        self.txtAmpsContact.do_set_properties(
-            tooltip=_("The amperes per active contact."), width=125)
-        self.txtMating.do_set_properties(tooltip=_(
-            "The number of connector mate and unmate cycles per "
-            "1000 hours of operation."),
-                                         width=125)  # noqa
-        self.txtNWave.do_set_properties(
-            tooltip=_("The number of wave soldered PTH connections."),
-            width=125)
-        self.txtNHand.do_set_properties(
-            tooltip=_("The number of hand soldered PTH connections."),
-            width=125)
-        self.txtNPlanes.do_set_properties(tooltip=_(
-            "The number of circuit planes for wave soldered "
-            "connections."),
-                                          width=125)  # noqa
+        self.txtContactGauge.do_set_properties(tooltip=self._lst_tooltips[4],
+                                               width=125)
+        self.txtActivePins.do_set_properties(tooltip=self._lst_tooltips[5],
+                                             width=125)
+        self.txtAmpsContact.do_set_properties(tooltip=self._lst_tooltips[6],
+                                              width=125)
+        self.txtMating.do_set_properties(tooltip=self._lst_tooltips[7],
+                                         width=125)
+        self.txtNWave.do_set_properties(tooltip=self._lst_tooltips[8],
+                                        width=125)
+        self.txtNHand.do_set_properties(tooltip=self._lst_tooltips[9],
+                                        width=125)
+        self.txtNPlanes.do_set_properties(tooltip=self._lst_tooltips[10],
+                                          width=125)
 
 
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Displays connection assessment results attribute data.
 
     The connection assessment result view displays all the assessment results
@@ -627,24 +614,27 @@ class AssessmentResultPanel(RAMSTKPanel):
             '\u03C0<sub>P</sub>:',
             '\u03C0<sub>C</sub>:',
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the connection hazard "
+              "rate."),
+            _('The base hazard rate for the connection.'),
+            _('The quality factor for the connection.'),
+            _('The environment factor for the connection.'),
+            _("The mating/unmating factor for the connection."),
+            _("The active pins factor for the connection."),
+            _("The complexity factor for the connection."),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dict attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiC: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
         self.txtPiK: RAMSTKEntry = RAMSTKEntry()
         self.txtPiP: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
 
         self._lst_widgets = [
             self.lblModel,
@@ -656,8 +646,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiC,
         ]
 
-        self.do_make_panel_fixed()
-        self.__set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -700,46 +690,6 @@ class AssessmentResultPanel(RAMSTKPanel):
 
         self._do_set_sensitive()
 
-    def _do_set_circular_pwa_sensitive(self) -> None:
-        """Set widgets for circular and PWS connectors sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id in [1, 2]:
-            self.txtPiK.set_sensitive(True)
-            self.txtPiQ.set_sensitive(False)
-            self.txtPiP.set_sensitive(True)
-
-    def _do_set_ic_socket_sensitive(self) -> None:
-        """Set widgets for IC socket connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id == 3:
-            self.txtPiP.set_sensitive(True)
-            self.txtPiQ.set_sensitive(False)
-
-    def _do_set_pth_sensitive(self) -> None:
-        """Set widgets for PTH connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id == 4:
-            self.txtPiC.set_sensitive(True)
-            self.txtPiQ.set_sensitive(True)
-
-    def _do_set_non_pth_sensitive(self) -> None:
-        """Set widgets for non-PTH connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._subcategory_id == 5:
-            self.txtPiQ.set_sensitive(True)
-
     def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected connection.
 
@@ -752,48 +702,47 @@ class AssessmentResultPanel(RAMSTKPanel):
 
         if self._hazard_rate_method_id == 2:
             self.txtPiE.set_sensitive(True)
-            self._do_set_circular_pwa_sensitive()
-            self._do_set_ic_socket_sensitive()
-            self._do_set_pth_sensitive()
-            self._do_set_non_pth_sensitive()
+            self.__do_set_circular_pwa_sensitive()
+            self.__do_set_ic_socket_sensitive()
+            self.__do_set_pth_sensitive()
+            self.__do_set_non_pth_sensitive()
 
-    def __set_properties(self) -> None:
-        """Set properties for Connection assessment result widgets.
+    def __do_set_circular_pwa_sensitive(self) -> None:
+        """Set widgets for circular and PWS connectors sensitive or not.
 
         :return: None
         :rtype: None
         """
-        self.lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the connection hazard "
-              "rate."))
+        if self._subcategory_id in [1, 2]:
+            self.txtPiK.set_sensitive(True)
+            self.txtPiQ.set_sensitive(False)
+            self.txtPiP.set_sensitive(True)
 
-        self.txtPiC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The complexity factor for the connection."))
-        self.txtPiE.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The environment factor for the connection.'))
-        self.txtPiK.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The mating/unmating factor for the connection."))
-        self.txtLambdaB.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The base hazard rate for the connection.'))
-        self.txtPiP.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The active pins factor for the connection."))
-        self.txtPiQ.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the connection.'))
+    def __do_set_ic_socket_sensitive(self) -> None:
+        """Set widgets for IC socket connections sensitive or not.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 3:
+            self.txtPiP.set_sensitive(True)
+            self.txtPiQ.set_sensitive(False)
+
+    def __do_set_pth_sensitive(self) -> None:
+        """Set widgets for PTH connections sensitive or not.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 4:
+            self.txtPiC.set_sensitive(True)
+            self.txtPiQ.set_sensitive(True)
+
+    def __do_set_non_pth_sensitive(self) -> None:
+        """Set widgets for non-PTH connections sensitive or not.
+
+        :return: None
+        :rtype: None
+        """
+        if self._subcategory_id == 5:
+            self.txtPiQ.set_sensitive(True)

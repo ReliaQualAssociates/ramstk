@@ -16,12 +16,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Display Resistor assessment input attribute data.
 
     The Resistor assessment input view displays all the assessment inputs for
@@ -145,11 +146,18 @@ class AssessmentInputPanel(RAMSTKPanel):
             _("Construction:"),
             _("Number of Elements:"),
         ]
+        self._lst_tooltips: List[str] = [
+            _('The quality level of the resistor.'),
+            _("The resistance (in \u03A9) of the resistor."),
+            _("The governing specification for the resistor."),
+            _("The type of thermistor."),
+            _("The style of resistor."),
+            _("The method of construction of the resistor."),
+            _("The number of active resistors in a resistor network or the "
+              "number of potentiometer taps."),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -157,7 +165,6 @@ class AssessmentInputPanel(RAMSTKPanel):
 
         # Initialize public scalar attributes.
         self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbSpecification: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbStyle: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
@@ -184,8 +191,8 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.txtNElements,
         ]
 
+        super().do_make_panel_fixed()
         self.__set_properties()
-        self.do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -218,14 +225,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_set_sensitive()
-
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        super().do_load_panel(attributes)
 
         self.cmbType.do_update(attributes['type_id'], signal='changed')
 
@@ -280,9 +280,8 @@ class AssessmentInputPanel(RAMSTKPanel):
         """
         try:
             if self._hazard_rate_method_id == 1:
-                _quality: List[List[str]] = [
-                    ["S"], ["R"], ["P"], ["M"], ["MIL-SPEC"], [_("Lower")]
-                ]
+                _quality: List[List[str]] = [["S"], ["R"], ["P"], ["M"],
+                                             ["MIL-SPEC"], [_("Lower")]]
             else:
                 _quality = self._dic_quality[self._subcategory_id]
         except KeyError:
@@ -431,29 +430,16 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
-
-        # ----- COMBOBOXES
-        self.cmbConstruction.do_set_properties(
-            tooltip=_("The method of construction of the resistor."))
-        self.cmbQuality.do_set_properties(
-            tooltip=_('The quality level of the resistor.'))
-        self.cmbSpecification.do_set_properties(
-            tooltip=_("The governing specification for the resistor."))
-        self.cmbStyle.do_set_properties(tooltip=_("The style of resistor."))
-        self.cmbType.do_set_properties(tooltip=_("The type of thermistor."))
+        super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtNElements.do_set_properties(
-            width=125,
-            tooltip=_("The number of active resistors in a resistor network "
-                      "or the number of potentiometer taps."))
-        self.txtResistance.do_set_properties(
-            width=125,
-            tooltip=_("The resistance (in \u03A9) of the resistor."))
+        self.txtNElements.do_set_properties(tooltip=self._lst_tooltips[6],
+                                            width=125)
+        self.txtResistance.do_set_properties(tooltip=self._lst_tooltips[1],
+                                             width=125)
 
 
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Display Resistor assessment results attribute data.
 
     The Resistor assessment result view displays all the assessment results
@@ -563,23 +549,29 @@ class AssessmentResultPanel(RAMSTKPanel):
             "\u03C0<sub>V</sub>:",
             "\u03C0<sub>C</sub>:",
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the resistor hazard "
+              "rate."),
+            _('The base hazard rate for the resistor.'),
+            _('The quality factor for the resistor.'),
+            _('The environment factor for the resistor.'),
+            _('The resistance factor for the resistor.'),
+            _('The temperature factor for the resistor.'),
+            _('The number of resistors factor for the resistor network.'),
+            _('The potentiometer taps factor for the resistor.'),
+            _('The voltage factor for the resistor.'),
+            _('The construction class factor for the resistor.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiC: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
         self.txtPiNR: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiR: RAMSTKEntry = RAMSTKEntry()
         self.txtPiT: RAMSTKEntry = RAMSTKEntry()
         self.txtPiTAPS: RAMSTKEntry = RAMSTKEntry()
@@ -598,8 +590,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiC,
         ]
 
-        self.do_make_panel_fixed()
-        self.__set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -614,27 +606,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>")
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtPiR.do_update(str(self.fmt.format(attributes['piR'])))
         self.txtPiT.do_update(str(self.fmt.format(attributes['piT'])))
@@ -719,60 +691,3 @@ class AssessmentResultPanel(RAMSTKPanel):
         else:
             self.txtPiTAPS.set_sensitive(False)
             self.txtPiV.set_sensitive(False)
-
-    def __set_properties(self) -> None:
-        """Set properties for Capacitor assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the capacitor failure "
-              "rate."))
-
-        self.txtLambdaB.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The base hazard rate for the resistor.'))
-        self.txtPiC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The construction class factor for the resistor.'))
-        self.txtPiE.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The environment factor for the resistor.'))
-        self.txtPiNR.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The number of resistors factor for the resistor '
-                      'network.'))
-        self.txtPiQ.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the resistor.'))
-        self.txtPiR.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The resistance factor for the resistor.'))
-        self.txtPiT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The temperature factor for the resistor.'))
-        self.txtPiTAPS.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The potentiometer taps factor for the resistor.'))
-        self.txtPiV.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The voltage factor for the resistor.'))

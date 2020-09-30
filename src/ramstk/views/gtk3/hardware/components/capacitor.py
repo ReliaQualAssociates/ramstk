@@ -15,12 +15,13 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Display Capacitor assessment input attribute data.
 
     The Capacitor assessment input view displays all the assessment inputs for
@@ -49,12 +50,6 @@ class AssessmentInputPanel(RAMSTKPanel):
     :ivar _lst_widgets: the list of widgets to display in the panel.  These
         are listed in the order they should appear on the panel.
 
-    :ivar _hazard_rate_method_id: the ID of the method to use for estimating
-        the Hardware item's hazard rate.
-    :ivar _subcategory_id: the ID of the Hardware item's subcategory.
-    :ivar _title: the text to put on the RAMSTKFrame() holding the
-        assessment input widgets.
-
     :ivar cmbConfiguration: select and display the configuration of the
         capacitor.
     :ivar cmbConstruction: select and display the method of construction of the
@@ -68,7 +63,7 @@ class AssessmentInputPanel(RAMSTKPanel):
     :ivar txtESR: enter and display the equivalent series resistance.
     """
 
-    # Define private dict attributes.
+    # Define private dictionary class attributes.
     _dic_quality: Dict[int, List[Any]] = {
         1: [['MIL-SPEC'], [_('Lower')]],
         2: [['M'], [_('Non-Established Reliability')], [_('Lower')]],
@@ -208,7 +203,7 @@ class AssessmentInputPanel(RAMSTKPanel):
              ['CG66'], ['CG67']]
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
 
     # Define private scalar class attributes.
 
@@ -243,11 +238,17 @@ class AssessmentInputPanel(RAMSTKPanel):
             _('Construction:'),
             _('Equivalent Series Resistance (\u03A9):'),
         ]
+        self._lst_tooltips: List[str] = [
+            _('The quality level of the capacitor.'),
+            _('The capacitance rating (in farads) of the capacitor.'),
+            _('The governing specification for the capacitor.'),
+            _('The style of the capacitor.'),
+            _('The configuration of the capacitor.'),
+            _('The method of construction of the capacitor.'),
+            _('The equivalent series resistance of the capacitor.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -256,7 +257,6 @@ class AssessmentInputPanel(RAMSTKPanel):
         # Initialize public scalar attributes.
         self.cmbConfiguration: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbSpecification: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbStyle: RAMSTKComboBox = RAMSTKComboBox()
 
@@ -282,8 +282,8 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.txtESR,
         ]
 
+        super().do_make_panel_fixed()
         self.__set_properties()
-        self.do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -342,14 +342,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_set_sensitive()
-
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        super().do_load_panel(attributes)
 
         # We don't block the callback signal otherwise the style
         # RAMSTKComboBox() will not be loaded and set.
@@ -378,14 +371,30 @@ class AssessmentInputPanel(RAMSTKPanel):
         """
         # If the capacitor specification changed, load the capacitor style
         # RAMSTKComboBox().
-        if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
-            _idx = int(combo.get_active()) - 1
-            _styles = self._dic_styles[self._subcategory_id][_idx]
-        else:
-            _styles = self._dic_styles[self._subcategory_id]
+        try:
+            if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
+                _idx = int(combo.get_active()) - 1
+                _styles = self._dic_styles[self._subcategory_id][_idx]
+            else:
+                _styles = self._dic_styles[self._subcategory_id]
+        except KeyError:
+            _styles = []
         self.cmbStyle.do_load_combo(entries=_styles, signal='changed')
 
-    def _do_set_parts_count_sensitive(self) -> None:
+    def _do_set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected capacitor type.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbQuality.set_sensitive(True)
+
+        if self._hazard_rate_method_id == 1:
+            self.__do_set_parts_count_sensitive()
+        else:
+            self.__do_set_part_stress_sensitive()
+
+    def __do_set_parts_count_sensitive(self) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Parts Count.
 
         :return: None
@@ -401,7 +410,7 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.txtCapacitance.set_sensitive(False)
             self.txtESR.set_sensitive(False)
 
-    def _do_set_part_stress_sensitive(self) -> None:
+    def __do_set_part_stress_sensitive(self) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Part Stress.
 
         :return: None
@@ -425,19 +434,6 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.cmbConfiguration.set_sensitive(True)
         else:
             self.cmbConfiguration.set_sensitive(False)
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected capacitor type.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbQuality.set_sensitive(True)
-
-        if self._hazard_rate_method_id == 1:
-            self._do_set_parts_count_sensitive()
-        else:
-            self._do_set_part_stress_sensitive()
 
     def __set_callbacks(self) -> None:
         """Set callback methods for Capacitor assessment input widgets.
@@ -482,30 +478,15 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
-
-        # ----- COMBOBOXES
-        self.cmbConfiguration.do_set_properties(
-            tooltip=_('The configuration of the capacitor.'))
-        self.cmbConstruction.do_set_properties(
-            tooltip=_('The method of construction of the capacitor.'))
-        self.cmbQuality.do_set_properties(
-            tooltip=_('The quality level of the capacitor.'))
-        self.cmbSpecification.do_set_properties(
-            tooltip=_('The governing specification for the capacitor.'))
-        self.cmbStyle.do_set_properties(
-            tooltip=_('The style of the capacitor.'))
+        super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtCapacitance.do_set_properties(
-            tooltip=_('The capacitance rating (in farads) of the capacitor.'),
-            width=125)
-        self.txtESR.do_set_properties(
-            tooltip=_('The equivalent series resistance of the capacitor.'),
-            width=125)
+        self.txtCapacitance.do_set_properties(tooltip=self._lst_tooltips[1],
+                                              width=125)
+        self.txtESR.do_set_properties(tooltip=self._lst_tooltips[6], width=125)
 
 
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Displays capacitor assessment results attribute data.
 
     The capacitor assessment result view displays all the assessment results
@@ -611,7 +592,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         "</sub></span>",
     }
 
-    # Define private list attributes.
+    # Define private list class attributes.
 
     # Define private scalar class attributes.
 
@@ -628,7 +609,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels = [
+        self._lst_labels: List[str] = [
             "",
             "\u03BB<sub>b</sub>:",
             "\u03C0<sub>Q</sub>:",
@@ -637,24 +618,27 @@ class AssessmentResultPanel(RAMSTKPanel):
             '\u03C0<sub>CF</sub>:',
             '\u03C0<sub>C</sub>:',
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the capacitor hazard "
+              "rate."),
+            _('The base hazard rate for the capacitor.'),
+            _('The quality factor for the capacitor.'),
+            _('The environment factor for the capacitor.'),
+            _('The capacitance factor for the capacitor.'),
+            _('The configuration factor for the capacitor.'),
+            _('The construction factor for the capacitor.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiCV: RAMSTKEntry = RAMSTKEntry()
         self.txtPiCF: RAMSTKEntry = RAMSTKEntry()
         self.txtPiC: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
 
         self._lst_widgets = [
             self.lblModel,
@@ -666,8 +650,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiC,
         ]
 
-        self.do_make_panel_fixed()
-        self.__set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -682,27 +666,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>")
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtPiCV.do_update(str(self.fmt.format(attributes['piCV'])))
         self.txtPiCF.do_update(str(self.fmt.format(attributes['piCF'])))
@@ -728,44 +692,3 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiCF.set_sensitive(True)
             self.txtPiC.set_sensitive(True)
             self.txtPiE.set_sensitive(True)
-
-    def __set_properties(self) -> None:
-        """Set properties for Capacitor assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the capacitor failure "
-              "rate."))
-
-        self.txtPiCV.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The capacitance factor for the capacitor.'))
-        self.txtPiCF.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The configuration factor for the capacitor.'))
-        self.txtPiC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The construction factor for the capacitor.'))
-        self.txtPiE.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The environment factor for the capacitor.'))
-        self.txtLambdaB.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The base hazard rate for the capacitor.'))
-        self.txtPiQ.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the capacitor.'))

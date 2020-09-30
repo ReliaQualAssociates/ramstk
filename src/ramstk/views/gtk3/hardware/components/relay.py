@@ -16,12 +16,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Display Relay assessment input attribute data in the RAMSTK Work Book.
 
     The Relay assessment input view displays all the assessment inputs for
@@ -157,11 +158,18 @@ class AssessmentInputPanel(RAMSTKPanel):
             _("Construction:"),
             _("Number of Cycles/Hour:"),
         ]
+        self._lst_tooltips: List[str] = [
+            _('The quality level of the relay.'),
+            _("The relay type."),
+            _("The type of load the relay is switching."),
+            _("The contact form of the relay."),
+            _("The rating of the relay contacts."),
+            _("The type of relay appliction."),
+            _("The method of construction of the relay."),
+            _("The number of relay on/off cycles per hour."),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -173,7 +181,6 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.cmbContactForm: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbContactRating: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbLoadType: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtCycles: RAMSTKEntry = RAMSTKEntry()
@@ -199,8 +206,8 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.txtCycles,
         ]
 
+        super().do_make_panel_fixed()
         self.__set_properties()
-        self.do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -236,14 +243,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_set_sensitive()
-
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        super().do_load_panel(attributes)
 
         self.cmbType.do_update(attributes['type_id'], signal='changed')
 
@@ -388,27 +388,11 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
-
-        # ----- COMBOBOXES
-        self.cmbApplication.do_set_properties(
-            tooltip=_("The type of relay appliction."))
-        self.cmbConstruction.do_set_properties(
-            tooltip=_("The method of construction of the relay."))
-        self.cmbContactForm.do_set_properties(
-            tooltip=_("The contact form of the relay."))
-        self.cmbContactRating.do_set_properties(
-            tooltip=_("The rating of the relay contacts."))
-        self.cmbQuality.do_set_properties(
-            tooltip=_('The quality level of the relay.'))
-        self.cmbLoadType.do_set_properties(
-            tooltip=_("The type of load the relay is switching."))
-        self.cmbType.do_set_properties(tooltip=_("The relay type."))
+        super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtCycles.do_set_properties(
-            width=125,
-            tooltip=_("The number of relay on/off cycles per hour."))
+        self.txtCycles.do_set_properties(tooltip=self._lst_tooltips[7],
+                                         width=125)
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Relay attribute.
@@ -437,7 +421,7 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.__do_load_construction_combo()
 
 
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Display Relay assessment results attribute data in the RAMSTK Work Book.
 
     The Relay assessment result view displays all the assessment results
@@ -491,25 +475,28 @@ class AssessmentResultPanel(RAMSTKPanel):
             '\u03C0<sub>F</sub>:',
             '\u03C0<sub>L</sub>:',
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the relay hazard rate."),
+            _('The base hazard rate for the relay.'),
+            _('The quality factor for the relay.'),
+            _('The environment factor for the relay.'),
+            _('The contact form factor for the relay.'),
+            _('The cycling factor for the relay.'),
+            _('The application and construction factor for the relay.'),
+            _('The load stress factor for the relay.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiC: RAMSTKEntry = RAMSTKEntry()
         self.txtPiCYC: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
         self.txtPiF: RAMSTKEntry = RAMSTKEntry()
         self.txtPiL: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
 
         self._lst_widgets = [
             self.lblModel,
@@ -522,8 +509,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiL,
         ]
 
-        self.do_make_panel_fixed()
-        self.__set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -538,27 +525,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>")
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
         self.txtPiCYC.do_update(str(self.fmt.format(attributes['piCYC'])))
@@ -587,49 +554,3 @@ class AssessmentResultPanel(RAMSTKPanel):
                 self.txtPiCYC.set_sensitive(True)
                 self.txtPiF.set_sensitive(True)
                 self.txtPiL.set_sensitive(True)
-
-    def __set_properties(self) -> None:
-        """Set properties for Capacitor assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the relay hazard rate."))
-
-        self.txtLambdaB.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The base hazard rate for the relay.'))
-        self.txtPiC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The contact form factor for the relay.'))
-        self.txtPiCYC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The cycling factor for the relay.'))
-        self.txtPiE.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The environment factor for the relay.'))
-        self.txtPiF.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(
-                'The application and construction factor for the relay.'))
-        self.txtPiL.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The load stress factor for the relay.'))
-        self.txtPiQ.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the relay.'))

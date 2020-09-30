@@ -16,12 +16,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Display Semiconductor assessment input attribute data.
 
     The Semiconductor assessment input view displays all the assessment inputs
@@ -185,11 +186,19 @@ class AssessmentInputPanel(RAMSTKPanel):
             _("Number of Characters:"),
             "\u03B8<sub>JC</sub>:",
         ]
+        self._lst_tooltips: List[str] = [
+            _("The quality level of the semiconductor."),
+            _("The package type for the semiconductor."),
+            _("The type of semiconductor."),
+            _("The application of the semiconductor."),
+            _("The method of construction of the semiconductor."),
+            _("The matching network of the semiconductor."),
+            _("The operating frequency of the semiconductor."),
+            _("The number of characters in the optoelectronic display."),
+            _("The junction-case thermal resistance of the semiconductor."),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -200,7 +209,6 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbMatching: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbPackage: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtFrequencyOperating: RAMSTKEntry = RAMSTKEntry()
@@ -231,8 +239,8 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.txtThetaJC,
         ]
 
+        super().do_make_panel_fixed()
         self.__set_properties()
-        self.do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -267,14 +275,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_set_sensitive()
-
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        super().do_load_panel(attributes)
 
         self.cmbType.do_update(attributes['type_id'], signal='changed')
 
@@ -501,36 +502,18 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
-
-        # ----- COMBOBOXES
-        self.cmbPackage.do_set_properties(
-            tooltip=_("The package type for the semiconductor."))
-        self.cmbType.do_set_properties(tooltip=_("The type of semiconductor."))
-        self.cmbApplication.do_set_properties(
-            tooltip=_("The application of the semiconductor."))
-        self.cmbConstruction.do_set_properties(
-            tooltip=_("The method of construction of the semiconductor."))
-        self.cmbMatching.do_set_properties(
-            tooltip=_("The matching network of the semiconductor."))
-        self.cmbQuality.do_set_properties(
-            tooltip=_("The quality level of the semiconductor."))
+        super().do_set_properties()
 
         # ----- ENTRIES
         self.txtFrequencyOperating.do_set_properties(
-            width=125,
-            tooltip=_("The operating frequency of the semiconductor."))
-        self.txtNElements.do_set_properties(
-            width=125,
-            tooltip=_(
-                "The number of characters in the optoelectronic display."))
-        self.txtThetaJC.do_set_properties(
-            width=125,
-            tooltip=_(
-                "The junction-case thermal resistance of the semiconductor."))
+            tooltip=self._lst_tooltips[6], width=125)
+        self.txtNElements.do_set_properties(tooltip=self._lst_tooltips[7],
+                                            width=125)
+        self.txtThetaJC.do_set_properties(tooltip=self._lst_tooltips[8],
+                                          width=125)
 
 
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Display semiconductor assessment results attribute data.
 
     The semiconductor assessment result view displays all the assessment
@@ -635,26 +618,34 @@ class AssessmentResultPanel(RAMSTKPanel):
             '\u03C0<sub>P</sub>:',
             '\u03C0<sub>S</sub>:',
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the semiconductor "
+              "hazard rate."),
+            _('The base hazard rate for the semiconductor.'),
+            _('The quality factor for the semiconductor.'),
+            _('The environment factor for the semiconductor.'),
+            _('The temperature factor for the semiconductor.'),
+            _('The application factor for the semiconductor.'),
+            _('The contact construction factor for the semiconductor.'),
+            _('The power rating factor for the semiconductor.'),
+            _('The matching network factor for the semiconductor.'),
+            _('The forward current factor for the semiconductor.'),
+            _('The quality factor for the semiconductor.'),
+            _('The electrical stress factor for the semiconductor.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiA: RAMSTKEntry = RAMSTKEntry()
         self.txtPiC: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
         self.txtPiI: RAMSTKEntry = RAMSTKEntry()
         self.txtPiM: RAMSTKEntry = RAMSTKEntry()
         self.txtPiP: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiR: RAMSTKEntry = RAMSTKEntry()
         self.txtPiS: RAMSTKEntry = RAMSTKEntry()
         self.txtPiT: RAMSTKEntry = RAMSTKEntry()
@@ -674,8 +665,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiS,
         ]
 
-        self.do_make_panel_fixed()
-        self.set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -690,27 +681,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>")
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
         self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
@@ -842,70 +813,3 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiT.set_sensitive(True)
         else:
             self.txtPiT.set_sensitive(False)
-
-    def __set_properties(self) -> None:
-        """Set properties for Semiconductor assessment result widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the semiconductor "
-              "hazard rate."))
-
-        self.txtLambdaB.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The base hazard rate for the semiconductor.'))
-        self.txtPiA.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The application factor for the semiconductor.'))
-        self.txtPiC.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The contact construction factor for the '
-                      'semiconductor.'))
-        self.txtPiE.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The environment factor for the semiconductor.'))
-        self.txtPiI.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The forward current factor for the semiconductor.'))
-        self.txtPiM.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The matching network factor for the semiconductor.'))
-        self.txtPiP.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the semiconductor.'))
-        self.txtPiQ.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The quality factor for the semiconductor.'))
-        self.txtPiR.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The power rating factor for the semiconductor.'))
-        self.txtPiS.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The electrical stress factor for the semiconductor.'))
-        self.txtPiT.do_set_properties(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_('The temperature factor for the semiconductor.'))

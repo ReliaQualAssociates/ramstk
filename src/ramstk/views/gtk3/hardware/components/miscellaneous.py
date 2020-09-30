@@ -16,12 +16,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 # noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+
+# RAMSTK Local Imports
+from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKPanel):
+class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """Display Miscellaneous assessment input attribute data.
 
     The Miscellaneous hardware assessment input view displays all the
@@ -71,11 +72,16 @@ class AssessmentInputPanel(RAMSTKPanel):
             _("Operating Frequency:"),
             _("Utilization:"),
         ]
+        self._lst_tooltips: List[str] = [
+            _('The quality level.'),
+            _("The application of the lamp."),
+            _("The type of electronic filter."),
+            _("The operating frequency of the crystal."),
+            _("The utilization factor (illuminate hours / equipment operate "
+              "hours) of the lamp.")
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
-        self._title: str = _("Design Ratings")
 
         # Initialize public dictionary attributes.
 
@@ -83,7 +89,6 @@ class AssessmentInputPanel(RAMSTKPanel):
 
         # Initialize public scalar attributes.
         self.cmbApplication: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtFrequency: RAMSTKEntry = RAMSTKEntry()
@@ -104,8 +109,8 @@ class AssessmentInputPanel(RAMSTKPanel):
             self.txtUtilization,
         ]
 
+        super().do_make_panel_fixed()
         self.__set_properties()
-        self.do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -155,14 +160,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
-
-        self.do_load_comboboxes(attributes['subcategory_id'])
-        self._do_set_sensitive()
-
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        super().do_load_panel(attributes)
 
         _dic_method = {
             1: self.__do_load_crystal,
@@ -298,25 +296,16 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
-
-        # ----- COMBOBOXES
-        self.cmbApplication.do_set_properties(
-            tooltip=_("The application of the lamp."))
-        self.cmbQuality.do_set_properties(tooltip=_('The quality level.'))
-        self.cmbType.do_set_properties(
-            tooltip=_("The type of electronic filter."))
+        super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtFrequency.do_set_properties(
-            width=125, tooltip=_("The operating frequency of the crystal."))
-        self.txtUtilization.do_set_properties(
-            width=125,
-            tooltip=_("The utilization factor (illuminate hours / equipment "
-                      "operate hours) of the lamp."))
+        self.txtFrequency.do_set_properties(tooltip=self._lst_tooltips[3],
+                                            width=125)
+        self.txtUtilization.do_set_properties(tooltip=self._lst_tooltips[4],
+                                              width=125)
 
 
-class AssessmentResultPanel(RAMSTKPanel):
+class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     """Display Misc assessment results attribute data in the RAMSTK Work Book.
 
     The Miscellaneous hardware item assessment result view displays all the
@@ -373,22 +362,23 @@ class AssessmentResultPanel(RAMSTKPanel):
             '\u03C0<sub>U</sub>:',
             '\u03C0<sub>A</sub>:',
         ]
+        self._lst_tooltips: List[str] = [
+            _("The assessment model used to calculate the hazard rate."),
+            _('The base hazard rate.'),
+            _('The quality factor.'),
+            _('The environment factor.'),
+            _('The utilization factor.'),
+            _('The application factor.'),
+        ]
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
-
-        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiA: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiU: RAMSTKEntry = RAMSTKEntry()
 
         self._lst_widgets = [
@@ -400,8 +390,8 @@ class AssessmentResultPanel(RAMSTKPanel):
             self.txtPiU,
         ]
 
-        self.do_make_panel_fixed()
-        self.set_properties()
+        super().do_make_panel_fixed()
+        super().do_set_properties()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
@@ -416,29 +406,7 @@ class AssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if (self._hazard_rate_method_id == 1
-                and self._subcategory_id in [3, 4]):
-            self._lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                "\u03BB<sub>g</sub></span>")
-
-        elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
-
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        super().do_load_panel(attributes)
 
         self.txtPiU.do_update(str(self.fmt.format(attributes['piU'])))
         self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
