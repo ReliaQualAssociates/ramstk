@@ -134,8 +134,8 @@ class TaskDescriptionPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
+        super().do_make_panel_fixed()
         self.__do_set_properties()
-        self.do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -764,8 +764,8 @@ class ProgramEffortPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
+        super().do_make_panel_fixed()
         self.__do_set_properties()
-        self.do_make_panel_fixed()
         self.__do_adjust_widgets()
 
         # Subscribe to PyPubSub messages.

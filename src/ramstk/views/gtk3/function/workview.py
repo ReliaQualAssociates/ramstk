@@ -73,8 +73,8 @@ class GeneralDataPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
+        super().do_make_panel_fixed()
         self.__do_set_properties()
-        self.do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.

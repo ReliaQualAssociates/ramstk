@@ -272,8 +272,8 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             self.txtNPlanes,
         ]
 
+        super().do_make_panel_fixed()
         self.__set_properties()
-        self.do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.

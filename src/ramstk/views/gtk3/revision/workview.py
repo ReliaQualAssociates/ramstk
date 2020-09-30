@@ -67,8 +67,7 @@ class GeneralDataPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        self.do_make_panel_fixed()
-
+        super().do_make_panel_fixed()
         self.__do_set_properties()
         self.__do_set_callbacks()
 

@@ -109,8 +109,8 @@ class GeneralDataPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
+        super().do_make_panel_fixed()
         self.__do_set_properties()
-        self.do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -414,8 +414,8 @@ class ClarityPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
+        super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_properties()
-        self.do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -556,8 +556,8 @@ class CompletenessPanel(RAMSTKPanel):
         ]
 
         # Make a treeview type panel.
+        super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_properties()
-        self.do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -695,8 +695,8 @@ class ConsistencyPanel(RAMSTKPanel):
         ]
 
         # Make a treeview type panel.
+        super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_properties()
-        self.do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -817,8 +817,8 @@ class VerifiabilityPanel(RAMSTKPanel):
         ]
 
         # Make a treeview type panel.
+        super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_properties()
-        self.do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
