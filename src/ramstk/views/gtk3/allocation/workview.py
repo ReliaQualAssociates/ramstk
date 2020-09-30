@@ -736,7 +736,7 @@ class Allocation(RAMSTKWorkView):
                 self._module + 'bg']
             _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
                 self._module + 'fg']
-        except KeyError as _error:
+        except KeyError:
             _bg_color = '#FFFFFF'
             _fg_color = '#000000'
 

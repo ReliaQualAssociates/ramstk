@@ -180,13 +180,13 @@ class RAMSTKPanel(RAMSTKFrame):
             if _row is not None:
                 self.tvwTreeView.selection.select_iter(_row)
                 self.show_all()
-        except TypeError as _error:
+        except TypeError:
             _error_msg = _(
                 "An error occurred while loading {1:s} data for Record "
                 "ID {0:d} into the view.  One or more values from the "
                 "database was the wrong type for the column it was trying to "
                 "load.").format(self._record_id, _tag)
-        except ValueError as _error:
+        except ValueError:
             _error_msg = _(
                 "An error occurred while loading {1:s} data for Record "
                 "ID {0:d} into the view.  One or more values from the "

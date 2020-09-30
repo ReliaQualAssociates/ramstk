@@ -41,7 +41,7 @@ class GeneralDataPanel(RAMSTKPanel):
         """Initialize an instance of the Hardware General Date panel."""
         super().__init__()
 
-        # Initialize private dict instance attributes.
+        # Initialize private dictionary instance attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
             0: ['repairable', 'integer'],
             2: ['category_id', 'integer'],
@@ -78,7 +78,7 @@ class GeneralDataPanel(RAMSTKPanel):
         # Initialize private scalar instance attributes.
         self._title: str = _("General Information")
 
-        # Initialize public dict instance attributes.
+        # Initialize public dictionary instance attributes.
         self.dicSubcategories: Dict[int, Dict[int, str]] = {}
 
         # Initialize public list instance attributes.
@@ -1805,11 +1805,18 @@ class GeneralData(RAMSTKWorkView):
         self._pnlLogistics: RAMSTKPanel = LogisticsPanel()
         self._pnlMiscellaneous: RAMSTKPanel = MiscellaneousPanel()
 
-        self._lst_callbacks = [self._do_request_make_comp_ref_des]
-        self._lst_icons = ['comp_ref_des']
+        self._lst_callbacks = [
+            self._do_request_make_comp_ref_des,
+        ]
+        self._lst_icons = [
+            'comp_ref_des',
+        ]
+        self._lst_mnu_labels = [
+            _("Comp. Ref. Des."),
+        ]
         self._lst_tooltips = [
             _("Creates the composite reference designator for the "
-              "selected hardware item.")
+              "selected hardware item."),
         ]
 
         self.__make_ui()
