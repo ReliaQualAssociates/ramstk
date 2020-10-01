@@ -134,8 +134,8 @@ class GeneralDataPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        super().do_make_panel_fixed()
         self.__do_set_properties()
+        super().do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -434,8 +434,8 @@ class LogisticsPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        super().do_make_panel_fixed()
         self.__do_set_properties()
+        super().do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -619,8 +619,8 @@ class MiscellaneousPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        super().do_make_panel_fixed()
         self.__do_set_properties()
+        super().do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -792,8 +792,8 @@ class AssessmentInputPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        super().do_make_panel_fixed()
         self.__do_set_properties()
+        super().do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -1178,8 +1178,8 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        super().do_make_panel_fixed()
         self.__do_set_properties()
+        super().do_make_panel_fixed()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -1381,8 +1381,8 @@ class ReliabilityResultsPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        super().do_make_panel_fixed()
         self.__do_set_properties()
+        super().do_make_panel_fixed()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_edit, 'mvw_editing_hardware')
@@ -1616,8 +1616,8 @@ class AvailabilityResultsPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        super().do_make_panel_fixed()
         self.__do_set_properties()
+        super().do_make_panel_fixed()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_edit, 'mvw_editing_hardware')

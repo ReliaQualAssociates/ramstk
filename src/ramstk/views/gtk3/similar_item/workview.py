@@ -58,9 +58,9 @@ class MethodPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
+        self.__do_set_properties()
         super().do_make_panel_fixed()
         self.__do_load_combobox()
-        self.__do_set_properties()
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -532,7 +532,6 @@ class SimilarItem(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_hardware: Dict[str, Any] = {}
 
         # Initialize private list attributes.
         self._lst_callbacks = [

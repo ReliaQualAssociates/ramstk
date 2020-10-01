@@ -239,8 +239,8 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             self.txtThetaJC,
         ]
 
-        super().do_make_panel_fixed()
         self.__set_properties()
+        super().do_make_panel_fixed()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
@@ -665,8 +665,8 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
             self.txtPiS,
         ]
 
-        super().do_make_panel_fixed()
         super().do_set_properties()
+        super().do_make_panel_fixed()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,

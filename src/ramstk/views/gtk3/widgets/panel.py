@@ -213,7 +213,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
             _minimum: Gtk.Requisition = self._lst_widgets[  # type: ignore
                 _idx].get_preferred_size()[0]
-            if _minimum.height == 0:
+            if _minimum.height <= 0:
                 _minimum.height = self._lst_widgets[  # type: ignore
                     _idx].height
 
