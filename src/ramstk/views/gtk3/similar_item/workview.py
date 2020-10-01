@@ -8,7 +8,7 @@
 """The RAMSTK SimilarItem Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -19,13 +19,461 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import EditFunction
-from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKFrame,
-                                       RAMSTKWorkView)
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox, RAMSTKPanel, RAMSTKWorkView
+)
+
+
+class MethodPanel(RAMSTKPanel):
+    """Panel to display Similar Item analysis methods."""
+    def __init__(self):
+        """Initialize an instance of the Similar Item methods panel."""
+        super().__init__()
+
+        # Initialize private dictionary instance attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            2: 'method_id',
+        }
+
+        # Initialize private list instance attributes.
+        self._lst_labels: List[str] = [
+            _("Select Method"),
+        ]
+
+        # Initialize private scalar instance attributes.
+        self._title: str = _("Similar Item Method")
+
+        # Initialize public dictionary instance attributes.
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+        self.cmbSimilarItemMethod: RAMSTKComboBox = RAMSTKComboBox()
+
+        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
+            'method_id': [self.cmbSimilarItemMethod.do_update, 'changed'],
+        }
+        self._lst_widgets = [
+            self.cmbSimilarItemMethod,
+        ]
+
+        # Make a fixed type panel.
+        super().do_make_panel_fixed()
+        self.__do_load_combobox()
+        self.__do_set_properties()
+        self.__do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
+
+    def _do_clear_panel(self) -> None:
+        """Clear the widgets on the panel.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbSimilarItemMethod.do_update(0, signal='changed')
+
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Similar Item Work View page.
+
+        :param dict attributes: a dict of attributes key:value pairs for the
+            displayed Hardware item's Similar Item analysis.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['hardware_id']
+
+        self.cmbSimilarItemMethod.do_update(
+            attributes['similar_item_method_id'], signal='changed')
+
+    def __do_load_combobox(self) -> None:
+        """Load Similar Item analysis RAMSTKComboBox()s.
+
+        :return: None
+        :rtype: None
+        """
+        # Load the method combobox.
+        self.cmbSimilarItemMethod.do_load_combo(
+            [[_("Topic 633"), 0], [_("User-Defined"), 1]], signal='changed')
+
+    def __do_set_callbacks(self) -> None:
+        """Set the callback functions and methods for the Similar Item widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbSimilarItemMethod.dic_handler_id[
+            'changed'] = self.cmbSimilarItemMethod.connect(
+                'changed', self.on_changed_combo, 2, 'wvw_editing_hardware')
+
+    def __do_set_properties(self) -> None:
+        """Set the properties of the Similar Item widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbSimilarItemMethod.do_set_properties(
+            tooltip=_("Select the similar item analysis method."))
+
+
+class SimilarItemPanel(RAMSTKPanel):
+    """Panel to display Similar Item analysis worksheet."""
+
+    # Define private dictionary class attributes.
+    _dic_quality: Dict[int, str] = {
+        0: '',
+        1: 'Space',
+        2: 'Full Military',
+        3: 'Ruggedized',
+        4: 'Commercial'
+    }
+    _dic_environment: Dict[int, str] = {
+        0: '',
+        1: 'Ground, Benign',
+        2: 'Ground,Mobile',
+        3: 'Naval, Sheltered',
+        4: 'Airborne, Inhabited, Cargo',
+        5: 'Airborne, Rotary Wing',
+        6: 'Space, Flight'
+    }
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self):
+        """Initialize an instance of the Similar Item analysis worksheet."""
+        super().__init__()
+
+        # Initialize private dictionary instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+        self._method_id: int = 0
+        self._similar_item_tree: treelib.Tree = treelib.Tree()
+        self._title: str = _("Similar Item Analysis")
+
+        # Initialize public dictionary instance attributes.
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        # Make a fixed type panel.
+        super().do_make_panel_treeview()
+        self.__do_set_properties()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
+
+        pub.subscribe(self._do_load_panel, 'do_load_similar_item')
+        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
+        pub.subscribe(self._do_load_row, 'succeed_get_similar_item_attributes')
+        pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
+
+    def do_load_combobox(self) -> None:
+        """Load Similar Item analysis RAMSTKComboBox()s.
+
+        :return: None
+        :rtype: None
+        """
+        # Load the quality from and quality to Gtk.CellRendererCombo().
+        for _idx in [4, 5]:
+            _model = self.tvwTreeView.get_cell_model(_idx, True)
+            for _quality in self._dic_quality.values():
+                _model.append([_quality])
+
+        # Load the environment from and environment to Gtk.CellRendererCombo().
+        for _idx in [6, 7]:
+            _model = self.tvwTreeView.get_cell_model(_idx, True)
+            for _environment in self._dic_environment.values():
+                _model.append([_environment])
+
+    def do_refresh_functions(self, row: Gtk.TreeIter,
+                             function: List[str]) -> None:
+        """Refresh the Similar Item functions in the RAMSTKTreeView().
+
+        :param row: the row in the Similar Item RAMSTKTreeView() whose
+            functions need to be updated.  This is require to allow a recursive
+            calling function to load the same function in all rows.
+        :param function: the list of user-defined Similar Item functions.
+        :return: None
+        """
+        _model = self.tvwTreeView.get_model()
+
+        _model.set_value(row, self._lst_col_order[30], function[0])
+        _model.set_value(row, self._lst_col_order[31], function[1])
+        _model.set_value(row, self._lst_col_order[32], function[2])
+        _model.set_value(row, self._lst_col_order[33], function[3])
+        _model.set_value(row, self._lst_col_order[34], function[4])
+
+    def do_set_callbacks(self) -> None:
+        """Set the callback functions and methods for the Similar Item widgets.
+
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cell_callbacks('wvw_editing_hardware',
+                                      self._lst_col_order[3:])
+
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Similar Item Work View page.
+
+        :param attributes: a dict of attributes key:value pairs for the
+            displayed Hardware item's Similar Item analysis.
+        :return: None
+        :rtype: None
+        """
+        self._method_id = attributes['similar_item_method_id']
+        self._record_id = attributes['hardware_id']
+
+        if self._record_id > 0:
+            self._do_load_tree()
+            self._do_set_columns_editable()
+
+    def _do_load_row(self, attributes: Dict[str, Any]) -> None:
+        """Load the Similar Item RAMSTKTreeView() and other widgets.
+
+        :param dict attributes: the attributes dict for the row to be loaded.
+        :return: None
+        :rtype: None
+        """
+        attributes['quality_from'] = self.__do_get_quality(
+            attributes['quality_from_id'])
+        attributes['quality_to'] = self.__do_get_quality(
+            attributes['quality_to_id'])
+        attributes['environment_from'] = self.__do_get_environment(
+            attributes['environment_from_id'])
+        attributes['environment_to'] = self.__do_get_environment(
+            attributes['environment_to_id'])
+
+        _node_id = attributes['hardware_id']
+
+        attributes['revision_id'] = self._similar_item_tree.get_node(
+            _node_id).data['hardware'].get_attributes()['revision_id']
+        attributes['name'] = self._similar_item_tree.get_node(
+            _node_id).data['hardware'].get_attributes()['name']
+        attributes['hazard_rate_active'] = self._similar_item_tree.get_node(
+            _node_id).data['reliability'].get_attributes()[
+                'hazard_rate_active']  # noqa
+
+        super().do_load_row(attributes)
+
+    def _do_load_tree(self) -> None:
+        """Load the Similar Item RAMSTKTreeView() with allocation data.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.tvwTreeView.get_model()
+        _model.clear()
+
+        self._tree_loaded = False
+        for _node in self._similar_item_tree.children(self._record_id):
+            _node_id = _node.data['hardware'].get_attributes()['hardware_id']
+            pub.sendMessage('request_get_hardware_attributes',
+                            node_id=_node_id,
+                            table='similar_item')
+        self._tree_loaded = True
+
+    def _do_set_columns_editable(self) -> None:
+        """Set editable columns based on the Similar Item method selected.
+
+        :return: None
+        :rtype: None
+        """
+        if self._method_id == 1:
+            self.tvwTreeView.editable = {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'False',
+                'col3': 'False',
+                'col4': 'True',
+                'col5': 'True',
+                'col6': 'True',
+                'col7': 'True',
+                'col8': 'True',
+                'col9': 'True',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'False',
+                'col13': 'False',
+                'col14': 'False',
+                'col15': 'False',
+                'col16': 'False',
+                'col17': 'False',
+                'col18': 'False',
+                'col19': 'False',
+                'col20': 'False',
+                'col21': 'False',
+                'col22': 'False',
+                'col23': 'False',
+                'col24': 'False',
+                'col25': 'False',
+                'col26': 'False',
+                'col27': 'False',
+                'col28': 'False',
+                'col29': 'False',
+                'col30': 'False',
+                'col31': 'False',
+                'col32': 'False',
+                'col33': 'False',
+                'col34': 'False',
+                'col35': 'False',
+                'col36': 'False',
+                'col37': 'False',
+                'col38': 'False',
+                'col39': 'False',
+                'col40': 'False',
+                'col41': 'False',
+                'col42': 'False',
+                'col43': 'False',
+                'col44': 'False',
+                'col45': 'False',
+                'col46': 'False',
+                'col47': 'False',
+                'col48': 'False',
+                'col49': 'False',
+                'col50': 'False',
+                'col51': 'False',
+                'col52': 'False',
+                'col53': 'False',
+                'col54': 'False',
+                'col55': 'False',
+            }
+
+            self.tvwTreeView.visible = {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'True',
+                'col3': 'True',
+                'col4': 'True',
+                'col5': 'True',
+                'col6': 'True',
+                'col7': 'True',
+                'col8': 'True',
+                'col9': 'True',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'False',
+                'col13': 'False',
+                'col14': 'False',
+                'col15': 'False',
+                'col16': 'False',
+                'col17': 'False',
+                'col18': 'False',
+                'col19': 'False',
+                'col20': 'False',
+                'col21': 'False',
+                'col22': 'False',
+                'col23': 'False',
+                'col24': 'False',
+                'col25': 'False',
+                'col26': 'False',
+                'col27': 'False',
+                'col28': 'False',
+                'col29': 'False',
+                'col30': 'False',
+                'col31': 'False',
+                'col32': 'False',
+                'col33': 'False',
+                'col34': 'False',
+                'col35': 'True',
+                'col36': 'False',
+                'col37': 'False',
+                'col38': 'False',
+                'col39': 'False',
+                'col40': 'False',
+                'col41': 'False',
+                'col42': 'False',
+                'col43': 'False',
+                'col44': 'False',
+                'col45': 'False',
+                'col46': 'False',
+                'col47': 'False',
+                'col48': 'False',
+                'col49': 'False',
+                'col50': 'False',
+                'col51': 'False',
+                'col52': 'False',
+                'col53': 'False',
+                'col54': 'False',
+                'col55': 'False',
+            }
+
+        # TODO: Remove editable argument after all RAMSTKTreeView()'s are
+        #  updated.
+        self.tvwTreeView.do_set_columns_editable(editable=None)
+        self.tvwTreeView.do_set_visible_columns()
+
+    def _do_set_tree(self, dmtree: treelib.Tree) -> None:
+        """Set the _similar_item_tree equal to the datamanger Hardware tree.
+
+        :param dmtree: the Hardware datamanger treelib.Tree() of data.
+        :return: None
+        :rtype: None
+        """
+        self._similar_item_tree = dmtree
+
+    def __do_get_environment(self, environment_id: int) -> str:
+        """Retrieve the environment name given the ID.
+
+        :param int environment_id: the ID number of the environment to return.
+        :return: _environment; the noun name of the environment.
+        :rtype; str
+        """
+        _environment = ''
+        try:
+            _environment = self._dic_environment[environment_id]
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        return _environment
+
+    def __do_get_quality(self, quality_id: int) -> str:
+        """Retrieve the quality name given the ID.
+
+        :param int quality_id: the ID number of the quality level to return.
+        :return: _quality; the noun name of the quality level.
+        :rtype; str
+        """
+        _quality = ''
+        try:
+            _quality = self._dic_quality[quality_id]
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+        return _quality
+
+    def __do_set_properties(self) -> None:
+        """Set the properties of the Similar Item widgets.
+
+        :return: None
+        :rtype: None
+        """
+        super().do_set_properties(bold=True, title=self._title)
+
+        self.tvwTreeView.set_enable_tree_lines(True)
+        self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
+        self.tvwTreeView.set_level_indentation(2)
+        self.tvwTreeView.set_tooltip_text(
+            _("Displays the Similar Item Analysis for the currently "
+              "selected Hardware item."))
 
 
 class SimilarItem(RAMSTKWorkView):
-    """
-    Display Similar Item attribute data in the Work Book.
+    """Display Similar Item attribute data in the Work Book.
 
     The WorkView displays all the attributes for the Similar Item Analysis. The
     attributes of a SimilarItem Work View are:
@@ -54,76 +502,10 @@ class SimilarItem(RAMSTKWorkView):
     :ivar cmbSimilarItemMethod: the method (Topic 633 or user-defined) to use
         for the similar item analysis.
     """
+
     # Define private dict class attributes.
-    _dic_keys = {2: 'method_id'}
-    _dic_column_keys = {
-        4: 'quality_from_id',
-        5: 'quality_to_id',
-        6: 'environment_from_id',
-        7: 'environment_to_id',
-        8: 'temperature_from',
-        9: 'temperature_to',
-        10: 'change_description_1',
-        11: 'change_factor_1',
-        12: 'change_description_2',
-        13: 'change_factor_2',
-        14: 'change_description_3',
-        15: 'change_factor_3',
-        16: 'change_description_4',
-        17: 'change_factor_4',
-        18: 'change_description_5',
-        19: 'change_factor_5',
-        20: 'change_description_6',
-        21: 'change_factor_6',
-        22: 'change_description_7',
-        23: 'change_factor_7',
-        24: 'change_description_8',
-        25: 'change_factor_8',
-        26: 'change_description_9',
-        27: 'change_factor_9',
-        28: 'change_description_10',
-        29: 'change_factor_10',
-        40: 'user_blob_1',
-        41: 'user_blob_2',
-        42: 'user_blob_3',
-        43: 'user_blob_4',
-        44: 'user_blob_5',
-        45: 'user_float_1',
-        46: 'user_float_2',
-        47: 'user_float_3',
-        48: 'user_float_4',
-        49: 'user_float_5',
-        50: 'user_int_1',
-        51: 'user_int_2',
-        52: 'user_int_3',
-        53: 'user_int_4',
-        54: 'user_int_5'
-    }
-    _dic_quality = {
-        0: '',
-        1: 'Space',
-        2: 'Full Military',
-        3: 'Ruggedized',
-        4: 'Commercial'
-    }
-    _dic_environment = {
-        0: '',
-        1: 'Ground, Benign',
-        2: 'Ground,Mobile',
-        3: 'Naval, Sheltered',
-        4: 'Airborne, Inhabited, Cargo',
-        5: 'Airborne, Rotary Wing',
-        6: 'Space, Flight'
-    }
 
     # Define private list class attributes.
-    _lst_labels: List[str] = [
-        _("Select Method"),
-    ]
-    _lst_title: List[str] = [
-        _("Similar Item Method"),
-        _("Similar Item Analysis"),
-    ]
 
     # Define private scalar class attributes.
     _module: str = 'similar_item'
@@ -131,293 +513,99 @@ class SimilarItem(RAMSTKWorkView):
     _tabtooltip: str = _(
         "Displays the Similar Item analysis for the selected hardware item.")
 
+    # Define public dictionary class attributes.
+
+    # Define public dictionary list attributes.
+
+    # Define public dictionary scalar attributes.
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the Hardware Work View general data page.
+        """Initialize the Hardware Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration:
+            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
-
-        self.RAMSTK_LOGGER.do_create_logger(
-            __name__,
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
 
         # Initialize private dictionary attributes.
         self._dic_hardware: Dict[str, Any] = {}
 
         # Initialize private list attributes.
         self._lst_callbacks = [
-            self._do_request_edit_function, self._do_request_rollup,
-            self._do_request_calculate
+            self._do_request_edit_function,
+            self._do_request_rollup,
+            self._do_request_calculate,
+            self._do_request_update,
+            self._do_request_update_all,
         ]
-        self._lst_icons = ['edit', 'rollup', 'calculate']
+        self._lst_icons = [
+            'edit',
+            'rollup',
+            'calculate',
+            'save',
+            'save-all',
+        ]
         self._lst_mnu_labels = [
             _("Edit Function"),
             _("Roll-Up Descriptions"),
-            _("Calculate Similar Item")
+            _("Calculate Similar Item"),
+            _("Save"),
+            _("Save All"),
         ]
         self._lst_tooltips = [
             _("Edit the Similar Item analysis functions."),
             _("Roll up descriptions to next higher level assembly."),
-            _("Calculate the Similar Item analysis.")
+            _("Calculate the Similar Item analysis."),
+            _("Save changes to the selected Similar Item analysis line item."),
+            _("Save changes to all Similar Item analysis line items."),
         ]
 
         # Initialize private scalar attributes.
-        self._similar_item_tree: treelib.Tree = treelib.Tree()
-        self._method_id: int = 0
+        self._pnlMethod: RAMSTKPanel = MethodPanel()
+        self._pnlSimilarItemAnalysis: RAMSTKPanel = SimilarItemPanel()
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbSimilarItemMethod: RAMSTKComboBox = RAMSTKComboBox()
 
-        # TMPLT: This is the list of widgets for the workview.  The order of
-        # TMPLT: the items in the list is the order they will appear on the
-        # TMPLT: workview's container (generally a Gtk.Fixed()) using the
-        # TMPLT: parent class' make_ui() method .  The list can be sliced if
-        # TMPLT: the information is to be displayed across multiple views.  It
-        # TMPLT: can also be used to make customized views.  Use this list
-        # TMPLT: in conjunction with the class variable _lst_labels.
-        self._lst_widgets = [self.cmbSimilarItemMethod]
-
-        self.__set_properties()
         self.__make_ui()
-        self.__set_callbacks()
-        self.__load_combobox()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_row, 'succeed_get_similar_item_attributes')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_hardware')
 
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'do_load_similar_item')
-        pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
-
-    def __do_get_environment(self, environment_id: int) -> str:
-        """
-        Retrieve the environment name given the ID.
-
-        :param int environment_id: the ID number of the environment to return.
-        :return: _environment; the noun name of the environment.
-        :rtype; str
-        """
-        _environment = ''
-        try:
-            _environment = self._dic_environment[environment_id]
-        except KeyError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        return _environment
-
-    def __do_get_quality(self, quality_id: int) -> str:
-        """
-        Retrieve the quality name given the ID.
-
-        :param int quality_id: the ID number of the quality level to return.
-        :return: _quality; the noun name of the quality level.
-        :rtype; str
-        """
-        _quality = ''
-        try:
-            _quality = self._dic_quality[quality_id]
-        except KeyError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        return _quality
-
-    def __load_combobox(self) -> None:
-        """
-        Load Similar Item analysis RAMSTKComboBox()s.
-
-        :return: None
-        :rtype: None
-        """
-        # Load the quality from and quality to Gtk.CellRendererCombo().
-        for _idx in [4, 5]:
-            _model = self._get_cell_model(_idx)
-            for _quality in self._dic_quality.values():
-                _model.append([_quality])
-
-        # Load the environment from and environment to Gtk.CellRendererCombo().
-        for _idx in [6, 7]:
-            _model = self._get_cell_model(_idx)
-            for _environment in self._dic_environment.values():
-                _model.append([_environment])
-
-        # Load the method combobox.
-        self.cmbSimilarItemMethod.do_load_combo(
-            [[_("Topic 633"), 0], [_("User-Defined"), 1]], signal='changed')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface for the Similar Item tab.
-
-        :return: None
-        :rtype: None
-        """
-        _hpaned: Gtk.HPaned = super().do_make_layout_lr()
-
-        _frame: RAMSTKFrame = super().do_make_panel_fixed(
-            start=0,
-            end=len(self._lst_labels),
-        )
-        _frame.do_set_properties(
-            bold=True,
-            title=self._lst_title[0],
-        )
-        _hpaned.pack1(_frame, True, True)
-
-        _frame: RAMSTKFrame = super().do_make_panel_treeview(self.treeview)
-        _frame.do_set_properties(
-            bold=True,
-            title=self._lst_title[1],
-        )
-        _hpaned.pack2(_frame, True, True)
-
-        self.show_all()
-
-    def __set_callbacks(self) -> None:
-        """
-        Set the callback functions and methods for the Similar Item widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cell_callbacks('wvw_editing_hardware',
-                                      self._lst_col_order[3:])
-
-        self.cmbSimilarItemMethod.dic_handler_id[
-            'changed'] = self.cmbSimilarItemMethod.connect(
-                'changed', self._on_combo_changed, 2)
-
-    def __set_properties(self) -> None:
-        """
-        Set the properties of the Similar Item widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
-        self.treeview.set_tooltip_text(
-            _("Displays the Similar Item Analysis for the currently "
-              "selected Hardware item."))
-
-        self.cmbSimilarItemMethod.do_set_properties(
-            tooltip=_("Select the similar item analysis method."))
-
-    def _do_clear_page(self) -> None:
-        """
-        Clear the contents of the page.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_clear_tree()
-
-        self.cmbSimilarItemMethod.do_update(0, signal='changed')
+        pub.subscribe(self._do_load_page,
+                      'succeed_get_all_hardware_attributes')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Similar Item Work View page.
+        """Load the Allocation page.
 
-        :param dict attributes: a dict of attributes key:value pairs for the
-            displayed Hardware item's Similar Item analysis.
+        :param attributes: the attributes dict for the selected Hardware item.
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes['revision_id']
         self._record_id = attributes['hardware_id']
-        self._method_id = attributes['similar_item_method_id']
-
-        self.cmbSimilarItemMethod.do_update(self._method_id, signal='changed')
-
-        if self._record_id > 0:
-            self._do_load_tree()
-
-    def _do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Similar Item RAMSTKTreeView() and other widgets.
-
-        :param dict attributes: the attributes dict for the row to be loaded.
-        :return: None
-        :rtype: None
-        """
-        attributes['quality_from'] = self.__do_get_quality(
-            attributes['quality_from_id'])
-        attributes['quality_to'] = self.__do_get_quality(
-            attributes['quality_to_id'])
-        attributes['environment_from'] = self.__do_get_environment(
-            attributes['environment_from_id'])
-        attributes['environment_to'] = self.__do_get_environment(
-            attributes['environment_to_id'])
-
-        _node_id = attributes['hardware_id']
-        attributes['revision_id'] = self._similar_item_tree.get_node(
-            _node_id).data['hardware'].get_attributes()['revision_id']
-        attributes['name'] = self._similar_item_tree.get_node(
-            _node_id).data['hardware'].get_attributes()['name']
-        attributes['hazard_rate_active'] = self._similar_item_tree.get_node(
-            _node_id).data['reliability'].get_attributes(
-            )['hazard_rate_active']
-
-        super().do_load_row(attributes)
-
-    def _do_load_tree(self) -> None:
-        """
-        Load the Similar Item RAMSTKTreeView() with allocation data.
-
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        self._tree_loaded = False
-        for _node in self._similar_item_tree.children(self._record_id):
-            _node_id = _node.data['hardware'].get_attributes()['hardware_id']
-            pub.sendMessage('request_get_hardware_attributes',
-                            node_id=_node_id,
-                            table='similar_item')
-        self._tree_loaded = True
-
-    def _do_refresh_tree(self, model: Gtk.TreeModel, row: Gtk.TreeIter,
-                         functions: List[str]) -> None:
-        """
-        Refresh the Similar Item Work View RAMSTKTreeView functions.
-
-        :param model:
-        :param row:
-        :param functions:
-        :return: None
-        :rtype: None
-        """
-        model.set_value(row, self._lst_col_order[30], functions[0])
-        model.set_value(row, self._lst_col_order[31], functions[1])
-        model.set_value(row, self._lst_col_order[32], functions[2])
-        model.set_value(row, self._lst_col_order[33], functions[3])
-        model.set_value(row, self._lst_col_order[34], functions[4])
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to iteratively calculate the Similar Item metrics.
+        """Request to iteratively calculate the Similar Item metrics.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
+        _model = self._pnlSimilarItemAnalysis.tvwTreeView.get_model()
         _row = _model.get_iter_first()
 
         # Iterate through the assemblies and calculate the Similar Item hazard
         # intensities.
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         _node_ids = []
         while _row is not None:
             _node_ids.append(_model.get_value(_row, 1))
@@ -426,155 +614,96 @@ class SimilarItem(RAMSTKWorkView):
         for _node_id in _node_ids:
             pub.sendMessage('request_calculate_similar_item', node_id=_node_id)
 
-        self.do_set_cursor_active(node_id=self._record_id)
-
     def _do_request_edit_function(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to edit the Similar Item analysis user-defined functions.
+        """Request to edit the Similar Item analysis user-defined functions.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        (_model, _row) = self.treeview.get_selection().get_selected()
+        (_model,
+         _row) = self._pnlSimilarItemAnalysis.tvwTreeView.get_selection(
+         ).get_selected()  # noqa
 
         _dialog = EditFunction(
-            self.treeview,
+            self._pnlSimilarItemAnalysis.tvwTreeView,
             dlgparent=self.get_parent().get_parent().get_parent().get_parent())
 
         if _dialog.do_run() == Gtk.ResponseType.OK:
-            _functions = _dialog.do_set_functions(self.treeview)
+            _functions = _dialog.do_set_functions(
+                self._pnlSimilarItemAnalysis.tvwTreeView)
             if _dialog.chkApplyAll.get_active():
                 _row = _model.get_iter_first()
                 while _row is not None:
-                    self._do_refresh_tree(_model, _row, _functions)
+                    self._pnlSimilarItemAnalysis.do_refresh_functions(
+                        _row, _functions)
                     _row = _model.iter_next(_row)
             else:
-                self._do_refresh_tree(_model, _row, _functions)
+                self._pnlSimilarItemAnalysis.do_refresh_functions(
+                    _row, _functions)
 
         _dialog.do_destroy()
 
     def _do_request_rollup(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to roll-up the Similar Item change descriptions.
+        """Request to roll-up the Similar Item change descriptions.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_roll_up_similar_item',
                         node_id=self._parent_id)
-        self.do_set_cursor_active(node_id=self._record_id)
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to save the selected Similar Item record.
+        """Request to save the selected Similar Item record.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_hardware', node_id=self._record_id)
-        self.do_set_cursor_active(node_id=self._record_id)
 
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to save all the entities in the Similar Item.
+        """Request to save all the entities in the Similar Item.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        self.do_set_cursor_busy()
+        super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor_active(node_id=self._record_id)
 
-    def _do_set_tree(self, dmtree: treelib.Tree) -> None:
-        """
-        Sets the _allocation_tree equal to the datamanger Hardware tree.
+    def __make_ui(self) -> None:
+        """Build the user interface for the Similar Item tab.
 
-        :param dmtree: the Hardware datamanger treelib.Tree() of data.
-        :type dmtree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        self._similar_item_tree = dmtree
+        _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
-    def _get_cell_model(self, column: int) -> Gtk.TreeModel:
-        """
-        Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
+        _hpaned.pack1(self._pnlMethod, True, True)
 
-        :param int column: the column number to retrieve the cell from.
-        :return: _model
-        :rtype: :class:`Gtk.TreeModel`
-        """
-        _column = self.treeview.get_column(column)
-        _cell = _column.get_cells()[0]
-        _model = _cell.get_property('model')
-        _model.clear()
-
-        return _model
-
-    def _get_hardware_attributes(self, tree: treelib.Tree) -> None:
-        """
-        Retrieve the information needed from the Hardware module.
-
-        :param tree: the treelib Tree() containing the Hardware items.
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        for _node in tree.all_nodes():
-            try:
-                _attributes = _node.data
-
-                self._dic_hardware[_attributes['hardware_id']] = [
-                    _attributes['name'], _attributes['hazard_rate_logistics']
-                ]
-            except TypeError:
-                pass
-
-    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
-        """
-        Respond to RAMSTKComboBox() 'changed' signals.
-
-        :param combo: the RAMSTKComboBox() that called this method.
-        :type combo: :class:`ramstk.views.gtk3.widgets.RAMSTKComboBox`
-        :param int index: the index in the handler ID list oc the callback
-            signal associated with the Gtk.ComboBox() that called this method.
-        :return: None
-        :rtype: None
-        """
-        _package = super().on_combo_changed(combo, index,
-                                            'wvw_editing_hardware')
-        _new_text = list(_package.values())[0]
-
-        self._method_id = _new_text
-
-        _visible: List[int] = []
-        _editable: List[int] = []
-        if _new_text == 1:  # Topic 633.
-            _visible = [
-                0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            ]
-            _editable = [
-                0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            ]
-        elif _new_text == 2:  # User-defined
-            _visible = self.treeview.visible
-            _editable = self.treeview.editable
+        _fmt_file = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
 
         try:
-            self.treeview.do_set_visible_columns(visible=_visible)
-            self.treeview.do_set_columns_editable(editable=_editable)
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'bg']
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'fg']
         except KeyError:
-            pass
+            _bg_color = '#FFFFFF'
+            _fg_color = '#000000'
+
+        self._pnlSimilarItemAnalysis.do_make_treeview(bg_color=_bg_color,
+                                                      fg_color=_fg_color,
+                                                      fmt_file=_fmt_file)
+        self._pnlSimilarItemAnalysis.do_load_combobox()
+        self._pnlSimilarItemAnalysis.do_set_callbacks()
+
+        _hpaned.pack2(self._pnlSimilarItemAnalysis, True, True)
+
+        self.show_all()

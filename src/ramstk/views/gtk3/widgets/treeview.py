@@ -537,8 +537,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def get_cell_model(self, column: int, clear: bool = True) -> Gtk.TreeModel:
         """Retrieve the Gtk.TreeModel() from a Gtk.CellRendererCombo().
 
-        :param int column: the column number to retrieve the cell's model.
-        :param bool clear: whether or not to clear the Gtk.TreeModel().
+        :param column: the column number to retrieve the cell's model.
+        :param clear: whether or not to clear the Gtk.TreeModel().
             Default is True.
         :return: _model
         :rtype: :class:`Gtk.TreeModel`

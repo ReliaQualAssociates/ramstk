@@ -290,8 +290,8 @@ class AllocationPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
         self._method_id = attributes['allocation_method_id']
+        self._record_id = attributes['hardware_id']
 
         if self._record_id > 0:
             self._do_load_tree()
@@ -553,6 +553,8 @@ class AllocationPanel(RAMSTKPanel):
             },
         }
 
+        # TODO: Remove editable argument after all RAMSTKTreeView()'s are
+        #  updated.
         self.tvwTreeView.visible = _dic_visible[self._method_id]
         self.tvwTreeView.do_set_visible_columns()
 
