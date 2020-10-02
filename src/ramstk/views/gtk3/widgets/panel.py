@@ -221,12 +221,10 @@ class RAMSTKPanel(RAMSTKFrame):
 
         _y_pos: int = 5
         (_x_pos, _labels) = do_make_label_group(self._lst_labels,
-                                                kwargs={
-                                                    'bold': False,
-                                                    'justify': _justify,
-                                                    'x_pos': 5,
-                                                    'y_pos': 5
-                                                })
+                                                bold=False,
+                                                justify=_justify,
+                                                x_pos=5,
+                                                y_pos=5)
         for _idx, _label in enumerate(_labels):
             _fixed.put(_label, 5, _y_pos)
 
