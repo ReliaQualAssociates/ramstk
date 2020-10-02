@@ -37,9 +37,9 @@ def get_indenture_level(record_id: str) -> str:
         _level = 'mechanism'
     elif record_id.count('.') == 2:
         _level = 'opload'
-    elif record_id.count('.') == 4 and self._record_id[-1] == 's':
+    elif record_id.count('.') == 4 and record_id[-1] == 's':
         _level = 'opstress'
-    elif record_id.count('.') == 4 and self._record_id[-1] == 't':
+    elif record_id.count('.') == 4 and record_id[-1] == 't':
         _level = 'testmethod'
 
     return _level

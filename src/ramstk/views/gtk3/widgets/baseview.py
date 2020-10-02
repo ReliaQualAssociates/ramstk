@@ -85,7 +85,7 @@ class RAMSTKBaseView(Gtk.HBox):
     }
 
     # Define public class scalar attributes.
-    RAMSTK_USER_CONFIGURATION = None
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -287,31 +287,6 @@ class RAMSTKBaseView(Gtk.HBox):
             + '/32x32/warning.png'
         }
 
-    def do_build_treeview(self, treeview: RAMSTKTreeView) -> None:
-        """Build an instance of a RAMSTKTreeView().
-
-        :param treeview: the RAMSTKTreeView() to initialize.
-        :type treeview: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
-        :return: None
-        :rtype: None
-        """
-        _colors = {'bg_color': '#FFFFFF', 'fg_color': '#000000'}
-        try:
-            _colors['bg_color'] = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'bg']
-            _colors['fg_color'] = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'fg']
-
-            _format_file = (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module]
-            )
-
-            treeview.do_build_treeview(format_file=_format_file,
-                                       colors=_colors)
-        except KeyError:
-            pass
-
     def _make_treeview(self) -> RAMSTKTreeView:
         """Make the RAMSTKTreeView instance for this view.
 
@@ -474,11 +449,9 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
         self.make_toolbuttons(
-            kwargs={
-                'icons': self._lst_icons,
-                'tooltips': self._lst_tooltips,
-                'callbacks': self._lst_callbacks,
-            })
+            icons=self._lst_icons,  # type: ignore
+            tooltips=self._lst_tooltips,  # type: ignore
+            callbacks=self._lst_callbacks)  # type: ignore
 
     def do_make_layout_lr(self) -> Gtk.HPaned:
         """Generates a view with the following layout:
@@ -604,25 +577,6 @@ class RAMSTKBaseView(Gtk.HBox):
         self.pack_start(_hpaned, True, True, 0)
 
         return _vpaned_left, _vpaned_right
-
-    @staticmethod
-    def do_make_panel_treeview(treeview: RAMSTKTreeView) -> RAMSTKFrame:
-        """Places the view's RAMSTKTreeView() in a RAMSTKFrame() to embed.
-
-        :param treeview: the RAMSTKTreeView() to emded in the panel.
-        :return: RAMSTKFrame holding the view's RAMSTKTreeView().
-        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
-        :return:
-        """
-        _frame: RAMSTKFrame = RAMSTKFrame()
-
-        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(treeview)
-        _frame.add(_scrollwindow)
-
-        return _frame
 
     def do_raise_dialog(self, **kwargs: Any) -> RAMSTKMessageDialog:
         """Raise a dialog in response to information, warnings, and errors.
@@ -897,14 +851,6 @@ class RAMSTKBaseView(Gtk.HBox):
         self.treeview.handler_block(
             self.treeview.dic_handler_id['button-press'])
 
-        #// TODO: Add _lst_icons, _lst_callbacks, and _lst_tooltips to GUIs.
-        #//
-        #// These lists are used in multiple private methods in each GUI
-        #// class as well as several public methods in the GUI meta-classes.
-        #// Having these lists as class attributes will allow simplifying or
-        #// eliminating class methods and likely remove **kwargs from argument
-        #// lists for others.  It will also simplify creation of new GUI
-        #// classes.
         if event.button == 3:
             _menu = Gtk.Menu()
             _menu.popup_at_pointer(event)
@@ -1261,13 +1207,13 @@ class RAMSTKListView(RAMSTKBaseView):
         if self._view_type == 'matrix':
             self.matrixview.dic_icons = {
                 'complete':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + '/32x32/complete.png',
                 'none':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + '/32x32/none.png',
                 'partial':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + '/32x32/partial.png'
             }
             self.matrixview.set_tooltip_text(self._tabtooltip)
@@ -1300,7 +1246,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['insert_part'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/insert_part.png')
 
         # Initialize private list attributes.

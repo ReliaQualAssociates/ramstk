@@ -195,7 +195,7 @@ class HazOpsPanel(RAMSTKPanel):
 
         # Make a fixed type panel.
 
-        self.__do_set_callbacks()
+        super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
@@ -242,6 +242,28 @@ class HazOpsPanel(RAMSTKPanel):
             _model = self.tvwTreeView.get_cell_model(i)
             for _probability in probabilities:
                 _model.append((_probability[0], ))
+
+    def do_set_callbacks(self) -> None:
+        """Set the callback methods and functions for the panel widgets.
+
+        :return: None
+        :rtype: None
+        """
+        _lst_column_order: List[int] = list(self.tvwTreeView.position.values())
+
+        self.tvwTreeView.dic_handler_id[
+            'changed'] = self.tvwTreeView.selection.connect(
+                'changed', self._on_row_change)
+
+        for i in _lst_column_order[3:]:
+            _cell = self.tvwTreeView.get_column(
+                _lst_column_order[i]).get_cells()
+            try:
+                _cell[0].connect('edited', self.on_cell_edit, i,
+                                 'wvw_editing_hazard')
+            except TypeError:
+                _cell[0].connect('toggled', self.on_cell_edit, 'new text', i,
+                                 'wvw_editing_hazard')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -297,28 +319,6 @@ class HazOpsPanel(RAMSTKPanel):
             self._record_id = -1
 
         selection.handler_unblock(self.tvwTreeView.dic_handler_id['changed'])
-
-    def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions for the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        _lst_column_order: List[int] = list(self.tvwTreeView.position.values())
-
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
-
-        for i in _lst_column_order[3:]:
-            _cell = self.tvwTreeView.get_column(
-                _lst_column_order[i]).get_cells()
-            try:
-                _cell[0].connect('edited', self.on_cell_edit, i,
-                                 'wvw_editing_hazard')
-            except TypeError:
-                _cell[0].connect('toggled', self.on_cell_edit, 'new text', i,
-                                 'wvw_editing_hazard')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -662,15 +662,32 @@ class HazOps(RAMSTKWorkView):
             tooltips=self._lst_tooltips,
             callbacks=self._lst_callbacks,
         )
-        super().do_build_treeview(self._pnlHazOps.tvwTreeView)
 
-        self._pnlHazOps.do_make_panel_treeview()
+        _fmt_file = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
+
+        try:
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'bg']
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'fg']
+        except KeyError:
+            _bg_color = '#FFFFFF'
+            _fg_color = '#000000'
+
+        self._pnlHazOps.do_make_treeview(bg_color=_bg_color,
+                                         fg_color=_fg_color,
+                                         fmt_file=_fmt_file)
+
         self._pnlHazOps.do_load_criticality(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_CRITICALITY)
         self._pnlHazOps.do_load_hazards(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS)
         self._pnlHazOps.do_load_probability(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY)
+
+        self._pnlHazOps.do_set_callbacks()
 
         self.pack_end(self._pnlHazOps, True, True, 0)
         self.show_all()

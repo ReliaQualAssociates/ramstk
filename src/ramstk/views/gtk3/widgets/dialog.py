@@ -17,15 +17,11 @@ from ramstk.views.gtk3 import GObject, Gtk, Pango, _
 
 
 class RAMSTKDialog(Gtk.Dialog):
-    """This is the RAMSTK Dialog class."""
+    """The RAMSTK Dialog class."""
     def __init__(self, dlgtitle: str, **kwargs: Any) -> None:
-        r"""
-        Initialize a RAMSTK Dialog widget.
+        """Initialize a RAMSTK Dialog widget.
 
-        :param str dlgtitle: the title text for the Gtk.Dialog().
-        :param \**kwargs: See below
-
-        :Keyword Arguments:
+        Accepts the following keyword arguments:
             * *dlgparent* (tuple) -- the parent window to associate the
                 Gtk.Dialog() with.
             * *dlgflags* (tuple) -- the flags that control the operation of the
@@ -34,6 +30,8 @@ class RAMSTKDialog(Gtk.Dialog):
             * *dlgbuttons* (tuple) -- the buttons to display and their response
                 values.  Default is Gtk.STOCK_OK <==> Gtk.ResponseType.ACCEPT
                 Gtk.STOCK_CANCEL <==> Gtk.ResponseType.CANCEL
+
+        :param dlgtitle: the title text for the Gtk.Dialog().
         """
         _dlgbuttons = kwargs.get('dlgbuttons',
                                  (Gtk.STOCK_OK, Gtk.ResponseType.OK,
@@ -76,8 +74,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self.__do_load_databases(database=kwargs['database'])
 
     def __do_load_databases(self, database: Dict[str, str]) -> None:
-        """
-        Read the database server and load the database list.
+        """Read the database server and load the database list.
 
         :param dict database: a dict containing the connection information
             for the RAMSTK program databases.
@@ -125,8 +122,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self.vbox.show_all()
 
     def _get_database(self) -> str:
-        """
-        Get the name of the selected database.
+        """Get the name of the selected database.
 
         :return: the name of the selected database.
         :rtype: str
@@ -140,8 +136,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self.destroy()
 
     def do_run(self) -> str:
-        """
-        Run the RAMSTKFileChooser dialog.
+        """Run the RAMSTKFileChooser dialog.
 
         :return: _dbname; the selected database name or empty string if none
             selected.
@@ -175,8 +170,7 @@ class RAMSTKDateSelect(Gtk.Dialog):
         self.destroy()
 
     def do_run(self) -> Any:
-        """
-        Run the RAMSTKDateSelect dialog.
+        """Run the RAMSTKDateSelect dialog.
 
         :return: the selected date or the default date if the dialog is
             cancelled.
@@ -196,10 +190,9 @@ class RAMSTKDateSelect(Gtk.Dialog):
 
 
 class RAMSTKFileChooser(Gtk.FileChooserDialog):
-    """This is the RAMSTK File Chooser Dialog class."""
+    """The RAMSTK File Chooser Dialog class."""
     def __init__(self, title: str, parent: object) -> None:
-        """
-        Initialize an instance of the RAMSTKFileChooser dialog.
+        """Initialize an instance of the RAMSTKFileChooser dialog.
 
         :param str title: the title of the dialog.
         :param object parent: the parent window for the dialog.
@@ -237,8 +230,7 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         self.destroy()
 
     def do_run(self) -> Tuple[Optional[Any], Optional[Any]]:
-        """
-        Run the RAMSTKFileChooser dialog.
+        """Run the RAMSTKFileChooser dialog.
 
         :return: (_filename, _extension); the file name and file extension of
                  the selected file.
@@ -258,17 +250,14 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
 
 
 class RAMSTKMessageDialog(Gtk.MessageDialog):
-    """
-    This is the RAMSTK Message Dialog class.
+    """The RAMSTK Message Dialog class.
 
     It used for RAMSTK error, warning, and information messages.
     """
     def __init__(self, parent: Gtk.Window = None) -> None:
-        """
-        Initialize runtime error, warning, and information dialogs.
+        """Initialize runtime error, warning, and information dialogs.
 
-        :keyword Gtk.Window _parent: the parent Gtk.Window(), if any, for the
-            dialog.
+        :param parent: the parent Gtk.Window(), if any, for the dialog.
         """
         Gtk.MessageDialog.__init__(self)
 
@@ -279,8 +268,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         self.show_all()
 
     def do_set_message(self, message: str) -> None:
-        """
-        Set the message to display in the dialog.
+        """Set the message to display in the dialog.
 
         :param str message: the message to display.
         :return: None
@@ -289,8 +277,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         self.set_markup(message)
 
     def do_set_message_type(self, message_type: str = 'error') -> None:
-        """
-        Set RAMSTKMessageDialog message type.
+        """Set RAMSTKMessageDialog message type.
 
         :param str message_type: the RAMSTKMessageDialog message type.
             Options are error, warning, information, or question.  Default
@@ -309,20 +296,14 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                      "YOUR HARDWARE:%20%0d%0a%0d%0a" \
                      "YOUR OS:%20%0d%0a%0d%0a" \
                      "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
-            _prompt = '<b>' \
-                     + _prompt \
-                     + _(
-                         "  Check the error log for additional information "
-                         "(if any).  Please e-mail <span foreground='blue' "
-                         "underline='single'>",
-                     ) \
-                     + _hyper \
-                     + _(
-                         "bugs@reliaqual.com</a></span> with a detailed "
-                         "description of the problem, the workflow you are "
-                         "using and the error log attached if the problem "
-                         "persists.</b>",
-                     )
+            _prompt = '<b>' + _prompt + _(
+                "  Check the error log for additional information "
+                "(if any).  Please e-mail <span foreground='blue' "
+                "underline='single'>", ) + _hyper + _(
+                    "bugs@reliaqual.com</a></span> with a detailed "
+                    "description of the problem, the workflow you are "
+                    "using and the error log attached if the problem "
+                    "persists.</b>", )
             self.set_markup(_prompt)
             _message_type = Gtk.MessageType.ERROR
             self.add_buttons("_OK", Gtk.ResponseType.OK)
