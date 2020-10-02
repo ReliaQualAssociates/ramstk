@@ -152,10 +152,10 @@ class RAMSTKSiteConfiguration:
                                             Tuple[str, str, str, str]] = {}
         self.RAMSTK_INCIDENT_STATUS: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_INCIDENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User.
+        self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}  # User.
         self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str, str]] = {
         }  # User.
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, Tuple[str, str, str]] = {
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str, str]] = {
         }  # User.
         self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str, str]] = {
         }  # Admin.

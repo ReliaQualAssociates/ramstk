@@ -994,13 +994,12 @@ class FMEAPanel(RAMSTKPanel):
         """Handle edits of the FMEA Work View RAMSTKTreeview().
 
         :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
+        :param new_text: the new text in the edited Gtk.CellRenderer().
+        :param position: the column position of the edited
             Gtk.CellRenderer().
         :return: None
-        :rtype: None
         """
         self.tvwTreeView.do_edit_cell(cell, path, new_text, position)
 

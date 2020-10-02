@@ -151,7 +151,7 @@ class SimilarItemPanel(RAMSTKPanel):
 
     # Define public scalar class attributes.
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize an instance of the Similar Item analysis worksheet."""
         super().__init__()
 
