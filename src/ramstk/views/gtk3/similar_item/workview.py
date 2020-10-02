@@ -171,8 +171,8 @@ class SimilarItemPanel(RAMSTKPanel):
         # Initialize public scalar instance attributes.
 
         # Make a fixed type panel.
-        super().do_make_panel_treeview()
         self.__do_set_properties()
+        super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')

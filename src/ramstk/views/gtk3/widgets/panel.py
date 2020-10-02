@@ -139,6 +139,22 @@ class RAMSTKPanel(RAMSTKFrame):
         _model = self.tvwTreeView.get_model()
         _model.clear()
 
+    def do_expand_tree(self) -> None:
+        """Expand the RAMSTKTreeView.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.tvwTreeView.get_model()
+        _row = _model.get_iter_first()
+
+        self.tvwTreeView.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.tvwTreeView.get_column(0)
+            self.tvwTreeView.set_cursor(_path, None, False)
+            self.tvwTreeView.row_activated(_path, _column)
+
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Load the data into a RAMSTKTreeView row.
 
