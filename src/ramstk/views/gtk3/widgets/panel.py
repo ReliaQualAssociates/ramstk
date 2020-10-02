@@ -18,6 +18,7 @@ from pandas.plotting import register_matplotlib_converters
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKPlot,
@@ -204,10 +205,12 @@ class RAMSTKPanel(RAMSTKFrame):
 
         _y_pos: int = 5
         (_x_pos, _labels) = do_make_label_group(self._lst_labels,
-                                                bold=False,
-                                                justify=_justify,
-                                                x_pos=5,
-                                                y_pos=5)
+                                                kwargs={
+                                                    'bold': False,
+                                                    'justify': _justify,
+                                                    'x_pos': 5,
+                                                    'y_pos': 5
+                                                })
         for _idx, _label in enumerate(_labels):
             _fixed.put(_label, 5, _y_pos)
 
@@ -327,6 +330,33 @@ class RAMSTKPanel(RAMSTKFrame):
         except KeyError:
             pass
 
+    # pylint: disable=unused-argument
+    def on_cell_toggled(self, cell: Gtk.CellRenderer, path: str, position: int,
+                        message: str) -> None:
+        """Handle edits of the FMEA Work View RAMSTKTreeview() toggle cells.
+
+        :param cell: the Gtk.CellRenderer() that was toggled.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was toggled.
+        :param position: the column position of the toggled
+            Gtk.CellRenderer().
+        :param message: the PyPubSub message to publish.
+        :return: None
+        :rtype: None
+        """
+        _new_text = boolean_to_integer(cell.get_active())
+        _lst_column_order: List[int] = list(self.tvwTreeView.position.values())
+
+        try:
+            _key = self._dic_attribute_keys[_lst_column_order[position]]
+            if not self.tvwTreeView.do_edit_cell(cell, path, _new_text,
+                                                 position):
+                pub.sendMessage(message,
+                                node_id=[self.parent_id, self._record_id, ''],
+                                package={_key: _new_text})
+        except KeyError:
+            pass
+
     def on_changed_combo(self, combo: RAMSTKComboBox, index: int,
                          message: str) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKComboBox() widgets.
@@ -423,6 +453,7 @@ class RAMSTKPanel(RAMSTKFrame):
         return {_key: _new_text}
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
         """Update the panel's Gtk.Widgets() when attributes are changed.
 
@@ -445,8 +476,8 @@ class RAMSTKPanel(RAMSTKFrame):
         _function(_value, _signal)  # type: ignore
 
     # pylint: disable=unused-argument
-    def on_focus_out(self, entry: object, __event: Gdk.EventFocus, index: int,
-                     message: str) -> Dict[Union[str, Any], Any]:
+    def on_focus_out(self, entry: RAMSTKTextView, __event: Gdk.EventFocus,
+                     index: int, message: str) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKTextView() widgets.
 
         This method is called by:

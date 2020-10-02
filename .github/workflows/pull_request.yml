@@ -54,9 +54,9 @@ jobs:
     name: Lint Code and Style Check Files
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Lint files using pylint, pycodestyle, mypy, and isort
-        uses: weibullguy/python-lint@master
+        uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
           use-docformatter: true
@@ -67,7 +67,7 @@ jobs:
           use-isort: true
           use-flake8: false
           use-black: false
-          extra-docformatter-options: "--in-place"
+          extra-docformatter-options: ""
           extra-pylint-options: "-j0 --rcfile=./.pylintrc --dummy-variables-rgx='__'"
           extra-pycodestyle-options: "--statistics --count --ignore=E121,E123,E126,E127,E133,E241,E242,E265,E402,E501,F401,W503,W504,W505"
           extra-pydocstyle-options: "--count"
