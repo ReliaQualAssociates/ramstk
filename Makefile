@@ -25,11 +25,28 @@ SED			= sed
 COPY 		= cp -v
 RMDIR		= rm -fvr
 GIT			= $(shell which git)
+ISORT       = $(shell which isort)
+DOCFORMATTER	= $(shell which docformatter)
+MYPY		= $(shell which mypy)
+PYCODESTYLE	= $(shell which pycodestyle)
+PYDOCSTYLE	= $(shell which pydocstyle)
+PYLINT		= $(shell which pylint)
+RADON		= $(shell which radon)
+YAPF        = $(shell which yapf)
 
 # Data files.
 LAYOUTS		= $(shell ls ./data/layouts)
 ICONS16		= $(shell ls ./data/icons/16x16)
 ICONS32		= $(shell ls ./data/icons/32x32)
+
+# Argument lists for tools.
+DOCFORMATTER_ARGS	= --in-place
+ISORT_ARGS	= --atomic --apply --use-parentheses --balanced --multi-line 5
+MYPY_ARGS	= --config-file ./setup.cfg
+PYCODESTYLE_ARGS	=
+PYDOCSTYLE_ARGS	= --count
+PYLINT_ARGS	= -j0 --rcfile=./.pylintrc
+YAPF_ARGS	= --in-place
 
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
@@ -211,27 +228,29 @@ sync:
 
 # This target is for use with IDE integration.
 format:
-	$(info Autoformatting $(SRCFILE)...)
-	isort --atomic --apply --use-parentheses -m5 $(SRCFILE)
-	yapf -i $(SRCFILE)
+	$(info Autoformatting $(SRCFILE) ...)
+	$(YAPF) $(YAPF_ARGS) $(SRCFILE)
+	$(ISORT) $(ISORT_ARGS) $(SRCFILE)
+	$(DOCFORMATTER) $(DOCFORMATTER_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 stylecheck:
-	$(info Style checking $(SRCFILE)...)
-	pycodestyle --statistics --count $(SRCFILE)
-	pydocstyle --count $(SRCFILE)
+	$(info Style checking $(SRCFILE) ...)
+	$(PYCODESTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
+	$(PYDOCSTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 typecheck:
-	mypy $(SRCFILE)
+	$(info Type checking $(SRCFILE) ...)
+	$(MYPY) $(MYPY_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 maintain:
-	$(info Checking maintainability of $(SRCFILE)...)
-	python -m mccabe -m 10 $(SRCFILE)*
-	radon cc -s $(SRCFILE)*
-	radon mi -s $(SRCFILE)*
-	radon hal $(SRCFILE)*
+	$(info Checking maintainability of $(SRCFILE) ...)
+	$(PY) -m mccabe -m 10 $(SRCFILE)
+	$(RADON) mi -s $(SRCFILE)
+	$(RADON) hal $(SRCFILE)
+	$(RADON) cc -s $(SRCFILE)
 
 # This target is for use with IDE integration.
 security:
@@ -240,9 +259,8 @@ security:
 
 # This target is for use with IDE integration.
 lint:
-	$(info Linting $(SRCFILE)...)
-	pylint -j0 --rcfile=./.pylintrc $(SRCFILE)
-	flake8 $(SRCFILE)
+	$(info Linting $(SRCFILE) ...)
+	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
 
 changelog:
 	github_changelog_generator --project $(REPO) --user $(GITHUB_USER) -t $(TOKEN)

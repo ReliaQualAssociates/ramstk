@@ -3,11 +3,11 @@
 #       ramstk.views.gtk3.allocation.workview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 Function Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -16,144 +16,146 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKComboBox, RAMSTKEntry,
-                                       RAMSTKWorkView)
+from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox, RAMSTKEntry, RAMSTKPanel, RAMSTKWorkView
+)
 
 
-class Allocation(RAMSTKWorkView):
-    """
-    Display Allocation attribute data in the RAMSTK Work Book.
+class GoalMethodPanel(RAMSTKPanel):
+    """Panel to display reliability Allocation goals and method."""
+    def __init__(self):
+        """Initialize an instance of the Allocation goals and method panel."""
+        super().__init__()
 
-    The Allocation Work View displays all the allocation data attributes for
-    the selected hardware item. The attributes of an Allocation General Data
-    Work View are:
-    """
-    # Define private class dict attributes.
-    # TMPLT: For each editable WorkView widget, populate this dict with the
-    # TMPLT: keymap for the widgets.  The key is the widget's index number on
-    # TMPLT: the WorkView.  The value is the name of the key in the datamanager
-    # TMPLT: attributes dict.
-    _dic_keys = {
-        0: 'allocation_method_id',
-        1: 'goal_measure_id',
-        2: ['reliability_goal', 'float'],
-        3: ['hazard_rate_goal', 'float'],
-        4: ['mtbf_goal', 'float']
-    }
-    # TMPLT: If the workview contains a RAMSTKTreeView, populate this dict with
-    # TMPLT: the keymap for the columns.  The key is the column number in the
-    # TMPLT: RAMSTKTreeView. The value is the name of the key in the datamanger
-    # TMPLT: attributes dict.
-    _dic_column_keys = {
-        0: 'revision_id',
-        1: 'hardware_id',
-        3: 'included',
-        4: 'n_sub_systems',
-        5: 'n_sub_elements',
-        6: 'mission_time',
-        7: 'duty_cycle',
-        8: 'int_factor',
-        9: 'soa_factor',
-        10: 'op_time_factor',
-        11: 'env_factor',
-        12: 'weight_factor',
-        13: 'percent_weight_factor',
-        15: 'hazard_rate_alloc',
-        17: 'mtbf_alloc',
-        19: 'reliability_alloc',
-        21: 'availability_alloc'
-    }
+        # Initialize private dictionary instance attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            0: ['allocation_method_id', 'integer'],
+            1: ['goal_measure_id', 'integer'],
+            2: ['reliability_goal', 'float'],
+            3: ['hazard_rate_goal', 'float'],
+            4: ['mtbf_goal', 'float'],
+        }
 
-    # Define private class list attributes.
-    # TMPLT: This list is the text of the labels that will be placed on the
-    # TMPLT: WorkView.  They should be entered in the list in the order they
-    # TMPLT: and their associated widget will appear on the form.  The list can
-    # TMPLT: be sliced if there are multiple views over which the data is
-    # TMPLT: displayed.
-    _lst_labels = [
-        _("Select Allocation Method"),
-        _("Select Goal Metric"),
-        _("R(t) Goal"),
-        _("h(t) Goal"),
-        _("MTBF Goal")
-    ]
-
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'allocation') -> None:
-        """
-        Initialize the Allocation Work View general data page.
-
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
-        :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        """
-        super().__init__(configuration, logger, module)
-
-        self.RAMSTK_LOGGER.do_create_logger(
-            __name__,
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_callbacks = [self._do_request_calculate]
-        self._lst_icons = ['calculate']
-        self._lst_mnu_labels = [_("Calculate")]
-        self._lst_tooltips = [
-            _("Calculate the currently selected child hardware item.")
+        # Initialize private list instance attributes.
+        self._lst_labels: List[str] = [
+            _("Select Allocation Method"),
+            _("Select Goal Metric"),
+            _("R(t) Goal"),
+            _("h(t) Goal"),
+            _("MTBF Goal"),
         ]
 
-        # Initialize private scalar attributes.
-        self._allocation_tree: treelib.Tree = treelib.Tree()
-        self._system_hazard_rate: float = 0.0
-        self._hazard_rate_goal: float = 0.0
+        # Initialize private scalar instance attributes.
         self._measure_id: int = 0
         self._method_id: int = 0
-        self._mtbf_goal: float = 0.0
-        self._reliability_goal: float = 0.0
+        self._title: str = _("Allocation Goals and Method")
 
-        # Initialize public dictionary attributes.
+        # Initialize public dictionary instance attributes.
 
-        # Initialize public list attributes.
+        # Initialize public list instance attributes.
 
-        # Initialize public scalar attributes.
+        # Initialize public scalar instance attributes.
         self.cmbAllocationGoal: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbAllocationMethod: RAMSTKComboBox = RAMSTKComboBox()
         self.txtHazardRateGoal: RAMSTKEntry = RAMSTKEntry()
         self.txtMTBFGoal: RAMSTKEntry = RAMSTKEntry()
         self.txtReliabilityGoal: RAMSTKEntry = RAMSTKEntry()
 
+        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
+            'allocation_method_id':
+            [self.cmbAllocationMethod.do_update, 'changed'],
+            'goal_measure_id': [self.cmbAllocationGoal.do_update, 'changed'],
+            'reliability_goal': [self.txtReliabilityGoal.do_update, 'changed'],
+            'hazard_rate_goal': [self.txtHazardRateGoal.do_update, 'changed'],
+            'mtbf_goal': [self.txtMTBFGoal.do_update, 'changed'],
+        }
         self._lst_widgets = [
-            self.cmbAllocationMethod, self.cmbAllocationGoal,
-            self.txtReliabilityGoal, self.txtHazardRateGoal, self.txtMTBFGoal
+            self.cmbAllocationMethod,
+            self.cmbAllocationGoal,
+            self.txtReliabilityGoal,
+            self.txtHazardRateGoal,
+            self.txtMTBFGoal,
         ]
 
-        self.__set_properties()
-        self.__make_ui()
-        self.__load_combobox()
-        self.__set_callbacks()
+        # Make a fixed type panel.
+        self.__do_set_properties()
+        super().do_make_panel_fixed()
+        self.__do_load_combobox()
+        self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_row, 'succeed_get_allocation_attributes')
-
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'do_load_allocation')
-        pub.subscribe(self._do_refresh_page,
+        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel,
                       'succeed_calculate_allocation_goals')
-        pub.subscribe(self._do_refresh_tree, 'succeed_allocate_reliability')
-        pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_hardware')
 
-    def __load_combobox(self) -> None:
+    def _do_clear_panel(self) -> None:
+        """Clear the contents of the panel widgets.
+
+        :return: None
+        :rtype: None
         """
-        Load the RAMSTKComboBox() widgets.
+        self.cmbAllocationMethod.do_update(0, signal='changed')
+        self.cmbAllocationGoal.do_update(0, signal='changed')
+        self.txtHazardRateGoal.do_update("", signal='changed')
+        self.txtMTBFGoal.do_update("", signal='changed')
+        self.txtReliabilityGoal.do_update("", signal='changed')
+
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Allocation goals and methods panel.
+
+        :param dict attributes: the attributes dict for the selected
+            Hardware item.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['hardware_id']
+        self._measure_id = attributes['goal_measure_id']
+        self._method_id = attributes['allocation_method_id']
+
+        self.cmbAllocationMethod.do_update(attributes['allocation_method_id'],
+                                           signal='changed')
+        self.cmbAllocationGoal.do_update(attributes['goal_measure_id'],
+                                         signal='changed')
+        self.txtReliabilityGoal.do_update(str(
+            self.fmt.format(attributes['reliability_goal'])),
+                                          signal='changed')  # noqa
+        self.txtHazardRateGoal.do_update(str(
+            self.fmt.format(attributes['hazard_rate_goal'])),
+                                         signal='changed')  # noqa
+        self.txtMTBFGoal.do_update(str(self.fmt.format(
+            attributes['mtbf_goal'])),
+                                   signal='changed')  # noqa
+
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected R(t) goal.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtReliabilityGoal.props.editable = False
+        self.txtReliabilityGoal.set_sensitive(False)
+        self.txtMTBFGoal.props.editable = False
+        self.txtMTBFGoal.set_sensitive(False)
+        self.txtHazardRateGoal.props.editable = False
+        self.txtHazardRateGoal.set_sensitive(False)
+
+        if self._measure_id == 1:  # Expressed as reliability.
+            self.txtReliabilityGoal.props.editable = True
+            self.txtReliabilityGoal.set_sensitive(True)
+        elif self._measure_id == 2:  # Expressed as a hazard rate.
+            self.txtHazardRateGoal.props.editable = True
+            self.txtHazardRateGoal.set_sensitive(True)
+        elif self._measure_id == 3:  # Expressed as an MTBF.
+            self.txtMTBFGoal.props.editable = True
+            self.txtMTBFGoal.set_sensitive(True)
+
+    def __do_load_combobox(self) -> None:
+        """Load the RAMSTKComboBox() widgets.
 
         :return: None
         :rtype: None
@@ -166,184 +168,167 @@ class Allocation(RAMSTKWorkView):
              [_("ARINC Apportionment"), 2],
              [_("Feasibility of Objectives"), 3]])
 
-    def __make_ui(self) -> None:
-        """
-        Create the Function Work View general data page.
+    def __do_set_callbacks(self) -> None:
+        """Set the callback methods and functions.
 
         :return: None
         :rtype: None
         """
-        # This page has the following layout:
-        # +-----+-----+---------------------------------+
-        # |  B  |  W  |                                 |
-        # |  U  |  I  |                                 |
-        # |  T  |  D  |                                 |
-        # |  T  |  G  |          SPREAD SHEET           |
-        # |  O  |  E  |                                 |
-        # |  N  |  T  |                                 |
-        # |  S  |  S  |                                 |
-        # +-----+-----+---------------------------------+
-        #                                      buttons -----+--> self
-        #                                                   |
-        #     Gtk.Fixed --->RAMSTKFrame ---+-->Gtk.HBox ----+
-        #                                  |
-        #  Scrollwindow --->RAMSTKFrame ---+
-        #  w/ self.treeview
-        # Make the buttons.
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
-        super().make_ui_with_treeview(
-            title=[_("Allocation Goals and Method"),
-                   _("Allocation Analysis")])
-        super().make_tab_label(tablabel=_("Allocation"),
-                               tooltip=_(
-                                   "Displays the Allocation analysis for the "
-                                   "selected "
-                                   "hardware item."))
-
-        self.show_all()
-
-    def __set_callbacks(self) -> None:
-        """
-        Set the callback methods and functions.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cell_callbacks('wvw_editing_hardware', [
-            self._lst_col_order[3], self._lst_col_order[5],
-            self._lst_col_order[6], self._lst_col_order[7],
-            self._lst_col_order[8], self._lst_col_order[9],
-            self._lst_col_order[10], self._lst_col_order[11]
-        ])
-
+        # ----- COMBOBOXES
         self.cmbAllocationMethod.dic_handler_id[
             'changed'] = self.cmbAllocationMethod.connect(
-                'changed', self._on_combo_changed, 0)
+                'changed', self.on_changed_combo, 0, 'wvw_editing_hardware')
         self.cmbAllocationGoal.dic_handler_id[
             'changed'] = self.cmbAllocationGoal.connect(
-                'changed', self._on_combo_changed, 1)
+                'changed', self.on_changed_combo, 1, 'wvw_editing_hardware')
+
+        # ----- ENTRIES
         self.txtReliabilityGoal.dic_handler_id[
             'changed'] = self.txtReliabilityGoal.connect(
-                'focus_out_event', self._on_focus_out, 2)
+                'changed', self.on_changed_text, 2, 'wvw_editing_hardware')
         self.txtHazardRateGoal.dic_handler_id[
             'changed'] = self.txtHazardRateGoal.connect(
-                'focus_out_event', self._on_focus_out, 3)
+                'changed', self.on_changed_text, 3, 'wvw_editing_hardware')
         self.txtMTBFGoal.dic_handler_id['changed'] = self.txtMTBFGoal.connect(
-            'focus_out_event', self._on_focus_out, 4)
+            'changed', self.on_changed_text, 4, 'wvw_editing_hardware')
 
-    def __set_properties(self) -> None:
-        """
-        Set the properties of the General Data Work View and widgets.
+    def __do_set_properties(self) -> None:
+        """Set the properties of the General Data Work View and widgets.
 
         :return: None
         :rtype: None
         """
-        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
-        self.treeview.set_tooltip_text(
-            _("Displays the Allocation Analysis for the currently selected "
-              "Hardware item."))
+        super().do_set_properties(bold=True, title=self._title)
+
+        # ----- COMBOBOXES
         self.cmbAllocationGoal.do_set_properties(tooltip=_(
             "Selects the goal measure for the selected hardware assembly."))
         self.cmbAllocationMethod.do_set_properties(tooltip=_(
             "Selects the method for allocating the reliability goal for "
             "the selected hardware assembly."))
+
+        # ----- ENTRIES
         self.txtHazardRateGoal.do_set_properties(
-            width=125,
             tooltip=("Displays the hazard rate goal for the selected hardware "
-                     "item."))
-        self.txtMTBFGoal.do_set_properties(
-            width=125,
-            tooltip=_(
-                "Displays the MTBF goal for the selected hardware item."))
-        self.txtReliabilityGoal.do_set_properties(
-            width=125,
-            tooltip=_(
-                "Displays the reliability goal for the selected hardware "
-                "item."))
+                     "item."),
+            width=125)
+        self.txtMTBFGoal.do_set_properties(tooltip=_(
+            "Displays the MTBF goal for the selected hardware item."),
+                                           width=125)  # noqa
+        self.txtReliabilityGoal.do_set_properties(tooltip=_(
+            "Displays the reliability goal for the selected hardware item."),
+                                                  width=125)  # noqa
 
-    def _do_clear_page(self) -> None:
-        """
-        Clear the contents of the page.
+
+class AllocationPanel(RAMSTKPanel):
+    """Panel to display reliability Allocation worksheet."""
+
+    # Define private dict class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+
+    # Define public dictionary class attributes.
+
+    # Define public dictionary list attributes.
+
+    # Define public dictionary scalar attributes.
+
+    def __init__(self):
+        """Initialize an instance of the Allocation worksheet panel."""
+        super().__init__()
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._allocation_tree: treelib.Tree = treelib.Tree()
+        self._method_id: int = 0
+        self._title: List[str] = _("Allocation Analysis")
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        # Make a treeview type panel.
+        super().do_make_panel_treeview()
+        self.__do_set_properties()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
+
+        pub.subscribe(self._do_load_panel, 'do_load_allocation')
+        pub.subscribe(self._do_load_panel, 'succeed_allocate_reliability')
+        pub.subscribe(self._do_load_row, 'succeed_get_allocation_attributes')
+        pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
+
+    def do_set_callbacks(self) -> None:
+        """Set the callback methods and functions.
 
         :return: None
         :rtype: None
         """
-        super().do_clear_tree()
+        super().do_set_cell_callbacks('wvw_editing_hardware', [
+            self._lst_col_order[3],
+            self._lst_col_order[5],
+            self._lst_col_order[6],
+            self._lst_col_order[7],
+            self._lst_col_order[8],
+            self._lst_col_order[9],
+            self._lst_col_order[10],
+            self._lst_col_order[11],
+        ])
 
-        self.cmbAllocationMethod.do_update(0, signal='changed')
-        self.cmbAllocationGoal.do_update(0, signal='changed')
-        self.txtHazardRateGoal.do_update("", signal='changed')
-        self.txtMTBFGoal.do_update("", signal='changed')
-        self.txtReliabilityGoal.do_update("", signal='changed')
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Allocation worksheet panel.
 
-    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Allocation page.
-
-        :param dict attributes: the attributes dict for the selected
-            Hardware item.
+        :param attributes: the attributes dict for the selected Hardware item.
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._measure_id = attributes['goal_measure_id']
         self._method_id = attributes['allocation_method_id']
-        self._hazard_rate_goal = attributes['hazard_rate_goal']
-        self._mtbf_goal = attributes['mtbf_goal']
-        self._reliability_goal = attributes['reliability_goal']
-        self._system_hazard_rate = attributes['hazard_rate_logistics']
-
-        self.cmbAllocationMethod.do_update(self._method_id, signal='changed')
-        self.cmbAllocationGoal.do_update(self._measure_id, signal='changed')
-        self.txtReliabilityGoal.do_update(str(
-            self.fmt.format(self._reliability_goal)),
-                                          signal='changed')
-        self.txtHazardRateGoal.do_update(str(
-            self.fmt.format(self._hazard_rate_goal)),
-                                         signal='changed')
-        self.txtMTBFGoal.do_update(str(self.fmt.format(self._mtbf_goal)),
-                                   signal='changed')
-
-        self._do_set_sensitive()
+        self._record_id = attributes['hardware_id']
 
         if self._record_id > 0:
             self._do_load_tree()
+            self._do_set_columns_editable()
 
     def _do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the Similar Item RAMSTKTreeView() and other widgets.
+        """Load the Allocation RAMSTKTreeView().
 
         :param dict attributes: the attributes dict for the row to be loaded.
         :return: None
         :rtype: None
         """
         _node_id = attributes['hardware_id']
+
         attributes['name'] = self._allocation_tree.get_node(
             _node_id).data['hardware'].get_attributes()['name']
         attributes['hazard_rate_logistics'] = self._allocation_tree.get_node(
-            _node_id).data['reliability'].get_attributes(
-            )['hazard_rate_logistics']
+            _node_id).data['reliability'].get_attributes()[
+                'hazard_rate_logistics']  # noqa
         attributes['mtbf_logistics'] = self._allocation_tree.get_node(
             _node_id).data['reliability'].get_attributes()['mtbf_logistics']
         attributes['reliability_logistics'] = self._allocation_tree.get_node(
-            _node_id).data['reliability'].get_attributes(
-            )['reliability_logistics']
+            _node_id).data['reliability'].get_attributes()[
+                'reliability_logistics']  # noqa
         attributes['availability_logistics'] = self._allocation_tree.get_node(
-            _node_id).data['reliability'].get_attributes(
-            )['availability_logistics']
+            _node_id).data['reliability'].get_attributes()[
+                'availability_logistics']  # noqa
 
         super().do_load_row(attributes)
 
     def _do_load_tree(self) -> None:
-        """
-        Load the Allocation RAMSTKTreeView() with allocation data.
+        """Load the Allocation RAMSTKTreeView() with allocation data.
 
         :return: None
         :rtype: None
         """
-        _model = self.treeview.get_model()
+        _model = self.tvwTreeView.get_model()
         _model.clear()
 
         self._tree_loaded = False
@@ -354,79 +339,8 @@ class Allocation(RAMSTKWorkView):
                             table='allocation')
         self._tree_loaded = True
 
-    def _do_refresh_page(self, attributes: Dict[str, Any]) -> None:
-        """
-        Update the Allocation page with new values.
-
-        :param dict attributes: the Allocation attributes dict.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_goal = attributes['hazard_rate_goal']
-        self._mtbf_goal = attributes['mtbf_goal']
-        self._reliability_goal = attributes['reliability_goal']
-
-        self.txtReliabilityGoal.do_update(
-            str(self.fmt.format(self._reliability_goal)))
-        self.txtHazardRateGoal.do_update(
-            str(self.fmt.format(self._hazard_rate_goal)))
-        self.txtMTBFGoal.do_update(str(self.fmt.format(self._mtbf_goal)))
-
-    def _do_refresh_tree(self, attributes: Dict[str, Any]) -> None:
-        """
-        Update the Allocation RAMSTKTreeView() with new values.
-
-        :param dict attributes: the Allocation attributes dict.
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _row = self.treeview.do_get_row_by_value(1, attributes['hardware_id'])
-
-        for _column_id in self._dic_column_keys:
-            _value = attributes[self._dic_column_keys[_column_id]]
-            _model.set_value(_row, _column_id, _value)
-
-    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
-        """
-        Calculate the Allocation reliability metrics.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_allocate_reliability',
-                        node_id=self._record_id)
-        super().do_set_cursor_active()
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to save the currently selected Function.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to save all the Functions.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
-
     def _do_set_columns_editable(self) -> None:
-        """
-        Set editable columns based on the Allocation method selected.
+        """Set editable columns based on the Allocation method selected.
 
         :return: None
         :rtype: None
@@ -438,135 +352,401 @@ class Allocation(RAMSTKWorkView):
         #   4: Feasibility of Objectives
         # Value is the list of columns that should be made editable for the
         # selected method.
-        _dic_editable = {
-            1: [
-                0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0
-            ],
-            2: [
-                0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0
-            ],
-            3: [
-                0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0
-            ],
-            4: [
-                0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0
-            ]
+        _dic_editable: Dict[int, Dict[str, str]] = {
+            1: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'False',
+                'col3': 'True',
+                'col4': 'False',
+                'col5': 'False',
+                'col6': 'True',
+                'col7': 'False',
+                'col8': 'False',
+                'col9': 'False',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'False',
+                'col13': 'False',
+                'col14': 'False',
+                'col15': 'False',
+                'col16': 'False',
+                'col17': 'False',
+                'col18': 'False',
+                'col19': 'False',
+                'col20': 'False',
+                'col21': 'False'
+            },
+            2: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'False',
+                'col3': 'True',
+                'col4': 'False',
+                'col5': 'True',
+                'col6': 'True',
+                'col7': 'True',
+                'col8': 'False',
+                'col9': 'False',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'False',
+                'col13': 'False',
+                'col14': 'False',
+                'col15': 'False',
+                'col16': 'False',
+                'col17': 'False',
+                'col18': 'False',
+                'col19': 'False',
+                'col20': 'False',
+                'col21': 'False'
+            },
+            3: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'False',
+                'col3': 'True',
+                'col4': 'False',
+                'col5': 'False',
+                'col6': 'False',
+                'col7': 'False',
+                'col8': 'False',
+                'col9': 'False',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'False',
+                'col13': 'False',
+                'col14': 'False',
+                'col15': 'False',
+                'col16': 'False',
+                'col17': 'False',
+                'col18': 'False',
+                'col19': 'False',
+                'col20': 'False',
+                'col21': 'False'
+            },
+            4: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'False',
+                'col3': 'True',
+                'col4': 'False',
+                'col5': 'False',
+                'col6': 'False',
+                'col7': 'False',
+                'col8': 'True',
+                'col9': 'True',
+                'col10': 'True',
+                'col11': 'True',
+                'col12': 'False',
+                'col13': 'False',
+                'col14': 'False',
+                'col15': 'False',
+                'col16': 'False',
+                'col17': 'False',
+                'col18': 'False',
+                'col19': 'False',
+                'col20': 'False',
+                'col21': 'False'
+            },
         }
-        self.treeview.do_set_columns_editable(
-            editable=_dic_editable[self._method_id])
 
-    def _do_set_sensitive(self) -> None:
-        """
-        Set widget sensitivity as needed for the selected R(t) goal.
+        self.tvwTreeView.editable = _dic_editable[self._method_id]
+        self.tvwTreeView.do_set_columns_editable(editable=None)
 
-        :return: None
-        :rtype: None
-        """
-        self.txtReliabilityGoal.props.editable = 0
-        self.txtReliabilityGoal.set_sensitive(0)
-        self.txtMTBFGoal.props.editable = 0
-        self.txtMTBFGoal.set_sensitive(0)
-        self.txtHazardRateGoal.props.editable = 0
-        self.txtHazardRateGoal.set_sensitive(0)
+        _dic_visible: Dict[int, Dict[str, str]] = {
+            1: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'True',
+                'col3': 'True',
+                'col4': 'True',
+                'col5': 'False',
+                'col6': 'True',
+                'col7': 'False',
+                'col8': 'False',
+                'col9': 'False',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'False',
+                'col13': 'False',
+                'col14': 'True',
+                'col15': 'True',
+                'col16': 'True',
+                'col17': 'True',
+                'col18': 'True',
+                'col19': 'True',
+                'col20': 'True',
+                'col21': 'True'
+            },
+            2: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'True',
+                'col3': 'True',
+                'col4': 'True',
+                'col5': 'True',
+                'col6': 'True',
+                'col7': 'True',
+                'col8': 'False',
+                'col9': 'False',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'True',
+                'col13': 'False',
+                'col14': 'True',
+                'col15': 'True',
+                'col16': 'True',
+                'col17': 'True',
+                'col18': 'True',
+                'col19': 'True',
+                'col20': 'True',
+                'col21': 'True'
+            },
+            3: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'True',
+                'col3': 'True',
+                'col4': 'False',
+                'col5': 'False',
+                'col6': 'False',
+                'col7': 'False',
+                'col8': 'False',
+                'col9': 'False',
+                'col10': 'False',
+                'col11': 'False',
+                'col12': 'True',
+                'col13': 'False',
+                'col14': 'True',
+                'col15': 'True',
+                'col16': 'True',
+                'col17': 'True',
+                'col18': 'True',
+                'col19': 'True',
+                'col20': 'True',
+                'col21': 'True'
+            },
+            4: {
+                'col0': 'False',
+                'col1': 'False',
+                'col2': 'True',
+                'col3': 'True',
+                'col4': 'False',
+                'col5': 'False',
+                'col6': 'False',
+                'col7': 'False',
+                'col8': 'True',
+                'col9': 'true',
+                'col10': 'True',
+                'col11': 'True',
+                'col12': 'True',
+                'col13': 'False',
+                'col14': 'True',
+                'col15': 'True',
+                'col16': 'True',
+                'col17': 'True',
+                'col18': 'True',
+                'col19': 'True',
+                'col20': 'True',
+                'col21': 'True'
+            },
+        }
 
-        if self._measure_id == 1:  # Expressed as reliability.
-            self.txtReliabilityGoal.props.editable = 1
-            self.txtReliabilityGoal.set_sensitive(1)
-        elif self._measure_id == 2:  # Expressed as a hazard rate.
-            self.txtHazardRateGoal.props.editable = 1
-            self.txtHazardRateGoal.set_sensitive(1)
-        elif self._measure_id == 3:  # Expressed as an MTBF.
-            self.txtMTBFGoal.props.editable = 1
-            self.txtMTBFGoal.set_sensitive(1)
+        # TODO: Remove editable argument after all RAMSTKTreeView()'s are
+        #  updated.
+        self.tvwTreeView.visible = _dic_visible[self._method_id]
+        self.tvwTreeView.do_set_visible_columns()
 
     def _do_set_tree(self, dmtree: treelib.Tree) -> None:
-        """
-        Sets the _allocation_tree equal to the datamanger Hardware tree.
+        """Set the _allocation_tree equal to the datamanger Hardware tree.
 
         :param dmtree: the Hardware datamanger treelib.Tree() of data.
-        :type dmtree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
         self._allocation_tree = dmtree
 
-    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
-        """
-        Respond to Gtk.ComboBox() 'changed' signals.
+    def __do_set_properties(self) -> None:
+        """Set the properties of the General Data Work View and widgets.
 
-        :param Gtk.ComboBox combo: the Gtk.ComboBox() that called this method.
-        :param int index: the index in the handler ID list oc the callback
-            signal associated with the Gtk.ComboBox() that called this method.
         :return: None
         :rtype: None
         """
-        # TODO: See issue #310.
-        _package = super().on_combo_changed(combo, index,
-                                            'wvw_editing_hardware')
-        _new_text = list(_package.values())[0]
+        super().do_set_properties(bold=True, title=self._title)
 
-        # Key is the allocation method ID:
-        #   1: Equal apportionment
-        #   2: AGREE apportionment
-        #   3: ARINC apportionment
-        #   4: Feasibility of Objectives
-        # Value is the list of columns that should be made visible and/or
-        # editable for the selected method.
-        _dic_visible = {
-            1: [0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-            2: [0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1],
-            3: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1],
-            4: [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        }
+        self.tvwTreeView.set_enable_tree_lines(True)
+        self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
+        self.tvwTreeView.set_level_indentation(2)
+        self.tvwTreeView.set_tooltip_text(
+            _("Displays the Allocation Analysis for the currently selected "
+              "Hardware item."))
 
-        if index == 0:
-            self._method_id = _new_text
-        elif index == 1:
-            self._measure_id = _new_text
+
+class Allocation(RAMSTKWorkView):
+    """Display Allocation attribute data in the RAMSTK Work Book.
+
+    The Allocation Work View displays all the allocation data attributes for
+    the selected hardware item. The attributes of an Allocation General Data
+    Work View are:
+
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+    """
+
+    # Define private dict class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _module: str = 'allocation'
+    _tablabel: str = _("Allocation")
+    _tabtooltip: str = _("Displays the Allocation analysis for "
+                         "the selected hardware item.")
+
+    # Define public dictionary class attributes.
+
+    # Define public dictionary list attributes.
+
+    # Define public dictionary scalar attributes.
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
+        """Initialize the Allocation Work View general data page.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :param logger: the RAMSTKLogManager class instance.
+        """
+        super().__init__(configuration, logger)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_calculate,
+            self._do_request_update,
+            self._do_request_update_all,
+        ]
+        self._lst_icons = [
+            'calculate',
+            'save',
+            'save-all',
+        ]
+        self._lst_mnu_labels = [
+            _("Calculate"),
+            _("Save"),
+            _("Save All"),
+        ]
+        self._lst_tooltips = [
+            _("Calculate the currently selected Allocation line item."),
+            _("Save changes to the currently selected Allocation line item."),
+            _("Save changes to all Allocation line items."),
+        ]
+
+        # Initialize private scalar attributes.
+        self._method_id: int = 0
+
+        self._pnlGoalMethods: RAMSTKPanel = GoalMethodPanel()
+        self._pnlAllocation: RAMSTKPanel = AllocationPanel()
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_hardware')
+
+        pub.subscribe(self._do_load_page,
+                      'succeed_get_all_hardware_attributes')
+
+    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
+        """Load the Allocation page.
+
+        :param attributes: the attributes dict for the selected Hardware item.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['hardware_id']
+        self._method_id = attributes['allocation_method_id']
+
+    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
+        """Calculate the Allocation reliability metrics.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_allocate_reliability',
+                        node_id=self._record_id)
+        super().do_set_cursor_active()
+
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+        """Request to save the currently selected Function.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_update_hardware', node_id=self._record_id)
+
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+        """Request to save all the Functions.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_update_all_hardware')
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the Allocation tab.
+
+        :return: None
+        :rtype: None
+        """
+        _hpaned: Gtk.HPaned = super().do_make_layout_lr()
+
+        self._pnlGoalMethods.fmt = self.fmt
+        _hpaned.pack1(self._pnlGoalMethods, True, True)
+
+        _fmt_file = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
 
         try:
-            self.treeview.do_set_visible_columns(
-                visible=_dic_visible[self._method_id])
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'bg']
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'fg']
         except KeyError:
-            pass
+            _bg_color = '#FFFFFF'
+            _fg_color = '#000000'
 
-        self._do_set_columns_editable()
+        self._pnlAllocation.do_make_treeview(bg_color=_bg_color,
+                                             fg_color=_fg_color,
+                                             fmt_file=_fmt_file)
+        self._pnlAllocation.do_set_callbacks()
 
-        self._do_set_sensitive()
+        _hpaned.pack2(self._pnlAllocation, True, True)
 
-    # pylint: disable=unused-argument
-    def _on_focus_out(self, entry: Gtk.Entry, __event: Gdk.EventFocus,
-                      index: int) -> None:
-        """
-        Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
-
-        This method is called by:
-
-            * RAMSTKEntry() 'focus-out-event' signal
-            * RAMSTKTextView() 'changed' signal
-
-        This method sends the 'wvw_editing_function' message.
-
-        :param entry: the Gtk.Entry() that called the method.
-        :type entry: :class:`Gtk.Entry`
-        :param __event: the Gdk.EventFocus that triggered the signal.
-        :type __event: :class:`Gdk.EventFocus`
-        :param int index: the position in the Function class Gtk.TreeModel()
-            associated with the data from the calling Gtk.Entry().
-        :return: None
-        :rtype: None
-        """
-        _package = super().on_focus_out(entry, index, 'wvw_editing_hardware')
-
-        _new_text = list(_package.values())[0]
-
-        if index == 2:
-            self._reliability_goal = _new_text
-        elif index == 3:
-            self._hazard_rate_goal = _new_text
-        elif index == 4:
-            self._mtbf_goal = _new_text
+        self.show_all()

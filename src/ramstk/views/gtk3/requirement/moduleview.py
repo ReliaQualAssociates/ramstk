@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Requirement GTK3 module view."""
 
 # Standard Library Imports
@@ -26,13 +26,31 @@ class ModuleView(RAMSTKModuleView):
     Display Requirement attribute data in the RAMSTK Module Book.
 
     The Requirement Module View displays all the Requirements associated with
-    the connected RAMSTK Program in a flat list.  All attributes of a
-    Requirement Module View are inherited.
+    the connected RAMSTK Program in a flat list.  The attributes of a
+    Requirement Module View are:
+
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module='requirement') -> None:
+
+    # Define private scalar class attributes.
+    _module: str = 'requirement'
+    _tablabel: str = 'Requirement'
+    _tabtooltip: str = _("Displays the RAMS requirements hierarchy for the "
+                         "selected Revision.")
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Requirement Module View.
 
@@ -41,7 +59,7 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -134,7 +152,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert, 'succeed_insert_requirement')
@@ -154,17 +172,6 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_requirement')
         pub.subscribe(self.on_delete, 'succeed_delete_requirement')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface for the Requirement work stream module.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """

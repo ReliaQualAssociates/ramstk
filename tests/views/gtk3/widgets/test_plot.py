@@ -25,7 +25,7 @@ class TestRAMSTKPlot():
 
         assert isinstance(DUT, RAMSTKPlot)
         assert isinstance(DUT.figure, Figure)
-        assert isinstance(DUT.plot, FigureCanvasGTK3Cairo)
+        assert isinstance(DUT.canvas, FigureCanvasGTK3Cairo)
         assert DUT._lst_max == []
         assert DUT._lst_min == [0.0]
 
@@ -117,8 +117,8 @@ class TestRAMSTKPlot():
                          marker='bo')
 
         _label = DUT.do_make_labels("Test Plot x-Label",
-                                    1.5,
-                                    2.5,
+                                    x_pos=1.5,
+                                    y_pos=2.5,
                                     fontsize=16,
                                     fontweight='bold')
 
@@ -140,8 +140,8 @@ class TestRAMSTKPlot():
                          marker='bo')
 
         _label = DUT.do_make_labels("Test Plot y-Label",
-                                    1.5,
-                                    2.5,
+                                    x_pos=1.5,
+                                    y_pos=2.5,
                                     set_x=False,
                                     fontsize=16,
                                     fontweight='bold')

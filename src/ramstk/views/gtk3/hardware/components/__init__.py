@@ -8,8 +8,10 @@
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 # RAMSTK Local Imports
 from . import (
-    capacitor, connection, inductor, integrated_circuit, meter, miscellaneous,
-    relay, resistor, semiconductor, switch)
-from .workview import (
-    RAMSTKAssessmentInputs, RAMSTKAssessmentResults, RAMSTKStressInputs,
-    RAMSTKStressResults)
+    capacitor, connection, inductor, integrated_circuit, meter,
+    miscellaneous, relay, resistor, semiconductor, switch
+)
+from .panels import (
+    RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel,
+    RAMSTKStressInputPanel, RAMSTKStressResultPanel
+)

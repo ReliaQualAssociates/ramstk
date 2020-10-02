@@ -25,13 +25,31 @@ class ModuleView(RAMSTKModuleView):
     Display Hardware attribute data in the RAMSTK Module Book.
 
     The Hardware Module View displays all the Hardware associated with the
-    connected RAMSTK Program in a flat list.  All attributes of a Hardware
-    Module View are inherited.
+    connected RAMSTK Program in a flat list.  The attributes of a Hardware
+    Module View are:
+
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module='hardware') -> None:
+
+    # Define private scalar class attributes.
+    _module: str = 'hardware'
+    _tablabel: str = 'Hardware'
+    _tabtooltip: str = _("Displays the hardware hierarchy (BoM) for the "
+                         "selected Revision.")
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Hardware Module View.
 
@@ -40,7 +58,7 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -133,7 +151,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
@@ -155,17 +173,6 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_hardware')
         pub.subscribe(self.on_delete, 'succeed_delete_hardware')
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface for the Hardware work stream module.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """

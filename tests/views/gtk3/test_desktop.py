@@ -11,11 +11,13 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.configuration import (RAMSTKUserConfiguration,
+    RAMSTK_CRITICALITY, RAMSTK_FAILURE_PROBABILITY)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
-from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
-                                     RAMSTKWorkBook)
+from ramstk.views.gtk3.books import (
+    RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
+)
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -33,8 +35,19 @@ class TestRAMSTKBook():
             test_toml_site_configuration.RAMSTK_AFFINITY_GROUPS
         test_toml_user_configuration.RAMSTK_CATEGORIES = \
             test_toml_site_configuration.RAMSTK_CATEGORIES
+        test_toml_user_configuration.RAMSTK_CRITICALITY = RAMSTK_CRITICALITY
+        test_toml_user_configuration.RAMSTK_DAMAGE_MODELS = \
+            test_toml_site_configuration.RAMSTK_DAMAGE_MODELS
+        test_toml_user_configuration.RAMSTK_FAILURE_PROBABILITY = \
+            RAMSTK_FAILURE_PROBABILITY
+        test_toml_user_configuration.RAMSTK_HAZARDS = \
+            test_toml_site_configuration.RAMSTK_HAZARDS
+        test_toml_user_configuration.RAMSTK_LOAD_HISTORY = \
+            test_toml_site_configuration.RAMSTK_LOAD_HISTORY
         test_toml_user_configuration.RAMSTK_MANUFACTURERS = \
             test_toml_site_configuration.RAMSTK_MANUFACTURERS
+        test_toml_user_configuration.RAMSTK_MEASURABLE_PARAMETERS = \
+            test_toml_site_configuration.RAMSTK_MEASURABLE_PARAMETERS
         test_toml_user_configuration.RAMSTK_MEASUREMENT_UNITS = \
             test_toml_site_configuration.RAMSTK_MEASUREMENT_UNITS
         test_toml_user_configuration.RAMSTK_REQUIREMENT_TYPE = \
@@ -49,18 +62,11 @@ class TestRAMSTKBook():
             test_toml_site_configuration.RAMSTK_STAKEHOLDERS
         test_toml_user_configuration.RAMSTK_SUBCATEGORIES = \
             test_toml_site_configuration.RAMSTK_SUBCATEGORIES
-        test_toml_user_configuration.RAMSTK_USERS = \
-            test_toml_site_configuration.RAMSTK_USERS
+        test_toml_user_configuration.RAMSTK_USERS = test_toml_site_configuration.RAMSTK_USERS
         test_toml_user_configuration.RAMSTK_VALIDATION_TYPE = \
             test_toml_site_configuration.RAMSTK_VALIDATION_TYPE
         test_toml_user_configuration.RAMSTK_WORKGROUPS = \
             test_toml_site_configuration.RAMSTK_WORKGROUPS
-        test_toml_user_configuration.RAMSTK_DAMAGE_MODELS = \
-            test_toml_site_configuration.RAMSTK_DAMAGE_MODELS
-        test_toml_user_configuration.RAMSTK_MEASURABLE_PARAMETERS = \
-            test_toml_site_configuration.RAMSTK_MEASURABLE_PARAMETERS
-        test_toml_user_configuration.RAMSTK_LOAD_HISTORY = \
-            test_toml_site_configuration.RAMSTK_LOAD_HISTORY
 
         DUT = RAMSTKDesktop(
             [test_toml_user_configuration, test_toml_site_configuration],

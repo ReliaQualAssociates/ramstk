@@ -15,24 +15,25 @@ from typing import TypeVar
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import (RAMSTK_FAILURE_PROBABILITY,
-                                  RAMSTKSiteConfiguration,
-                                  RAMSTKUserConfiguration)
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (
-    CreateProject, EditOptions, EditPreferences, ExportProject, ImportProject,
-    OpenProject)
-from ramstk.views.gtk3.books import (RAMSTKListBook, RAMSTKModuleBook,
-                                     RAMSTKWorkBook)
+    CreateProject, EditOptions, EditPreferences,
+    ExportProject, ImportProject, OpenProject
+)
+from ramstk.views.gtk3.books import (
+    RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
+)
 
 Tconfiguration = TypeVar('Tconfiguration', RAMSTKUserConfiguration,
                          RAMSTKSiteConfiguration)
 
 
 def destroy(__widget: Gtk.Widget, __event: Gdk.Event = None) -> None:
-    """
-    Quit the RAMSTK application.
+    """Quit the RAMSTK application.
 
     This function quits the RAMSTK application when the X in the upper right
     corner is pressed or if this function is called as a callback.
@@ -48,8 +49,7 @@ def destroy(__widget: Gtk.Widget, __event: Gdk.Event = None) -> None:
 
 
 class RAMSTKDesktop(Gtk.Window):
-    """
-    The base view for the RAMSTK Books.
+    """The base view for the RAMSTK Books.
 
     This is the container class for the List Book, Module Book, and Work Book.
     Attributes of the RAMSTKDesktop are:
@@ -81,8 +81,7 @@ class RAMSTKDesktop(Gtk.Window):
 
     def __init__(self, configuration: Tconfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize an instance of the RAMSTK Book.
+        """Initialize an instance of the RAMSTK Book.
 
         :param list configuration: a list containing the RAMSTK user
             configuration and RAMSTK site configuration class instances.
@@ -130,11 +129,6 @@ class RAMSTKDesktop(Gtk.Window):
         self.nbkWorkBook = RAMSTKWorkBook(configuration[0], logger)
         self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION = configuration[1]
 
-        self.nbkWorkBook.dic_work_views['function'][1].do_load_combobox(
-            self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION.RAMSTK_HAZARDS,
-            self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION.RAMSTK_SEVERITY,
-            RAMSTK_FAILURE_PROBABILITY)
-
         try:
             locale.setlocale(locale.LC_ALL,
                              self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOCALE)
@@ -151,8 +145,7 @@ class RAMSTKDesktop(Gtk.Window):
         pub.subscribe(self._do_set_status, 'request_set_status')
 
     def __make_menu(self) -> None:
-        """
-        Make the menu for the Module Book.
+        """Make the menu for the Module Book.
 
         :return: None
         :rtype: None
@@ -164,8 +157,7 @@ class RAMSTKDesktop(Gtk.Window):
         self.menubar.show_all()
 
     def __make_menu_edit(self) -> Gtk.MenuItem:
-        """
-        Make the Edit menu.
+        """Make the Edit menu.
 
         :return: the Edit menu.
         :rtype: :class:`Gtk.MenuItem`
@@ -189,8 +181,7 @@ class RAMSTKDesktop(Gtk.Window):
         return _menu_item
 
     def __make_menu_file(self) -> Gtk.MenuItem:
-        """
-        Make the File menu.
+        """Make the File menu.
 
         :return: the Tools menu.
         :rtype: :class:`Gtk.MenuItem`
@@ -275,8 +266,7 @@ class RAMSTKDesktop(Gtk.Window):
         return _menu_item
 
     def __make_menu_tools(self) -> Gtk.MenuItem:
-        """
-        Make the Tools menu.
+        """Make the Tools menu.
 
         :return: the Tools menu.
         :rtype: :class:`Gtk.MenuItem`
@@ -299,8 +289,7 @@ class RAMSTKDesktop(Gtk.Window):
         return _menu_item
 
     def __make_toolbar(self) -> None:
-        """
-        Make the toolbar for the Module Book.
+        """Make the toolbar for the Module Book.
 
         :return: None
         :rtype: None
@@ -384,8 +373,7 @@ class RAMSTKDesktop(Gtk.Window):
         self.toolbar.show_all()
 
     def __make_ui(self) -> None:
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
@@ -417,8 +405,7 @@ class RAMSTKDesktop(Gtk.Window):
         self._do_set_status_icon()
 
     def __set_callbacks(self) -> None:
-        """
-        Set the callback functions/methods for the RAMSTKListBook and widgets.
+        """Set the callbacks for the RAMSTKListBook() and widgets.
 
         :return: None
         :rtype: None
@@ -428,8 +415,7 @@ class RAMSTKDesktop(Gtk.Window):
         self.connect('button_press_event', self._on_button_press)
 
     def __set_properties(self) -> None:
-        """
-        Set properties of the RAMSTKBook and widgets.
+        """Set properties of the RAMSTKBook and widgets.
 
         :return: None
         :rtype: None
@@ -445,8 +431,7 @@ class RAMSTKDesktop(Gtk.Window):
 
     @staticmethod
     def _do_request_close_project(__widget: Gtk.Widget) -> None:
-        """
-        Request to close the open RAMSTK Program.
+        """Request to close the open RAMSTK Program.
 
         :param Gtk.Widget __widget: the Gtk.Widget() that called this method.
         :return: None
@@ -456,8 +441,7 @@ class RAMSTKDesktop(Gtk.Window):
 
     def _do_request_options_assistant(self,
                                       __widget: Gtk.ImageMenuItem) -> None:
-        """
-        Request the EditOptions assistant be launched.
+        """Request the EditOptions assistant be launched.
 
         :param __widget: the Gtk.ImageMenuItem() that called this class.
         :type __widget: :class:`Gtk.ImageMenuItem`
@@ -477,8 +461,7 @@ class RAMSTKDesktop(Gtk.Window):
     def _do_request_save_project(self,
                                  widget: Gtk.Widget,
                                  end: bool = False) -> None:
-        """
-        Request to save the open RAMSTK Program.
+        """Request to save the open RAMSTK Program.
 
         :param Gtk.Widget widget: the Gtk.Widget() that called this method.
         :keyword bool end: indicates whether or not to quit RAMSTK after saving
@@ -496,8 +479,7 @@ class RAMSTKDesktop(Gtk.Window):
             destroy(widget)
 
     def _do_set_status(self, status: str) -> None:
-        """
-        Set the status message.
+        """Set the status message.
 
         :param str status: the status message to display.
         :return: None
@@ -506,8 +488,7 @@ class RAMSTKDesktop(Gtk.Window):
         self.statusbar.push(1, status)
 
     def _do_set_status_icon(self, connected: bool = False) -> None:
-        """
-        Set the status icon in the system tay to indicate connection status.
+        """Set the status icon in the system tay to indicate connection status.
 
         :param bool connected: whether or not RAMSTK is connected to a program
             database.
@@ -533,8 +514,7 @@ class RAMSTKDesktop(Gtk.Window):
                   u"project database."))
 
     def _on_button_press(self, __book: object, event: Gdk.EventButton) -> None:
-        """
-        Handle mouse clicks on the RAMSTKBook.
+        """Handle mouse clicks on the RAMSTKBook.
 
         :param __book: the RAMSTKBook that was 'clicked'.
         :param event: the Gdk.Event() that called this method (the
@@ -556,8 +536,7 @@ class RAMSTKDesktop(Gtk.Window):
             self.present()
 
     def _on_request_open(self) -> None:
-        """
-        Set the status bar and update the progress bar.
+        """Set the status bar and update the progress bar.
 
         :return: None
         :rtype: None
@@ -571,8 +550,7 @@ class RAMSTKDesktop(Gtk.Window):
                 self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']))
 
     def _on_select(self, title: str) -> None:
-        """
-        Respond to load the Work View Gtk.Notebook() widgets.
+        """Respond to load the Work View Gtk.Notebook() widgets.
 
         This method handles the results of the an individual module's
         _on_select() method.  It sets the title of the RAMSTK Work Book and
@@ -590,8 +568,7 @@ class RAMSTKDesktop(Gtk.Window):
     @staticmethod
     def _on_window_state_event(window: Gtk.Window,
                                event: Gdk.EventWindowState) -> None:
-        """
-        Iconify or deiconify the desktop.
+        """Iconify or deiconify the desktop.
 
         :return: None
         :rtype: None

@@ -19,8 +19,7 @@ from .widget import RAMSTKWidget
 
 def do_make_buttonbox(view: Any,
                       **kwargs: Any) -> Union[Gtk.HButtonBox, Gtk.VButtonBox]:
-    r"""
-    Create the buttonbox for RAMSTK Views.
+    """Create the buttonbox for RAMSTK Views.
 
     This method creates the base buttonbox used by all RAMSTK Views.  Use a
     buttonbox for a RAMSTK View if there are only buttons to be added.
@@ -28,11 +27,9 @@ def do_make_buttonbox(view: Any,
     :param view: the RAMSTKView() this buttonbox will be embedded in.
     :type view: :class:`ramstk.views.gtk3.widgets.view.RAMSTKBaseView`
 
-    :param \**kwargs: See below
-
-    :Keyword Arguments:
+    Accepts the following keyword arguments:
         * *callbacks* (list) -- list of callback functions to assign to each
-            button in the butoonbox.
+            button in the buttonbox.
         * *height* (int) -- height of the Gtk.Button() widget.
             Default is 30.
         * *icons* (list) -- list of the icons to display on each button in the
@@ -92,15 +89,14 @@ def do_make_buttonbox(view: Any,
 
 
 class RAMSTKButton(Gtk.Button, RAMSTKWidget):
-    """This is the RAMSTK Button class."""
+    """The RAMSTK Button class."""
 
     # Define private class scalar attributes.
     _default_height = 30
     _default_width = 200
 
     def __init__(self, label: str = "...") -> None:
-        """
-        Initialize an instance of the RAMSTKButton().
+        """Initialize an instance of the RAMSTKButton().
 
         :keyword str label: the text to display on the RAMSTKButton().
             Default is an ellipsis (...).
@@ -114,12 +110,9 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
         self.show_all()
 
     def do_set_properties(self, **kwargs: Any) -> None:
-        r"""
-        Set the properties of the RAMSTKButton.
+        """Set the properties of the RAMSTKButton.
 
-        :param \**kwargs: See below
-
-        :Keyword Arguments for the RAMSTKButton:
+        Accepts the following keyword arguments:
             * *icon* (str) -- the icon to display on the button.  Default is
                 None.
         :return: None
@@ -140,15 +133,14 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
 
 
 class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
-    """This is the RAMSTK Check Button class."""
+    """The RAMSTK Check Button class."""
 
     # Define private class scalar attributes.
-    _default_height = 20
+    _default_height = 40
     _default_width = 200
 
     def __init__(self, label: str = "") -> None:
-        """
-        Initialize an instance of the RAMSTK CheckButton.
+        """Initialize an instance of the RAMSTK CheckButton.
 
         :keyword str label: the text to display with the Gtk.CheckButton().
             Default is an empty string.
@@ -161,12 +153,9 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.set_label(label)
 
     def do_set_properties(self, **kwargs: Any) -> None:
-        r"""
-        Set the properties of the RAMSTK button.
+        """Set the properties of the RAMSTK button.
 
-        :param \**kwargs: See below
-
-        :Keyword Arguments:
+        Accepts the following keyword arguments:
             * *height* (int) -- height of the RAMSTKCheckButton() widget.
                 Default is 40.
             * *tooltip* (str) -- the tooltip, if any, for the button.
@@ -185,8 +174,7 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.get_child().set_property('width-request', self.width)
 
     def do_update(self, value: int, signal: str = '') -> None:
-        """
-        Update the RAMSTK CheckButton with a new value.
+        """Update the RAMSTK CheckButton with a new value.
 
         :param int value: the information to update the RAMSTKCheckButton() to
             display.
@@ -203,12 +191,11 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
 
 
 class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
-    """This is the RAMSTK Option Button class."""
+    """The RAMSTK Option Button class."""
     def __init__(self,
                  group: Gtk.RadioButton = None,
                  label: str = _("")) -> None:
-        """
-        Initialize an instance of the RAMSTK OptionButton.
+        """Initialize an instance of the RAMSTK OptionButton.
 
         :keyword group: the group the Gtk.RadioButton() belongs to, if any.
             Default is None.
@@ -226,15 +213,14 @@ class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
 
 
 class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
-    """This is the RAMSTK Spin Button class."""
+    """The RAMSTK Spin Button class."""
 
     # Define private class scalar attributes.
     _default_height = 30
     _default_width = 200
 
     def __init__(self) -> None:
-        """
-        Initialize an instance of the RAMSTKSpinButton().
+        """Initialize an instance of the RAMSTKSpinButton().
 
         :return: None
         :rtype: None
@@ -245,12 +231,10 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
         self.show_all()
 
     def do_set_properties(self, **kwargs: Any) -> None:
-        r"""
-        Set the properties of the RAMSTKSpinButton.
+        """Set the properties of the RAMSTKSpinButton.
 
-        :param \**kwargs: See below
+        Accepts the following keyword arguments:
 
-        :Keyword Arguments:
             * *height* (int) -- height of the RAMSTKButton() widget.
                 Default is 30.
             * *limits* (list) -- the list of values for the spin button
@@ -276,8 +260,7 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
         self.set_update_policy(Gtk.SpinButtonUpdatePolicy.IF_VALID)
 
     def do_update(self, value: int, signal: str = '') -> None:
-        """
-        Update the RAMSTK Spin Button with a new value.
+        """Update the RAMSTK Spin Button with a new value.
 
         :param int value: the information to update the RAMSTKSpinButton() to
             display.

@@ -26,13 +26,31 @@ class ModuleView(RAMSTKModuleView):
     Display Validation attribute data in the RAMSTK Module Book.
 
     The Validation Module View displays all the Validations associated with the
-    connected RAMSTK Program in a flat list.  All attributes of a Validation
-    Module View are inherited.
+    connected RAMSTK Program in a flat list.  The attributes of a Validation
+    Module View are:
+
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module='validation') -> None:
+
+    # Define private scalar class attributes.
+    _module: str = 'validation'
+    _tablabel: str = 'Verification'
+    _tabtooltip: str = _("Displays the list of verification tasks for the "
+                         "selected Revision.")
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the Validation Module View.
 
@@ -41,7 +59,7 @@ class ModuleView(RAMSTKModuleView):
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -111,7 +129,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_insert, 'succeed_insert_validation')
@@ -130,17 +148,6 @@ class ModuleView(RAMSTKModuleView):
                       'fail_update_validation')
         pub.subscribe(self.on_delete, 'succeed_delete_validation')
 
-    def __make_ui(self) -> None:
-        """
-        Build the user interface for the Validation work stream module.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
-
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """
         Send request to delete selected record from the RAMSTKValidation table.
@@ -155,7 +162,7 @@ class ModuleView(RAMSTKModuleView):
         _prompt = _("You are about to delete Validation {0:d} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog: RAMSTKMessageDialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type('question')
 

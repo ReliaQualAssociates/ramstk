@@ -3,8 +3,8 @@
 #       ramstk.views.gtk3.revision.listview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Failure Definition List View Module."""
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Revision List View Module."""
 
 # Standard Library Imports
 from typing import Any, Dict
@@ -60,17 +60,32 @@ class FailureDefinition(RAMSTKListView):
 
     The attributes of the Failure Definition List View are:
 
-    :ivar int _definition_id: the Failure Definition ID of the definition
-        selected in the List View.
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
     # Define private dict class attributes.
     _dic_keys = {2: 'definition'}
     _dic_column_keys = {'definition': 2}
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module='failure_definition') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'failure_definition'
+    _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
+    _tabtooltip = _("Displays failure definitions for the "
+                    "selected revision.")
+    _view_type: str = 'list'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the List View for the Failure Definition package.
 
@@ -78,9 +93,8 @@ class FailureDefinition(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the module.
         """
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
 
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
@@ -88,12 +102,16 @@ class FailureDefinition(RAMSTKListView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_key_index = {'definition_id': 0, 'definition': 2}
+        self._dic_key_index = {
+            'revision_id': 0,
+            'definition_id': 1,
+            'definition': 2
+        }
 
         # Initialize private list attributes.
         self._lst_callbacks = [
             self._do_request_insert, self._do_request_delete,
-            self._do_request_update, self._do_request_update_all
+            self.do_request_update, self.do_request_update_all
         ]
         self._lst_icons = ['add', 'remove', 'save', 'save-all']
         self._lst_mnu_labels = [
@@ -119,7 +137,7 @@ class FailureDefinition(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.__do_load_tree,
@@ -163,30 +181,17 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.treeview.dic_handler_id[
+            'changed'] = self.treeview.selection.connect(
+                'changed', self._on_row_change)
+
         _cell = self.treeview.get_columns()[1].get_cells()[0]
+        _cell.set_property('editable', False)
+
+        _cell = self.treeview.get_columns()[2].get_cells()[0]
         _cell.set_property('editable', True)
         self._lst_handler_id.append(
             _cell.connect('edited', self._on_cell_edit, 2))
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
-
-        self.tab_label.set_markup("<span weight='bold'>"
-                                  + _("Failure\nDefinitions") + "</span>")
-        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays failure definitions for the "
-              "selected revision."))
 
     def __set_properties(self) -> None:
         """
@@ -271,33 +276,6 @@ class FailureDefinition(RAMSTKListView):
         pub.sendMessage('request_insert_failure_definition',
                         revision_id=self._revision_id)
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to update the currently selected Failure Definition record.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_failure_definition',
-                        revision_id=self._revision_id,
-                        node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to update all Failure Definitions records.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_failure_definitions',
-                        revision_id=self._revision_id)
-
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       position: int) -> None:
         """
@@ -343,17 +321,34 @@ class FailureDefinition(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.treeview.handler_block(self.treeview.dic_handler_id['changed'])
+
         _attributes: Dict[str, Any] = super().on_row_change(selection)
 
         if _attributes:
             self._record_id = _attributes['definition_id']
+
+        self.treeview.handler_unblock(self.treeview.dic_handler_id['changed'])
 
 
 class UsageProfile(RAMSTKListView):
     """
     Display all the Usage Profiles associated with the selected Revision.
 
-    All attributes of a Usage Profile List View are inherited.
+    The attributes of a Usage Profile List View are:
+
+    :cvar str _module: the name of the module.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
     """
 
     # Define private dict class attributes.
@@ -432,10 +427,14 @@ class UsageProfile(RAMSTKListView):
         ]
     }
 
-    def __init__(self,
-                 configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager,
-                 module: str = 'usage_profile') -> None:
+    # Define private scalar class attributes.
+    _module: str = 'usage_profile'
+    _tablabel = "<span weight='bold'>" + _("Usage\nProfiles") + "</span>"
+    _tabtooltip = _("Displays usage profiles for the selected revision.")
+    _view_type: str = 'list'
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         """
         Initialize the List View for the Usage Profile.
 
@@ -443,7 +442,6 @@ class UsageProfile(RAMSTKListView):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the module.
         """
         #// TODO: Update Usage Profile GUI treeview to use a RAMSTKTreeView.
         #
@@ -452,7 +450,8 @@ class UsageProfile(RAMSTKListView):
         #// method.  After updating to use a RAMSTKTreeView, remove or update
         #// the local _on_cell_edit(), __make_cell(), __make_treeview()
         #// methods from the usage profile list view.
-        super().__init__(configuration, logger, module)
+        super().__init__(configuration, logger)
+
         self.RAMSTK_LOGGER.do_create_logger(
             __name__,
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
@@ -466,8 +465,8 @@ class UsageProfile(RAMSTKListView):
         # Initialize private list attributes.
         self._lst_callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_delete, self.do_request_update,
+            self.do_request_update_all
         ]
         self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
         self._lst_icons = [
@@ -501,7 +500,7 @@ class UsageProfile(RAMSTKListView):
 
         self.__make_treeview()
         self.__set_properties()
-        self.__make_ui()
+        super().make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.__do_load_tree,
@@ -675,26 +674,6 @@ class UsageProfile(RAMSTKListView):
 
             _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
             self.treeview.append_column(_column)
-
-    def __make_ui(self) -> None:
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        super().make_ui(icons=self._lst_icons,
-                        tooltips=self._lst_tooltips,
-                        callbacks=self._lst_callbacks)
-
-        self.tab_label.set_markup("<span weight='bold'>" + _("Usage\nProfiles")
-                                  + "</span>")
-        self.tab_label.set_xalign(xalign=0.5)
-        self.tab_label.set_yalign(yalign=0.5)
-        self.tab_label.set_justify(Gtk.Justification.CENTER)
-        self.tab_label.show_all()
-        self.tab_label.set_tooltip_text(
-            _("Displays usage profiles for the selected revision."))
 
     def __set_properties(self) -> None:
         """
@@ -1012,36 +991,6 @@ class UsageProfile(RAMSTKListView):
                             revision_id=self._revision_id,
                             mission_id=_mission_id,
                             phase_id=_phase_id)
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to update the currently selected Usage Profile record.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        _model, _row = self.treeview.selection.get_selected()
-        _node_id = _model.get_value(_row, 9)
-
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_usage_profile',
-                        revision_id=self._revision_id,
-                        node_id=_node_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to update all the Usage Profile records.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_usage_profiles',
-                        revision_id=self._revision_id)
 
     def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: Any,
                       position: int) -> None:
