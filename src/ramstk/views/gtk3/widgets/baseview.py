@@ -27,30 +27,37 @@ from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from .button import RAMSTKCheckButton, do_make_buttonbox
 from .combo import RAMSTKComboBox
 from .dialog import RAMSTKMessageDialog
-from .entry import RAMSTKTextView
 from .frame import RAMSTKFrame
-from .label import RAMSTKLabel, do_make_label_group
+from .label import RAMSTKLabel
 from .matrixview import RAMSTKMatrixView
-from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
 
 
 class RAMSTKBaseView(Gtk.HBox):
-    """
-    Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
+    """Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
 
     Attributes of the RAMSTKBaseView are:
 
     :cvar RAMSTK_USER_CONFIGURATION: the instance of the RAMSTK Configuration
         class.
-    :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.Configuration.Configuration`
-    :cvar dict dic_tab_position: dictionary holding the Gtk.PositionType()s for
+    :cvar dic_tab_position: dictionary holding the Gtk.PositionType()s for
         each of left, right, top, and bottom.
 
-    :ivar dict _dic_icons: dictionary containing icon name and absolute path
+    The following attributes are used to build toolbars and pop-up menus:
+
+    :ivar _dic_icons: dictionary containing icon name and absolute path
         key:value pairs.
-    :ivar list _lst_col_order: list containing the order of the columns in the
-        List View RAMSTKTreeView().
+
+    :ivar _lst_callbacks: the list of callback functions to associate with
+        toolbutton items and pop-up menu entries on a view.
+    :ivar _lst_icons: the list of icon names (keys) in the _dic_icons
+        dictionary to use for each toolbutton item and pop-up menu entry.
+    :ivar _lst_mnu_labels: the list of labels to use on pop-up menu entries
+        for a view.  These are generally only used for views with a
+        RAMSTKTreeView().
+    :ivar _lst_tooltips: the list of tooltips to associate with each
+        toolbutton item.
+
     :ivar float _mission_time: the mission time for the open RAMSTK Program.
     :ivar _notebook: the Gtk.Notebook() to hold all the pages of information to
         be displayed.
@@ -82,14 +89,10 @@ class RAMSTKBaseView(Gtk.HBox):
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the RAMSTK Base View.
+        """Initialize the RAMSTK Base View.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
         GObject.GObject.__init__(self)
 
@@ -102,9 +105,13 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Initialize private dictionary attributes.
         self._dic_icons: Dict[str, str] = self.__set_icons()
-        self._img_tab: Gtk.Image = Gtk.Image()
 
         # Initialize private list attributes.
+        self._lst_callbacks: List[object] = []
+        self._lst_icons: List[str] = []
+        self._lst_mnu_labels: List[str] = []
+        self._lst_tooltips: List[str] = []
+
         self._lst_col_order: List[int] = []
         self._lst_handler_id: List[int] = []
         self._lst_layouts: List[str] = [
@@ -114,6 +121,7 @@ class RAMSTKBaseView(Gtk.HBox):
         ]
 
         # Initialize private scalar attributes.
+        self._img_tab: Gtk.Image = Gtk.Image()
         self._mission_time: float = float(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         self._notebook: Gtk.Notebook = Gtk.Notebook()
@@ -148,8 +156,7 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_matrix')
 
     def __set_callbacks(self) -> None:
-        """
-        Set common callback methods.
+        """Set common callback methods.
 
         Sets callback for the RAMSTKView, Gtk.TreeView, and Gtk.TreeSelection.
 
@@ -173,8 +180,7 @@ class RAMSTKBaseView(Gtk.HBox):
                 self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def __set_icons(self) -> Dict[str, str]:
-        """
-        Set the dict of icons.
+        """Set the dict of icons.
 
         :return: the dict of icons to use in RAMSTK.
         :rtype: dict
@@ -281,9 +287,33 @@ class RAMSTKBaseView(Gtk.HBox):
             + '/32x32/warning.png'
         }
 
-    def _make_treeview(self) -> RAMSTKTreeView:
+    def do_build_treeview(self, treeview: RAMSTKTreeView) -> None:
+        """Build an instance of a RAMSTKTreeView().
+
+        :param treeview: the RAMSTKTreeView() to initialize.
+        :type treeview: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
+        :return: None
+        :rtype: None
         """
-        Make the RAMSTKTreeView instance for this view.
+        _colors = {'bg_color': '#FFFFFF', 'fg_color': '#000000'}
+        try:
+            _colors['bg_color'] = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'bg']
+            _colors['fg_color'] = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                self._module + 'fg']
+
+            _format_file = (
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module]
+            )
+
+            treeview.do_build_treeview(format_file=_format_file,
+                                       colors=_colors)
+        except KeyError:
+            pass
+
+    def _make_treeview(self) -> RAMSTKTreeView:
+        """Make the RAMSTKTreeView instance for this view.
 
         :return: _treeview; the RAMSTKTreeView() created.
         :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
@@ -329,8 +359,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return _treeview
 
     def do_expand_tree(self) -> None:
-        """
-        Expands the RAMSTKTreeView.
+        """Expands the RAMSTKTreeView.
 
         :return: None
         :rtype: None
@@ -346,8 +375,7 @@ class RAMSTKBaseView(Gtk.HBox):
             self.treeview.row_activated(_path, _column)
 
     def do_get_headings(self, level: str) -> List:
-        """
-        Get the list of headings for the Usage Profile treeview.
+        """Get the list of headings for the Usage Profile treeview.
 
         :param level: the level (mission, phase, environment) to retrieve
             headers for.
@@ -362,8 +390,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return _headings
 
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """
-        Load the data into a row.
+        """Load the data into a row.
 
         This is used to load data into a RAMSTKTreeView() that is being used in
         a "worksheet" manner.  See the Allocation and Similar Item work views
@@ -387,8 +414,7 @@ class RAMSTKBaseView(Gtk.HBox):
             _model.append(None, _data)
 
     def do_load_tree(self, tree: treelib.Tree) -> None:
-        """
-        Load the RAMSTK View RAMSTKTreeView().
+        """Load the RAMSTK View RAMSTKTreeView().
 
         This method is called in response to the 'retrieved_<module>'.
 
@@ -429,11 +455,35 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-    def do_make_layout_lr(self) -> Gtk.HPaned:
-        """
-        Generates a view with the following layout:
+    def do_make_layout(self) -> None:
+        """Generate a view with the following layout:
 
         +-----+---------------------------------------+
+        |  B  |                WIDGETS                |
+        |  U  |                                       |
+        |  T  |                                       |
+        |  T  |                                       |
+        |  O  |                                       |
+        |  N  |                                       |
+        |  S  |                                       |
+        +-----+---------------------------------------+
+        self.make_toolbuttons -------> self
+
+        :return: None
+        :rtype: None
+        """
+        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
+        self.make_toolbuttons(
+            kwargs={
+                'icons': self._lst_icons,
+                'tooltips': self._lst_tooltips,
+                'callbacks': self._lst_callbacks,
+            })
+
+    def do_make_layout_lr(self) -> Gtk.HPaned:
+        """Generates a view with the following layout:
+
+        +-----+-------------------+-------------------+
         |  B  |      L. SIDE      |      R. SIDE      |
         |  U  |                   |                   |
         |  T  |                   |                   |
@@ -450,10 +500,7 @@ class RAMSTKBaseView(Gtk.HBox):
             sides for further population.
         :rtype: :class:`Gtk.Hpaned`
         """
-        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.do_make_layout()
 
         _hpaned: Gtk.HPaned = Gtk.HPaned()
 
@@ -462,8 +509,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return _hpaned
 
     def do_make_layout_lrr(self) -> Tuple[Gtk.HPaned, Gtk.VPaned]:
-        """
-        Creates a view with the following layout:
+        """Creates a view with the following layout:
 
         +-----+-------------------+-------------------+
         |  B  |      L. SIDE      |      R. TOP       |
@@ -482,10 +528,7 @@ class RAMSTKBaseView(Gtk.HBox):
             that create the left and right sections for further population.
         :rtype: tuple
         """
-        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.do_make_layout()
 
         _hpaned: Gtk.HPaned = Gtk.HPaned()
         _vpaned_right: Gtk.VPaned = Gtk.VPaned()
@@ -497,8 +540,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return _hpaned, _vpaned_right
 
     def do_make_layout_llr(self) -> Tuple[Gtk.HPaned, Gtk.VPaned]:
-        """
-        Creates a view with the following layout:
+        """Creates a view with the following layout:
 
         +-----+-------------------+-------------------+
         |  B  |       L. TOP      |     R. SIDE       |
@@ -517,10 +559,7 @@ class RAMSTKBaseView(Gtk.HBox):
             that create the left and right sections for further population.
         :rtype: tuple
         """
-        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.do_make_layout()
 
         _hpaned: Gtk.HPaned = Gtk.HPaned()
         _vpaned_left: Gtk.VPaned = Gtk.VPaned()
@@ -532,8 +571,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return _hpaned, _vpaned_left
 
     def do_make_layout_llrr(self) -> Tuple[Gtk.VPaned, Gtk.VPaned]:
-        """
-        Creates a view with the following layout:
+        """Creates a view with the following layout:
 
         +-----+-------------------+-------------------+
         |  B  |       L. TOP      |      R. TOP       |
@@ -554,10 +592,7 @@ class RAMSTKBaseView(Gtk.HBox):
             that create the left and right sections for further population.
         :rtype: tuple
         """
-        self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.do_make_layout()
 
         _hpaned: Gtk.HPaned = Gtk.HPaned()
         _vpaned_left: Gtk.VPaned = Gtk.VPaned()
@@ -570,74 +605,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return _vpaned_left, _vpaned_right
 
-    def do_make_panel_fixed(self, start: int, end: int) -> RAMSTKFrame:
-        """
-        Places the labels and widgets on a Gtk.Fixed() to embed in a panel.
-
-        :param int start: the starting index in the label and widget list
-            attributes for the first widget to display.
-        :param int end: the ending index in the label and widget list
-            attributes for the last widget to display.
-        :return: RAMSTKFrame holding the Gtk.Fixed() the widgets were placed
-            on.
-        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
-        """
-        _fixed: Gtk.Fixed = Gtk.Fixed()
-
-        _y_pos: int = 5
-        (_x_pos,
-         _lst_labels) = do_make_label_group(self._lst_labels[start:end],
-                                            x_pos=5,
-                                            y_pos=5)
-        for _idx, _label in enumerate(_lst_labels):
-            _fixed.put(_label, 5, _y_pos)
-
-            _minimum: Gtk.Requisition = self._lst_widgets[
-                _idx + start].get_preferred_size()[0]
-            if _minimum.height == 0:
-                _minimum.height = self._lst_widgets[_idx + start].height
-
-            # RAMSTKTextViews are placed inside a scrollwindow so that's
-            # what needs to be placed on the container.
-            if isinstance(self._lst_widgets[_idx + start], RAMSTKTextView):
-                _fixed.put(self._lst_widgets[_idx + start].scrollwindow,
-                           _x_pos + 5, _y_pos)
-                _y_pos += _minimum.height + 30
-            else:
-                _fixed.put(self._lst_widgets[_idx + start], _x_pos + 5, _y_pos)
-                _y_pos += _minimum.height + 5
-
-        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
-
-        _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.add(_scrollwindow)
-
-        return _frame
-
-    @staticmethod
-    def do_make_panel_plot(plot: object) -> RAMSTKFrame:
-        """
-        Places the view's RAMSTKPlot() in a RAMSTKFrame() to embed in a panel.
-
-        :param plot: the plot to embed.
-        :return: RAMSTKFrame holding the view's RAMSTKTreeView().
-        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKFrame`
-        :return:
-        """
-        _frame: RAMSTKFrame = RAMSTKFrame()
-
-        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(plot)
-        _frame.add(_scrollwindow)
-
-        return _frame
-
     @staticmethod
     def do_make_panel_treeview(treeview: RAMSTKTreeView) -> RAMSTKFrame:
-        """
-        Places the view's RAMSTKTreeView() in a RAMSTKFrame() to embed.
+        """Places the view's RAMSTKTreeView() in a RAMSTKFrame() to embed.
 
         :param treeview: the RAMSTKTreeView() to emded in the panel.
         :return: RAMSTKFrame holding the view's RAMSTKTreeView().
@@ -655,8 +625,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return _frame
 
     def do_raise_dialog(self, **kwargs: Any) -> RAMSTKMessageDialog:
-        """
-        Raise a dialog in response to information, warnings, and errors.
+        """Raise a dialog in response to information, warnings, and errors.
 
         This method will display an message dialog of the appropriate severity
         information, warning, or error containing a message to the user.  It
@@ -678,8 +647,7 @@ class RAMSTKBaseView(Gtk.HBox):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
-        """
-        Update the module view RAMSTKTreeView() with attribute changes.
+        """Update the module view RAMSTKTreeView() with attribute changes.
 
         This method receives two dicts.  This first is from the
         workflow's workview module and is sent when a workview widget is
@@ -721,8 +689,7 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
     def do_request_insert(self, **kwargs: Any) -> None:
-        """
-        Request insert a new work stream element into the program database.
+        """Request insert a new work stream element into the program database.
 
         :return: None
         :rtype: None
@@ -735,12 +702,11 @@ class RAMSTKBaseView(Gtk.HBox):
         else:
             pub.sendMessage('request_insert_{0:s}'.format(
                 self._module.lower()),
-                            parent_id=self._parent_id)
+                            parent_id=self._parent_id)  # noqa
 
     def do_request_insert_child(self, __button: Gtk.ToolButton,
                                 **kwargs: Any) -> Any:
-        """
-        Request to insert a new child entity of the selected entity.
+        """Request to insert a new child entity of the selected entity.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -754,8 +720,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
     def do_request_insert_sibling(self, __button: Gtk.ToolButton,
                                   **kwargs: Any) -> Any:
-        """
-        Send request to insert a new sibling entity.
+        """Send request to insert a new sibling entity.
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
@@ -776,8 +741,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return self.do_request_insert(sibling=True, **kwargs)
 
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
-        """
-        Set the callback methods for RAMSTKTreeView() cells.
+        """Set the callback methods for RAMSTKTreeView() cells.
 
         :param str message: the PyPubSub message to broadcast on a
             successful edit.
@@ -796,8 +760,7 @@ class RAMSTKBaseView(Gtk.HBox):
                                  message, _idx)
 
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
-        """
-        Set the cursor for the Module, List, and Work Book Gdk.Window().
+        """Set the cursor for the Module, List, and Work Book Gdk.Window().
 
         :param cursor: the Gdk.Cursor.new() to set.  Only handles one of the
                        following:
@@ -846,8 +809,8 @@ class RAMSTKBaseView(Gtk.HBox):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def do_set_cursor_active(self, node_id: Any = '', tree: Any = '') -> None:
-        """
-        Set the active cursor for the Module, List, and Work Book Gdk.Window().
+        """Set the active cursor for the Module, List, and Work Book
+        Gdk.Window().
 
         :keyword node_id: the node ID passed in the PyPubSub message.  Only
             needed when this method is a PyPubSub subscriber.
@@ -861,8 +824,8 @@ class RAMSTKBaseView(Gtk.HBox):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def do_set_cursor_active_on_fail(self, error_message: str = '') -> None:
-        """
-        Set the active cursor for the Module, List, and Work Book Gdk.Window().
+        """Set the active cursor for the Module, List, and Work Book
+        Gdk.Window().
 
         :keyword str error_message: the error message broadcast with the
         'fail' message.  Only needed when this method is a PyPubSub subscriber.
@@ -872,8 +835,8 @@ class RAMSTKBaseView(Gtk.HBox):
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def do_set_cursor_busy(self) -> None:
-        """
-        Set the busy cursor for the Module, List, and Work Book Gdk.Window().
+        """Set the busy cursor for the Module, List, and Work Book
+        Gdk.Window().
 
         :return: None
         :rtype: None
@@ -881,8 +844,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self.do_set_cursor(Gdk.CursorType.WATCH)
 
     def make_tab_label(self, **kwargs: Dict[str, Any]) -> None:
-        """
-        Make the view's tab label.
+        """Make the view's tab label.
 
         :param dict kwargs: the keyword arguments (if any) to apply to the
             tab label.
@@ -905,8 +867,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self.hbx_tab_label.show_all()
 
     def make_toolbuttons(self, **kwargs: Dict[str, Any]) -> None:
-        """
-        Common method to create the RAMSTKBaseView tool buttons.
+        """Common method to create the RAMSTKBaseView tool buttons.
 
         :return: None
         """
@@ -918,8 +879,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
     def on_button_press(self, __treeview: RAMSTKTreeView,
                         event: Gdk.EventButton) -> None:
-        """
-        Handle mouse clicks on the View's RTKTreeView().
+        """Handle mouse clicks on the View's RTKTreeView().
 
         :param event: the Gdk.Event() that called this method (the important
         attribute is which mouse button was clicked).
@@ -967,8 +927,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
     def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      message: str, position: int) -> None:
-        """
-        Handle edits of the Allocation Work View RAMSTKTreeview().
+        """Handle edits of the Allocation Work View RAMSTKTreeview().
 
         :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
         :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
@@ -993,8 +952,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
     def on_combo_changed(self, combo: RAMSTKComboBox, index: int,
                          message: str) -> Dict[Union[str, Any], Any]:
-        """
-        Retrieve RAMSTKCombo() changes and return to the child class.
+        """Retrieve RAMSTKCombo() changes and return to the child class.
 
         This method is called by the child class instance _on_combo_changed()
         methods.  The child class should unblock the RAMSTKComboBox()'s
@@ -1052,8 +1010,7 @@ class RAMSTKBaseView(Gtk.HBox):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
-        """
-        Update the RAMSTKTreeView after deleting a line item.
+        """Update the RAMSTKTreeView after deleting a line item.
 
         :param int node_id: the treelib Tree() node ID that was deleted.
         :param tree: the treelib Tree() containing the workflow module data.
@@ -1072,8 +1029,7 @@ class RAMSTKBaseView(Gtk.HBox):
     # noinspection PyUnboundLocalVariable
     def on_focus_out(self, entry: object, index: int,
                      message: str) -> Dict[Union[str, Any], Any]:
-        """
-        Retrieve changes made in RAMSTKEntry() widgets.
+        """Retrieve changes made in RAMSTKEntry() widgets.
 
         This method is called by:
 
@@ -1100,7 +1056,7 @@ class RAMSTKBaseView(Gtk.HBox):
             index of the newly changed RAMSTKEntry() or RAMSTKTextView().
         :rtype: dict
         """
-        entry.handler_block(entry.dic_handler_id['changed'])
+        entry.handler_block(entry.dic_handler_id['changed'])  # type: ignore
 
         try:
             _key = self._dic_keys[index][0]
@@ -1111,23 +1067,22 @@ class RAMSTKBaseView(Gtk.HBox):
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         if _type == 'float':
-            _new_text: Any = float(entry.get_text())
+            _new_text: Any = float(entry.get_text())  # type: ignore
         elif _type == 'integer':
-            _new_text = int(entry.get_text())
+            _new_text = int(entry.get_text())  # type: ignore
         elif _type == 'string':
-            _new_text = str(entry.get_text())
+            _new_text = str(entry.get_text())  # type: ignore
 
         pub.sendMessage(message,
                         node_id=[self._record_id, -1],
                         package={_key: _new_text})
 
-        entry.handler_unblock(entry.dic_handler_id['changed'])
+        entry.handler_unblock(entry.dic_handler_id['changed'])  # type: ignore
 
         return {_key: _new_text}
 
     def on_insert(self, data: Any) -> None:
-        """
-        Add row to module view for newly added work stream element.
+        """Add row to module view for newly added work stream element.
 
         :param data: the data package for the work stream element to add.
         :return: None
@@ -1162,8 +1117,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self.treeview.selection.select_iter(_row)
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
-        """
-        Common method for views to use for RAMSTKTreeView() row changes.
+        """Common method for views to use for RAMSTKTreeView() row changes.
 
         :param selection: the current Gtk.TreeSelection().
         :type selection: :class:`Gtk.TreeSelection`
@@ -1197,8 +1151,7 @@ class RAMSTKBaseView(Gtk.HBox):
         return _attributes
 
     def on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        """
-        Set the Revision ID when a new Revision is selected.
+        """Set the Revision ID when a new Revision is selected.
 
         :return: None
         :rtype: None
@@ -1207,8 +1160,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
 
 class RAMSTKListView(RAMSTKBaseView):
-    """
-    Class to display list and matrix type data in the RAMSTK List Book.
+    """Class to display list and matrix type data in the RAMSTK List Book.
 
     This is the meta class for all RAMSTK List View classes.  Attributes of the
     RAMSTKListView are:
@@ -1227,14 +1179,13 @@ class RAMSTKListView(RAMSTKBaseView):
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
     :type tab_label: :class:`Gtk.Label`
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the List View.
+        """Initialize the List View.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration:
+            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
@@ -1282,8 +1233,7 @@ class RAMSTKListView(RAMSTKBaseView):
             self._do_request_update(__button)
 
     def do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
-        """
-        Load the RAMSTKMatrixView() with matrix data.
+        """Load the RAMSTKMatrixView() with matrix data.
 
         :param str matrix_type: the type of matrix to load.
         :param matrix: the data matrix to display.
@@ -1294,28 +1244,30 @@ class RAMSTKListView(RAMSTKBaseView):
             self.matrixview.do_load_matrix(matrix)
 
     def make_ui(self) -> None:
-        """
-        Build the list view user interface.
+        """Build the list view user interface.
 
         :return: None
         :rtype: None
         """
         self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.make_toolbuttons(
+            kwargs={
+                'icons': self._lst_icons,
+                'tooltips': self._lst_tooltips,
+                'callbacks': self._lst_callbacks,
+            })
 
         _scrolledwindow = Gtk.ScrolledWindow()
         if self._view_type == 'matrix':
             self.matrixview.dic_icons = {
                 'complete':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
                 + '/32x32/complete.png',
                 'none':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
                 + '/32x32/none.png',
                 'partial':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
                 + '/32x32/partial.png'
             }
             self.matrixview.set_tooltip_text(self._tabtooltip)
@@ -1330,31 +1282,25 @@ class RAMSTKListView(RAMSTKBaseView):
 
 
 class RAMSTKModuleView(RAMSTKBaseView):
-    """
-    Display data in the RAMSTK Module Book.
+    """Display data in the RAMSTK Module Book.
 
     This is the meta class for all RAMSTK Module View classes.  Attributes of
     the RAMSTKModuleView are:
 
     :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the RAMSTKModuleView meta-class.
+        """Initialize the RAMSTKModuleView meta-class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param str module: the name of the RAMSTK workflow module.
         """
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
         self._dic_icons['insert_part'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR  # type: ignore
             + '/32x32/insert_part.png')
 
         # Initialize private list attributes.
@@ -1370,8 +1316,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self.__set_properties()
 
     def __set_properties(self) -> None:
-        """
-        Set common properties of the ModuleView and widgets.
+        """Set common properties of the ModuleView and widgets.
 
         :return: None
         :rtype: None
@@ -1379,16 +1324,18 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self.treeview.set_rubber_banding(True)
 
     def make_ui(self) -> None:
-        """
-        Build the user interface for a ModuleView.
+        """Build the user interface for a ModuleView.
 
         :return: None
         :rtype: None
         """
         self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.make_toolbuttons(
+            kwargs={
+                'icons': self._lst_icons,
+                'tooltips': self._lst_tooltips,
+                'callbacks': self._lst_callbacks,
+            })
 
         self.treeview.set_tooltip_text(self._tabtooltip)
 
@@ -1402,8 +1349,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
 
 class RAMSTKWorkView(RAMSTKBaseView):
-    """
-    Class to display data in the RAMSTK Work Book.
+    """Class to display data in the RAMSTK Work Book.
 
     This is the meta class for all RAMSTK Work View classes.  Attributes of the
     RAMSTKWorkView are:
@@ -1411,14 +1357,13 @@ class RAMSTKWorkView(RAMSTKBaseView):
     :ivar list _lst_widgets: the list of RAMSTK (preferred) and Gtk widgets
         used to display information on a workview.
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the RAMSTKWorkView meta-class.
+        """Initialize the RAMSTKWorkView meta-class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :type configuration:
+            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
         :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param str module: the name of the RAMSTK workflow module.
@@ -1439,11 +1384,9 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
 
     def do_clear_tree(self) -> None:
-        """
-        Clear the contents of a RAMSTKTreeView().
+        """Clear the contents of a RAMSTKTreeView().
 
         :return: None
         :rtype: None
@@ -1455,9 +1398,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
         _model.clear()
 
-    def make_ui(self, **kwargs: Any) -> RAMSTKFrame:
-        """
-        Common method to create work view Gtk.Notebook() general data pages.
+    def _make_ui(self, **kwargs: Any) -> RAMSTKFrame:
+        """Common method to create work view Gtk.Notebook() general data pages.
 
         The Gtk.Fixed() can be retrieved by the calling function with the
         following:
@@ -1474,15 +1416,17 @@ class RAMSTKWorkView(RAMSTKBaseView):
         _index_start = kwargs.get('start', 0)
 
         self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.make_toolbuttons(
+            kwargs={
+                'icons': self._lst_icons,
+                'tooltips': self._lst_tooltips,
+                'callbacks': self._lst_callbacks,
+            })
 
         return self.do_make_panel_fixed(_index_start, _index_end)
 
-    def make_ui_with_treeview(self) -> None:
-        """
-        Build the work view UI containing a RAMSTKTreeView().
+    def _make_ui_with_treeview(self) -> None:
+        """Build the work view UI containing a RAMSTKTreeView().
 
         :return: None
         :rtype: None
@@ -1509,9 +1453,12 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # TMPLT: from the child class' __make_ui() method followed by a call
         # TMPLT: to this method.
         self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
-        self.make_toolbuttons(icons=self._lst_icons,
-                              tooltips=self._lst_tooltips,
-                              callbacks=self._lst_callbacks)
+        self.make_toolbuttons(
+            kwargs={
+                'icons': self._lst_icons,
+                'tooltips': self._lst_tooltips,
+                'callbacks': self._lst_callbacks,
+            })
 
         _hbox = Gtk.HBox()
 
@@ -1544,8 +1491,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
-        """
-        Update the Work View Gtk.Widgets() when attributes change.
+        """Update the Work View Gtk.Widgets() when attributes change.
 
         This method is called whenever an attribute is edited in the module
         view.
@@ -1567,8 +1513,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    message: str) -> None:
-        """
-        Common method to respond to work view checkbutton 'toggles'.
+        """Common method to respond to work view checkbutton 'toggles'.
 
         :param checkbutton: the Gtk.CheckButton() that was toggled.
         :type checkbutton: :class:`Gtk.CheckButton`
