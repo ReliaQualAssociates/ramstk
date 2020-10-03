@@ -31,26 +31,6 @@ jobs:
           path: 'src/ramstk'
 
   lint-it:
-    name: Lint Code and Style Check Repository
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Lint files using pylint, pycodestyle, mypy, and isort
-        uses: ricardochaves/python-lint@v1.1.0
-        with:
-          python-root-list: "src/ramstk"
-          use-pylint: true
-          use-pycodestyle: true
-          use-mypy: true
-          use-isort: true
-          use-flake8: false
-          use-black: false
-          extra-pylint-options: "-j0 --rcfile=./.pylintrc --dummy-variables-rgx='__'"
-          extra-pycodestyle-options: "--statistics --count --ignore=E121,E123,E126,E127,E133,E241,E242,E265,E402,E501,F401,W503,W504,W505"
-          extra-mypy-options: ""
-          extra-isort-options: "--use-parentheses --balanced --multi-line 5"
-
-  my-lint-it:
     name: Lint Code and Style Check Files
     runs-on: ubuntu-latest
     steps:
@@ -59,17 +39,19 @@ jobs:
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
+          use-black: false
+          use-isort: true
           use-docformatter: true
-          use-pylint: true
           use-pycodestyle: true
           use-pydocstyle: true
           use-mypy: true
-          use-isort: true
+          use-pylint: true
           use-flake8: false
-          use-black: false
+          extra-black-options: ""
+          extra-isort-options: "--use-parentheses --balanced --multi-line 5"
           extra-docformatter-options: ""
-          extra-pylint-options: "-j0 --rcfile=./.pylintrc --dummy-variables-rgx='__'"
           extra-pycodestyle-options: "--statistics --count --ignore=E121,E123,E126,E127,E133,E241,E242,E265,E402,E501,F401,W503,W504,W505"
           extra-pydocstyle-options: "--count"
           extra-mypy-options: ""
-          extra-isort-options: "--use-parentheses --balanced --multi-line 5"
+          extra-pylint-options: "-j0 --rcfile=./.pylintrc --dummy-variables-rgx='__'"
+          extra-flake8-options: ""
