@@ -1,16 +1,28 @@
+# Standard Library Imports
+from typing import Any, Dict, List, Tuple, Union
+
+# Third Party Imports
 import pandas as pd
 import treelib
-from .button import RAMSTKCheckButton as RAMSTKCheckButton, do_make_buttonbox as do_make_buttonbox
+
+# RAMSTK Package Imports
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration
+)
+from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
+from ramstk.views.gtk3 import Gdk as Gdk
+from ramstk.views.gtk3 import GObject as GObject
+from ramstk.views.gtk3 import Gtk as Gtk
+
+# RAMSTK Local Imports
+from .button import RAMSTKCheckButton as RAMSTKCheckButton
+from .button import do_make_buttonbox as do_make_buttonbox
 from .combo import RAMSTKComboBox as RAMSTKComboBox
 from .dialog import RAMSTKMessageDialog as RAMSTKMessageDialog
 from .frame import RAMSTKFrame as RAMSTKFrame
 from .label import RAMSTKLabel as RAMSTKLabel
 from .matrixview import RAMSTKMatrixView as RAMSTKMatrixView
 from .treeview import RAMSTKTreeView as RAMSTKTreeView
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
-from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
-from ramstk.views.gtk3 import GObject as GObject, Gdk as Gdk, Gtk as Gtk
-from typing import Any, Dict, List, Tuple, Union
 
 class RAMSTKBaseView(Gtk.HBox):
     dic_tab_position: Any = ...

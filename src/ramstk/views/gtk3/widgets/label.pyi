@@ -1,6 +1,11 @@
-from .widget import RAMSTKWidget as RAMSTKWidget
-from ramstk.views.gtk3 import Gtk as Gtk
+# Standard Library Imports
 from typing import Any, Dict, List, Tuple
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import Gtk as Gtk
+
+# RAMSTK Local Imports
+from .widget import RAMSTKWidget as RAMSTKWidget
 
 class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
     def __init__(self, text: str) -> None: ...

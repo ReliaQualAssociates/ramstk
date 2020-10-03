@@ -22,10 +22,11 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import integer_to_boolean, string_to_boolean
 from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKBaseView, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-    RAMSTKScrolledWindow, do_make_buttonbox, do_make_column,
-    do_make_label_group, do_make_text_cell, do_make_toggle_cell,
-    do_set_cell_properties)
+    RAMSTKBaseView, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
+    RAMSTKLabel, RAMSTKScrolledWindow, do_make_buttonbox,
+    do_make_column, do_make_label_group, do_make_text_cell,
+    do_make_toggle_cell, do_set_cell_properties
+)
 
 
 class EditPreferences(Gtk.Window, RAMSTKBaseView):

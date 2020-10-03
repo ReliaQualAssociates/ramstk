@@ -1,8 +1,26 @@
-import treelib
-from ramstk.utilities import boolean_to_integer as boolean_to_integer
-from ramstk.views.gtk3 import Gdk as Gdk, Gtk as Gtk
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton, RAMSTKComboBox as RAMSTKComboBox, RAMSTKEntry as RAMSTKEntry, RAMSTKFrame as RAMSTKFrame, RAMSTKPlot as RAMSTKPlot, RAMSTKScrolledWindow as RAMSTKScrolledWindow, RAMSTKTextView as RAMSTKTextView, RAMSTKTreeView as RAMSTKTreeView, do_make_label_group as do_make_label_group
+# Standard Library Imports
 from typing import Any, Dict, List, Union
+
+# Third Party Imports
+import treelib
+
+# RAMSTK Package Imports
+from ramstk.utilities import boolean_to_integer as boolean_to_integer
+from ramstk.views.gtk3 import Gdk as Gdk
+from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton
+from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
+from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKFrame as RAMSTKFrame
+from ramstk.views.gtk3.widgets import RAMSTKPlot as RAMSTKPlot
+from ramstk.views.gtk3.widgets import (
+    RAMSTKScrolledWindow as RAMSTKScrolledWindow
+)
+from ramstk.views.gtk3.widgets import RAMSTKTextView as RAMSTKTextView
+from ramstk.views.gtk3.widgets import RAMSTKTreeView as RAMSTKTreeView
+from ramstk.views.gtk3.widgets import (
+    do_make_label_group as do_make_label_group
+)
 
 class RAMSTKPanel(RAMSTKFrame):
     fmt: str = ...

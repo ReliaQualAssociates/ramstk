@@ -1,10 +1,48 @@
-from .components import capacitor as capacitor, connection as connection, inductor as inductor, integrated_circuit as integrated_circuit, meter as meter, miscellaneous as miscellaneous, relay as relay, resistor as resistor, semiconductor as semiconductor, switch as switch
-from .components.panels import RAMSTKStressInputPanel as RAMSTKStressInputPanel, RAMSTKStressResultPanel as RAMSTKStressResultPanel
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration, RAMSTK_ACTIVE_ENVIRONMENTS as RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_DORMANT_ENVIRONMENTS as RAMSTK_DORMANT_ENVIRONMENTS, RAMSTK_HR_DISTRIBUTIONS as RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS as RAMSTK_HR_MODELS, RAMSTK_HR_TYPES as RAMSTK_HR_TYPES
+# Standard Library Imports
+from typing import Any, Dict, List, Tuple
+
+# RAMSTK Package Imports
+from ramstk.configuration import (
+    RAMSTK_ACTIVE_ENVIRONMENTS as RAMSTK_ACTIVE_ENVIRONMENTS
+)
+from ramstk.configuration import (
+    RAMSTK_DORMANT_ENVIRONMENTS as RAMSTK_DORMANT_ENVIRONMENTS
+)
+from ramstk.configuration import (
+    RAMSTK_HR_DISTRIBUTIONS as RAMSTK_HR_DISTRIBUTIONS
+)
+from ramstk.configuration import RAMSTK_HR_MODELS as RAMSTK_HR_MODELS
+from ramstk.configuration import RAMSTK_HR_TYPES as RAMSTK_HR_TYPES
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration
+)
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton, RAMSTKComboBox as RAMSTKComboBox, RAMSTKEntry as RAMSTKEntry, RAMSTKPanel as RAMSTKPanel, RAMSTKScrolledWindow as RAMSTKScrolledWindow, RAMSTKTextView as RAMSTKTextView, RAMSTKWorkView as RAMSTKWorkView
-from typing import Any, Dict, List, Tuple
+from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton
+from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
+from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKScrolledWindow as RAMSTKScrolledWindow
+)
+from ramstk.views.gtk3.widgets import RAMSTKTextView as RAMSTKTextView
+from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
+
+# RAMSTK Local Imports
+from .components import capacitor as capacitor
+from .components import connection as connection
+from .components import inductor as inductor
+from .components import integrated_circuit as integrated_circuit
+from .components import meter as meter
+from .components import miscellaneous as miscellaneous
+from .components import relay as relay
+from .components import resistor as resistor
+from .components import semiconductor as semiconductor
+from .components import switch as switch
+from .components.panels import RAMSTKStressInputPanel as RAMSTKStressInputPanel
+from .components.panels import (
+    RAMSTKStressResultPanel as RAMSTKStressResultPanel
+)
 
 class GeneralDataPanel(RAMSTKPanel):
     dicSubcategories: Any = ...

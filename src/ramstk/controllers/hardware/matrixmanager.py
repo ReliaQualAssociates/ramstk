@@ -16,8 +16,9 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKMatrixManager
-from ramstk.models.programdb import (RAMSTKHardware, RAMSTKRequirement,
-                                     RAMSTKValidation)
+from ramstk.models.programdb import (
+    RAMSTKHardware, RAMSTKRequirement, RAMSTKValidation
+)
 
 
 class MatrixManager(RAMSTKMatrixManager):

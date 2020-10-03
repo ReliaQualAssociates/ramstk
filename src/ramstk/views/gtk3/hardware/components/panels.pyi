@@ -1,6 +1,17 @@
-from ramstk.views.gtk3 import Gtk as Gtk
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton, RAMSTKComboBox as RAMSTKComboBox, RAMSTKEntry as RAMSTKEntry, RAMSTKLabel as RAMSTKLabel, RAMSTKPanel as RAMSTKPanel, RAMSTKScrolledWindow as RAMSTKScrolledWindow, RAMSTKTextView as RAMSTKTextView
+# Standard Library Imports
 from typing import Any, Dict
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton
+from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
+from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKLabel as RAMSTKLabel
+from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKScrolledWindow as RAMSTKScrolledWindow
+)
+from ramstk.views.gtk3.widgets import RAMSTKTextView as RAMSTKTextView
 
 class RAMSTKAssessmentInputPanel(RAMSTKPanel):
     cmbQuality: Any = ...

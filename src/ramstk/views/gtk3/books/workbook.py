@@ -18,11 +18,13 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.allocation import wvwAllocation
 from ramstk.views.gtk3.fmea import wvwFMEA
 from ramstk.views.gtk3.function import wvwFunctionGD, wvwHazOps
-from ramstk.views.gtk3.hardware import (wvwHardwareAI, wvwHardwareAR,
-                                        wvwHardwareGD)
+from ramstk.views.gtk3.hardware import (
+    wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
+)
 from ramstk.views.gtk3.pof import wvwPoF
-from ramstk.views.gtk3.requirement import (wvwRequirementAnalysis,
-                                           wvwRequirementGD)
+from ramstk.views.gtk3.requirement import (
+    wvwRequirementAnalysis, wvwRequirementGD
+)
 from ramstk.views.gtk3.revision import wvwRevisionGD
 from ramstk.views.gtk3.similar_item import wvwSimilarItem
 from ramstk.views.gtk3.validation import wvwBurndownCurve, wvwValidationGD

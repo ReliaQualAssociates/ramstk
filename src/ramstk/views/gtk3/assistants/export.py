@@ -15,7 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKFileChooser, RAMSTKMessageDialog)
+from ramstk.views.gtk3.widgets import RAMSTKFileChooser, RAMSTKMessageDialog
 
 
 class ExportProject(RAMSTKFileChooser):

@@ -1,6 +1,12 @@
-import matplotlib
-from ramstk.views.gtk3 import Gdk as Gdk, Gtk as Gtk
+# Standard Library Imports
 from typing import Any, Dict, List, Union
+
+# Third Party Imports
+import matplotlib
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import Gdk as Gdk
+from ramstk.views.gtk3 import Gtk as Gtk
 
 class RAMSTKPlot:
     figure: Any = ...

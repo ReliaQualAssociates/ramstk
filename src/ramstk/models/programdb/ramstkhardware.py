@@ -10,8 +10,9 @@
 from datetime import date
 
 # Third Party Imports
-from sqlalchemy import (Column, Float, ForeignKey, Integer, String,
-                        UniqueConstraint)
+from sqlalchemy import (
+    Column, Float, ForeignKey, Integer, String, UniqueConstraint
+)
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports

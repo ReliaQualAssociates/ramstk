@@ -18,7 +18,8 @@ from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem)
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
+)
 
 
 class DataManager(RAMSTKDataManager):

@@ -16,8 +16,10 @@ from treelib.exceptions import NodeIDAbsentError
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import (RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
-                                     RAMSTKOpStress, RAMSTKTestMethod)
+from ramstk.models.programdb import (
+    RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
+    RAMSTKOpStress, RAMSTKTestMethod
+)
 
 
 class DataManager(RAMSTKDataManager):

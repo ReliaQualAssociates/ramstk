@@ -8,7 +8,7 @@
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKDialog, RAMSTKLabel)
+from ramstk.views.gtk3.widgets import RAMSTKDialog, RAMSTKLabel
 
 
 class AddControlAction(RAMSTKDialog):

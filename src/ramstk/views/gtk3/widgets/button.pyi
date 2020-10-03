@@ -1,6 +1,12 @@
-from .widget import RAMSTKWidget as RAMSTKWidget
-from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf, Gtk as Gtk
+# Standard Library Imports
 from typing import Any, Union
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf
+from ramstk.views.gtk3 import Gtk as Gtk
+
+# RAMSTK Local Imports
+from .widget import RAMSTKWidget as RAMSTKWidget
 
 def do_make_buttonbox(view: Any, **kwargs: Any) -> Union[Gtk.HButtonBox, Gtk.VButtonBox]: ...
 
