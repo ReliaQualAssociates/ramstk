@@ -1,9 +1,20 @@
+# Standard Library Imports
+from typing import Any, Dict, List, Union
+
+# Third Party Imports
 import treelib
+
+# RAMSTK Package Imports
+from ramstk.utilities import string_to_boolean as string_to_boolean
+from ramstk.views.gtk3 import Gdk as Gdk
+from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf
+from ramstk.views.gtk3 import GObject as GObject
+from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3 import Pango as Pango
+
+# RAMSTK Local Imports
 from .label import RAMSTKLabel as RAMSTKLabel
 from .widget import RAMSTKWidget as RAMSTKWidget
-from ramstk.utilities import string_to_boolean as string_to_boolean
-from ramstk.views.gtk3 import GObject as GObject, Gdk as Gdk, GdkPixbuf as GdkPixbuf, Gtk as Gtk, Pango as Pango
-from typing import Any, Dict, List, Union
 
 def do_make_cell(cell_type: str) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle, Gtk.CellRendererSpin, Gtk.CellRendererCombo]: ...
 def do_make_column(cells: List[Gtk.CellRenderer], **kwargs: Dict[str, Any]) -> Gtk.TreeViewColumn: ...

@@ -26,7 +26,8 @@ from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability,
-    RAMSTKRequirement, RAMSTKSimilarItem, RAMSTKValidation)
+    RAMSTKRequirement, RAMSTKSimilarItem, RAMSTKValidation
+)
 
 
 def _do_replace_nan(value: Any, default: Any) -> Any:

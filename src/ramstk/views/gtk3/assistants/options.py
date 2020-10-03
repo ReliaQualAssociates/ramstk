@@ -18,8 +18,9 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import integer_to_boolean
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (RAMSTKCheckButton, RAMSTKDialog,
-                                       RAMSTKLabel)
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton, RAMSTKDialog, RAMSTKLabel
+)
 
 
 class EditOptions(RAMSTKDialog):

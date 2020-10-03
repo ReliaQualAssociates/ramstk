@@ -15,9 +15,10 @@ from typing import Any, Dict
 from pubsub import pub
 
 # RAMSTK Local Imports
-from .models import (capacitor, connection, crystal, efilter, fuse, inductor,
-                     integratedcircuit, lamp, meter, relay, resistor,
-                     semiconductor, switch)
+from .models import (
+    capacitor, connection, crystal, efilter, fuse, inductor,
+    integratedcircuit, lamp, meter, relay, resistor, semiconductor, switch
+)
 
 
 # noinspection PyTypeChecker

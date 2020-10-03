@@ -20,7 +20,7 @@ jobs:
           pip install -U urllib3
           pip install -U pip-tools
           pip install -r requirements.txt -r requirements-test.txt
-          psql -c 'create database TestProgramDB;' -U postgres
+          psql -c "create database TestProgramDB;" -U postgres
   build-and-test:
     executor: python/default
     steps:

@@ -12,8 +12,8 @@ from collections import defaultdict
 from typing import Any, Dict
 
 # Third Party Imports
-from pubsub import pub
 import treelib
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import criticality

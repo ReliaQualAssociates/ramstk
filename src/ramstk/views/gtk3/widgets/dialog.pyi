@@ -1,5 +1,10 @@
-from ramstk.views.gtk3 import GObject as GObject, Gtk as Gtk, Pango as Pango
+# Standard Library Imports
 from typing import Any, Optional, Tuple
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import GObject as GObject
+from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3 import Pango as Pango
 
 class RAMSTKDialog(Gtk.Dialog):
     def __init__(self, dlgtitle: str, **kwargs: Any) -> None: ...

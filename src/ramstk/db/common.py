@@ -25,7 +25,8 @@ from ramstk.models.commondb import (
     RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode, RAMSTKGroup,
     RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
     RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
-    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser)
+    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
+)
 
 _ = gettext.gettext
 

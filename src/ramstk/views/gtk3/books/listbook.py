@@ -13,10 +13,12 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import mtxFunctionHardware
-from ramstk.views.gtk3.hardware import (mtxHardwareRequirement,
-                                        mtxHardwareValidation)
-from ramstk.views.gtk3.requirement import (lvwStakeholders,
-                                           mtxRequirementHardware)
+from ramstk.views.gtk3.hardware import (
+    mtxHardwareRequirement, mtxHardwareValidation
+)
+from ramstk.views.gtk3.requirement import (
+    lvwStakeholders, mtxRequirementHardware
+)
 from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
 from ramstk.views.gtk3.validation import mtxValidationRequirement
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook

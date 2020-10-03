@@ -1,8 +1,21 @@
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
-from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk as Gdk, Gtk as Gtk
-from ramstk.views.gtk3.widgets import RAMSTKButton as RAMSTKButton, RAMSTKCheckButton as RAMSTKCheckButton, RAMSTKComboBox as RAMSTKComboBox, RAMSTKDateSelect as RAMSTKDateSelect, RAMSTKEntry as RAMSTKEntry, RAMSTKPanel as RAMSTKPanel, RAMSTKTextView as RAMSTKTextView, RAMSTKWorkView as RAMSTKWorkView
+# Standard Library Imports
 from typing import Any, Dict, Tuple
+
+# RAMSTK Package Imports
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration
+)
+from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
+from ramstk.views.gtk3 import Gdk as Gdk
+from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3.widgets import RAMSTKButton as RAMSTKButton
+from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton
+from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
+from ramstk.views.gtk3.widgets import RAMSTKDateSelect as RAMSTKDateSelect
+from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
+from ramstk.views.gtk3.widgets import RAMSTKTextView as RAMSTKTextView
+from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 
 class GeneralDataPanel(RAMSTKPanel):
     btnValidateDate: Any = ...

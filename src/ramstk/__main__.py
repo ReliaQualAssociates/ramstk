@@ -16,15 +16,16 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager
-from ramstk.configuration import (RAMSTKSiteConfiguration,
-                                  RAMSTKUserConfiguration,
-RAMSTK_CRITICALITY, RAMSTK_FAILURE_PROBABILITY)
-
+from ramstk.configuration import (
+    RAMSTK_CRITICALITY, RAMSTK_FAILURE_PROBABILITY,
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.controllers import (
-    amFMEA, amFunction, amHardware, amStakeholder, amValidation, dmFMEA,
-    dmFunction, dmHardware, dmOptions, dmPoF, dmRequirement, dmRevision,
-    dmStakeholder, dmValidation, mmFunction, mmHardware, mmRequirement,
-    mmValidation)
+    amFMEA, amFunction, amHardware, amStakeholder, amValidation,
+    dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
+    dmRequirement, dmRevision, dmStakeholder, dmValidation,
+    mmFunction, mmHardware, mmRequirement, mmValidation
+)
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import

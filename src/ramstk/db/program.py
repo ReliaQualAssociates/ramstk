@@ -17,9 +17,10 @@ from ramstk.models.programdb import (
     RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKHardware,
     RAMSTKHazardAnalysis, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF,
     RAMSTKMission, RAMSTKMissionPhase, RAMSTKMode, RAMSTKOpLoad,
-    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus, RAMSTKReliability,
-    RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem, RAMSTKStakeholder,
-    RAMSTKTestMethod, RAMSTKValidation)
+    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus,
+    RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem,
+    RAMSTKStakeholder, RAMSTKTestMethod, RAMSTKValidation
+)
 
 
 def do_make_programdb_tables(engine: Engine) -> None:
