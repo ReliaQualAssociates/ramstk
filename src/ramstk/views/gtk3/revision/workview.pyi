@@ -1,16 +1,8 @@
-# Standard Library Imports
-from typing import Any
-
-# RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration
-)
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
-from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
-from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
-from ramstk.views.gtk3.widgets import RAMSTKTextView as RAMSTKTextView
-from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry, RAMSTKPanel as RAMSTKPanel, RAMSTKTextView as RAMSTKTextView, RAMSTKWorkView as RAMSTKWorkView
+from typing import Any
 
 class GeneralDataPanel(RAMSTKPanel):
     txtCode: Any = ...

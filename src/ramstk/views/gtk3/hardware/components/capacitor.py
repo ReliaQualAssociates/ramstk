@@ -467,11 +467,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtCapacitance.dic_handler_id[
             'changed'] = self.txtCapacitance.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      5, 'wvw_editing_hardware')
         self.txtESR.dic_handler_id['changed'] = self.txtESR.connect(
             'changed',
-            super().on_changed_text, 6, 'wvw_editing_hardware')
+            super().on_changed_entry, 6, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Capacitor assessment input widgets.

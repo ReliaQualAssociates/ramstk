@@ -741,39 +741,39 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtArea.dic_handler_id['changed'] = self.txtArea.connect(
             'changed',
-            super().on_changed_text, 8, 'wvw_editing_hardware')
+            super().on_changed_entry, 8, 'wvw_editing_hardware')
         self.txtFeatureSize.dic_handler_id[
             'changed'] = self.txtFeatureSize.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      9, 'wvw_editing_hardware')
         self.txtNActivePins.dic_handler_id[
             'changed'] = self.txtNActivePins.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      10,
                                                      'wvw_editing_hardware')
         self.txtNCycles.dic_handler_id['changed'] = self.txtNCycles.connect(
             'changed',
-            super().on_changed_text, 11, 'wvw_editing_hardware')
+            super().on_changed_entry, 11, 'wvw_editing_hardware')
         self.txtNElements.dic_handler_id[
             'changed'] = self.txtNElements.connect('changed',
-                                                   super().on_changed_text, 12,
+                                                   super().on_changed_entry, 12,
                                                    'wvw_editing_hardware')
         self.txtOperatingLife.dic_handler_id[
             'changed'] = self.txtOperatingLife.connect('changed',
-                                                       super().on_changed_text,
+                                                       super().on_changed_entry,
                                                        13,
                                                        'wvw_editing_hardware')
         self.txtThetaJC.dic_handler_id['changed'] = self.txtThetaJC.connect(
             'changed',
-            super().on_changed_text, 14, 'wvw_editing_hardware')
+            super().on_changed_entry, 14, 'wvw_editing_hardware')
         self.txtVoltageESD.dic_handler_id[
             'changed'] = self.txtVoltageESD.connect('changed',
-                                                    super().on_changed_text,
+                                                    super().on_changed_entry,
                                                     15, 'wvw_editing_hardware')
         self.txtYearsInProduction.dic_handler_id[
             'changed'] = self.txtYearsInProduction.connect(
                 'changed',
-                super().on_changed_text, 16, 'wvw_editing_hardware')
+                super().on_changed_entry, 16, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Integrated Circuit assessment input widgets.

@@ -295,44 +295,44 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
         self.txtTemperatureRatedMin.dic_handler_id[
             'changed'] = self.txtTemperatureRatedMin.connect(
                 'changed',
-                super().on_changed_text, 0, 'wvw_editing_hardware')
+                super().on_changed_entry, 0, 'wvw_editing_hardware')
         self.txtTemperatureKnee.dic_handler_id[
             'changed'] = self.txtTemperatureKnee.connect(
                 'changed',
-                super().on_changed_text, 1, 'wvw_editing_hardware')
+                super().on_changed_entry, 1, 'wvw_editing_hardware')
         self.txtTemperatureRatedMax.dic_handler_id[
             'changed'] = self.txtTemperatureRatedMax.connect(
                 'changed',
-                super().on_changed_text, 2, 'wvw_editing_hardware')
+                super().on_changed_entry, 2, 'wvw_editing_hardware')
         self.txtCurrentRated.dic_handler_id[
             'changed'] = self.txtCurrentRated.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       3,
                                                       'wvw_editing_hardware')
         self.txtCurrentOperating.dic_handler_id[
             'changed'] = self.txtCurrentOperating.connect(
                 'changed',
-                super().on_changed_text, 4, 'wvw_editing_hardware')
+                super().on_changed_entry, 4, 'wvw_editing_hardware')
         self.txtPowerRated.dic_handler_id[
             'changed'] = self.txtPowerRated.connect('changed',
-                                                    super().on_changed_text, 5,
+                                                    super().on_changed_entry, 5,
                                                     'wvw_editing_hardware')
         self.txtPowerOperating.dic_handler_id[
             'changed'] = self.txtPowerOperating.connect(
                 'changed',
-                super().on_changed_text, 6, 'wvw_editing_hardware')
+                super().on_changed_entry, 6, 'wvw_editing_hardware')
         self.txtVoltageRated.dic_handler_id[
             'changed'] = self.txtVoltageRated.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       7,
                                                       'wvw_editing_hardware')
         self.txtVoltageAC.dic_handler_id[
             'changed'] = self.txtVoltageAC.connect('changed',
-                                                   super().on_changed_text, 8,
+                                                   super().on_changed_entry, 8,
                                                    'wvw_editing_hardware')
         self.txtVoltageDC.dic_handler_id[
             'changed'] = self.txtVoltageDC.connect('changed',
-                                                   super().on_changed_text, 9,
+                                                   super().on_changed_entry, 9,
                                                    'wvw_editing_hardware')
 
     def __set_properties(self) -> None:

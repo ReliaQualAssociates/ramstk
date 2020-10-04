@@ -283,11 +283,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtFrequency.dic_handler_id[
             'changed'] = self.txtFrequency.connect('changed',
-                                                   self.on_changed_text, 3,
+                                                   self.on_changed_entry, 3,
                                                    'wvw_editing_hardware')
         self.txtUtilization.dic_handler_id[
             'changed'] = self.txtUtilization.connect('changed',
-                                                     self.on_changed_text, 4,
+                                                     self.on_changed_entry, 4,
                                                      'wvw_editing_hardware')
 
     def __set_properties(self) -> None:

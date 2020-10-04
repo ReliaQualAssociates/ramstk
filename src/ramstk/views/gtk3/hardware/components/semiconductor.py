@@ -488,13 +488,13 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtFrequencyOperating.dic_handler_id[
             'changed'] = self.txtFrequencyOperating.connect(
-                'changed', self.on_changed_text, 6, 'wvw_editing_hardware')
+                'changed', self.on_changed_entry, 6, 'wvw_editing_hardware')
         self.txtNElements.dic_handler_id[
             'changed'] = self.txtNElements.connect('changed',
-                                                   self.on_changed_text, 7,
+                                                   self.on_changed_entry, 7,
                                                    'wvw_editing_hardware')
         self.txtThetaJC.dic_handler_id['changed'] = self.txtThetaJC.connect(
-            'changed', self.on_changed_text, 8, 'wvw_editing_hardware')
+            'changed', self.on_changed_entry, 8, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Semiconductor assessment input widgets.

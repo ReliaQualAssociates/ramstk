@@ -279,24 +279,24 @@ class GeneralDataPanel(RAMSTKPanel):
 
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
-            super().on_changed_text, 0, 'wvw_editing_requirement')
+            super().on_changed_entry, 0, 'wvw_editing_requirement')
         self.txtName.dic_handler_id['changed'] = self.txtName.connect(
             'focus-out-event',
-            super().on_changed_text, 1, 'wvw_editing_requirement')
+            super().on_changed_entry, 1, 'wvw_editing_requirement')
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
-                super().on_changed_text, 4, 'wvw_editing_requirement')
+                super().on_changed_entry, 4, 'wvw_editing_requirement')
         self.txtPageNum.dic_handler_id['changed'] = self.txtPageNum.connect(
             'changed',
-            super().on_changed_text, 5, 'wvw_editing_requirement')
+            super().on_changed_entry, 5, 'wvw_editing_requirement')
         self.txtFigNum.dic_handler_id['changed'] = self.txtFigNum.connect(
             'changed',
-            super().on_changed_text, 6, 'wvw_editing_requirement')
+            super().on_changed_entry, 6, 'wvw_editing_requirement')
         self.txtValidatedDate.dic_handler_id[
             'changed'] = self.txtValidatedDate.connect(
                 'changed',
-                super().on_changed_text, 10, 'wvw_editing_requirement')
+                super().on_changed_entry, 10, 'wvw_editing_requirement')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.

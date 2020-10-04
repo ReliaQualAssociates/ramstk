@@ -185,12 +185,12 @@ class GoalMethodPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtReliabilityGoal.dic_handler_id[
             'changed'] = self.txtReliabilityGoal.connect(
-                'changed', self.on_changed_text, 2, 'wvw_editing_hardware')
+                'changed', self.on_changed_entry, 2, 'wvw_editing_hardware')
         self.txtHazardRateGoal.dic_handler_id[
             'changed'] = self.txtHazardRateGoal.connect(
-                'changed', self.on_changed_text, 3, 'wvw_editing_hardware')
+                'changed', self.on_changed_entry, 3, 'wvw_editing_hardware')
         self.txtMTBFGoal.dic_handler_id['changed'] = self.txtMTBFGoal.connect(
-            'changed', self.on_changed_text, 4, 'wvw_editing_hardware')
+            'changed', self.on_changed_entry, 4, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the General Data Work View and widgets.

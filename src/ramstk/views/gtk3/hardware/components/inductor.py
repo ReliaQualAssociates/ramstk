@@ -333,9 +333,9 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         # ----- ENTRIES
         self.txtArea.dic_handler_id['changed'] = self.txtArea.connect(
-            'changed', self.on_changed_text, 5, 'wvw_editing_hardware')
+            'changed', self.on_changed_entry, 5, 'wvw_editing_hardware')
         self.txtWeight.dic_handler_id['changed'] = self.txtWeight.connect(
-            'changed', self.on_changed_text, 6, 'wvw_editing_hardware')
+            'changed', self.on_changed_entry, 6, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Inductor assessment input widgets.

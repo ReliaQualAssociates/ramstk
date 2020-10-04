@@ -119,13 +119,15 @@ class GeneralDataPanel(RAMSTKPanel):
         """
         self.txtCode.dic_handler_id['changed'] = (self.txtCode.connect(
             'changed',
-            super().on_changed_text, 0, 'wvw_editing_function'))
+            super().on_changed_entry, 0, 'wvw_editing_function'))
         self.txtName.dic_handler_id['changed'] = (self.txtName.connect(
             'changed',
-            super().on_changed_text, 1, 'wvw_editing_function'))
-        self.txtRemarks.dic_handler_id['changed'] = (self.txtRemarks.connect(
-            'focus-out-event',
-            super().on_focus_out, 2, 'wvw_editing_function'))
+            super().on_changed_entry, 1, 'wvw_editing_function'))
+        _buffer: Gtk.TextBuffer = self.txtRemarks.do_get_buffer()
+        self.txtRemarks.dic_handler_id['changed'] = (_buffer.connect(
+            'changed',
+            super().on_changed_textview, 2, 'wvw_editing_function',
+            self.txtRemarks))
         self.chkSafetyCritical.dic_handler_id['toggled'] = (
             self.chkSafetyCritical.connect('toggled',
                                            super().on_toggled, 3,

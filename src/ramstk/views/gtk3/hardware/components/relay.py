@@ -380,7 +380,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         # ----- ENTRIES
         self.txtCycles.dic_handler_id['changed'] = self.txtCycles.connect(
-            'focus-out-event', self.on_changed_text, 7, 'wvw_editing_hardware')
+            'focus-out-event', self.on_changed_entry, 7, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Relay assessment input widgets.

@@ -487,29 +487,29 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtContactGauge.dic_handler_id[
             'changed'] = self.txtContactGauge.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       4,
                                                       'wvw_editing_hardware')
         self.txtActivePins.dic_handler_id[
             'changed'] = self.txtActivePins.connect('changed',
-                                                    super().on_changed_text, 5,
+                                                    super().on_changed_entry, 5,
                                                     'wvw_editing_hardware')
         self.txtAmpsContact.dic_handler_id[
             'changed'] = self.txtAmpsContact.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      6, 'wvw_editing_hardware')
         self.txtMating.dic_handler_id['changed'] = self.txtMating.connect(
             'changed',
-            super().on_changed_text, 7, 'wvw_editing_hardware')
+            super().on_changed_entry, 7, 'wvw_editing_hardware')
         self.txtNWave.dic_handler_id['changed'] = self.txtNWave.connect(
             'changed',
-            super().on_changed_text, 8, 'wvw_editing_hardware')
+            super().on_changed_entry, 8, 'wvw_editing_hardware')
         self.txtNHand.dic_handler_id['changed'] = self.txtNHand.connect(
             'changed',
-            super().on_changed_text, 9, 'wvw_editing_hardware')
+            super().on_changed_entry, 9, 'wvw_editing_hardware')
         self.txtNPlanes.dic_handler_id['changed'] = self.txtNPlanes.connect(
             'changed',
-            super().on_changed_text, 10, 'wvw_editing_hardware')
+            super().on_changed_entry, 10, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Connection assessment input widgets.

@@ -288,44 +288,43 @@ class GeneralDataPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtAltPartNum.dic_handler_id[
             'changed'] = self.txtAltPartNum.connect('changed',
-                                                    super().on_changed_text, 6,
-                                                    'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    6, 'wvw_editing_hardware')
         self.txtCompRefDes.dic_handler_id[
             'changed'] = self.txtCompRefDes.connect('changed',
-                                                    super().on_changed_text, 9,
-                                                    'wvw_editing_hardware')
-        self.txtDescription.dic_handler_id[
-            'changed'] = self.txtDescription.connect('focus-out-event',
-                                                     super().on_focus_out,
-                                                     None, 11,
-                                                     'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    9, 'wvw_editing_hardware')
+        _buffer: Gtk.TextBuffer = self.txtDescription.do_get_buffer()
+        self.txtDescription.dic_handler_id['changed'] = _buffer.connect(
+            'changed',
+            super().on_changed_textview, 11, 'wvw_editing_hardware',
+            self.txtDescription)
         self.txtFigureNumber.dic_handler_id[
             'changed'] = self.txtFigureNumber.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       12,
                                                       'wvw_editing_hardware')
         self.txtLCN.dic_handler_id['changed'] = self.txtLCN.connect(
             'changed',
-            super().on_changed_text, 13, 'wvw_editing_hardware')
+            super().on_changed_entry, 13, 'wvw_editing_hardware')
         self.txtName.dic_handler_id['changed'] = self.txtName.connect(
             'changed',
-            super().on_changed_text, 14, 'wvw_editing_hardware')
+            super().on_changed_entry, 14, 'wvw_editing_hardware')
         self.txtPageNumber.dic_handler_id[
             'changed'] = self.txtPageNumber.connect('changed',
-                                                    super().on_changed_text,
+                                                    super().on_changed_entry,
                                                     16, 'wvw_editing_hardware')
         self.txtPartNumber.dic_handler_id[
             'changed'] = self.txtPartNumber.connect('changed',
-                                                    super().on_changed_text,
+                                                    super().on_changed_entry,
                                                     17, 'wvw_editing_hardware')
         self.txtRefDes.dic_handler_id['changed'] = self.txtRefDes.connect(
             'changed',
-            super().on_changed_text, 19, 'wvw_editing_hardware')
+            super().on_changed_entry, 19, 'wvw_editing_hardware')
         self.txtSpecification.dic_handler_id[
-            'changed'] = self.txtSpecification.connect('changed',
-                                                       super().on_changed_text,
-                                                       21,
-                                                       'wvw_editing_hardware')
+            'changed'] = self.txtSpecification.connect(
+                'changed',
+                super().on_changed_entry, 21, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -533,19 +532,19 @@ class LogisticsPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtCAGECode.dic_handler_id['changed'] = self.txtCAGECode.connect(
             'changed',
-            super().on_changed_text, 8, 'wvw_editing_hardware')
+            super().on_changed_entry, 8, 'wvw_editing_hardware')
         self.txtCost.dic_handler_id['changed'] = self.txtCost.connect(
             'changed',
-            super().on_changed_text, 10, 'wvw_editing_hardware')
+            super().on_changed_entry, 10, 'wvw_editing_hardware')
         self.txtNSN.dic_handler_id['changed'] = self.txtNSN.connect(
             'changed',
-            super().on_changed_text, 15, 'wvw_editing_hardware')
+            super().on_changed_entry, 15, 'wvw_editing_hardware')
         self.txtQuantity.dic_handler_id['changed'] = self.txtQuantity.connect(
             'changed',
-            super().on_changed_text, 18, 'wvw_editing_hardware')
+            super().on_changed_entry, 18, 'wvw_editing_hardware')
         self.txtYearMade.dic_handler_id['changed'] = self.txtYearMade.connect(
             'changed',
-            super().on_changed_text, 22, 'wvw_editing_hardware')
+            super().on_changed_entry, 22, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -674,13 +673,16 @@ class MiscellaneousPanel(RAMSTKPanel):
             super().on_toggled, 1, 'wvw_editing_hardware'))
 
         # ----- ENTRIES
-        self.txtAttachments.dic_handler_id[
-            'changed'] = self.txtAttachments.connect('focus-out-event',
-                                                     super().on_focus_out, 7,
-                                                     'wvw_editing_hardware')
-        self.txtRemarks.dic_handler_id['changed'] = self.txtRemarks.connect(
-            'focus-out-event',
-            super().on_focus_out, 20, 'wvw_editing_hardware')
+        _buffer: Gtk.TextBuffer = self.txtAttachments.do_get_buffer()
+        self.txtAttachments.dic_handler_id['changed'] = _buffer.connect(
+            'changed',
+            super().on_changed_textview, 7, 'wvw_editing_hardware',
+            self.txtAttachments)
+        _buffer = self.txtRemarks.do_get_buffer()
+        self.txtRemarks.dic_handler_id['changed'] = _buffer.connect(
+            'changed',
+            super().on_changed_textview, 20, 'wvw_editing_hardware',
+            self.txtRemarks)
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1023,45 +1025,43 @@ class AssessmentInputPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtAddAdjFactor.dic_handler_id[
             'changed'] = self.txtAddAdjFactor.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       6,
                                                       'wvw_editing_hardware')
         self.txtFailScale.dic_handler_id[
             'changed'] = self.txtFailScale.connect('changed',
-                                                   super().on_changed_text, 8,
+                                                   super().on_changed_entry, 8,
                                                    'wvw_editing_hardware')
         self.txtFailShape.dic_handler_id[
             'changed'] = self.txtFailShape.connect('changed',
-                                                   super().on_changed_text, 9,
+                                                   super().on_changed_entry, 9,
                                                    'wvw_editing_hardware')
         self.txtFailLocation.dic_handler_id[
             'changed'] = self.txtFailLocation.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       10,
                                                       'wvw_editing_hardware')
         self.txtMultAdjFactor.dic_handler_id[
-            'changed'] = self.txtMultAdjFactor.connect('changed',
-                                                       super().on_changed_text,
-                                                       11,
-                                                       'wvw_editing_hardware')
+            'changed'] = self.txtMultAdjFactor.connect(
+                'changed',
+                super().on_changed_entry, 11, 'wvw_editing_hardware')
         self.txtSpecifiedHt.dic_handler_id[
             'changed'] = self.txtSpecifiedHt.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      12,
                                                      'wvw_editing_hardware')
         self.txtSpecifiedHtVar.dic_handler_id[
             'changed'] = self.txtSpecifiedHtVar.connect(
                 'changed',
-                super().on_changed_text, 13, 'wvw_editing_hardware')
+                super().on_changed_entry, 13, 'wvw_editing_hardware')
         self.txtSpecifiedMTBF.dic_handler_id[
-            'changed'] = self.txtSpecifiedMTBF.connect('changed',
-                                                       super().on_changed_text,
-                                                       14,
-                                                       'wvw_editing_hardware')
+            'changed'] = self.txtSpecifiedMTBF.connect(
+                'changed',
+                super().on_changed_entry, 14, 'wvw_editing_hardware')
         self.txtSpecifiedMTBFVar.dic_handler_id[
             'changed'] = self.txtSpecifiedMTBFVar.connect(
                 'changed',
-                super().on_changed_text, 15, 'wvw_editing_hardware')
+                super().on_changed_entry, 15, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1271,19 +1271,19 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtActiveTemp.dic_handler_id[
             'changed'] = self.txtActiveTemp.connect('changed',
-                                                    super().on_changed_text, 5,
-                                                    'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    5, 'wvw_editing_hardware')
         self.txtDormantTemp.dic_handler_id[
             'changed'] = self.txtDormantTemp.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      7, 'wvw_editing_hardware')
         self.txtDutyCycle.dic_handler_id[
             'changed'] = self.txtDutyCycle.connect('changed',
-                                                   super().on_changed_text, 16,
-                                                   'wvw_editing_hardware')
+                                                   super().on_changed_entry,
+                                                   16, 'wvw_editing_hardware')
         self.txtMissionTime.dic_handler_id[
             'changed'] = self.txtMissionTime.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      17,
                                                      'wvw_editing_hardware')
 

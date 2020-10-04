@@ -23,7 +23,6 @@ from ramstk.views.gtk3.widgets import (
 
 class GeneralDataPanel(RAMSTKPanel):
     """The panel to display general data about the selected Revision."""
-
     def __init__(self) -> None:
         """Initialize an instance of the Revision General Data panel."""
         super().__init__()
@@ -109,11 +108,13 @@ class GeneralDataPanel(RAMSTKPanel):
         :rtype: None
         """
         self.txtName.dic_handler_id['changed'] = self.txtName.connect(
-            'changed', self.on_changed_text, 0, 'wvw_editing_revision')
-        self.txtRemarks.dic_handler_id['changed'] = self.txtRemarks.connect(
-            'focus-out-event', self.on_focus_out, 1, 'wvw_editing_revision')
+            'changed', self.on_changed_entry, 0, 'wvw_editing_revision')
+        _buffer: Gtk.TextBuffer = self.txtRemarks.do_get_buffer()
+        self.txtRemarks.dic_handler_id['changed'] = _buffer.connect(
+            'changed', self.on_changed_textview, 1, 'wvw_editing_revision',
+            self.txtRemarks)
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
-            'changed', self.on_changed_text, 2, 'wvw_editing_revision')
+            'changed', self.on_changed_entry, 2, 'wvw_editing_revision')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.

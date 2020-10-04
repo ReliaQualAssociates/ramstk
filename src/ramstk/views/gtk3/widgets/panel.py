@@ -19,11 +19,16 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.utilities import boolean_to_integer
-from ramstk.views.gtk3 import Gdk, Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKPlot,
-    RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKTreeView, do_make_label_group
+from ramstk.views.gtk3 import Gtk, _
+
+# RAMSTK Local Imports
+from . import (
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry,
+    RAMSTKFrame, RAMSTKTextView, do_make_label_group
 )
+from .plot import RAMSTKPlot
+from .scrolledwindow import RAMSTKScrolledWindow
+from .treeview import RAMSTKTreeView
 
 register_matplotlib_converters()
 
@@ -36,7 +41,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
     __do_set_callbacks() to set the callback method for the widgets in the
         panel.  The use of the public methods on_changed_combo(),
-        on_changed_text(), on_focus_out(), and on_toggled() in this
+        on_changed_entry(), on_focus_out(), and on_toggled() in this
         meta-class shall be the preferred callback methods.
     __do_set_properties() to set the properties of the widgets in the panel.
 
@@ -417,8 +422,8 @@ class RAMSTKPanel(RAMSTKFrame):
 
         return {_key: _new_text}
 
-    def on_changed_text(self, entry: RAMSTKEntry, index: int,
-                        message: str) -> Dict[Union[str, Any], Any]:
+    def on_changed_entry(self, entry: RAMSTKEntry, index: int,
+                         message: str) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKEntry() widgets.
 
         This method is called by:
@@ -440,31 +445,41 @@ class RAMSTKPanel(RAMSTKFrame):
             by this method.
         :rtype: dict
         """
-        _key: str = ''
-        _new_text: Any = ''
-        _type: str = 'string'
-
         entry.handler_block(entry.dic_handler_id['changed'])
 
-        try:
-            _key = self._dic_attribute_keys[index][0]
-            _type = self._dic_attribute_keys[index][1]
-
-            _new_text = {
-                'float': float(entry.do_get_text()),
-                'integer': int(entry.do_get_text()),
-                'string': str(entry.do_get_text()),
-            }[_type]
-
-            pub.sendMessage(message,
-                            node_id=[self._record_id, -1, -1],
-                            package={_key: _new_text})
-        except (KeyError, ValueError):
-            pass
+        _package: Dict[str, Any] = self.__do_read_text(entry, index, message)
 
         entry.handler_unblock(entry.dic_handler_id['changed'])
 
-        return {_key: _new_text}
+        return _package
+
+    # pylint: disable=unused-argument
+    def on_changed_textview(
+            self, buffer: Gtk.TextBuffer, index: int, message: str,
+            textview: RAMSTKTextView) -> Dict[Union[str, Any], Any]:
+        """Retrieve changes made in RAMSTKTextView() widgets.
+
+        This method is called by:
+
+            * Gtk.TextBuffer() 'changed' signal
+
+        :param buffer: the Gtk.TextBuffer() calling this method.  This
+            parameter is unused in this method.
+        :param index: the position in the class' Gtk.TreeModel() associated
+            with the data from the calling RAMSTKTextView().
+        :param message: the PyPubSub message to broadcast.
+        :return: {_key: _new_text}; the child module attribute name and the
+            new value from the RAMSTKTextView(). The value {'': ''} will be
+            returned when a KeyError or ValueError is raised by this method.
+        """
+        textview.handler_block(textview.dic_handler_id['changed'])
+
+        _package: Dict[str, Any] = self.__do_read_text(textview, index,
+                                                       message)
+
+        textview.handler_unblock(textview.dic_handler_id['changed'])
+
+        return _package
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -488,27 +503,6 @@ class RAMSTKPanel(RAMSTKFrame):
         (_function,
          _signal) = self._dic_attribute_updater.get(_key)  # type: ignore
         _function(_value, _signal)  # type: ignore
-
-    # pylint: disable=unused-argument
-    def on_focus_out(self, entry: RAMSTKTextView, __event: Gdk.EventFocus,
-                     index: int, message: str) -> Dict[Union[str, Any], Any]:
-        """Retrieve changes made in RAMSTKTextView() widgets.
-
-        This method is called by:
-
-            * RAMSTKTextView() 'focus-out-event' signal
-
-        :param entry: the Gtk.TextBuffer() calling this method.
-        :param __event: the Gdk.Event() that occurred in the RAMSTKTextView().
-        :param index: the position in the class' Gtk.TreeModel() associated
-            with the data from the calling RAMSTKTextView().
-        :param message: the pypubsub message to broadcast.
-        :return: {_key: _new_text}; the child module attribute name and the
-            new value from the RAMSTKTextView(). The value {'': ''} will be
-            returned when a KeyError or ValueError is raised by this method.
-        :rtype: dict
-        """
-        return self.on_changed_text(entry, index, message)
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    message: str) -> Dict[Union[str, Any], Any]:
@@ -537,6 +531,40 @@ class RAMSTKPanel(RAMSTKFrame):
                             package={_key: _new_text})
 
         except KeyError:
+            pass
+
+        return {_key: _new_text}
+
+    def __do_read_text(self, entry: RAMSTKEntry, index: int,
+                       message: str) -> Dict[str, Any]:
+        """Read the text in a RAMSTKEntry() or Gtk.TextBuffer().
+
+        :param entry: the RAMSTKEntry() or Gtk.TextBuffer() to read.
+        :param index: the position in the attribute key dict for the
+            attribute being updated.
+        :param message: the PyPubSub message to send along with the data
+            package.
+        :return: {_key, _new_text}; a dict containing the attribute key and
+            the new value (text) for that key.
+        """
+        _key: str = ''
+        _new_text: Any = ''
+        _type: str = 'string'
+
+        try:
+            _key = self._dic_attribute_keys[index][0]
+            _type = self._dic_attribute_keys[index][1]
+
+            _new_text = {
+                'float': float(entry.do_get_text()),
+                'integer': int(entry.do_get_text()),
+                'string': str(entry.do_get_text()),
+            }[_type]
+
+            pub.sendMessage(message,
+                            node_id=[self._record_id, -1, -1],
+                            package={_key: _new_text})
+        except (KeyError, ValueError):
             pass
 
         return {_key: _new_text}

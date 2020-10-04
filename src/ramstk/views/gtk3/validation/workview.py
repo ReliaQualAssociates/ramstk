@@ -330,44 +330,46 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.cmbTaskType.connect('changed', self._do_make_task_code)
 
         # ----- ENTRIES
-        self.txtTask.dic_handler_id['changed'] = self.txtTask.connect(
-            'focus-out-event',
-            super().on_focus_out, 0, 'wvw_editing_validation')
+        _buffer: Gtk.TextBuffer = self.txtTask.do_get_buffer()
+        self.txtTask.dic_handler_id['changed'] = _buffer.connect(
+            'changed',
+            super().on_changed_textview, 0, 'wvw_editing_validation',
+            self.txtTask)
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
-                super().on_changed_text, 2, 'wvw_editing_validation')
+                super().on_changed_entry, 2, 'wvw_editing_validation')
         self.txtMinAcceptable.dic_handler_id[
             'changed'] = self.txtMinAcceptable.connect(
                 'changed',
-                super().on_changed_text, 4, 'wvw_editing_validation')
+                super().on_changed_entry, 4, 'wvw_editing_validation')
         self.txtMaxAcceptable.dic_handler_id[
             'changed'] = self.txtMaxAcceptable.connect(
                 'changed',
-                super().on_changed_text, 5, 'wvw_editing_validation')
+                super().on_changed_entry, 5, 'wvw_editing_validation')
         self.txtMeanAcceptable.dic_handler_id[
             'changed'] = self.txtMeanAcceptable.connect(
                 'changed',
-                super().on_changed_text, 6, 'wvw_editing_validation')
+                super().on_changed_entry, 6, 'wvw_editing_validation')
         self.txtVarAcceptable.dic_handler_id[
             'changed'] = self.txtVarAcceptable.connect(
                 'changed',
-                super().on_changed_text, 7, 'wvw_editing_validation')
+                super().on_changed_entry, 7, 'wvw_editing_validation')
         self.txtStartDate.dic_handler_id[
             'changed'] = self.txtStartDate.connect('changed',
-                                                   super().on_changed_text, 8,
+                                                   super().on_changed_entry, 8,
                                                    'wvw_editing_validation')
         self.txtEndDate.dic_handler_id['changed'] = self.txtEndDate.connect(
             'changed',
-            super().on_changed_text, 9, 'wvw_editing_validation')
+            super().on_changed_entry, 9, 'wvw_editing_validation')
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
-            super().on_changed_text, 11, 'wvw_editing_validation')
+            super().on_changed_entry, 11, 'wvw_editing_validation')
 
         # ----- SPINBUTTONS
         self.spnStatus.dic_handler_id['changed'] = self.spnStatus.connect(
             'value-changed',
-            super().on_changed_text, 10, 'wvw_editing_validation')
+            super().on_changed_entry, 10, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -673,17 +675,17 @@ class TaskEffortPanel(RAMSTKPanel):
         :rtype: None
         """
         self.txtMinTime.dic_handler_id['changed'] = self.txtMinTime.connect(
-            'changed', self.on_changed_text, 11, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 11, 'wvw_editing_validation')
         self.txtExpTime.dic_handler_id['changed'] = self.txtExpTime.connect(
-            'changed', self.on_changed_text, 12, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 12, 'wvw_editing_validation')
         self.txtMaxTime.dic_handler_id['changed'] = self.txtMaxTime.connect(
-            'changed', self.on_changed_text, 13, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 13, 'wvw_editing_validation')
         self.txtMinCost.dic_handler_id['changed'] = self.txtMinCost.connect(
-            'changed', self.on_changed_text, 14, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 14, 'wvw_editing_validation')
         self.txtExpCost.dic_handler_id['changed'] = self.txtExpCost.connect(
-            'changed', self.on_changed_text, 15, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 15, 'wvw_editing_validation')
         self.txtMaxCost.dic_handler_id['changed'] = self.txtMaxCost.connect(
-            'changed', self.on_changed_text, 16, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 16, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
