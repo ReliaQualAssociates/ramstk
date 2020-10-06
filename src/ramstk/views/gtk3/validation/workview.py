@@ -102,19 +102,21 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.txtEndDate: RAMSTKEntry = RAMSTKEntry()
         self.txtStartDate: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'description': [self.txtTask.do_update, 'changed'],
-            'task_type': [self.cmbTaskType.do_update, 'changed'],
-            'task_specification': [self.txtSpecification.do_update, 'changed'],
-            'measurement_unit': [self.cmbMeasurementUnit.do_update, 'changed'],
-            'acceptable_minimum': [self.txtMinAcceptable, 'changed'],
-            'acceptable_mean': [self.txtMeanAcceptable, 'changed'],
-            'acceptable_maximum': [self.txtMaxAcceptable, 'changed'],
+        self._dic_attribute_updater = {
+            'description': [self.txtTask.do_update, 'changed', 0],
+            'task_type': [self.cmbTaskType.do_update, 'changed', 1],
+            'task_specification':
+            [self.txtSpecification.do_update, 'changed', 2],
+            'measurement_unit':
+            [self.cmbMeasurementUnit.do_update, 'changed', 3],
+            'acceptable_minimum': [self.txtMinAcceptable, 'changed', 4],
+            'acceptable_mean': [self.txtMeanAcceptable, 'changed', 5],
+            'acceptable_maximum': [self.txtMaxAcceptable, 'changed', 6],
             'acceptable_variance':
-            [self.txtVarAcceptable.do_update, 'changed'],
-            'date_start': [self.txtStartDate.do_update, 'changed'],
-            'date_end': [self.txtEndDate.do_update, 'changed'],
-            'status': [self.spnStatus.do_update, 'changed'],
+            [self.txtVarAcceptable.do_update, 'changed', 7],
+            'date_start': [self.txtStartDate.do_update, 'changed', 8],
+            'date_end': [self.txtEndDate.do_update, 'changed', 9],
+            'status': [self.spnStatus.do_update, 'changed', 10],
         }
 
         self._lst_widgets = [
@@ -211,7 +213,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.txtStartDate.do_update('', signal='changed')
         self.txtEndDate.do_update('', signal='changed')
 
-        self.spnStatus.do_update(0.0, signal='changed')
+        self.spnStatus.do_update(0, signal='changed')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Validation General Data page widgets.
@@ -377,7 +379,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- BUTTONS
         self.btnEndDate.do_set_properties(
@@ -693,7 +695,7 @@ class TaskEffortPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         self.txtMinTime.do_set_properties(
             width=100,
@@ -828,7 +830,7 @@ class ProgramEffortPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         self.txtProjectTimeLL.do_set_properties(width=100, editable=False)
         self.txtProjectTime.do_set_properties(width=100, editable=False)
@@ -1243,18 +1245,27 @@ class BurndownCurve(RAMSTKWorkView):
         self.pltPlot.axis.cla()
         self.pltPlot.axis.grid(True, which='both')
 
-        self.pltPlot.do_load_plot(x_values=list(plan.index),
-                                  y_values=list(plan.loc[:, 'lower']),
-                                  plot_type='date',
-                                  marker='g--')
-        self.pltPlot.do_load_plot(x_values=list(plan.index),
-                                  y_values=list(plan.loc[:, 'mean']),
-                                  plot_type='date',
-                                  marker='b-')
-        self.pltPlot.do_load_plot(x_values=list(plan.index),
-                                  y_values=list(plan.loc[:, 'upper']),
-                                  plot_type='date',
-                                  marker='r--')
+        self.pltPlot.do_load_plot(
+            **{
+                'x_values': list(plan.index),
+                'y_values': list(plan.loc[:, 'lower']),
+                'plot_type': 'date',
+                'marker': 'g--'
+            })
+        self.pltPlot.do_load_plot(
+            **{
+                'x_values': list(plan.index),
+                'y_values': list(plan.loc[:, 'mean']),
+                'plot_type': 'date',
+                'marker': 'b-'
+            })
+        self.pltPlot.do_load_plot(
+            **{
+                'x_values': list(plan.index),
+                'y_values': list(plan.loc[:, 'upper']),
+                'plot_type': 'date',
+                'marker': 'r--'
+            })
 
     def __make_ui(self) -> None:
         """Build the user interface for the Validation Status tab.
@@ -1262,15 +1273,7 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().make_tab_label(
-            tablabel=self._tablabel,
-            tooltip=self._tabtooltip,
-        )
-        super().make_toolbuttons(
-            icons=self._lst_icons,
-            tooltips=self._lst_tooltips,
-            callbacks=self._lst_callbacks,
-        )
+        super().do_make_layout()
 
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
@@ -1278,7 +1281,7 @@ class BurndownCurve(RAMSTKWorkView):
         _scrollwindow.add(self.pltPlot.canvas)
 
         _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(title=_("Program Validation Effort"))
+        _frame.do_set_properties(**{'title': _("Program Validation Effort")})
         _frame.add(_scrollwindow)
 
         self.pack_start(_frame, True, True, 0)

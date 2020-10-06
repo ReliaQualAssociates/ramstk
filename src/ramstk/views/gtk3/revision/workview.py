@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.revision.workviews.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.revision.workview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 Revision Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub  # type: ignore
@@ -53,9 +53,9 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtName: RAMSTKEntry = RAMSTKEntry()
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'name': [self.txtName.do_update, 'changed'],
-            'remarks': [self.txtRemarks.do_update, 'focus-out-event'],
+        self._dic_attribute_updater = {
+            'name': [self.txtName.do_update, 'changed', 0],
+            'remarks': [self.txtRemarks.do_update, 'changed', 1],
             'revision_code': [self.txtCode.do_update, 'changed'],
         }
 

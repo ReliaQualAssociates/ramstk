@@ -8,7 +8,7 @@
 """Capacitor Work View Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -38,13 +38,6 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         MIL-SPECs.  Key is capacitor subcategory ID; values are lists of
         styles.
 
-    :ivar _dic_attribute_keys: dictionary to provide a "Rosetta Stone" for
-        the widget index (key) and the attribute name and data type (value).
-    :ivar _dic_attribute_updater: dictionary to provide a "Rosetta Stone"
-        for the attribute name (key) and the method and signal name (value)
-        that updates the widget on this view.  This dictionary is used to
-        have the widgets on this panel updated when changes are made in the
-        module view.
     :ivar list _lst_labels: list of label text to display for the capacitor
         MIL-HDBK-217 input parameters.
     :ivar _lst_widgets: the list of widgets to display in the panel.  These
@@ -54,7 +47,6 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         capacitor.
     :ivar cmbConstruction: select and display the method of construction of the
         capacitor.
-    :ivar cmbQuality: select and display the quality level of the capacitor.
     :ivar cmbSpecification: select and display the governing specification of
         the capacitor.
     :ivar cmbStyle: select and display the style of the capacitor.
@@ -263,14 +255,16 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtCapacitance: RAMSTKEntry = RAMSTKEntry()
         self.txtESR: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'specification_id': [self.cmbSpecification.do_update, 'changed'],
-            'type_id': [self.cmbStyle.do_update, 'changed'],
-            'configuration_id': [self.cmbConfiguration.do_update, 'changed'],
-            'construction_id': [self.cmbConstruction.do_update, 'changed'],
-            'capacitance': [self.txtCapacitance.do_update, 'changed'],
-            'resistance': [self.txtESR.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'specification_id':
+            [self.cmbSpecification.do_update, 'changed', 1],
+            'type_id': [self.cmbStyle.do_update, 'changed', 2],
+            'configuration_id':
+            [self.cmbConfiguration.do_update, 'changed', 3],
+            'construction_id': [self.cmbConstruction.do_update, 'changed', 4],
+            'capacitance': [self.txtCapacitance.do_update, 'changed', 5],
+            'resistance': [self.txtESR.do_update, 'changed', 6],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -283,9 +277,9 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         ]
 
         # Make a fixed type panel.
-        self.__set_properties()
+        self.__do_set_properties()
         super().do_make_panel_fixed()
-        self.__set_callbacks()
+        self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_comboboxes, 'changed_subcategory')
@@ -294,6 +288,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the capacitor assessment input RAMSTKComboBox()s.
 
@@ -395,6 +390,43 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         else:
             self.__do_set_part_stress_sensitive()
 
+    def __do_set_callbacks(self) -> None:
+        """Set callback methods for Capacitor assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        # ----- COMBOBOXES
+        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
+            'changed',
+            super().on_changed_combo, 0, 'wvw_editing_hardware')
+        self.cmbSpecification.dic_handler_id[
+            'changed'] = self.cmbSpecification.connect(
+                'changed',
+                super().on_changed_combo, 1, 'wvw_editing_hardware')
+        self.cmbSpecification.connect('changed', self._do_load_styles)
+        self.cmbStyle.dic_handler_id['changed'] = self.cmbStyle.connect(
+            'changed',
+            super().on_changed_combo, 2, 'wvw_editing_hardware')
+        self.cmbConfiguration.dic_handler_id[
+            'changed'] = self.cmbConfiguration.connect(
+                'changed',
+                super().on_changed_combo, 3, 'wvw_editing_hardware')
+        self.cmbConstruction.dic_handler_id[
+            'changed'] = self.cmbConstruction.connect('changed',
+                                                      super().on_changed_combo,
+                                                      4,
+                                                      'wvw_editing_hardware')
+
+        # ----- ENTRIES
+        self.txtCapacitance.dic_handler_id[
+            'changed'] = self.txtCapacitance.connect('changed',
+                                                     super().on_changed_entry,
+                                                     5, 'wvw_editing_hardware')
+        self.txtESR.dic_handler_id['changed'] = self.txtESR.connect(
+            'changed',
+            super().on_changed_entry, 6, 'wvw_editing_hardware')
+
     def __do_set_parts_count_sensitive(self) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Parts Count.
 
@@ -436,44 +468,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         else:
             self.cmbConfiguration.set_sensitive(False)
 
-    def __set_callbacks(self) -> None:
-        """Set callback methods for Capacitor assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        # ----- COMBOBOXES
-        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
-            'changed',
-            super().on_changed_combo, 0, 'wvw_editing_hardware')
-        self.cmbSpecification.dic_handler_id[
-            'changed'] = self.cmbSpecification.connect(
-                'changed',
-                super().on_changed_combo, 1, 'wvw_editing_hardware')
-        self.cmbSpecification.connect('changed', self._do_load_styles)
-        self.cmbStyle.dic_handler_id['changed'] = self.cmbStyle.connect(
-            'changed',
-            super().on_changed_combo, 2, 'wvw_editing_hardware')
-        self.cmbConfiguration.dic_handler_id[
-            'changed'] = self.cmbConfiguration.connect(
-                'changed',
-                super().on_changed_combo, 3, 'wvw_editing_hardware')
-        self.cmbConstruction.dic_handler_id[
-            'changed'] = self.cmbConstruction.connect('changed',
-                                                      super().on_changed_combo,
-                                                      4,
-                                                      'wvw_editing_hardware')
-
-        # ----- ENTRIES
-        self.txtCapacitance.dic_handler_id[
-            'changed'] = self.txtCapacitance.connect('changed',
-                                                     super().on_changed_entry,
-                                                     5, 'wvw_editing_hardware')
-        self.txtESR.dic_handler_id['changed'] = self.txtESR.connect(
-            'changed',
-            super().on_changed_entry, 6, 'wvw_editing_hardware')
-
-    def __set_properties(self) -> None:
+    def __do_set_properties(self) -> None:
         """Set properties for Capacitor assessment input widgets.
 
         :return: None
@@ -501,19 +496,11 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     :ivar list _lst_labels: list of label text to display for the capacitor
         MIL-HDBK-217 input parameters.
 
-    :ivar _hazard_rate_method_id: the ID of the method to use for estimating
-        the Hardware item's hazard rate.
-    :ivar _subcategory_id: the ID of the Hardware item's subcategory.
-
-    :ivar lblModel: displays the hazard rate model use to estimate the
-        Hardware item's hazard rate.
     :ivar self.txtLambdaB: displays the base hazard rate for the Hardware
         item.
     :ivar txtPiCV: displays the capacitance factor for the capacitor.
     :ivar txtPiCF: displays the configuration factor for the capacitor.
     :ivar txtPiC: displays the construction factor for the capacitor.
-    :ivar txtPiE: displays the environment factor for the Hardware item.
-    :ivar txtPiQ: displays the quality factor for the Hardware item.
     """
 
     # Define private dict class attributes.

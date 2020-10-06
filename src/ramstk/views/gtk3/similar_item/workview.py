@@ -8,7 +8,7 @@
 """The RAMSTK SimilarItem Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -32,7 +32,7 @@ class MethodPanel(RAMSTKPanel):
 
         # Initialize private dictionary instance attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            2: 'method_id',
+            2: ['method_id', 'integer'],
         }
 
         # Initialize private list instance attributes.
@@ -50,8 +50,8 @@ class MethodPanel(RAMSTKPanel):
         # Initialize public scalar instance attributes.
         self.cmbSimilarItemMethod: RAMSTKComboBox = RAMSTKComboBox()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'method_id': [self.cmbSimilarItemMethod.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'method_id': [self.cmbSimilarItemMethod.do_update, 'changed', 0],
         }
         self._lst_widgets = [
             self.cmbSimilarItemMethod,
@@ -462,7 +462,7 @@ class SimilarItemPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         self.tvwTreeView.set_enable_tree_lines(True)
         self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
@@ -499,8 +499,6 @@ class SimilarItem(RAMSTKWorkView):
         order they appear on the toolbar or pop-up menu.
     :ivar int _hardware_id: the Hardware ID of the selected Similar Item.
     :ivar int _method_id: the ID of the similar item method to use.
-    :ivar cmbSimilarItemMethod: the method (Topic 633 or user-defined) to use
-        for the similar item analysis.
     """
 
     # Define private dict class attributes.
@@ -697,9 +695,11 @@ class SimilarItem(RAMSTKWorkView):
             _bg_color = '#FFFFFF'
             _fg_color = '#000000'
 
-        self._pnlSimilarItemAnalysis.do_make_treeview(bg_color=_bg_color,
-                                                      fg_color=_fg_color,
-                                                      fmt_file=_fmt_file)
+        self._pnlSimilarItemAnalysis.do_make_treeview(**{
+            'bg_color': _bg_color,
+            'fg_color': _fg_color,
+            'fmt_file': _fmt_file
+        })
         self._pnlSimilarItemAnalysis.do_load_combobox()
         self._pnlSimilarItemAnalysis.do_set_callbacks()
 

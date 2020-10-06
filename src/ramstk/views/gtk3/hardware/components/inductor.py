@@ -8,7 +8,7 @@
 """Inductor Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -35,25 +35,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     :cvar dict _dic_specifications: dictionary of inductor MIL-SPECs.  Key is
         inductor subcategory ID; values are lists of specifications.
 
-    :ivar _dic_attribute_keys: dictionary to provide a "Rosetta Stone" for
-        the widget index (key) and the attribute name and data type (value).
-    :ivar _dic_attribute_updater: dictionary to provide a "Rosetta Stone"
-        for the attribute name (key) and the method and signal name (value)
-        that updates the widget on this view.  This dictionary is used to
-        have the widgets on this panel updated when changes are made in the
-        module view.
     :ivar list _lst_labels: list of label text to display for the capacitor
         MIL-HDBK-217 input parameters.
     :ivar _lst_widgets: the list of widgets to display in the panel.  These
         are listed in the order they should appear on the panel.
 
-    :ivar _hazard_rate_method_id: the ID of the method to use for estimating
-        the Hardware item's hazard rate.
-    :ivar _subcategory_id: the ID of the Hardware item's subcategory.
-    :ivar _title: the text to put on the RAMSTKFrame() holding the
-        assessment input widgets.
-
-    :ivar fmt: the formatting to use when displaying float values.
     :ivar cmbInsulation: select and display the insulation class of the
         inductor.
     :ivar cmbSpecification: select and display the governing specification for
@@ -147,14 +133,15 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtArea: RAMSTKEntry = RAMSTKEntry()
         self.txtWeight: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'construction_id': [self.cmbConstruction.do_update, 'changed'],
-            'family_id': [self.cmbFamily.do_update, 'changed'],
-            'insulation_id': [self.cmbInsulation.do_update, 'changed'],
-            'specification_id': [self.cmbSpecification.do_update, 'changed'],
-            'area': [self.txtArea.do_update, 'changed'],
-            'weight': [self.txtWeight.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'construction_id': [self.cmbConstruction.do_update, 'changed', 1],
+            'family_id': [self.cmbFamily.do_update, 'changed', 2],
+            'insulation_id': [self.cmbInsulation.do_update, 'changed', 3],
+            'specification_id':
+            [self.cmbSpecification.do_update, 'changed', 4],
+            'area': [self.txtArea.do_update, 'changed', 5],
+            'weight': [self.txtWeight.do_update, 'changed', 6],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -177,6 +164,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the capacitor assessment input RAMSTKComboBox().
 
@@ -366,18 +354,9 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     :ivar list _lst_labels: list of label text to display for the capacitor
         MIL-HDBK-217 input parameters.
 
-    :ivar _hazard_rate_method_id: the ID of the method to use for estimating
-        the Hardware item's hazard rate.
-    :ivar _subcategory_id: the ID of the Hardware item's subcategory.
-
-    :ivar fmt: the formatting to use when displaying float values.
-    :ivar lblModel: displays the hazard rate model use to estimate the
-        Hardware item's hazard rate.
     :ivar self.txtLambdaB: displays the base hazard rate for the Hardware
         item.
     :ivar txtPiC: displays the construction factor for the Hardware item.
-    :ivar txtPiE: displays the environment factor for the Hardware item.
-    :ivar txtPiQ: displays the quality factor for the Hardware item.
     """
 
     # Define private dict class attributes.

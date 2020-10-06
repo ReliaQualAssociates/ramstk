@@ -8,6 +8,7 @@
 """The RAMSTK GTK3 panel Module."""
 
 # Standard Library Imports
+from datetime import datetime
 from typing import Any, Dict, List, Union
 
 # Third Party Imports
@@ -22,10 +23,11 @@ from ramstk.utilities import boolean_to_integer
 from ramstk.views.gtk3 import Gtk, _
 
 # RAMSTK Local Imports
-from . import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry,
-    RAMSTKFrame, RAMSTKTextView, do_make_label_group
-)
+from .button import RAMSTKCheckButton
+from .combo import RAMSTKComboBox
+from .entry import RAMSTKEntry, RAMSTKTextView
+from .frame import RAMSTKFrame
+from .label import do_make_label_group
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
@@ -63,27 +65,29 @@ class RAMSTKPanel(RAMSTKFrame):
 
     The attributes of a RAMSTKPanel are:
 
-    :ivar dict _dic_attribute_keys: contains key:value pairs where the key is
-    the index of the widget displaying the associated attribute and the value
-    is a list with the name of the attribute in position 0 and the attribute's
-    data type in position 1.  An example entry in this dict might be:
+    :ivar _dic_attribute_keys: contains key:value pairs where the key is
+        the index of the widget displaying the associated attribute and the
+        value is a list with the name of the attribute in position 0 and the
+        attribute's data type in position 1.  An example entry in this dict
+        might be:
 
         0: ['name', 'string']
 
-    :ivar dict _dic_attribute_updater: contains key:value pairs where the
+    :ivar _dic_attribute_updater: contains key:value pairs where the
         key is the name of the attribute and the value is a list with the
-        method used to update a widget's display in position 0 and the name of
-        the signal to block while updating the widget in position 1.  An
-        example entry in this dict might be:
+        method used to update a widget's display in position 0, the
+        name of the signal to block while updating the widget in position 1,
+        and the column number in the RAMSTKTreeView() where the attribute data
+        is displayed in position 2.  An example entry in this dict might be:
 
-        'name': [self.txtName.do_update, 'changed']
+        'name': [self.txtName.do_update, 'changed', 0]
 
-    :ivar list _lst_labels: the list of text to display in the labels
+    :ivar _lst_labels: the list of text to display in the labels
         for each widget in a panel.
-    :ivar list _lst_widgets: the list of widgets to display in a panel.
-    :ivar int _record_id: the work stream module ID whose attributes
+    :ivar _lst_widgets: the list of widgets to display in a panel.
+    :ivar _record_id: the work stream module ID whose attributes
         this panel is displaying.
-    :ivar str _title: the title to place on the RAMSTKFrame() that is
+    :ivar _title: the title to place on the RAMSTKFrame() that is
         this panel's container.
 
     :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
@@ -112,8 +116,10 @@ class RAMSTKPanel(RAMSTKFrame):
         super().__init__()
 
         # Initialize private dict instance attributes.
+        # TODO: _dic_attribute_keys renamed to _dic_index_attribute?
+        # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {}
+        self._dic_attribute_updater: Dict[str, Union[object, str, int]] = {}
 
         # Initialize private list instance attributes.
         self._lst_col_order: List[int] = []
@@ -121,6 +127,7 @@ class RAMSTKPanel(RAMSTKFrame):
         self._lst_widgets: List[object] = []
 
         # Initialize private scalar instance attributes.
+        self._parent_id: int = -1
         self._record_id: int = -1
         self._title: str = ''
         self._tree_loaded: bool = False
@@ -225,11 +232,13 @@ class RAMSTKPanel(RAMSTKFrame):
         _fixed: Gtk.Fixed = Gtk.Fixed()
 
         _y_pos: int = 5
-        (_x_pos, _labels) = do_make_label_group(self._lst_labels,
-                                                bold=False,
-                                                justify=_justify,
-                                                x_pos=5,
-                                                y_pos=5)
+        # noinspection PyTypeChecker
+        (_x_pos, _labels) = do_make_label_group(
+            self._lst_labels,
+            bold=False,  # type: ignore
+            justify=_justify,
+            x_pos=5,  # type: ignore
+            y_pos=5)  # type: ignore
         for _idx, _label in enumerate(_labels):
             _fixed.put(_label, 5, _y_pos)
 
@@ -304,15 +313,58 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self._lst_col_order = list(self.tvwTreeView.position.values())
 
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
+        """Update the module view RAMSTKTreeView() with attribute changes.
+
+        This method receives two dicts.  This first is from the
+        workflow's workview module and is sent when a workview widget is
+        edited/changed.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: database field new value
+
+        The second dict is from the workflow's moduleview.
+
+            `keys` key: `keys` value
+
+        corresponds to:
+
+            database field name: TreeModel default column position
+
+        Since both dicts contain the same key values, this method can refresh
+        the proper column of the RAMSTKTreeView with the new data.
+
+        :param node_id: unused in this method.
+        :param package: the key:value for the data being updated.
+        :return: None
+        """
+        [[_key, _value]] = package.items()
+
+        try:
+            _position = self._lst_col_order[self._dic_attribute_updater[_key]
+                                            [2]]
+
+            _model, _row = self.tvwTreeView.get_selection().get_selected()
+            _model.set(_row, _position, _value)
+        except KeyError as _error:
+            # Not all attributes available on the workview are stored in the
+            # moduleview tree.  We log the error in case the offending
+            # attribute is supposed to be there and then continue.
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
 
-        :param str message: the PyPubSub message to broadcast on a
+        :param message: the PyPubSub message to broadcast on a
             successful edit.
-        :param list columns: the list of column numbers whose cells should
+        :param columns: the list of column numbers whose cells should
             have a callback function assigned.
         :return: None
-        :rtype: None
         """
         for _idx in columns:
             _cell = self.tvwTreeView.get_column(
@@ -335,12 +387,9 @@ class RAMSTKPanel(RAMSTKFrame):
             Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
         :return: None
-        :rtype: None
         """
-        _lst_column_order: List[int] = list(self.tvwTreeView.position.values())
-
         try:
-            _key = self._dic_attribute_keys[_lst_column_order[position]]
+            _key = self._dic_attribute_keys[self._lst_column_order[position]]
             if not self.tvwTreeView.do_edit_cell(cell, path, new_text,
                                                  position):
                 pub.sendMessage(message,
@@ -483,6 +532,23 @@ class RAMSTKPanel(RAMSTKFrame):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
+    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
+        """Update the RAMSTKTreeView after deleting a line item.
+
+        :param node_id: the treelib Tree() node ID that was deleted.
+        :param tree: the treelib Tree() containing the workflow module data.
+        :return: None
+        """
+        _model, _row = self.tvwTreeView.selection.get_selected()
+        _model.remove(_row)
+
+        _row = _model.get_iter_first()
+        if _row is not None:
+            self.tvwTreeView.selection.select_iter(_row)
+            self.show_all()
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
         """Update the panel's Gtk.Widgets() when attributes are changed.
 
@@ -496,13 +562,46 @@ class RAMSTKPanel(RAMSTKFrame):
         :param package: a dict containing the attribute name as key and
             the new attribute value as the value.
         :return: None
-        :rtype: None
         """
         [[_key, _value]] = package.items()
 
         (_function,
          _signal) = self._dic_attribute_updater.get(_key)  # type: ignore
         _function(_value, _signal)  # type: ignore
+
+    def on_insert(self, data: Any) -> None:
+        """Add row to module view for newly added work stream element.
+
+        :param data: the data package for the work stream element to add.
+        :return: None
+        """
+        _attributes = []
+        _model, _row = self.tvwTreeView.selection.get_selected()
+
+        try:
+            if self._record_id == self._parent_id:
+                _prow = _row
+            else:
+                _prow = _model.iter_parent(_row)
+        except TypeError:
+            _prow = None
+
+        for _key in self.tvwTreeView.korder:
+            if _key == 'dict':
+                _attributes.append(str(data))
+            else:
+                try:
+                    if isinstance(data[_key], datetime.date):
+                        data[_key] = data[_key].strftime("%Y-%m-%d")
+                    data[_key] = data[_key].decode('utf-8')
+                except (AttributeError, KeyError) as _error:
+                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+                _attributes.append(data[_key])
+
+        _row = _model.append(_prow, _attributes)
+
+        self.tvwTreeView.selection.select_iter(_row)
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    message: str) -> Dict[Union[str, Any], Any]:
@@ -515,7 +614,6 @@ class RAMSTKPanel(RAMSTKFrame):
         :return: {_key: _new_text}; the child module attribute name and the
             new value from the RAMSTKEntry() or RAMSTKTextView(). The value
             {'': -1} will be returned when a KeyError is raised by this method.
-        :rtype: dict
         """
         _key: str = ''
         _new_text: int = -1

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-#       vies.gtk3.hardware.components.semiconductor.py is part of the RAMSTK
-#       Project
+#       ramstk.views.gtk3.hardware.components.semiconductor.py is part of the
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Semiconductor Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -215,17 +215,17 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtNElements: RAMSTKEntry = RAMSTKEntry()
         self.txtThetaJC: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'application_id': [self.cmbApplication.do_update, 'changed'],
-            'construction_id': [self.cmbConstruction.do_update, 'changed'],
-            'matching_id': [self.cmbMatching.do_update, 'changed'],
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'family_id': [self.cmbPackage.do_update, 'changed'],
-            'type_id': [self.cmbType.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'application_id': [self.cmbApplication.do_update, 'changed', 0],
+            'construction_id': [self.cmbConstruction.do_update, 'changed', 1],
+            'matching_id': [self.cmbMatching.do_update, 'changed', 2],
+            'quality_id': [self.cmbQuality.do_update, 'changed', 3],
+            'family_id': [self.cmbPackage.do_update, 'changed', 4],
+            'type_id': [self.cmbType.do_update, 'changed', 5],
             'frequency_operating':
-            [self.txtFrequencyOperating.do_update, 'changed'],
-            'n_elements': [self.txtNElements.do_update, 'changed'],
-            'theta_jc': [self.txtThetaJC.do_update, 'changed'],
+            [self.txtFrequencyOperating.do_update, 'changed', 6],
+            'n_elements': [self.txtNElements.do_update, 'changed', 7],
+            'theta_jc': [self.txtThetaJC.do_update, 'changed', 8],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -250,6 +250,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the Semiconductor RKTComboBox()s.
 
@@ -268,12 +269,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.__do_load_type()
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Semiconductor assesment input widgets.
+        """Load the Semiconductor assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
-        Semiconductor.
+        :param attributes: the attributes dictionary for the selected
+            semiconductor.
         :return: None
-        :rtype: None
         """
         super().do_load_panel(attributes)
 

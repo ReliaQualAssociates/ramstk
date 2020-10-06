@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       views.gtk3.hardware.components.meter.py is part of the RAMSTK
+#       ramstk.views.gtk3.hardware.components.meter.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -8,7 +8,7 @@
 """Meter Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -99,10 +99,10 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.cmbApplication: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'application_id': [self.cmbApplication.do_update, 'changed'],
-            'type_id': [self.cmbType.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'application_id': [self.cmbApplication.do_update, 'changed', 1],
+            'type_id': [self.cmbType.do_update, 'changed', 2],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -121,6 +121,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the meter assessment input RAMSTKComboBox()s.
 
@@ -152,12 +153,10 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.cmbType.do_load_combo(_data, signal='changed')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Meter assesment input widgets.
+        """Load the Meter assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Meter.
+        :param attributes: the attributes dictionary for the selected meter.
         :return: None
-        :rtype: None
         """
         super().do_load_panel(attributes)
 

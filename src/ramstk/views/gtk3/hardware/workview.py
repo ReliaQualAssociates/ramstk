@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import locale
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -101,20 +101,20 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtRefDes: RAMSTKEntry = RAMSTKEntry()
         self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'category_id': [self.cmbCategory.do_update, 'changed'],
-            'subcategory_id': [self.cmbSubcategory.do_update, 'changed'],
-            'alt_part_number': [self.txtAltPartNum.do_update, 'changed'],
-            'comp_ref_des': [self.txtCompRefDes.do_update, 'changed'],
-            'description': [self.txtDescription.do_update, 'changed'],
-            'figure_number': [self.txtFigureNumber.do_update, 'changed'],
-            'lcn': [self.txtLCN.do_update, 'changed'],
-            'name': [self.txtName.do_update, 'changed'],
-            'page_number': [self.txtPageNumber.do_update, 'changed'],
-            'part_number': [self.txtPartNumber.do_update, 'changed'],
-            'ref_des': [self.txtRefDes.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'category_id': [self.cmbCategory.do_update, 'changed', 0],
+            'subcategory_id': [self.cmbSubcategory.do_update, 'changed', 1],
+            'alt_part_number': [self.txtAltPartNum.do_update, 'changed', 2],
+            'comp_ref_des': [self.txtCompRefDes.do_update, 'changed', 3],
+            'description': [self.txtDescription.do_update, 'changed', 4],
+            'figure_number': [self.txtFigureNumber.do_update, 'changed', 5],
+            'lcn': [self.txtLCN.do_update, 'changed', 6],
+            'name': [self.txtName.do_update, 'changed', 7],
+            'page_number': [self.txtPageNumber.do_update, 'changed', 8],
+            'part_number': [self.txtPartNumber.do_update, 'changed', 9],
+            'ref_des': [self.txtRefDes.do_update, 'changed', 10],
             'specification_number':
-            [self.txtSpecification.do_update, 'changed'],
+            [self.txtSpecification.do_update, 'changed', 11],
         }
 
         self._lst_widgets = [
@@ -332,7 +332,7 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         self.chkRepairable.do_set_properties(
             tooltip=_("Indicates whether or not the selected hardware item is "
@@ -412,14 +412,14 @@ class LogisticsPanel(RAMSTKPanel):
         self.txtQuantity: RAMSTKEntry = RAMSTKEntry()
         self.txtYearMade: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'cage_code': [self.txtCAGECode.do_update, 'changed'],
-            'cost_type_id': [self.cmbCostType.do_update, 'changed'],
-            'manufacturer_id': [self.cmbManufacturer.do_update, 'changed'],
-            'cost': [self.txtCost.do_update, 'changed'],
-            'nsn': [self.txtNSN.do_update, 'changed'],
-            'quantity': [self.txtQuantity.do_update, 'changed'],
-            'year_of_manufacture': [self.txtYearMade.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'cage_code': [self.txtCAGECode.do_update, 'changed', 0],
+            'cost_type_id': [self.cmbCostType.do_update, 'changed', 1],
+            'manufacturer_id': [self.cmbManufacturer.do_update, 'changed', 2],
+            'cost': [self.txtCost.do_update, 'changed', 3],
+            'nsn': [self.txtNSN.do_update, 'changed', 4],
+            'quantity': [self.txtQuantity.do_update, 'changed', 5],
+            'year_of_manufacture': [self.txtYearMade.do_update, 'changed', 6],
         }
 
         self._lst_widgets = [
@@ -552,7 +552,7 @@ class LogisticsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtCAGECode.do_set_properties(
@@ -607,9 +607,9 @@ class MiscellaneousPanel(RAMSTKPanel):
         self.txtAttachments: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'attachments': [self.txtAttachments.do_update, 'changed'],
-            'remarks': [self.txtRemarks.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'attachments': [self.txtAttachments.do_update, 'changed', 0],
+            'remarks': [self.txtRemarks.do_update, 'changed', 1],
         }
         self._lst_widgets = [
             self.txtAttachments,
@@ -690,7 +690,7 @@ class MiscellaneousPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtAttachments.do_set_properties(
@@ -764,19 +764,20 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.txtSpecifiedMTBF: RAMSTKEntry = RAMSTKEntry()
         self.txtSpecifiedMTBFVar: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'add_adj_factor': [self.txtAddAdjFactor.do_update, 'changed'],
-            'scale_parameter': [self.txtFailScale.do_update, 'changed'],
-            'shape_parameter': [self.txtFailShape.do_update, 'changed'],
-            'location_parameter': [self.txtFailLocation.do_update, 'changed'],
-            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'add_adj_factor': [self.txtAddAdjFactor.do_update, 'changed', 0],
+            'scale_parameter': [self.txtFailScale.do_update, 'changed', 1],
+            'shape_parameter': [self.txtFailShape.do_update, 'changed', 2],
+            'location_parameter':
+            [self.txtFailLocation.do_update, 'changed', 3],
+            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 'changed', 4],
             'hazard_rate_specified':
-            [self.txtSpecifiedHt.do_update, 'changed'],
+            [self.txtSpecifiedHt.do_update, 'changed', 5],
             'hr_specified_variance':
-            [self.txtSpecifiedHtVar.do_update, 'changed'],
-            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 'changed'],
+            [self.txtSpecifiedHtVar.do_update, 'changed', 6],
+            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 'changed', 7],
             'mtbf_spec_variance':
-            [self.txtSpecifiedMTBFVar.do_update, 'changed'],
+            [self.txtSpecifiedMTBFVar.do_update, 'changed', 8],
         }
         self._lst_widgets = [
             self.cmbHRType,
@@ -1069,7 +1070,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # _____ COMBOBOXES
         self.cmbFailureDist.do_set_properties(tooltip=_(
@@ -1164,9 +1165,9 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         self.txtDutyCycle: RAMSTKEntry = RAMSTKEntry()
         self.txtMissionTime: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'duty_cycle': [self.txtDutyCycle.do_update, 'changed'],
-            'mission_time': [self.txtMissionTime.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'duty_cycle': [self.txtDutyCycle.do_update, 'changed', 0],
+            'mission_time': [self.txtMissionTime.do_update, 'changed', 1],
         }
         self._lst_widgets = [
             self.cmbActiveEnviron,
@@ -1293,7 +1294,7 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # _____ COMBOBOXES
         self.cmbActiveEnviron.do_set_properties(
@@ -1489,7 +1490,7 @@ class ReliabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtActiveHt.do_set_properties(tooltip=_(
@@ -1684,7 +1685,7 @@ class AvailabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtCostFailure.do_set_properties(tooltip=_(
@@ -1992,7 +1993,7 @@ class AssessmentInputs(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_component_input: Dict[int, object] = {
+        self._dic_component_input: Dict[int, RAMSTKPanel] = {
             1: integrated_circuit.AssessmentInputPanel(),
             2: semiconductor.AssessmentInputPanel(),
             3: resistor.AssessmentInputPanel(),
@@ -2272,7 +2273,7 @@ class AssessmentResults(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_component_results = {
+        self._dic_component_results: Dict[int, RAMSTKPanel] = {
             1: integrated_circuit.AssessmentResultPanel(),
             2: semiconductor.AssessmentResultPanel(),
             3: resistor.AssessmentResultPanel(),

@@ -1,16 +1,9 @@
-# Standard Library Imports
-from typing import Any, List
-
-# RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration
-)
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3.assistants import EditFunction as EditFunction
-from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
-from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
-from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox, RAMSTKPanel as RAMSTKPanel, RAMSTKWorkView as RAMSTKWorkView
+from typing import Any, List
 
 class MethodPanel(RAMSTKPanel):
     cmbSimilarItemMethod: Any = ...

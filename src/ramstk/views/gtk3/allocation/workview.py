@@ -7,7 +7,7 @@
 """The RAMSTK GTK3 Function Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -62,13 +62,16 @@ class GoalMethodPanel(RAMSTKPanel):
         self.txtMTBFGoal: RAMSTKEntry = RAMSTKEntry()
         self.txtReliabilityGoal: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
+        self._dic_attribute_updater = {
             'allocation_method_id':
-            [self.cmbAllocationMethod.do_update, 'changed'],
-            'goal_measure_id': [self.cmbAllocationGoal.do_update, 'changed'],
-            'reliability_goal': [self.txtReliabilityGoal.do_update, 'changed'],
-            'hazard_rate_goal': [self.txtHazardRateGoal.do_update, 'changed'],
-            'mtbf_goal': [self.txtMTBFGoal.do_update, 'changed'],
+            [self.cmbAllocationMethod.do_update, 'changed', 0],
+            'goal_measure_id':
+            [self.cmbAllocationGoal.do_update, 'changed', 1],
+            'reliability_goal':
+            [self.txtReliabilityGoal.do_update, 'changed', 2],
+            'hazard_rate_goal':
+            [self.txtHazardRateGoal.do_update, 'changed', 3],
+            'mtbf_goal': [self.txtMTBFGoal.do_update, 'changed', 4],
         }
         self._lst_widgets = [
             self.cmbAllocationMethod,
@@ -198,7 +201,7 @@ class GoalMethodPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- COMBOBOXES
         self.cmbAllocationGoal.do_set_properties(tooltip=_(
@@ -246,7 +249,7 @@ class AllocationPanel(RAMSTKPanel):
         # Initialize private scalar attributes.
         self._allocation_tree: treelib.Tree = treelib.Tree()
         self._method_id: int = 0
-        self._title: List[str] = _("Allocation Analysis")
+        self._title: str = _("Allocation Analysis")
 
         # Initialize public dictionary attributes.
 
@@ -573,7 +576,7 @@ class AllocationPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         self.tvwTreeView.set_enable_tree_lines(True)
         self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
@@ -612,8 +615,8 @@ class Allocation(RAMSTKWorkView):
     # Define private scalar class attributes.
     _module: str = 'allocation'
     _tablabel: str = _("Allocation")
-    _tabtooltip: str = _("Displays the Allocation analysis for "
-                         "the selected hardware item.")
+    _tabtooltip: str = _("Displays the Allocation analysis for the selected "
+                         "hardware item.")
 
     # Define public dictionary class attributes.
 
@@ -742,9 +745,11 @@ class Allocation(RAMSTKWorkView):
             _bg_color = '#FFFFFF'
             _fg_color = '#000000'
 
-        self._pnlAllocation.do_make_treeview(bg_color=_bg_color,
-                                             fg_color=_fg_color,
-                                             fmt_file=_fmt_file)
+        self._pnlAllocation.do_make_treeview(**{
+            'bg_color': _bg_color,
+            'fg_color': _fg_color,
+            'fmt_file': _fmt_file
+        })
         self._pnlAllocation.do_set_callbacks()
 
         _hpaned.pack2(self._pnlAllocation, True, True)

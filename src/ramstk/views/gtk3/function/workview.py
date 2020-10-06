@@ -3,11 +3,11 @@
 #       ramstk.views.gtk3.function.workview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 Function Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -58,11 +58,12 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtName: RAMSTKEntry = RAMSTKEntry()
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'function_code': [self.txtCode.do_update, 'changed'],
-            'name': [self.txtName.do_update, 'changed'],
-            'remarks': [self.txtRemarks.do_update, 'changed'],
-            'safety_critical': [self.chkSafetyCritical.do_update, 'toggled']
+        self._dic_attribute_updater = {
+            'function_code': [self.txtCode.do_update, 'changed', 0],
+            'name': [self.txtName.do_update, 'changed', 5],
+            'remarks': [self.txtRemarks.do_update, 'changed', 15],
+            'safety_critical':
+            [self.chkSafetyCritical.do_update, 'toggled', 17]
         }
 
         self._lst_widgets = [
@@ -328,7 +329,7 @@ class HazOpsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         self.tvwTreeView.set_enable_tree_lines(True)
         self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
