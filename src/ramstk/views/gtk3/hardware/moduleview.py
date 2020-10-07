@@ -125,16 +125,7 @@ class HardwarePanel(RAMSTKPanel):
         :param selection: the Hardware class Gtk.TreeSelection().
         :return: None
         """
-        selection.handler_block(self.tvwTreeView.dic_handler_id['changed'])
-
-        _attributes: Dict[str, Any] = {}
-
-        _model, _row = selection.get_selected()
-        if _row is not None:
-            for _key in self._dic_attribute_updater:
-                _attributes[_key] = _model.get_value(
-                    _row,
-                    self._lst_col_order[self._dic_attribute_updater[_key][2]])
+        _attributes = super().on_row_change(selection)
 
         if _attributes:
             self._record_id = _attributes['hardware_id']
@@ -147,8 +138,6 @@ class HardwarePanel(RAMSTKPanel):
             pub.sendMessage('request_get_all_hardware_attributes',
                             node_id=self._record_id)
             pub.sendMessage('request_set_title', title=_title)
-
-        selection.handler_unblock(self.tvwTreeView.dic_handler_id['changed'])
 
     def __do_set_callbacks(self) -> None:
         """Set callbacks for the ModuleView.

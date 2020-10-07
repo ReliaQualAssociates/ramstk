@@ -7,7 +7,7 @@
 """RAMSTK Function GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Dict, List
 
 # Third Party Imports
 import treelib
@@ -113,16 +113,7 @@ class FunctionPanel(RAMSTKPanel):
         :param selection: the Function class Gtk.TreeSelection().
         :return: None
         """
-        selection.handler_block(self.tvwTreeView.dic_handler_id['changed'])
-
-        _attributes: Dict[str, Any] = {}
-
-        _model, _row = selection.get_selected()
-        if _row is not None:
-            for _key in self._dic_attribute_updater:
-                _attributes[_key] = _model.get_value(
-                    _row,
-                    self._lst_col_order[self._dic_attribute_updater[_key][2]])
+        _attributes = super().on_row_change(selection)
 
         if _attributes:
             self._record_id = _attributes['function_id']
@@ -136,8 +127,6 @@ class FunctionPanel(RAMSTKPanel):
                             node_id=self._record_id,
                             table='hazards')
             pub.sendMessage('request_set_title', title=_title)
-
-        selection.handler_unblock(self.tvwTreeView.dic_handler_id['changed'])
 
     def __do_set_callbacks(self) -> None:
         """Set callbacks for the Function module view.
