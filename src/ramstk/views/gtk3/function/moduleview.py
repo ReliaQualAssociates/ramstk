@@ -61,7 +61,7 @@ class FunctionPanel(RAMSTKPanel):
             'name': [None, 'edited', 15],
             'parent_id': [None, 'edited', 16],
             'remarks': [None, 'edited', 17],
-            'safety_critical': [None, 'edited', 18],
+            'safety_critical': [None, 'toggled', 18],
             'total_mode_count': [None, 'edited', 19],
             'total_part_count': [None, 'edited', 20],
             'type': [None, 'edited', 21],
@@ -70,6 +70,7 @@ class FunctionPanel(RAMSTKPanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
+        self._title = _("Function BoM")
 
         # Initialize public dictionary class attributes.
 
@@ -126,12 +127,6 @@ class FunctionPanel(RAMSTKPanel):
         if _attributes:
             self._record_id = _attributes['function_id']
             self._parent_id = _attributes['parent_id']
-
-            _prow = _model.iter_parent(_row)
-            if _prow is not None:
-                self._parent_id = self._record_id
-            else:
-                self._parent_id = 0
 
             _title = _("Analyzing Function {0:s}: {1:s}").format(
                 str(_attributes['function_code']), str(_attributes['name']))
@@ -272,8 +267,6 @@ class ModuleView(RAMSTKModuleView):
         super().make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_insert, 'succeed_insert_function')
-
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_function')
         pub.subscribe(self.do_set_cursor_active, 'succeed_insert_function')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
@@ -283,6 +276,8 @@ class ModuleView(RAMSTKModuleView):
                       'fail_insert_function')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_function')
+
+        pub.subscribe(self._on_insert_function, 'succeed_insert_function')
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKFunction table.
@@ -323,7 +318,7 @@ class ModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_functions')
 
-    def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
         """Add row to module view for newly added function.
 
         :param node_id: the ID of the newly added function.

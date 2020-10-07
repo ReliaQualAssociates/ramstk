@@ -5,7 +5,6 @@ bump2version
 check-manifest
 
 # Code formatting
-add-trailing-comma
 isort
 pep8
 pre-commit
@@ -15,7 +14,6 @@ yapf
 
 # Static code checking
 bandit
-flake8
 mccabe
 mypy
 pycodestyle

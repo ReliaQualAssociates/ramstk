@@ -8,7 +8,6 @@
 """The RAMSTK GTK3 panel Module."""
 
 # Standard Library Imports
-from datetime import datetime
 from typing import Any, Dict, List, Union
 
 # Third Party Imports
@@ -442,7 +441,6 @@ class RAMSTKPanel(RAMSTKFrame):
             and the new value from the RAMSTKComboBox().  The value {'': -1}
             will be returned when a KeyError or ValueError is raised by this
             method.
-        :rtype: dict
         """
         _key: str = ''
         _new_text: int = -1
@@ -586,18 +584,7 @@ class RAMSTKPanel(RAMSTKFrame):
         except TypeError:
             _prow = None
 
-        for _key in self.tvwTreeView.korder:
-            if _key == 'dict':
-                _attributes.append(str(data))
-            else:
-                try:
-                    if isinstance(data[_key], datetime.date):
-                        data[_key] = data[_key].strftime("%Y-%m-%d")
-                    data[_key] = data[_key].decode('utf-8')
-                except (AttributeError, KeyError) as _error:
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-                _attributes.append(data[_key])
+        _attributes = self.tvwTreeView.get_aggregate_attributes(data)
 
         _row = _model.append(_prow, _attributes)
 

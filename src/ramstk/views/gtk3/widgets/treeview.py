@@ -356,9 +356,11 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                     _attributes.append(str(entity))
                 else:
                     try:
+                        if isinstance(entity[_key], datetime.date):
+                            entity[_key] = entity[_key].strftime("%Y-%m-%d")
                         entity[_key] = entity[_key].decode(  # type: ignore
                             'utf-8')
-                    except AttributeError:
+                    except (AttributeError, KeyError):
                         pass
                     _attributes.append(entity[_key])  # type: ignore
         except TypeError:

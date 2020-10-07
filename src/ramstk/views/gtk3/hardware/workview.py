@@ -1891,7 +1891,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = super().on_combo_changed(combo, index,
+        _package = self._pnlGeneralData.on_changed_combo(combo, index,
                                             'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
@@ -2201,7 +2201,7 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = super().on_combo_changed(combo, index,
+        _package = self._pnlAssessmentInput.on_changed_combo(combo, index,
                                             'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
