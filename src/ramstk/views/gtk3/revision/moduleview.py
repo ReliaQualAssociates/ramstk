@@ -20,7 +20,7 @@ from ramstk.views.gtk3.widgets import (
 
 
 class RevisionPanel(RAMSTKPanel):
-    """Panel to display hierarchy of revisions."""
+    """Panel to display flat list of revisions."""
 
     # Define private dictionary class attributes.
 
