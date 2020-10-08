@@ -118,7 +118,7 @@ class RAMSTKPanel(RAMSTKFrame):
         # TODO: _dic_attribute_keys renamed to _dic_index_attribute?
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
-        self._dic_attribute_updater: Dict[str, Union[object, str, int]] = {}
+        self._dic_attribute_updater: Dict[str, Any] = {}
 
         # Initialize private list instance attributes.
         self._lst_col_order: List[int] = []
@@ -589,6 +589,30 @@ class RAMSTKPanel(RAMSTKFrame):
         _row = _model.append(_prow, _attributes)
 
         self.tvwTreeView.selection.select_iter(_row)
+
+    def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
+        """Get the attributes for the newly selected row.
+
+        :param selection: the Gtk.TreeSelection() for the new row.
+        :return: _attributes; the dict of attributes and value for the item
+            in the selected row.  The key is the attribute name, the value is
+            the attribute value.  Pulling them from the RAMSTKTreeView()
+            ensures uncommitted changes are always selected.
+        """
+        selection.handler_block(self.tvwTreeView.dic_handler_id['changed'])
+
+        _attributes: Dict[str, Any] = {}
+
+        _model, _row = selection.get_selected()
+        if _row is not None:
+            for _key in self._dic_attribute_updater:
+                _attributes[_key] = _model.get_value(
+                    _row,
+                    self._lst_col_order[self._dic_attribute_updater[_key][2]])
+
+        selection.handler_unblock(self.tvwTreeView.dic_handler_id['changed'])
+
+        return _attributes
 
     def on_toggled(self, checkbutton: RAMSTKCheckButton, index: int,
                    message: str) -> Dict[Union[str, Any], Any]:
