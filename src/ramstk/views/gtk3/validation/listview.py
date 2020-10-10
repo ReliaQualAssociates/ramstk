@@ -39,7 +39,6 @@ class ValidationRequirement(RAMSTKListView):
         "Validation::Requirement\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Validation::Requirement "
                     "matrix for the selected revision.")
-    _view_type: str = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -62,6 +61,7 @@ class ValidationRequirement(RAMSTKListView):
         self._lst_tooltips = [
             _("Save changes to the Validation::Requirement matrix.")
         ]
+        self._view_type = 'matrix'
 
         # Initialize private scalar attributes.
 

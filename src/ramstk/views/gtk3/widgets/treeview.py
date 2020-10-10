@@ -509,7 +509,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         :param method: the callback method for the cell.
         :return: None
-        :rtype: None
         """
         for _key in self.editable:
             _column = self.get_column(self.position[_key])

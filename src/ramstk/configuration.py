@@ -455,7 +455,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self._lst_format_files = [
             "allocation", "failure_definition", "fmea", "function", "hardware",
             "hazard", "pof", "requirement", "revision", "similar_item",
-            "stakeholder", "validation"
+            "stakeholder", "usage_profile", "validation"
         ]
         self._lst_categories = [
             'integratedcircuit', 'semiconductor', 'resistor', 'capacitor',
@@ -688,6 +688,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "revision": "revision.toml",
                 "similar_item": "similar_item.toml",
                 "stakeholder": "stakeholder.toml",
+                "usage_profile": "usage_profile.toml",
                 "validation": "validation.toml"
             },
             "colors": {
@@ -853,6 +854,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "revision": self.RAMSTK_FORMAT_FILE['revision'],
                 "similar_item": self.RAMSTK_FORMAT_FILE['similar_item'],
                 "stakeholder": self.RAMSTK_FORMAT_FILE['stakeholder'],
+                "usage_profile": self.RAMSTK_FORMAT_FILE['usage_profile'],
                 "validation": self.RAMSTK_FORMAT_FILE['validation']
             },
             "colors": {
