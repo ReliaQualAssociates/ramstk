@@ -8,6 +8,7 @@
 """RAMSTK Requirement GTK3 module view."""
 
 # Standard Library Imports
+from typing import Dict, List
 
 # Third Party Imports
 import treelib
@@ -42,6 +43,18 @@ class RequirementPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            0: ['requirement_code', 'string'],
+            1: ['description', 'string'],
+            2: ['requirement_type', 'integer'],
+            4: ['specification', 'string'],
+            5: ['page_number', 'string'],
+            6: ['figure_number', 'string'],
+            7: ['priority', 'integer'],
+            8: ['owner', 'integer'],
+            9: ['requirement_code', 'string'],
+            10: ['validated_date', 'date'],
+        }
         self._dic_attribute_updater = {
             'requirement_id': [None, 'edited', 1],
             'derived': [None, 'edited', 2],
@@ -113,6 +126,17 @@ class RequirementPanel(RAMSTKPanel):
 
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
+    def do_set_callbacks(self) -> None:
+        """Set callbacks for the Revision module view.
+
+        :return: None
+        """
+        super().do_set_cell_callbacks('mvw_editing_requirement',
+                                      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        self.tvwTreeView.dic_handler_id[
+            'changed'] = self.tvwTreeView.selection.connect(
+                'changed', self._on_row_change)
+
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).
 
@@ -145,22 +169,14 @@ class RequirementPanel(RAMSTKPanel):
             self._parent_id = _attributes['parent_id']
 
             _title = _("Analyzing Requirement {0:s}: {1:s}").format(
-                str(_attributes['requirement_code']), str(_attributes['name']))
+                str(_attributes['requirement_code']),
+                str(_attributes['description']))
 
             pub.sendMessage('selected_requirement', attributes=_attributes)
             pub.sendMessage('request_get_requirement_attributes',
                             node_id=self._record_id,
                             table='hazards')
             pub.sendMessage('request_set_title', title=_title)
-
-    def __do_set_callbacks(self) -> None:
-        """Set callbacks for the Requirement module view.
-
-        :return: None
-        """
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.
@@ -259,7 +275,7 @@ class ModuleView(RAMSTKModuleView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlRequirement = RequirementPanel()
+        self._pnlPanel = RequirementPanel()
 
         # Initialize public dictionary attributes.
 
@@ -268,6 +284,7 @@ class ModuleView(RAMSTKModuleView):
         # Initialize public scalar attributes.
 
         super().make_ui()
+        self._pnlPanel.do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active,

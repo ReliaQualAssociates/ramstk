@@ -6,6 +6,9 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Revision GTK3 module view."""
 
+# Standard Library Imports
+from typing import Dict, List
+
 # Third Party Imports
 import treelib
 from pubsub import pub
@@ -39,6 +42,11 @@ class RevisionPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            0: ['name', 'string'],
+            1: ['remarks', 'string'],
+            2: ['revision_code', 'string'],
+        }
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'availability_logistics': [None, 'edited', 1],
@@ -90,6 +98,16 @@ class RevisionPanel(RAMSTKPanel):
 
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
+    def do_set_callbacks(self) -> None:
+        """Set callbacks for the Revision module view.
+
+        :return: None
+        """
+        super().do_set_cell_callbacks('mvw_editing_revision', [0, 1, 2])
+        self.tvwTreeView.dic_handler_id[
+            'changed'] = self.tvwTreeView.selection.connect(
+                'changed', self._on_row_change)
+
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).
 
@@ -119,7 +137,6 @@ class RevisionPanel(RAMSTKPanel):
 
         if _attributes:
             self._record_id = _attributes['revision_id']
-            self._parent_id = _attributes['parent_id']
 
             _title = _("Analyzing Revision {0:s}: {1:s}").format(
                 str(_attributes['revision_code']), str(_attributes['name']))
@@ -129,15 +146,6 @@ class RevisionPanel(RAMSTKPanel):
                             node_id=self._record_id,
                             table='hazards')
             pub.sendMessage('request_set_title', title=_title)
-
-    def __do_set_callbacks(self) -> None:
-        """Set callbacks for the Revision module view.
-
-        :return: None
-        """
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.
@@ -246,6 +254,7 @@ class ModuleView(RAMSTKModuleView):
         # Initialize public scalar attributes.
 
         super().make_ui()
+        self._pnlPanel.do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_revision')
@@ -258,7 +267,7 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_revision')
 
-        pub.subscribe(self._on_insert, 'succeed_insert_revision')
+        pub.subscribe(self._on_insert_revision, 'succeed_insert_revision')
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRevision table.
@@ -300,7 +309,9 @@ class ModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_all_revisions')
 
-    def _on_insert_revision(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_insert_revision(self,
+                            node_id: int = 0,
+                            tree: treelib.Tree = '') -> None:
         """Add row to module view for newly added revision.
 
         :param node_id: the ID of the newly added revision.
