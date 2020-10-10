@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.requirement.listview.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.stakeholder.listview.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Requirement List View Module."""
+"""The RAMSTK Stakeholder Input list view module."""
 
 # Standard Library Imports
 from typing import Any, Dict, Tuple
@@ -36,7 +36,7 @@ class StakeholderPanel(RAMSTKPanel):
     # Define public scalar class attributes.
 
     def __init__(self) -> None:
-        """Initialize an instance of the Stakeholder panel."""
+        """Initialize an instance of the stakeholder input panel."""
         super().__init__()
 
         # Initialize private dictionary class attributes.
@@ -96,7 +96,7 @@ class StakeholderPanel(RAMSTKPanel):
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
         _cellmodel.append([""])
-        # Each _group is (Description, Group Type).
+
         # pylint: disable=unused-variable
         for __, _key in enumerate(affinities):
             _group = affinities[_key]
@@ -118,6 +118,27 @@ class StakeholderPanel(RAMSTKPanel):
             _group = stakeholders[_key]
             _cellmodel.append([_group])
 
+    def do_set_callbacks(self) -> None:
+        """Set callbacks for the stakeholder input list view.
+
+        :return: None
+        """
+        self.tvwTreeView.dic_handler_id[
+            'changed'] = self.tvwTreeView.selection.connect(
+                'changed', self._on_row_change)
+
+        _idx = 2
+        for _key in [
+                'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9',
+                'col10', 'col11', 'col12', 'col13', 'col14', 'col15'
+        ]:
+            _cell = self.tvwTreeView.get_column(
+                self.tvwTreeView.position[_key]).get_cells()[0]
+            _cell.connect('edited',
+                          super().on_cell_edit, 'lvw_editing_stakeholder',
+                          _idx)
+            _idx += 1
+
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
         """Set properties of the RAMSTKPanel() widgets.
 
@@ -132,7 +153,7 @@ class StakeholderPanel(RAMSTKPanel):
         self.tvwTreeView.set_tooltip_text(
             _("Displays the list of stakeholders."))
 
-        # Set the spinbutton cells to have a range of [1, 5] with a step of 1.
+        # Set the spin button cells to have a range of [1, 5] with a step of 1.
         for _key in ['col2', 'col7', 'col8']:
             _column = self.tvwTreeView.get_column(
                 self.tvwTreeView.position[_key])
@@ -169,8 +190,8 @@ class StakeholderPanel(RAMSTKPanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == 'stakeholder' and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
-            _name = _model.get_value(_row, self._lst_col_order[15])
+            _code = _model.get_value(_row, self._lst_col_order[1])
+            _name = _model.get_value(_row, self._lst_col_order[3])
             _title = _("Analyzing Stakeholder {0:s}: {1:s}").format(
                 str(_code), str(_name))
 
@@ -189,39 +210,12 @@ class StakeholderPanel(RAMSTKPanel):
 
         if _attributes:
             self._record_id = _attributes['stakeholder_id']
-            self._parent_id = _attributes['parent_id']
-
-            _title = _("Analyzing Stakeholder {0:s}: {1:s}").format(
-                str(_attributes['stakeholder_code']), str(_attributes['name']))
+            self._parent_id = _attributes['requirement_id']
 
             pub.sendMessage('selected_stakeholder', attributes=_attributes)
-            pub.sendMessage('request_get_stakeholder_attributes',
-                            node_id=self._record_id,
-                            table='hazards')
-            pub.sendMessage('request_set_title', title=_title)
-
-    def __do_set_callbacks(self) -> None:
-        """Set callbacks for the Stakeholder module view.
-
-        :return: None
-        """
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
-
-        _idx = 2
-        for _key in [
-                'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9',
-                'col10', 'col11', 'col12', 'col13', 'col14', 'col15'
-        ]:
-            _cell = self.tvwTreeView.get_column(
-                self.tvwTreeView.position[_key]).get_cells()[0]
-            _cell.connect('edited',
-                          super().on_cell_edit, 'lvw_editing_stakeholder',
-                          _idx)
-            _idx += 1
 
 
+# noinspection PyUnresolvedReferences
 class Stakeholders(RAMSTKListView):
     """Display Stakeholder Inputs associated with the selected Revision.
 
@@ -243,30 +237,21 @@ class Stakeholders(RAMSTKListView):
         toolbar buttons and pop-up menu.  The tooltips are listed in the
         order they appear on the toolbar or pop-up menu.
     """
-    # Define private dict class attributes.
-    _dic_keys = {
-        2: 'customer_rank',
-        3: 'description',
-        4: 'group',
-        5: 'improvement',
-        6: 'overall_weight',
-        7: 'planned_rank',
-        8: 'priority',
-        9: 'requirement_id',
-        10: 'stakeholder',
-        11: 'user_float_1',
-        12: 'user_float_2',
-        13: 'user_float_3',
-        14: 'user_float_4',
-        15: 'user_float_5'
-    }
-    _dic_column_keys = _dic_keys
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
 
     # Define private scalar class attributes.
     _module: str = 'stakeholder'
     _tablabel = "<span weight='bold'>" + _("Stakeholder\nInputs") + "</span>"
     _tabtooltip = _("Displays stakeholder inputs for the selected revision.")
-    _view_type: str = 'list'
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -341,7 +326,7 @@ class Stakeholders(RAMSTKListView):
         pub.subscribe(self._on_insert_stakeholder,
                       'succeed_insert_stakeholder')
 
-    def _do_insert_to_affinity_group(self, new_text: str) -> None:
+    def _do_add_to_affinity_group(self, new_text: str) -> None:
         """Add an entry to the RAMSTK_AFFINITY_GROUP dictionary.
 
         :param new_text: the name of the new group to add to the
@@ -356,6 +341,7 @@ class Stakeholders(RAMSTKListView):
         self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_new_key] = str(
             new_text)
 
+    # pylint: disable=unused-argument
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate the selected Stakeholder input.
 
@@ -367,6 +353,7 @@ class Stakeholders(RAMSTKListView):
                         node_id=self._record_id)
         super().do_set_cursor_active()
 
+    # pylint: disable=unused-argument
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate all Stakeholder inputs.
 
@@ -377,6 +364,7 @@ class Stakeholders(RAMSTKListView):
         pub.sendMessage('request_calculate_all_stakeholders')
         super().do_set_cursor_active()
 
+    # pylint: disable=unused-argument
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete the selected Stakeholder.
 
@@ -399,6 +387,7 @@ class Stakeholders(RAMSTKListView):
 
         _dialog.do_destroy()
 
+    # pylint: disable=unused-argument
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """Request to save the currently selected Stakeholder Input.
 
@@ -408,6 +397,7 @@ class Stakeholders(RAMSTKListView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_update_stakeholder', node_id=self._record_id)
 
+    # pylint: disable=unused-argument
     def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Request to save all the Stakeholder Inputs.
 
@@ -429,7 +419,7 @@ class Stakeholders(RAMSTKListView):
         self._pnlPanel.on_insert(_data)
 
     def __make_ui(self) -> None:
-        """Set up the RAMSTKTreeView() for Stakeholders.
+        """Build the user interface for the stakeholder input list view.
 
         :return: None
         """
@@ -440,3 +430,4 @@ class Stakeholders(RAMSTKListView):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS)
         self._pnlPanel.do_load_stakeholders(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_STAKEHOLDERS)
+        self._pnlPanel.do_set_callbacks()

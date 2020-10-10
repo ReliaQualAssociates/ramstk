@@ -142,9 +142,6 @@ class RevisionPanel(RAMSTKPanel):
                 str(_attributes['revision_code']), str(_attributes['name']))
 
             pub.sendMessage('selected_revision', attributes=_attributes)
-            pub.sendMessage('request_get_revision_attributes',
-                            node_id=self._record_id,
-                            table='hazards')
             pub.sendMessage('request_set_title', title=_title)
 
     def __do_set_properties(self) -> None:
@@ -253,8 +250,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui()
-        self._pnlPanel.do_set_callbacks()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_revision')
@@ -321,3 +317,11 @@ class ModuleView(RAMSTKModuleView):
         """
         _data = tree.get_node(node_id).data['revision'].get_attributes()
         self._pnlPanel.on_insert(_data)
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the module view.
+
+        :return: None
+        """
+        super().make_ui()
+        self._pnlPanel.do_set_callbacks()
