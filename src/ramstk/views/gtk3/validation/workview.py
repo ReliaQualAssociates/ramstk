@@ -456,12 +456,12 @@ class TaskEffortPanel(RAMSTKPanel):
 
         # Initialize private dict instance attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            11: ['time_minimum', 'float'],
-            12: ['time_average', 'float'],
-            13: ['time_maximum', 'float'],
-            14: ['cost_minimum', 'float'],
-            15: ['cost_average', 'float'],
-            16: ['cost_maximum', 'float'],
+            12: ['time_minimum', 'float'],
+            13: ['time_average', 'float'],
+            14: ['time_maximum', 'float'],
+            15: ['cost_minimum', 'float'],
+            16: ['cost_average', 'float'],
+            17: ['cost_maximum', 'float'],
         }
 
         # Initialize private list instance attributes.

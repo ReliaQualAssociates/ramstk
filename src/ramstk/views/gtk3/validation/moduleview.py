@@ -7,6 +7,9 @@
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Validation GTK3 module view."""
 
+# Standard Library Imports
+from typing import Dict, List
+
 # Third Party Imports
 import treelib
 from pubsub import pub
@@ -40,6 +43,26 @@ class ValidationPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            0: ['description', 'string'],
+            1: ['task_type', 'integer'],
+            2: ['task_specification', 'string'],
+            3: ['measurement_unit', 'integer'],
+            4: ['acceptable_minimum', 'float'],
+            5: ['acceptable_maximum', 'float'],
+            6: ['acceptable_mean', 'float'],
+            7: ['acceptable_variance', 'float'],
+            8: ['date_start', 'string'],
+            9: ['date_end', 'string'],
+            10: ['status', 'float'],
+            11: ['name', 'string'],
+            12: ['time_minimum', 'float'],
+            14: ['time_average', 'float'],
+            15: ['time_maximum', 'float'],
+            16: ['cost_minimum', 'float'],
+            17: ['cost_average', 'float'],
+            18: ['cost_maximum', 'float'],
+        }
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'validation_id': [None, 'edited', 1],
@@ -250,6 +273,9 @@ class ModuleView(RAMSTKModuleView):
         # Initialize public scalar attributes.
 
         super().make_ui()
+        self._pnlPanel.do_set_cell_callbacks(
+            'mvw_editing_validation',
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_validation_2')

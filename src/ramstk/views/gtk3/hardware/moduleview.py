@@ -42,6 +42,40 @@ class HardwarePanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            2: ['alt_part_number', 'text'],
+            3: ['cage_code', 'text'],
+            4: ['comp_ref_des', 'text'],
+            5: ['cost', 'float'],
+            6: ['cost_failure', 'float'],
+            7: ['cost_hour', 'float'],
+            8: ['description', 'text'],
+            9: ['duty_cycle', 'float'],
+            10: ['figure_number', 'text'],
+            11: ['lcn', 'text'],
+            12: ['level', 'integer'],
+            13: ['manufacturer_id', 'integer'],
+            14: ['mission_time', 'float'],
+            15: ['name', 'text'],
+            16: ['nsn', 'text'],
+            17: ['page_number', 'text'],
+            18: ['parent_id', 'integer'],
+            19: ['part', 'boolean'],
+            20: ['part_number', 'text'],
+            21: ['quantity', 'integer'],
+            22: ['ref_des', 'text'],
+            23: ['remarks', 'text'],
+            24: ['repairable', 'boolean'],
+            25: ['specification_number', 'text'],
+            26: ['tagged_part', 'boolean'],
+            27: ['total_part_count', 'integer'],
+            28: ['total_power_dissipation', 'float'],
+            29: ['year_of_manufacture', 'integer'],
+            30: ['cost_type_id', 'integer'],
+            31: ['attachments', 'text'],
+            32: ['category_id', 'integer'],
+            33: ['subcategory_id', 'integer'],
+        }
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0, 33],
             'hardware_id': [None, 'edited', 1, 33],
@@ -216,40 +250,6 @@ class ModuleView(RAMSTKModuleView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            2: ['alt_part_number', 'text'],
-            3: ['cage_code', 'text'],
-            4: ['comp_ref_des', 'text'],
-            5: ['cost', 'float'],
-            6: ['cost_failure', 'float'],
-            7: ['cost_hour', 'float'],
-            8: ['description', 'text'],
-            9: ['duty_cycle', 'float'],
-            10: ['figure_number', 'text'],
-            11: ['lcn', 'text'],
-            12: ['level', 'integer'],
-            13: ['manufacturer_id', 'integer'],
-            14: ['mission_time', 'float'],
-            15: ['name', 'text'],
-            16: ['nsn', 'text'],
-            17: ['page_number', 'text'],
-            18: ['parent_id', 'integer'],
-            19: ['part', 'boolean'],
-            20: ['part_number', 'text'],
-            21: ['quantity', 'integer'],
-            22: ['ref_des', 'text'],
-            23: ['remarks', 'text'],
-            24: ['repairable', 'boolean'],
-            25: ['specification_number', 'text'],
-            26: ['tagged_part', 'boolean'],
-            27: ['total_part_count', 'integer'],
-            28: ['total_power_dissipation', 'float'],
-            29: ['year_of_manufacture', 'integer'],
-            30: ['cost_type_id', 'integer'],
-            31: ['attachments', 'text'],
-            32: ['category_id', 'integer'],
-            33: ['subcategory_id', 'integer'],
-        }
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/hardware.png')
@@ -310,6 +310,10 @@ class ModuleView(RAMSTKModuleView):
         # Initialize public scalar attributes.
 
         super().make_ui()
+        self._pnlPanel.do_set_cell_callbacks('mvw_editing_hardware', [
+            2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
+        ])
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active,

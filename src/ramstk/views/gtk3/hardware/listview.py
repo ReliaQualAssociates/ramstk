@@ -39,7 +39,6 @@ class HardwareRequirement(RAMSTKListView):
         "Hardware::Requirement\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Hardware::Requirement matrix "
                     "for the selected revision.")
-    _view_type: str = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -62,6 +61,7 @@ class HardwareRequirement(RAMSTKListView):
         self._lst_tooltips = [
             _("Save changes to the Hardware::Requirement matrix.")
         ]
+        self._view_type = 'matrix'
 
         # Initialize private scalar attributes.
 
@@ -102,7 +102,6 @@ class HardwareValidation(RAMSTKListView):
         "Hardware::Validation\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Hardware::Validation matrix "
                     "for the selected revision.")
-    _view_type: str = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -125,6 +124,7 @@ class HardwareValidation(RAMSTKListView):
         self._lst_tooltips = [
             _("Save changes to the Hardware::Validation matrix.")
         ]
+        self._view_type = 'matrix'
 
         # Initialize private scalar attributes.
 

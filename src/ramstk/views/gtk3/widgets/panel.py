@@ -1,4 +1,4 @@
-# pylint: disable=non-parent-init-called
+# pylint: disable=non-parent-init-called, disable=too-many-public-methods
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.widgets.panel.py is part of the RAMSTK Project
@@ -27,6 +27,7 @@ from .combo import RAMSTKComboBox
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import do_make_label_group
+from .matrixview import RAMSTKMatrixView
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
@@ -169,10 +170,8 @@ class RAMSTKPanel(RAMSTKFrame):
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Load the data into a RAMSTKTreeView row.
 
-        :param attributes: the Hardware attributes dict for the row to be
-            loaded in the WorkView worksheet.
+        :param attributes: the attributes dict for the row to be loaded.
         :return: None
-        :rtype: None
         """
         _model = self.tvwTreeView.get_model()
 
@@ -190,7 +189,6 @@ class RAMSTKPanel(RAMSTKFrame):
 
         :param tree: the treelib Tree containing the module to load.
         :return: None
-        :rtype: None
         """
         _model = self.tvwTreeView.get_model()
         _model.clear()
@@ -278,11 +276,23 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.add(_scrollwindow)
 
+    def do_make_panel_matrixview(self, matrix: RAMSTKMatrixView) -> None:
+        """Create a panel with a RAMSTKMatrixView().
+
+        :param matrix: the matrix to display in the panel.
+        :return: None
+        """
+        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(matrix)
+
+        self.add(_scrollwindow)
+
     def do_make_panel_treeview(self) -> None:
         """Create a panel with a RAMSTKTreeView().
 
         :return: None
-        :rtype: None
         """
         self._lst_widgets.append(self.tvwTreeView)
 

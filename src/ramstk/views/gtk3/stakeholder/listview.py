@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Stakeholder Input list view module."""
+"""The RAMSTK Stakeholder Input list view."""
 
 # Standard Library Imports
 from typing import Any, Dict, Tuple

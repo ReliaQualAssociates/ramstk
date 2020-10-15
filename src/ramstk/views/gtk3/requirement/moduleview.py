@@ -173,9 +173,6 @@ class RequirementPanel(RAMSTKPanel):
                 str(_attributes['description']))
 
             pub.sendMessage('selected_requirement', attributes=_attributes)
-            pub.sendMessage('request_get_requirement_attributes',
-                            node_id=self._record_id,
-                            table='hazards')
             pub.sendMessage('request_set_title', title=_title)
 
     def __do_set_properties(self) -> None:

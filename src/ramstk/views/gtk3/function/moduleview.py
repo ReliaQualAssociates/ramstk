@@ -42,6 +42,11 @@ class FunctionPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = {
+            5: ['function_code', 'text'],
+            15: ['name', 'text'],
+            17: ['remarks', 'text'],
+        }
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'function_id': [None, 'edited', 1],
@@ -205,11 +210,6 @@ class ModuleView(RAMSTKModuleView):
             to_tty=False)
 
         # Initialize private dictionary attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            5: ['function_code', 'text'],
-            15: ['name', 'text'],
-            17: ['remarks', 'text'],
-        }
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/function.png')
@@ -254,6 +254,8 @@ class ModuleView(RAMSTKModuleView):
         # Initialize public scalar attributes.
 
         super().make_ui()
+        self._pnlPanel.do_set_cell_callbacks('mvw_editing_function',
+                                             [5, 15, 17])
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, 'succeed_delete_function')
