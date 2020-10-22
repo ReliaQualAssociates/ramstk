@@ -1,3 +1,5 @@
+***NOTE:*** You should pull from the release/v1.0.0 branch rather than the master branch.
+
 # The RAMS ToolKit (RAMSTK)
 > A toolkit for **R**eliability, **A**vailability, **M**aintainability, and **S**afety (RAMS) analyses.
 
