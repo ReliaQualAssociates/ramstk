@@ -14,8 +14,7 @@ from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 class FunctionHardware(RAMSTKListView):
-    """
-    Display all the Function::Hardware matrix for the selected Revision.
+    """Display all the Function::Hardware matrix for the selected Revision.
 
     The attributes of the Function::Hardware Matrix View are:
 
@@ -42,8 +41,7 @@ class FunctionHardware(RAMSTKListView):
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the List View for the Function package.
+        """Initialize the List View for the Function package.
 
         :param configuration: the RAMSTK Configuration class instance.
         :param logger: the RAMSTKLogManager class instance.
