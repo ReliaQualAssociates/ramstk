@@ -13,6 +13,7 @@ from ramstk.controllers.managers import (
 )
 
 # RAMSTK Local Imports
+from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .fmea.analysismanager import AnalysisManager as amFMEA
 from .fmea.datamanager import DataManager as dmFMEA
 from .function.analysismanager import AnalysisManager as amFunction

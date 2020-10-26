@@ -1,4 +1,4 @@
-# pylint: disable=non-parent-init-called, disable=too-many-public-methods
+# pylint: disable=non-parent-init-called, too-many-public-methods
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.widgets.panel.py is part of the RAMSTK Project
