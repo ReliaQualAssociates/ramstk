@@ -29,6 +29,7 @@ from .requirement.matrixmanager import MatrixManager as mmRequirement
 from .revision.datamanager import DataManager as dmRevision
 from .stakeholder.analysismanager import AnalysisManager as amStakeholder
 from .stakeholder.datamanager import DataManager as dmStakeholder
+from .usage_profile.datamanager import DataManager as dmUsageProfile
 from .validation.analysismanager import AnalysisManager as amValidation
 from .validation.datamanager import DataManager as dmValidation
 from .validation.matrixmanager import MatrixManager as mmValidation
