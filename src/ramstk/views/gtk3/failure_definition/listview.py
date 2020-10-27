@@ -62,7 +62,7 @@ class FailureDefinitionPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_tree,
-                      'succeed_get_failure_definitions_attributes')
+                      'succeed_retrieve_failure_definitions')
         pub.subscribe(super().on_delete, 'succeed_delete_failure_definition')
 
         pub.subscribe(self._on_module_switch, 'lvwSwitchedPage')

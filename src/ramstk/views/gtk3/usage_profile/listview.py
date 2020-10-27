@@ -17,6 +17,9 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.models.programdb import (
+    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
+)
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKPanel
 
@@ -123,6 +126,7 @@ class UsageProfilePanel(RAMSTKPanel):
         self._title = _("Usage Profile")
 
         # Initialize public dictionary class attributes.
+        self.dic_icons = {'mission': None, 'phase': None, 'environment': None}
 
         # Initialize public list class attributes.
 
@@ -131,15 +135,14 @@ class UsageProfilePanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super()._do_load_tree,
-                      'succeed_get_usage_profile_attributes')
-        pub.subscribe(super()._do_load_treee, 'succeed_insert_environment')
-        pub.subscribe(super()._do_load_tree, 'succeed_insert_mission')
-        pub.subscribe(super()._do_load_tree, 'succeed_insert_mission_phase')
         pub.subscribe(super().on_delete, 'succeed_delete_environment')
         pub.subscribe(super().on_delete, 'succeed_delete_mission')
         pub.subscribe(super().on_delete, 'succeed_delete_mission_phase')
 
+        pub.subscribe(self._do_load_tree, 'succeed_retrieve_usage_profile')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_environment')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_mission')
+        pub.subscribe(self._do_load_tree, 'succeed_insert_mission_phase')
         pub.subscribe(self._on_module_switch, 'lvwSwitchedPage')
 
     def do_set_callbacks(self) -> None:
@@ -151,10 +154,10 @@ class UsageProfilePanel(RAMSTKPanel):
             'changed'] = self.tvwTreeView.selection.connect(
                 'changed', self._on_row_change)
 
-        _idx = 2
+        _idx = 1
         for _key in [
-                'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9',
-                'col10', 'col11', 'col12', 'col13', 'col14', 'col15'
+                'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8',
+                'col9', 'col10'
         ]:
             _cell = self.tvwTreeView.get_column(
                 self.tvwTreeView.position[_key]).get_cells()[0]
@@ -182,43 +185,33 @@ class UsageProfilePanel(RAMSTKPanel):
 
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         """
-        _entity = kwargs.get('entity', None)
-        _identifier = kwargs.get('identifier', 0)
-        _row = kwargs.get('row', None)
+        _entity: RAMSTKEnvironment = kwargs.get('entity', None)
+        _identifier: int = kwargs.get('identifier', 0)  # type: ignore
+        _row: Gtk.TreeIter = kwargs.get('row', None)
 
         _model = self.tvwTreeView.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._dic_icons['environment'], 22, 22)
+            self.dic_icons['environment'], 22, 22)
         _attributes = [
-            _icon, _entity.environment_id, _entity.name, '', _entity.units,
+            _entity.environment_id, _entity.name, '', _entity.units,
             _entity.minimum, _entity.maximum, _entity.mean, _entity.variance,
-            _identifier, 1, 'environment'
+            _identifier, 1, 'environment', _icon
         ]
 
         try:
             _new_row = _model.append(_row, _attributes)
         except TypeError:
-            _user_msg = _("One or more Environments for revision ID {0:d} had "
-                          "the wrong data type in it's data package and was "
-                          "not displayed in the Usage "
-                          "Profile.".format(self._revision_id))
             _debug_msg = (
-                "RAMSTK ERROR: Data for Environment ID {0:s} for Revision ID "
-                "{1:s} is the wrong type for one or more columns.".format(
-                    str(_entity.environment_id), str(self._revision_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                "RAMSTK ERROR: Data for Environment ID {0:s} is the wrong "
+                "type for one or more columns.".format(
+                    str(_entity.environment_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Environments for revision ID {0:d} was "
-                          "missing some of it's data and was not displayed in "
-                          "the Usage Profile.".format(self._revision_id))
             _debug_msg = (
-                "RAMSTK ERROR: Too few fields for Environment ID {0:s} for "
-                "Revision ID {1:s}.".format(str(_entity.environment_id),
-                                            str(self._revision_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+                "RAMSTK ERROR: Too few fields for Environment ID {0:s}.".
+                format(str(_entity.environment_id)))
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
@@ -229,18 +222,18 @@ class UsageProfilePanel(RAMSTKPanel):
 
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         """
-        _entity = kwargs.get('entity', None)
-        _identifier = kwargs.get('identifier', 0)
-        _row = kwargs.get('row', None)
+        _entity: RAMSTKMission = kwargs.get('entity', None)
+        _identifier: int = kwargs.get('identifier', 0)  # type: ignore
+        _row: Gtk.TreeIter = kwargs.get('row', None)
 
         _model = self.tvwTreeView.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._dic_icons['mission'], 22, 22)
+            self.dic_icons['mission'], 22, 22)
         _attributes = [
-            _icon, _entity.mission_id, _entity.description, '',
-            _entity.time_units, 0.0, _entity.mission_time, 0.0, 0.0,
-            _identifier, 0, 'mission'
+            _entity.mission_id, _entity.description, '', _entity.time_units,
+            0.0, _entity.mission_time, 0.0, 0.0, _identifier, 0, 'mission',
+            _icon
         ]
 
         try:
@@ -249,20 +242,17 @@ class UsageProfilePanel(RAMSTKPanel):
             _user_msg = _("One or more Missions had the wrong data type in "
                           "it's data package and is not displayed in the "
                           "Usage Profile.")
-            _debug_msg = (
-                "Data for Mission ID {0:s} for Revision ID {1:s} is the wrong "
-                "type for one or more columns.".format(str(_entity.mission_id),
-                                                       str(self._revision_id)))
+            _debug_msg = ("Data for Mission ID {0:s} is the wrong "
+                          "type for one or more columns.".format(
+                              str(_entity.mission_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
         except ValueError:
             _user_msg = _("One or more Missions was missing some of it's data "
                           "and is not displayed in the Usage Profile.")
-            _debug_msg = (
-                "Too few fields for Mission ID {0:s} for Revision ID "
-                "{1:s}.".format(str(_entity.mission_id),
-                                str(self._revision_id)))
+            _debug_msg = ("Too few fields for Mission ID {0:s}.".format(
+                str(_entity.mission_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -274,18 +264,18 @@ class UsageProfilePanel(RAMSTKPanel):
 
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
         """
-        _entity = kwargs.get('entity', None)
-        _identifier = kwargs.get('identifier', 0)
-        _row = kwargs.get('row', None)
+        _entity: RAMSTKMissionPhase = kwargs.get('entity', None)
+        _identifier: int = kwargs.get('identifier', 0)  # type: ignore
+        _row: Gtk.TreeIter = kwargs.get('row', None)
 
         _model = self.tvwTreeView.get_model()
 
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._dic_icons['phase'], 22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons['phase'],
+                                                       22, 22)
         _attributes = [
-            _icon, _entity.phase_id, _entity.name, _entity.description, '',
+            _entity.phase_id, _entity.name, _entity.description, '',
             _entity.phase_start, _entity.phase_end, 0.0, 0.0, _identifier, 0,
-            'phase'
+            'phase', _icon
         ]
 
         try:
@@ -295,9 +285,8 @@ class UsageProfilePanel(RAMSTKPanel):
                           "in it's data package and is not displayed in the "
                           "Usage Profile.")
             _debug_msg = (
-                "RAMSTK ERROR: Data for Mission Phase ID {0:s} for Revision "
-                "ID {1:s} is the wrong type for one or more columns.".format(
-                    str(_entity.phase_id), str(self._revision_id)))
+                "RAMSTK ERROR: Data for Mission Phase ID {0:s} is the wrong "
+                "type for one or more columns.".format(str(_entity.phase_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -306,9 +295,8 @@ class UsageProfilePanel(RAMSTKPanel):
                           "it's data and is not displayed in the Usage "
                           "Profile.")
             _debug_msg = (
-                "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s} for "
-                "Revision ID {1:s}.".format(str(_entity.phase_id),
-                                            str(self._revision_id)))
+                "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s}.".
+                format(str(_entity.phase_id)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
@@ -332,27 +320,34 @@ class UsageProfilePanel(RAMSTKPanel):
         # to clear the tree in preparation for the load.
         if _entity is None:
             _model.clear()
+        else:
+            _entity = _entity['usage_profile']
 
         try:
             if _entity.is_mission:
-                _new_row = self._do_load_mission(entity=_entity,
-                                                 identifier=_node.identifier,
-                                                 row=row)
+                _new_row = self._do_load_mission(**{
+                    'entity': _entity,
+                    'identifier': _node.identifier,
+                    'row': row
+                })
             elif _entity.is_phase:
-                _new_row = self._do_load_phase(entity=_entity,
-                                               identifier=_node.identifier,
-                                               row=row)
+                _new_row = self._do_load_phase(**{
+                    'entity': _entity,
+                    'identifier': _node.identifier,
+                    'row': row
+                })
             elif _entity.is_env:
-                _new_row = self._do_load_environment(
-                    entity=_entity, identifier=_node.identifier, row=row)
+                _new_row = self._do_load_environment(**{
+                    'entity': _entity,
+                    'identifier': _node.identifier,
+                    'row': row
+                })
         except AttributeError:
             _user_msg = _("One or more Usage Profile line items was "
                           "missing it's data package and is not "
                           "displayed in the Usage Profile.")
-            _debug_msg = (
-                "There is no data package for Usage Profile ID {0:s} for "
-                "Revision ID {1:s}.".format(str(_node.identifier),
-                                            str(self._revision_id)))
+            _debug_msg = ("There is no data package for Usage Profile ID {"
+                          "0:s}.".format(str(_node.identifier)))
             _new_row = None
 
         for _n in tree.children(_node.identifier):
@@ -399,7 +394,7 @@ class UsageProfilePanel(RAMSTKPanel):
                 self._parent_id = -1
 
             try:
-                _level = _model.get_value(_row, 11)
+                _level = _model.get_value(_row, 10)
                 self._dic_attribute_keys = self._dic_element_keys[_level]
                 self._dic_attribute_updater = self._dic_attributes[_level]
             except TypeError:
@@ -410,7 +405,7 @@ class UsageProfilePanel(RAMSTKPanel):
             # Change the column headings depending on what is being selected.
             i = 0
             _columns = self.tvwTreeView.get_columns()
-            for _heading in super().do_get_headings(_level):
+            for _heading in self._dic_headings[_level]:
                 _label = Gtk.Label()
                 _label.set_line_wrap(True)
                 _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -508,6 +503,7 @@ class UsageProfile(RAMSTKListView):
         ]
 
         # Initialize private scalar attributes.
+        self._pnlPanel = UsageProfilePanel()
 
         # Initialize public dictionary attributes.
 
@@ -515,7 +511,7 @@ class UsageProfile(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active,
@@ -536,32 +532,6 @@ class UsageProfile(RAMSTKListView):
                       'fail_insert_mission_phase')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_usage_profile')
-
-    def __do_request_delete(self, level: str) -> None:
-        """Send the correct delete message.
-
-        :param level: the indenture level of the Usage Profile element to
-            delete.
-        :return: None
-        """
-        _model, _row = self.tvwTreeView.selection.get_selected()
-        _node_id = _model.get_value(_row, 9)
-
-        super().do_set_cursor_busy()
-        if level == 'mission':
-            pub.sendMessage('request_delete_mission',
-                            revision_id=self._revision_id,
-                            node_id=_node_id)
-        elif level == 'phase':
-            pub.sendMessage('request_delete_mission_phase',
-                            revision_id=self._revision_id,
-                            mission_id=self._parent_id,
-                            node_id=_node_id)
-        elif level == 'environment':
-            pub.sendMessage('request_delete_environment',
-                            revision_id=self._revision_id,
-                            phase_id=self._parent_id,
-                            node_id=_node_id)
 
     # pylint: disable=unused-argument
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -656,3 +626,41 @@ class UsageProfile(RAMSTKListView):
                             revision_id=self._revision_id,
                             mission_id=_mission_id,
                             phase_id=_phase_id)
+
+    def __do_request_delete(self, level: str) -> None:
+        """Send the correct delete message.
+
+        :param level: the indenture level of the Usage Profile element to
+            delete.
+        :return: None
+        """
+        _model, _row = self.tvwTreeView.selection.get_selected()
+        _node_id = _model.get_value(_row, 9)
+
+        super().do_set_cursor_busy()
+        if level == 'mission':
+            pub.sendMessage('request_delete_mission',
+                            revision_id=self._revision_id,
+                            node_id=_node_id)
+        elif level == 'phase':
+            pub.sendMessage('request_delete_mission_phase',
+                            revision_id=self._revision_id,
+                            mission_id=self._parent_id,
+                            node_id=_node_id)
+        elif level == 'environment':
+            pub.sendMessage('request_delete_environment',
+                            revision_id=self._revision_id,
+                            phase_id=self._parent_id,
+                            node_id=_node_id)
+
+    def __make_ui(self):
+        """Build the user interface for the usage profile list view.
+
+        :return: None
+        """
+        super().make_ui()
+
+        self._pnlPanel.do_set_properties()
+        self._pnlPanel.do_set_callbacks()
+        for _element in ['mission', 'phase', 'environment']:
+            self._pnlPanel.dic_icons[_element] = self._dic_icons[_element]

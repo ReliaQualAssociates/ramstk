@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Revision Package Data Model."""
+"""Failure Definition Package Data Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -86,7 +86,7 @@ class DataManager(RAMSTKDataManager):
 
             self.dao.do_insert(_failure_definition)
 
-            self.last_id = _failure_definition.definition_id
+            self.last_id: int = _failure_definition.definition_id
 
             self.tree.create_node(
                 tag=_failure_definition.definition,

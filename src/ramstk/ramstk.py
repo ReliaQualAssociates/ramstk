@@ -4,14 +4,16 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""This is the RAMSTK program manager."""
+"""The RAMSTK program manager."""
 
 # Standard Library Imports
 from typing import Dict
 
 # Third Party Imports
 from pubsub import pub
-from sqlalchemy.exc import ArgumentError, NoSuchModuleError, OperationalError
+from sqlalchemy.exc import (  # type: ignore
+    ArgumentError, NoSuchModuleError, OperationalError
+)
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
@@ -20,8 +22,7 @@ from ramstk.exceptions import DataAccessError
 
 
 class RAMSTKProgramManager:
-    """
-    The RAMSTK program manager class.
+    """The RAMSTK program manager class.
 
     The RAMSTK program manager is responsible for managing all the analysis,
     data, and matrix managers associated with the RAMSTK program database that
@@ -38,12 +39,7 @@ class RAMSTKProgramManager:
     :type program_dao: :class:`ramstk.db.base.BaseDatabase`
     """
     def __init__(self) -> None:
-        """
-        Initialize an instance of the RAMSTK program manager.
-
-        :param user_configuration: the RAMSTKUserConfiguration() instance.
-        :type user_configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
-        """
+        """Initialize an instance of the RAMSTK program manager."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -53,6 +49,9 @@ class RAMSTKProgramManager:
         # Initialize public dictionary attributes.
         self.dic_managers: Dict[str, Dict[str, object]] = {
             'revision': {
+                'data': None
+            },
+            'failure_definition': {
                 'data': None
             },
             'function': {
@@ -84,6 +83,9 @@ class RAMSTKProgramManager:
             'pof': {
                 'data': None
             },
+            'usage_profile': {
+                'data': None
+            },
             'validation': {
                 'analysis': None,
                 'data': None,
@@ -92,7 +94,9 @@ class RAMSTKProgramManager:
             'options': {
                 'data': None
             },
-            'exim': {'export': None}
+            'exim': {
+                'export': None
+            }
         }
 
         # Initialize public list attributes.
@@ -110,8 +114,7 @@ class RAMSTKProgramManager:
 
     def do_create_program(self, program_db: BaseDatabase,
                           database: Dict) -> None:
-        """
-        Create a new RAMSTK Program database.
+        """Create a new RAMSTK Program database.
 
         :param program_db: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
@@ -132,8 +135,7 @@ class RAMSTKProgramManager:
 
     def do_open_program(self, program_db: BaseDatabase,
                         database: Dict[str, str]) -> None:
-        """
-        Open an RAMSTK Program database for analyses.
+        """Open an RAMSTK Program database for analyses.
 
         :param program_dao: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
@@ -162,9 +164,8 @@ class RAMSTKProgramManager:
             pub.sendMessage('fail_connect_program_database',
                             error_message=_error_msg)
         except OperationalError:
-            _error_msg = (
-                "The database {0:s} does not exist.".format(
-                    database['database']))
+            _error_msg = ("The database {0:s} does not exist.".format(
+                database['database']))
             pub.sendMessage('fail_connect_program_database',
                             error_message=_error_msg)
         except DataAccessError as _error:
@@ -172,8 +173,7 @@ class RAMSTKProgramManager:
                             error_message=_error.msg)
 
     def do_close_program(self) -> None:
-        """
-        Close the open RAMSTK Program database.
+        """Close the open RAMSTK Program database.
 
         :return: None
         :rtype: None
@@ -190,8 +190,7 @@ class RAMSTKProgramManager:
 
     @staticmethod
     def do_save_program() -> None:
-        """
-        Save the open RAMSTK Program database.
+        """Save the open RAMSTK Program database.
 
         :return: None
         :rtype: None

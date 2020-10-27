@@ -22,9 +22,9 @@ from ramstk.configuration import (
 )
 from ramstk.controllers import (
     amFMEA, amFunction, amHardware, amStakeholder, amValidation,
-    dmFMEA, dmFunction, dmHardware, dmOptions, dmPoF,
-    dmRequirement, dmRevision, dmStakeholder, dmValidation,
-    mmFunction, mmHardware, mmRequirement, mmValidation
+    dmFailureDefinition, dmFMEA, dmFunction, dmHardware, dmOptions,
+    dmPoF, dmRequirement, dmRevision, dmStakeholder, dmUsageProfile,
+    dmValidation, mmFunction, mmHardware, mmRequirement, mmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
@@ -34,8 +34,7 @@ from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
 
 
 def do_connect_to_site_db(conn_info, logger) -> BaseDatabase:
-    """
-    Connect to the site (common) database.
+    """Connect to the site (common) database.
 
     :param dict conn_info: the site database connection information.
     :param logger: the RAMSTKLogManager() to use for logging status.
@@ -58,8 +57,7 @@ def do_copy_configuration_values(
         user_configuration: RAMSTKUserConfiguration,
         site_configuration: RAMSTKSiteConfiguration
 ) -> RAMSTKUserConfiguration:
-    """
-    Copy some values from the site configuration to the user configuration.
+    """Copy some values from the site configuration to the user configuration.
 
     :param user_configuration: the instance of the RAMSTKUserConfiguration()
         to add volatile data to.
@@ -113,8 +111,7 @@ def do_copy_configuration_values(
 
 def do_read_site_configuration(logger: RAMSTKLogManager) -> \
         RAMSTKSiteConfiguration:
-    """
-    Create a site configuration instance.
+    """Create a site configuration instance.
 
     :param logger: the logging.Logger() instance to use for writing to the
         runtime log file.
@@ -124,8 +121,8 @@ def do_read_site_configuration(logger: RAMSTKLogManager) -> \
     :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     """
     def on_fail_create_site_configuration(error_message: str) -> None:
-        """
-        Logs the error message when there's a failure to create the site conf.
+        """Logs the error message when there's a failure to create the site
+        conf.
 
         :param str error_message: the error message raised by the failure.
         :return: None
@@ -149,16 +146,15 @@ def do_read_site_configuration(logger: RAMSTKLogManager) -> \
 
 def do_read_user_configuration(
 ) -> Tuple[RAMSTKUserConfiguration, RAMSTKLogManager]:
-    """
-    Create a user configuration instance.
+    """Create a user configuration instance.
 
     :return: _configuration; the RAMSTKUserConfiguraion() instance to use for
         this run of RAMSTK.
     :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
     def on_fail_create_user_configuration(error_message: str) -> None:
-        """
-        Logs the error message when there's a failure to create the user conf.
+        """Logs the error message when there's a failure to create the user
+        conf.
 
         :param str error_message: the error message raised by the failure.
         :return: None
@@ -234,9 +230,12 @@ def the_one_ring() -> None:
         user_configuration)
     _program_mgr.dic_managers['hardware']['data'] = dmHardware()
     _program_mgr.dic_managers['hardware']['matrix'] = mmHardware()
+    _program_mgr.dic_managers['failure_definition']['data'] = \
+        dmFailureDefinition()
     _program_mgr.dic_managers['fmea']['analysis'] = amFMEA(user_configuration)
     _program_mgr.dic_managers['fmea']['data'] = dmFMEA()
     _program_mgr.dic_managers['pof']['data'] = dmPoF()
+    _program_mgr.dic_managers['usage_profile']['data'] = dmUsageProfile()
     _program_mgr.dic_managers['validation']['analysis'] = amValidation(
         user_configuration)
     _program_mgr.dic_managers['validation']['data'] = dmValidation()
