@@ -184,6 +184,7 @@ class UsageProfilePanel(RAMSTKPanel):
         """Load an environmental condition into the RAMSTK TreeView.
 
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
+        :rtype: :class:`Gtk.TreeIter`
         """
         _entity: RAMSTKEnvironment = kwargs.get('entity', None)
         _identifier: int = kwargs.get('identifier', 0)  # type: ignore
@@ -346,8 +347,8 @@ class UsageProfilePanel(RAMSTKPanel):
             _user_msg = _("One or more Usage Profile line items was "
                           "missing it's data package and is not "
                           "displayed in the Usage Profile.")
-            _debug_msg = ("There is no data package for Usage Profile ID {"
-                          "0:s}.".format(str(_node.identifier)))
+            _debug_msg = ("There is no data package for Usage Profile ID "
+                          "{0:s}.".format(str(_node.identifier)))
             self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
             self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None

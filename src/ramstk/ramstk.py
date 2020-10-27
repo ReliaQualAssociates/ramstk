@@ -11,6 +11,7 @@ from typing import Dict
 
 # Third Party Imports
 from pubsub import pub
+# noinspection PyPackageRequirements
 from sqlalchemy.exc import (  # type: ignore
     ArgumentError, NoSuchModuleError, OperationalError
 )
@@ -102,8 +103,9 @@ class RAMSTKProgramManager:
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.user_configuration: RAMSTKUserConfiguration = None
-        self.program_dao: BaseDatabase = None
+        self.user_configuration: RAMSTKUserConfiguration = \
+            RAMSTKUserConfiguration()
+        self.program_dao: BaseDatabase = BaseDatabase()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_create_program, 'request_create_program')
@@ -137,10 +139,9 @@ class RAMSTKProgramManager:
                         database: Dict[str, str]) -> None:
         """Open an RAMSTK Program database for analyses.
 
-        :param program_dao: the BaseDatabase() that is to be used to create and
+        :param program_db: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
-        :type program_dao: :class:`ramstk.db.base.BaseDatabase`
-        :param dict database: a dictionary of parameters to pass to the DAO.
+        :param database: a dictionary of parameters to pass to the DAO.
         :return: None
         :rtype: None
         """

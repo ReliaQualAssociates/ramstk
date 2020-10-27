@@ -511,6 +511,7 @@ class RAMSTKPanel(RAMSTKFrame):
         return _package
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def on_changed_textview(
             self, buffer: Gtk.TextBuffer, index: int, message: str,
             textview: RAMSTKTextView) -> Dict[Union[str, Any], Any]:
@@ -525,6 +526,7 @@ class RAMSTKPanel(RAMSTKFrame):
         :param index: the position in the class' Gtk.TreeModel() associated
             with the data from the calling RAMSTKTextView().
         :param message: the PyPubSub message to broadcast.
+        :param textview: the RAMSTKTextView() calling this method.
         :return: {_key: _new_text}; the child module attribute name and the
             new value from the RAMSTKTextView(). The value {'': ''} will be
             returned when a KeyError or ValueError is raised by this method.

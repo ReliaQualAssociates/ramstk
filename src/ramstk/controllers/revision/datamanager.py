@@ -12,7 +12,6 @@ from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
@@ -98,8 +97,6 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         :raise: AttributeError if not connected to a RAMSTK program database.
         """
-        _tree = Tree()
-
         try:
             _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
             _revision = RAMSTKRevision()
