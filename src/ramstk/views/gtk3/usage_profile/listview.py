@@ -348,6 +348,8 @@ class UsageProfilePanel(RAMSTKPanel):
                           "displayed in the Usage Profile.")
             _debug_msg = ("There is no data package for Usage Profile ID {"
                           "0:s}.".format(str(_node.identifier)))
+            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
+            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
             _new_row = None
 
         for _n in tree.children(_node.identifier):

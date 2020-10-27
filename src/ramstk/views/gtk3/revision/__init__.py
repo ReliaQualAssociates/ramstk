@@ -8,7 +8,5 @@
 """The RAMSTK GTK3 revision package."""
 
 # RAMSTK Local Imports
-from .listview import FailureDefinition as lvwFailureDefinition
-from .listview import UsageProfile as lvwUsageProfile
 from .moduleview import ModuleView as mvwRevision
 from .workview import GeneralData as wvwRevisionGD

@@ -97,7 +97,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage("succeed_insert_failure_definition",
                             node_id=self.last_id,
                             tree=self.tree)
-        except DataAccessError as _error:
+        except DataAccessError:
             pub.sendMessage("fail_insert_failure_definition",
                             error_message=("Attempting to add failure "
                                            "definition to non-existent "
