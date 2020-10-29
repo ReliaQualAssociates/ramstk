@@ -242,6 +242,7 @@ class Stakeholders(RAMSTKListView):
     _module: str = 'stakeholder'
     _tablabel = "<span weight='bold'>" + _("Stakeholder\nInputs") + "</span>"
     _tabtooltip = _("Displays stakeholder inputs for the selected revision.")
+    _view_type = 'list'
 
     # Define public dictionary class attributes.
 

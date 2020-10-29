@@ -999,24 +999,25 @@ class RAMSTKListView(RAMSTKBaseView):
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
     :type tab_label: :class:`Gtk.Label`
     """
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """Initialize the List View.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        if self._view_type == 'matrix':
+            self._lst_callbacks = [self.do_request_update]
+            self._lst_icons = ['save']
+            self._lst_mnu_labels = [_("Save Matrix")]
 
         # Initialize private scalar attributes.
-        self._view_type: str = 'list'
 
         # Initialize public dictionary attributes.
 

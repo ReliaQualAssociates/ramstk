@@ -42,16 +42,14 @@ class RequirementHardware(RAMSTKListView):
         "Requirement::Hardware\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Requirement::Hardware matrix "
                     "for the selected revision.")
+    _view_type = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """Initialize the List View for the Requirement package.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param module: the name of the module.
         """
         super().__init__(configuration, logger)
 
@@ -64,7 +62,6 @@ class RequirementHardware(RAMSTKListView):
         self._lst_tooltips = [
             _("Save changes to the Requirement::Hardware matrix.")
         ]
-        self._view_type = 'matrix'
 
         # Initialize private scalar attributes.
 

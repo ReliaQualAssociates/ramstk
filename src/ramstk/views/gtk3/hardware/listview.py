@@ -14,8 +14,7 @@ from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 class HardwareRequirement(RAMSTKListView):
-    """
-    Display all the Hardware::Requirement matrix for the selected Revision.
+    """Display all the Hardware::Requirement matrix for the selected Revision.
 
     The attributes of the Hardware::Requirement Matrix View are:
 
@@ -39,29 +38,23 @@ class HardwareRequirement(RAMSTKListView):
         "Hardware::Requirement\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Hardware::Requirement matrix "
                     "for the selected revision.")
+    _view_type: str = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the List View for the Hardware package.
+        """Initialize the List View for the Hardware package.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [self.do_request_update]
-        self._lst_icons = ['save']
-        self._lst_mnu_labels = [_("Save Matrix")]
         self._lst_tooltips = [
             _("Save changes to the Hardware::Requirement matrix.")
         ]
-        self._view_type = 'matrix'
 
         # Initialize private scalar attributes.
 
@@ -77,8 +70,7 @@ class HardwareRequirement(RAMSTKListView):
 
 
 class HardwareValidation(RAMSTKListView):
-    """
-    Display all the Hardware::Validation matrix for the selected Revision.
+    """Display all the Hardware::Validation matrix for the selected Revision.
 
     The attributes of the Hardware::Validation Matrix View are:
 
@@ -102,29 +94,23 @@ class HardwareValidation(RAMSTKListView):
         "Hardware::Validation\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Hardware::Validation matrix "
                     "for the selected revision.")
+    _view_type = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the List View for the Hardware package.
+        """Initialize the List View for the Hardware package.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [self.do_request_update]
-        self._lst_icons = ['save']
-        self._lst_mnu_labels = [_("Save Matrix")]
         self._lst_tooltips = [
             _("Save changes to the Hardware::Validation matrix.")
         ]
-        self._view_type = 'matrix'
 
         # Initialize private scalar attributes.
 

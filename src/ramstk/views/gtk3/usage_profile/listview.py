@@ -171,13 +171,10 @@ class UsageProfilePanel(RAMSTKPanel):
 
         :return: None
         """
-        super().do_set_properties(
-            **{
-                'bold':
-                True,
-                'title':
-                self._title,
-            })
+        super().do_set_properties(**{
+            'bold': True,
+            'title': self._title,
+        })
 
         self.tvwTreeView.set_tooltip_text(
             _("Displays the usage profiles for the selected revision."))
@@ -442,6 +439,7 @@ class UsageProfile(RAMSTKListView):
     _module: str = 'usage_profile'
     _tablabel = "<span weight='bold'>" + _("Usage\nProfiles") + "</span>"
     _tabtooltip = _("Displays usage profiles for the selected revision.")
+    _view_type = 'list'
 
     # Define public dictionary class attributes.
 

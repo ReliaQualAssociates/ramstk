@@ -38,6 +38,7 @@ class FunctionHardware(RAMSTKListView):
         "Function::Hardware\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Function::Hardware matrix "
                     "for the selected revision.")
+    _view_type = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -53,13 +54,9 @@ class FunctionHardware(RAMSTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._lst_callbacks = [self.do_request_update]
-        self._lst_icons = ['save']
-        self._lst_mnu_labels = [_("Save Matrix")]
         self._lst_tooltips = [
             _("Save changes to the Function::Hardware matrix.")
         ]
-        self._view_type = 'matrix'
 
         # Initialize public dictionary attributes.
 

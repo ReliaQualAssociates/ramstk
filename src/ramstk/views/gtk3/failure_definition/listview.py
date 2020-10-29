@@ -165,6 +165,7 @@ class FailureDefinition(RAMSTKListView):
     _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
     _tabtooltip = _("Displays failure definitions for the "
                     "selected revision.")
+    _view_type: str = 'list'
 
     # Define public dictionary class attributes.
 
