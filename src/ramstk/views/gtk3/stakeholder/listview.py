@@ -146,10 +146,6 @@ class StakeholderPanel(RAMSTKPanel):
         """
         super().do_set_properties(**{'bold': True, 'title': self._title})
 
-        self.tvwTreeView.set_enable_tree_lines(True)
-        self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
-        self.tvwTreeView.set_level_indentation(2)
-        self.tvwTreeView.set_rubber_banding(True)
         self.tvwTreeView.set_tooltip_text(
             _("Displays the list of stakeholders."))
 

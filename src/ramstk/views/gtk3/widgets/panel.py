@@ -384,6 +384,18 @@ class RAMSTKPanel(RAMSTKFrame):
                 _cell[0].connect('toggled', self.on_cell_edit, 'new text',
                                  message, _idx)
 
+    def do_set_properties(self, **kwargs: Any) -> None:
+        """Set properties of the RAMSTKPanel() widgets.
+
+        :return: None
+        """
+        super().do_set_properties(**kwargs)
+
+        self.tvwTreeView.set_enable_tree_lines(True)
+        self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
+        self.tvwTreeView.set_level_indentation(2)
+        self.tvwTreeView.set_rubber_banding(True)
+
     def on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: str,
                      position: int, message: str) -> None:
         """Handle edits of the RAMSTKTreeview() in a treeview panel.

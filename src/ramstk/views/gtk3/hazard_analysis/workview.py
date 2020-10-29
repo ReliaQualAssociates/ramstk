@@ -263,10 +263,7 @@ class HazOps(RAMSTKWorkView):
         """Initialize the Work View for the HazOps.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 

@@ -171,12 +171,14 @@ class UsageProfilePanel(RAMSTKPanel):
 
         :return: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(
+            **{
+                'bold':
+                True,
+                'title':
+                self._title,
+            })
 
-        self.tvwTreeView.set_enable_tree_lines(True)
-        self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
-        self.tvwTreeView.set_level_indentation(2)
-        self.tvwTreeView.set_rubber_banding(True)
         self.tvwTreeView.set_tooltip_text(
             _("Displays the usage profiles for the selected revision."))
 
@@ -222,6 +224,7 @@ class UsageProfilePanel(RAMSTKPanel):
         """Load a mission into the RAMSTK TreeView.
 
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
+        :rtype: :class:`Gtk.TreeIter`
         """
         _entity: RAMSTKMission = kwargs.get('entity', None)
         _identifier: int = kwargs.get('identifier', 0)  # type: ignore
@@ -264,6 +267,7 @@ class UsageProfilePanel(RAMSTKPanel):
         """Load a mission phase into the RAMSTK TreeView.
 
         :return: _new_row; the Gtk.Iter() pointing to the next row to load.
+        :rtype: :class:`Gtk.TreeIter`
         """
         _entity: RAMSTKMissionPhase = kwargs.get('entity', None)
         _identifier: int = kwargs.get('identifier', 0)  # type: ignore
@@ -321,37 +325,27 @@ class UsageProfilePanel(RAMSTKPanel):
         # to clear the tree in preparation for the load.
         if _entity is None:
             _model.clear()
-        else:
-            _entity = _entity['usage_profile']
-
-        try:
-            if _entity.is_mission:
-                _new_row = self._do_load_mission(**{
-                    'entity': _entity,
+        elif _entity['usage_profile'].is_mission:
+            _new_row = self._do_load_mission(
+                **{
+                    'entity': _entity['usage_profile'],
                     'identifier': _node.identifier,
                     'row': row
                 })
-            elif _entity.is_phase:
-                _new_row = self._do_load_phase(**{
-                    'entity': _entity,
+        elif _entity['usage_profile'].is_phase:
+            _new_row = self._do_load_phase(
+                **{
+                    'entity': _entity['usage_profile'],
                     'identifier': _node.identifier,
                     'row': row
                 })
-            elif _entity.is_env:
-                _new_row = self._do_load_environment(**{
-                    'entity': _entity,
+        elif _entity['usage_profile'].is_env:
+            _new_row = self._do_load_environment(
+                **{
+                    'entity': _entity['usage_profile'],
                     'identifier': _node.identifier,
                     'row': row
                 })
-        except AttributeError:
-            _user_msg = _("One or more Usage Profile line items was "
-                          "missing it's data package and is not "
-                          "displayed in the Usage Profile.")
-            _debug_msg = ("There is no data package for Usage Profile ID "
-                          "{0:s}.".format(str(_node.identifier)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)

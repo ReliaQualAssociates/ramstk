@@ -205,11 +205,6 @@ class ModuleView(RAMSTKModuleView):
         """
         super().__init__(configuration, logger)
 
-        self.RAMSTK_LOGGER.do_create_logger(
-            __name__,
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
-
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
