@@ -127,15 +127,13 @@ class RequirementPanel(RAMSTKPanel):
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
     def do_set_callbacks(self) -> None:
-        """Set callbacks for the Revision module view.
+        """Set callbacks for the requirement module view.
 
         :return: None
         """
+        super().do_set_callbacks()
         super().do_set_cell_callbacks('mvw_editing_requirement',
                                       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
 
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).

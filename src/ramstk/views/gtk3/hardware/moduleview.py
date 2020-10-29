@@ -126,6 +126,7 @@ class HardwarePanel(RAMSTKPanel):
 
         super().do_make_panel_treeview()
         self.__do_set_properties()
+        super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_tree, 'succeed_retrieve_hardware')
@@ -172,15 +173,6 @@ class HardwarePanel(RAMSTKPanel):
             pub.sendMessage('request_get_all_hardware_attributes',
                             node_id=self._record_id)
             pub.sendMessage('request_set_title', title=_title)
-
-    def __do_set_callbacks(self) -> None:
-        """Set callbacks for the ModuleView.
-
-        :return: None
-        """
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.

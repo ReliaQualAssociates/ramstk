@@ -103,10 +103,8 @@ class RevisionPanel(RAMSTKPanel):
 
         :return: None
         """
+        super().do_set_callbacks()
         super().do_set_cell_callbacks('mvw_editing_revision', [0, 1, 2])
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
 
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).

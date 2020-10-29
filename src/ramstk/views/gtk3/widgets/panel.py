@@ -366,6 +366,15 @@ class RAMSTKPanel(RAMSTKFrame):
             # attribute is supposed to be there and then continue.
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
+    def do_set_callbacks(self) -> None:
+        """Set the callback methods for RAMSTKTreeView().
+
+        :return: None
+        """
+        self.tvwTreeView.dic_handler_id[
+            'changed'] = self.tvwTreeView.selection.connect(
+                'changed', self._on_row_change)
+
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
 

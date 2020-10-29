@@ -108,6 +108,7 @@ class ValidationPanel(RAMSTKPanel):
 
         super().do_make_panel_treeview()
         self.__do_set_properties()
+        super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_tree, 'succeed_retrieve_validations')
@@ -145,25 +146,15 @@ class ValidationPanel(RAMSTKPanel):
 
         if _attributes:
             self._record_id = _attributes['validation_id']
-            self._parent_id = _attributes['parent_id']
 
-            _title = _("Analyzing Validation {0:s}: {1:s}").format(
-                str(_attributes['validation_code']), str(_attributes['name']))
+            _title = _("Analyzing Validation {0:s}").format(
+                str(_attributes['name']))
 
             pub.sendMessage('selected_validation', attributes=_attributes)
             pub.sendMessage('request_get_validation_attributes',
                             node_id=self._record_id,
-                            table='hazards')
+                            table='validation')
             pub.sendMessage('request_set_title', title=_title)
-
-    def __do_set_callbacks(self) -> None:
-        """Set callbacks for the Validation module view.
-
-        :return: None
-        """
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.
