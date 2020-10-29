@@ -458,11 +458,6 @@ class UsageProfile(RAMSTKListView):
         """
         super().__init__(configuration, logger)
 
-        self.RAMSTK_LOGGER.do_create_logger(
-            __name__,
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
