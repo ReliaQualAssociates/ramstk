@@ -428,6 +428,8 @@ class ClarityPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Requirements clarity panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -568,8 +570,10 @@ class CompletenessPanel(RAMSTKPanel):
             _checkbutton.do_update(False, signal='toggled')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
+        """Load the Requirements completeness panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -707,8 +711,10 @@ class ConsistencyPanel(RAMSTKPanel):
             _checkbutton.do_update(False, signal='toggled')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
+        """Load the Requirements consistency panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -829,8 +835,10 @@ class VerifiabilityPanel(RAMSTKPanel):
             _checkbutton.do_update(False, signal='toggled')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
+        """Load the Requirements verifiability panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
