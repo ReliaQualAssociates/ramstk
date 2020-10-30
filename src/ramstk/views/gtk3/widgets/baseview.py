@@ -697,7 +697,7 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.do_set_cursor_busy()
         pub.sendMessage('request_update_{0:s}'.format(self._module),
-            node_id=self._record_id)
+                        node_id=self._record_id)
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to save all the records to RAMSTK program database.
@@ -976,7 +976,6 @@ class RAMSTKListView(RAMSTKBaseView):
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
     :type tab_label: :class:`Gtk.Label`
     """
-
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
         """Initialize the List View.
