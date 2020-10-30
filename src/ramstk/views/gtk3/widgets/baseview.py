@@ -429,48 +429,6 @@ class RAMSTKBaseView(Gtk.HBox):
             # noinspection PyDeepBugsSwappedArgs
             _model.append(None, _data)
 
-    def do_load_tree(self, tree: treelib.Tree) -> None:
-        """Load the RAMSTK View RAMSTKTreeView().
-
-        This method is called in response to the 'retrieved_<module>'.
-
-        :param tree: the treelib Tree containing the module to load.
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        try:
-            _tag = tree.get_node(0).tag
-        except AttributeError as _error:
-            _tag = "UNK"
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        try:
-            self.treeview.do_load_tree(tree, _tag)
-            self.treeview.expand_all()
-            _row = _model.get_iter_first()
-            if _row is not None:
-                self.treeview.selection.select_iter(_row)
-                self.show_all()
-        except TypeError as _error:
-            _error_msg = _(
-                "An error occurred while loading {1:s} records for Revision "
-                "ID {0:d} into the view.  One or more values from the "
-                "database was the wrong type for the column it was trying to "
-                "load.").format(self._revision_id, _tag)
-            self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-        except ValueError as _error:
-            _error_msg = _(
-                "An error occurred while loading {1:s} records for Revision "
-                "ID {0:d} into the view.  One or more values from the "
-                "database was missing.").format(self._revision_id, _tag)
-            self.RAMSTK_LOGGER.do_log_error(__name__, _error_msg)
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
     def do_make_layout(self) -> None:
         """Create a view with the following layout.
 
@@ -731,6 +689,25 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return self.do_request_insert(sibling=True, **kwargs)
 
+    def do_request_update(self, __button: Gtk.ToolButton) -> None:
+        """Request to update selected record to RAMSTK program database.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        self.do_set_cursor_busy()
+        pub.sendMessage('request_update_{0:s}'.format(self._module),
+            node_id=self._record_id)
+
+    def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+        """Send request to save all the records to RAMSTK program database.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        self.do_set_cursor_busy()
+        pub.sendMessage('request_update_all_{0:s}s'.format(self._module))
+
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """Set the cursor for the Module, List, and Work Book Gdk.Window().
 
@@ -964,7 +941,7 @@ class RAMSTKBaseView(Gtk.HBox):
                     _row, self._lst_col_order[self._dic_key_index[_key]])
 
         try:
-            self._record_id = _attributes['hardware_id']
+            self._record_id = _attributes['revision_id']
         except KeyError:
             self._record_id = -1
 
@@ -1099,6 +1076,18 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self._dic_key_index: Dict[str, int] = {}
 
         # Initialize private list attributes.
+        self._lst_callbacks = [
+            self.do_request_insert_sibling,
+            self.do_request_delete,
+            self.do_request_update,
+            self.do_request_update_all,
+        ]
+        self._lst_icons = [
+            'add',
+            'remove',
+            'save',
+            'save-all',
+        ]
 
         # Initialize private scalar attributes.
 

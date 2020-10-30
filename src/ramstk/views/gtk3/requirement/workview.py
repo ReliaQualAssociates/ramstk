@@ -21,6 +21,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry, RAMSTKPanel, RAMSTKTextView, RAMSTKWorkView
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class GeneralDataPanel(RAMSTKPanel):
     """Panel to display general data about the selected Requirement."""
@@ -29,18 +32,7 @@ class GeneralDataPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['requirement_code', 'string'],
-            1: ['description', 'string'],
-            2: ['requirement_type', 'integer'],
-            4: ['specification', 'string'],
-            5: ['page_number', 'string'],
-            6: ['figure_number', 'string'],
-            7: ['priority', 'integer'],
-            8: ['owner', 'integer'],
-            9: ['requirement_code', 'string'],
-            10: ['validated_date', 'date'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -999,28 +991,6 @@ class GeneralData(RAMSTKWorkView):
                         node_id=self._record_id,
                         prefix=_prefix)
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected Requirement.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_requirement', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Requirements.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_requirements')
-
 
 class RequirementAnalysis(RAMSTKWorkView):
     """Display Requirement attribute data in the RAMSTK Work Book.
@@ -1094,28 +1064,6 @@ class RequirementAnalysis(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_requirement')
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save the currently selected Requirement.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_requirement', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Requirements.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_requirements')
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement Analysis tab.

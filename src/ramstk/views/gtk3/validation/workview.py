@@ -29,6 +29,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKPanel, RAMSTKPlot, RAMSTKSpinButton, RAMSTKTextView, RAMSTKWorkView
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 register_matplotlib_converters()
 
 
@@ -39,20 +42,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['description', 'string'],
-            1: ['task_type', 'integer'],
-            2: ['task_specification', 'string'],
-            3: ['measurement_unit', 'integer'],
-            4: ['acceptable_minimum', 'float'],
-            5: ['acceptable_maximum', 'float'],
-            6: ['acceptable_mean', 'float'],
-            7: ['acceptable_variance', 'float'],
-            8: ['date_start', 'string'],
-            9: ['date_end', 'string'],
-            10: ['status', 'float'],
-            11: ['name', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
         self._dic_task_types: Dict[int, List[str]] = {}
         self._dic_units: Dict[int, str] = {}
 
@@ -897,8 +887,8 @@ class GeneralData(RAMSTKWorkView):
         self._lst_callbacks = [
             self._do_request_calculate,
             self._do_request_calculate_all,
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons = ['calculate', 'calculate_all', 'save', 'save-all']
         self._lst_mnu_labels = [
@@ -982,28 +972,6 @@ class GeneralData(RAMSTKWorkView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_validation_tasks')
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected Validation.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_validation', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Validations.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_validations')
 
     def _on_value_changed(self, spinbutton: Gtk.SpinButton,
                           __event: Gdk.EventFocus) -> None:
@@ -1163,29 +1131,6 @@ class BurndownCurve(RAMSTKWorkView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_plan')
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all Validation tasks and program results.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_validation', node_id=self._record_id)
-
-    @staticmethod
-    def _do_request_update_all(__button: Gtk.ToolButton) -> None:
-        """Request to save all Validation tasks and program results.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_validations')
 
     def __do_load_assessment_milestones(self, assessed: pd.DataFrame,
                                         y_max: float) -> None:

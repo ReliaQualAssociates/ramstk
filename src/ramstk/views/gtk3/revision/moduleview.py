@@ -21,6 +21,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class RevisionPanel(RAMSTKPanel):
     """Panel to display flat list of revisions."""
@@ -42,11 +45,7 @@ class RevisionPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['name', 'string'],
-            1: ['remarks', 'string'],
-            2: ['revision_code', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'availability_logistics': [None, 'edited', 1],
@@ -161,12 +160,6 @@ class ModuleView(RAMSTKModuleView):
 
     :cvar _module: the name of the module.
 
-    :ivar _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
     :ivar _lst_tooltips: the list of tooltips for the view's
@@ -205,18 +198,6 @@ class ModuleView(RAMSTKModuleView):
             + '/32x32/revision.png')
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self.do_request_insert_sibling,
-            self._do_request_delete,
-            self._do_request_update,
-            self._do_request_update_all,
-        ]
-        self._lst_icons = [
-            'add',
-            'remove',
-            'save',
-            'save-all',
-        ]
         self._lst_mnu_labels = [
             _("Add Revision"),
             _("Delete Selected Revision"),
@@ -254,7 +235,7 @@ class ModuleView(RAMSTKModuleView):
 
         pub.subscribe(self._on_insert_revision, 'succeed_insert_revision')
 
-    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRevision table.
 
         :param __button: the Gtk.ToolButton() that called this method.
@@ -275,24 +256,6 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._revision_id)
 
         _dialog.do_destroy()
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to update the selected record to the RAMSTKRevision table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_revision', node_id=self._revision_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the records to the RAMSTKRevision table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_revisions')
 
     def _on_insert_revision(self,
                             node_id: int = 0,

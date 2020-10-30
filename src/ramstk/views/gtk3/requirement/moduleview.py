@@ -22,6 +22,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class RequirementPanel(RAMSTKPanel):
     """Panel to display hierarchy of requirements."""
@@ -43,18 +46,7 @@ class RequirementPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['requirement_code', 'string'],
-            1: ['description', 'string'],
-            2: ['requirement_type', 'integer'],
-            4: ['specification', 'string'],
-            5: ['page_number', 'string'],
-            6: ['figure_number', 'string'],
-            7: ['priority', 'integer'],
-            8: ['owner', 'integer'],
-            9: ['requirement_code', 'string'],
-            10: ['validated_date', 'date'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
             'requirement_id': [None, 'edited', 1],
             'derived': [None, 'edited', 2],
@@ -193,12 +185,6 @@ class ModuleView(RAMSTKModuleView):
 
     :cvar _module: the name of the module.
 
-    :ivar _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
     :ivar _lst_tooltips: the list of tooltips for the view's
@@ -237,27 +223,22 @@ class ModuleView(RAMSTKModuleView):
             + '/32x32/requirement.png')
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
-        ]
-        self._lst_icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
-        ]
+        self._lst_callbacks.insert(1, self.do_request_insert_child)
+        self._lst_icons[0] = 'insert_sibling'
+        self._lst_icons.insert(1, 'insert_child')
         self._lst_mnu_labels = [
             _("Add Sibling Requirement"),
             _("Add Child Requirement"),
             _("Delete Selected Requirement"),
             _("Save Selected Requirement"),
-            _("Save All Requirements")
+            _("Save All Requirements"),
         ]
         self._lst_tooltips = [
             _("Add a new sibling requirement."),
             _("Add a new child requirement."),
             _("Remove the currently selected requirement."),
             _("Save changes to the currently selected requirement."),
-            _("Save changes to all requirements")
+            _("Save changes to all requirements"),
         ]
 
         # Initialize private scalar attributes.
@@ -288,7 +269,7 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self._on_insert_requirement,
                       'succeed_insert_requirement')
 
-    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRequirement table.
 
         :param __button: the Gtk.ToolButton() that called this method.
@@ -309,24 +290,6 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._record_id)
 
         _dialog.do_destroy()
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to update selected record to the RAMSTKRequirement table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_requirement', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save all the records to the RAMSTKRequirement table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_requirements')
 
     def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> None:
         """Add row to module view for newly added requirement.

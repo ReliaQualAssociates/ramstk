@@ -22,6 +22,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class ValidationPanel(RAMSTKPanel):
     """Panel to display flat list of validation tasks."""
@@ -43,26 +46,7 @@ class ValidationPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['description', 'string'],
-            1: ['task_type', 'integer'],
-            2: ['task_specification', 'string'],
-            3: ['measurement_unit', 'integer'],
-            4: ['acceptable_minimum', 'float'],
-            5: ['acceptable_maximum', 'float'],
-            6: ['acceptable_mean', 'float'],
-            7: ['acceptable_variance', 'float'],
-            8: ['date_start', 'string'],
-            9: ['date_end', 'string'],
-            10: ['status', 'float'],
-            11: ['name', 'string'],
-            12: ['time_minimum', 'float'],
-            14: ['time_average', 'float'],
-            15: ['time_maximum', 'float'],
-            16: ['cost_minimum', 'float'],
-            17: ['cost_average', 'float'],
-            18: ['cost_maximum', 'float'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'validation_id': [None, 'edited', 1],
@@ -176,12 +160,6 @@ class ModuleView(RAMSTKModuleView):
 
     :cvar _module: the name of the module.
 
-    :ivar _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
     :ivar _lst_tooltips: the list of tooltips for the view's
@@ -220,18 +198,6 @@ class ModuleView(RAMSTKModuleView):
             + '/32x32/validation.png')
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self.do_request_insert_sibling,
-            self._do_request_delete,
-            self._do_request_update,
-            self._do_request_update_all,
-        ]
-        self._lst_icons = [
-            'add',
-            'remove',
-            'save',
-            'save-all',
-        ]
         self._lst_mnu_labels = [
             _("Add Task"),
             _("Delete Selected Task"),
@@ -272,7 +238,7 @@ class ModuleView(RAMSTKModuleView):
 
         pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
 
-    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKValidation table.
 
         :param __button: the Gtk.ToolButton() that called this method.
@@ -293,24 +259,6 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._record_id)
 
         _dialog.do_destroy()
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to update the selected record to the RAMSTKValidation table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_validation', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the records to the RAMSTKValidation table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_validations')
 
     def _on_insert_validation(self, node_id: int, tree: treelib.Tree) -> None:
         """Add row to module view for newly added validation.

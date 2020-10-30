@@ -197,7 +197,6 @@ class RAMSTKPanel(RAMSTKFrame):
             _tag = tree.get_node(0).tag
         except AttributeError as _error:
             _tag = "UNK"
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
         try:
             self.tvwTreeView.do_load_tree(tree, _tag)
@@ -361,10 +360,7 @@ class RAMSTKPanel(RAMSTKFrame):
             _model, _row = self.tvwTreeView.get_selection().get_selected()
             _model.set(_row, _position, _value)
         except KeyError as _error:
-            # Not all attributes available on the workview are stored in the
-            # moduleview tree.  We log the error in case the offending
-            # attribute is supposed to be there and then continue.
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            print(_error)
 
     def do_set_callbacks(self) -> None:
         """Set the callback methods for RAMSTKTreeView().

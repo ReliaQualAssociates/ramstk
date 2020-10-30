@@ -21,6 +21,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class HardwarePanel(RAMSTKPanel):
     """Panel to display hierarchy of hardware."""
@@ -42,40 +45,7 @@ class HardwarePanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            2: ['alt_part_number', 'text'],
-            3: ['cage_code', 'text'],
-            4: ['comp_ref_des', 'text'],
-            5: ['cost', 'float'],
-            6: ['cost_failure', 'float'],
-            7: ['cost_hour', 'float'],
-            8: ['description', 'text'],
-            9: ['duty_cycle', 'float'],
-            10: ['figure_number', 'text'],
-            11: ['lcn', 'text'],
-            12: ['level', 'integer'],
-            13: ['manufacturer_id', 'integer'],
-            14: ['mission_time', 'float'],
-            15: ['name', 'text'],
-            16: ['nsn', 'text'],
-            17: ['page_number', 'text'],
-            18: ['parent_id', 'integer'],
-            19: ['part', 'boolean'],
-            20: ['part_number', 'text'],
-            21: ['quantity', 'integer'],
-            22: ['ref_des', 'text'],
-            23: ['remarks', 'text'],
-            24: ['repairable', 'boolean'],
-            25: ['specification_number', 'text'],
-            26: ['tagged_part', 'boolean'],
-            27: ['total_part_count', 'integer'],
-            28: ['total_power_dissipation', 'float'],
-            29: ['year_of_manufacture', 'integer'],
-            30: ['cost_type_id', 'integer'],
-            31: ['attachments', 'text'],
-            32: ['category_id', 'integer'],
-            33: ['subcategory_id', 'integer'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0, 33],
             'hardware_id': [None, 'edited', 1, 33],
@@ -194,12 +164,6 @@ class ModuleView(RAMSTKModuleView):
 
     :cvar _module: the name of the module.
 
-    :ivar _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
     :ivar _lst_tooltips: the list of tooltips for the view's
@@ -238,26 +202,15 @@ class ModuleView(RAMSTKModuleView):
             + '/32x32/hardware.png')
 
         # Initialize private list attributes.
-        self._lst_callbacks: List[object] = [
-            self._do_request_insert_sibling,
-            self._do_request_insert_child,
-            self._do_request_insert_part,
-            self._do_request_delete,
-            self._do_request_calculate_hardware,
-            self._do_request_calculate_all_hardware,
-            self._do_request_update,
-            self._do_request_update_all,
-        ]
-        self._lst_icons: List[str] = [
-            'insert_sibling',
-            'insert_child',
-            'insert_part',
-            'remove',
-            'calculate',
-            'calculate_all',
-            'save',
-            'save-all',
-        ]
+        self._lst_callbacks.insert(1, self._do_request_insert_child)
+        self._lst_callbacks.insert(2, self._do_request_insert_part)
+        self._lst_callbacks.insert(4, self._do_request_calculate_hardware)
+        self._lst_callbacks.insert(5, self._do_request_calculate_all_hardware)
+        self._lst_icons[0] = 'insert_sibling'
+        self._lst_icons.insert(1, 'insert_child')
+        self._lst_icons.insert(2, 'insert_part')
+        self._lst_icons.insert(4, 'calculate')
+        self._lst_icons.insert(5, 'calculate_all')
         self._lst_mnu_labels: List[str] = [
             _("Add Sibling Assembly"),
             _("Add Child Assembly"),
@@ -315,26 +268,7 @@ class ModuleView(RAMSTKModuleView):
 
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
-    def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
-        """Send request to calculate the selected hardware item.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
-
-    def _do_request_calculate_all_hardware(self,
-                                           __button: Gtk.ToolButton) -> None:
-        """Send request to iteratively calculate all hardware items.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_all_hardware')
-
-    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKHardware table.
 
         :param __button: the Gtk.ToolButton() that called this method.
@@ -353,6 +287,25 @@ class ModuleView(RAMSTKModuleView):
             pub.sendMessage('request_delete_hardware', node_id=self._record_id)
 
         _dialog.do_destroy()
+
+    def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
+        """Send request to calculate the selected hardware item.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
+
+    def _do_request_calculate_all_hardware(self,
+                                           __button: Gtk.ToolButton) -> None:
+        """Send request to iteratively calculate all hardware items.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_calculate_all_hardware')
 
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         """Request to insert a new child assembly under the selected assembly.
@@ -386,24 +339,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_insert_hardware',
                         parent_id=self._parent_id,
                         part=0)
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to update the selected record to the RAMSTKHardware table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save all the records to the RAMSTKHardware table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
 
     def _on_insert_hardware(self, node_id: int, tree: treelib.Tree) -> None:
         """Add row to module view for newly added hardware.

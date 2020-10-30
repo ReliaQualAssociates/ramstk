@@ -20,6 +20,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry, RAMSTKPanel, RAMSTKTextView, RAMSTKWorkView
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class GeneralDataPanel(RAMSTKPanel):
     """The panel to display general data about the selected Revision."""
@@ -28,11 +31,7 @@ class GeneralDataPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['name', 'string'],
-            1: ['remarks', 'string'],
-            2: ['revision_code', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -188,8 +187,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private list attributes.
         self._lst_callbacks: List[object] = [
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons: List[str] = [
             'save',
@@ -219,28 +218,6 @@ class GeneralData(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_revision')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_revision')
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save changes to the currently selected Revision.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_revision', node_id=self._revision_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save change sto all Revisions.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_revisions')
 
     def __make_ui(self) -> None:
         """Build the user interface for the Revision General Data tab.

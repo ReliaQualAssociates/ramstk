@@ -28,6 +28,7 @@ from ramstk.views.gtk3.widgets import (
 )
 
 # RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
 from .components import (
     capacitor, connection, inductor, integrated_circuit, meter,
     miscellaneous, relay, resistor, semiconductor, switch
@@ -42,21 +43,7 @@ class GeneralDataPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['repairable', 'integer'],
-            2: ['category_id', 'integer'],
-            5: ['subcategory_id', 'integer'],
-            6: ['alt_part_number', 'string'],
-            9: ['comp_ref_des', 'string'],
-            11: ['description', 'string'],
-            12: ['figure_number', 'string'],
-            13: ['lcn', 'string'],
-            14: ['name', 'string'],
-            16: ['page_number', 'string'],
-            17: ['part_number', 'string'],
-            19: ['ref_des', 'string'],
-            21: ['specification_number', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -374,15 +361,7 @@ class LogisticsPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            3: ['cost_type_id', 'integer'],
-            4: ['manufacturer_id', 'integer'],
-            8: ['cage_code', 'string'],
-            10: ['cost', 'float'],
-            15: ['nsn', 'string'],
-            18: ['quantity', 'integer'],
-            22: ['year_of_manufacture', 'integer'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -581,11 +560,7 @@ class MiscellaneousPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            1: ['tagged_part', 'integer'],
-            7: ['attachments', 'string'],
-            20: ['remarks', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -1840,30 +1815,6 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_make_comp_ref_des', node_id=self._record_id)
         super().do_set_cursor_active()
 
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected Hardware.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Hardwares.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
-
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
 
@@ -1891,8 +1842,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = self._pnlGeneralData.on_changed_combo(combo, index,
-                                            'wvw_editing_hardware')
+        _package = self._pnlGeneralData.on_changed_combo(
+            combo, index, 'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
         if index == 2:
@@ -2009,8 +1960,8 @@ class AssessmentInputs(RAMSTKWorkView):
         # Initialize private list attributes.
         self._lst_callbacks = [
             self._do_request_calculate_hardware,
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons = [
             'calculate',
@@ -2151,30 +2102,6 @@ class AssessmentInputs(RAMSTKWorkView):
 
         pub.sendMessage('request_get_hardware_tree')
 
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save the currently selected Hardware item.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save all Hardware items.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
-
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
 
@@ -2201,8 +2128,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = self._pnlAssessmentInput.on_changed_combo(combo, index,
-                                            'wvw_editing_hardware')
+        _package = self._pnlAssessmentInput.on_changed_combo(
+            combo, index, 'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
         # Hazard rate types are:
@@ -2289,8 +2216,8 @@ class AssessmentResults(RAMSTKWorkView):
         # Initialize private list attributes.
         self._lst_callbacks = [
             self._do_request_calculate_hardware,
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons = [
             'calculate',
@@ -2417,27 +2344,3 @@ class AssessmentResults(RAMSTKWorkView):
         self._subcategory_id = attributes['subcategory_id']
 
         pub.sendMessage('request_get_hardware_tree')
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save the currently selected Hardware item.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save all Hardware items.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')

@@ -21,6 +21,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKTextView, RAMSTKWorkView
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class GeneralDataPanel(RAMSTKPanel):
     """The panel to display general data about the selected Function."""
@@ -29,12 +32,7 @@ class GeneralDataPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['function_code', 'string'],
-            1: ['name', 'string'],
-            2: ['remarks', 'string'],
-            3: ['safety_critical', 'integer'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -214,8 +212,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private list attributes.
         self._lst_callbacks = [
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons = ['save', 'save-all']
         self._lst_mnu_labels: List[str] = [
@@ -257,25 +255,3 @@ class GeneralData(RAMSTKWorkView):
 
         self.pack_end(self._pnlGeneralData, True, True, 0)
         self.show_all()
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected Function.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_function', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Functions.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_functions')
