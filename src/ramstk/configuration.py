@@ -18,6 +18,7 @@ from os import environ, makedirs
 from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import toml
 from pubsub import pub
 
@@ -112,13 +113,23 @@ RAMSTK_SW_APPLICATION = [[_("Airborne"), 0.0128, 6.28],
 RAMSTK_SW_TEST_METHODS = [[
     _("Code Reviews"),
     _("Code review is a systematic examination (often known as peer "
-      "review) of computer source code.")
-], [_("Error/Anomaly Detection"), _("")], [_("Structure Analysis"),
-                                           _("")],
-                          [_("Random Testing"), _("")],
-                          [_("Functional Testing"),
-                           _("")], [_("Branch Testing"),
-                                    _("")]]
+      "review) of computer source code."),
+], [
+    _("Error/Anomaly Detection"),
+    _(""),
+], [
+    _("Structure Analysis"),
+    _(""),
+], [
+    _("Random Testing"),
+    _(""),
+], [
+    _("Functional Testing"),
+    _(""),
+], [
+    _("Branch Testing"),
+    _(""),
+]]
 
 RAMSTK_LIFECYCLE = [[_("Design")], [_("Reliability Growth")],
                     [_("Reliability Qualification")], [_("Production")],
@@ -148,33 +159,33 @@ class RAMSTKSiteConfiguration:
         self.RAMSTK_DETECTION_METHODS: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
         self.RAMSTK_HAZARDS: Dict[str, Tuple[str, str]] = {}  # User.
-        self.RAMSTK_INCIDENT_CATEGORY: Dict[str,
-                                            Tuple[str, str, str, str]] = {}
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, Tuple[str, str, str,
+                                                       str]] = {}
         self.RAMSTK_INCIDENT_STATUS: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_INCIDENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}  # User.
-        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str, str]] = {
-        }  # User.
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str, str]] = {
-        }  # User.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str, str]] = {
-        }  # Admin.
+        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str,
+                                                   str]] = {}  # User.
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str,
+                                                           str]] = {}  # User.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str,
+                                                       str]] = {}  # Admin.
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
         self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
-        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {
-        }  # Admin
+        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str,
+                                              str]] = {}  # Admin
         self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_STRESS_LIMITS: Dict[
-            str, Tuple[float, float, float, float, float, float, float, float,
-                       float, float]] = {}  # User.
+        self.RAMSTK_STRESS_LIMITS: Dict[str, Tuple[float, float, float, float,
+                                                   float, float, float, float,
+                                                   float, float]] = {}  # User.
         self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}  # Static.
-        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str, str]] = {
-        }  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str, str]] = {
-        }  # Admin.
+        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str,
+                                           str]] = {}  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str,
+                                                     str]] = {}  # Admin.
         self.RAMSTK_WORKGROUPS: Dict[str, Tuple[str, str]] = {}  # Admin.
 
         # Initialize public list attributes.
@@ -189,8 +200,7 @@ class RAMSTKSiteConfiguration:
         self.RAMSTK_SITE_CONF = self.RAMSTK_SITE_DIR + "/Site.toml"
 
     def do_create_site_configuration(self) -> None:
-        """
-        Create the default site configuration file.
+        """Create the default site configuration file.
 
         :return: None
         :rtype: None
@@ -219,8 +229,8 @@ class RAMSTKSiteConfiguration:
                             error_message=_error_msg)
 
     def get_site_configuration(self) -> None:
-        """
-        Read the site configuration file.
+        """Read the site configuration file.
+
         :return: None
         :rtype: None
         """
@@ -242,8 +252,7 @@ class RAMSTKSiteConfiguration:
                             error_message=_error_msg)
 
     def set_site_directories(self) -> None:
-        """
-        Set the site-wide RAMSTK directories.
+        """Set the site-wide RAMSTK directories.
 
         :return: None
         :rtype: None
@@ -256,39 +265,16 @@ class RAMSTKSiteConfiguration:
 
 
 class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
-    r"""
-    RAMSTK configuration class.
+    """RAMSTK configuration class.
 
     Attributes of the Configuration class are:
 
     :ivar dict RAMSTK_FORMAT_FILE: Dictionary containing the path to the format
-        files to use for various widgets.  Keys for this dictionary are:
-
-            * revision
-            * function
-            * requirement
-            * hardware
-            * validation
-            * allocation
-            * similar_item
-            * fmeca
-            * stakeholder
-            * ffmeca
-
+        files to use for various widgets.  Keys are the name of the RAMSTK
+        work stream module, values are the absolute path to the format file
+        for that work stream module.
     :ivar dict RAMSTK_COLORS: Dictionary containing the colors to use for
-        various widgets.  Keys for this dictionary are:
-
-            * revisionbg - Revision Tree background
-            * revisionfg - Revision Tree foreground
-            * functionbg - Function Tree background
-            * functionfg - Function Tree foreground
-            * requirementbg - Requirement Tree background
-            * requirementfg - Requirement Tree foreground
-            * hardwarebg - Hardware Tree background
-            * hardwarefg - Hardware Tree foreground
-            * validationbg - Validation Tree background
-            * validationfg - Validation Tree foreground
-
+        various widgets.
     :ivar dict RAMSTK_COM_INFO: Dictionary for the RAMSTK common database
         connection information.  The information contained is:
 
@@ -382,36 +368,15 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             2. MIL-STD-338
 
     :ivar str RAMSTK_CONF_DIR: Path to the directory containing configuration
-        files used by RAMSTK.  Default values are:
-
-            - POSIX default: *$HOME/.config/RAMSTK*
-            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK*
-
+        files used by RAMSTK.
     :ivar str RAMSTK_DATA_DIR: Path to the directory containing data files used
-        by RAMSTK.  Default values are:
-
-            - POSIX default: */usr/share/RAMSTK*
-            - Windows default: *None*
-
+        by RAMSTK.
     :ivar str RAMSTK_ICON_DIR: Path to the directory containing icon files used
-        by RAMSTK.  Default values are:
-
-            - POSIX default: */usr/share/RAMSTK/icons*
-            - Windows default: *None*
-
+        by RAMSTK.
     :ivar str RAMSTK_LOG_DIR: Path to the directory containing log files used
-        by RAMSTK.  Default values are:
-
-            - POSIX default: */var/log*
-            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK\\\logs*
-
+        by RAMSTK.
     :ivar str RAMSTK_PROG_DIR: Path to the base directory containing RAMSTK
         Program database files.  This is only used when the backend is SQLite3.
-        Default values are:
-
-            - POSIX default: *$HOME/analyses/ramstk*
-            - Windows default: *C:\\\Users\\\<USER NAME>\\\analyses\\\ramstk*
-
     :ivar str RAMSTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options
         are:
 
@@ -439,7 +404,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
     """
     _lst_format_files: List[str]
     RAMSTK_PROG_DIR: str
-    RAMSTK_PROG_INFO: Dict[int, Any]
+    RAMSTK_PROG_INFO: Dict[str, str]
 
     def __init__(self) -> None:
         """Class for user-specific RAMSTK configuration settings."""
@@ -467,22 +432,30 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self._INSTALL_PREFIX = get_install_prefix()
 
         # Initialize public dictionary attributes.
+        self.RAMSTK_CATEGORIES: Dict[str, str] = {}
         self.RAMSTK_COLORS: Dict[str, str] = {}
+        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
+        self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}
+        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str, str]] = {}
         self.RAMSTK_PAGE_NUMBER: Dict[int, str] = {
             0: 'revision',
             1: 'function',
             2: 'requirement',
             3: 'hardware',
-            4: 'validation'
+            4: 'validation',
         }
-        self.RAMSTK_PROG_INFO: Dict[int, str] = {}
+        self.RAMSTK_PROG_INFO: Dict[str, str] = {}
+        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}
+        self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}
         self.RAMSTK_TABPOS = {
             "listbook": "top",
             "modulebook": "bottom",
             "workbook": "bottom",
         }
+        self.RAMSTK_WORKGROUPS: Dict[str, Tuple[str, str]] = {}
 
         # Initialize public list attributes.
         self.RAMSTK_RISK_POINTS = [4, 10]
@@ -520,8 +493,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.loaded = False
 
     def _do_make_configuration_dir(self) -> None:
-        """
-        Creates the user configuration directory.
+        """Create the user configuration directory.
+
         :return: None
         :rtype: None
         """
@@ -539,8 +512,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                                 error_message=_error_msg)
 
     def _do_make_data_dir(self) -> None:
-        """
-        Creates the user data directory.
+        """Create the user data directory.
+
         :return: None
         :rtype: None
         """
@@ -557,8 +530,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                                 error_message=_error_msg)
 
     def _do_make_icon_dir(self) -> None:
-        """
-        Creates the user icon directory.
+        """Create the user icon directory.
+
         :return: None
         :rtype: None
         """
@@ -576,8 +549,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                                 error_message=_error_msg)
 
     def _do_make_log_dir(self) -> None:
-        """
-        Creates the user log directory.
+        """Create the user log directory.
+
         :return: None
         :rtype: None
         """
@@ -595,8 +568,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                                 error_message=_error_msg)
 
     def _do_make_program_dir(self) -> None:
-        """
-        Creates the user program directory.
+        """Create the user program directory.
+
         :return: None
         :rtype: None
         """
@@ -612,8 +585,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                                 error_message=_error_msg)
 
     def do_create_user_configuration(self) -> None:
-        """
-        Create the default user configuration file.
+        """Create the default user configuration file.
 
         :return: None
         :rtype: None
@@ -743,8 +715,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                             error_message=_error_msg)
 
     def get_user_configuration(self) -> None:
-        """
-        Read the RAMSTK user configuration file.
+        """Read the RAMSTK user configuration file.
 
         :return: None
         :rtype: None
@@ -808,13 +779,12 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                             error_message=_error_msg)
 
     def set_user_configuration(self) -> None:
-        """
-        Write changes to the user's configuration file.
+        """Write changes to the user's configuration file.
 
         :return: None
         :rtype: None
         """
-        _dic_user_configuration = {
+        _dic_user_configuration: Dict[str, Any] = {
             "title": "RAMSTK User Configuration",
             "general": {
                 "reportsize": self.RAMSTK_REPORT_SIZE,
@@ -890,8 +860,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
 
     def set_user_directories(self) -> None:
-        """
-        Set the user-specific configuration directories.
+        """Set the user-specific configuration directories.
 
         :return: None
         :rtype: None

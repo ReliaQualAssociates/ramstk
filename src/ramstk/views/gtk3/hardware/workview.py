@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
+# noinspection PyPackageRequirements
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
@@ -535,7 +536,7 @@ class LogisticsPanel(RAMSTKPanel):
 
         # ----- ENTRIES
         self.txtCAGECode.do_set_properties(
-            tooltip=_("The Commerical and Government Entity (CAGE) Code of "
+            tooltip=_("The Commercial and Government Entity (CAGE) Code of "
                       "the selected hardware item."))
         self.txtCost.do_set_properties(
             width=100,
@@ -2141,7 +2142,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self._do_set_sensitive(type_id=_new_text)
         # Hazard rate methods are:
         #     1 = MIL-HDBK-217F Parts Count
-        #     2 = MIL-HDNK-217F Parts Stress
+        #     2 = MIL-HDBK-217F Parts Stress
         #     3 = NSWC (not yet implemented)
         elif index == 4:
             pub.sendMessage('changed_hazard_rate_method', method_id=_new_text)
