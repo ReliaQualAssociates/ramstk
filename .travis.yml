@@ -23,8 +23,8 @@ install:
     - pip install -U setuptools>12.0
     - pip install -U urllib3
     - pip install -U pip-tools
-    - pip install -U pycairo
-    - pip install -U PyGObject
+    - pip install -U "pycairo<1.20.0"
+    - pip install -U "pygobject>=3.27,<3.38.0"
     - pip install -r requirements.txt -r requirements-test.txt
     - make install PREFIX=$VIRTUAL_ENV
 
