@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-#       views.gtk3.hardware.components.integrated_circuit.py is part of the
-#       RAMSTK Project
+#       ramstk.views.gtk3.hardware.components.integrated_circuit.py is part of
+#       the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -167,23 +167,24 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtVoltageESD: RAMSTKEntry = RAMSTKEntry()
         self.txtYearsInProduction: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'application_id': [self.cmbApplication.do_update, 'changed'],
-            'construction_id': [self.cmbConstruction.do_update, 'changed'],
-            'manufacturing_id': [self.cmbManufacturing.do_update, 'changed'],
-            'package_id': [self.cmbPackage.do_update, 'changed'],
-            'technology_id': [self.cmbTechnology.do_update, 'changed'],
-            'type_id': [self.cmbType.do_update, 'changed'],
-            'area': [self.txtArea.do_update, 'changed'],
-            'feature_size': [self.txtFeatureSize, 'changed'],
-            'n_active_pins': [self.txtNActivePins.do_update, 'changed'],
-            'n_cycles': [self.txtNCycles, 'changed'],
-            'n_elements': [self.txtNElements, 'changed'],
-            'operating_life': [self.txtOperatingLife, 'changed'],
-            'theta_jc': [self.txtThetaJC, 'changed'],
-            'voltage_esd': [self.txtVoltageESD, 'changed'],
-            'years_in_production': [self.txtYearsInProduction, 'changed'],
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'application_id': [self.cmbApplication.do_update, 'changed', 1],
+            'construction_id': [self.cmbConstruction.do_update, 'changed', 2],
+            'manufacturing_id':
+            [self.cmbManufacturing.do_update, 'changed', 3],
+            'package_id': [self.cmbPackage.do_update, 'changed', 4],
+            'technology_id': [self.cmbTechnology.do_update, 'changed', 5],
+            'type_id': [self.cmbType.do_update, 'changed', 6],
+            'area': [self.txtArea.do_update, 'changed', 7],
+            'feature_size': [self.txtFeatureSize, 'changed', 8],
+            'n_active_pins': [self.txtNActivePins.do_update, 'changed', 9],
+            'n_cycles': [self.txtNCycles, 'changed', 10],
+            'n_elements': [self.txtNElements, 'changed', 11],
+            'operating_life': [self.txtOperatingLife, 'changed', 12],
+            'theta_jc': [self.txtThetaJC, 'changed', 13],
+            'voltage_esd': [self.txtVoltageESD, 'changed', 14],
+            'years_in_production': [self.txtYearsInProduction, 'changed', 15],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -316,6 +317,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             10: self.__do_load_vhsic_vlsi,
         }
         try:
+            # noinspection PyArgumentList
             _dic_method[self._subcategory_id](attributes)
         except KeyError:
             pass
@@ -392,10 +394,9 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def _do_load_application_combo(self, attributes: Dict[str, Any]) -> None:
         """Load the IC application RAMSTKComboBox().
 
-        :param dict attributes: the attributes dict for the selected
-            integrated circuit.
+        :param attributes: the attributes dict for the selected integrated
+            circuit.
         :return: None
-        :rtype: Nont
         """
         if attributes['construction_id'] == 1:
             self.cmbApplication.do_load_combo(
@@ -409,10 +410,9 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_dram(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display DRAM information.
 
-        :param dict attributes: the attributes dictionary for the selected
-            Integrated Circuit.
+        :param attributes: the attributes dictionary for the selected
+            integrated circuit.
         :return: None
-        :rtype: None
         """
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbTechnology.do_update(attributes['technology_id'])
@@ -741,39 +741,38 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtArea.dic_handler_id['changed'] = self.txtArea.connect(
             'changed',
-            super().on_changed_text, 8, 'wvw_editing_hardware')
+            super().on_changed_entry, 8, 'wvw_editing_hardware')
         self.txtFeatureSize.dic_handler_id[
             'changed'] = self.txtFeatureSize.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      9, 'wvw_editing_hardware')
         self.txtNActivePins.dic_handler_id[
             'changed'] = self.txtNActivePins.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      10,
                                                      'wvw_editing_hardware')
         self.txtNCycles.dic_handler_id['changed'] = self.txtNCycles.connect(
             'changed',
-            super().on_changed_text, 11, 'wvw_editing_hardware')
+            super().on_changed_entry, 11, 'wvw_editing_hardware')
         self.txtNElements.dic_handler_id[
             'changed'] = self.txtNElements.connect('changed',
-                                                   super().on_changed_text, 12,
-                                                   'wvw_editing_hardware')
+                                                   super().on_changed_entry,
+                                                   12, 'wvw_editing_hardware')
         self.txtOperatingLife.dic_handler_id[
-            'changed'] = self.txtOperatingLife.connect('changed',
-                                                       super().on_changed_text,
-                                                       13,
-                                                       'wvw_editing_hardware')
+            'changed'] = self.txtOperatingLife.connect(
+                'changed',
+                super().on_changed_entry, 13, 'wvw_editing_hardware')
         self.txtThetaJC.dic_handler_id['changed'] = self.txtThetaJC.connect(
             'changed',
-            super().on_changed_text, 14, 'wvw_editing_hardware')
+            super().on_changed_entry, 14, 'wvw_editing_hardware')
         self.txtVoltageESD.dic_handler_id[
             'changed'] = self.txtVoltageESD.connect('changed',
-                                                    super().on_changed_text,
+                                                    super().on_changed_entry,
                                                     15, 'wvw_editing_hardware')
         self.txtYearsInProduction.dic_handler_id[
             'changed'] = self.txtYearsInProduction.connect(
                 'changed',
-                super().on_changed_text, 16, 'wvw_editing_hardware')
+                super().on_changed_entry, 16, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Integrated Circuit assessment input widgets.

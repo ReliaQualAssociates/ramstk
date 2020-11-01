@@ -12,14 +12,14 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.failure_definition import lvwFailureDefinition
 from ramstk.views.gtk3.function import mtxFunctionHardware
 from ramstk.views.gtk3.hardware import (
     mtxHardwareRequirement, mtxHardwareValidation
 )
-from ramstk.views.gtk3.requirement import (
-    lvwStakeholders, mtxRequirementHardware
-)
-from ramstk.views.gtk3.revision import lvwFailureDefinition, lvwUsageProfile
+from ramstk.views.gtk3.requirement import mtxRequirementHardware
+from ramstk.views.gtk3.stakeholder import lvwStakeholders
+from ramstk.views.gtk3.usage_profile import lvwUsageProfile
 from ramstk.views.gtk3.validation import mtxValidationRequirement
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 

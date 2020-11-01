@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-#       gui.gtk.workviews.components.Switch.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.hardware.components.switch.py is part of the
+#       RAMSTK Project.
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Switch Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -122,13 +123,13 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtNCycles: RAMSTKEntry = RAMSTKEntry()
         self.txtNElements: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'application_id': [self.cmbApplication.do_update, 'changed'],
-            'construction_id': [self.cmbConstruction.do_update, 'changed'],
-            'contact_form_id': [self.cmbContactForm.do_update, 'changed'],
-            'n_cycles': [self.txtNCycles.do_update, 'changed'],
-            'n_elements': [self.txtNElements.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'application_id': [self.cmbApplication.do_update, 'changed', 1],
+            'construction_id': [self.cmbConstruction.do_update, 'changed', 2],
+            'contact_form_id': [self.cmbContactForm.do_update, 'changed', 3],
+            'n_cycles': [self.txtNCycles.do_update, 'changed', 4],
+            'n_elements': [self.txtNElements.do_update, 'changed', 5],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -150,6 +151,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the switch RKTComboBox().
 
@@ -163,7 +165,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]],
                                       signal='changed')
 
-        # Load the application RAMSTKCOmboBox().
+        # Load the application RAMSTKComboBox().
         try:
             _data = self._dic_applications[self._subcategory_id]
         except KeyError:
@@ -305,10 +307,10 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         # ----- ENTRIES
         self.txtNCycles.dic_handler_id['changed'] = self.txtNCycles.connect(
-            'changed', self.on_changed_text, 4, 'wvw_editing_hardware')
+            'changed', self.on_changed_entry, 4, 'wvw_editing_hardware')
         self.txtNElements.dic_handler_id[
             'changed'] = self.txtNElements.connect('changed',
-                                                   self.on_changed_text, 5,
+                                                   self.on_changed_entry, 5,
                                                    'wvw_editing_hardware')
 
     def __set_properties(self) -> None:

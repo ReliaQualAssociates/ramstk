@@ -41,7 +41,7 @@ ICONS32		= $(shell ls ./data/icons/32x32)
 
 # Argument lists for tools.
 DOCFORMATTER_ARGS	= --in-place
-ISORT_ARGS	= --atomic --apply --use-parentheses --balanced --multi-line 5
+ISORT_ARGS	= --atomic --use-parentheses --balanced --multi-line 5
 MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	=
 PYDOCSTYLE_ARGS	= --count
@@ -161,9 +161,9 @@ requirements:
 	pip-compile --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 upgrade:
-	pip-compile --upgrade --generate-hashes --output-file $(REQFILE) requirements.in
-	pip-compile --upgrade --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
-	pip-compile --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
+	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(REQFILE) requirements.in
+	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
+	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 # Targets to install and uninstall.
 install: clean-build clean-pyc

@@ -1,11 +1,9 @@
-defusedxml
 lifelines<0.15
-lxml
 matplotlib
 openpyxl
 pandas
 psycopg2
-pycairo
+pycairo<1.20.0
 pygobject>=3.27
 pypubsub
 sortedcontainers

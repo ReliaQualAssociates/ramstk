@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-#       gui.gtk.workviews.components.Connection.py is part of the RAMSTK
-#       Project
+#       ramstk.views.gtk3.hardware.components.connection.py is part of the
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Connection Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -42,13 +42,6 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     :cvar dict _dic_type: dictionary of connector types.  Key is connector
         subcategory ID; values are lists of types.
 
-    :ivar _dic_attribute_keys: dictionary to provide a "Rosetta Stone" for
-        the widget index (key) and the attribute name and data type (value).
-    :ivar _dic_attribute_updater: dictionary to provide a "Rosetta Stone"
-        for the attribute name (key) and the method and signal name (value)
-        that updates the widget on this view.  This dictionary is used to
-        have the widgets on this panel updated when changes are made in the
-        module view.
     :ivar list _lst_labels: list of label text to display for the capacitor
         MIL-HDBK-217 input parameters.
     :ivar _lst_widgets: the list of widgets to display in the panel.  These
@@ -245,18 +238,19 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtNHand: RAMSTKEntry = RAMSTKEntry()
         self.txtNPlanes: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'specification_id': [self.cmbSpecification.do_update, 'changed'],
-            'type_id': [self.cmbType.do_update, 'changed'],
-            'insert_id': [self.cmbInsert.do_update, 'changed'],
-            'contact_gauge': [self.txtContactGauge.do_update, 'changed'],
-            'n_active_pins': [self.txtActivePins.do_update, 'changed'],
-            'current_operating': [self.txtAmpsContact, 'changed'],
-            'n_cycles': [self.txtMating, 'changed'],
-            'n_wave_soldered': [self.txtNWave, 'changed'],
-            'n_hand_soldered': [self.txtNHand, 'changed'],
-            'n_circuit_planes': [self.txtNPlanes, 'changed'],
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'specification_id':
+            [self.cmbSpecification.do_update, 'changed', 1],
+            'type_id': [self.cmbType.do_update, 'changed', 2],
+            'insert_id': [self.cmbInsert.do_update, 'changed', 3],
+            'contact_gauge': [self.txtContactGauge.do_update, 'changed', 4],
+            'n_active_pins': [self.txtActivePins.do_update, 'changed', 5],
+            'current_operating': [self.txtAmpsContact, 'changed', 6],
+            'n_cycles': [self.txtMating, 'changed', 7],
+            'n_wave_soldered': [self.txtNWave, 'changed', 8],
+            'n_hand_soldered': [self.txtNHand, 'changed', 9],
+            'n_circuit_planes': [self.txtNPlanes, 'changed', 10],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -487,29 +481,29 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtContactGauge.dic_handler_id[
             'changed'] = self.txtContactGauge.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       4,
                                                       'wvw_editing_hardware')
         self.txtActivePins.dic_handler_id[
             'changed'] = self.txtActivePins.connect('changed',
-                                                    super().on_changed_text, 5,
-                                                    'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    5, 'wvw_editing_hardware')
         self.txtAmpsContact.dic_handler_id[
             'changed'] = self.txtAmpsContact.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      6, 'wvw_editing_hardware')
         self.txtMating.dic_handler_id['changed'] = self.txtMating.connect(
             'changed',
-            super().on_changed_text, 7, 'wvw_editing_hardware')
+            super().on_changed_entry, 7, 'wvw_editing_hardware')
         self.txtNWave.dic_handler_id['changed'] = self.txtNWave.connect(
             'changed',
-            super().on_changed_text, 8, 'wvw_editing_hardware')
+            super().on_changed_entry, 8, 'wvw_editing_hardware')
         self.txtNHand.dic_handler_id['changed'] = self.txtNHand.connect(
             'changed',
-            super().on_changed_text, 9, 'wvw_editing_hardware')
+            super().on_changed_entry, 9, 'wvw_editing_hardware')
         self.txtNPlanes.dic_handler_id['changed'] = self.txtNPlanes.connect(
             'changed',
-            super().on_changed_text, 10, 'wvw_editing_hardware')
+            super().on_changed_entry, 10, 'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Connection assessment input widgets.

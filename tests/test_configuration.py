@@ -611,6 +611,7 @@ class TestGetterSetter():
             'revision': 'revision.toml',
             'similar_item': 'similar_item.toml',
             'stakeholder': 'stakeholder.toml',
+            'usage_profile': 'usage_profile.toml',
             'validation': 'validation.toml',
         }
         assert DUT.RAMSTK_STRESS_LIMITS == {

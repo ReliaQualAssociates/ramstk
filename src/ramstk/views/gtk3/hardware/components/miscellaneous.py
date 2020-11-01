@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       views.gtk3.hardware.components.miscellaneous.py is part of the
+#       ramstk.views.gtk3.hardware.components.miscellaneous.py is part of the
 #       RAMSTK Project.
 #
 # All rights reserved.
@@ -8,7 +8,7 @@
 """Miscellaneous Parts Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -94,12 +94,12 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtFrequency: RAMSTKEntry = RAMSTKEntry()
         self.txtUtilization: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'application_id': [self.cmbApplication.do_update, 'changed'],
-            'type_id': [self.cmbType.do_update, 'changed'],
-            'frequency_operating': [self.txtFrequency.do_update, 'changed'],
-            'duty_cycle': [self.txtUtilization.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'application_id': [self.cmbApplication.do_update, 'changed', 1],
+            'type_id': [self.cmbType.do_update, 'changed', 2],
+            'frequency_operating': [self.txtFrequency.do_update, 'changed', 3],
+            'duty_cycle': [self.txtUtilization.do_update, 'changed', 4],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -120,6 +120,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the miscellaneous assessment input RKTComboBox()s.
 
@@ -168,6 +169,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             4: self.__do_load_lamp
         }
         try:
+            # noinspection PyArgumentList
             _dic_method[self._subcategory_id](attributes)
         except KeyError:
             pass
@@ -283,11 +285,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtFrequency.dic_handler_id[
             'changed'] = self.txtFrequency.connect('changed',
-                                                   self.on_changed_text, 3,
+                                                   self.on_changed_entry, 3,
                                                    'wvw_editing_hardware')
         self.txtUtilization.dic_handler_id[
             'changed'] = self.txtUtilization.connect('changed',
-                                                     self.on_changed_text, 4,
+                                                     self.on_changed_entry, 4,
                                                      'wvw_editing_hardware')
 
     def __set_properties(self) -> None:

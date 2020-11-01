@@ -3,11 +3,11 @@
 #       ramstk.views.gtk3.requirement.workview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 Requirement Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -21,6 +21,9 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry, RAMSTKPanel, RAMSTKTextView, RAMSTKWorkView
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class GeneralDataPanel(RAMSTKPanel):
     """Panel to display general data about the selected Requirement."""
@@ -29,18 +32,7 @@ class GeneralDataPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['requirement_code', 'string'],
-            1: ['description', 'string'],
-            2: ['requirement_type', 'integer'],
-            4: ['specification', 'string'],
-            5: ['page_number', 'string'],
-            6: ['figure_number', 'string'],
-            7: ['priority', 'integer'],
-            8: ['owner', 'integer'],
-            9: ['requirement_code', 'string'],
-            10: ['validated_date', 'date'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -84,16 +76,15 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
         self.txtValidatedDate: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'derived': [self.chkDerived.do_update, 'toggled'],
-            'description': [self.txtName.do_update, 'changed'],
-            'figure_number': [self.txtFigNum.do_update, 'changed'],
-            'page_number': [self.txtPageNum.do_update, 'changed'],
-            'specification': [self.txtSpecification.do_update, 'changed'],
-            'validated': [self.chkValidated.do_update, 'toggled'],
-            'validated_date': [self.txtValidatedDate.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'derived': [self.chkDerived.do_update, 'toggled', 0],
+            'description': [self.txtName.do_update, 'changed', 1],
+            'figure_number': [self.txtFigNum.do_update, 'changed', 2],
+            'page_number': [self.txtPageNum.do_update, 'changed', 3],
+            'specification': [self.txtSpecification.do_update, 'changed', 4],
+            'validated': [self.chkValidated.do_update, 'toggled', 5],
+            'validated_date': [self.txtValidatedDate.do_update, 'changed', 6],
         }
-
         self._lst_widgets = [
             self.txtCode,
             self.txtName,
@@ -279,24 +270,24 @@ class GeneralDataPanel(RAMSTKPanel):
 
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
-            super().on_changed_text, 0, 'wvw_editing_requirement')
+            super().on_changed_entry, 0, 'wvw_editing_requirement')
         self.txtName.dic_handler_id['changed'] = self.txtName.connect(
             'focus-out-event',
-            super().on_changed_text, 1, 'wvw_editing_requirement')
+            super().on_changed_entry, 1, 'wvw_editing_requirement')
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
-                super().on_changed_text, 4, 'wvw_editing_requirement')
+                super().on_changed_entry, 4, 'wvw_editing_requirement')
         self.txtPageNum.dic_handler_id['changed'] = self.txtPageNum.connect(
             'changed',
-            super().on_changed_text, 5, 'wvw_editing_requirement')
+            super().on_changed_entry, 5, 'wvw_editing_requirement')
         self.txtFigNum.dic_handler_id['changed'] = self.txtFigNum.connect(
             'changed',
-            super().on_changed_text, 6, 'wvw_editing_requirement')
+            super().on_changed_entry, 6, 'wvw_editing_requirement')
         self.txtValidatedDate.dic_handler_id[
             'changed'] = self.txtValidatedDate.connect(
                 'changed',
-                super().on_changed_text, 10, 'wvw_editing_requirement')
+                super().on_changed_entry, 10, 'wvw_editing_requirement')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -304,7 +295,7 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- BUTTONS
         self.btnValidateDate.do_set_properties(height=25, width=25)
@@ -390,16 +381,16 @@ class ClarityPanel(RAMSTKPanel):
         self.chkClarityQ7: RAMSTKCheckButton = RAMSTKCheckButton()
         self.chkClarityQ8: RAMSTKCheckButton = RAMSTKCheckButton()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'q_clarity_0': [self.chkClarityQ0, 'toggled'],
-            'q_clarity_1': [self.chkClarityQ1, 'toggled'],
-            'q_clarity_2': [self.chkClarityQ2, 'toggled'],
-            'q_clarity_3': [self.chkClarityQ3, 'toggled'],
-            'q_clarity_4': [self.chkClarityQ4, 'toggled'],
-            'q_clarity_5': [self.chkClarityQ5, 'toggled'],
-            'q_clarity_6': [self.chkClarityQ6, 'toggled'],
-            'q_clarity_7': [self.chkClarityQ7, 'toggled'],
-            'q_clarity_8': [self.chkClarityQ8, 'toggled'],
+        self._dic_attribute_updater = {
+            'q_clarity_0': [self.chkClarityQ0, 'toggled', 0],
+            'q_clarity_1': [self.chkClarityQ1, 'toggled', 2],
+            'q_clarity_2': [self.chkClarityQ2, 'toggled', 3],
+            'q_clarity_3': [self.chkClarityQ3, 'toggled', 4],
+            'q_clarity_4': [self.chkClarityQ4, 'toggled', 5],
+            'q_clarity_5': [self.chkClarityQ5, 'toggled', 6],
+            'q_clarity_6': [self.chkClarityQ6, 'toggled', 7],
+            'q_clarity_7': [self.chkClarityQ7, 'toggled', 8],
+            'q_clarity_8': [self.chkClarityQ8, 'toggled', 9],
         }
 
         self._lst_widgets = [
@@ -437,6 +428,8 @@ class ClarityPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Requirements clarity panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -464,7 +457,7 @@ class ClarityPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         for _checkbutton in self._lst_widgets:
             _checkbutton.do_set_properties(height=30)
@@ -530,17 +523,17 @@ class CompletenessPanel(RAMSTKPanel):
         self.chkCompleteQ8: RAMSTKCheckButton = RAMSTKCheckButton()
         self.chkCompleteQ9: RAMSTKCheckButton = RAMSTKCheckButton()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'q_complete_0': [self.chkCompleteQ0, 'toggled'],
-            'q_complete_1': [self.chkCompleteQ1, 'toggled'],
-            'q_complete_2': [self.chkCompleteQ2, 'toggled'],
-            'q_complete_3': [self.chkCompleteQ3, 'toggled'],
-            'q_complete_4': [self.chkCompleteQ4, 'toggled'],
-            'q_complete_5': [self.chkCompleteQ5, 'toggled'],
-            'q_complete_6': [self.chkCompleteQ6, 'toggled'],
-            'q_complete_7': [self.chkCompleteQ7, 'toggled'],
-            'q_complete_8': [self.chkCompleteQ8, 'toggled'],
-            'q_complete_9': [self.chkCompleteQ9, 'toggled'],
+        self._dic_attribute_updater = {
+            'q_complete_0': [self.chkCompleteQ0, 'toggled', 0],
+            'q_complete_1': [self.chkCompleteQ1, 'toggled', 1],
+            'q_complete_2': [self.chkCompleteQ2, 'toggled', 2],
+            'q_complete_3': [self.chkCompleteQ3, 'toggled', 3],
+            'q_complete_4': [self.chkCompleteQ4, 'toggled', 4],
+            'q_complete_5': [self.chkCompleteQ5, 'toggled', 5],
+            'q_complete_6': [self.chkCompleteQ6, 'toggled', 6],
+            'q_complete_7': [self.chkCompleteQ7, 'toggled', 7],
+            'q_complete_8': [self.chkCompleteQ8, 'toggled', 8],
+            'q_complete_9': [self.chkCompleteQ9, 'toggled', 9],
         }
 
         self._lst_widgets = [
@@ -577,8 +570,10 @@ class CompletenessPanel(RAMSTKPanel):
             _checkbutton.do_update(False, signal='toggled')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
+        """Load the Requirements completeness panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -606,7 +601,7 @@ class CompletenessPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         for _checkbutton in self._lst_widgets:
             _checkbutton.do_set_properties(height=30)
@@ -671,16 +666,16 @@ class ConsistencyPanel(RAMSTKPanel):
         self.chkConsistentQ7: RAMSTKCheckButton = RAMSTKCheckButton()
         self.chkConsistentQ8: RAMSTKCheckButton = RAMSTKCheckButton()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'q_consistent_0': [self.chkConsistentQ0, 'toggled'],
-            'q_consistent_1': [self.chkConsistentQ1, 'toggled'],
-            'q_consistent_2': [self.chkConsistentQ2, 'toggled'],
-            'q_consistent_3': [self.chkConsistentQ3, 'toggled'],
-            'q_consistent_4': [self.chkConsistentQ4, 'toggled'],
-            'q_consistent_5': [self.chkConsistentQ5, 'toggled'],
-            'q_consistent_6': [self.chkConsistentQ6, 'toggled'],
-            'q_consistent_7': [self.chkConsistentQ7, 'toggled'],
-            'q_consistent_8': [self.chkConsistentQ8, 'toggled'],
+        self._dic_attribute_updater = {
+            'q_consistent_0': [self.chkConsistentQ0, 'toggled', 0],
+            'q_consistent_1': [self.chkConsistentQ1, 'toggled', 1],
+            'q_consistent_2': [self.chkConsistentQ2, 'toggled', 2],
+            'q_consistent_3': [self.chkConsistentQ3, 'toggled', 3],
+            'q_consistent_4': [self.chkConsistentQ4, 'toggled', 4],
+            'q_consistent_5': [self.chkConsistentQ5, 'toggled', 5],
+            'q_consistent_6': [self.chkConsistentQ6, 'toggled', 6],
+            'q_consistent_7': [self.chkConsistentQ7, 'toggled', 7],
+            'q_consistent_8': [self.chkConsistentQ8, 'toggled', 8],
         }
 
         self._lst_widgets = [
@@ -716,8 +711,10 @@ class ConsistencyPanel(RAMSTKPanel):
             _checkbutton.do_update(False, signal='toggled')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
+        """Load the Requirements consistency panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -745,7 +742,7 @@ class ConsistencyPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         for _checkbutton in self._lst_widgets:
             _checkbutton.do_set_properties(height=30)
@@ -799,13 +796,13 @@ class VerifiabilityPanel(RAMSTKPanel):
         self.chkVerifiableQ4: RAMSTKCheckButton = RAMSTKCheckButton()
         self.chkVerifiableQ5: RAMSTKCheckButton = RAMSTKCheckButton()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'q_verifiable_0': [self.chkVerifiableQ0, 'toggled'],
-            'q_verifiable_1': [self.chkVerifiableQ1, 'toggled'],
-            'q_verifiable_2': [self.chkVerifiableQ2, 'toggled'],
-            'q_verifiable_3': [self.chkVerifiableQ3, 'toggled'],
-            'q_verifiable_4': [self.chkVerifiableQ4, 'toggled'],
-            'q_verifiable_5': [self.chkVerifiableQ5, 'toggled'],
+        self._dic_attribute_updater = {
+            'q_verifiable_0': [self.chkVerifiableQ0, 'toggled', 0],
+            'q_verifiable_1': [self.chkVerifiableQ1, 'toggled', 1],
+            'q_verifiable_2': [self.chkVerifiableQ2, 'toggled', 2],
+            'q_verifiable_3': [self.chkVerifiableQ3, 'toggled', 3],
+            'q_verifiable_4': [self.chkVerifiableQ4, 'toggled', 4],
+            'q_verifiable_5': [self.chkVerifiableQ5, 'toggled', 5],
         }
 
         self._lst_widgets = [
@@ -838,8 +835,10 @@ class VerifiabilityPanel(RAMSTKPanel):
             _checkbutton.do_update(False, signal='toggled')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
+        """Load the Requirements verifiability panel.
 
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
         :return: None
         :rtype: None
         """
@@ -867,7 +866,7 @@ class VerifiabilityPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         for _checkbutton in self._lst_widgets:
             _checkbutton.do_set_properties(height=30)
@@ -965,15 +964,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().make_tab_label(
-            tablabel=self._tablabel,
-            tooltip=self._tabtooltip,
-        )
-        super().make_toolbuttons(
-            icons=self._lst_icons,
-            tooltips=self._lst_tooltips,
-            callbacks=self._lst_callbacks,
-        )
+        super().do_make_layout()
 
         # Add the validation date dialog launcher button to the right of the
         # validated date RAMSTKEntry.
@@ -1007,28 +998,6 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_create_requirement_code',
                         node_id=self._record_id,
                         prefix=_prefix)
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected Requirement.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_requirement', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Requirements.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_requirements')
 
 
 class RequirementAnalysis(RAMSTKWorkView):
@@ -1103,28 +1072,6 @@ class RequirementAnalysis(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_requirement')
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save the currently selected Requirement.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_requirement', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Requirements.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_requirements')
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement Analysis tab.

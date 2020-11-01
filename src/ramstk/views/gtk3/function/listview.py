@@ -14,8 +14,7 @@ from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 class FunctionHardware(RAMSTKListView):
-    """
-    Display all the Function::Hardware matrix for the selected Revision.
+    """Display all the Function::Hardware matrix for the selected Revision.
 
     The attributes of the Function::Hardware Matrix View are:
 
@@ -39,18 +38,14 @@ class FunctionHardware(RAMSTKListView):
         "Function::Hardware\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Function::Hardware matrix "
                     "for the selected revision.")
-    _view_type: str = 'matrix'
+    _view_type = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the List View for the Function package.
+        """Initialize the List View for the Function package.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        :param module: the name of the module.
         """
         super().__init__(configuration, logger)
 
@@ -59,9 +54,6 @@ class FunctionHardware(RAMSTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._lst_callbacks = [self.do_request_update]
-        self._lst_icons = ['save']
-        self._lst_mnu_labels = [_("Save Matrix")]
         self._lst_tooltips = [
             _("Save changes to the Function::Hardware matrix.")
         ]

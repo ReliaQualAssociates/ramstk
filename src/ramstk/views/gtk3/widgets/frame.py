@@ -23,7 +23,7 @@ class RAMSTKFrame(Gtk.Frame):
         """Initialize an instance of the RAMSTK Frame."""
         GObject.GObject.__init__(self)
 
-    def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
+    def do_set_properties(self, **kwargs: Any) -> None:
         """Set the RAMSTKFrame properties."""
         _bold: Union[Dict[str, Any], bool] = kwargs.get('bold', False)
         _shadow = kwargs.get('shadow', Gtk.ShadowType.ETCHED_OUT)

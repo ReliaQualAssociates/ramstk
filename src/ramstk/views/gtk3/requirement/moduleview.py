@@ -8,7 +8,7 @@
 """RAMSTK Requirement GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, List
 
 # Third Party Imports
 import treelib
@@ -18,30 +18,183 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKModuleView
+from ramstk.views.gtk3.widgets import (
+    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
+)
+
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
+
+class RequirementPanel(RAMSTKPanel):
+    """Panel to display hierarchy of requirements."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Requirement panel."""
+        super().__init__()
+
+        # Initialize private dictionary class attributes.
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
+        self._dic_attribute_updater = {
+            'requirement_id': [None, 'edited', 1],
+            'derived': [None, 'edited', 2],
+            'description': [None, 'edited', 3],
+            'figure_number': [None, 'edited', 4],
+            'owner': [None, 'edited', 5],
+            'page_number': [None, 'edited', 6],
+            'parent_id': [None, 'edited', 7],
+            'priority': [None, 'edited', 8],
+            'requirement_code': [None, 'edited', 9],
+            'specification': [None, 'edited', 10],
+            'requirement_type': [None, 'edited', 11],
+            'validated': [None, 'edited', 12],
+            'validated_date': [None, 'edited', 13],
+            'q_clarity_0': [None, 'edited', 14],
+            'q_clarity_1': [None, 'edited', 15],
+            'q_clarity_2': [None, 'edited', 16],
+            'q_clarity_3': [None, 'edited', 17],
+            'q_clarity_4': [None, 'edited', 18],
+            'q_clarity_5': [None, 'edited', 19],
+            'q_clarity_6': [None, 'edited', 20],
+            'q_clarity_7': [None, 'edited', 21],
+            'q_clarity_8': [None, 'edited', 22],
+            'q_complete_0': [None, 'edited', 23],
+            'q_complete_1': [None, 'edited', 24],
+            'q_complete_2': [None, 'edited', 25],
+            'q_complete_3': [None, 'edited', 26],
+            'q_complete_4': [None, 'edited', 27],
+            'q_complete_5': [None, 'edited', 28],
+            'q_complete_6': [None, 'edited', 29],
+            'q_complete_7': [None, 'edited', 30],
+            'q_complete_8': [None, 'edited', 31],
+            'q_complete_9': [None, 'edited', 32],
+            'q_consistent_0': [None, 'edited', 33],
+            'q_consistent_1': [None, 'edited', 34],
+            'q_consistent_2': [None, 'edited', 35],
+            'q_consistent_3': [None, 'edited', 36],
+            'q_consistent_4': [None, 'edited', 37],
+            'q_consistent_5': [None, 'edited', 38],
+            'q_consistent_6': [None, 'edited', 39],
+            'q_consistent_7': [None, 'edited', 40],
+            'q_consistent_8': [None, 'edited', 41],
+            'q_verifiable_0': [None, 'edited', 42],
+            'q_verifiable_1': [None, 'edited', 43],
+            'q_verifiable_2': [None, 'edited', 44],
+            'q_verifiable_3': [None, 'edited', 45],
+            'q_verifiable_4': [None, 'edited', 46],
+            'q_verifiable_5': [None, 'edited', 47],
+        }
+
+        # Initialize private list class attributes.
+
+        # Initialize private scalar class attributes.
+        self._title = _("Requirement BoM")
+
+        # Initialize public dictionary class attributes.
+
+        # Initialize public list class attributes.
+
+        # Initialize public scalar class attributes.
+
+        super().do_make_panel_treeview()
+        self.__do_set_properties()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_load_tree, 'succeed_retrieve_requirements')
+        pub.subscribe(super().do_refresh_tree, 'wvw_editing_requirement')
+        pub.subscribe(super().on_delete, 'succeed_delete_requirement')
+
+        pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+
+    def do_set_callbacks(self) -> None:
+        """Set callbacks for the requirement module view.
+
+        :return: None
+        """
+        super().do_set_callbacks()
+        super().do_set_cell_callbacks('mvw_editing_requirement',
+                                      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    def _on_module_switch(self, module: str = '') -> None:
+        """Respond to changes in selected Module View module (tab).
+
+        :param module: the name of the module that was just selected.
+        :return: None
+        """
+        _model, _row = self.tvwTreeView.selection.get_selected()
+
+        if module == 'requirement' and _row is not None:
+            _code = _model.get_value(_row, self._lst_col_order[5])
+            _name = _model.get_value(_row, self._lst_col_order[15])
+            _title = _("Analyzing Requirement {0:s}: {1:s}").format(
+                str(_code), str(_name))
+
+            pub.sendMessage('request_set_title', title=_title)
+
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        """Handle events for the Requirement ModuleView RAMSTKTreeView().
+
+        This method is called whenever a Requirement Module View
+        RAMSTKTreeView() row is activated/changed.
+
+        :param selection: the Requirement class Gtk.TreeSelection().
+        :return: None
+        """
+        _attributes = super().on_row_change(selection)
+
+        if _attributes:
+            self._record_id = _attributes['requirement_id']
+            self._parent_id = _attributes['parent_id']
+
+            _title = _("Analyzing Requirement {0:s}: {1:s}").format(
+                str(_attributes['requirement_code']),
+                str(_attributes['description']))
+
+            pub.sendMessage('selected_requirement', attributes=_attributes)
+            pub.sendMessage('request_set_title', title=_title)
+
+    def __do_set_properties(self) -> None:
+        """Set common properties of the ModuleView and widgets.
+
+        :return: None
+        """
+        super().do_set_properties(**{'bold': True, 'title': self._title})
+
+        self.tvwTreeView.set_tooltip_text(
+            _("Displays the hierarchical list of requirements."))
 
 
 class ModuleView(RAMSTKModuleView):
-    """
-    Display Requirement attribute data in the RAMSTK Module Book.
+    """Display Requirement attribute data in the RAMSTK Module Book.
 
     The Requirement Module View displays all the Requirements associated with
     the connected RAMSTK Program in a flat list.  The attributes of a
     Requirement Module View are:
 
-    :cvar str _module: the name of the module.
-    :ivar list _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
-    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+    :cvar _module: the name of the module.
+
+    :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
-    :ivar list _lst_tooltips: the list of tooltips for the view's
+    :ivar _lst_tooltips: the list of tooltips for the view's
         toolbar buttons and pop-up menu.  The tooltips are listed in the
         order they appear on the toolbar or pop-up menu.
     """
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
 
     # Define private scalar class attributes.
     _module: str = 'requirement'
@@ -49,102 +202,47 @@ class ModuleView(RAMSTKModuleView):
     _tabtooltip: str = _("Displays the RAMS requirements hierarchy for the "
                          "selected Revision.")
 
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the Requirement Module View.
+        """Initialize the Requirement Module View.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
-
-        self.RAMSTK_LOGGER.do_create_logger(
-            __name__,
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
-            to_tty=False)
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/requirement.png')
-        self._dic_key_index = {
-            'requirement_id': 1,
-            'derived': 2,
-            'description': 3,
-            'figure_number': 4,
-            'owner': 5,
-            'page_number': 6,
-            'parent_id': 7,
-            'priority': 8,
-            'requirement_code': 9,
-            'specification': 10,
-            'requirement_type': 11,
-            'validated': 12,
-            'validated_date': 13,
-            'q_clarity_0': 14,
-            'q_clarity_1': 15,
-            'q_clarity_2': 16,
-            'q_clarity_3': 17,
-            'q_clarity_4': 18,
-            'q_clarity_5': 19,
-            'q_clarity_6': 20,
-            'q_clarity_7': 21,
-            'q_clarity_8': 22,
-            'q_complete_0': 23,
-            'q_complete_1': 24,
-            'q_complete_2': 25,
-            'q_complete_3': 26,
-            'q_complete_4': 27,
-            'q_complete_5': 28,
-            'q_complete_6': 29,
-            'q_complete_7': 30,
-            'q_complete_8': 31,
-            'q_complete_9': 32,
-            'q_consistent_0': 33,
-            'q_consistent_1': 34,
-            'q_consistent_2': 35,
-            'q_consistent_3': 36,
-            'q_consistent_4': 37,
-            'q_consistent_5': 38,
-            'q_consistent_6': 39,
-            'q_consistent_7': 40,
-            'q_consistent_8': 41,
-            'q_verifiable_0': 42,
-            'q_verifiable_1': 43,
-            'q_verifiable_2': 44,
-            'q_verifiable_3': 45,
-            'q_verifiable_4': 46,
-            'q_verifiable_5': 47
-        }
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
-        ]
-        self._lst_icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
-        ]
+        self._lst_callbacks.insert(1, self.do_request_insert_child)
+        self._lst_icons[0] = 'insert_sibling'
+        self._lst_icons.insert(1, 'insert_child')
         self._lst_mnu_labels = [
             _("Add Sibling Requirement"),
             _("Add Child Requirement"),
             _("Delete Selected Requirement"),
             _("Save Selected Requirement"),
-            _("Save All Requirements")
+            _("Save All Requirements"),
         ]
         self._lst_tooltips = [
             _("Add a new sibling requirement."),
             _("Add a new child requirement."),
             _("Remove the currently selected requirement."),
             _("Save changes to the currently selected requirement."),
-            _("Save changes to all requirements")
+            _("Save changes to all requirements"),
         ]
 
         # Initialize private scalar attributes.
+        self._pnlPanel = RequirementPanel()
 
         # Initialize public dictionary attributes.
 
@@ -153,13 +251,9 @@ class ModuleView(RAMSTKModuleView):
         # Initialize public scalar attributes.
 
         super().make_ui()
+        self._pnlPanel.do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_insert, 'succeed_insert_requirement')
-        pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
-
-        pub.subscribe(self.do_load_tree, 'succeed_retrieve_requirements')
-        pub.subscribe(self.do_refresh_tree, 'wvw_editing_requirement')
         pub.subscribe(self.do_set_cursor_active,
                       'succeed_delete_requirement_2')
         pub.subscribe(self.do_set_cursor_active,
@@ -171,16 +265,15 @@ class ModuleView(RAMSTKModuleView):
                       'fail_insert_requirement')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_requirement')
-        pub.subscribe(self.on_delete, 'succeed_delete_requirement')
 
-    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to delete selected record from the RAMSTKRequirement table.
+        pub.subscribe(self._on_insert_requirement,
+                      'succeed_insert_requirement')
+
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        """Request to delete selected record from the RAMSTKRequirement table.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
         :return: None
-        :rtype: None
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent(
         ).get_parent()
@@ -198,136 +291,13 @@ class ModuleView(RAMSTKModuleView):
 
         _dialog.do_destroy()
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """
-        Request to update the selected record to the RAMSTKRequirement table.
+    def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> None:
+        """Add row to module view for newly added requirement.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_requirement', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """
-        Send request to save all the records to the RAMSTKRequirement table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_requirements')
-
-    def _on_cell_edit(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      position: int) -> None:
-        """
-        Handle edits of Requirement package Module View RAMSTKTreeview().
-
-        This requirement sends a dict with it's message that relates the
-        database field and the new data for that field.
-
-            `package` key: `package` value
-
-        corresponds to:
-
-            database field name: new value
-
-        The workview module listens for this message so it can update it's
-        widgets.  Other modules may listen as well.
-
-        :param __cell: the Gtk.CellRenderer() that was edited.
-        :type __cell: :class:`Gtk.CellRenderer`
-        :param str path: the Gtk.TreeView() path of the
-            Gtk.CellRenderer() that was edited.
-        :param str new_text: the new text in the edited
-            Gtk.CellRenderer().
-        :param int position: the column position of the edited
-            Gtk.CellRenderer().
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {5: 'requirement_code', 15: 'name', 17: 'remarks'}
-        try:
-            _key = _dic_keys[self._lst_col_order[position]]
-        except KeyError:
-            _key = ''
-
-        self.treeview.do_edit_cell(__cell, path, new_text, position)
-
-        pub.sendMessage('mvw_editing_requirement',
-                        node_id=[self._record_id, -1, ''],
-                        package={_key: new_text})
-
-    def _on_insert(self, node_id: int, tree: treelib.Tree) -> None:
-        """
-        Add row to module view for newly added requirement.
-
-        :param int node_id: the ID of the newly added requirement.
+        :param node_id: the ID of the newly added requirement.
         :param tree: the treelib Tree() containing the work stream module's
             data.
-        :type tree: :class:`treelib.Tree`
         :return: None
-        :rtype: None
         """
         _data = tree.get_node(node_id).data['requirement'].get_attributes()
-        super().on_insert(_data)
-
-    def _on_module_switch(self, module: str = '') -> None:
-        """
-        Method to set the module view title when the page is switched.
-
-        :param module: the name of the module of the new page.
-        :return: None
-        """
-        _model, _row = self.treeview.selection.get_selected()
-
-        if module == 'requirement' and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Requirement {0:s}: {1:s}").format(
-                str(_code), str(_name))
-
-            pub.sendMessage('request_set_title', title=_title)
-
-    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
-        """
-        Handle events for the Requirement package Module View RAMSTKTreeView().
-
-        This method is called whenever a Requirement Module View
-        RAMSTKTreeView() row is activated/changed.
-
-        :param selection: the Requirement class Gtk.TreeSelection().
-        :type selection: :class:`Gtk.TreeSelection`
-        :return: None
-        :rtype: None
-        """
-        selection.handler_block(self.treeview.dic_handler_id['changed'])
-
-        _model, _row = selection.get_selected()
-        _attributes: Dict[str, Any] = super().on_row_change(selection)
-
-        if _attributes:
-            self._record_id = _attributes['requirement_id']
-            self._parent_id = _attributes['parent_id']
-
-            _prow = _model.iter_parent(_row)
-            if _prow is not None:
-                self._parent_id = self._record_id
-            else:
-                self._parent_id = 0
-
-            _title = _("Analyzing {0:s} Requirement: {1:s}").format(
-                str(_attributes['requirement_type']),
-                str(_attributes['requirement_code']))
-
-            pub.sendMessage('selected_requirement', attributes=_attributes)
-            pub.sendMessage('request_get_requirement_attributes',
-                            node_id=self._record_id,
-                            table='requirement')
-            pub.sendMessage('request_set_title', title=_title)
-
-        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
+        self._pnlPanel.on_insert(_data)

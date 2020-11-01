@@ -521,7 +521,8 @@ def test_toml_user_configuration(make_home_config_dir):
             "revision": "revision.toml",
             "similar_item": "similar_item.toml",
             "stakeholder": "stakeholder.toml",
-            "validation": "validation.toml"
+            "usage_profile": "usage_profile.toml",
+            "validation": "validation.toml",
         },
         "colors": {
             "functionbg": "#FFFFFF",

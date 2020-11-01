@@ -11,6 +11,7 @@
 # Standard Library Imports
 from datetime import datetime
 from shutil import copyfile
+from typing import Any, Dict
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -30,14 +31,14 @@ from ramstk.views.gtk3.widgets import (
 
 
 class EditPreferences(Gtk.Window, RAMSTKBaseView):
-    """
-    Assistant to provide a GUI to set various RAMSTK config preferences.
+    """Assistant to provide a GUI to set various RAMSTK config preferences.
 
-    RAMSTK preferences are stored in the RAMSTK Site database and the user's
-    Site configuration file and Program configuration file.  Configurations
-    preferences are stored in Site.conf or RAMSTK.conf in each user's
-    $HOME/.config/RAMSTK directory and are applicable only to that specific
-    user.  Configuration preferences are edited with the Preferences assistant.
+    RAMSTK preferences are stored in the RAMSTK Site database and the
+    user's Site configuration file and Program configuration file.
+    Configurations preferences are stored in Site.conf or RAMSTK.conf in
+    each user's $HOME/.config/RAMSTK directory and are applicable only
+    to that specific user.  Configuration preferences are edited with
+    the Preferences assistant.
     """
     # Define private list class attributes.
     _lst_labels = [
@@ -67,29 +68,18 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
     def __init__(self, __widget: Gtk.ImageMenuItem,
                  configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager, parent: object) -> None:
-        """
-        Initialize an instance of the Preferences assistant.
+        """Initialize an instance of the Preferences assistant.
 
         :param __widget: the Gtk.ImageMenuItem() that called this assistant.
-        :type __widget: :class:`Gtk.ImageMenuItem`
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         :param parent: the RAMSTKDesktop from which this assistant was
             launched.
-        :type parent: object
         """
         GObject.GObject.__init__(self)
-        RAMSTKBaseView.__init__(self,
-                                configuration,
-                                logger,
-                                module='preferences')
+        RAMSTKBaseView.__init__(self, configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._site_preferences = {}
-        self._user_preferences = {}
 
         # Initialize private list attributes.
         self._lst_callbacks = [self._do_quit, self._do_request_update]
@@ -170,8 +160,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         self._do_load_page()
 
     def __load_comboboxes(self) -> None:
-        """
-        Load the RAMSTKComboBoxes() with their data.
+        """Load the RAMSTKComboBoxes() with their data.
 
         :return: None
         :rtype: None
@@ -183,23 +172,24 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         self.cmbListBookTabPosition.do_load_combo([["Bottom"], ["Left"],
                                                    ["Right"], ["Top"]])
         self.cmbReportSize.do_load_combo([["A4"], ["Letter"]])
-        self.cmbFormatFiles.do_load_combo(
-            [[_("Allocation"), 'allocation', ''], [
-                _("(D)FME(C)A"), 'fmea', ''
-            ], [_("Failure Definition"), 'failure_definition', ''],
-             [_("Function"), 'function', ''], [_("Hardware"), 'hardware', ''],
-             [_("Hazards Analysis"), 'hazard', ''],
-             [_("Physics of Failure Analysis"), 'pof', ''],
-             [_("Requirement"), 'requirement', ''],
-             [_("Revision"), 'revision', ''],
-             [_("Similar Item Analysis"), 'similar_item', ''],
-             [_("Stakeholder Input"), 'stakeholder', ''],
-             [_("Validation"), 'validation', '']],
-            simple=False)
+        self.cmbFormatFiles.do_load_combo([
+            [_("Allocation"), 'allocation', ''],
+            [_("(D)FME(C)A"), 'fmea', ''],
+            [_("Failure Definition"), 'failure_definition', ''],
+            [_("Function"), 'function', ''],
+            [_("Hardware"), 'hardware', ''],
+            [_("Hazards Analysis"), 'hazard', ''],
+            [_("Physics of Failure Analysis"), 'pof', ''],
+            [_("Requirement"), 'requirement', ''],
+            [_("Revision"), 'revision', ''],
+            [_("Similar Item Analysis"), 'similar_item', ''],
+            [_("Stakeholder Input"), 'stakeholder', ''],
+            [_("Validation"), 'validation', ''],
+        ],
+                                          simple=False)  # noqa
 
     def __make_format_treeview(self) -> None:
-        """
-        Make the format file editing Gtk.Treeview().
+        """Make the format file editing Gtk.Treeview().
 
         :return: None
         :rtype: None
@@ -247,8 +237,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
             self.tvwFormatFile.append_column(_column)
 
     def __make_general_preferences_page(self) -> None:
-        """
-        Make the Preferences class Gtk.Notebook() general preferences page.
+        """Make the Preferences class Gtk.Notebook() general preferences page.
 
         :return: None
         :rtype: None
@@ -284,8 +273,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         self._notebook.insert_page(_frame, tab_label=_label, position=-1)
 
     def __make_look_and_feel_page(self) -> None:
-        """
-        Make the Preferences class Gtk.Notebook() look and feel page.
+        """Make the Preferences class Gtk.Notebook() look and feel page.
 
         :return: None
         :rtype: None
@@ -318,14 +306,13 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
         self.__make_format_treeview()
 
-        _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
-            self.tvwFormatFile)
-        _frame: RAMSTKFrame = RAMSTKFrame()
+        _scrollwindow = RAMSTKScrolledWindow(self.tvwFormatFile)
+        _frame = RAMSTKFrame()
         _frame.do_set_properties(title="Module View Column Layout")
         _frame.add(_scrollwindow)
         _hpaned.pack2(_frame, True, True)
 
-        _label: RAMSTKLabel = RAMSTKLabel(_("Look &amp; Feel"))
+        _label = RAMSTKLabel(_("Look &amp; Feel"))
         _label.do_set_properties(
             height=30,
             width=-1,
@@ -334,8 +321,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         self._notebook.insert_page(_hpaned, tab_label=_label, position=-1)
 
     def __make_ui(self) -> None:
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
@@ -372,8 +358,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         self.show_all()
 
     def __set_callbacks(self) -> None:
-        """
-        Set the callback functions/methods for each of the widgets.
+        """Set the callback functions/methods for each of the widgets.
 
         :return: None
         :rtype: None
@@ -435,8 +420,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
                                                     self._on_combo_changed, 4)
 
     def __set_properties(self) -> None:
-        """
-        Set the properties of the Preferences assistance widgets.
+        """Set the properties of the Preferences assistance widgets.
 
         :return: None
         :rtype: None
@@ -457,8 +441,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model) -> None:
-        """
-        Handle Gtk.CellRenderer() edits.
+        """Handle Gtk.CellRenderer() edits.
 
         :param __cell: the Gtk.CellRenderer() that was edited.
         :type __cell: :class:`Gtk.CellRenderer`
@@ -480,8 +463,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
             model[path][position] = float(new_text)
 
     def _do_load_format(self, module: str) -> None:
-        """
-        Load the selected Module View format file for editing.
+        """Load the selected Module View format file for editing.
 
         :param str module: the name of the RAMSTK workstream module whose
             Module View layout is to be edited.
@@ -517,8 +499,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
             _model.append(_data)
 
     def _do_load_page(self) -> None:
-        """
-        Load the current preference values.
+        """Load the current preference values.
 
         :return: (_error_code, _user_msg, _debug_msg); the error code, message
                  to be displayed to the user, and the message to be written to
@@ -586,24 +567,18 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS['validationfg']))
 
     def _do_quit(self, __button: Gtk.Button) -> None:
-        """
-        Quit the preferences Gtk.Assistant().
+        """Quit the preferences Gtk.Assistant().
 
         :param __button: the Gtk.Button() that called this method.
-        :type __button: :class:`Gtk.Button`
         :return: None
-        :rtype: None
         """
         self.destroy()
 
     def _do_request_update(self, __button: Gtk.Button) -> None:
-        """
-        Request to update the user and program preferences.
+        """Request to update the user and program preferences.
 
         :param __button: the Gtk.Button() that called this method.
-        :type __button: :class:`Gtk.Button`
         :return: None
-        :rtype: None
         """
         _conf_file = self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + \
             '/RAMSTK.toml'
@@ -618,24 +593,19 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
             pass
 
     def _do_request_update_all(self, button: Gtk.Button) -> None:
-        """
-        Wrapper method for _do_request_update().
+        """Wrap method _do_request_update().
 
         :param button: the Gtk.Button() that called this method.
-        :type button: :class:`Gtk.Button`
         :return: None
-        :rtype: None
         """
         self._do_request_update(button)
 
     def _do_save_tree_layout(self) -> None:
-        """
-        Save the Module View RAMSTKTreeView() layout file.
+        """Save the Module View RAMSTKTreeView() layout file.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
         """
-        _layout = {
+        _layout: Dict[str, Any] = {
             'pixbuf': 'False',
             'defaulttitle': {},
             'usertitle': {},
@@ -644,7 +614,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
             'widget': {},
             'editable': {},
             'visible': {},
-            'key': {}
+            'key': {},
         }
 
         # Get the format file for the Gtk.TreeView to be edited.  Make a
@@ -677,8 +647,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
     def _do_select_path(self, button: Gtk.FileChooserButton,
                         index: int) -> None:
-        """
-        Select the path from the file chooser.
+        """Select the path from the file chooser.
 
         :param button: the Gtk.FileChooserButton() that called this method.
         :type button: :class:`Gtk.FileChooserButton`
@@ -702,8 +671,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
     def _do_set_color(self, colorbutton: Gtk.ColorButton,
                       ramstk_color: int) -> None:
-        """
-        Set the selected color.
+        """Set the selected color.
 
         :param colorbutton: the Gtk.ColorButton() that called this method.
         :type colorbutton: :class:`Gtk.ColorButton`
@@ -732,8 +700,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
     @staticmethod
     def _do_toggle_cell(cell, path, position, model) -> None:
-        """
-        Handle Gtk.CellRendererToggle() edits.
+        """Handle Gtk.CellRendererToggle() edits.
 
         :param cell: the Gtk.CellRenderer() that was edited.
         :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
@@ -746,8 +713,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
         model[path][position] = not cell.get_active()
 
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
-        """
-        Edit RAMSTKTreeView() layouts.
+        """Edit RAMSTKTreeView() layouts.
 
         :param combo: the RAMSTKComboBox() that called this method.
         :type combo: :class:`gui.gtk.RAMSTKComboBox`

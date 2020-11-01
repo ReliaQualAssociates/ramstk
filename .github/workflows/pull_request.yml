@@ -48,7 +48,7 @@ jobs:
           use-pylint: true
           use-flake8: false
           extra-black-options: ""
-          extra-isort-options: "--recursive --use-parentheses --balanced --multi-line 5 -j5"
+          extra-isort-options: "--use-parentheses --balanced --multi-line 5 -j5"
           extra-docformatter-options: ""
           extra-pycodestyle-options: "--statistics --count --ignore=E121,E123,E126,E127,E133,E241,E242,E265,E402,E501,F401,W503,W504,W505"
           extra-pydocstyle-options: "--count"

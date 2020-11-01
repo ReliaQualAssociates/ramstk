@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.revision.workviews.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.revision.workview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 Revision Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub  # type: ignore
@@ -20,20 +20,18 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry, RAMSTKPanel, RAMSTKTextView, RAMSTKWorkView
 )
 
+# RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
+
 
 class GeneralDataPanel(RAMSTKPanel):
     """The panel to display general data about the selected Revision."""
-
     def __init__(self) -> None:
         """Initialize an instance of the Revision General Data panel."""
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['name', 'string'],
-            1: ['remarks', 'string'],
-            2: ['revision_code', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -54,9 +52,9 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtName: RAMSTKEntry = RAMSTKEntry()
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'name': [self.txtName.do_update, 'changed'],
-            'remarks': [self.txtRemarks.do_update, 'focus-out-event'],
+        self._dic_attribute_updater = {
+            'name': [self.txtName.do_update, 'changed', 0],
+            'remarks': [self.txtRemarks.do_update, 'changed', 1],
             'revision_code': [self.txtCode.do_update, 'changed'],
         }
 
@@ -109,11 +107,13 @@ class GeneralDataPanel(RAMSTKPanel):
         :rtype: None
         """
         self.txtName.dic_handler_id['changed'] = self.txtName.connect(
-            'changed', self.on_changed_text, 0, 'wvw_editing_revision')
-        self.txtRemarks.dic_handler_id['changed'] = self.txtRemarks.connect(
-            'focus-out-event', self.on_focus_out, 1, 'wvw_editing_revision')
+            'changed', self.on_changed_entry, 0, 'wvw_editing_revision')
+        _buffer: Gtk.TextBuffer = self.txtRemarks.do_get_buffer()
+        self.txtRemarks.dic_handler_id['changed'] = _buffer.connect(
+            'changed', self.on_changed_textview, 1, 'wvw_editing_revision',
+            self.txtRemarks)
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
-            'changed', self.on_changed_text, 2, 'wvw_editing_revision')
+            'changed', self.on_changed_entry, 2, 'wvw_editing_revision')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -187,8 +187,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private list attributes.
         self._lst_callbacks: List[object] = [
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons: List[str] = [
             'save',
@@ -218,28 +218,6 @@ class GeneralData(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_revision')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_revision')
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save changes to the currently selected Revision.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_revision', node_id=self._revision_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save change sto all Revisions.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_revisions')
 
     def __make_ui(self) -> None:
         """Build the user interface for the Revision General Data tab.

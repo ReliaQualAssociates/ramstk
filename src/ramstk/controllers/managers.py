@@ -23,8 +23,7 @@ from ramstk.models.programdb import RAMSTKMatrix
 
 
 class RAMSTKAnalysisManager():
-    """
-    Contain the attributes and methods of an analysis manager.
+    """Contain the attributes and methods of an analysis manager.
 
     This class manages the analyses for RAMSTK modules.  Attributes of the
     analysis manager are:
@@ -44,8 +43,7 @@ class RAMSTKAnalysisManager():
     # pylint: disable=unused-argument
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[str, Any]) -> None:
-        """
-        Initialize an instance of the hardware analysis manager.
+        """Initialize an instance of the hardware analysis manager.
 
         :param configuration: the RAMSTKUserConfiguration instance associated
             with the current instance of the RAMSTK application.
@@ -70,8 +68,7 @@ class RAMSTKAnalysisManager():
         self.RAMSTK_CONFIGURATION = self.RAMSTK_USER_CONFIGURATION
 
     def on_get_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """
-        Set all the attributes for the analysis manager.
+        """Set all the attributes for the analysis manager.
 
         :param dict attributes: the data manager's attributes dict.
         :return: None
@@ -80,8 +77,7 @@ class RAMSTKAnalysisManager():
         self._attributes = attributes
 
     def on_get_tree(self, dmtree: treelib.Tree) -> None:
-        """
-        Set the analysis manager's treelib Tree().
+        """Set the analysis manager's treelib Tree().
 
         :param dmtree: the data manager's treelib Tree().
         :type dmtree: :class:`treelib.Tree`
@@ -92,21 +88,30 @@ class RAMSTKAnalysisManager():
 
 
 class RAMSTKDataManager():
-    """
-    This is the meta-class for all RAMSTK Data Managers.
+    """This is the meta-class for all RAMSTK Data Managers.
 
     :ivar tree: the treelib Tree()that will contain the structure of the RAMSTK
         module being modeled.
     :type tree: :class:`treelib.Tree`
     """
 
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
     _root = 0
+    _tag = ''
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     # pylint: disable=unused-argument
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """
-        Initialize an RAMSTK data model instance.
-        """
+        """Initialize an RAMSTK data model instance."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -148,16 +153,13 @@ class RAMSTKDataManager():
         self._mtx_prefix = self._mtx_prefix + '_'
 
     def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        """
-        Set the revision ID for the data manager.
-        """
+        """Set the revision ID for the data manager."""
         self._revision_id = attributes['revision_id']
 
     @staticmethod
     def do_build_dict(records: List[object],
                       id_field: str) -> Dict[int, object]:
-        """
-        Convert a list of RAMSTK database records into a dict of records.
+        """Convert a list of RAMSTK database records into a dict of records.
 
         This is a helper method to use when an entry in a data manager's data
         package will consist of multiple records.  SQLAlchemy will return a
@@ -180,14 +182,13 @@ class RAMSTKDataManager():
         """
         _dic_records = {}
         for _record in records:
-            _id = _record.get_attributes()[id_field]
+            _id = _record.get_attributes()[id_field]  # type: ignore
             _dic_records[_id] = _record
 
         return _dic_records
 
     def do_connect(self, dao: BaseDatabase) -> None:
-        """
-        Connect data manager to a database.
+        """Connect data manager to a database.
 
         :param dao: the BaseDatabase() instance (data access object)
             representing the connected RAMSTK Program database.
@@ -196,19 +197,17 @@ class RAMSTKDataManager():
         self.dao = dao
 
     def do_create_all_codes(self, prefix: str) -> None:
-        """
-        Create codes for all MODULE data table records.
+        """Create codes for all MODULE data table records.
 
         :param str prefix: the string to use as a prefix for each code.
         :return: None
         :rtype: None
         """
         for _node in self.tree.all_nodes():
-            self.do_create_code(_node.identifier, prefix)
+            self.do_create_code(_node.identifier, prefix)  # type: ignore
 
     def do_delete(self, node_id: int, table: str) -> None:
-        """
-        Remove a RAMSTK data table record.
+        """Remove a RAMSTK data table record.
 
         :param int node_id: the node ID to be removed from the RAMSTK Program
             database.
@@ -220,8 +219,7 @@ class RAMSTKDataManager():
         return self.dao.do_delete(self.do_select(node_id, table))
 
     def do_get_attributes(self, node_id: int, table: str) -> None:
-        """
-        Retrieve the RAMSTK data table attributes for node ID.
+        """Retrieve the RAMSTK data table attributes for node ID.
 
         :param str node_id: the node ID in the treelib Tree to get the
             attributes for.
@@ -235,8 +233,7 @@ class RAMSTKDataManager():
                             node_id, table=table).get_attributes())
 
     def do_get_last_id(self, module: str) -> None:
-        """
-        Broadcast the last used ID as the payload of a message.
+        """Broadcast the last used ID as the payload of a message.
 
         :param str module: the name of the workflow module to retrieve the
             last ID.
@@ -246,12 +243,11 @@ class RAMSTKDataManager():
         pub.sendMessage('succeed_get_last_{0:s}_id'.format(module),
                         last_id=self.last_id)
 
-    def do_select(self, node_id: int, table: str) -> Any:
-        """
-        Retrieve the RAMSTK data table record for the Node ID passed.
+    def do_select(self, node_id: Any, table: str) -> Any:
+        """Retrieve the RAMSTK data table record for the Node ID passed.
 
-        :param int node_id: the Node ID of the data package to retrieve.
-        :param str table: the name of the RAMSTK data table to retrieve the
+        :param node_id: the Node ID of the data package to retrieve.
+        :param table: the name of the RAMSTK data table to retrieve the
             attributes from.
         :return: the instance of the RAMSTK<MODULE> data table that was
             requested or None if the requested Node ID does not exist.
@@ -260,14 +256,13 @@ class RAMSTKDataManager():
         """
         try:
             _entity = self.tree.get_node(node_id).data[table]
-        except (AttributeError, treelib.tree.NodeIDAbsentError):
+        except (AttributeError, treelib.tree.NodeIDAbsentError, TypeError):
             _entity = None
 
         return _entity
 
     def do_select_matrix(self, matrix_type: str) -> None:
-        """
-        Retrieve all the values for the matrix.
+        """Retrieve all the values for the matrix.
 
         :param str matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
@@ -297,8 +292,7 @@ class RAMSTKDataManager():
                                            "matrix.".format(str(matrix_type))))
 
     def do_set_tree(self, module_tree: treelib.Tree) -> None:
-        """
-        Set the MODULE treelib Tree().
+        """Set the MODULE treelib Tree().
 
         This method is generally used to respond to events such as successful
         calculations of the entire system.
@@ -312,19 +306,17 @@ class RAMSTKDataManager():
 
     # noinspection PyUnresolvedReferences
     def do_update_all(self) -> None:
-        """
-        Update all MODULE data table records in the RAMSTK Program database.
+        """Update all MODULE data table records in the RAMSTK Program database.
 
         :return: None
         :rtype: None
         """
         for _node in self.tree.all_nodes():
-            self.do_update(_node.identifier)
+            self.do_update(_node.identifier)  # type: ignore
 
     def do_update_matrix(self, revision_id: int, matrix_type: str,
                          matrix: pd.DataFrame) -> None:
-        """
-        Update the matrix values in the RAMSTK Program database.
+        """Update the matrix values in the RAMSTK Program database.
 
         :param int revision_id: the revisiond ID associated with the matrix to
             update.
@@ -372,8 +364,7 @@ class RAMSTKDataManager():
 
 
 class RAMSTKMatrixManager():
-    """
-    This is the meta-class for all RAMSTK Matrix Managers.
+    """This is the meta-class for all RAMSTK Matrix Managers.
 
     The Matrix data model is an aggregate model of N x M cell data models.  The
     attributes of a Matrix are:
@@ -416,8 +407,7 @@ class RAMSTKMatrixManager():
 
     def __init__(self, column_tables: Dict[str, List[Any]],
                  row_table: object) -> None:
-        """
-        Initialize a Matrix data model instance.
+        """Initialize a Matrix data model instance.
 
         :param dict column_tables: a dict of RAMSTK data table objects that
             comprise the columns.
@@ -450,8 +440,7 @@ class RAMSTKMatrixManager():
         pub.subscribe(self.do_request_update, 'do_request_update_matrix')
 
     def do_create_columns(self, matrix_type: str) -> None:
-        """
-        Create the matrix columns.
+        """Create the matrix columns.
 
         This will effectively create the requested matrix since the row
         headings column was already created.  All values in the resulting
@@ -486,8 +475,7 @@ class RAMSTKMatrixManager():
         (__, self.n_col) = self.dic_matrices[matrix_type].shape
 
     def do_create_rows(self, tree: treelib.Tree) -> None:
-        """
-        Create the matrix rows.
+        """Create the matrix rows.
 
         All matrices for a given workflow module will have the same row
         headings.  This method will create a matrix with only one column
@@ -530,8 +518,7 @@ class RAMSTKMatrixManager():
                                 matrix_type=_matrix_type)
 
     def do_delete_column(self, node_id: int, matrix_type: str) -> Any:
-        """
-        Delete a column from the requested matrix.
+        """Delete a column from the requested matrix.
 
         :param int node_id: the MODULE treelib Node ID that was deleted.
             Note that node ID = MODULE ID = matrix row ID.
@@ -544,8 +531,7 @@ class RAMSTKMatrixManager():
             [node_id], axis=1)
 
     def do_delete_row(self, node_id: int) -> Any:
-        """
-        Delete a row from all the matrices.
+        """Delete a row from all the matrices.
 
         :param int node_id: the MODULE treelib Node ID that was deleted.
             Note that node ID = MODULE ID = matrix row ID.
@@ -558,8 +544,7 @@ class RAMSTKMatrixManager():
                 [node_id])
 
     def do_insert_column(self, node_id: str, matrix_type: str) -> Any:
-        """
-        Insert a column into the requested matrix.
+        """Insert a column into the requested matrix.
 
         :param int node_id: the MODULE treelib Node ID that was inserted.
             Note that node ID = MODULE ID = matrix row ID.
@@ -580,8 +565,7 @@ class RAMSTKMatrixManager():
                                                    axis=1)
 
     def do_insert_row(self, node_id: int) -> Any:
-        """
-        Insert a row into each matrix managed by this matrix manager.
+        """Insert a row into each matrix managed by this matrix manager.
 
         :param int node_id: the MODULE treelib Node ID that was inserted.
             Note that node ID = MODULE ID = matrix row ID.
@@ -601,8 +585,7 @@ class RAMSTKMatrixManager():
                 _new_row)
 
     def do_load(self, matrix_type: str, matrix: List[Tuple[int]]) -> None:
-        """
-        Load the matrix values.
+        """Load the matrix values.
 
         :param str matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
@@ -618,7 +601,8 @@ class RAMSTKMatrixManager():
             _n_columns = len(self.dic_matrices[matrix_type].columns)
             if _n_columns > 2:
                 for _col in matrix:
-                    self.dic_matrices[matrix_type].iloc[_col[1], _col[0]] = _col[2]
+                    self.dic_matrices[matrix_type].iloc[_col[1],
+                                                        _col[0]] = _col[2]
                 pub.sendMessage('succeed_load_matrix',
                                 matrix_type=matrix_type,
                                 matrix=self.dic_matrices[matrix_type])
@@ -626,8 +610,7 @@ class RAMSTKMatrixManager():
             pass
 
     def do_request_update(self, revision_id: int, matrix_type: str) -> None:
-        """
-        Update the requested matrix in the RAMSTK program database.
+        """Update the requested matrix in the RAMSTK program database.
 
         :param int revision_id: the Revision ID the associated matrix
             belongs to.
@@ -644,8 +627,7 @@ class RAMSTKMatrixManager():
                             matrix=self.dic_matrices[matrix_type])
 
     def do_select(self, matrix_type: str, row: int, col: str) -> Any:
-        """
-        Select the value from the cell identified by col and row.
+        """Select the value from the cell identified by col and row.
 
         :param str matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by

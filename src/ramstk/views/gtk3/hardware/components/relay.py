@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       views.gtk3.hardware.components.relay.py is part of the RAMSTK
+#       ramstk.views.gtk3.hardware.components.relay.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -8,7 +8,7 @@
 """Relay Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -67,9 +67,10 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     _dic_application = {
         1: [[_("Dry Circuit")]],
         2:
-        [[_("General Purpose")], [_("Sensitve (0 - 100mW)")], [_("Polarized")],
-         [_("Vibrating Reed")], [_("High Speed")], [_("Thermal Time Delay")],
-         [_("Electronic Time Delay, Non-Thermal")], [_("Latching, Magnetic")]],
+        [[_("General Purpose")], [_("Sensitive (0 - 100mW)")],
+         [_("Polarized")], [_("Vibrating Reed")], [_("High Speed")],
+         [_("Thermal Time Delay")], [_("Electronic Time Delay, Non-Thermal")],
+         [_("Latching, Magnetic")]],
         3: [[_("High Voltage")], [_("Medium Power")]],
         4: [[_("Contactors, High Current")]],
     }
@@ -164,7 +165,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             _("The type of load the relay is switching."),
             _("The contact form of the relay."),
             _("The rating of the relay contacts."),
-            _("The type of relay appliction."),
+            _("The type of relay application."),
             _("The method of construction of the relay."),
             _("The number of relay on/off cycles per hour."),
         ]
@@ -185,15 +186,16 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         self.txtCycles: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'type_id': [self.cmbType.do_update, 'changed'],
-            'technology_id': [self.cmbLoadType.do_update, 'changed'],
-            'contact_form_id': [self.cmbContactForm.do_update, 'changed'],
-            'contact_rating_id': [self.cmbContactRating.do_update, 'changed'],
-            'application_id': [self.cmbApplication.do_update, 'changed'],
-            'construction': [self.cmbConstruction.do_update, 'changed'],
-            'n_cycles': [self.txtCycles, 'changed']
+        self._dic_attribute_updater = {
+            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
+            'type_id': [self.cmbType.do_update, 'changed', 1],
+            'technology_id': [self.cmbLoadType.do_update, 'changed', 2],
+            'contact_form_id': [self.cmbContactForm.do_update, 'changed', 3],
+            'contact_rating_id':
+            [self.cmbContactRating.do_update, 'changed', 4],
+            'application_id': [self.cmbApplication.do_update, 'changed', 5],
+            'construction': [self.cmbConstruction.do_update, 'changed', 6],
+            'n_cycles': [self.txtCycles, 'changed', 7],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -217,6 +219,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the Relay RAMSTKComboBox()s.
 
@@ -380,7 +383,8 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         # ----- ENTRIES
         self.txtCycles.dic_handler_id['changed'] = self.txtCycles.connect(
-            'focus-out-event', self.on_changed_text, 7, 'wvw_editing_hardware')
+            'focus-out-event', self.on_changed_entry, 7,
+            'wvw_editing_hardware')
 
     def __set_properties(self) -> None:
         """Set properties for Relay assessment input widgets.
@@ -394,16 +398,19 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtCycles.do_set_properties(tooltip=self._lst_tooltips[7],
                                          width=125)
 
-    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_combo_changed(self, __combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Relay attribute.
 
         This method is called by:
 
             * Gtk.Combo() 'changed' signal
 
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`gui.gtk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
+        :param __combo: the RAMSTKCombo() that called this method.  This
+            parameter is unused in this method but is required because the
+            widget provides it to the callback function.
+        :param index: the position in the signal handler list associated
             with the calling RAMSTKComboBox().  Indices are:
 
             +-------+------------------+-------+------------------+
@@ -518,12 +525,10 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Relay assessment results wodgets.
+        """Load the Relay assessment results widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
-        Relay.
+        :param attributes: the attributes dictionary for the selected relay.
         :return: None
-        :rtype: None
         """
         super().do_load_panel(attributes)
 

@@ -194,7 +194,7 @@ generated-members=REQUEST,acl_users,aq_parent
 [VARIABLES]
 
 # Tells whether we should check for unused import in __init__ files.
-init-import=yes
+init-import=no
 
 # A regular expression matching the beginning of the name of dummy variables
 # (i.e. not used).

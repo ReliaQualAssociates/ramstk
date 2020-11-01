@@ -7,9 +7,21 @@
 # Copyright 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 revision package."""
 
+ATTRIBUTE_KEYS = {
+    0: ['requirement_code', 'string'],
+    1: ['description', 'string'],
+    2: ['requirement_type', 'integer'],
+    4: ['specification', 'string'],
+    5: ['page_number', 'string'],
+    6: ['figure_number', 'string'],
+    7: ['priority', 'integer'],
+    8: ['owner', 'integer'],
+    9: ['requirement_code', 'string'],
+    10: ['validated_date', 'date'],
+}
+
 # RAMSTK Local Imports
 from .listview import RequirementHardware as mtxRequirementHardware
-from .listview import Stakeholders as lvwStakeholders
 from .moduleview import ModuleView as mvwRequirement
 from .workview import GeneralData as wvwRequirementGD
 from .workview import RequirementAnalysis as wvwRequirementAnalysis

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       views.gtk3.hardware.components.resistor.py is part of the RAMSTK
+#       ramstk.views.gtk3.hardware.components.resistor.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -8,7 +8,7 @@
 """Resistor Work View."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -172,14 +172,15 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtNElements: RAMSTKEntry = RAMSTKEntry()
         self.txtResistance: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'construction_id': [self.cmbConstruction.do_update, 'changed'],
-            'family_id': [self.cmbStyle.do_update, 'changed'],
-            'n_elements': [self.txtNElements.do_update, 'changed'],
-            'quality_id': [self.cmbQuality.do_update, 'changed'],
-            'resistance': [self.txtResistance.do_update, 'changed'],
-            'specification_id': [self.cmbSpecification.do_update, 'changed'],
-            'type_id': [self.cmbType.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'construction_id': [self.cmbConstruction.do_update, 'changed', 0],
+            'family_id': [self.cmbStyle.do_update, 'changed', 1],
+            'n_elements': [self.txtNElements.do_update, 'changed', 2],
+            'quality_id': [self.cmbQuality.do_update, 'changed', 3],
+            'resistance': [self.txtResistance.do_update, 'changed', 4],
+            'specification_id':
+            [self.cmbSpecification.do_update, 'changed', 5],
+            'type_id': [self.cmbType.do_update, 'changed', 6],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -202,6 +203,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                       'succeed_get_all_hardware_attributes')
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the Resistor RKTComboBox()s.
 
@@ -417,11 +419,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # ----- ENTRIES
         self.txtResistance.dic_handler_id[
             'changed'] = self.txtResistance.connect('changed',
-                                                    self.on_changed_text, 5,
+                                                    self.on_changed_entry, 5,
                                                     'wvw_editing_hardware')
         self.txtNElements.dic_handler_id[
             'changed'] = self.txtNElements.connect('changed',
-                                                   self.on_changed_text, 6,
+                                                   self.on_changed_entry, 6,
                                                    'wvw_editing_hardware')
 
     def __set_properties(self) -> None:

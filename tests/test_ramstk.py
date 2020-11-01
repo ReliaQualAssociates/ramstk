@@ -116,7 +116,7 @@ class TestProgramManager():
             'matrix': None
         }
         assert DUT.dic_managers['options'] == {'data': None}
-        assert DUT.program_dao is None
+        assert isinstance(DUT.program_dao, BaseDatabase)
         assert pub.isSubscribed(DUT.do_create_program,
                                 'request_create_program')
         assert pub.isSubscribed(DUT.do_open_program, 'request_open_program')
@@ -246,7 +246,7 @@ class TestProgramManager():
         DUT = RAMSTKProgramManager()
         DUT.do_close_program()
 
-        assert DUT.program_dao is None
+        assert isinstance(DUT.program_dao, BaseDatabase)
 
         pub.unsubscribe(self.on_fail_close_program,
                         'fail_disconnect_program_database')

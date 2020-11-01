@@ -84,18 +84,18 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
     # noinspection PyIncorrectDocstring
     def do_load_combo(self,
-                      entries: List[Union[str]],
+                      entries: List[List[Union[str, int]]],
                       signal: str = '',
                       simple: bool = True) -> None:
         """Load RAMSTK ComboBox widgets.
 
-        :param list entries: the information to load into the Gtk.ComboBox().
+        :param entries: the information to load into the Gtk.ComboBox().
             This is always a list of lists where each internal list contains
             the information to be displayed and there is one internal list for
             each RAMSTKComboBox line.
-        :keyword str signal: the name of the signal whose handler ID the
+        :param signal: the name of the signal whose handler ID the
             RAMSTKComboBox() needs to block.
-        :keyword bool simple: indicates whether this is a simple (one item) or
+        :param simple: indicates whether this is a simple (one item) or
             complex (three item) RAMSTKComboBox.  A simple (default)
             RAMSTKComboBox contains and displays one field only.  A 'complex'
             RAMSTKComboBox contains three str fields, but only displays the
@@ -105,7 +105,6 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
             the other two fields might contain a code and an index.  These
             could be extracted for use in the RAMSTK Views.
         :return: None
-        :rtype: None
         :raise: TypeError if attempting to load other than string values.
         """
         _model = self.get_model()

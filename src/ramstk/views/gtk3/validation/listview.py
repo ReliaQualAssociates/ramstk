@@ -14,8 +14,7 @@ from ramstk.views.gtk3.widgets import RAMSTKListView
 
 
 class ValidationRequirement(RAMSTKListView):
-    """
-    Display all the Validation::Requirement matrix for the selected Revision.
+    """Display the Validation::Requirement matrix for the selected Revision.
 
     The attributes of the Validation::Requirement Matrix View are:
 
@@ -39,17 +38,14 @@ class ValidationRequirement(RAMSTKListView):
         "Validation::Requirement\nMatrix") + "</span>"
     _tabtooltip = _("Displays the Validation::Requirement "
                     "matrix for the selected revision.")
-    _view_type: str = 'matrix'
+    _view_type = 'matrix'
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize the List View for the Validation package.
+        """Initialize the List View for the Validation package.
 
         :param configuration: the RAMSTK Configuration class instance.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 

@@ -37,6 +37,7 @@ requirement = "requirement.toml"
 revision = "revision.toml"
 similaritem = "similar_item.toml"
 stakeholder = "stakeholder.toml"
+usage_profile = "usage_profile.toml"
 validation = "validation.toml"
 
 [colors]

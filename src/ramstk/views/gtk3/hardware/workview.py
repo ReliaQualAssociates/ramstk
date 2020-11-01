@@ -8,10 +8,11 @@
 
 # Standard Library Imports
 import locale
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
+# noinspection PyPackageRequirements
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
@@ -28,6 +29,7 @@ from ramstk.views.gtk3.widgets import (
 )
 
 # RAMSTK Local Imports
+from . import ATTRIBUTE_KEYS
 from .components import (
     capacitor, connection, inductor, integrated_circuit, meter,
     miscellaneous, relay, resistor, semiconductor, switch
@@ -42,21 +44,7 @@ class GeneralDataPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['repairable', 'integer'],
-            2: ['category_id', 'integer'],
-            5: ['subcategory_id', 'integer'],
-            6: ['alt_part_number', 'string'],
-            9: ['comp_ref_des', 'string'],
-            11: ['description', 'string'],
-            12: ['figure_number', 'string'],
-            13: ['lcn', 'string'],
-            14: ['name', 'string'],
-            16: ['page_number', 'string'],
-            17: ['part_number', 'string'],
-            19: ['ref_des', 'string'],
-            21: ['specification_number', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -101,20 +89,20 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtRefDes: RAMSTKEntry = RAMSTKEntry()
         self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'category_id': [self.cmbCategory.do_update, 'changed'],
-            'subcategory_id': [self.cmbSubcategory.do_update, 'changed'],
-            'alt_part_number': [self.txtAltPartNum.do_update, 'changed'],
-            'comp_ref_des': [self.txtCompRefDes.do_update, 'changed'],
-            'description': [self.txtDescription.do_update, 'changed'],
-            'figure_number': [self.txtFigureNumber.do_update, 'changed'],
-            'lcn': [self.txtLCN.do_update, 'changed'],
-            'name': [self.txtName.do_update, 'changed'],
-            'page_number': [self.txtPageNumber.do_update, 'changed'],
-            'part_number': [self.txtPartNumber.do_update, 'changed'],
-            'ref_des': [self.txtRefDes.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'category_id': [self.cmbCategory.do_update, 'changed', 0],
+            'subcategory_id': [self.cmbSubcategory.do_update, 'changed', 1],
+            'alt_part_number': [self.txtAltPartNum.do_update, 'changed', 2],
+            'comp_ref_des': [self.txtCompRefDes.do_update, 'changed', 3],
+            'description': [self.txtDescription.do_update, 'changed', 4],
+            'figure_number': [self.txtFigureNumber.do_update, 'changed', 5],
+            'lcn': [self.txtLCN.do_update, 'changed', 6],
+            'name': [self.txtName.do_update, 'changed', 7],
+            'page_number': [self.txtPageNumber.do_update, 'changed', 8],
+            'part_number': [self.txtPartNumber.do_update, 'changed', 9],
+            'ref_des': [self.txtRefDes.do_update, 'changed', 10],
             'specification_number':
-            [self.txtSpecification.do_update, 'changed'],
+            [self.txtSpecification.do_update, 'changed', 11],
         }
 
         self._lst_widgets = [
@@ -288,44 +276,43 @@ class GeneralDataPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtAltPartNum.dic_handler_id[
             'changed'] = self.txtAltPartNum.connect('changed',
-                                                    super().on_changed_text, 6,
-                                                    'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    6, 'wvw_editing_hardware')
         self.txtCompRefDes.dic_handler_id[
             'changed'] = self.txtCompRefDes.connect('changed',
-                                                    super().on_changed_text, 9,
-                                                    'wvw_editing_hardware')
-        self.txtDescription.dic_handler_id[
-            'changed'] = self.txtDescription.connect('focus-out-event',
-                                                     super().on_focus_out,
-                                                     None, 11,
-                                                     'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    9, 'wvw_editing_hardware')
+        _buffer: Gtk.TextBuffer = self.txtDescription.do_get_buffer()
+        self.txtDescription.dic_handler_id['changed'] = _buffer.connect(
+            'changed',
+            super().on_changed_textview, 11, 'wvw_editing_hardware',
+            self.txtDescription)
         self.txtFigureNumber.dic_handler_id[
             'changed'] = self.txtFigureNumber.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       12,
                                                       'wvw_editing_hardware')
         self.txtLCN.dic_handler_id['changed'] = self.txtLCN.connect(
             'changed',
-            super().on_changed_text, 13, 'wvw_editing_hardware')
+            super().on_changed_entry, 13, 'wvw_editing_hardware')
         self.txtName.dic_handler_id['changed'] = self.txtName.connect(
             'changed',
-            super().on_changed_text, 14, 'wvw_editing_hardware')
+            super().on_changed_entry, 14, 'wvw_editing_hardware')
         self.txtPageNumber.dic_handler_id[
             'changed'] = self.txtPageNumber.connect('changed',
-                                                    super().on_changed_text,
+                                                    super().on_changed_entry,
                                                     16, 'wvw_editing_hardware')
         self.txtPartNumber.dic_handler_id[
             'changed'] = self.txtPartNumber.connect('changed',
-                                                    super().on_changed_text,
+                                                    super().on_changed_entry,
                                                     17, 'wvw_editing_hardware')
         self.txtRefDes.dic_handler_id['changed'] = self.txtRefDes.connect(
             'changed',
-            super().on_changed_text, 19, 'wvw_editing_hardware')
+            super().on_changed_entry, 19, 'wvw_editing_hardware')
         self.txtSpecification.dic_handler_id[
-            'changed'] = self.txtSpecification.connect('changed',
-                                                       super().on_changed_text,
-                                                       21,
-                                                       'wvw_editing_hardware')
+            'changed'] = self.txtSpecification.connect(
+                'changed',
+                super().on_changed_entry, 21, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -333,7 +320,7 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         self.chkRepairable.do_set_properties(
             tooltip=_("Indicates whether or not the selected hardware item is "
@@ -375,15 +362,7 @@ class LogisticsPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            3: ['cost_type_id', 'integer'],
-            4: ['manufacturer_id', 'integer'],
-            8: ['cage_code', 'string'],
-            10: ['cost', 'float'],
-            15: ['nsn', 'string'],
-            18: ['quantity', 'integer'],
-            22: ['year_of_manufacture', 'integer'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -413,14 +392,14 @@ class LogisticsPanel(RAMSTKPanel):
         self.txtQuantity: RAMSTKEntry = RAMSTKEntry()
         self.txtYearMade: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'cage_code': [self.txtCAGECode.do_update, 'changed'],
-            'cost_type_id': [self.cmbCostType.do_update, 'changed'],
-            'manufacturer_id': [self.cmbManufacturer.do_update, 'changed'],
-            'cost': [self.txtCost.do_update, 'changed'],
-            'nsn': [self.txtNSN.do_update, 'changed'],
-            'quantity': [self.txtQuantity.do_update, 'changed'],
-            'year_of_manufacture': [self.txtYearMade.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'cage_code': [self.txtCAGECode.do_update, 'changed', 0],
+            'cost_type_id': [self.cmbCostType.do_update, 'changed', 1],
+            'manufacturer_id': [self.cmbManufacturer.do_update, 'changed', 2],
+            'cost': [self.txtCost.do_update, 'changed', 3],
+            'nsn': [self.txtNSN.do_update, 'changed', 4],
+            'quantity': [self.txtQuantity.do_update, 'changed', 5],
+            'year_of_manufacture': [self.txtYearMade.do_update, 'changed', 6],
         }
 
         self._lst_widgets = [
@@ -533,19 +512,19 @@ class LogisticsPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtCAGECode.dic_handler_id['changed'] = self.txtCAGECode.connect(
             'changed',
-            super().on_changed_text, 8, 'wvw_editing_hardware')
+            super().on_changed_entry, 8, 'wvw_editing_hardware')
         self.txtCost.dic_handler_id['changed'] = self.txtCost.connect(
             'changed',
-            super().on_changed_text, 10, 'wvw_editing_hardware')
+            super().on_changed_entry, 10, 'wvw_editing_hardware')
         self.txtNSN.dic_handler_id['changed'] = self.txtNSN.connect(
             'changed',
-            super().on_changed_text, 15, 'wvw_editing_hardware')
+            super().on_changed_entry, 15, 'wvw_editing_hardware')
         self.txtQuantity.dic_handler_id['changed'] = self.txtQuantity.connect(
             'changed',
-            super().on_changed_text, 18, 'wvw_editing_hardware')
+            super().on_changed_entry, 18, 'wvw_editing_hardware')
         self.txtYearMade.dic_handler_id['changed'] = self.txtYearMade.connect(
             'changed',
-            super().on_changed_text, 22, 'wvw_editing_hardware')
+            super().on_changed_entry, 22, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -553,11 +532,11 @@ class LogisticsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtCAGECode.do_set_properties(
-            tooltip=_("The Commerical and Government Entity (CAGE) Code of "
+            tooltip=_("The Commercial and Government Entity (CAGE) Code of "
                       "the selected hardware item."))
         self.txtCost.do_set_properties(
             width=100,
@@ -582,11 +561,7 @@ class MiscellaneousPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            1: ['tagged_part', 'integer'],
-            7: ['attachments', 'string'],
-            20: ['remarks', 'string'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -608,9 +583,9 @@ class MiscellaneousPanel(RAMSTKPanel):
         self.txtAttachments: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'attachments': [self.txtAttachments.do_update, 'changed'],
-            'remarks': [self.txtRemarks.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'attachments': [self.txtAttachments.do_update, 'changed', 0],
+            'remarks': [self.txtRemarks.do_update, 'changed', 1],
         }
         self._lst_widgets = [
             self.txtAttachments,
@@ -674,13 +649,16 @@ class MiscellaneousPanel(RAMSTKPanel):
             super().on_toggled, 1, 'wvw_editing_hardware'))
 
         # ----- ENTRIES
-        self.txtAttachments.dic_handler_id[
-            'changed'] = self.txtAttachments.connect('focus-out-event',
-                                                     super().on_focus_out, 7,
-                                                     'wvw_editing_hardware')
-        self.txtRemarks.dic_handler_id['changed'] = self.txtRemarks.connect(
-            'focus-out-event',
-            super().on_focus_out, 20, 'wvw_editing_hardware')
+        _buffer: Gtk.TextBuffer = self.txtAttachments.do_get_buffer()
+        self.txtAttachments.dic_handler_id['changed'] = _buffer.connect(
+            'changed',
+            super().on_changed_textview, 7, 'wvw_editing_hardware',
+            self.txtAttachments)
+        _buffer = self.txtRemarks.do_get_buffer()
+        self.txtRemarks.dic_handler_id['changed'] = _buffer.connect(
+            'changed',
+            super().on_changed_textview, 20, 'wvw_editing_hardware',
+            self.txtRemarks)
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -688,7 +666,7 @@ class MiscellaneousPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtAttachments.do_set_properties(
@@ -762,19 +740,20 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.txtSpecifiedMTBF: RAMSTKEntry = RAMSTKEntry()
         self.txtSpecifiedMTBFVar: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'add_adj_factor': [self.txtAddAdjFactor.do_update, 'changed'],
-            'scale_parameter': [self.txtFailScale.do_update, 'changed'],
-            'shape_parameter': [self.txtFailShape.do_update, 'changed'],
-            'location_parameter': [self.txtFailLocation.do_update, 'changed'],
-            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'add_adj_factor': [self.txtAddAdjFactor.do_update, 'changed', 0],
+            'scale_parameter': [self.txtFailScale.do_update, 'changed', 1],
+            'shape_parameter': [self.txtFailShape.do_update, 'changed', 2],
+            'location_parameter':
+            [self.txtFailLocation.do_update, 'changed', 3],
+            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 'changed', 4],
             'hazard_rate_specified':
-            [self.txtSpecifiedHt.do_update, 'changed'],
+            [self.txtSpecifiedHt.do_update, 'changed', 5],
             'hr_specified_variance':
-            [self.txtSpecifiedHtVar.do_update, 'changed'],
-            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 'changed'],
+            [self.txtSpecifiedHtVar.do_update, 'changed', 6],
+            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 'changed', 7],
             'mtbf_spec_variance':
-            [self.txtSpecifiedMTBFVar.do_update, 'changed'],
+            [self.txtSpecifiedMTBFVar.do_update, 'changed', 8],
         }
         self._lst_widgets = [
             self.cmbHRType,
@@ -1023,45 +1002,43 @@ class AssessmentInputPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtAddAdjFactor.dic_handler_id[
             'changed'] = self.txtAddAdjFactor.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       6,
                                                       'wvw_editing_hardware')
         self.txtFailScale.dic_handler_id[
             'changed'] = self.txtFailScale.connect('changed',
-                                                   super().on_changed_text, 8,
+                                                   super().on_changed_entry, 8,
                                                    'wvw_editing_hardware')
         self.txtFailShape.dic_handler_id[
             'changed'] = self.txtFailShape.connect('changed',
-                                                   super().on_changed_text, 9,
+                                                   super().on_changed_entry, 9,
                                                    'wvw_editing_hardware')
         self.txtFailLocation.dic_handler_id[
             'changed'] = self.txtFailLocation.connect('changed',
-                                                      super().on_changed_text,
+                                                      super().on_changed_entry,
                                                       10,
                                                       'wvw_editing_hardware')
         self.txtMultAdjFactor.dic_handler_id[
-            'changed'] = self.txtMultAdjFactor.connect('changed',
-                                                       super().on_changed_text,
-                                                       11,
-                                                       'wvw_editing_hardware')
+            'changed'] = self.txtMultAdjFactor.connect(
+                'changed',
+                super().on_changed_entry, 11, 'wvw_editing_hardware')
         self.txtSpecifiedHt.dic_handler_id[
             'changed'] = self.txtSpecifiedHt.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      12,
                                                      'wvw_editing_hardware')
         self.txtSpecifiedHtVar.dic_handler_id[
             'changed'] = self.txtSpecifiedHtVar.connect(
                 'changed',
-                super().on_changed_text, 13, 'wvw_editing_hardware')
+                super().on_changed_entry, 13, 'wvw_editing_hardware')
         self.txtSpecifiedMTBF.dic_handler_id[
-            'changed'] = self.txtSpecifiedMTBF.connect('changed',
-                                                       super().on_changed_text,
-                                                       14,
-                                                       'wvw_editing_hardware')
+            'changed'] = self.txtSpecifiedMTBF.connect(
+                'changed',
+                super().on_changed_entry, 14, 'wvw_editing_hardware')
         self.txtSpecifiedMTBFVar.dic_handler_id[
             'changed'] = self.txtSpecifiedMTBFVar.connect(
                 'changed',
-                super().on_changed_text, 15, 'wvw_editing_hardware')
+                super().on_changed_entry, 15, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1069,7 +1046,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # _____ COMBOBOXES
         self.cmbFailureDist.do_set_properties(tooltip=_(
@@ -1164,9 +1141,9 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         self.txtDutyCycle: RAMSTKEntry = RAMSTKEntry()
         self.txtMissionTime: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater: Dict[str, Union[object, str]] = {
-            'duty_cycle': [self.txtDutyCycle.do_update, 'changed'],
-            'mission_time': [self.txtMissionTime.do_update, 'changed'],
+        self._dic_attribute_updater = {
+            'duty_cycle': [self.txtDutyCycle.do_update, 'changed', 0],
+            'mission_time': [self.txtMissionTime.do_update, 'changed', 1],
         }
         self._lst_widgets = [
             self.cmbActiveEnviron,
@@ -1271,19 +1248,19 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         # ----- ENTRIES
         self.txtActiveTemp.dic_handler_id[
             'changed'] = self.txtActiveTemp.connect('changed',
-                                                    super().on_changed_text, 5,
-                                                    'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    5, 'wvw_editing_hardware')
         self.txtDormantTemp.dic_handler_id[
             'changed'] = self.txtDormantTemp.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      7, 'wvw_editing_hardware')
         self.txtDutyCycle.dic_handler_id[
             'changed'] = self.txtDutyCycle.connect('changed',
-                                                   super().on_changed_text, 16,
-                                                   'wvw_editing_hardware')
+                                                   super().on_changed_entry,
+                                                   16, 'wvw_editing_hardware')
         self.txtMissionTime.dic_handler_id[
             'changed'] = self.txtMissionTime.connect('changed',
-                                                     super().on_changed_text,
+                                                     super().on_changed_entry,
                                                      17,
                                                      'wvw_editing_hardware')
 
@@ -1293,7 +1270,7 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # _____ COMBOBOXES
         self.cmbActiveEnviron.do_set_properties(
@@ -1489,7 +1466,7 @@ class ReliabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtActiveHt.do_set_properties(tooltip=_(
@@ -1684,7 +1661,7 @@ class AvailabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.do_set_properties(bold=True, title=self._title)
+        super().do_set_properties(**{'bold': True, 'title': self._title})
 
         # ----- ENTRIES
         self.txtCostFailure.do_set_properties(tooltip=_(
@@ -1839,30 +1816,6 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_make_comp_ref_des', node_id=self._record_id)
         super().do_set_cursor_active()
 
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected Hardware.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Hardwares.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
-
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
 
@@ -1890,8 +1843,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = super().on_combo_changed(combo, index,
-                                            'wvw_editing_hardware')
+        _package = self._pnlGeneralData.on_changed_combo(
+            combo, index, 'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
         if index == 2:
@@ -1992,7 +1945,7 @@ class AssessmentInputs(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_component_input: Dict[int, object] = {
+        self._dic_component_input: Dict[int, RAMSTKPanel] = {
             1: integrated_circuit.AssessmentInputPanel(),
             2: semiconductor.AssessmentInputPanel(),
             3: resistor.AssessmentInputPanel(),
@@ -2008,8 +1961,8 @@ class AssessmentInputs(RAMSTKWorkView):
         # Initialize private list attributes.
         self._lst_callbacks = [
             self._do_request_calculate_hardware,
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons = [
             'calculate',
@@ -2150,30 +2103,6 @@ class AssessmentInputs(RAMSTKWorkView):
 
         pub.sendMessage('request_get_hardware_tree')
 
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save the currently selected Hardware item.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save all Hardware items.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
-
     def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
 
@@ -2200,8 +2129,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _package = super().on_combo_changed(combo, index,
-                                            'wvw_editing_hardware')
+        _package = self._pnlAssessmentInput.on_changed_combo(
+            combo, index, 'wvw_editing_hardware')
         _new_text = list(_package.values())[0]
 
         # Hazard rate types are:
@@ -2213,7 +2142,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self._do_set_sensitive(type_id=_new_text)
         # Hazard rate methods are:
         #     1 = MIL-HDBK-217F Parts Count
-        #     2 = MIL-HDNK-217F Parts Stress
+        #     2 = MIL-HDBK-217F Parts Stress
         #     3 = NSWC (not yet implemented)
         elif index == 4:
             pub.sendMessage('changed_hazard_rate_method', method_id=_new_text)
@@ -2272,7 +2201,7 @@ class AssessmentResults(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_component_results = {
+        self._dic_component_results: Dict[int, RAMSTKPanel] = {
             1: integrated_circuit.AssessmentResultPanel(),
             2: semiconductor.AssessmentResultPanel(),
             3: resistor.AssessmentResultPanel(),
@@ -2288,8 +2217,8 @@ class AssessmentResults(RAMSTKWorkView):
         # Initialize private list attributes.
         self._lst_callbacks = [
             self._do_request_calculate_hardware,
-            self._do_request_update,
-            self._do_request_update_all,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons = [
             'calculate',
@@ -2416,27 +2345,3 @@ class AssessmentResults(RAMSTKWorkView):
         self._subcategory_id = attributes['subcategory_id']
 
         pub.sendMessage('request_get_hardware_tree')
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save the currently selected Hardware item.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    # TODO: Make this public per convention 303.3.  Do this for all workviews.
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save all Hardware items.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
