@@ -110,10 +110,22 @@ class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKRevision instances on success."""
+        """do_select_all() should return a Tree() object populated with RAMSTKFailureDefinition instances on success."""
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        assert isinstance(DUT.tree, Tree)
+        assert isinstance(
+            DUT.tree.get_node(1).data['failure_definition'],
+            RAMSTKFailureDefinition)
+
+    @pytest.mark.unit
+    def test_do_select_all_tree_loaded(self, mock_program_dao):
+        """do_select_all() should return a Tree() object populated with RAMSTKFailureDefinition instances on success when there is already a tree of definitions."""
+        DUT = dmFailureDefinition()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_select_all(attributes={'revision_id': 1})
 
         assert isinstance(DUT.tree, Tree)
@@ -277,10 +289,24 @@ class TestGetterSetter():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        pub.sendMessage('request_set_all_revision_attributes',
-                        attributes={'definition': 'Failure Definition'},
-                        definition_id=1,
-                        usage_id='1.1')
+        pub.sendMessage('request_set_all_failure_definition_attributes',
+                        attributes={'definition_id': 1,
+                                    'definition': 'Failure Definition'})
+        assert DUT.do_select(
+            1,
+            table='failure_definition').definition == 'Failure Definition'
+
+    @pytest.mark.unit
+    def test_do_set_all_attributes_extra_attribute(self, mock_program_dao):
+        """do_set_all_attributes() should send the success message."""
+        DUT = dmFailureDefinition()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('request_set_all_failure_definition_attributes',
+                        attributes={'definition_id': 1,
+                                    'definition': 'Failure Definition',
+                                    'funpack': 'Fun Packer'})
         assert DUT.do_select(
             1,
             table='failure_definition').definition == 'Failure Definition'

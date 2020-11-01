@@ -16,7 +16,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmUsageProfile
 from ramstk.db.base import BaseDatabase
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
 )
@@ -170,6 +169,25 @@ class TestSelectMethods():
         success."""
         DUT = dmUsageProfile()
         DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        assert isinstance(DUT.tree, Tree)
+        assert isinstance(
+            DUT.tree.get_node('1').data['usage_profile'], RAMSTKMission)
+        assert isinstance(
+            DUT.tree.get_node('1.1').data['usage_profile'], RAMSTKMissionPhase)
+        assert isinstance(
+            DUT.tree.get_node('1.1.1').data['usage_profile'],
+            RAMSTKEnvironment)
+
+    @pytest.mark.unit
+    def test_do_select_all_tree_loaded(self, mock_program_dao):
+        """do_select_all() should return a Tree() object populated with
+        RAMSTKMission, RAMSTKMissionPhase, and RAMSTKEnvironment instances on
+        success when the tree is already populated."""
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_select_all(attributes={'revision_id': 1})
 
         assert isinstance(DUT.tree, Tree)
@@ -394,6 +412,11 @@ class TestGetterSetter():
         assert last_id['environment'] == 3
         print("\033[36m\nsucceed_get_last_id topic was broadcast")
 
+    def on_fail_set_usage_profile_attrs(self, node_id):
+        assert node_id == 0
+        print("\033[36m\nfail_set_usage_profile_attributes topic was "
+              "broadcast")
+
     @pytest.mark.unit
     def test_do_get_attributes_usage_profile(self, mock_program_dao):
         """_do_get_attributes() should return treelib Tree() on success."""
@@ -431,6 +454,24 @@ class TestGetterSetter():
         assert DUT.do_select('1.1.1', table='usage_profile').minimum == 5.12
 
     @pytest.mark.unit
+    def test_do_set_attributes_root_node(self, mock_program_dao):
+        """do_set_attributes() should send the fail message."""
+        pub.subscribe(self.on_fail_set_usage_profile_attrs,
+                      'fail_set_usage_profile_attributes')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage(
+            'request_set_usage_profile_attributes',
+            node_id=0,
+            package={'description': 'This is the mission description.'})
+
+        pub.unsubscribe(self.on_fail_set_usage_profile_attrs,
+                        'fail_set_usage_profile_attributes')
+
+    @pytest.mark.unit
     def test_do_set_all_attributes(self, mock_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmUsageProfile()
@@ -443,10 +484,25 @@ class TestGetterSetter():
                             'phase_end': 10.24
                         },
                         node_id='1.1')
-        assert DUT.do_select(
-            '1.1', table='usage_profile').phase_end == 10.24
-        assert DUT.do_select(
-            '1.1', table='usage_profile').phase_start == 5.12
+        assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
+        assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
+
+    @pytest.mark.unit
+    def test_do_set_all_attributes_extra_attributes(self, mock_program_dao):
+        """do_set_all_attributes() should send the success message."""
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('request_set_all_usage_profile_attributes',
+                        attributes={
+                            'phase_start': 5.12,
+                            'phase_end': 10.24,
+                            'funpack': 'Fun Packer',
+                        },
+                        node_id='1.1')
+        assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
+        assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
 
     @pytest.mark.unit
     def test_on_get_tree(self, mock_program_dao):
@@ -496,7 +552,8 @@ class TestInsertMethods():
     def test_do_insert_mission(self, mock_program_dao):
         """do_insert() should send the success message after successfully
         inserting a new mission."""
-        pub.subscribe(self.on_succeed_insert_mission, 'succeed_insert_usage_profile')
+        pub.subscribe(self.on_succeed_insert_mission,
+                      'succeed_insert_usage_profile')
 
         DUT = dmUsageProfile()
         DUT.do_connect(mock_program_dao)
@@ -542,7 +599,8 @@ class TestInsertMethods():
 
         assert isinstance(DUT.tree, Tree)
         assert isinstance(
-            DUT.tree.get_node('1.1.4').data['usage_profile'], RAMSTKEnvironment)
+            DUT.tree.get_node('1.1.4').data['usage_profile'],
+            RAMSTKEnvironment)
 
         pub.unsubscribe(self.on_succeed_insert_environment,
                         'succeed_insert_environment')
@@ -557,13 +615,17 @@ class TestUpdateMethods():
 
     def on_fail_update_usage_profile(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent usage profile ID 1.10.'
-        )
+            'Attempted to save non-existent usage profile ID 1.10.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     def on_fail_update_usage_profile_no_data_package(self, error_message):
         assert error_message == (
             'No data package found for usage profile ID 1.1.')
+        print("\033[35m\nfail_update_usage_profile topic was broadcast")
+
+    def on_fail_update_usage_profile_root_node(self, error_message):
+        assert error_message == (
+            'No data package found for usage profile ID 0.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     @pytest.mark.integration
@@ -619,9 +681,25 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_usage_profile_no_data_package,
                         'fail_update_usage_profile')
 
+    @pytest.mark.unit
+    def test_do_update_usage_profile_root_node(self, mock_program_dao):
+        """do_update_usage_profile() should broadcast the fail message when
+        attempting to save the root node."""
+        pub.subscribe(self.on_fail_update_usage_profile_root_node,
+                      'fail_update_usage_profile')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_update(0)
+
+        pub.unsubscribe(self.on_fail_update_usage_profile_root_node,
+                        'fail_update_usage_profile')
+
     @pytest.mark.integration
     def test_do_update_all_usage_profile(self, test_program_dao):
-        """do_update_usage_profile() should broadcast the succeed message on success."""
+        """do_update_usage_profile() should broadcast the succeed message on
+        success."""
         DUT = dmUsageProfile()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})

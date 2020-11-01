@@ -231,29 +231,34 @@ class DataManager(RAMSTKDataManager):
         """Set the attributes of the record associated with the Node ID.
 
         :param node_id: the ID of the record whose attributes are to be set.
-        :param  package: the key:value for the attribute being updated.
+        :param package: the key:value for the attribute being updated.
         :return: None
         :rtype: None
         """
         [[_key, _value]] = package.items()
 
-        _attributes = self.do_select(node_id,
-                                     table='usage_profile').get_attributes()
-        if _key in _attributes:
-            _attributes[_key] = _value
+        try:
+            _attributes = self.do_select(
+                node_id, table='usage_profile').get_attributes()
+            if _key in _attributes:
+                _attributes[_key] = _value
 
-            if len(node_id.split('.')) == 1:
-                _attributes.pop('revision_id')
-                _attributes.pop('mission_id')
-            elif len(node_id.split('.')) == 2:
-                _attributes.pop('mission_id')
-                _attributes.pop('phase_id')
-            elif len(node_id.split('.')) == 3:
-                _attributes.pop('phase_id')
-                _attributes.pop('environment_id')
+                if len(node_id.split('.')) == 1:
+                    _attributes.pop('revision_id')
+                    _attributes.pop('mission_id')
+                elif len(node_id.split('.')) == 2:
+                    _attributes.pop('mission_id')
+                    _attributes.pop('phase_id')
+                elif len(node_id.split('.')) == 3:
+                    _attributes.pop('phase_id')
+                    _attributes.pop('environment_id')
 
-            self.do_select(node_id,
-                           table='usage_profile').set_attributes(_attributes)
+                self.do_select(
+                    node_id, table='usage_profile').set_attributes(_attributes)
+
+        except (AttributeError, TypeError):
+            pub.sendMessage('fail_set_usage_profile_attributes',
+                            node_id=node_id)
 
     def do_update(self, node_id: str) -> None:
         """Update record associated with node ID in RAMSTK Program database.
@@ -275,8 +280,8 @@ class DataManager(RAMSTKDataManager):
             if node_id != 0:
                 pub.sendMessage('fail_update_usage_profile',
                                 error_message=('No data package found for '
-                                               'usage profile ID {'
-                                               '0:s}.').format(str(node_id)))
+                                               'usage profile ID '
+                                               '{0:s}.').format(str(node_id)))
 
     def _do_delete(self, node_id: int) -> Tree:
         """Remove a usage profile element.
