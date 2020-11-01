@@ -8,8 +8,8 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 class RAMSTKListBook(RAMSTKBaseBook):
-
-    def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager) -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         self._dic_list_views = None
         ...
 
