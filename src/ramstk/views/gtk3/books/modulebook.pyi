@@ -12,7 +12,9 @@ from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 class RAMSTKModuleBook(RAMSTKBaseBook):
     icoStatus: Any = ...
-    def __init__(self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager) -> None:
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
         self._on_switch_page = None
         self._lst_handler_id = None
         self._dic_module_views = None
