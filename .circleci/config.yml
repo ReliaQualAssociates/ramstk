@@ -22,6 +22,7 @@ jobs:
       - run: sudo pip install -U urllib3
       - run: sudo pip install -U pip-tools
       - run: sudo pip install -r requirements.txt -r requirements-test.txt
+      - run: sudo pip install .
       - run: make coverage
 
 workflows:
