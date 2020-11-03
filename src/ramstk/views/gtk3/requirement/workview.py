@@ -322,7 +322,66 @@ class GeneralDataPanel(RAMSTKPanel):
             tooltip=_("The date the selected requirement was validated."))
 
 
-class ClarityPanel(RAMSTKPanel):
+class AnalysisPanel(RAMSTKPanel):
+    """Meta-Class for requirement analysis panels."""
+    def __init__(self) -> None:
+        """Initialize an instance of the Requirement analysis panel."""
+        super().__init__()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(super().on_edit, 'mvw_editing_requirement')
+
+        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_load_panel, 'selected_requirement')
+
+    def do_set_callbacks(self) -> None:
+        """Set the callback methods and functions for the panel widgets.
+
+        :return: None
+        :rtype: None
+        """
+        for _index, _checkbutton in enumerate(self._lst_widgets):
+            _checkbutton.dic_handler_id['toggled'] = (_checkbutton.connect(
+                'toggled',
+                super().on_toggled, _index, 'wvw_editing_requirement'))
+
+    def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
+        """Set the properties of the panel widgets.
+
+        :return: None
+        :rtype: None
+        """
+        super().do_set_properties(**{'bold': True, 'title': self._title})
+
+        for _checkbutton in self._lst_widgets:
+            _checkbutton.do_set_properties(height=30)
+
+    def _do_clear_panel(self) -> None:
+        """Clear the contents of the panel widgets.
+
+        :return: None
+        :rtype: None
+        """
+        for _checkbutton in self._lst_widgets:
+            _checkbutton.do_update(False, signal='toggled')
+
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Requirements clarity panel.
+
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+
+        for _index, _checkbutton in enumerate(self._lst_widgets):
+            _checkbutton.do_update(int(
+                attributes['q_clarity_{0:d}'.format(_index)]),
+                                   signal='toggled')  # noqa
+
+
+class ClarityPanel(AnalysisPanel):
     """Panel to display clarity questions about the selected Requirement."""
     def __init__(self) -> None:
         """Initialize an instance of the Requirement clarity panel."""
@@ -406,64 +465,12 @@ class ClarityPanel(RAMSTKPanel):
         ]
 
         # Make a fixed type panel.
-        self.__do_set_properties()
+        super().do_set_properties()
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
-        self.__do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_requirement')
-
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_requirement')
-
-    def _do_clear_panel(self) -> None:
-        """Clear the contents of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_update(False, signal='toggled')
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
-
-        :param attributes: the Requirement attributes to load into the Work
-            View widgets.
-        :return: None
-        :rtype: None
-        """
-        self._record_id = attributes['requirement_id']
-
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.do_update(int(
-                attributes['q_clarity_{0:d}'.format(_index)]),
-                                   signal='toggled')  # noqa
-
-    def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions for the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.dic_handler_id['toggled'] = (_checkbutton.connect(
-                'toggled',
-                super().on_toggled, _index, 'wvw_editing_requirement'))
-
-    def __do_set_properties(self) -> None:
-        """Set the properties of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
-
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_set_properties(height=30)
+        super().do_set_callbacks()
 
 
-class CompletenessPanel(RAMSTKPanel):
+class CompletenessPanel(AnalysisPanel):
     """Panel to display completeness questions about selected Requirement."""
     def __init__(self) -> None:
         """Initialize an instance of the Requirement completeness panel."""
@@ -549,65 +556,13 @@ class CompletenessPanel(RAMSTKPanel):
             self.chkCompleteQ9,
         ]
 
-        # Make a treeview type panel.
-        self.__do_set_properties()
+        # Make a fixed type panel.
+        super().do_set_properties()
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
-        self.__do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_requirement')
-
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_requirement')
-
-    def _do_clear_panel(self) -> None:
-        """Clear the contents of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_update(False, signal='toggled')
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements completeness panel.
-
-        :param attributes: the Requirement attributes to load into the Work
-            View widgets.
-        :return: None
-        :rtype: None
-        """
-        self._record_id = attributes['requirement_id']
-
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.do_update(int(
-                attributes['q_complete_{0:d}'.format(_index)]),
-                                   signal='toggled')  # noqa
-
-    def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions for the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.dic_handler_id['toggled'] = (_checkbutton.connect(
-                'toggled',
-                super().on_toggled, _index, 'wvw_editing_requirement'))
-
-    def __do_set_properties(self) -> None:
-        """Set the properties of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
-
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_set_properties(height=30)
+        super().do_set_callbacks()
 
 
-class ConsistencyPanel(RAMSTKPanel):
+class ConsistencyPanel(AnalysisPanel):
     """Panel to display consistency questions about selected Requirement."""
     def __init__(self) -> None:
         """Initialize an instance of the Requirement consistency panel."""
@@ -690,65 +645,13 @@ class ConsistencyPanel(RAMSTKPanel):
             self.chkConsistentQ8,
         ]
 
-        # Make a treeview type panel.
-        self.__do_set_properties()
+        # Make a fixed type panel.
+        super().do_set_properties()
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
-        self.__do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_requirement')
-
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_requirement')
-
-    def _do_clear_panel(self) -> None:
-        """Clear the contents of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_update(False, signal='toggled')
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements consistency panel.
-
-        :param attributes: the Requirement attributes to load into the Work
-            View widgets.
-        :return: None
-        :rtype: None
-        """
-        self._record_id = attributes['requirement_id']
-
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.do_update(int(
-                attributes['q_complete_{0:d}'.format(_index)]),
-                                   signal='toggled')  # noqa
-
-    def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions for the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.dic_handler_id['toggled'] = (_checkbutton.connect(
-                'toggled',
-                super().on_toggled, _index, 'wvw_editing_requirement'))
-
-    def __do_set_properties(self) -> None:
-        """Set the properties of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
-
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_set_properties(height=30)
+        super().do_set_callbacks()
 
 
-class VerifiabilityPanel(RAMSTKPanel):
+class VerifiabilityPanel(AnalysisPanel):
     """Panel to display verifiability questions about selected Requirement."""
     def __init__(self) -> None:
         """Initialize an instance of the Requirement verifiability panel."""
@@ -814,62 +717,10 @@ class VerifiabilityPanel(RAMSTKPanel):
             self.chkVerifiableQ5,
         ]
 
-        # Make a treeview type panel.
-        self.__do_set_properties()
+        # Make a fixed type panel.
+        super().do_set_properties()
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
-        self.__do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_requirement')
-
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_requirement')
-
-    def _do_clear_panel(self) -> None:
-        """Clear the contents of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_update(False, signal='toggled')
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements verifiability panel.
-
-        :param attributes: the Requirement attributes to load into the Work
-            View widgets.
-        :return: None
-        :rtype: None
-        """
-        self._record_id = attributes['requirement_id']
-
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.do_update(int(
-                attributes['q_complete_{0:d}'.format(_index)]),
-                                   signal='toggled')  # noqa
-
-    def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions for the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.dic_handler_id['toggled'] = (_checkbutton.connect(
-                'toggled',
-                super().on_toggled, _index, 'wvw_editing_requirement'))
-
-    def __do_set_properties(self) -> None:
-        """Set the properties of the panel widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
-
-        for _checkbutton in self._lst_widgets:
-            _checkbutton.do_set_properties(height=30)
+        super().do_set_callbacks()
 
 
 class GeneralData(RAMSTKWorkView):
