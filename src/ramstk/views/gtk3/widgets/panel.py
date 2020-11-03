@@ -195,7 +195,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         try:
             _tag = tree.get_node(0).tag
-        except AttributeError as _error:
+        except AttributeError:
             _tag = "UNK"
 
         try:

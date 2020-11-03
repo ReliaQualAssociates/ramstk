@@ -3,7 +3,7 @@
 #       ramstk.views.gtk3.widgets.plot.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK GTK3 Plot Module."""
 
 # Standard Library Imports
@@ -14,10 +14,12 @@ from ramstk.views.gtk3 import Gdk, Gtk, _
 
 try:
     # noinspection PyPackageRequirements
+    # Third Party Imports
     import matplotlib
     # noinspection PyPackageRequirements
-    from matplotlib.backends.backend_gtk3cairo \
-        import FigureCanvasGTK3Cairo as FigureCanvas
+    from matplotlib.backends.backend_gtk3cairo import (
+        FigureCanvasGTK3Cairo as FigureCanvas
+    )
     # noinspection PyPackageRequirements
     from matplotlib.figure import Figure
     # noinspection PyPackageRequirements
