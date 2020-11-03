@@ -248,9 +248,9 @@ class TestCreateControllers():
                                 'request_make_comp_ref_des')
         assert pub.isSubscribed(DUT._do_get_all_hardware_attributes,
                                 'request_get_all_hardware_attributes')
-        assert pub.isSubscribed(DUT._do_get_hardware_tree,
+        assert pub.isSubscribed(DUT.do_get_tree,
                                 'request_get_hardware_tree')
-        assert pub.isSubscribed(DUT._do_set_hardware_attributes,
+        assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_hardware_attributes')
         assert pub.isSubscribed(DUT._do_set_all_hardware_attributes,
                                 'succeed_calculate_hardware')
@@ -674,8 +674,8 @@ class TestGetterSetter():
         pub.sendMessage('request_get_hardware_tree')
 
     @pytest.mark.unit
-    def test_do_set_hardware_attributes(self, mock_program_dao):
-        """_do_set_hardware_attributes() should send the success message."""
+    def testdo_set_attributes(self, mock_program_dao):
+        """do_set_attributes() should send the success message."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
         DUT._do_select_all_hardware(attributes={'revision_id': 1})
@@ -1108,21 +1108,21 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_specified': 2.3876})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_dormant': 0.023876})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_software': 0.3876})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'add_adj_factor': 0.1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mult_adj_factor': 1.25})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mission_time': 10.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'quantity': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'cost_type_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'cost': 5.28})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'total_part_count': 10})
+        DATAMGR.do_set_attributes([1, -1], {'add_adj_factor': 0.1})
+        DATAMGR.do_set_attributes([1, -1], {'mult_adj_factor': 1.25})
+        DATAMGR.do_set_attributes([1, -1], {'mission_time': 10.0})
+        DATAMGR.do_set_attributes([1, -1], {'quantity': 1})
+        DATAMGR.do_set_attributes([1, -1], {'cost_type_id': 2})
+        DATAMGR.do_set_attributes([1, -1], {'cost': 5.28})
+        DATAMGR.do_set_attributes([1, -1], {'total_part_count': 10})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
@@ -1157,17 +1157,17 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 3})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'mtbf_specified': 285000.0})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_dormant': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'add_adj_factor': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mult_adj_factor': 1.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mission_time': 10.0})
+        DATAMGR.do_set_attributes([1, -1], {'add_adj_factor': 0.0})
+        DATAMGR.do_set_attributes([1, -1], {'mult_adj_factor': 1.0})
+        DATAMGR.do_set_attributes([1, -1], {'mission_time': 10.0})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
 
@@ -1187,7 +1187,7 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 4})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
@@ -1208,7 +1208,7 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 4})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
@@ -1232,13 +1232,13 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'fail_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_specified': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_dormant': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
@@ -1262,12 +1262,12 @@ class TestAnalysisMethods():
 
         pub.subscribe(on_message, 'fail_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 3})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mtbf_specified': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'mtbf_specified': 0.0})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_dormant': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
@@ -1285,30 +1285,30 @@ class TestAnalysisMethods():
         DUT = amHardware(test_toml_user_configuration)
 
         # Do a couple of assemblies with a specified h(t)
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_specified': 0.15})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_dormant': 0.0035})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'total_part_count': 89})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'total_part_count': 89})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'total_power_dissipation': 45.89})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'cost': 438.19})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mission_time': 10.0})
+        DATAMGR.do_set_attributes([1, -1], {'cost': 438.19})
+        DATAMGR.do_set_attributes([1, -1], {'mission_time': 10.0})
         DATAMGR.do_update(1)
 
         # Do a couple of assemblies with a specified MTBF
-        DATAMGR._do_set_hardware_attributes([2, -1],
+        DATAMGR.do_set_attributes([2, -1],
                                             {'hazard_rate_type_id': 3})
-        DATAMGR._do_set_hardware_attributes([2, -1], {'mtbf_specified': 38292})
-        DATAMGR._do_set_hardware_attributes([2, -1],
+        DATAMGR.do_set_attributes([2, -1], {'mtbf_specified': 38292})
+        DATAMGR.do_set_attributes([2, -1],
                                             {'hazard_rate_software': 0.045})
-        DATAMGR._do_set_hardware_attributes([2, -1], {'total_part_count': 55})
-        DATAMGR._do_set_hardware_attributes([2, -1],
+        DATAMGR.do_set_attributes([2, -1], {'total_part_count': 55})
+        DATAMGR.do_set_attributes([2, -1],
                                             {'total_power_dissipation': 4.67})
-        DATAMGR._do_set_hardware_attributes([2, -1], {'cost': 1282.95})
-        DATAMGR._do_set_hardware_attributes([2, -1], {'mission_time': 10.0})
+        DATAMGR.do_set_attributes([2, -1], {'cost': 1282.95})
+        DATAMGR.do_set_attributes([2, -1], {'mission_time': 10.0})
         DATAMGR.do_update(2)
 
         pub.sendMessage('request_calculate_all_hardware')
@@ -1399,28 +1399,28 @@ class TestMilHdbk217FPredictions():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_method_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'subcategory_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'quality_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'category_id': 1})
+        DATAMGR.do_set_attributes([1, -1], {'subcategory_id': 1})
+        DATAMGR.do_set_attributes([1, -1], {'quality_id': 1})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'environment_active_id': 3})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'environment_dormant_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'n_elements': 100})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'power_operating': 0.05})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'n_elements': 100})
+        DATAMGR.do_set_attributes([1, -1], {'power_operating': 0.05})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_software': 0.3876})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'add_adj_factor': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mult_adj_factor': 1.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mission_time': 10.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'quantity': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'cost_type_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'cost': 5.28})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'part': 1})
+        DATAMGR.do_set_attributes([1, -1], {'add_adj_factor': 0.0})
+        DATAMGR.do_set_attributes([1, -1], {'mult_adj_factor': 1.0})
+        DATAMGR.do_set_attributes([1, -1], {'mission_time': 10.0})
+        DATAMGR.do_set_attributes([1, -1], {'quantity': 1})
+        DATAMGR.do_set_attributes([1, -1], {'cost_type_id': 2})
+        DATAMGR.do_set_attributes([1, -1], {'cost': 5.28})
+        DATAMGR.do_set_attributes([1, -1], {'part': 1})
         DATAMGR.do_update(1)
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
@@ -1472,41 +1472,41 @@ class TestMilHdbk217FPredictions():
 
         pub.subscribe(on_message, 'succeed_calculate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'subcategory_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'quality_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'category_id': 4})
+        DATAMGR.do_set_attributes([1, -1], {'subcategory_id': 1})
+        DATAMGR.do_set_attributes([1, -1], {'quality_id': 1})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'environment_active_id': 3})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'environment_dormant_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'capacitance': 0.0000033})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'construction_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'configuration_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'resistance': 0.05})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'construction_id': 1})
+        DATAMGR.do_set_attributes([1, -1], {'configuration_id': 1})
+        DATAMGR.do_set_attributes([1, -1], {'resistance': 0.05})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'voltage_dc_operating': 3.3})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'voltage_ac_operating': 0.04})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'voltage_rated': 6.25})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'voltage_rated': 6.25})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'temperature_rated_max': 105.0})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'temperature_active': 45.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'power_operating': 0.05})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1], {'power_operating': 0.05})
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_software': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'add_adj_factor': 0.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mult_adj_factor': 1.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'mission_time': 10.0})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'quantity': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'cost_type_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'cost': 1.35})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'part': 1})
+        DATAMGR.do_set_attributes([1, -1], {'add_adj_factor': 0.0})
+        DATAMGR.do_set_attributes([1, -1], {'mult_adj_factor': 1.0})
+        DATAMGR.do_set_attributes([1, -1], {'mission_time': 10.0})
+        DATAMGR.do_set_attributes([1, -1], {'quantity': 1})
+        DATAMGR.do_set_attributes([1, -1], {'cost_type_id': 2})
+        DATAMGR.do_set_attributes([1, -1], {'cost': 1.35})
+        DATAMGR.do_set_attributes([1, -1], {'part': 1})
         DATAMGR.do_update(1)
 
         pub.sendMessage('request_calculate_hardware', node_id=1)
@@ -1558,14 +1558,14 @@ class TestStressCalculations():
 
         pub.subscribe(on_message, 'fail_stress_analysis')
 
-        DATAMGR._do_set_hardware_attributes([2, -1],
+        DATAMGR.do_set_attributes([2, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([2, -1],
+        DATAMGR.do_set_attributes([2, -1],
                                             {'hazard_rate_method_id': 2})
-        DATAMGR._do_set_hardware_attributes([2, -1], {'category_id': 1})
-        DATAMGR._do_set_hardware_attributes([2, -1],
+        DATAMGR.do_set_attributes([2, -1], {'category_id': 1})
+        DATAMGR.do_set_attributes([2, -1],
                                             {'current_operating': 0.005})
-        DATAMGR._do_set_hardware_attributes([2, -1], {'current_rated': 0.0})
+        DATAMGR.do_set_attributes([2, -1], {'current_rated': 0.0})
 
     @pytest.mark.unit
     def test_do_calculate_power_ratio(self, mock_program_dao,
@@ -1661,12 +1661,12 @@ class TestStressCalculations():
 
         pub.subscribe(on_message, 'succeed_derate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 8})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'current_ratio': 0.95})
+        DATAMGR.do_set_attributes([1, -1], {'category_id': 8})
+        DATAMGR.do_set_attributes([1, -1], {'current_ratio': 0.95})
         DATAMGR.do_update(1)
 
         pub.sendMessage('request_derate_hardware', node_id=1)
@@ -1689,12 +1689,12 @@ class TestStressCalculations():
 
         pub.subscribe(on_message, 'succeed_derate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 3})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'power_ratio': 0.95})
+        DATAMGR.do_set_attributes([1, -1], {'category_id': 3})
+        DATAMGR.do_set_attributes([1, -1], {'power_ratio': 0.95})
         DATAMGR.do_update(1)
 
         pub.sendMessage('request_derate_hardware', node_id=1)
@@ -1711,12 +1711,12 @@ class TestStressCalculations():
         DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'voltage_ratio': -0.95})
+        DATAMGR.do_set_attributes([1, -1], {'category_id': 4})
+        DATAMGR.do_set_attributes([1, -1], {'voltage_ratio': -0.95})
         DATAMGR.do_update(1)
 
         pub.sendMessage('request_derate_hardware', node_id=1)
@@ -1736,12 +1736,12 @@ class TestStressCalculations():
         DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'voltage_ratio': 0.95})
+        DATAMGR.do_set_attributes([1, -1], {'category_id': 4})
+        DATAMGR.do_set_attributes([1, -1], {'voltage_ratio': 0.95})
         DATAMGR.do_update(1)
 
         pub.sendMessage('request_derate_hardware', node_id=1)
@@ -1764,14 +1764,14 @@ class TestStressCalculations():
 
         pub.subscribe(on_message, 'succeed_derate_hardware')
 
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_type_id': 1})
-        DATAMGR._do_set_hardware_attributes([1, -1],
+        DATAMGR.do_set_attributes([1, -1],
                                             {'hazard_rate_method_id': 2})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'category_id': 4})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'current_ratio': 0.45})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'power_ratio': 0.35})
-        DATAMGR._do_set_hardware_attributes([1, -1], {'voltage_ratio': 0.5344})
+        DATAMGR.do_set_attributes([1, -1], {'category_id': 4})
+        DATAMGR.do_set_attributes([1, -1], {'current_ratio': 0.45})
+        DATAMGR.do_set_attributes([1, -1], {'power_ratio': 0.35})
+        DATAMGR.do_set_attributes([1, -1], {'voltage_ratio': 0.5344})
         DATAMGR.do_update(1)
 
         pub.sendMessage('request_derate_hardware', node_id=1)

@@ -88,7 +88,7 @@ class RAMSTKAnalysisManager():
 
 
 class RAMSTKDataManager():
-    """This is the meta-class for all RAMSTK Data Managers.
+    """The meta-class for all RAMSTK Data Managers.
 
     :ivar tree: the treelib Tree()that will contain the structure of the RAMSTK
         module being modeled.
@@ -113,6 +113,7 @@ class RAMSTKDataManager():
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize an RAMSTK data model instance."""
         # Initialize private dictionary attributes.
+        self._pkey: Dict[str, List[str]] = {}
 
         # Initialize private list attributes.
 
@@ -291,6 +292,43 @@ class RAMSTKDataManager():
                             error_message=("No matrix returned for {0:s} "
                                            "matrix.".format(str(matrix_type))))
 
+    def do_set_attributes(self, node_id: List, package: Dict[str,
+                                                             Any]) -> None:
+        """Set the attributes of the record associated with definition ID.
+
+        This is a helper method to set the desired failure definition attribute
+        since the failure definitions are carried in a dict and we need to
+        select the correct record to update.
+
+        :param node_id: the ID of the revision and the failure definition in
+            the RAMSTK Program database table whose attributes are to be set.
+        :param package: the key:value pair of the attribute to set.
+        :return: None
+        :rtype: None
+        """
+        [[_key, _value]] = package.items()
+
+        for _table in self._pkey:
+            try:
+                _attributes = self.do_select(node_id[0],
+                                             table=_table).get_attributes()
+            except (AttributeError, KeyError):
+                _attributes = {}
+
+            for _field in self._pkey[_table]:
+                try:
+                    _attributes.pop(_field)
+                except KeyError:
+                    pass
+
+            if _key in _attributes:
+                _attributes[_key] = _value
+
+                self.do_select(node_id[0],
+                               table=_table).set_attributes(_attributes)
+
+        self.do_get_tree()
+
     def do_set_tree(self, module_tree: treelib.Tree) -> None:
         """Set the MODULE treelib Tree().
 
@@ -364,20 +402,20 @@ class RAMSTKDataManager():
 
 
 class RAMSTKMatrixManager():
-    """This is the meta-class for all RAMSTK Matrix Managers.
+    """The meta-class for all RAMSTK Matrix Managers.
 
     The Matrix data model is an aggregate model of N x M cell data models.  The
     attributes of a Matrix are:
 
     :ivar object _row_table: the RAMSTK Progam database table to use for the
         matrix rows.  This is an SQLAlchemy object.
-    :ivar list column_tables: a list of RAMSTK data table objects that
+    :ivar column_tables: a list of RAMSTK data table objects that
         comprise the columns.  One table per matrix managed by an instance of
         the matrix manager.
-    :ivar dict dic_matrices: the dictionary containing all the matrices managed
+    :ivar dic_matrices: the dictionary containing all the matrices managed
         by an instance of the matrix manager.
-    :ivar int n_row: the number of rows in the Matrix.
-    :ivar int n_col: the number of columns in the Matrix.
+    :ivar n_row: the number of rows in the Matrix.
+    :ivar n_col: the number of columns in the Matrix.
 
     There are currently 10 matrices as defined by their matrix type.  These
     are:

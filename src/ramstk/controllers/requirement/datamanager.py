@@ -7,8 +7,7 @@
 """Requirement Package Data Model."""
 
 # Standard Library Imports
-from datetime import date
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -21,11 +20,10 @@ from ramstk.models.programdb import RAMSTKRequirement
 
 
 class DataManager(RAMSTKDataManager):
-    """
-    Contain the attributes and methods of the Requirement data manager.
+    """Contain the attributes and methods of the Requirement data manager.
 
-    This class manages the requirement data from the RAMSTKRequirement and
-    RAMSTKStakeholder data models.
+    This class manages the requirement data from the RAMSTKRequirement
+    and RAMSTKStakeholder data models.
     """
 
     _tag = 'requirement'
@@ -35,6 +33,7 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._pkey = {'requirement': ['revision_id', 'requirement_id']}
 
         # Initialize private list attributes.
 
@@ -58,18 +57,17 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_requirement_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_requirement_tree')
-        pub.subscribe(self.do_set_attributes,
+        pub.subscribe(super().do_set_attributes,
                       'request_set_requirement_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_requirement')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_requirement_attributes')
-        pub.subscribe(self.do_set_attributes, 'wvw_editing_requirement')
         pub.subscribe(self.do_create_code, 'request_create_requirement_code')
         pub.subscribe(self.do_create_all_codes,
                       'request_create_all_requirement_codes')
 
     def _do_delete_requirement(self, node_id: int) -> None:
-        """
-        Remove a requirement.
+        """Remove a requirement.
 
         :param int node_id: the node (requirement) ID to be removed from the
             RAMSTK Program database.
@@ -92,8 +90,7 @@ class DataManager(RAMSTKDataManager):
                             error_message=_error_msg)
 
     def _do_get_attributes(self, node_id: int, table: str) -> None:
-        """
-        Retrieve the RAMSTK data table attributes for the requirement.
+        """Retrieve the RAMSTK data table attributes for the requirement.
 
         :param int node_id: the node (requirement) ID of the requirement to get
             the attributes for.
@@ -108,8 +105,7 @@ class DataManager(RAMSTKDataManager):
                         attributes=_attributes)
 
     def do_create_code(self, node_id: int, prefix: str) -> None:
-        """
-        Request to create the requirement code.
+        """Request to create the requirement code.
 
         :param int node_id: the Requirement ID to create the code for.
         :param str prefix: the code prefix to use for the requested code.
@@ -132,8 +128,7 @@ class DataManager(RAMSTKDataManager):
                                                    str(node_id)))
 
     def do_get_all_attributes(self, node_id: int) -> None:
-        """
-        Retrieve all RAMSTK data tables' attributes for the requirement.
+        """Retrieve all RAMSTK data tables' attributes for the requirement.
 
         This is a helper method to be able to retrieve all the requirement's
         attributes in a single call.  It's used primarily by the
@@ -153,8 +148,7 @@ class DataManager(RAMSTKDataManager):
                         attributes=_attributes)
 
     def do_get_tree(self) -> None:
-        """
-        Retrieve the requirement treelib Tree.
+        """Retrieve the requirement treelib Tree.
 
         :return: None
         :rtype: None
@@ -162,8 +156,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
     def do_insert_requirement(self, parent_id: int = 0) -> None:
-        """
-        Add a new requirement.
+        """Add a new requirement.
 
         :param int parent_id: the parent (requirement) ID the new requirement
             will be a child (derived) of.
@@ -197,8 +190,7 @@ class DataManager(RAMSTKDataManager):
     # pylint: disable=arguments-differ
     # noinspection PyUnresolvedReferences
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """
-        Retrieve all the Requirement data from the RAMSTK Program database.
+        """Retrieve all the Requirement data from the RAMSTK Program database.
 
         :param dict attributes: the attributes for the selected Requirement.
         :return: None
@@ -226,8 +218,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_retrieve_requirements', tree=self.tree)
 
     def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """
-        Set all the attributes of the record associated with the Module ID.
+        """Set all the attributes of the record associated with the Module ID.
 
         This is a helper function to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
@@ -238,47 +229,14 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(node_id=[attributes['requirement_id'], -1],
-                                   package={_key: attributes[_key]})
-
-    def do_set_attributes(self, node_id: List,
-                          package: Dict[str, Any]) -> None:
-        """
-        Set the attributes of the record associated with the Module ID.
-
-        :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list
-            is:
-
-                0 - Requirement ID
-
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        """
-        [[_key, _value]] = package.items()
-
-        for _table in ['requirement']:
-            _attributes = self.do_select(node_id[0],
-                                         table=_table).get_attributes()
-            if _key in _attributes:
-                _attributes[_key] = _value
-
-                if _key == 'validated_date' and not _value:
-                    _attributes[_key] = date.today()
-
-                _attributes.pop('revision_id')
-                _attributes.pop('requirement_id')
-
-                self.do_select(node_id[0],
-                               table=_table).set_attributes(_attributes)
+            super().do_set_attributes(
+                node_id=[attributes['requirement_id'], -1],
+                package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
-        """
-        Update the record associated with node ID in RAMSTK Program database.
+        """Update record associated with node ID in RAMSTK Program database.
 
-        :param int node_id: the node (requirement) ID of the requirement to
-            save.
+        :param node_id: the node (requirement) ID of the requirement to save.
         :return: None
         :rtype: None
         """

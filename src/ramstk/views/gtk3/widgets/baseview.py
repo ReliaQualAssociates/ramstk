@@ -107,8 +107,14 @@ class RAMSTKBaseView(Gtk.HBox):
         self._dic_icons: Dict[str, str] = self.__set_icons()
 
         # Initialize private list attributes.
-        self._lst_callbacks: List[object] = []
-        self._lst_icons: List[str] = []
+        self._lst_callbacks: List[object] = [
+            self.do_request_update,
+            self.do_request_update_all,
+        ]
+        self._lst_icons: List[str] = [
+            'save',
+            'save-all',
+        ]
         self._lst_mnu_labels: List[str] = []
         self._lst_tooltips: List[str] = []
 
@@ -988,7 +994,10 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        if self._view_type == 'matrix':
+        if self._view_type == 'list':
+            self._lst_callbacks.insert(0, super().do_request_insert)
+            self._lst_icons.insert(0, 'add')
+        elif self._view_type == 'matrix':
             self._lst_callbacks = [self.do_request_update]
             self._lst_icons = ['save']
             self._lst_mnu_labels = [_("Save Matrix")]
@@ -1075,18 +1084,10 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self._dic_key_index: Dict[str, int] = {}
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self.do_request_insert_sibling,
-            self.do_request_delete,
-            self.do_request_update,
-            self.do_request_update_all,
-        ]
-        self._lst_icons = [
-            'add',
-            'remove',
-            'save',
-            'save-all',
-        ]
+        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
+        self._lst_callbacks.insert(1, self.do_request_delete)
+        self._lst_icons.insert(0, 'add')
+        self._lst_icons.insert(0, 'remove')
 
         # Initialize private scalar attributes.
 

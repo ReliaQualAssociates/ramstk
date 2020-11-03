@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
@@ -10,6 +10,7 @@ from ramstk.models.programdb import (
 
 class DataManager(RAMSTKDataManager):
     _tag: str = ...
+    _pkey: Any = ...
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         ...
@@ -28,10 +29,6 @@ class DataManager(RAMSTKDataManager):
         ...
 
     def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        ...
-
-    def do_set_attributes(self, node_id: List, package: Dict[str,
-                                                             Any]) -> None:
         ...
 
     def do_update(self, node_id: int) -> None:
