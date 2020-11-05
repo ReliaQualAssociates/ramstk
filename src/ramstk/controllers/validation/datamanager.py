@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -21,8 +21,7 @@ from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
 
 class DataManager(RAMSTKDataManager):
-    """
-    Contain the attributes and methods of the Validation data manager.
+    """Contain the attributes and methods of the Validation data manager.
 
     This class manages the validation data from the RAMSTKValidation and
     RAMSKTProgramStatus data models.
@@ -36,6 +35,7 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private dictionary attributes.
         self._dic_status: Dict[Any, float] = {}
+        self._pkey = {'validation': ['revision_id', 'validation_id']}
 
         # Initialize private list attributes.
 
@@ -64,17 +64,16 @@ class DataManager(RAMSTKDataManager):
                       'request_get_all_validation_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_validation_tree')
         pub.subscribe(self.do_get_status_tree, 'request_get_status_tree')
-        pub.subscribe(self.do_set_attributes,
+        pub.subscribe(super().do_set_attributes,
                       'request_set_validation_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_validation')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_validation_attributes')
         pub.subscribe(self._do_update_program_status,
                       'succeed_calculate_all_tasks')
-        pub.subscribe(self.do_set_attributes, 'wvw_editing_validation')
 
     def _do_delete_validation(self, node_id: int) -> None:
-        """
-        Remove a Validation task.
+        """Remove a Validation task.
 
         :param int node_id: the node (validation) ID to be removed from the
             RAMSTK Program database.
@@ -103,8 +102,7 @@ class DataManager(RAMSTKDataManager):
 
     # pylint: disable=arguments-differ
     def _do_insert_status(self) -> RAMSTKProgramStatus:
-        """
-        Add a new program status record.
+        """Add a new program status record.
 
         :return: _status; the newly inserted RAMSTKProgramStatus record.
         :rtype: :class:`ramstk.models.programdb.RAMSTKProgramStatus`
@@ -127,8 +125,7 @@ class DataManager(RAMSTKDataManager):
         return _status
 
     def _do_select_all_status_tree(self):
-        """
-        Retrieve all the status updates from the RAMSTK Program database.
+        """Retrieve all the status updates from the RAMSTK Program database.
 
         :return: None
         :rtype: None
@@ -153,8 +150,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id[1] = max(self.last_id[1], _status.status_id)
 
     def _do_update_program_status(self, cost_remaining, time_remaining):
-        """
-        Update the remaining cost and time of the selected program.
+        """Update the remaining cost and time of the selected program.
 
         .. note:: This method will always update the status for the current
             day.  If no status record exists for the current day, it will
@@ -181,8 +177,7 @@ class DataManager(RAMSTKDataManager):
                         attributes={'y_actual': self._dic_status})
 
     def do_get_all_attributes(self, node_id):
-        """
-        Retrieve all RAMSTK data tables' attributes for the validation item.
+        """Retrieve all RAMSTK data tables' attributes for the validation item.
 
         This is a helper method to be able to retrieve all the validation
         item's attributes in a single call.  It's used primarily by the
@@ -202,8 +197,7 @@ class DataManager(RAMSTKDataManager):
                         attributes=_attributes)
 
     def do_get_tree(self) -> None:
-        """
-        Retrieve the validation treelib Tree.
+        """Retrieve the validation treelib Tree.
 
         :return: None
         :rtype: None
@@ -211,8 +205,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_validation_tree', dmtree=self.tree)
 
     def do_get_status_tree(self) -> None:
-        """
-        Retrieve the status treelib Tree().
+        """Retrieve the status treelib Tree().
 
         :return: None
         :rtype: None
@@ -220,8 +213,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_status_tree', stree=self.status_tree)
 
     def do_insert_validation(self) -> None:
-        """
-        Add a new validation task.
+        """Add a new validation task.
 
         :return: None
         :rtype: None
@@ -253,10 +245,9 @@ class DataManager(RAMSTKDataManager):
 
     # pylint: disable=arguments-differ
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """
-        Retrieve all the Validation BoM data from the RAMSTK Program database.
+        """Retrieve all Validation BoM data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes for the selected Requirement.
+        :param attributes: the attributes for the selected Requirement.
         :return: None
         :rtype: None
         """
@@ -285,8 +276,7 @@ class DataManager(RAMSTKDataManager):
         self._do_select_all_status_tree()
 
     def do_set_all_attributes(self, attributes):
-        """
-        Set all the attributes of the record associated with the Module ID.
+        """Set all the attributes of the record associated with the Module ID.
 
         This is a helper function to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
@@ -297,43 +287,13 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes([attributes['validation_id']],
-                                   package={_key: attributes[_key]})
-
-    def do_set_attributes(self, node_id: List[int],
-                          package: Dict[str, Any]) -> None:
-        """
-        Set the attributes of the record associated with the Nonee ID.
-
-
-        :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list
-            is:
-
-                0 - Validation ID
-
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        :raises: KeyError if the revision ID or validation ID keys are missing.
-        """
-        [[_key, _value]] = package.items()
-
-        _attributes = self.do_select(node_id[0],
-                                     table='validation').get_attributes()
-        if _key in _attributes:
-            _attributes[_key] = _value
-            _attributes.pop('revision_id')
-            _attributes.pop('validation_id')
-
-            self.do_select(node_id[0],
-                           table='validation').set_attributes(_attributes)
+            super().do_set_attributes([attributes['validation_id']],
+                                      package={_key: attributes[_key]})
 
     def do_update(self, node_id):
-        """
-        Update the record associated with node ID in RAMSTK Program database.
+        """Update record associated with node ID in RAMSTK Program database.
 
-        :param int node_id: the validation ID of the validation item to save.
+        :param node_id: the validation ID of the validation item to save.
         :return: None
         :rtype: None
         """

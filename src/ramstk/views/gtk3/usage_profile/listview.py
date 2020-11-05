@@ -459,21 +459,13 @@ class UsageProfile(RAMSTKListView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self._do_request_insert_sibling,
-            self._do_request_insert_child,
-            self._do_request_delete,
-            self.do_request_update,
-            self.do_request_update_all,
-        ]
+        self._lst_callbacks[0] = self._do_request_insert_sibling
+        self._lst_callbacks.insert(1, self._do_request_insert_child)
+        self._lst_callbacks.insert(2, self._do_request_delete)
         self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        self._lst_icons = [
-            'insert_sibling',
-            'insert_child',
-            'remove',
-            'save',
-            'save-all',
-        ]
+        self._lst_icons[0] = 'insert_sibling'
+        self._lst_icons.insert(1, 'insert_child')
+        self._lst_icons.insert(2, 'remove')
         self._lst_mnu_labels = [
             _("Add Sibling"),
             _("Add Child"),

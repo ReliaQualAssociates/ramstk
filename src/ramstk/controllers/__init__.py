@@ -16,12 +16,13 @@ from ramstk.controllers.managers import (
 from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .fmea.analysismanager import AnalysisManager as amFMEA
 from .fmea.datamanager import DataManager as dmFMEA
-from .function.analysismanager import AnalysisManager as amFunction
 from .function.datamanager import DataManager as dmFunction
 from .function.matrixmanager import MatrixManager as mmFunction
 from .hardware.analysismanager import AnalysisManager as amHardware
 from .hardware.datamanager import DataManager as dmHardware
 from .hardware.matrixmanager import MatrixManager as mmHardware
+from .hazards.analysismanager import AnalysisManager as amHazards
+from .hazards.datamanager import DataManager as dmHazards
 from .options.datamanager import DataManager as dmOptions
 from .pof.datamanager import DataManager as dmPoF
 from .requirement.datamanager import DataManager as dmRequirement

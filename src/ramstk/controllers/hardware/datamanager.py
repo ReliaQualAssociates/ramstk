@@ -3,11 +3,11 @@
 #       ramstk.controllers.hardware.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -23,12 +23,11 @@ from ramstk.models.programdb import (
 
 
 class DataManager(RAMSTKDataManager):
-    """
-    Contain the attributes and methods of the Hardware data manager.
+    """Contain the attributes and methods of the Hardware data manager.
 
     This class manages the hardware data from the RAMSTKHardware,
-    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKMilHdbkF, RAMSTKNSWC, and
-    RAMSKTReliability data models.
+    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKMilHdbkF,
+    RAMSTKNSWC, and RAMSKTReliability data models.
     """
 
     _tag = 'hardware'
@@ -39,6 +38,16 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._pkey = {
+            'hardware': ['revision_id', 'hardware_id'],
+            'design_electric': ['revision_id', 'hardware_id'],
+            'design_mechanic': ['revision_id', 'hardware_id'],
+            'mil_hdbk_217f': ['revision_id', 'hardware_id'],
+            'nswc': ['revision_id', 'hardware_id'],
+            'reliability': ['revision_id', 'hardware_id'],
+            'allocation': ['revision_id', 'hardware_id'],
+            'similar_item': ['revision_id', 'hardware_id'],
+        }
 
         # Initialize private list attributes.
 
@@ -60,13 +69,11 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_select_all_hardware, 'selected_revision')
         pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
         pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
-        pub.subscribe(self._do_set_hardware_attributes,
+        pub.subscribe(super().do_set_attributes,
                       'request_set_hardware_attributes')
-        pub.subscribe(self._do_set_hardware_attributes,
-                      'wvw_editing_allocation')
-        pub.subscribe(self._do_set_hardware_attributes,
-                      'wvw_editing_component')
-        pub.subscribe(self._do_set_hardware_attributes, 'wvw_editing_hardware')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_allocation')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_component')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
                       'succeed_calculate_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
@@ -75,15 +82,14 @@ class DataManager(RAMSTKDataManager):
                       'succeed_allocate_reliability')
         pub.subscribe(self._do_get_all_hardware_attributes,
                       'request_get_all_hardware_attributes')
-        pub.subscribe(self._do_get_hardware_tree, 'request_get_hardware_tree')
+        pub.subscribe(self.do_get_tree, 'request_get_hardware_tree')
         pub.subscribe(self._do_make_composite_ref_des,
                       'request_make_comp_ref_des')
 
     def _do_delete_hardware(self, node_id: int) -> None:
-        """
-        Remove a Hardware item.
+        """Remove a Hardware item.
 
-        :param int node_id: the node (hardware) ID to be removed from the
+        :param node_id: the node (hardware) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
@@ -103,8 +109,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
     def _do_get_all_hardware_attributes(self, node_id: int) -> None:
-        """
-        Retrieve all RAMSTK data tables' attributes for the hardware item.
+        """Retrieve all RAMSTK data tables' attributes for the hardware item.
 
         This is a helper method to be able to retrieve all the hardware item's
         attributes in a single call.  It's used primarily by the
@@ -127,9 +132,8 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_all_hardware_attributes',
                         attributes=_attributes)
 
-    def _do_get_hardware_tree(self) -> None:
-        """
-        Retrieve the hardware treelib Tree.
+    def do_get_tree(self) -> None:
+        """Retrieve the hardware treelib Tree.
 
         :return: None
         :rtype: None
@@ -137,8 +141,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_hardware_tree', dmtree=self.tree)
 
     def _do_insert_hardware(self, parent_id: int, part: int) -> None:
-        """
-        Add a new hardware item.
+        """Add a new hardware item.
 
         :param int parent_id: the parent hardware item'd ID.
         :param int part: whether to insert a part (1) or assembly (0).
@@ -210,8 +213,7 @@ class DataManager(RAMSTKDataManager):
                 pub.sendMessage("fail_insert_hardware", error_message=_error)
 
     def _do_make_composite_ref_des(self, node_id: int = 1) -> None:
-        """
-        Make the composite reference designators.
+        """Make the composite reference designators.
 
         :keyword int node_id: the ID of the node to start making the composite
             reference designators.
@@ -241,8 +243,7 @@ class DataManager(RAMSTKDataManager):
             self._do_make_composite_ref_des(node_id=_child_node.identifier)
 
     def _do_select_all_hardware(self, attributes: Dict[str, Any]) -> None:
-        """
-        Retrieve all the Hardware BoM data from the RAMSTK Program database.
+        """Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
         :param dict attributes: the attributes dict for the selected Revision.
         :return: None
@@ -324,10 +325,9 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
 
-    def _do_set_all_hardware_attributes(self,
-                                        attributes: Dict[str, Any]) -> None:
-        """
-        Set all the attributes of the record associated with the Module ID.
+    def _do_set_all_hardware_attributes(self, attributes: Dict[str,
+                                                               Any]) -> None:
+        """Set all the attributes of the record associated with the Module ID.
 
         This is a helper function to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
@@ -338,50 +338,13 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self._do_set_hardware_attributes(
-                node_id=[attributes['hardware_id'], -1],
-                package={_key: attributes[_key]})
-
-    def _do_set_hardware_attributes(self, node_id: List[int],
-                                    package: Dict[str, Any]) -> None:
-        """
-        Set the attributes of the record associated with the Module ID.
-
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        """
-        [[_key, _value]] = package.items()
-
-        for _table in [
-                'hardware', 'design_electric', 'design_mechanic',
-                'mil_hdbk_217f', 'nswc', 'reliability', 'allocation',
-                'similar_item'
-        ]:
-            _attributes = self.do_select(node_id[0],
-                                         table=_table).get_attributes()
-
-            if _key in _attributes:
-                _attributes[_key] = _value
-
-                # Only the ramstk_hardware table contains the revision_id
-                # column.
-                try:
-                    _attributes.pop('revision_id')
-                except KeyError:
-                    pass
-                _attributes.pop('hardware_id')
-
-                self.do_select(node_id[0],
-                               table=_table).set_attributes(_attributes)
+            super().do_set_attributes(node_id=[attributes['hardware_id'], -1],
+                                      package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
-        """
-        Update the record associated with node ID in RAMSTK Program database.
+        """Update record associated with node ID in RAMSTK Program database.
 
-        :param int node_id: the hardware ID of the hardware item to save.
+        :param node_id: the hardware ID of the hardware item to save.
         :return: None
         :rtype: None
         """

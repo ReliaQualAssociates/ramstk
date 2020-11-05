@@ -185,18 +185,6 @@ class FailureDefinition(RAMSTKListView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self._do_request_insert,
-            self._do_request_delete,
-            self.do_request_update,
-            self.do_request_update_all,
-        ]
-        self._lst_icons = [
-            'add',
-            'remove',
-            'save',
-            'save-all',
-        ]
         self._lst_mnu_labels = [
             _("Add Definition"),
             _("Delete Selected"),

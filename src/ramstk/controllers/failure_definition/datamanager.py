@@ -34,6 +34,9 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._pkey: Dict[str, List[str]] = {
+            'failure_definition': ['revision_id', 'definition_id']
+        }
 
         # Initialize private list attributes.
 
@@ -53,11 +56,12 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_update_all,
                       'request_update_all_failure_definitions')
         pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
-        pub.subscribe(self.do_set_attributes,
+        pub.subscribe(super().do_set_attributes,
                       'request_set_failure_definition_attributes')
+        pub.subscribe(super().do_set_attributes,
+                      'lvw_editing_failure_definition')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_failure_definition_attributes')
-        pub.subscribe(self.do_set_attributes, 'lvw_editing_failure_definition')
 
         pub.subscribe(self._do_delete_failure_definition,
                       'request_delete_failure_definition')
@@ -143,36 +147,9 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(node_id=[attributes['definition_id'], -1],
-                                   package={_key: attributes[_key]})
-
-    def do_set_attributes(self, node_id: List, package: Dict[str,
-                                                             Any]) -> None:
-        """Set the attributes of the record associated with definition ID.
-
-        This is a helper method to set the desired failure definition attribute
-        since the failure definitions are carried in a dict and we need to
-        select the correct record to update.
-
-        :param node_id: the ID of the revision and the failure definition in
-            the RAMSTK Program database table whose attributes are to be set.
-        :param package: the key:value pair of the attribute to set.
-        :return: None
-        :rtype: None
-        """
-        [[_key, _value]] = package.items()
-
-        for _table in ['failure_definition']:
-            _attributes = self.do_select(node_id[0],
-                                         table=_table).get_attributes()
-            if _key in _attributes:
-                _attributes[_key] = _value
-
-                _attributes.pop('revision_id')
-                _attributes.pop('definition_id')
-
-                self.do_select(node_id[0],
-                               table=_table).set_attributes(_attributes)
+            super().do_set_attributes(
+                node_id=[attributes['definition_id'], -1],
+                package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
         """Update the failure definition associated with node ID in database.

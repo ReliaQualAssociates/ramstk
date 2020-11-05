@@ -7,7 +7,7 @@
 """PoF Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -23,8 +23,7 @@ from ramstk.models.programdb import (
 
 
 class DataManager(RAMSTKDataManager):
-    """
-    Contain the attributes and methods of the PoF data manager.
+    """Contain the attributes and methods of the PoF data manager.
 
     This class manages the PoF data from the RAMSTKMode, RAMSTKMechains,
     RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod data models.
@@ -38,6 +37,20 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._pkey = {
+            'opload': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'load_id'
+            ],
+            'opstress': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'load_id', 'stress_id'
+            ],
+            'testmethod': [
+                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
+                'load_id', 'test_id'
+            ]
+        }
 
         # Initialize private list attributes.
         self._last_id = [0, 0, 0]
@@ -68,12 +81,11 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_attributes,
                       'request_get_test_method_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_pof_tree')
-        pub.subscribe(self.do_set_attributes, 'request_set_pof_attributes')
-        pub.subscribe(self.do_set_attributes, 'wvw_editing_pof')
+        pub.subscribe(super().do_set_attributes, 'request_set_pof_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_pof')
 
     def _do_delete(self, node_id: int) -> None:
-        """
-        Remove a PoF element.
+        """Remove a PoF element.
 
         :param int node_id: the node (PoF element) ID to be removed from the
             RAMSTK Program database.
@@ -86,8 +98,7 @@ class DataManager(RAMSTKDataManager):
             RAMSTKDataManager.do_delete(self, node_id, _table)
 
             self.tree.remove_node(node_id)
-            pub.sendMessage('succeed_delete_pof_2',
-                            node_id=node_id)
+            pub.sendMessage('succeed_delete_pof_2', node_id=node_id)
             pub.sendMessage('succeed_delete_pof',
                             node_id=node_id,
                             tree=self.tree)
@@ -97,8 +108,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('fail_delete_pof', error_message=_error_msg)
 
     def _do_insert_opload(self, parent_id: str) -> None:
-        """
-        Add a new operating to PoF mechanism ID.
+        """Add a new operating to PoF mechanism ID.
 
         :param str parent_id: the parent node ID the operating load is
             associated with.
@@ -137,8 +147,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage("fail_insert_opload", error_message=_error_msg)
 
     def _do_insert_opstress(self, parent_id: str) -> None:
-        """
-        Add a new operating stress to PoF load ID.
+        """Add a new operating stress to PoF load ID.
 
         :parem str parent_id: the parent node ID the operating stress is
             associated with.
@@ -179,8 +188,7 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage("fail_insert_opstress", error_message=_error_msg)
 
     def _do_insert_testmethod(self, parent_id: str) -> None:
-        """
-        Add a new test method to PoF load ID.
+        """Add a new test method to PoF load ID.
 
         :parem str parent_id: the parent node ID the test method is associated
             with.
@@ -220,8 +228,7 @@ class DataManager(RAMSTKDataManager):
                             error_message=_error_msg)
 
     def _do_select_all_mechanism(self, mode_id: int) -> None:
-        """
-        Retrieve all the failure mechanisms for the mode ID.
+        """Retrieve all the failure mechanisms for the mode ID.
 
         :param int mode_id: the mode ID to select the mechanisms for.
         :return: None
@@ -243,8 +250,7 @@ class DataManager(RAMSTKDataManager):
             self._do_select_all_opload(_identifier)
 
     def _do_select_all_opload(self, parent_id: str) -> None:
-        """
-        Retrieve all the operating loads for the mechanism ID.
+        """Retrieve all the operating loads for the mechanism ID.
 
         :parem str parent_id: the parent node ID the coperating loads are
             associated with.
@@ -271,8 +277,7 @@ class DataManager(RAMSTKDataManager):
             self._do_select_all_testmethod(_identifier)
 
     def _do_select_all_opstress(self, parent_id: str) -> None:
-        """
-        Retrieve all the operating stresses for the load ID.
+        """Retrieve all the operating stresses for the load ID.
 
         :parem str parent_id: the parent node ID the operating stresses are
             associated with.
@@ -298,8 +303,7 @@ class DataManager(RAMSTKDataManager):
             self._last_id[1] = max(self._last_id[1], _opstress.stress_id)
 
     def _do_select_all_testmethod(self, parent_id: str) -> None:
-        """
-        Retrieve all the test methods for the load ID.
+        """Retrieve all the test methods for the load ID.
 
         :parem str parent_id: the parent node ID the test methods are
             associated with.
@@ -324,8 +328,7 @@ class DataManager(RAMSTKDataManager):
             self._last_id[2] = max(self._last_id[2], _method.test_id)
 
     def do_get_tree(self) -> None:
-        """
-        Retrieve the PoF treelib Tree.
+        """Retrieve the PoF treelib Tree.
 
         :return: None
         :rtype: None
@@ -333,8 +336,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_pof_tree', dmtree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """
-        Retrieve all the PoF data from the RAMSTK Program database.
+        """Retrieve all the PoF data from the RAMSTK Program database.
 
         :param dict attributes: the attributes dict for the selected
             function or hardware item.
@@ -360,56 +362,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_pof', tree=self.tree)
 
-    def do_set_attributes(self, node_id: List[int],
-                          package: Dict[str, Any]) -> None:
-        """
-        Set the attributes of the record associated with the Module ID.
-
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param dict package: the attributes dictionary.
-        :return: None
-        :rtype: None
-        """
-        [[_key, _value]] = package.items()
-
-        _pkey = {
-            'opload': [
-                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
-                'load_id'
-            ],
-            'opstress': [
-                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
-                'load_id', 'stress_id'
-            ],
-            'testmethod': [
-                'revision_id', 'hardware_id', 'mode_id', 'mechanism_id',
-                'load_id', 'test_id'
-            ]
-        }
-        for _table in ['opload', 'opstress', 'testmethod']:
-            try:
-                _attributes = self.do_select(node_id[0],
-                                             table=_table).get_attributes()
-            except (AttributeError, KeyError):
-                _attributes = {}
-
-            for _field in _pkey[_table]:
-                try:
-                    _attributes.pop(_field)
-                except KeyError:
-                    pass
-
-            if _key in _attributes:
-                _attributes[_key] = _value
-
-                self.do_select(node_id[0],
-                               table=_table).set_attributes(_attributes)
-        self.do_get_tree()
-
     def do_update(self, node_id: int) -> None:
-        """
-        Update the record associated with node ID in RAMSTK Program database.
+        """Update record associated with node ID in RAMSTK Program database.
 
         :param int node_id: the node ID of the PoF item to save.
         :return: None

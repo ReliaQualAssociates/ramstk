@@ -7,7 +7,7 @@
 """Stakeholder Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -19,11 +19,10 @@ from ramstk.models.programdb import RAMSTKStakeholder
 
 
 class DataManager(RAMSTKDataManager):
-    """
-    Contain the attributes and methods of the Stakeholder data manager.
+    """Contain the attributes and methods of the Stakeholder data manager.
 
-    This class manages the stakeholder data from the RAMSTKStakeholder and
-    RAMSTKStakeholder data models.
+    This class manages the stakeholder data from the RAMSTKStakeholder
+    and RAMSTKStakeholder data models.
     """
 
     _tag = 'stakeholder'
@@ -33,6 +32,7 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._pkey = {'stakeholder': ['revision_id', 'stakeholder_id']}
 
         # Initialize private list attributes.
 
@@ -56,15 +56,14 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_stakeholder_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_stakeholder_tree')
-        pub.subscribe(self.do_set_attributes,
+        pub.subscribe(super().do_set_attributes,
                       'request_set_stakeholder_attributes')
-        pub.subscribe(self.do_set_attributes, 'lvw_editing_stakeholder')
+        pub.subscribe(super().do_set_attributes, 'lvw_editing_stakeholder')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_stakeholder_attributes')
 
     def _do_delete_stakeholder(self, node_id: int) -> None:
-        """
-        Remove a stakeholder.
+        """Remove a stakeholder.
 
         :param int node_id: the node (stakeholder) ID to be removed from the
             RAMSTK Program database.
@@ -77,8 +76,7 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_stakeholder_',
-                            node_id=node_id)
+            pub.sendMessage('succeed_delete_stakeholder_', node_id=node_id)
             pub.sendMessage('succeed_delete_stakeholder',
                             node_id=node_id,
                             tree=self.tree)
@@ -89,8 +87,7 @@ class DataManager(RAMSTKDataManager):
                             error_message=_error_msg)
 
     def do_get_all_attributes(self, node_id: int) -> None:
-        """
-        Retrieve all RAMSTK data tables' attributes for the stakeholder.
+        """Retrieve all RAMSTK data tables' attributes for the stakeholder.
 
         This is a helper method to be able to retrieve all the stakeholder's
         attributes in a single call.  It's used primarily by the
@@ -111,8 +108,7 @@ class DataManager(RAMSTKDataManager):
                         attributes=_attributes)
 
     def do_get_tree(self) -> None:
-        """
-        Retrieve the stakeholder treelib Tree.
+        """Retrieve the stakeholder treelib Tree.
 
         :return: None
         :rtype: None
@@ -120,8 +116,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_stakeholder_tree', dmtree=self.tree)
 
     def do_insert_stakeholder(self) -> None:
-        """
-        Add a new stakeholder.
+        """Add a new stakeholder.
 
         :param int parent_id: the parent (stakeholder) ID the new stakeholder
             will be a child (derived) of.
@@ -151,8 +146,7 @@ class DataManager(RAMSTKDataManager):
                             error_message=_error.msg)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """
-        Retrieve all the Stakeholder data from the RAMSTK Program database.
+        """Retrieve all the Stakeholder data from the RAMSTK Program database.
 
         :param dict attributes: the attributes dict for the selected Revision.
         :return: None
@@ -180,8 +174,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_retrieve_stakeholders', tree=self.tree)
 
     def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """
-        Set all the attributes of the record associated with the Module ID.
+        """Set all the attributes of the record associated with the Module ID.
 
         This is a helper function to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
@@ -192,40 +185,14 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self.do_set_attributes(node_id=[attributes['stakeholder_id'], -1],
-                                   package={_key: attributes[_key]})
-
-    def do_set_attributes(self, node_id: List[int],
-                          package: Dict[str, Any]) -> None:
-        """
-        Set the attributes of the record associated with the node ID.
-
-        :param int node_id: the ID of the record in the RAMSTK Program
-            database table whose attributes are to be set.
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        """
-        [[_key, _value]] = package.items()
-
-        for _table in ['stakeholder']:
-            _attributes = self.do_select(node_id[0],
-                                         table=_table).get_attributes()
-            if _key in _attributes:
-                _attributes[_key] = _value
-
-                _attributes.pop('revision_id')
-                _attributes.pop('stakeholder_id')
-
-            self.do_select(node_id[0],
-                           table=_table).set_attributes(_attributes)
+            super().do_set_attributes(
+                node_id=[attributes['stakeholder_id'], -1],
+                package={_key: attributes[_key]})
 
     def do_update_stakeholder(self, node_id: int) -> None:
-        """
-        Update the record associated with node ID in RAMSTK Program database.
+        """Update record associated with node ID in RAMSTK Program database.
 
-        :param int node_id: the node (stakeholder) ID of the stakeholder to
-            save.
+        :param node_id: the node (stakeholder) ID of the stakeholder to save.
         :return: None
         :rtype: None
         """
