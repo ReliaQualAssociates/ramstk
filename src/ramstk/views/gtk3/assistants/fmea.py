@@ -61,8 +61,8 @@ class AddControlAction(RAMSTKDialog):
         _y_pos: int = _label.get_preferred_size()[0].height + 50
 
         self.rdoControl.set_tooltip_text(
-            _("Select to add a design control to the selected failure "
-              "cause."))
+            _(u"Select to add a design control "
+              u"to the selected failure cause."))
         self.rdoAction.set_tooltip_text(
             _("Select to add an action to the selected failure cause."))
 
@@ -73,9 +73,10 @@ class AddControlAction(RAMSTKDialog):
 
     def _cancel(self, __button):
         """
-        Destroy the assistant when the 'Cancel' button is pressed.
+        Method to destroy the assistant when the 'Cancel' button is
+        pressed.
 
-        :param __button: the Gtk.Button() that called this method.
-        :type __button: :class:`Gtk.Button`
+        :param gtk.Button __button: the gtk.Button() that called this method.
         """
+
         self.destroy()
