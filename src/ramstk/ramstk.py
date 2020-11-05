@@ -77,6 +77,10 @@ class RAMSTKProgramManager:
                 'data': None,
                 'matrix': None
             },
+            'hazards': {
+                'analysis': None,
+                'data': None
+            },
             'fmea': {
                 'analysis': None,
                 'data': None

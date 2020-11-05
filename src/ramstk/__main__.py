@@ -21,8 +21,8 @@ from ramstk.configuration import (
     RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 )
 from ramstk.controllers import (
-    amFMEA, amFunction, amHardware, amStakeholder, amValidation,
-    dmFailureDefinition, dmFMEA, dmFunction, dmHardware, dmOptions,
+    amFMEA, amHardware, amHazards, amStakeholder, amValidation,
+    dmFailureDefinition, dmFMEA, dmFunction, dmHardware, dmHazards, dmOptions,
     dmPoF, dmRequirement, dmRevision, dmStakeholder, dmUsageProfile,
     dmValidation, mmFunction, mmHardware, mmRequirement, mmValidation
 )
@@ -219,8 +219,9 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
     _program_mgr.dic_managers['function']['data'] = dmFunction()
     _program_mgr.dic_managers['function']['matrix'] = mmFunction()
-    _program_mgr.dic_managers['function']['analysis'] = amFunction(
+    _program_mgr.dic_managers['hazards']['analysis'] = amHazards(
         user_configuration)
+    _program_mgr.dic_managers['hazards']['data'] = dmHazards()
     _program_mgr.dic_managers['requirement']['data'] = dmRequirement()
     _program_mgr.dic_managers['requirement']['matrix'] = mmRequirement()
     _program_mgr.dic_managers['stakeholder']['analysis'] = amStakeholder(

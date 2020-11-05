@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.function.workview.py is part of the RAMSTK Project
+#       ramstk.views.gtk3.hazard_analysis.workview.py is part of the RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,6 +12,7 @@ from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
+from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
@@ -198,7 +200,7 @@ class HazOpsPanel(RAMSTKPanel):
               "Function."))
 
     # pylint: disable=unused-argument
-    def __do_load_panel(self, node_id: int) -> None:
+    def __do_load_panel(self, node_id: int, tree: Tree) -> None:
         """Wrap method responds to calculate, delete, insert messages.
 
         This is necessary for now because the Hazards are carried around in
