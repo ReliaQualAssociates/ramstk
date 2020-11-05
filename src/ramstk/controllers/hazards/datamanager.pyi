@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
@@ -19,9 +19,6 @@ class DataManager(RAMSTKDataManager):
     last_id: Any = ...
 
     def _do_delete_hazard(self, node_id: int) -> None:
-        ...
-
-    def _do_set_hazard(self, node_id: List, package: Dict) -> None:
         ...
 
     def do_get_all_attributes(self, node_id: int) -> None:

@@ -399,7 +399,7 @@ class TestUpdateMethods():
         print("\033[35m\nfail_update_hazard topic was broadcast")
 
     def on_fail_update_hazard_no_data(self, error_message):
-        assert error_message == ('No data package found for hazard ID 0.')
+        assert error_message == ('No data package found for hazard ID 1.')
         print("\033[35m\nfail_update_hazard topic was broadcast")
 
     @pytest.mark.unit
@@ -442,12 +442,22 @@ class TestUpdateMethods():
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.get_node(1).data = None
 
-        DUT.do_update(0)
+        DUT.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_hazard_no_data,
                         'fail_update_hazard')
 
+    @pytest.mark.unit
+    def test_do_update_root_node(self, mock_program_dao):
+        """do_update() should return a non-zero error code when passed a Hazard
+        ID that has no data package."""
+        DUT = dmHazards()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        DUT.do_update(0)
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestAnalysisMethods():

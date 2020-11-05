@@ -8,7 +8,7 @@
 """Hazards Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
@@ -87,41 +87,6 @@ class DataManager(RAMSTKDataManager):
                               "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hazard', error_message=_error_message)
 
-    def _do_set_hazard(self, node_id: List, package: Dict) -> None:
-        """Set the attributes of the record associated with hazard ID.
-
-        This is a helper method to set the desired hazard analysis attribute
-        since the hazard analyses are carried in a dict and we need to
-        select the correct record to update.
-
-        :param list node_id: a list of the ID's of the record in the RAMSTK
-            Program database table whose attributes are to be set.  The list
-            is:
-
-                0 - Hazard ID
-                1 - Hazard ID
-                2 - FMEA ID
-
-        :param dict package: the key:value for the attribute being updated.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _attributes = self.do_select(
-                node_id[0], table='hazards')[node_id[1]].get_attributes()
-            _attributes.pop('revision_id')
-            _attributes.pop('hazard_id')
-            _attributes.pop('hazard_id')
-        except KeyError:
-            _attributes = {}
-
-        for _key in list(package.keys()):
-            if _key in _attributes:
-                _attributes[_key] = package[_key]
-                self.do_select(
-                    node_id[0],
-                    table='hazards')[node_id[1]].set_attributes(_attributes)
-
     def do_get_all_attributes(self, node_id: int) -> None:
         """Retrieve all RAMSTK data tables' attributes for the hazard.
 
@@ -176,7 +141,6 @@ class DataManager(RAMSTKDataManager):
                             node_id=self.last_id,
                             tree=self.tree)
         except DataAccessError as _error:
-            print(_error)
             pub.sendMessage("fail_insert_hazard", error_message=_error)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -209,11 +173,7 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data={'hazard': _hazard})
 
-            try:
-                self._last_id[0] = max(self._last_id[0], max(_hazards.keys()))
-            except ValueError:
-                self._last_id[0] = self._last_id[0]
-
+        self._last_id[0] = max(self._last_id[0], max(_hazards.keys()))
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_hazards', tree=self.tree)
@@ -221,7 +181,7 @@ class DataManager(RAMSTKDataManager):
     def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set all the attributes of the record associated with the Module ID.
 
-        This is a helper hazard to set a group of attributes in a single
+        This is a helper method to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
 
         :param attributes: the aggregate attributes dict for the hazard.
@@ -244,10 +204,6 @@ class DataManager(RAMSTKDataManager):
         """
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['hazard'])
-            for _key in self.tree.get_node(node_id).data['hazard']:
-                self.dao.do_update(
-                    self.tree.get_node(node_id).data['hazard'][_key])
-
             pub.sendMessage('succeed_update_hazard', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_update_hazard',
