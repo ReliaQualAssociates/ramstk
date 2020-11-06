@@ -45,22 +45,24 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self._do_delete_stakeholder,
-                      'request_delete_stakeholder')
-        pub.subscribe(self.do_insert_stakeholder, 'request_insert_stakeholder')
-        pub.subscribe(self.do_update_stakeholder, 'request_update_stakeholder')
-        pub.subscribe(self.do_update_all, 'request_update_all_stakeholders')
-        pub.subscribe(self.do_get_attributes,
+        pub.subscribe(super().do_get_attributes,
                       'request_get_stakeholder_attributes')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_stakeholder_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_stakeholder_tree')
         pub.subscribe(super().do_set_attributes,
                       'request_set_stakeholder_attributes')
         pub.subscribe(super().do_set_attributes, 'lvw_editing_stakeholder')
+        pub.subscribe(super().do_update_all, 'request_update_all_stakeholders')
+
+        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_insert_stakeholder, 'request_insert_stakeholder')
+        pub.subscribe(self.do_update_stakeholder, 'request_update_stakeholder')
+        pub.subscribe(self.do_get_all_attributes,
+                      'request_get_all_stakeholder_attributes')
+        pub.subscribe(self.do_get_tree, 'request_get_stakeholder_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_stakeholder_attributes')
+
+        pub.subscribe(self._do_delete_stakeholder,
+                      'request_delete_stakeholder')
 
     def _do_delete_stakeholder(self, node_id: int) -> None:
         """Remove a stakeholder.

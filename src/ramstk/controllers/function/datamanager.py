@@ -48,21 +48,23 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self._do_delete, 'request_delete_function')
-        pub.subscribe(self.do_insert_function, 'request_insert_function')
-        pub.subscribe(self.do_update, 'request_update_function')
-        pub.subscribe(self.do_update_all, 'request_update_all_functions')
         pub.subscribe(super().do_get_attributes,
                       'request_get_function_attributes')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_function_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_function_tree')
         pub.subscribe(super().do_set_attributes,
                       'request_set_function_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_function')
+        pub.subscribe(super().do_update_all, 'request_update_all_functions')
+
+        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_insert_function, 'request_insert_function')
+        pub.subscribe(self.do_update, 'request_update_function')
+        pub.subscribe(self.do_get_all_attributes,
+                      'request_get_all_function_attributes')
+        pub.subscribe(self.do_get_tree, 'request_get_function_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_function_attributes')
+
+        pub.subscribe(self._do_delete, 'request_delete_function')
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a function.
@@ -197,11 +199,7 @@ class DataManager(RAMSTKDataManager):
                                    package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
-        """Update the record associated with node ID in RAMSTK Program
-        database.
-
-        .. note:: This will also update all the hazards associated with the
-            function.
+        """Update record associated with node ID in RAMSTK Program database.
 
         :param node_id: the node (function) ID of the function to save.
         :return: None

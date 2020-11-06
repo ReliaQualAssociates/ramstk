@@ -72,8 +72,21 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_get_attributes, 'request_get_mode_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_mechanism_attributes')
+        pub.subscribe(super().do_get_attributes, 'request_get_cause_attributes')
+        pub.subscribe(super().do_get_attributes, 'request_get_control_attributes')
+        pub.subscribe(super().do_get_attributes, 'request_get_action_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_fmea')
+        pub.subscribe(super().do_set_attributes, 'request_set_fmea_attributes')
+        pub.subscribe(super().do_update_all, 'request_update_all_fmea')
+
         pub.subscribe(self.do_select_all, 'selected_function')
         pub.subscribe(self.do_select_all, 'selected_hardware')
+        pub.subscribe(self.do_update, 'request_update_fmea')
+        pub.subscribe(self.do_get_tree, 'request_get_fmea_tree')
+
         pub.subscribe(self._do_delete, 'request_delete_fmea')
         pub.subscribe(self._do_insert_action, 'request_insert_fmea_action')
         pub.subscribe(self._do_insert_cause, 'request_insert_fmea_cause')
@@ -81,18 +94,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_insert_mechanism,
                       'request_insert_fmea_mechanism')
         pub.subscribe(self._do_insert_mode, 'request_insert_fmea_mode')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_fmea')
-        pub.subscribe(super().do_set_attributes, 'request_set_fmea_attributes')
-
-        pub.subscribe(self.do_update, 'request_update_fmea')
-        pub.subscribe(self.do_update_all, 'request_update_all_fmea')
-        pub.subscribe(self.do_get_attributes, 'request_get_mode_attributes')
-        pub.subscribe(self.do_get_attributes,
-                      'request_get_mechanism_attributes')
-        pub.subscribe(self.do_get_attributes, 'request_get_cause_attributes')
-        pub.subscribe(self.do_get_attributes, 'request_get_control_attributes')
-        pub.subscribe(self.do_get_attributes, 'request_get_action_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_fmea_tree')
 
     def _add_cause_node(self, cause: object, parent_id: str) -> None:
         """Add a node to the treelib Tree() to hold a failure cause.

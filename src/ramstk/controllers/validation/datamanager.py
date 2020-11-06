@@ -52,25 +52,27 @@ class DataManager(RAMSTKDataManager):
                                      identifier=self._root)
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_validation_attributes')
+        pub.subscribe(super().do_set_attributes,
+                      'request_set_validation_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_validation')
+        pub.subscribe(super().do_set_tree, 'succeed_calculate_all_validation')
+        pub.subscribe(super().do_update_all, 'request_update_all_validation')
+
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_set_tree, 'succeed_calculate_all_validation')
-        pub.subscribe(self._do_delete_validation, 'request_delete_validation')
         pub.subscribe(self.do_insert_validation, 'request_insert_validation')
         pub.subscribe(self.do_update, 'request_update_validation')
-        pub.subscribe(self.do_update_all, 'request_update_all_validation')
-        pub.subscribe(self.do_get_attributes,
-                      'request_get_validation_attributes')
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_validation_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_validation_tree')
         pub.subscribe(self.do_get_status_tree, 'request_get_status_tree')
-        pub.subscribe(super().do_set_attributes,
-                      'request_set_validation_attributes')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_validation')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_validation_attributes')
         pub.subscribe(self._do_update_program_status,
                       'succeed_calculate_all_tasks')
+
+        pub.subscribe(self._do_delete_validation, 'request_delete_validation')
 
     def _do_delete_validation(self, node_id: int) -> None:
         """Remove a Validation task.

@@ -48,18 +48,19 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_hazard, 'request_insert_hazard')
-        pub.subscribe(self.do_update, 'request_update_hazard')
-        pub.subscribe(self.do_update_all, 'request_update_all_hazards')
         pub.subscribe(super().do_get_attributes,
                       'request_get_hazard_attributes')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_hazard_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_hazard_tree')
         pub.subscribe(super().do_set_attributes,
                       'request_set_hazard_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_hazard')
+        pub.subscribe(super().do_update_all, 'request_update_all_hazards')
+
+        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_insert_hazard, 'request_insert_hazard')
+        pub.subscribe(self.do_update, 'request_update_hazard')
+        pub.subscribe(self.do_get_all_attributes,
+                      'request_get_all_hazard_attributes')
+        pub.subscribe(self.do_get_tree, 'request_get_hazard_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_hazard_attributes')
 
@@ -161,19 +162,12 @@ class DataManager(RAMSTKDataManager):
                 value=self._revision_id,
                 order=RAMSTKHazardAnalysis.hazard_id):
 
-            _hazards = self.dao.do_select_all(
-                RAMSTKHazardAnalysis,
-                key=RAMSTKHazardAnalysis.hazard_id,
-                value=_hazard.hazard_id,
-                order=RAMSTKHazardAnalysis.hazard_id)
-            _hazards = self.do_build_dict(_hazards, 'hazard_id')
-
             self.tree.create_node(tag=_hazard.potential_hazard,
                                   identifier=_hazard.hazard_id,
                                   parent=self._root,
                                   data={'hazard': _hazard})
 
-        self._last_id[0] = max(self._last_id[0], max(_hazards.keys()))
+        self._last_id[0] = max(self.tree.nodes.keys())
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_hazards', tree=self.tree)
@@ -195,8 +189,7 @@ class DataManager(RAMSTKDataManager):
                                    package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
-        """Update the record associated with node ID in RAMSTK Program
-        database.
+        """Update record associated with node ID in RAMSTK Program database.
 
         :param node_id: the node (hazard) ID of the hazard to save.
         :return: None

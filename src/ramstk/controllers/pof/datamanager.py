@@ -64,25 +64,28 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_get_attributes, 'request_get_mode_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_mechanism_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_opload_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_opstress_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_test_method_attributes')
+        pub.subscribe(super().do_set_attributes, 'request_set_pof_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_pof')
+        pub.subscribe(super().do_update_all, 'request_update_all_pof')
+
         pub.subscribe(self.do_select_all, 'selected_hardware')
+        pub.subscribe(self.do_update, 'request_update_pof')
+        pub.subscribe(self.do_get_tree, 'request_get_pof_tree')
+
         pub.subscribe(self._do_delete, 'request_delete_pof')
         pub.subscribe(self._do_insert_opload, 'request_insert_pof_opload')
         pub.subscribe(self._do_insert_opstress, 'request_insert_pof_opstress')
         pub.subscribe(self._do_insert_testmethod,
                       'request_insert_pof_testmethod')
-        pub.subscribe(self.do_update, 'request_update_pof')
-        pub.subscribe(self.do_update_all, 'request_update_all_pof')
-        pub.subscribe(self.do_get_attributes, 'request_get_mode_attributes')
-        pub.subscribe(self.do_get_attributes,
-                      'request_get_mechanism_attributes')
-        pub.subscribe(self.do_get_attributes, 'request_get_opload_attributes')
-        pub.subscribe(self.do_get_attributes,
-                      'request_get_opstress_attributes')
-        pub.subscribe(self.do_get_attributes,
-                      'request_get_test_method_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_pof_tree')
-        pub.subscribe(super().do_set_attributes, 'request_set_pof_attributes')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_pof')
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a PoF element.

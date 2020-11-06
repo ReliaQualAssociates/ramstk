@@ -60,20 +60,21 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_tree, 'succeed_calculate_all_hardware')
-        pub.subscribe(self.do_update, 'request_update_hardware')
-        pub.subscribe(self.do_update_all, 'request_update_all_hardware')
-        pub.subscribe(self.do_get_attributes,
+        pub.subscribe(super().do_get_attributes,
                       'request_get_hardware_attributes')
-
-        pub.subscribe(self._do_select_all_hardware, 'selected_revision')
-        pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
-        pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(super().do_set_attributes,
                       'request_set_hardware_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_allocation')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_component')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_hardware')
+        pub.subscribe(super().do_set_tree, 'succeed_calculate_all_hardware')
+        pub.subscribe(super().do_update_all, 'request_update_all_hardware')
+
+        pub.subscribe(self.do_update, 'request_update_hardware')
+
+        pub.subscribe(self._do_select_all_hardware, 'selected_revision')
+        pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
+        pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
                       'succeed_calculate_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
