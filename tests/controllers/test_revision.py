@@ -174,12 +174,11 @@ class TestCreateControllers():
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all,
                                 'request_retrieve_revisions')
-        assert pub.isSubscribed(DUT._do_delete, 'request_delete_revision')
         assert pub.isSubscribed(DUT.do_insert, 'request_insert_revision')
         assert pub.isSubscribed(DUT.do_update, 'request_update_revision')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_revisions')
-        assert pub.isSubscribed(DUT._do_get_attributes,
+        assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_revision_attributes')
         assert pub.isSubscribed(DUT.do_get_all_attributes,
                                 'request_get_all_revision_attributes')
@@ -188,7 +187,8 @@ class TestCreateControllers():
                                 'request_set_revision_attributes')
         assert pub.isSubscribed(DUT.do_set_all_attributes,
                                 'request_set_all_revision_attributes')
-
+        assert pub.isSubscribed(DUT._do_delete_revision,
+                                'request_delete_revision')
 
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
@@ -257,7 +257,7 @@ class TestDeleteMethods():
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-        DUT._do_delete(DUT.last_id)
+        DUT._do_delete_revision(DUT.last_id)
 
         assert DUT.last_id == 1
 
@@ -272,7 +272,8 @@ class TestDeleteMethods():
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-        DUT._do_delete(300)
+
+        pub.sendMessage('request_delete_revision', node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_revision, 'fail_delete_revision')
 
@@ -304,7 +305,7 @@ class TestGetterSetter():
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-        DUT._do_get_attributes(1)
+        DUT.do_get_attributes(1, 'revision')
 
         pub.unsubscribe(self.on_succeed_get_revision_attrs,
                         'succeed_get_revision_attributes')

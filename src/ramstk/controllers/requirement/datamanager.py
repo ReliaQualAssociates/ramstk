@@ -46,25 +46,27 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self._do_delete_requirement,
-                      'request_delete_requirement')
-        pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')
-        pub.subscribe(self.do_update, 'request_update_requirement')
-        pub.subscribe(self.do_update_all, 'request_update_all_requirements')
-        pub.subscribe(self._do_get_attributes,
+        pub.subscribe(super().do_get_attributes,
                       'request_get_requirement_attributes')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_requirement_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_requirement_tree')
         pub.subscribe(super().do_set_attributes,
                       'request_set_requirement_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_requirement')
+        pub.subscribe(super().do_update_all, 'request_update_all_requirements')
+
+        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')
+        pub.subscribe(self.do_update, 'request_update_requirement')
+        pub.subscribe(self.do_get_all_attributes,
+                      'request_get_all_requirement_attributes')
+        pub.subscribe(self.do_get_tree, 'request_get_requirement_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_requirement_attributes')
         pub.subscribe(self.do_create_code, 'request_create_requirement_code')
         pub.subscribe(self.do_create_all_codes,
                       'request_create_all_requirement_codes')
+
+        pub.subscribe(self._do_delete_requirement,
+                      'request_delete_requirement')
 
     def _do_delete_requirement(self, node_id: int) -> None:
         """Remove a requirement.
@@ -88,21 +90,6 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_requirement',
                             error_message=_error_msg)
-
-    def _do_get_attributes(self, node_id: int, table: str) -> None:
-        """Retrieve the RAMSTK data table attributes for the requirement.
-
-        :param int node_id: the node (requirement) ID of the requirement to get
-            the attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_requirement_attributes',
-                        attributes=_attributes)
 
     def do_create_code(self, node_id: int, prefix: str) -> None:
         """Request to create the requirement code.

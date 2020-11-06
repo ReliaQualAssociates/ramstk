@@ -49,24 +49,25 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_failure_definition,
-                      'request_insert_failure_definition')
-        pub.subscribe(self.do_update, 'request_update_failure_definition')
-        pub.subscribe(self.do_update_all,
-                      'request_update_all_failure_definitions')
-        pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_failure_definition_attributes')
         pub.subscribe(super().do_set_attributes,
                       'request_set_failure_definition_attributes')
         pub.subscribe(super().do_set_attributes,
                       'lvw_editing_failure_definition')
+        pub.subscribe(super().do_update_all,
+                      'request_update_all_failure_definitions')
+
+        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_insert_failure_definition,
+                      'request_insert_failure_definition')
+        pub.subscribe(self.do_update, 'request_update_failure_definition')
+        pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_failure_definition_attributes')
 
         pub.subscribe(self._do_delete_failure_definition,
                       'request_delete_failure_definition')
-        pub.subscribe(self._do_get_attributes,
-                      'request_get_failure_definition_attributes')
 
     def do_get_tree(self) -> None:
         """Retrieve the failure definition treelib Tree.
@@ -192,17 +193,3 @@ class DataManager(RAMSTKDataManager):
                           "definition ID {0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_failure_definition',
                             error_message=_error_msg)
-
-    def _do_get_attributes(self, node_id: int, table: str) -> None:
-        """Retrieve RAMSTK data table attributes for the failure definition.
-
-        :param node_id: the node (failure definition) ID of the failure
-            definition to get the attributes for.
-        :param table: the RAMSTK data table to retrieve the attributes from.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id, table=table).get_attributes()
-
-        pub.sendMessage('succeed_get_failure_definition_attributes',
-                        attributes=_attributes)

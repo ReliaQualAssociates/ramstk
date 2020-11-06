@@ -111,7 +111,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_update, 'request_update_requirement')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_requirements')
-        assert pub.isSubscribed(DUT._do_get_attributes,
+        assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_requirement_attributes')
         assert pub.isSubscribed(DUT.do_get_all_attributes,
                                 'request_get_all_requirement_attributes')
@@ -365,7 +365,7 @@ class TestGetterSetter():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_get_attributes(1, 'requirement')
+        DUT.do_get_attributes(1, 'requirement')
 
     @pytest.mark.unit
     def test_do_get_all_attributes_data_manager(self, mock_program_dao):

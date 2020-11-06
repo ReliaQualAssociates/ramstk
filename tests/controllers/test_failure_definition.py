@@ -86,7 +86,7 @@ class TestCreateControllers():
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT._do_delete_failure_definition,
                                 'request_delete_failure_definition')
-        assert pub.isSubscribed(DUT._do_get_attributes,
+        assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_insert_failure_definition,
@@ -263,7 +263,7 @@ class TestGetterSetter():
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_get_attributes(1, 'failure_definition')
+        DUT.do_get_attributes(1, 'failure_definition')
 
         pub.unsubscribe(self.on_succeed_get_failure_definition_attrs,
                         'succeed_get_failure_definitions_attributes')

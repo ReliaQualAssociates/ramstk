@@ -48,21 +48,23 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
-        pub.subscribe(self._do_delete, 'request_delete_revision')
-        pub.subscribe(self.do_insert, 'request_insert_revision')
-        pub.subscribe(self.do_update, 'request_update_revision')
-        pub.subscribe(self.do_update_all, 'request_update_all_revisions')
-        pub.subscribe(self._do_get_attributes,
+        pub.subscribe(super().do_get_attributes,
                       'request_get_revision_attributes')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_revision_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_revision_tree')
         pub.subscribe(super().do_set_attributes,
                       'request_set_revision_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_revision')
+        pub.subscribe(super().do_update_all, 'request_update_all_revisions')
+
+        pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
+        pub.subscribe(self.do_insert, 'request_insert_revision')
+        pub.subscribe(self.do_update, 'request_update_revision')
+        pub.subscribe(self.do_get_all_attributes,
+                      'request_get_all_revision_attributes')
+        pub.subscribe(self.do_get_tree, 'request_get_revision_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_revision_attributes')
+
+        pub.subscribe(self._do_delete_revision, 'request_delete_revision')
 
     def do_get_all_attributes(self, node_id: int) -> None:
         """Retrieve all RAMSTK data tables' attributes for the revision.
@@ -181,7 +183,7 @@ class DataManager(RAMSTKDataManager):
                                                'revision ID {0:s}.').format(
                                                    str(node_id)))
 
-    def _do_delete(self, node_id: int) -> None:
+    def _do_delete_revision(self, node_id: int) -> None:
         """Remove a revision.
 
         :param int node_id: the node (revision) ID to be removed from the
@@ -202,17 +204,3 @@ class DataManager(RAMSTKDataManager):
             _error_msg = ("Attempted to delete non-existent revision ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_revision', error_message=_error_msg)
-
-    def _do_get_attributes(self, node_id: int) -> None:
-        """Retrieve the RAMSTK data table attributes for the revision.
-
-        :param node_id: the node (revision) ID of the revision to get the
-            attributes for.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id,
-                                     table='revision').get_attributes()
-
-        pub.sendMessage('succeed_get_revision_attributes',
-                        attributes=_attributes)
