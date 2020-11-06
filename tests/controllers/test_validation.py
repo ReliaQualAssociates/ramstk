@@ -136,8 +136,6 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT._do_delete_validation,
-                                'request_delete_validation')
         assert pub.isSubscribed(DUT.do_insert_validation,
                                 'request_insert_validation')
         assert pub.isSubscribed(DUT.do_update, 'request_update_validation')
@@ -145,13 +143,11 @@ class TestCreateControllers():
                                 'request_update_all_validation')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_validation_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_validation_attributes')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_validation_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_validation_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_validation_attributes')
+        assert pub.isSubscribed(DUT._do_delete_validation,
+                                'request_delete_validation')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_toml_user_configuration):
@@ -560,14 +556,6 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
 
-    def on_succeed_get_all_attrs(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes['validation_id'] == 1
-        assert attributes['name'] == 'PRF-0001'
-        print(
-            "\033[36m\nsucceed_get_all_validation_attributes topic was broadcast"
-        )
-
     def on_succeed_get_validation_tree(self, dmtree):
         assert isinstance(dmtree, Tree)
         assert isinstance(
@@ -601,20 +589,6 @@ class TestGetterSetter():
                         'succeed_get_validation_attributes')
 
     @pytest.mark.unit
-    def test_do_get_all_attributes_data_manager(self, mock_program_dao):
-        """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
-        pub.subscribe(self.on_succeed_get_all_attrs,
-                      'succeed_get_all_validation_attributes')
-
-        DUT = dmValidation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_all_attributes(1)
-
-        pub.unsubscribe(self.on_succeed_get_all_attrs,
-                        'succeed_get_all_validation_attributes')
-
-    @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
         """do_set_attributes() should send the success message."""
         DUT = dmValidation()
@@ -642,28 +616,6 @@ class TestGetterSetter():
             assert DUT.do_select(
                 1,
                 table='validation').task_filliwonga == 'This is a filli-wonga.'
-
-    @pytest.mark.unit
-    def test_do_set_all_attributes(self, mock_program_dao):
-        """do_set_all_attributes() should send the success message."""
-        DUT = dmValidation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('request_set_all_validation_attributes',
-                        attributes={
-                            'validation_id':
-                            1,
-                            'task_specification':
-                            'MIL-STD-1629A',
-                            'description':
-                            'This is a description added by a test.',
-                        })
-        assert DUT.do_select(
-            1, table='validation').task_specification == 'MIL-STD-1629A'
-        assert DUT.do_select(
-            1, table='validation'
-        ).description == 'This is a description added by a test.'
 
     @pytest.mark.unit
     def test_on_get_validation_tree(self, mock_program_dao):

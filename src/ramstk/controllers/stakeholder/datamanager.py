@@ -55,11 +55,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_insert_stakeholder, 'request_insert_stakeholder')
         pub.subscribe(self.do_update_stakeholder, 'request_update_stakeholder')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_stakeholder_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_stakeholder_tree')
-        pub.subscribe(self.do_set_all_attributes,
-                      'request_set_all_stakeholder_attributes')
 
         pub.subscribe(self._do_delete_stakeholder,
                       'request_delete_stakeholder')
@@ -87,27 +83,6 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_stakeholder',
                             error_message=_error_msg)
-
-    def do_get_all_attributes(self, node_id: int) -> None:
-        """Retrieve all RAMSTK data tables' attributes for the stakeholder.
-
-        This is a helper method to be able to retrieve all the stakeholder's
-        attributes in a single call.  It's used primarily by the
-        AnalysisManager.
-
-        :param int node_id: the node (stakeholder) ID of the stakeholder item
-            to get the attributes for.
-        :return: None
-        :rtype: None
-        """
-        _attributes: Dict[str, Any] = {}
-
-        for _table in ['stakeholder']:
-            _attributes.update(
-                self.do_select(node_id, table=_table).get_attributes())
-
-        pub.sendMessage('succeed_get_all_stakeholder_attributes',
-                        attributes=_attributes)
 
     def do_get_tree(self) -> None:
         """Retrieve the stakeholder treelib Tree.
@@ -174,22 +149,6 @@ class DataManager(RAMSTKDataManager):
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_stakeholders', tree=self.tree)
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param dict attributes: the aggregate attributes dict for the
-            stakeholder.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            super().do_set_attributes(
-                node_id=[attributes['stakeholder_id'], -1],
-                package={_key: attributes[_key]})
 
     def do_update_stakeholder(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.

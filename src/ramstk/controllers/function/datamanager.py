@@ -58,8 +58,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_insert_function, 'request_insert_function')
         pub.subscribe(self.do_update, 'request_update_function')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_function_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_function_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_function_attributes')
@@ -88,24 +86,6 @@ class DataManager(RAMSTKDataManager):
                               "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_function',
                             error_message=_error_message)
-
-    def do_get_all_attributes(self, node_id: int) -> None:
-        """Retrieve all RAMSTK data tables' attributes for the function.
-
-        This is a helper method to be able to retrieve all the function's
-        attributes in a single call.  It's used primarily by the
-        AnalysisManager.
-
-        :param node_id: the node (function) ID of the function item to
-            get the attributes for.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id,
-                                     table='function').get_attributes()
-
-        pub.sendMessage('succeed_get_all_function_attributes',
-                        attributes=_attributes)
 
     def do_get_tree(self) -> None:
         """Retrieve the function treelib Tree.

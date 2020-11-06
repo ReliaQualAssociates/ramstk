@@ -58,31 +58,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
         pub.subscribe(self.do_insert, 'request_insert_revision')
         pub.subscribe(self.do_update, 'request_update_revision')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_revision_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_revision_tree')
-        pub.subscribe(self.do_set_all_attributes,
-                      'request_set_all_revision_attributes')
 
         pub.subscribe(self._do_delete_revision, 'request_delete_revision')
-
-    def do_get_all_attributes(self, node_id: int) -> None:
-        """Retrieve all RAMSTK data tables' attributes for the revision.
-
-        This is a helper method to be able to retrieve all the revision's
-        attributes in a single call.  It's used primarily by the
-        AnalysisManager.
-
-        :param int node_id: the node (revision) ID of the revision item to
-            get the attributes for.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id,
-                                     table='revision').get_attributes()
-
-        pub.sendMessage('succeed_get_all_revision_attributes',
-                        attributes=_attributes)
 
     def do_get_tree(self) -> None:
         """Retrieve the revision treelib Tree.
@@ -144,22 +122,6 @@ class DataManager(RAMSTKDataManager):
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_revisions', tree=self.tree)
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param attributes: the aggregate attributes dict for the revision.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            super().do_set_attributes(node_id=[
-                attributes['revision_id'],
-            ],
-                                      package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.

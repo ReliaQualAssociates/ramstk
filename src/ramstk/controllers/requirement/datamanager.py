@@ -56,11 +56,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')
         pub.subscribe(self.do_update, 'request_update_requirement')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_requirement_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_requirement_tree')
-        pub.subscribe(self.do_set_all_attributes,
-                      'request_set_all_requirement_attributes')
         pub.subscribe(self.do_create_code, 'request_create_requirement_code')
         pub.subscribe(self.do_create_all_codes,
                       'request_create_all_requirement_codes')
@@ -113,26 +109,6 @@ class DataManager(RAMSTKDataManager):
                                 error_message=('No data package found for '
                                                'requirement ID {0:s}.').format(
                                                    str(node_id)))
-
-    def do_get_all_attributes(self, node_id: int) -> None:
-        """Retrieve all RAMSTK data tables' attributes for the requirement.
-
-        This is a helper method to be able to retrieve all the requirement's
-        attributes in a single call.  It's used primarily by the
-        AnalysisManager.
-
-        :param int node_id: the node (requirement) ID of the requirement item
-            to get the attributes for.
-        :return: None
-        :rtype: None
-        """
-        _attributes = {}
-        for _table in ['requirement']:
-            _attributes.update(
-                self.do_select(node_id, table=_table).get_attributes())
-
-        pub.sendMessage('succeed_get_all_requirement_attributes',
-                        attributes=_attributes)
 
     def do_get_tree(self) -> None:
         """Retrieve the requirement treelib Tree.
@@ -203,22 +179,6 @@ class DataManager(RAMSTKDataManager):
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_requirements', tree=self.tree)
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param dict attributes: the aggregate attributes dict for the
-            requirement.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            super().do_set_attributes(
-                node_id=[attributes['requirement_id'], -1],
-                package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.

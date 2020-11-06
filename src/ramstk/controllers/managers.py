@@ -70,7 +70,7 @@ class RAMSTKAnalysisManager():
     def on_get_all_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set all the attributes for the analysis manager.
 
-        :param dict attributes: the data manager's attributes dict.
+        :param attributes: the data manager's attributes dict.
         :return: None
         :rtype: None
         """
@@ -141,52 +141,18 @@ class RAMSTKDataManager():
             pass
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_select_revision, 'selected_revision')
         pub.subscribe(self.do_select_matrix, 'request_select_matrix')
         pub.subscribe(self.do_update_matrix, 'request_update_matrix')
         pub.subscribe(self.do_connect, 'succeed_connect_program_database')
         pub.subscribe(self.do_update_all, 'request_save_project')
+
+        pub.subscribe(self._on_select_revision, 'selected_revision')
 
         self._mtx_prefix = self._tag
         for _letter in self._tag.lower():
             if _letter in ('a', 'e', 'i', 'o', 'u'):
                 self._mtx_prefix = self._mtx_prefix.replace(_letter, "")
         self._mtx_prefix = self._mtx_prefix + '_'
-
-    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        """Set the revision ID for the data manager."""
-        self._revision_id = attributes['revision_id']
-
-    @staticmethod
-    def do_build_dict(records: List[object],
-                      id_field: str) -> Dict[int, object]:
-        """Convert a list of RAMSTK database records into a dict of records.
-
-        This is a helper method to use when an entry in a data manager's data
-        package will consist of multiple records.  SQLAlchemy will return a
-        list of records for any one-to-many relationships.  However, there is
-        no simple way to select the exact record from the many returned in a
-        list.  This method creates a dict using the passed ID field name as the
-        key and the associated RAMSTK data table instance (record) as the
-        value.
-
-        For example, the Revision data manager needs to manage all the failure
-        definitions associated with each revision.  This method will convert
-        the list return by SQLAlchemy to a dict so each definition can be
-        accessed by it's definition ID (key).
-
-        :param list records: the list of RAMSTK<MODULE> data table records.
-        :param str id_field: the name of the field in the RAMSTK<MODULE> data
-            table records to use as the key in the resulting dict.
-        :return: _dic_records; the dict version of the records.
-        :rtype: dict
-        """
-        _dic_records = {}
-        for _record in records:
-            _id = _record.get_attributes()[id_field]  # type: ignore
-            _dic_records[_id] = _record
-
-        return _dic_records
 
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
@@ -294,14 +260,10 @@ class RAMSTKDataManager():
 
     def do_set_attributes(self, node_id: List, package: Dict[str,
                                                              Any]) -> None:
-        """Set the attributes of the record associated with definition ID.
+        """Set the attributes of the record associated with node ID.
 
-        This is a helper method to set the desired failure definition attribute
-        since the failure definitions are carried in a dict and we need to
-        select the correct record to update.
-
-        :param node_id: the ID of the revision and the failure definition in
-            the RAMSTK Program database table whose attributes are to be set.
+        :param node_id: the ID of the record in the RAMSTK Program database
+            table whose attributes are to be set.
         :param package: the key:value pair of the attribute to set.
         :return: None
         :rtype: None
@@ -336,7 +298,6 @@ class RAMSTKDataManager():
         calculations of the entire system.
 
         :param module_tree: the treelib Tree() to assign to the tree attribute.
-        :type module_tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
@@ -399,6 +360,10 @@ class RAMSTKDataManager():
                 self.dao.do_update(_entity)
 
         pub.sendMessage('succeed_update_matrix')
+
+    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
+        """Set the revision ID for the data manager."""
+        self._revision_id = attributes['revision_id']
 
 
 class RAMSTKMatrixManager():

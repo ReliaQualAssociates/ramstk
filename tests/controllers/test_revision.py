@@ -180,13 +180,9 @@ class TestCreateControllers():
                                 'request_update_all_revisions')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_revision_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_revision_attributes')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_revision_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_revision_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_revision_attributes')
         assert pub.isSubscribed(DUT._do_delete_revision,
                                 'request_delete_revision')
 
@@ -321,26 +317,6 @@ class TestGetterSetter():
                         node_id=[1,],
                         package={'revision_code': '-'})
         assert DUT.do_select(1, table='revision').revision_code == '-'
-
-    @pytest.mark.unit
-    def test_do_set_all_attributes(self, mock_program_dao):
-        """do_set_all_attributes() should send the success message."""
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-
-        pub.sendMessage('request_set_all_revision_attributes',
-                        attributes={
-                            'revision_id': 1,
-                            'revision_code': '1',
-                            'remarks': 'These are remarks added by a test.',
-                            'total_part_count': 28
-                        })
-        assert DUT.do_select(1, table='revision').revision_code == '1'
-        assert DUT.do_select(
-            1,
-            table='revision').remarks == 'These are remarks added by a test.'
-        assert DUT.do_select(1, table='revision').total_part_count == 28
 
     @pytest.mark.unit
     def test_on_get_tree(self, mock_program_dao):

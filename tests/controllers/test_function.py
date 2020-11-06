@@ -84,7 +84,6 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
         assert pub.isSubscribed(DUT.do_insert_function,
                                 'request_insert_function')
         assert pub.isSubscribed(DUT.do_update, 'request_update_function')
@@ -92,13 +91,12 @@ class TestCreateControllers():
                                 'request_update_all_functions')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_function_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_function_attributes')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_function_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_function_attributes')
         assert pub.isSubscribed(DUT.do_set_all_attributes,
                                 'request_set_all_function_attributes')
+        assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -471,14 +469,6 @@ class TestGetterSetter():
         assert attributes['safety_critical'] == 0
         print("\033[36m\nsucceed_get_function_attributes topic was broadcast.")
 
-    def on_succeed_get_all_attrs(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes['function_id'] == 1
-        assert attributes['name'] == 'Function Name'
-        print(
-            "\033[36m\nsucceed_get_all_function_attributes topic was broadcast"
-        )
-
     def on_succeed_get_function_tree(self, dmtree):
         assert isinstance(dmtree, Tree)
         assert isinstance(dmtree.get_node(1).data['function'], RAMSTKFunction)
@@ -495,21 +485,6 @@ class TestGetterSetter():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_attributes(1, 'function')
-
-    @pytest.mark.unit
-    def test_do_get_all_attributes_data_manager(self, mock_program_dao):
-        """do_get_all_attributes() should return a dict of all RAMSTK data
-        tables' attributes on success."""
-        pub.subscribe(self.on_succeed_get_all_attrs,
-                      'succeed_get_all_function_attributes')
-
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_all_attributes(1)
-
-        pub.unsubscribe(self.on_succeed_get_all_attrs,
-                        'succeed_get_all_function_attributes')
 
     @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
