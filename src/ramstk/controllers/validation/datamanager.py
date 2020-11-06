@@ -61,7 +61,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all, 'request_update_all_validation')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_validation, 'request_insert_validation')
         pub.subscribe(self.do_update, 'request_update_validation')
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_validation_attributes')
@@ -73,6 +72,7 @@ class DataManager(RAMSTKDataManager):
                       'succeed_calculate_all_tasks')
 
         pub.subscribe(self._do_delete_validation, 'request_delete_validation')
+        pub.subscribe(self._do_insert_validation, 'request_insert_validation')
 
     def _do_delete_validation(self, node_id: int) -> None:
         """Remove a Validation task.
@@ -214,7 +214,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_status_tree', stree=self.status_tree)
 
-    def do_insert_validation(self) -> None:
+    def _do_insert_validation(self) -> None:
         """Add a new validation task.
 
         :return: None

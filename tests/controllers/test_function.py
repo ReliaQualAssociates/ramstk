@@ -84,8 +84,6 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_insert_function,
-                                'request_insert_function')
         assert pub.isSubscribed(DUT.do_update, 'request_update_function')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_functions')
@@ -97,6 +95,8 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_set_all_attributes,
                                 'request_set_all_function_attributes')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
+        assert pub.isSubscribed(DUT._do_insert_function,
+                                'request_insert_function')
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -364,7 +364,7 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_sibling_function(self, mock_program_dao):
-        """do_insert_function() should send the success message after
+        """_do_insert_function() should send the success message after
         successfully inserting a sibling function."""
         pub.subscribe(self.on_succeed_insert_function,
                       'succeed_insert_function')
@@ -372,7 +372,7 @@ class TestInsertMethods():
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_function()
+        DUT._do_insert_function()
 
         assert isinstance(
             DUT.tree.get_node(3).data['function'], RAMSTKFunction)
@@ -384,12 +384,12 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_child_function(self, mock_program_dao):
-        """do_insert_function() should send the success message after
+        """_do_insert_function() should send the success message after
         successfully inserting a child function."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_function(parent_id=2)
+        DUT._do_insert_function(parent_id=2)
 
         assert isinstance(
             DUT.tree.get_node(3).data['function'], RAMSTKFunction)
@@ -398,14 +398,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_function_no_parent(self, mock_program_dao):
-        """do_insert_function() should send the fail message if attempting to
+        """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_function, 'fail_insert_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_function(parent_id=40)
+        DUT._do_insert_function(parent_id=40)
 
     @pytest.mark.unit
     def test_do_insert_matrix_row(self, mock_program_dao):

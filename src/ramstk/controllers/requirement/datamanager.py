@@ -54,7 +54,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all, 'request_update_all_requirements')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')
         pub.subscribe(self.do_update, 'request_update_requirement')
         pub.subscribe(self.do_get_tree, 'request_get_requirement_tree')
         pub.subscribe(self.do_create_code, 'request_create_requirement_code')
@@ -63,6 +62,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self._do_delete_requirement,
                       'request_delete_requirement')
+        pub.subscribe(self._do_insert_requirement, 'request_insert_requirement')
 
     def _do_delete_requirement(self, node_id: int) -> None:
         """Remove a requirement.
@@ -118,7 +118,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
-    def do_insert_requirement(self, parent_id: int = 0) -> None:
+    def _do_insert_requirement(self, parent_id: int = 0) -> None:
         """Add a new requirement.
 
         :param int parent_id: the parent (requirement) ID the new requirement

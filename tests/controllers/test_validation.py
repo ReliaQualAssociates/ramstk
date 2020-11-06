@@ -136,8 +136,6 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_insert_validation,
-                                'request_insert_validation')
         assert pub.isSubscribed(DUT.do_update, 'request_update_validation')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_validation')
@@ -148,6 +146,8 @@ class TestCreateControllers():
                                 'request_set_validation_attributes')
         assert pub.isSubscribed(DUT._do_delete_validation,
                                 'request_delete_validation')
+        assert pub.isSubscribed(DUT._do_insert_validation,
+                                'request_insert_validation')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_toml_user_configuration):
@@ -453,14 +453,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_validation(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a validation task."""
+        """_do_insert_validation() should send the success message after successfully inserting a validation task."""
         pub.subscribe(self.on_succeed_insert_validation,
                       'succeed_insert_validation')
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_validation()
+        DUT._do_insert_validation()
 
         assert isinstance(
             DUT.tree.get_node(4).data['validation'], RAMSTKValidation)

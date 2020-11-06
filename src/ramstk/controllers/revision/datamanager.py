@@ -56,11 +56,11 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all, 'request_update_all_revisions')
 
         pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
-        pub.subscribe(self.do_insert, 'request_insert_revision')
         pub.subscribe(self.do_update, 'request_update_revision')
         pub.subscribe(self.do_get_tree, 'request_get_revision_tree')
 
         pub.subscribe(self._do_delete_revision, 'request_delete_revision')
+        pub.subscribe(self._do_insert_revision, 'request_insert_revision')
 
     def do_get_tree(self) -> None:
         """Retrieve the revision treelib Tree.
@@ -69,35 +69,6 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage('succeed_get_revision_tree', dmtree=self.tree)
-
-    # pylint: disable=arguments-differ
-    def do_insert(self) -> None:
-        """Add a new revision.
-
-        :return: None
-        :rtype: None
-        :raise: AttributeError if not connected to a RAMSTK program database.
-        """
-        try:
-            _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
-            _revision = RAMSTKRevision()
-            _revision.revision_id = _last_id + 1
-            _revision.name = 'New Revision'
-
-            self.dao.do_insert(_revision)
-
-            self.tree.create_node(tag=_revision.name,
-                                  identifier=_revision.revision_id,
-                                  parent=self._root,
-                                  data={'revision': _revision})
-            self.last_id = _revision.revision_id
-            pub.sendMessage('succeed_insert_revision',
-                            node_id=self.last_id,
-                            tree=self.tree)
-        except DataAccessError:
-            pub.sendMessage("fail_insert_revision",
-                            error_message=("Failed to insert revision into "
-                                           "program database."))
 
     def do_select_all(self) -> None:
         """Retrieve all the Revision data from the RAMSTK Program database.
@@ -166,3 +137,31 @@ class DataManager(RAMSTKDataManager):
             _error_msg = ("Attempted to delete non-existent revision ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_revision', error_message=_error_msg)
+
+    def _do_insert_revision(self) -> None:
+        """Add a new revision.
+
+        :return: None
+        :rtype: None
+        :raise: AttributeError if not connected to a RAMSTK program database.
+        """
+        try:
+            _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
+            _revision = RAMSTKRevision()
+            _revision.revision_id = _last_id + 1
+            _revision.name = 'New Revision'
+
+            self.dao.do_insert(_revision)
+
+            self.tree.create_node(tag=_revision.name,
+                                  identifier=_revision.revision_id,
+                                  parent=self._root,
+                                  data={'revision': _revision})
+            self.last_id = _revision.revision_id
+            pub.sendMessage('succeed_insert_revision',
+                            node_id=self.last_id,
+                            tree=self.tree)
+        except DataAccessError:
+            pub.sendMessage("fail_insert_revision",
+                            error_message=("Failed to insert revision into "
+                                           "program database."))

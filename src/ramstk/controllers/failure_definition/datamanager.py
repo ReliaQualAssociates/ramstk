@@ -59,15 +59,13 @@ class DataManager(RAMSTKDataManager):
                       'request_update_all_failure_definitions')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_failure_definition,
-                      'request_insert_failure_definition')
         pub.subscribe(self.do_update, 'request_update_failure_definition')
         pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
-        pub.subscribe(self.do_set_all_attributes,
-                      'request_set_all_failure_definition_attributes')
 
         pub.subscribe(self._do_delete_failure_definition,
                       'request_delete_failure_definition')
+        pub.subscribe(self._do_insert_failure_definition,
+                      'request_insert_failure_definition')
 
     def do_get_tree(self) -> None:
         """Retrieve the failure definition treelib Tree.
@@ -78,7 +76,7 @@ class DataManager(RAMSTKDataManager):
         pub.sendMessage('succeed_get_failure_definition_tree',
                         dmtree=self.tree)
 
-    def do_insert_failure_definition(self) -> None:
+    def _do_insert_failure_definition(self) -> None:
         """Add a new failure definition for the selected revision.
 
         :return: None

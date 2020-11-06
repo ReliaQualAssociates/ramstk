@@ -104,8 +104,6 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_insert_requirement,
-                                'request_insert_requirement')
         assert pub.isSubscribed(DUT.do_update, 'request_update_requirement')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_requirements')
@@ -121,6 +119,8 @@ class TestCreateControllers():
                                 'request_create_requirement_code')
         assert pub.isSubscribed(DUT._do_delete_requirement,
                                 'request_delete_requirement')
+        assert pub.isSubscribed(DUT._do_insert_requirement,
+                                'request_insert_requirement')
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -462,7 +462,7 @@ class TestInsertMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_requirement(parent_id=0)
+        DUT._do_insert_requirement(parent_id=0)
 
         assert isinstance(
             DUT.tree.get_node(3).data['requirement'], RAMSTKRequirement)
@@ -479,7 +479,7 @@ class TestInsertMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_requirement(parent_id=1)
+        DUT._do_insert_requirement(parent_id=1)
 
         assert isinstance(
             DUT.tree.get_node(3).data['requirement'], RAMSTKRequirement)
@@ -498,7 +498,7 @@ class TestInsertMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_requirement(parent_id=32)
+        DUT._do_insert_requirement(parent_id=32)
 
     @pytest.mark.unit
     def test_do_insert_matrix_hardware_column(self, mock_program_dao):

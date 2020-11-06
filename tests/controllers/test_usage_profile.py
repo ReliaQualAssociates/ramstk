@@ -406,12 +406,6 @@ class TestGetterSetter():
             dmtree.get_node('1.1.1').data['usage_profile'], RAMSTKEnvironment)
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
 
-    def on_succeed_get_last_id(self, last_id):
-        assert last_id['mission'] == 2
-        assert last_id['mission_phase'] == 3
-        assert last_id['environment'] == 3
-        print("\033[36m\nsucceed_get_last_id topic was broadcast")
-
     def on_fail_set_usage_profile_attrs(self, node_id):
         assert node_id == 0
         print("\033[36m\nfail_set_usage_profile_attributes topic was "
@@ -517,21 +511,6 @@ class TestGetterSetter():
 
         pub.unsubscribe(self.on_succeed_get_usage_profile_tree,
                         'succeed_get_usage_profile_tree')
-
-    @pytest.mark.unit
-    def test_do_get_last_id(self, mock_program_dao):
-        """do_get_last_id() should broadcast the success message with the last
-        ID aste payload."""
-        pub.subscribe(self.on_succeed_get_last_id,
-                      'succeed_get_last_usage_profile_id')
-
-        DUT = dmUsageProfile()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_last_id('usage_profile')
-
-        pub.unsubscribe(self.on_succeed_get_last_id,
-                        'succeed_get_last_usage_profile_id')
 
 
 class TestInsertMethods():

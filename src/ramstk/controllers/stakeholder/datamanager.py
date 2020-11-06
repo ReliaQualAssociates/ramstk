@@ -53,12 +53,13 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all, 'request_update_all_stakeholders')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_stakeholder, 'request_insert_stakeholder')
         pub.subscribe(self.do_update_stakeholder, 'request_update_stakeholder')
         pub.subscribe(self.do_get_tree, 'request_get_stakeholder_tree')
 
         pub.subscribe(self._do_delete_stakeholder,
                       'request_delete_stakeholder')
+        pub.subscribe(self._do_insert_stakeholder,
+                      'request_insert_stakeholder')
 
     def _do_delete_stakeholder(self, node_id: int) -> None:
         """Remove a stakeholder.
@@ -92,35 +93,6 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_stakeholder_tree', dmtree=self.tree)
 
-    def do_insert_stakeholder(self) -> None:
-        """Add a new stakeholder.
-
-        :param int parent_id: the parent (stakeholder) ID the new stakeholder
-            will be a child (derived) of.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _stakeholder = RAMSTKStakeholder()
-            _stakeholder.revision_id = self._revision_id
-            _stakeholder.stakeholder_id = self.last_id + 1
-            _stakeholder.description = 'New Stakeholder Input'
-
-            self.dao.do_insert(_stakeholder)
-
-            self.last_id = _stakeholder.stakeholder_id
-            self.tree.create_node(tag=_stakeholder.description,
-                                  identifier=self.last_id,
-                                  parent=0,
-                                  data={'stakeholder': _stakeholder})
-            pub.sendMessage('succeed_insert_stakeholder_2',
-                            node_id=self.last_id)
-            pub.sendMessage('succeed_insert_stakeholder',
-                            node_id=self.last_id,
-                            tree=self.tree)
-        except DataAccessError as _error:
-            pub.sendMessage("fail_insert_stakeholder",
-                            error_message=_error.msg)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Stakeholder data from the RAMSTK Program database.
@@ -172,3 +144,30 @@ class DataManager(RAMSTKDataManager):
                                 error_message=('No data package found for '
                                                'stakeholder ID {0:s}.').format(
                                                    str(node_id)))
+    def _do_insert_stakeholder(self) -> None:
+        """Add a new stakeholder.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _stakeholder = RAMSTKStakeholder()
+            _stakeholder.revision_id = self._revision_id
+            _stakeholder.stakeholder_id = self.last_id + 1
+            _stakeholder.description = 'New Stakeholder Input'
+
+            self.dao.do_insert(_stakeholder)
+
+            self.last_id = _stakeholder.stakeholder_id
+            self.tree.create_node(tag=_stakeholder.description,
+                                  identifier=self.last_id,
+                                  parent=0,
+                                  data={'stakeholder': _stakeholder})
+            pub.sendMessage('succeed_insert_stakeholder_2',
+                            node_id=self.last_id)
+            pub.sendMessage('succeed_insert_stakeholder',
+                            node_id=self.last_id,
+                            tree=self.tree)
+        except DataAccessError as _error:
+            pub.sendMessage("fail_insert_stakeholder",
+                            error_message=_error.msg)

@@ -89,20 +89,16 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_insert_hazard, 'request_insert_hazard')
         assert pub.isSubscribed(DUT.do_update, 'request_update_hazard')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_hazards')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_hazard_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_hazard_attributes')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_hazard_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_hazard_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_hazard_attributes')
         assert pub.isSubscribed(DUT._do_delete_hazard, 'request_delete_hazard')
+        assert pub.isSubscribed(DUT._do_insert_hazard, 'request_insert_hazard')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_toml_user_configuration):
@@ -221,14 +217,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_insert_hazard(self, mock_program_dao):
-        """do_insert_hazard() should send the success message after
+        """_do_insert_hazard() should send the success message after
         successfully inserting a new hazard."""
         pub.subscribe(self.on_succeed_insert_hazard, 'succeed_insert_hazard')
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_hazard(parent_id=1)
+        DUT._do_insert_hazard(parent_id=1)
 
         assert isinstance(
             DUT.tree.get_node(1).data['hazard'], RAMSTKHazardAnalysis)
@@ -237,14 +233,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_insert_hazard_no_function(self, mock_program_dao):
-        """do_insert_hazard() should send the fail message when attempting to
+        """_do_insert_hazard() should send the fail message when attempting to
         add a hazard to a non-existent function ID."""
         pub.subscribe(self.on_fail_insert_hazard, 'fail_insert_hazard')
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_hazard(parent_id=10)
+        DUT._do_insert_hazard(parent_id=10)
 
         pub.unsubscribe(self.on_fail_insert_hazard, 'fail_insert_hazard')
 

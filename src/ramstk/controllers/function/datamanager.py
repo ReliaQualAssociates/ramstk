@@ -56,13 +56,13 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all, 'request_update_all_functions')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_function, 'request_insert_function')
         pub.subscribe(self.do_update, 'request_update_function')
         pub.subscribe(self.do_get_tree, 'request_get_function_tree')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_function_attributes')
 
         pub.subscribe(self._do_delete, 'request_delete_function')
+        pub.subscribe(self._do_insert_function, 'request_insert_function')
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a function.
@@ -95,8 +95,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_function_tree', dmtree=self.tree)
 
-    # pylint: disable=arguments-differ
-    def do_insert_function(self, parent_id: int = 0) -> None:
+    def _do_insert_function(self, parent_id: int = 0) -> None:
         """Add a new function as child of the parent ID function.
 
         :param int parent_id: the parent (function) ID of the function to

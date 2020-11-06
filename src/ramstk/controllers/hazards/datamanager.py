@@ -56,7 +56,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all, 'request_update_all_hazards')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_insert_hazard, 'request_insert_hazard')
         pub.subscribe(self.do_update, 'request_update_hazard')
         pub.subscribe(self.do_get_all_attributes,
                       'request_get_all_hazard_attributes')
@@ -65,6 +64,7 @@ class DataManager(RAMSTKDataManager):
                       'request_set_all_hazard_attributes')
 
         pub.subscribe(self._do_delete_hazard, 'request_delete_hazard')
+        pub.subscribe(self._do_insert_hazard, 'request_insert_hazard')
 
     def _do_delete_hazard(self, node_id: int) -> None:
         """Remove a hazard.
@@ -113,7 +113,7 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_hazard_tree', dmtree=self.tree)
 
-    def do_insert_hazard(self, parent_id: int = 0) -> None:
+    def _do_insert_hazard(self, parent_id: int = 0) -> None:
         """Add a new hazard to parent (function) ID.
 
         :param parent_id: the parent (function) ID to associate the new hazard

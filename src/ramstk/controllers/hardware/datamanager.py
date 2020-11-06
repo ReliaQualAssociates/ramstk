@@ -74,7 +74,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self._do_select_all_hardware, 'selected_revision')
         pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
-        pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
                       'succeed_calculate_hardware')
         pub.subscribe(self._do_set_all_hardware_attributes,
@@ -84,6 +83,8 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_get_all_hardware_attributes,
                       'request_get_all_hardware_attributes')
         pub.subscribe(self.do_get_tree, 'request_get_hardware_tree')
+
+        pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(self._do_make_composite_ref_des,
                       'request_make_comp_ref_des')
 

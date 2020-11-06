@@ -96,8 +96,6 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_insert_stakeholder,
-                                'request_insert_stakeholder')
         assert pub.isSubscribed(DUT.do_update_stakeholder,
                                 'request_update_stakeholder')
         assert pub.isSubscribed(DUT.do_update_all,
@@ -110,6 +108,8 @@ class TestCreateControllers():
                                 'request_set_stakeholder_attributes')
         assert pub.isSubscribed(DUT._do_delete_stakeholder,
                                 'request_delete_stakeholder')
+        assert pub.isSubscribed(DUT._do_insert_stakeholder,
+                                'request_insert_stakeholder')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_toml_user_configuration):
@@ -304,14 +304,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_stakeholder(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a new top-level stakeholder."""
+        """_do_insert_stakeholder() should send the success message after successfully inserting a new top-level stakeholder."""
         pub.subscribe(self.on_succeed_insert_stakeholder,
                       'succeed_insert_stakeholder')
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_stakeholder()
+        DUT._do_insert_stakeholder()
 
         assert isinstance(
             DUT.tree.get_node(3).data['stakeholder'], RAMSTKStakeholder)
@@ -324,7 +324,7 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_stakeholder_existing_id(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a new top-level stakeholder."""
+        """_do_insert_stakeholder() should send the success message after successfully inserting a new top-level stakeholder."""
         pub.subscribe(self.on_fail_insert_stakeholder,
                       'fail_insert_stakeholder')
 
@@ -333,7 +333,7 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.last_id = DUT.last_id - 1
 
-        DUT.do_insert_stakeholder()
+        DUT._do_insert_stakeholder()
 
         pub.unsubscribe(self.on_fail_insert_stakeholder,
                         'fail_insert_stakeholder')

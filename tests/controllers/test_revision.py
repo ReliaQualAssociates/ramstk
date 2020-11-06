@@ -174,7 +174,6 @@ class TestCreateControllers():
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all,
                                 'request_retrieve_revisions')
-        assert pub.isSubscribed(DUT.do_insert, 'request_insert_revision')
         assert pub.isSubscribed(DUT.do_update, 'request_update_revision')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_revisions')
@@ -185,6 +184,8 @@ class TestCreateControllers():
                                 'request_set_revision_attributes')
         assert pub.isSubscribed(DUT._do_delete_revision,
                                 'request_delete_revision')
+        assert pub.isSubscribed(DUT._do_insert_revision,
+                                'request_insert_revision')
 
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
@@ -288,10 +289,6 @@ class TestGetterSetter():
         assert isinstance(dmtree.get_node(1).data['revision'], RAMSTKRevision)
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
 
-    def on_succeed_get_last_id(self, last_id):
-        assert last_id == 2
-        print("\033[36m\nsucceed_get_last_id topic was broadcast")
-
     @pytest.mark.unit
     def test_do_get_attributes_revision(self, mock_program_dao):
         """_do_get_attributes() should return a dict of revision attributes on success."""
@@ -332,20 +329,6 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_revision_tree,
                         'succeed_get_revision_tree')
 
-    @pytest.mark.unit
-    def test_do_get_last_id(self, mock_program_dao):
-        """do_get_last_id() should broadcast the success message with the last ID aste payload."""
-        pub.subscribe(self.on_succeed_get_last_id,
-                      'succeed_get_last_revision_id')
-
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT.do_get_last_id('revision')
-
-        pub.unsubscribe(self.on_succeed_get_last_id,
-                        'succeed_get_last_revision_id')
-
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
@@ -356,14 +339,15 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a new revision."""
+        """_do_insert_revision() should send the success message after
+        successfully inserting a new revision."""
         pub.subscribe(self.on_succeed_insert_revision,
                       'succeed_insert_revision')
 
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-        DUT.do_insert()
+        DUT._do_insert_revision()
 
         assert isinstance(
             DUT.tree.get_node(3).data['revision'], RAMSTKRevision)
