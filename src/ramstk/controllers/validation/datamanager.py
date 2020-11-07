@@ -245,7 +245,6 @@ class DataManager(RAMSTKDataManager):
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_validation", error_message=_error)
 
-    # pylint: disable=arguments-differ
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Validation BoM data from the RAMSTK Program database.
 

@@ -238,7 +238,7 @@ class TestCreateControllers():
                                 'request_update_all_hardware')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_hardware_attributes')
-        assert pub.isSubscribed(DUT._do_select_all_hardware,
+        assert pub.isSubscribed(DUT.do_select_all,
                                 'selected_revision')
         assert pub.isSubscribed(DUT._do_delete_hardware,
                                 'request_delete_hardware')
@@ -246,13 +246,13 @@ class TestCreateControllers():
                                 'request_insert_hardware')
         assert pub.isSubscribed(DUT._do_make_composite_ref_des,
                                 'request_make_comp_ref_des')
-        assert pub.isSubscribed(DUT._do_get_all_hardware_attributes,
+        assert pub.isSubscribed(DUT._do_get_all_attributes,
                                 'request_get_all_hardware_attributes')
         assert pub.isSubscribed(DUT.do_get_tree,
                                 'request_get_hardware_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_hardware_attributes')
-        assert pub.isSubscribed(DUT._do_set_all_hardware_attributes,
+        assert pub.isSubscribed(DUT._do_set_all_attributes,
                                 'succeed_calculate_hardware')
 
     @pytest.mark.unit
@@ -329,13 +329,13 @@ class TestSelectMethods():
             tree.get_node(1).data['similar_item'], RAMSTKSimilarItem)
 
     @pytest.mark.unit
-    def test__do_select_all_hardware(self, mock_program_dao):
-        """_do_select_all_hardware() should return a Tree() object populated with RAMSTKHardware instances on success."""
+    def test_do_select_all_hardware(self, mock_program_dao):
+        """do_select_all() should return a Tree() object populated with RAMSTKHardware instances on success."""
         pub.subscribe(self.on_succeed_select_all, 'succeed_retrieve_hardware')
 
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.unsubscribe(self.on_succeed_select_all,
                         'succeed_retrieve_hardware')
@@ -345,7 +345,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKDesignElectric on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='design_electric')
 
@@ -358,7 +358,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKDesignMechanic on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='design_mechanic')
 
@@ -371,7 +371,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKHardware on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='hardware')
 
@@ -384,7 +384,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKMilHdbkF on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='mil_hdbk_217f')
 
@@ -397,7 +397,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKNSWC on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='nswc')
 
@@ -410,7 +410,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKReliability on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='reliability')
 
@@ -419,11 +419,11 @@ class TestSelectMethods():
         assert _hardware.reliability_goal == 1.0
 
     @pytest.mark.unit
-    def test__do_select_all_hardwareocation(self, mock_program_dao):
+    def test__do_select_all_hardware_allocation(self, mock_program_dao):
         """do_select() should return an instance of the RAMSTKAllocation on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='allocation')
 
@@ -436,7 +436,7 @@ class TestSelectMethods():
         """do_select() should return an instance of the RAMSTKSimilarItem on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='similar_item')
 
@@ -449,7 +449,7 @@ class TestSelectMethods():
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select(1, table='scibbidy-bibbidy-doo')
@@ -459,7 +459,7 @@ class TestSelectMethods():
         """do_select() should return None when a non-existent Hardware ID is requested."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         assert DUT.do_select(100, table='hardware') is None
 
@@ -468,7 +468,7 @@ class TestSelectMethods():
         """_do_create() should create an instance of the hardware matrix manager."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -511,7 +511,7 @@ class TestDeleteMethods():
 
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_delete_hardware', node_id=DUT.last_id)
 
@@ -525,7 +525,7 @@ class TestDeleteMethods():
         """_do_delete() should send the fail message."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(error_message):
             assert error_message == ("Attempted to delete non-existent "
@@ -544,10 +544,10 @@ class TestDeleteMethods():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
-        print(DUT.dic_matrices)
+
         assert DUT.do_select('hrdwr_rqrmnt', 1, 'S1:SS4') == 0
 
         DATAMGR.tree.remove_node(1)
@@ -563,7 +563,7 @@ class TestDeleteMethods():
         """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -600,7 +600,7 @@ class TestGetterSetter():
         """do_get_attributes() should return a dict of hardware attributes on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -620,7 +620,7 @@ class TestGetterSetter():
         """get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
@@ -642,7 +642,7 @@ class TestGetterSetter():
         """_get_all_attributes() should update the attributes dict on success."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
@@ -660,7 +660,7 @@ class TestGetterSetter():
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_hardware_tree message."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(dmtree):
@@ -678,7 +678,7 @@ class TestGetterSetter():
         """do_set_attributes() should send the success message."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_hardware_attributes',
                         node_id=[2, -1],
@@ -708,7 +708,7 @@ class TestGetterSetter():
         """do_calculate_goal() should return the proper allocation goal measure."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
@@ -734,7 +734,7 @@ class TestInsertMethods():
         """do_insert() should send the success message after successfully inserting a new sibling hardware assembly."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(node_id, tree):
             assert node_id == 3
@@ -771,7 +771,7 @@ class TestInsertMethods():
         """do_insert() should send the success message after successfully inserting a new child hardware assembly."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(node_id, tree):
             assert node_id == 3
@@ -808,7 +808,7 @@ class TestInsertMethods():
         """do_insert() should send the success message after successfully inserting a new hardware part."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(node_id, tree):
             assert node_id == 3
@@ -845,7 +845,7 @@ class TestInsertMethods():
         """do_insert() should send the fail message when attempting to add a child to a hardware part."""
         DUT = dmHardware()
         DUT.do_connect(test_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(error_message):
             assert error_message == (
@@ -864,7 +864,7 @@ class TestInsertMethods():
         """do_insert_row() should add a row to the end of each hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -897,7 +897,7 @@ class TestInsertMethods():
         """do_insert_column() should add a column to the right of the requested hardware matrix."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -930,7 +930,7 @@ class TestInsertMethods():
         """do_make_comp_ref_des() should return a zero error code on success."""
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         _hardware = DUT.do_select(1, table='hardware')
         _hardware.ref_des = "SS8"
@@ -955,10 +955,10 @@ class TestUpdateMethods():
         """ do_update() should return a zero error code on success. """
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(node_id):
-            DUT._do_select_all_hardware(attributes={'revision_id': 1})
+            DUT.do_select_all(attributes={'revision_id': 1})
             _hardware = DUT.do_select(node_id, table='hardware')
             assert node_id == 2
             assert _hardware.parent_id == 1
@@ -981,7 +981,7 @@ class TestUpdateMethods():
         """ do_update() should return a non-zero error code when passed a Hardware ID that doesn't exist. """
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(error_message):
             assert error_message == (
@@ -997,7 +997,7 @@ class TestUpdateMethods():
         """ do_update_all() should return a zero error code on success. """
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
-        DUT._do_select_all_hardware(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
 
         def on_message(node_id):
             assert DUT.do_select(node_id,
@@ -1012,7 +1012,7 @@ class TestUpdateMethods():
         """do_update() should ."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = mmHardware()
         DUT._col_tree.create_node(tag='requirements',
                                   identifier=0,
@@ -1070,7 +1070,7 @@ class TestAnalysisMethods():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the h(t)."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1132,7 +1132,7 @@ class TestAnalysisMethods():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the MTBF."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1178,7 +1178,7 @@ class TestAnalysisMethods():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when using an s-distribution."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1199,7 +1199,7 @@ class TestAnalysisMethods():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when using an s-distribution."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1219,7 +1219,7 @@ class TestAnalysisMethods():
         """do_calculate() should send the fail message when all hazard rates=0.0."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -1249,7 +1249,7 @@ class TestAnalysisMethods():
         """do_calculate() should send the fail message when the specified MTBF=0.0."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -1281,7 +1281,7 @@ class TestAnalysisMethods():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         # Do a couple of assemblies with a specified h(t)
@@ -1334,7 +1334,7 @@ class TestAnalysisMethods():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         DUT._attributes['hardware_id'] = 1
@@ -1361,7 +1361,7 @@ class TestMilHdbk217FPredictions():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F parts count prediction."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1431,7 +1431,7 @@ class TestMilHdbk217FPredictions():
         """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F part stress prediction."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1548,7 +1548,7 @@ class TestStressCalculations():
         """do_calculate() should send the stress ratio calculation fail message when rated current is zero."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         amHardware(test_toml_user_configuration)
 
         def on_message(error_message):
@@ -1573,7 +1573,7 @@ class TestStressCalculations():
         """_do_calculate_power() should return None and update the power ratio attribute."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         DUT._attributes['power_operating'] = 0.2
@@ -1591,7 +1591,7 @@ class TestStressCalculations():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         DUT._attributes['hardware_id'] = 1
@@ -1609,7 +1609,7 @@ class TestStressCalculations():
         """do_calculate() should send the stress ratio calculation fail message when rated voltage is zero."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         DUT._attributes['hardware_id'] = 1
@@ -1629,7 +1629,7 @@ class TestStressCalculations():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         DUT._attributes['hardware_id'] = 1
@@ -1648,7 +1648,7 @@ class TestStressCalculations():
         test_toml_user_configuration.get_user_configuration()
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1677,7 +1677,7 @@ class TestStressCalculations():
         """do_derating_analysis() should set overstress attribute True and build reason message when a component is power overstressed."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1708,7 +1708,7 @@ class TestStressCalculations():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR.do_set_attributes([1, -1],
@@ -1733,7 +1733,7 @@ class TestStressCalculations():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR.do_set_attributes([1, -1],
@@ -1755,7 +1755,7 @@ class TestStressCalculations():
         """do_derating_analysis() should set overstress attribute False and the reason message should='' when a component is not overstressed."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1792,7 +1792,7 @@ class TestAllocation():
         """do_calculate_goal() should calculate the equivalent h(t) and MTBF goals from a specified reliability goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=1)
@@ -1811,7 +1811,7 @@ class TestAllocation():
         """do_calculate_goal() should calculate the equivalent MTBF and R(t) goals from a specified hazard rate goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
@@ -1830,7 +1830,7 @@ class TestAllocation():
         """do_calculate_goal() should calculate the equivalent h(t) and R(t) goals from a specified MTBF goal."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
@@ -1850,7 +1850,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the AGREE method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1897,7 +1897,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the ARINC method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1945,7 +1945,7 @@ class TestAllocation():
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
@@ -1963,7 +1963,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the equal apportionment method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -1990,7 +1990,7 @@ class TestAllocation():
         """do_calculate_allocation() should apportion the node ID reliability goal using the feasibility of objectives method."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):
@@ -2043,7 +2043,7 @@ class TestSimilarItem():
         """do_calculate_goal() should calculate the Topic 6.3.3 similar item."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
@@ -2075,7 +2075,7 @@ class TestSimilarItem():
         """do_calculate_goal() should calculate the Topic 644 similar item."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         pub.sendMessage('request_get_hardware_tree')
@@ -2108,7 +2108,7 @@ class TestSimilarItem():
         """do_roll_up_change_descriptions() should combine all child change descriptions into a single change description for the parent."""
         DATAMGR = dmHardware()
         DATAMGR.do_connect(test_program_dao)
-        DATAMGR._do_select_all_hardware(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
         def on_message(attributes):

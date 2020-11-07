@@ -70,23 +70,113 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_tree, 'succeed_calculate_all_hardware')
         pub.subscribe(super().do_update_all, 'request_update_all_hardware')
 
+        pub.subscribe(self.do_get_tree, 'request_get_hardware_tree')
+        pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_hardware')
 
-        pub.subscribe(self._do_select_all_hardware, 'selected_revision')
         pub.subscribe(self._do_delete_hardware, 'request_delete_hardware')
-        pub.subscribe(self._do_set_all_hardware_attributes,
-                      'succeed_calculate_hardware')
-        pub.subscribe(self._do_set_all_hardware_attributes,
-                      'succeed_calculate_allocation_goals')
-        pub.subscribe(self._do_set_all_hardware_attributes,
-                      'succeed_allocate_reliability')
-        pub.subscribe(self._do_get_all_hardware_attributes,
+        pub.subscribe(self._do_get_all_attributes,
                       'request_get_all_hardware_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_hardware_tree')
-
         pub.subscribe(self._do_insert_hardware, 'request_insert_hardware')
         pub.subscribe(self._do_make_composite_ref_des,
                       'request_make_comp_ref_des')
+        pub.subscribe(self._do_set_all_attributes,
+                      'succeed_calculate_hardware')
+        pub.subscribe(self._do_set_all_attributes,
+                      'succeed_calculate_allocation_goals')
+        pub.subscribe(self._do_set_all_attributes,
+                      'succeed_allocate_reliability')
+
+    def do_get_tree(self) -> None:
+        """Retrieve the hardware treelib Tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_hardware_tree', dmtree=self.tree)
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """Retrieve all the Hardware BoM data from the RAMSTK Program database.
+
+        :param attributes: the attributes dict for the selected Revision.
+        :return: None
+        :rtype: None
+        """
+        self._revision_id = attributes['revision_id']
+
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        for _hardware in self.dao.do_select_all(
+                RAMSTKHardware,
+                key=RAMSTKHardware.revision_id,
+                value=self._revision_id,
+                order=RAMSTKHardware.parent_id):
+
+            _design_e = self.dao.do_select_all(
+                RAMSTKDesignElectric,
+                key=RAMSTKDesignElectric.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
+
+            _design_m = self.dao.do_select_all(
+                RAMSTKDesignMechanic,
+                key=RAMSTKDesignMechanic.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
+
+            _milhdbkf = self.dao.do_select_all(RAMSTKMilHdbkF,
+                                               key=RAMSTKMilHdbkF.hardware_id,
+                                               value=_hardware.hardware_id,
+                                               order=None,
+                                               _all=False)
+
+            _nswc = self.dao.do_select_all(RAMSTKNSWC,
+                                           key=RAMSTKNSWC.hardware_id,
+                                           value=_hardware.hardware_id,
+                                           order=None,
+                                           _all=False)
+
+            _reliability = self.dao.do_select_all(
+                RAMSTKReliability,
+                key=RAMSTKReliability.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
+
+            _allocation = self.dao.do_select_all(
+                RAMSTKAllocation,
+                key=RAMSTKAllocation.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
+
+            _similaritem = self.dao.do_select_all(
+                RAMSTKSimilarItem,
+                key=RAMSTKSimilarItem.hardware_id,
+                value=_hardware.hardware_id,
+                order=None,
+                _all=False)
+
+            self.tree.create_node(tag=_hardware.comp_ref_des,
+                                  identifier=_hardware.hardware_id,
+                                  parent=_hardware.parent_id,
+                                  data={
+                                      'hardware': _hardware,
+                                      'design_electric': _design_e,
+                                      'design_mechanic': _design_m,
+                                      'mil_hdbk_217f': _milhdbkf,
+                                      'nswc': _nswc,
+                                      'reliability': _reliability,
+                                      'allocation': _allocation,
+                                      'similar_item': _similaritem
+                                  })
+
+        self.last_id = max(self.tree.nodes.keys())
+
+        pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
 
     def _do_delete_hardware(self, node_id: int) -> None:
         """Remove a Hardware item.
@@ -110,15 +200,15 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hardware', error_message=_error_msg)
 
-    def _do_get_all_hardware_attributes(self, node_id: int) -> None:
+    def _do_get_all_attributes(self, node_id: int) -> None:
         """Retrieve all RAMSTK data tables' attributes for the hardware item.
 
         This is a helper method to be able to retrieve all the hardware item's
         attributes in a single call.  It's used primarily by the
         AnalysisManager.
 
-        :param int node_id: the node (hardware) ID of the hardware item to
-            get the attributes for.
+        :param node_id: the node (hardware) ID of the hardware item to get the
+            attributes for.
         :return: None
         :rtype: None
         """
@@ -133,14 +223,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_get_all_hardware_attributes',
                         attributes=_attributes)
-
-    def do_get_tree(self) -> None:
-        """Retrieve the hardware treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_hardware_tree', dmtree=self.tree)
 
     def _do_insert_hardware(self, parent_id: int, part: int) -> None:
         """Add a new hardware item.
@@ -244,98 +326,14 @@ class DataManager(RAMSTKDataManager):
         for _child_node in self.tree.children(node_id):
             self._do_make_composite_ref_des(node_id=_child_node.identifier)
 
-    def _do_select_all_hardware(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Hardware BoM data from the RAMSTK Program database.
-
-        :param dict attributes: the attributes dict for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self._revision_id = attributes['revision_id']
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _hardware in self.dao.do_select_all(
-                RAMSTKHardware,
-                key=RAMSTKHardware.revision_id,
-                value=self._revision_id,
-                order=RAMSTKHardware.parent_id):
-
-            _design_e = self.dao.do_select_all(
-                RAMSTKDesignElectric,
-                key=RAMSTKDesignElectric.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
-
-            _design_m = self.dao.do_select_all(
-                RAMSTKDesignMechanic,
-                key=RAMSTKDesignMechanic.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
-
-            _milhdbkf = self.dao.do_select_all(RAMSTKMilHdbkF,
-                                               key=RAMSTKMilHdbkF.hardware_id,
-                                               value=_hardware.hardware_id,
-                                               order=None,
-                                               _all=False)
-
-            _nswc = self.dao.do_select_all(RAMSTKNSWC,
-                                           key=RAMSTKNSWC.hardware_id,
-                                           value=_hardware.hardware_id,
-                                           order=None,
-                                           _all=False)
-
-            _reliability = self.dao.do_select_all(
-                RAMSTKReliability,
-                key=RAMSTKReliability.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
-
-            _allocation = self.dao.do_select_all(
-                RAMSTKAllocation,
-                key=RAMSTKAllocation.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
-
-            _similaritem = self.dao.do_select_all(
-                RAMSTKSimilarItem,
-                key=RAMSTKSimilarItem.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
-
-            self.tree.create_node(tag=_hardware.comp_ref_des,
-                                  identifier=_hardware.hardware_id,
-                                  parent=_hardware.parent_id,
-                                  data={
-                                      'hardware': _hardware,
-                                      'design_electric': _design_e,
-                                      'design_mechanic': _design_m,
-                                      'mil_hdbk_217f': _milhdbkf,
-                                      'nswc': _nswc,
-                                      'reliability': _reliability,
-                                      'allocation': _allocation,
-                                      'similar_item': _similaritem
-                                  })
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
-
-    def _do_set_all_hardware_attributes(self, attributes: Dict[str,
+    def _do_set_all_attributes(self, attributes: Dict[str,
                                                                Any]) -> None:
         """Set all the attributes of the record associated with the Module ID.
 
         This is a helper function to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
 
-        :param dict attributes: the aggregate attributes dict for the hardware
-            item.
+        :param attributes: the aggregate attributes dict for the hardware item.
         :return: None
         :rtype: None
         """
