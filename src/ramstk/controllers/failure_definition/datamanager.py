@@ -58,9 +58,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all,
                       'request_update_all_failure_definitions')
 
+        pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_failure_definition')
-        pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
 
         pub.subscribe(self._do_delete_failure_definition,
                       'request_delete_failure_definition')
@@ -75,37 +75,6 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_failure_definition_tree',
                         dmtree=self.tree)
-
-    def _do_insert_failure_definition(self) -> None:
-        """Add a new failure definition for the selected revision.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _failure_definition = RAMSTKFailureDefinition()
-            _failure_definition.revision_id = self._revision_id
-            _failure_definition.definition_id = self.last_id + 1
-
-            self.dao.do_insert(_failure_definition)
-
-            self.last_id: int = _failure_definition.definition_id
-
-            self.tree.create_node(
-                tag=_failure_definition.definition,
-                identifier=self.last_id,
-                parent=self._root,
-                data={'failure_definition': _failure_definition})
-
-            pub.sendMessage("succeed_insert_failure_definition",
-                            node_id=self.last_id,
-                            tree=self.tree)
-        except DataAccessError:
-            pub.sendMessage("fail_insert_failure_definition",
-                            error_message=("Attempting to add failure "
-                                           "definition to non-existent "
-                                           "revision {0:d}.").format(
-                                               self._revision_id))
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Failure Definitions from the RAMSTK Program database.
@@ -134,21 +103,6 @@ class DataManager(RAMSTKDataManager):
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_failure_definitions', tree=self.tree)
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param attributes: the aggregate attributes dict for the revision.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            super().do_set_attributes(
-                node_id=[attributes['definition_id'], -1],
-                package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
         """Update the failure definition associated with node ID in database.
@@ -191,3 +145,34 @@ class DataManager(RAMSTKDataManager):
                           "definition ID {0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_failure_definition',
                             error_message=_error_msg)
+
+    def _do_insert_failure_definition(self) -> None:
+        """Add a new failure definition for the selected revision.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _failure_definition = RAMSTKFailureDefinition()
+            _failure_definition.revision_id = self._revision_id
+            _failure_definition.definition_id = self.last_id + 1
+
+            self.dao.do_insert(_failure_definition)
+
+            self.last_id = _failure_definition.definition_id
+
+            self.tree.create_node(
+                tag=_failure_definition.definition,
+                identifier=self.last_id,
+                parent=self._root,
+                data={'failure_definition': _failure_definition})
+
+            pub.sendMessage("succeed_insert_failure_definition",
+                            node_id=self.last_id,
+                            tree=self.tree)
+        except DataAccessError:
+            pub.sendMessage("fail_insert_failure_definition",
+                            error_message=("Attempting to add failure "
+                                           "definition to non-existent "
+                                           "revision {0:d}.").format(
+                                               self._revision_id))

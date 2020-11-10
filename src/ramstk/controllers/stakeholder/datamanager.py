@@ -52,38 +52,14 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, 'lvw_editing_stakeholder')
         pub.subscribe(super().do_update_all, 'request_update_all_stakeholders')
 
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_update_stakeholder, 'request_update_stakeholder')
         pub.subscribe(self.do_get_tree, 'request_get_stakeholder_tree')
+        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_update, 'request_update_stakeholder')
 
         pub.subscribe(self._do_delete_stakeholder,
                       'request_delete_stakeholder')
         pub.subscribe(self._do_insert_stakeholder,
                       'request_insert_stakeholder')
-
-    def _do_delete_stakeholder(self, node_id: int) -> None:
-        """Remove a stakeholder.
-
-        :param int node_id: the node (stakeholder) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            super().do_delete(node_id, 'stakeholder')
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage('succeed_delete_stakeholder_', node_id=node_id)
-            pub.sendMessage('succeed_delete_stakeholder',
-                            node_id=node_id,
-                            tree=self.tree)
-        except DataAccessError:
-            _error_msg = ("Attempted to delete non-existent stakeholder ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_stakeholder',
-                            error_message=_error_msg)
 
     def do_get_tree(self) -> None:
         """Retrieve the stakeholder treelib Tree.
@@ -92,7 +68,6 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage('succeed_get_stakeholder_tree', dmtree=self.tree)
-
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Stakeholder data from the RAMSTK Program database.
@@ -122,7 +97,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_stakeholders', tree=self.tree)
 
-    def do_update_stakeholder(self, node_id: int) -> None:
+    def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
 
         :param node_id: the node (stakeholder) ID of the stakeholder to save.
@@ -144,6 +119,31 @@ class DataManager(RAMSTKDataManager):
                                 error_message=('No data package found for '
                                                'stakeholder ID {0:s}.').format(
                                                    str(node_id)))
+
+    def _do_delete_stakeholder(self, node_id: int) -> None:
+        """Remove a stakeholder.
+
+        :param int node_id: the node (stakeholder) ID to be removed from the
+            RAMSTK Program database.
+        :return: None
+        :rtype: None
+        """
+        try:
+            super().do_delete(node_id, 'stakeholder')
+
+            self.tree.remove_node(node_id)
+            self.last_id = max(self.tree.nodes.keys())
+
+            pub.sendMessage('succeed_delete_stakeholder_', node_id=node_id)
+            pub.sendMessage('succeed_delete_stakeholder',
+                            node_id=node_id,
+                            tree=self.tree)
+        except DataAccessError:
+            _error_msg = ("Attempted to delete non-existent stakeholder ID "
+                          "{0:s}.").format(str(node_id))
+            pub.sendMessage('fail_delete_stakeholder',
+                            error_message=_error_msg)
+
     def _do_insert_stakeholder(self) -> None:
         """Add a new stakeholder.
 

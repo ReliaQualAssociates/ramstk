@@ -87,6 +87,61 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_insert_testmethod,
                       'request_insert_pof_testmethod')
 
+    def do_get_tree(self) -> None:
+        """Retrieve the PoF treelib Tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_pof_tree', dmtree=self.tree)
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """Retrieve all the PoF data from the RAMSTK Program database.
+
+        :param dict attributes: the attributes dict for the selected
+            function or hardware item.
+        :return: None
+        :rtype: None
+        """
+        self._revision_id = attributes['revision_id']
+        self._parent_id = attributes['hardware_id']
+
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        for _mode in self.dao.session.query(RAMSTKMode).filter(
+                RAMSTKMode.revision_id == self._revision_id,
+                RAMSTKMode.hardware_id == self._parent_id).all():
+
+            self.tree.create_node(tag='mode',
+                                  identifier=str(_mode.mode_id),
+                                  parent=self._root,
+                                  data={'mode': _mode})
+
+            self._do_select_all_mechanism(_mode.mode_id)
+
+        pub.sendMessage('succeed_retrieve_pof', tree=self.tree)
+
+    def do_update(self, node_id: int) -> None:
+        """Update record associated with node ID in RAMSTK Program database.
+
+        :param int node_id: the node ID of the PoF item to save.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _table = list(self.tree.get_node(node_id).data.keys())[0]
+
+            self.dao.session.add(self.tree.get_node(node_id).data[_table])
+
+            self.dao.do_update()
+            pub.sendMessage('succeed_update_pof', node_id=node_id)
+        except AttributeError:
+            pub.sendMessage('fail_update_pof',
+                            error_message=('Attempted to save non-existent '
+                                           'PoF element with PoF ID '
+                                           '{0:s}.').format(str(node_id)))
+
     def _do_delete(self, node_id: int) -> None:
         """Remove a PoF element.
 
@@ -329,58 +384,3 @@ class DataManager(RAMSTKDataManager):
                                   data={'testmethod': _method})
 
             self._last_id[2] = max(self._last_id[2], _method.test_id)
-
-    def do_get_tree(self) -> None:
-        """Retrieve the PoF treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_pof_tree', dmtree=self.tree)
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the PoF data from the RAMSTK Program database.
-
-        :param dict attributes: the attributes dict for the selected
-            function or hardware item.
-        :return: None
-        :rtype: None
-        """
-        self._revision_id = attributes['revision_id']
-        self._parent_id = attributes['hardware_id']
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _mode in self.dao.session.query(RAMSTKMode).filter(
-                RAMSTKMode.revision_id == self._revision_id,
-                RAMSTKMode.hardware_id == self._parent_id).all():
-
-            self.tree.create_node(tag='mode',
-                                  identifier=str(_mode.mode_id),
-                                  parent=self._root,
-                                  data={'mode': _mode})
-
-            self._do_select_all_mechanism(_mode.mode_id)
-
-        pub.sendMessage('succeed_retrieve_pof', tree=self.tree)
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param int node_id: the node ID of the PoF item to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _table = list(self.tree.get_node(node_id).data.keys())[0]
-
-            self.dao.session.add(self.tree.get_node(node_id).data[_table])
-
-            self.dao.do_update()
-            pub.sendMessage('succeed_update_pof', node_id=node_id)
-        except AttributeError:
-            pub.sendMessage('fail_update_pof',
-                            error_message=('Attempted to save non-existent '
-                                           'PoF element with PoF ID '
-                                           '{0:s}.').format(str(node_id)))

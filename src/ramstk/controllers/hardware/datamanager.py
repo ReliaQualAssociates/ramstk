@@ -178,6 +178,40 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
 
+    def do_update(self, node_id: int) -> None:
+        """Update record associated with node ID in RAMSTK Program database.
+
+        :param node_id: the hardware ID of the hardware item to save.
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.dao.do_update(self.tree.get_node(node_id).data['hardware'])
+            self.dao.do_update(
+                self.tree.get_node(node_id).data['design_electric'])
+            self.dao.do_update(
+                self.tree.get_node(node_id).data['design_mechanic'])
+            self.dao.do_update(
+                self.tree.get_node(node_id).data['mil_hdbk_217f'])
+            self.dao.do_update(self.tree.get_node(node_id).data['nswc'])
+            self.dao.do_update(self.tree.get_node(node_id).data['reliability'])
+            self.dao.do_update(self.tree.get_node(node_id).data['allocation'])
+            self.dao.do_update(
+                self.tree.get_node(node_id).data['similar_item'])
+
+            pub.sendMessage('succeed_update_hardware', node_id=node_id)
+        except (AttributeError, DataAccessError):
+            pub.sendMessage('fail_update_hardware',
+                            error_message=('Attempted to save non-existent '
+                                           'hardware item with hardware ID '
+                                           '{0:s}.').format(str(node_id)))
+        except TypeError:
+            if node_id != 0:
+                pub.sendMessage('fail_update_hardware',
+                                error_message=('No data package found for '
+                                               'hardware ID {0:s}.').format(
+                                                   str(node_id)))
+
     def _do_delete_hardware(self, node_id: int) -> None:
         """Remove a Hardware item.
 
@@ -326,8 +360,7 @@ class DataManager(RAMSTKDataManager):
         for _child_node in self.tree.children(node_id):
             self._do_make_composite_ref_des(node_id=_child_node.identifier)
 
-    def _do_set_all_attributes(self, attributes: Dict[str,
-                                                               Any]) -> None:
+    def _do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set all the attributes of the record associated with the Module ID.
 
         This is a helper function to set a group of attributes in a single
@@ -340,37 +373,3 @@ class DataManager(RAMSTKDataManager):
         for _key in attributes:
             super().do_set_attributes(node_id=[attributes['hardware_id'], -1],
                                       package={_key: attributes[_key]})
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the hardware ID of the hardware item to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['hardware'])
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['design_electric'])
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['design_mechanic'])
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['mil_hdbk_217f'])
-            self.dao.do_update(self.tree.get_node(node_id).data['nswc'])
-            self.dao.do_update(self.tree.get_node(node_id).data['reliability'])
-            self.dao.do_update(self.tree.get_node(node_id).data['allocation'])
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['similar_item'])
-
-            pub.sendMessage('succeed_update_hardware', node_id=node_id)
-        except (AttributeError, DataAccessError):
-            pub.sendMessage('fail_update_hardware',
-                            error_message=('Attempted to save non-existent '
-                                           'hardware item with hardware ID '
-                                           '{0:s}.').format(str(node_id)))
-        except TypeError:
-            if node_id != 0:
-                pub.sendMessage('fail_update_hardware',
-                                error_message=('No data package found for '
-                                               'hardware ID {0:s}.').format(
-                                                   str(node_id)))

@@ -55,9 +55,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, 'wvw_editing_revision')
         pub.subscribe(super().do_update_all, 'request_update_all_revisions')
 
+        pub.subscribe(self.do_get_tree, 'request_get_revision_tree')
         pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
         pub.subscribe(self.do_update, 'request_update_revision')
-        pub.subscribe(self.do_get_tree, 'request_get_revision_tree')
 
         pub.subscribe(self._do_delete_revision, 'request_delete_revision')
         pub.subscribe(self._do_insert_revision, 'request_insert_revision')

@@ -62,30 +62,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self._do_delete_requirement,
                       'request_delete_requirement')
-        pub.subscribe(self._do_insert_requirement, 'request_insert_requirement')
-
-    def _do_delete_requirement(self, node_id: int) -> None:
-        """Remove a requirement.
-
-        :param int node_id: the node (requirement) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            super().do_delete(node_id, 'requirement')
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage('succeed_delete_requirement',
-                            node_id=node_id,
-                            tree=self.tree)
-        except DataAccessError:
-            _error_msg = ("Attempted to delete non-existent requirement ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_requirement',
-                            error_message=_error_msg)
+        pub.subscribe(self._do_insert_requirement,
+                      'request_insert_requirement')
 
     def do_create_code(self, node_id: int, prefix: str) -> None:
         """Request to create the requirement code.
@@ -118,40 +96,6 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_requirement_tree', dmtree=self.tree)
 
-    def _do_insert_requirement(self, parent_id: int = 0) -> None:
-        """Add a new requirement.
-
-        :param int parent_id: the parent (requirement) ID the new requirement
-            will be a child (derived) of.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _requirement = RAMSTKRequirement()
-            _requirement.revision_id = self._revision_id
-            _requirement.requirement_id = self.last_id + 1
-            _requirement.parent_id = parent_id
-            _requirement.description = 'New Requirement'
-
-            self.dao.do_insert(_requirement)
-
-            self.last_id = _requirement.requirement_id
-            self.tree.create_node(tag=_requirement.requirement_code,
-                                  identifier=self.last_id,
-                                  parent=parent_id,
-                                  data={'requirement': _requirement})
-            pub.sendMessage('succeed_insert_requirement',
-                            node_id=self.last_id,
-                            tree=self.tree)
-        except NodeIDAbsentError:
-            pub.sendMessage(
-                "fail_insert_requirement",
-                error_message=("Attempting to add child requirement "
-                               "to non-existent requirement "
-                               "{0:d}.").format(parent_id))
-
-    # pylint: disable=arguments-differ
-    # noinspection PyUnresolvedReferences
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Requirement data from the RAMSTK Program database.
 
@@ -202,3 +146,58 @@ class DataManager(RAMSTKDataManager):
                                 error_message=('No data package found for '
                                                'requirement ID {0:s}.').format(
                                                    str(node_id)))
+
+    def _do_delete_requirement(self, node_id: int) -> None:
+        """Remove a requirement.
+
+        :param int node_id: the node (requirement) ID to be removed from the
+            RAMSTK Program database.
+        :return: None
+        :rtype: None
+        """
+        try:
+            super().do_delete(node_id, 'requirement')
+
+            self.tree.remove_node(node_id)
+            self.last_id = max(self.tree.nodes.keys())
+
+            pub.sendMessage('succeed_delete_requirement',
+                            node_id=node_id,
+                            tree=self.tree)
+        except DataAccessError:
+            _error_msg = ("Attempted to delete non-existent requirement ID "
+                          "{0:s}.").format(str(node_id))
+            pub.sendMessage('fail_delete_requirement',
+                            error_message=_error_msg)
+
+    def _do_insert_requirement(self, parent_id: int = 0) -> None:
+        """Add a new requirement.
+
+        :param int parent_id: the parent (requirement) ID the new requirement
+            will be a child (derived) of.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _requirement = RAMSTKRequirement()
+            _requirement.revision_id = self._revision_id
+            _requirement.requirement_id = self.last_id + 1
+            _requirement.parent_id = parent_id
+            _requirement.description = 'New Requirement'
+
+            self.dao.do_insert(_requirement)
+
+            self.last_id = _requirement.requirement_id
+            self.tree.create_node(tag=_requirement.requirement_code,
+                                  identifier=self.last_id,
+                                  parent=parent_id,
+                                  data={'requirement': _requirement})
+            pub.sendMessage('succeed_insert_requirement',
+                            node_id=self.last_id,
+                            tree=self.tree)
+        except NodeIDAbsentError:
+            pub.sendMessage(
+                "fail_insert_requirement",
+                error_message=("Attempting to add child requirement "
+                               "to non-existent requirement "
+                               "{0:d}.").format(parent_id))

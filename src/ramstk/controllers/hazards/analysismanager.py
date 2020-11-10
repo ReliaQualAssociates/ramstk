@@ -50,7 +50,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_get_all_attributes,
-                      'succeed_get_all_hazard_attributes')
+                      'succeed_get_hazard_attributes')
         pub.subscribe(self.on_get_tree, 'succeed_get_hazard_tree')
         pub.subscribe(self.do_calculate_fha, 'request_calculate_fha')
 

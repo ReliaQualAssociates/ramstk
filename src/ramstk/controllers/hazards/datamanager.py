@@ -55,16 +55,70 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, 'wvw_editing_hazard')
         pub.subscribe(super().do_update_all, 'request_update_all_hazards')
 
+        pub.subscribe(self.do_get_tree, 'request_get_hazard_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_hazard')
-        pub.subscribe(self.do_get_all_attributes,
-                      'request_get_all_hazard_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_hazard_tree')
-        pub.subscribe(self.do_set_all_attributes,
-                      'request_set_all_hazard_attributes')
 
         pub.subscribe(self._do_delete_hazard, 'request_delete_hazard')
         pub.subscribe(self._do_insert_hazard, 'request_insert_hazard')
+
+    def do_get_tree(self) -> None:
+        """Retrieve the hazard treelib Tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_hazard_tree', dmtree=self.tree)
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """Retrieve all the Hazard data from the RAMSTK Program database.
+
+        :param dict attributes: the attributes for the selected Hazard.
+        :return: None
+        :rtype: None
+        """
+        self._revision_id = attributes['revision_id']
+
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        for _hazard in self.dao.do_select_all(
+                RAMSTKHazardAnalysis,
+                key=RAMSTKHazardAnalysis.revision_id,
+                value=self._revision_id,
+                order=RAMSTKHazardAnalysis.hazard_id):
+
+            self.tree.create_node(tag=_hazard.potential_hazard,
+                                  identifier=_hazard.hazard_id,
+                                  parent=self._root,
+                                  data={'hazard': _hazard})
+
+        self._last_id[0] = max(self.tree.nodes.keys())
+        self.last_id = max(self.tree.nodes.keys())
+
+        pub.sendMessage('succeed_retrieve_hazards', tree=self.tree)
+
+    def do_update(self, node_id: int) -> None:
+        """Update record associated with node ID in RAMSTK Program database.
+
+        :param node_id: the node (hazard) ID of the hazard to save.
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.dao.do_update(self.tree.get_node(node_id).data['hazard'])
+            pub.sendMessage('succeed_update_hazard', node_id=node_id)
+        except AttributeError:
+            pub.sendMessage('fail_update_hazard',
+                            error_message=('Attempted to save non-existent '
+                                           'hazard with hazard ID '
+                                           '{0:s}.').format(str(node_id)))
+        except TypeError:
+            if node_id != 0:
+                pub.sendMessage('fail_update_hazard',
+                                error_message=('No data package found for '
+                                               'hazard ID {0:s}.').format(
+                                                   str(node_id)))
 
     def _do_delete_hazard(self, node_id: int) -> None:
         """Remove a hazard.
@@ -87,31 +141,6 @@ class DataManager(RAMSTKDataManager):
             _error_message = ("Attempted to delete non-existent hazard ID "
                               "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hazard', error_message=_error_message)
-
-    def do_get_all_attributes(self, node_id: int) -> None:
-        """Retrieve all RAMSTK data tables' attributes for the hazard.
-
-        This is a helper method to be able to retrieve all the hazard's
-        attributes in a single call.  It's used primarily by the
-        AnalysisManager.
-
-        :param node_id: the node (hazard) ID of the hazard item to
-            get the attributes for.
-        :return: None
-        :rtype: None
-        """
-        _attributes = self.do_select(node_id, table='hazard').get_attributes()
-
-        pub.sendMessage('succeed_get_all_hazard_attributes',
-                        attributes=_attributes)
-
-    def do_get_tree(self) -> None:
-        """Retrieve the hazard treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_hazard_tree', dmtree=self.tree)
 
     def _do_insert_hazard(self, parent_id: int = 0) -> None:
         """Add a new hazard to parent (function) ID.
@@ -143,69 +172,3 @@ class DataManager(RAMSTKDataManager):
                             tree=self.tree)
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_hazard", error_message=_error)
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Hazard data from the RAMSTK Program database.
-
-        :param dict attributes: the attributes for the selected Hazard.
-        :return: None
-        :rtype: None
-        """
-        self._revision_id = attributes['revision_id']
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _hazard in self.dao.do_select_all(
-                RAMSTKHazardAnalysis,
-                key=RAMSTKHazardAnalysis.revision_id,
-                value=self._revision_id,
-                order=RAMSTKHazardAnalysis.hazard_id):
-
-            self.tree.create_node(tag=_hazard.potential_hazard,
-                                  identifier=_hazard.hazard_id,
-                                  parent=self._root,
-                                  data={'hazard': _hazard})
-
-        self._last_id[0] = max(self.tree.nodes.keys())
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage('succeed_retrieve_hazards', tree=self.tree)
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper method to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param attributes: the aggregate attributes dict for the hazard.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            self.do_set_attributes(node_id=[
-                attributes['hazard_id'],
-            ],
-                                   package={_key: attributes[_key]})
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the node (hazard) ID of the hazard to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['hazard'])
-            pub.sendMessage('succeed_update_hazard', node_id=node_id)
-        except AttributeError:
-            pub.sendMessage('fail_update_hazard',
-                            error_message=('Attempted to save non-existent '
-                                           'hazard with hazard ID '
-                                           '{0:s}.').format(str(node_id)))
-        except TypeError:
-            if node_id != 0:
-                pub.sendMessage('fail_update_hazard',
-                                error_message=('No data package found for '
-                                               'hazard ID {0:s}.').format(
-                                                   str(node_id)))

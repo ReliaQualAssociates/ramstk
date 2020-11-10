@@ -58,11 +58,67 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_function')
         pub.subscribe(self.do_get_tree, 'request_get_function_tree')
-        pub.subscribe(self.do_set_all_attributes,
-                      'request_set_all_function_attributes')
 
         pub.subscribe(self._do_delete, 'request_delete_function')
         pub.subscribe(self._do_insert_function, 'request_insert_function')
+
+    def do_get_tree(self) -> None:
+        """Retrieve the function treelib Tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_function_tree', dmtree=self.tree)
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """Retrieve all the Function data from the RAMSTK Program database.
+
+        :param dict attributes: the attributes for the selected Function.
+        :return: None
+        :rtype: None
+        """
+        self._revision_id = attributes['revision_id']
+
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        for _function in self.dao.do_select_all(
+                RAMSTKFunction,
+                key=RAMSTKFunction.revision_id,
+                value=self._revision_id,
+                order=RAMSTKFunction.function_id):
+
+            self.tree.create_node(tag=_function.name,
+                                  identifier=_function.function_id,
+                                  parent=_function.parent_id,
+                                  data={'function': _function})
+
+        self._last_id[0] = max(self.tree.nodes.keys())
+        self.last_id = max(self.tree.nodes.keys())
+
+        pub.sendMessage('succeed_retrieve_functions', tree=self.tree)
+
+    def do_update(self, node_id: int) -> None:
+        """Update record associated with node ID in RAMSTK Program database.
+
+        :param node_id: the node (function) ID of the function to save.
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.dao.do_update(self.tree.get_node(node_id).data['function'])
+            pub.sendMessage('succeed_update_function', node_id=node_id)
+        except AttributeError:
+            pub.sendMessage('fail_update_function',
+                            error_message=('Attempted to save non-existent '
+                                           'function with function ID '
+                                           '{0:s}.').format(str(node_id)))
+        except TypeError:
+            if node_id != 0:
+                pub.sendMessage('fail_update_function',
+                                error_message=('No data package found for '
+                                               'function ID {0:s}.').format(
+                                                   str(node_id)))
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a function.
@@ -86,14 +142,6 @@ class DataManager(RAMSTKDataManager):
                               "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_function',
                             error_message=_error_message)
-
-    def do_get_tree(self) -> None:
-        """Retrieve the function treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_function_tree', dmtree=self.tree)
 
     def _do_insert_function(self, parent_id: int = 0) -> None:
         """Add a new function as child of the parent ID function.
@@ -132,69 +180,3 @@ class DataManager(RAMSTKDataManager):
                             error_message=("Attempting to add a function as a "
                                            "child of non-existent parent node "
                                            "{0:s}.".format(str(parent_id))))
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Function data from the RAMSTK Program database.
-
-        :param dict attributes: the attributes for the selected Function.
-        :return: None
-        :rtype: None
-        """
-        self._revision_id = attributes['revision_id']
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _function in self.dao.do_select_all(
-                RAMSTKFunction,
-                key=RAMSTKFunction.revision_id,
-                value=self._revision_id,
-                order=RAMSTKFunction.function_id):
-
-            self.tree.create_node(tag=_function.name,
-                                  identifier=_function.function_id,
-                                  parent=_function.parent_id,
-                                  data={'function': _function})
-
-        self._last_id[0] = max(self.tree.nodes.keys())
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage('succeed_retrieve_functions', tree=self.tree)
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param attributes: the aggregate attributes dict for the function.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            self.do_set_attributes(node_id=[
-                attributes['function_id'],
-            ],
-                                   package={_key: attributes[_key]})
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the node (function) ID of the function to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['function'])
-            pub.sendMessage('succeed_update_function', node_id=node_id)
-        except AttributeError:
-            pub.sendMessage('fail_update_function',
-                            error_message=('Attempted to save non-existent '
-                                           'function with function ID '
-                                           '{0:s}.').format(str(node_id)))
-        except TypeError:
-            if node_id != 0:
-                pub.sendMessage('fail_update_function',
-                                error_message=('No data package found for '
-                                               'function ID {0:s}.').format(
-                                                   str(node_id)))
