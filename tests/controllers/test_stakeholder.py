@@ -96,7 +96,7 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_update_stakeholder,
+        assert pub.isSubscribed(DUT.do_update,
                                 'request_update_stakeholder')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_stakeholders')
@@ -369,7 +369,7 @@ class TestUpdateMethods():
 
         _stakeholder = DUT.do_select(1, table='stakeholder')
         _stakeholder.description = 'Test Stakeholder'
-        DUT.do_update_stakeholder(1)
+        DUT.do_update(1)
 
         DUT.do_select_all(attributes={'revision_id': 1})
         _stakeholder = DUT.do_select(1, table='stakeholder')
@@ -388,7 +388,7 @@ class TestUpdateMethods():
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_update_stakeholder(100)
+        DUT.do_update(100)
 
         pub.unsubscribe(self.on_fail_update_stakeholder,
                         'fail_update_stakeholder')
@@ -400,7 +400,7 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        assert DUT.do_update_stakeholder(0) is None
+        assert DUT.do_update(0) is None
 
     @pytest.mark.unit
     def test_do_update_data_manager_no_data_package(self, mock_program_dao):
@@ -412,7 +412,7 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.tree.get_node(1).data.pop('stakeholder')
-        DUT.do_update_stakeholder(1)
+        DUT.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_stakeholder_no_package,
                         'fail_update_requirement')
@@ -437,7 +437,7 @@ class TestAnalysisMethods():
         _stakeholder.customer_rank = 2
         _stakeholder.priority = 4
         _stakeholder.user_float_1 = 2.6
-        DATAMGR.do_update_stakeholder(1)
+        DATAMGR.do_update(1)
 
         pub.sendMessage('request_get_stakeholder_attributes', node_id=1,
                         table='stakeholder')

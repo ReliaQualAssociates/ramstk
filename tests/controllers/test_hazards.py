@@ -112,7 +112,7 @@ class TestCreateControllers():
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
         assert pub.isSubscribed(DUT.on_get_all_attributes,
-                                'succeed_get_all_hazard_attributes')
+                                'succeed_get_hazard_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_hazard_tree')
         assert pub.isSubscribed(DUT.do_calculate_fha, 'request_calculate_fha')
 
@@ -282,7 +282,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_hazard_attrs,
                         'succeed_get_hazards_attributes')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_get_all_attributes_data_manager(self, mock_program_dao):
         """do_get_all_attributes() should return a dict of all RAMSTK data
         tables' attributes on success."""
@@ -312,7 +312,7 @@ class TestGetterSetter():
         assert DUT.do_select(1,
                              table='hazard').potential_hazard == 'Donald Trump'
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_set_all_attributes(self, mock_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmHazards()
@@ -350,7 +350,7 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_hazard_tree,
                         'succeed_get_hazard_tree')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_get_all_attributes_analysis_manager(self, mock_program_dao,
                                                  test_toml_user_configuration):
         """_get_all_attributes() should update the attributes dict on
@@ -455,6 +455,7 @@ class TestUpdateMethods():
 
         DUT.do_update(0)
 
+
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
@@ -468,8 +469,6 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHazards(test_toml_user_configuration)
 
-        pub.sendMessage('request_get_hazard_tree')
-
         _hazard = DATAMGR.do_select(1, 'hazard')
         _hazard.assembly_severity = 'Major'
         _hazard.assembly_probability = 'Level A - Frequent'
@@ -480,6 +479,9 @@ class TestAnalysisMethods():
         _hazard.system_severity_f = 'Medium'
         _hazard.system_probability_f = 'Level C - Occasional'
         DATAMGR.do_update(1)
+        pub.sendMessage('request_get_hazard_attributes',
+                        node_id=1,
+                        table='hazard')
 
         pub.sendMessage('request_calculate_fha', node_id=1)
 
@@ -498,8 +500,6 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHazards(test_toml_user_configuration)
 
-        pub.sendMessage('request_get_hazard_tree')
-
         _hazard = DATAMGR.do_select(1, 'hazard')
         _hazard.user_float_1 = 1.5
         _hazard.user_float_2 = 0.8
@@ -507,6 +507,9 @@ class TestAnalysisMethods():
         _hazard.function_1 = 'uf1*uf2'
         _hazard.function_2 = 'res1/ui1'
         DATAMGR.do_update(1)
+        pub.sendMessage('request_get_hazard_attributes',
+                        node_id=1,
+                        table='hazard')
 
         pub.sendMessage('request_calculate_fha', node_id=1)
 

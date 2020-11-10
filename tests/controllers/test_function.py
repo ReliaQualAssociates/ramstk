@@ -92,8 +92,6 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_function_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_function_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_function_attributes')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
         assert pub.isSubscribed(DUT._do_insert_function,
                                 'request_insert_function')
@@ -498,7 +496,7 @@ class TestGetterSetter():
                         package={'function_code': '-'})
         assert DUT.do_select(1, table='function').function_code == '-'
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_set_all_attributes(self, mock_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmFunction()
