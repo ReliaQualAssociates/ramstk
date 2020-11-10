@@ -149,7 +149,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete_validation(self, node_id: int) -> None:
         """Remove a Validation task.
 
-        :param int node_id: the node (validation) ID to be removed from the
+        :param node_id: the node (validation) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
@@ -174,25 +174,21 @@ class DataManager(RAMSTKDataManager):
                                            "validation ID {0:s}.").format(
                                                str(node_id)))
 
-    def _do_get_all_attributes(self, node_id):
+    def _do_get_all_attributes(self, node_id: int) -> None:
         """Retrieve all RAMSTK data tables' attributes for the validation item.
 
         This is a helper method to be able to retrieve all the validation
         item's attributes in a single call.  It's used primarily by the
         AnalysisManager.
 
-        :param int node_id: the node (validation) ID of the validation item to
+        :param node_id: the node (validation) ID of the validation item to
             get the attributes for.
         :return: None
         :rtype: None
         """
-        _attributes = {}
-        for _table in ['validation']:
-            _attributes.update(
-                self.do_select(node_id, table=_table).get_attributes())
-
         pub.sendMessage('succeed_get_all_validation_attributes',
-                        attributes=_attributes)
+                        attributes=self.do_select(node_id,
+                                     table='validation').get_attributes())
 
     # pylint: disable=arguments-differ
     def _do_insert_status(self) -> RAMSTKProgramStatus:
@@ -280,8 +276,8 @@ class DataManager(RAMSTKDataManager):
         This is a helper function to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
 
-        :param dict attributes: the aggregate attributes dict for the
-            validation task.
+        :param attributes: the aggregate attributes dict for the validation
+            task.
         :return: None
         :rtype: None
         """

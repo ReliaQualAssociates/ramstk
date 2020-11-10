@@ -113,52 +113,25 @@ class DataManager(RAMSTKDataManager):
                 value=self._revision_id,
                 order=RAMSTKHardware.parent_id):
 
-            _design_e = self.dao.do_select_all(
-                RAMSTKDesignElectric,
-                key=RAMSTKDesignElectric.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
+            _design_e = self._do_select_all_electrical_attributes(
+                _hardware.hardware_id)
 
-            _design_m = self.dao.do_select_all(
-                RAMSTKDesignMechanic,
-                key=RAMSTKDesignMechanic.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
+            _design_m = self._do_select_all_mechanical_attributes(
+                _hardware.hardware_id)
 
-            _milhdbkf = self.dao.do_select_all(RAMSTKMilHdbkF,
-                                               key=RAMSTKMilHdbkF.hardware_id,
-                                               value=_hardware.hardware_id,
-                                               order=None,
-                                               _all=False)
+            _milhdbkf = self._do_select_all_milhdbk217_attributes(
+                _hardware.hardware_id)
 
-            _nswc = self.dao.do_select_all(RAMSTKNSWC,
-                                           key=RAMSTKNSWC.hardware_id,
-                                           value=_hardware.hardware_id,
-                                           order=None,
-                                           _all=False)
+            _nswc = self._do_select_all_nswc_attributes(_hardware.hardware_id)
 
-            _reliability = self.dao.do_select_all(
-                RAMSTKReliability,
-                key=RAMSTKReliability.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
+            _reliability = self._do_select_all_reliability_attributes(
+                _hardware.hardware_id)
 
-            _allocation = self.dao.do_select_all(
-                RAMSTKAllocation,
-                key=RAMSTKAllocation.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
+            _allocation = self._do_select_all_allocation_attributes(
+                _hardware.hardware_id)
 
-            _similaritem = self.dao.do_select_all(
-                RAMSTKSimilarItem,
-                key=RAMSTKSimilarItem.hardware_id,
-                value=_hardware.hardware_id,
-                order=None,
-                _all=False)
+            _similaritem = self._do_select_all_similar_item_attributes(
+                _hardware.hardware_id)
 
             self.tree.create_node(tag=_hardware.comp_ref_des,
                                   identifier=_hardware.hardware_id,
@@ -177,6 +150,111 @@ class DataManager(RAMSTKDataManager):
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
+
+    def _do_select_all_allocation_attributes(
+            self, hardware_id: int) -> RAMSTKAllocation:
+        """Select the allocation attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose allocation
+            attributes are needed.
+        :return: the RAMSTKAllocation() record for the hardware ID.
+        :rtype: RAMSTKAllocation
+        """
+        return self.dao.do_select_all(RAMSTKAllocation,
+                                      key=RAMSTKAllocation.hardware_id,
+                                      value=hardware_id,
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_all_electrical_attributes(
+            self, hardware_id: int) -> RAMSTKDesignElectric:
+        """Select the electrical attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose electrical
+            attributes are needed.
+        :return: the RAMSTKDesignElectric() record for the hardware ID.
+        :rtype: RAMSTKDesignElectric
+        """
+        return self.dao.do_select_all(RAMSTKDesignElectric,
+                                      key=RAMSTKDesignElectric.hardware_id,
+                                      value=hardware_id,
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_all_mechanical_attributes(self, hardware_id: int) -> \
+            RAMSTKDesignMechanic:
+        """Select the mechanical attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose mechanical
+            attributes are needed.
+        :return: the RAMSTKDesignMechanic() record for the hardware ID.
+        :rtype: RAMSTKDesignMechanic
+        """
+        return self.dao.do_select_all(RAMSTKDesignMechanic,
+                                      key=RAMSTKDesignMechanic.hardware_id,
+                                      value=hardware_id,
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_all_milhdbk217_attributes(self, hardware_id: int) -> \
+            RAMSTKMilHdbkF:
+        """Select the MIL-HDBK-217F attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose MIL-HDBK-217F
+            attributes are needed.
+        :return: the RAMSTKMilHdbkF() record for the hardware ID.
+        :rtype: RAMSTKDesignMilHdbkF
+        """
+        return self.dao.do_select_all(RAMSTKMilHdbkF,
+                                      key=RAMSTKMilHdbkF.hardware_id,
+                                      value=hardware_id,
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_all_nswc_attributes(self, hardware_id: int) -> \
+            RAMSTKNSWC:
+        """Select the NSWC attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose NSWC
+            attributes are needed.
+        :return: the RAMSTKNSWC() record for the hardware ID.
+        :rtype: RAMSTKSWC
+        """
+        return self.dao.do_select_all(RAMSTKNSWC,
+                                      key=RAMSTKNSWC.hardware_id,
+                                      value=hardware_id,
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_all_reliability_attributes(self, hardware_id: int) -> \
+            RAMSTKReliability:
+        """Select the reliability attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose reliability
+            attributes are needed.
+        :return: the RAMSTKReliability() record for the hardware ID.
+        :rtype: RAMSTKReliability
+        """
+        return self.dao.do_select_all(RAMSTKReliability,
+                                      key=RAMSTKReliability.hardware_id,
+                                      value=hardware_id,
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_all_similar_item_attributes(self, hardware_id: int) -> \
+            RAMSTKSimilarItem:
+        """Select the similar item attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose similar item
+            attributes are needed.
+        :return: the RAMSTKSimilarItem() record for the hardware ID.
+        :rtype: RAMSTKSimilarItem
+        """
+        return self.dao.do_select_all(RAMSTKSimilarItem,
+                                      key=RAMSTKSimilarItem.hardware_id,
+                                      value=hardware_id,
+                                      order=None,
+                                      _all=False)
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.

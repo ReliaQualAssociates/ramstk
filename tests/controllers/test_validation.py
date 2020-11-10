@@ -556,6 +556,14 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
 
+    def on_succeed_get_all_validation_attrs(self, attributes):
+        assert isinstance(attributes, dict)
+        assert attributes['validation_id'] == 1
+        assert attributes['name'] == 'PRF-0001'
+        assert attributes['time_average'] == 0.0
+        print(
+            "\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
+
     def on_succeed_get_validation_tree(self, dmtree):
         assert isinstance(dmtree, Tree)
         assert isinstance(
@@ -589,6 +597,21 @@ class TestGetterSetter():
                         'succeed_get_validation_attributes')
 
     @pytest.mark.unit
+    def test_do_get_all_attributes(self, mock_program_dao):
+        """_do_get_all_attributes() should return a dict of validation
+        attributes on success."""
+        pub.subscribe(self.on_succeed_get_all_validation_attrs,
+                      'succeed_get_all_validation_attributes')
+
+        DUT = dmValidation()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_get_all_attributes(1)
+
+        pub.unsubscribe(self.on_succeed_get_all_validation_attrs,
+                        'succeed_get_all_validation_attributes')
+
+    @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
         """do_set_attributes() should send the success message."""
         DUT = dmValidation()
@@ -616,6 +639,19 @@ class TestGetterSetter():
             assert DUT.do_select(
                 1,
                 table='validation').task_filliwonga == 'This is a filli-wonga.'
+
+    @pytest.mark.unit
+    def test_do_set_all_attributes(self, mock_program_dao):
+        """_do_set_all_attributes() should send the success message."""
+        DUT = dmValidation()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('request_set_all_validation_attributes',
+                        attributes={'validation_id': 1,
+                                    'task_specification': 'NSWC-11'})
+        assert DUT.do_select(
+            1, table='validation').task_specification == 'NSWC-11'
 
     @pytest.mark.unit
     def test_on_get_validation_tree(self, mock_program_dao):
