@@ -187,8 +187,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage('succeed_get_all_validation_attributes',
-                        attributes=self.do_select(node_id,
-                                     table='validation').get_attributes())
+                        attributes=self.do_select(
+                            node_id, table='validation').get_attributes())
 
     # pylint: disable=arguments-differ
     def _do_insert_status(self) -> RAMSTKProgramStatus:

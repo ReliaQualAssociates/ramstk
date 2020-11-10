@@ -34,7 +34,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete_validation(self, node_id: int) -> None:
         ...
 
-    def _do_get_all_attributes(self, node_id: Any) -> None:
+    def _do_get_all_attributes(self, node_id: int) -> None:
         ...
 
     def _do_insert_status(self) -> RAMSTKProgramStatus:
