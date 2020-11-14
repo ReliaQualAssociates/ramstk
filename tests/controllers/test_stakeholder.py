@@ -96,24 +96,20 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT._do_delete_stakeholder,
-                                'request_delete_stakeholder')
-        assert pub.isSubscribed(DUT.do_insert_stakeholder,
-                                'request_insert_stakeholder')
-        assert pub.isSubscribed(DUT.do_update_stakeholder,
+        assert pub.isSubscribed(DUT.do_update,
                                 'request_update_stakeholder')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_stakeholders')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_stakeholder_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_stakeholder_attributes')
         assert pub.isSubscribed(DUT.do_get_tree,
                                 'request_get_stakeholder_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_stakeholder_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_stakeholder_attributes')
+        assert pub.isSubscribed(DUT._do_delete_stakeholder,
+                                'request_delete_stakeholder')
+        assert pub.isSubscribed(DUT._do_insert_stakeholder,
+                                'request_insert_stakeholder')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_toml_user_configuration):
@@ -126,7 +122,7 @@ class TestCreateControllers():
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
         assert pub.isSubscribed(DUT.on_get_all_attributes,
-                                'succeed_get_all_stakeholder_attributes')
+                                'succeed_get_stakeholder_attributes')
         assert pub.isSubscribed(DUT.on_get_tree,
                                 'succeed_get_stakeholder_tree')
         assert pub.isSubscribed(DUT.do_calculate_stakeholder,
@@ -246,20 +242,11 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_stakeholder_attributes topic was broadcast")
 
-    def on_succeed_get_all_attrs(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes['stakeholder_id'] == 1
-        assert attributes['description'] == 'Stakeholder Input'
-        assert attributes['priority'] == 1
-        print(
-            "\033[36m\nsucceed_get_all_stakeholder_attributes topic was broadcast"
-        )
-
-    def on_succeed_get_stakeholder_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node(1).data, dict)
+    def on_succeed_get_stakeholder_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data, dict)
         assert isinstance(
-            dmtree.get_node(1).data['stakeholder'], RAMSTKStakeholder)
+            tree.get_node(1).data['stakeholder'], RAMSTKStakeholder)
         print("\033[36m\nsucceed_get_stakeholder_tree topic was broadcast")
 
     @pytest.mark.unit
@@ -277,20 +264,6 @@ class TestGetterSetter():
                         'succeed_get_stakeholder_attributes')
 
     @pytest.mark.unit
-    def test_do_get_all_attributes_data_manager(self, mock_program_dao):
-        """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
-        pub.subscribe(self.on_succeed_get_all_attrs,
-                      'succeed_get_all_stakeholder_attributes')
-
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_all_attributes(1)
-
-        pub.unsubscribe(self.on_succeed_get_all_attrs,
-                        'succeed_get_all_stakeholder_attributes')
-
-    @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
         """do_set_attributes() should send the success message."""
         DUT = dmStakeholder()
@@ -301,27 +274,6 @@ class TestGetterSetter():
                         node_id=[1, -1],
                         package={'stakeholder': 'Customer'})
         assert DUT.do_select(1, table='stakeholder').stakeholder == 'Customer'
-
-    @pytest.mark.unit
-    def test_do_set_all_attributes(self, mock_program_dao):
-        """do_set_all_attributes() should send the success message."""
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('request_set_all_stakeholder_attributes',
-                        attributes={
-                            'stakeholder_id': 1,
-                            'stakeholder': 'Service',
-                            'description':
-                            'This is a description added by a test.',
-                            'priority': 2
-                        })
-        assert DUT.do_select(1, table='stakeholder').stakeholder == 'Service'
-        assert DUT.do_select(
-            1, table='stakeholder'
-        ).description == 'This is a description added by a test.'
-        assert DUT.do_select(1, table='stakeholder').priority == 2
 
     @pytest.mark.unit
     def test_on_get_tree(self, mock_program_dao):
@@ -352,14 +304,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_stakeholder(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a new top-level stakeholder."""
+        """_do_insert_stakeholder() should send the success message after successfully inserting a new top-level stakeholder."""
         pub.subscribe(self.on_succeed_insert_stakeholder,
                       'succeed_insert_stakeholder')
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_stakeholder()
+        DUT._do_insert_stakeholder()
 
         assert isinstance(
             DUT.tree.get_node(3).data['stakeholder'], RAMSTKStakeholder)
@@ -372,7 +324,7 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_stakeholder_existing_id(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a new top-level stakeholder."""
+        """_do_insert_stakeholder() should send the success message after successfully inserting a new top-level stakeholder."""
         pub.subscribe(self.on_fail_insert_stakeholder,
                       'fail_insert_stakeholder')
 
@@ -381,7 +333,7 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.last_id = DUT.last_id - 1
 
-        DUT.do_insert_stakeholder()
+        DUT._do_insert_stakeholder()
 
         pub.unsubscribe(self.on_fail_insert_stakeholder,
                         'fail_insert_stakeholder')
@@ -417,7 +369,7 @@ class TestUpdateMethods():
 
         _stakeholder = DUT.do_select(1, table='stakeholder')
         _stakeholder.description = 'Test Stakeholder'
-        DUT.do_update_stakeholder(1)
+        DUT.do_update(1)
 
         DUT.do_select_all(attributes={'revision_id': 1})
         _stakeholder = DUT.do_select(1, table='stakeholder')
@@ -436,7 +388,7 @@ class TestUpdateMethods():
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_update_stakeholder(100)
+        DUT.do_update(100)
 
         pub.unsubscribe(self.on_fail_update_stakeholder,
                         'fail_update_stakeholder')
@@ -448,7 +400,7 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        assert DUT.do_update_stakeholder(0) is None
+        assert DUT.do_update(0) is None
 
     @pytest.mark.unit
     def test_do_update_data_manager_no_data_package(self, mock_program_dao):
@@ -460,7 +412,7 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.tree.get_node(1).data.pop('stakeholder')
-        DUT.do_update_stakeholder(1)
+        DUT.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_stakeholder_no_package,
                         'fail_update_requirement')
@@ -485,8 +437,10 @@ class TestAnalysisMethods():
         _stakeholder.customer_rank = 2
         _stakeholder.priority = 4
         _stakeholder.user_float_1 = 2.6
-        DATAMGR.do_update_stakeholder(1)
+        DATAMGR.do_update(1)
 
+        pub.sendMessage('request_get_stakeholder_attributes', node_id=1,
+                        table='stakeholder')
         pub.sendMessage('request_calculate_stakeholder', node_id=1)
 
         assert DUT._attributes['improvement'] == 1.2

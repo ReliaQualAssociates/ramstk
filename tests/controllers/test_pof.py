@@ -483,11 +483,11 @@ class TestGetterSetter():
             "\033[36m\nsucceed_get_test_method_attributes topic was broadcast."
         )
 
-    def on_succeed_get_pof_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node('5').data['mode'], RAMSTKMode)
+    def on_succeed_get_pof_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node('5').data['mode'], RAMSTKMode)
         assert isinstance(
-            dmtree.get_node('5.1').data['mechanism'], RAMSTKMechanism)
+            tree.get_node('5.1').data['mechanism'], RAMSTKMechanism)
         print("\033[36m\nsucceed_get_pof_tree topic was broadcast")
 
     @pytest.mark.integration

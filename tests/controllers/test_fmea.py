@@ -98,7 +98,7 @@ class TestCreateControllers():
         assert isinstance(DUT._attributes, dict)
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
-        assert pub.isSubscribed(DUT._on_get_tree,
+        assert pub.isSubscribed(DUT.on_get_tree,
                                 'succeed_retrieve_hardware_fmea')
         assert pub.isSubscribed(DUT._do_calculate_criticality,
                                 'request_calculate_criticality')
@@ -678,11 +678,11 @@ class TestGetterSetter():
             'Action #1 for Cause ID 1.')
         print("\033[36m\nsucceed_get_action_attributes topic was broadcast.")
 
-    def on_succeed_get_fmea_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node('4').data['mode'], RAMSTKMode)
+    def on_succeed_get_fmea_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node('4').data['mode'], RAMSTKMode)
         assert isinstance(
-            dmtree.get_node('4.1').data['mechanism'], RAMSTKMechanism)
+            tree.get_node('4.1').data['mechanism'], RAMSTKMechanism)
         print("\033[36m\nsucceed_get_fmea_tree topic was broadcast")
 
     @pytest.mark.integration

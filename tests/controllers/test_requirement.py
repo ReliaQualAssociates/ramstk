@@ -104,27 +104,23 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT._do_delete_requirement,
-                                'request_delete_requirement')
-        assert pub.isSubscribed(DUT.do_insert_requirement,
-                                'request_insert_requirement')
         assert pub.isSubscribed(DUT.do_update, 'request_update_requirement')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_requirements')
-        assert pub.isSubscribed(DUT._do_get_attributes,
+        assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_requirement_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_requirement_attributes')
         assert pub.isSubscribed(DUT.do_get_tree,
                                 'request_get_requirement_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_requirement_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_requirement_attributes')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'wvw_editing_requirement')
         assert pub.isSubscribed(DUT.do_create_code,
                                 'request_create_requirement_code')
+        assert pub.isSubscribed(DUT._do_delete_requirement,
+                                'request_delete_requirement')
+        assert pub.isSubscribed(DUT._do_insert_requirement,
+                                'request_insert_requirement')
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -331,20 +327,11 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_requirement_attributes topic was broadcast")
 
-    def on_succeed_get_all_attrs(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes['requirement_id'] == 1
-        assert attributes['description'] == ''
-        assert attributes['priority'] == 0
-        print(
-            "\033[36m\nsucceed_get_all_requirement_attributes topic was broadcast"
-        )
-
-    def on_succeed_get_requirement_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node(1).data, dict)
+    def on_succeed_get_requirement_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data, dict)
         assert isinstance(
-            dmtree.get_node(1).data['requirement'], RAMSTKRequirement)
+            tree.get_node(1).data['requirement'], RAMSTKRequirement)
         print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
 
     def on_succeed_create_requirement_code(self, requirement_code):
@@ -365,18 +352,7 @@ class TestGetterSetter():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_get_attributes(1, 'requirement')
-
-    @pytest.mark.unit
-    def test_do_get_all_attributes_data_manager(self, mock_program_dao):
-        """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
-        pub.subscribe(self.on_succeed_get_all_attrs,
-                      'succeed_get_all_requirement_attributes')
-
-        DUT = dmRequirement()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_all_attributes(1)
+        DUT.do_get_attributes(1, 'requirement')
 
     @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
@@ -403,28 +379,6 @@ class TestGetterSetter():
                         package={'validated_date': None})
         assert DUT.do_select(
             1, table='requirement').validated_date == date.today()
-
-    @pytest.mark.unit
-    def test_do_set_all_attributes(self, mock_program_dao):
-        """do_set_all_attributes() should send the success message."""
-        DUT = dmRequirement()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('request_set_all_requirement_attributes',
-                        attributes={
-                            'requirement_id': 1,
-                            'requirement_code': 'PERF-0021',
-                            'description':
-                            'This is a description added by a test.',
-                            'priority': 2
-                        })
-        assert DUT.do_select(
-            1, table='requirement').requirement_code == 'PERF-0021'
-        assert DUT.do_select(
-            1, table='requirement'
-        ).description == 'This is a description added by a test.'
-        assert DUT.do_select(1, table='requirement').priority == 2
 
     @pytest.mark.unit
     def test_on_get_tree(self, mock_program_dao):
@@ -508,7 +462,7 @@ class TestInsertMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_requirement(parent_id=0)
+        DUT._do_insert_requirement(parent_id=0)
 
         assert isinstance(
             DUT.tree.get_node(3).data['requirement'], RAMSTKRequirement)
@@ -525,7 +479,7 @@ class TestInsertMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_requirement(parent_id=1)
+        DUT._do_insert_requirement(parent_id=1)
 
         assert isinstance(
             DUT.tree.get_node(3).data['requirement'], RAMSTKRequirement)
@@ -544,7 +498,7 @@ class TestInsertMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_requirement(parent_id=32)
+        DUT._do_insert_requirement(parent_id=32)
 
     @pytest.mark.unit
     def test_do_insert_matrix_hardware_column(self, mock_program_dao):
@@ -689,7 +643,7 @@ class TestUpdateMethods():
                       'succeed_retrieve_hardware')
 
         pub.sendMessage('selected_revision', attributes={'revision_id': 1})
-        pub.sendMessage('do_request_update_matrix', revision_id=1,
+        pub.sendMessage('do_request_update_matrix',
                         matrix_type='rqrmnt_hrdwr')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')

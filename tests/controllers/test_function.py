@@ -84,21 +84,17 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
-        assert pub.isSubscribed(DUT.do_insert_function,
-                                'request_insert_function')
         assert pub.isSubscribed(DUT.do_update, 'request_update_function')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_functions')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_function_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_function_attributes')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_function_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_function_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_function_attributes')
+        assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
+        assert pub.isSubscribed(DUT._do_insert_function,
+                                'request_insert_function')
 
     @pytest.mark.unit
     def test_matrix_manager_create(self):
@@ -366,7 +362,7 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_sibling_function(self, mock_program_dao):
-        """do_insert_function() should send the success message after
+        """_do_insert_function() should send the success message after
         successfully inserting a sibling function."""
         pub.subscribe(self.on_succeed_insert_function,
                       'succeed_insert_function')
@@ -374,7 +370,7 @@ class TestInsertMethods():
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_function()
+        DUT._do_insert_function()
 
         assert isinstance(
             DUT.tree.get_node(3).data['function'], RAMSTKFunction)
@@ -386,12 +382,12 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_child_function(self, mock_program_dao):
-        """do_insert_function() should send the success message after
+        """_do_insert_function() should send the success message after
         successfully inserting a child function."""
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_function(parent_id=2)
+        DUT._do_insert_function(parent_id=2)
 
         assert isinstance(
             DUT.tree.get_node(3).data['function'], RAMSTKFunction)
@@ -400,14 +396,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_function_no_parent(self, mock_program_dao):
-        """do_insert_function() should send the fail message if attempting to
+        """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_function, 'fail_insert_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_function(parent_id=40)
+        DUT._do_insert_function(parent_id=40)
 
     @pytest.mark.unit
     def test_do_insert_matrix_row(self, mock_program_dao):
@@ -471,17 +467,9 @@ class TestGetterSetter():
         assert attributes['safety_critical'] == 0
         print("\033[36m\nsucceed_get_function_attributes topic was broadcast.")
 
-    def on_succeed_get_all_attrs(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes['function_id'] == 1
-        assert attributes['name'] == 'Function Name'
-        print(
-            "\033[36m\nsucceed_get_all_function_attributes topic was broadcast"
-        )
-
-    def on_succeed_get_function_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node(1).data['function'], RAMSTKFunction)
+    def on_succeed_get_function_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data['function'], RAMSTKFunction)
         print("\033[36m\nsucceed_get_function_tree topic was broadcast")
 
     @pytest.mark.unit
@@ -497,21 +485,6 @@ class TestGetterSetter():
         DUT.do_get_attributes(1, 'function')
 
     @pytest.mark.unit
-    def test_do_get_all_attributes_data_manager(self, mock_program_dao):
-        """do_get_all_attributes() should return a dict of all RAMSTK data
-        tables' attributes on success."""
-        pub.subscribe(self.on_succeed_get_all_attrs,
-                      'succeed_get_all_function_attributes')
-
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_all_attributes(1)
-
-        pub.unsubscribe(self.on_succeed_get_all_attrs,
-                        'succeed_get_all_function_attributes')
-
-    @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
         """do_set_attributes() should send the success message."""
         DUT = dmFunction()
@@ -523,7 +496,7 @@ class TestGetterSetter():
                         package={'function_code': '-'})
         assert DUT.do_select(1, table='function').function_code == '-'
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_set_all_attributes(self, mock_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmFunction()
@@ -650,7 +623,6 @@ class TestUpdateMethods():
 
         pub.sendMessage('selected_revision', attributes={'revision_id': 1})
         pub.sendMessage('do_request_update_matrix',
-                        revision_id=1,
                         matrix_type='fnctn_hrdwr')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')

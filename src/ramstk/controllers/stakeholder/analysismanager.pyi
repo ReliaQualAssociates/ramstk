@@ -2,7 +2,7 @@
 from typing import Any, Dict
 
 # RAMSTK Package Imports
-from ramstk.analyses import fha as fha
+from ramstk.analyses import improvementfactor as improvementfactor
 from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
 )
@@ -13,11 +13,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
                  **kwargs: Dict[str, Any]) -> None:
         ...
 
-    def do_calculate_fha(self, node_id: int) -> None:
+    def do_calculate_stakeholder(self, node_id: int) -> None:
         ...
 
-    def _do_calculate_hri(self) -> None:
-        ...
-
-    def _do_calculate_user_defined(self) -> None:
+    def _do_calculate_improvement(self) -> None:
         ...

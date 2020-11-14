@@ -643,7 +643,7 @@ class PoF(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlPoF: RAMSTKPanel = PoFPanel()
+        self._pnlPanel: RAMSTKPanel = PoFPanel()
 
         # Initialize public dictionary attributes.
 
@@ -674,7 +674,8 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model, _row = self._pnlPoF.tvwTreeView.get_selection().get_selected()
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
+        )
         _node_id = _model.get_value(_row, 0)
 
         super().do_set_cursor_busy()
@@ -688,7 +689,8 @@ class PoF(RAMSTKWorkView):
         """
         # Try to get the information needed to add a new entity at the correct
         # location in the PoF.
-        _model, _row = self._pnlPoF.tvwTreeView.get_selection().get_selected()
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
+        )
         try:
             _parent_id = _model.get_value(_row, 0)
             _attributes = _model.get_value(_row, 12).replace("'", '"')
@@ -719,7 +721,8 @@ class PoF(RAMSTKWorkView):
         """
         # Try to get the information needed to add a new entity at the correct
         # location in the PoF.
-        _model, _row = self._pnlPoF.tvwTreeView.get_selection().get_selected()
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
+        )
         try:
             _attributes = _model.get_value(_row, 12).replace("'", '"')
             _attributes = json.loads("{0}".format(_attributes))
@@ -786,8 +789,8 @@ class PoF(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._pnlPoF.tvwTreeView.dic_handler_id[
-            'button-press'] = self._pnlPoF.tvwTreeView.connect(
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
                 "button_press_event",
                 super().on_button_press)
 
@@ -799,33 +802,16 @@ class PoF(RAMSTKWorkView):
         """
         super().do_make_layout()
 
-        _fmt_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
+        self.do_embed_treeview_panel()
+        self._pnlPanel.do_load_combobox()
+        self._pnlPanel.do_set_callbacks()
 
-        try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'fg']
-        except KeyError:
-            _bg_color = '#FFFFFF'
-            _fg_color = '#000000'
-
-        self._pnlPoF.dic_damage_models =  \
+        self._pnlPanel.dic_damage_models =  \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS
-        self._pnlPoF.dic_load_history =  \
+        self._pnlPanel.dic_load_history =  \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY
-        self._pnlPoF.dic_measurable_parameters =  \
+        self._pnlPanel.dic_measurable_parameters =  \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS
-        self._pnlPoF.dic_icons = self._dic_icons
-
-        self._pnlPoF.do_make_treeview(bg_color=_bg_color,
-                                      fg_color=_fg_color,
-                                      fmt_file=_fmt_file)
-        self._pnlPoF.do_load_combobox()
-        self._pnlPoF.do_set_callbacks()
-
-        self.pack_end(self._pnlPoF, True, True, 0)
+        self._pnlPanel.dic_icons = self._dic_icons
 
         self.show_all()

@@ -1,6 +1,9 @@
 # Standard Library Imports
 from typing import Any, Dict, List
 
+# Third Party Imports
+from treelib import Tree as Tree
+
 # RAMSTK Package Imports
 from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -45,7 +48,7 @@ class HazOpsPanel(RAMSTKPanel):
     def __do_set_properties(self) -> None:
         ...
 
-    def __do_load_panel(self, node_id: int) -> None:
+    def __do_load_panel(self, node_id: int, tree: Tree) -> None:
         ...
 
 
@@ -57,7 +60,7 @@ class HazOps(RAMSTKWorkView):
     _lst_icons: Any = ...
     _lst_mnu_labels: Any = ...
     _lst_tooltips: Any = ...
-    _pnlHazOps: Any = ...
+    _pnlPanel: Any = ...
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:

@@ -84,13 +84,9 @@ class TestCreateControllers():
         assert DUT._tag == 'failure_definition'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT._do_delete_failure_definition,
-                                'request_delete_failure_definition')
-        assert pub.isSubscribed(DUT._do_get_attributes,
+        assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_insert_failure_definition,
-                                'request_insert_failure_definition')
         assert pub.isSubscribed(DUT.do_update,
                                 'request_update_failure_definition')
         assert pub.isSubscribed(DUT.do_update_all,
@@ -99,11 +95,12 @@ class TestCreateControllers():
                                 'request_get_failure_definition_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_failure_definition_attributes')
-        assert pub.isSubscribed(
-            DUT.do_set_all_attributes,
-            'request_set_all_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'lvw_editing_failure_definition')
+        assert pub.isSubscribed(DUT._do_delete_failure_definition,
+                                'request_delete_failure_definition')
+        assert pub.isSubscribed(DUT._do_insert_failure_definition,
+                                'request_insert_failure_definition')
 
 
 class TestSelectMethods():
@@ -241,18 +238,14 @@ class TestGetterSetter():
             "\033[36m\nsucceed_get_all_revision_attributes topic was broadcast"
         )
 
-    def on_succeed_get_failure_definition_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_failure_definition_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node(1).data['failure_definition'],
+            tree.get_node(1).data['failure_definition'],
             RAMSTKFailureDefinition)
         print(
             "\033[36m\nsucceed_get_failure_definition_tree topic was broadcast"
         )
-
-    def on_succeed_get_last_id(self, last_id):
-        assert last_id == 1
-        print("\033[36m\nsucceed_get_last_id topic was broadcast")
 
     @pytest.mark.unit
     def test_do_get_attributes(self, mock_program_dao):
@@ -263,7 +256,7 @@ class TestGetterSetter():
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_get_attributes(1, 'failure_definition')
+        DUT.do_get_attributes(1, 'failure_definition')
 
         pub.unsubscribe(self.on_succeed_get_failure_definition_attrs,
                         'succeed_get_failure_definitions_attributes')
@@ -325,21 +318,6 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_failure_definition_tree,
                         'succeed_get_failure_definition_tree')
 
-    @pytest.mark.unit
-    def test_do_get_last_id(self, mock_program_dao):
-        """do_get_last_id() should broadcast the success message with the last
-        ID aste payload."""
-        pub.subscribe(self.on_succeed_get_last_id,
-                      'succeed_get_last_failure_definition_id')
-
-        DUT = dmFailureDefinition()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_last_id('failure_definition')
-
-        pub.unsubscribe(self.on_succeed_get_last_id,
-                        'succeed_get_last_failure_definition_id')
-
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
@@ -360,7 +338,7 @@ class TestInsertMethods():
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_failure_definition()
+        DUT._do_insert_failure_definition()
 
         assert isinstance(
             DUT.tree.get_node(1).data['failure_definition'],

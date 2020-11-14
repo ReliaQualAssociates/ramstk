@@ -72,8 +72,24 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_get_attributes, 'request_get_mode_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_mechanism_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_cause_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_control_attributes')
+        pub.subscribe(super().do_get_attributes,
+                      'request_get_action_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_fmea')
+        pub.subscribe(super().do_set_attributes, 'request_set_fmea_attributes')
+        pub.subscribe(super().do_update_all, 'request_update_all_fmea')
+
         pub.subscribe(self.do_select_all, 'selected_function')
         pub.subscribe(self.do_select_all, 'selected_hardware')
+        pub.subscribe(self.do_update, 'request_update_fmea')
+        pub.subscribe(self.do_get_tree, 'request_get_fmea_tree')
+
         pub.subscribe(self._do_delete, 'request_delete_fmea')
         pub.subscribe(self._do_insert_action, 'request_insert_fmea_action')
         pub.subscribe(self._do_insert_cause, 'request_insert_fmea_cause')
@@ -81,27 +97,70 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_insert_mechanism,
                       'request_insert_fmea_mechanism')
         pub.subscribe(self._do_insert_mode, 'request_insert_fmea_mode')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_fmea')
-        pub.subscribe(super().do_set_attributes, 'request_set_fmea_attributes')
 
-        pub.subscribe(self.do_update, 'request_update_fmea')
-        pub.subscribe(self.do_update_all, 'request_update_all_fmea')
-        pub.subscribe(self.do_get_attributes, 'request_get_mode_attributes')
-        pub.subscribe(self.do_get_attributes,
-                      'request_get_mechanism_attributes')
-        pub.subscribe(self.do_get_attributes, 'request_get_cause_attributes')
-        pub.subscribe(self.do_get_attributes, 'request_get_control_attributes')
-        pub.subscribe(self.do_get_attributes, 'request_get_action_attributes')
-        pub.subscribe(self.do_get_tree, 'request_get_fmea_tree')
+    def do_get_tree(self) -> None:
+        """Retrieve the FMEA treelib Tree.
 
-    def _add_cause_node(self, cause: object, parent_id: str) -> None:
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_fmea_tree', tree=self.tree)
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """Retrieve all FMEA data from the RAMSTK Program database.
+
+        :param dict attributes: the attributes dict for the selected
+            function or hardware item.
+        :return: None
+        :rtype: None
+        """
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        self._last_id = [0, 0, 0, 0, 0]
+        self._revision_id = attributes['revision_id']
+
+        try:
+            self._is_functional = False
+            self._parent_id = attributes['hardware_id']
+            self._do_select_all_hardware_fmea()
+        except KeyError:
+            self._is_functional = True
+            self._parent_id = attributes['function_id']
+
+    def do_update(self, node_id: int) -> None:
+        """Update record associated with node ID in RAMSTK Program database.
+
+        :param node_id: the node ID of the FMEA item to save.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _table = list(self.tree.get_node(node_id).data.keys())[0]
+
+            self.dao.session.add(self.tree.get_node(node_id).data[_table])
+
+            self.dao.do_update()
+            pub.sendMessage('succeed_update_fmea', node_id=node_id)
+        except AttributeError:
+            pub.sendMessage('fail_update_fmea',
+                            error_message=('Attempted to save non-existent '
+                                           'FMEA element with FMEA ID '
+                                           '{0:s}.').format(str(node_id)))
+        except TypeError:
+            if node_id != 0:
+                pub.sendMessage('fail_update_fmea',
+                                error_message=('No data package found for '
+                                               'FMEA ID {0:s}.').format(
+                                                   str(node_id)))
+
+    def _add_cause_node(self, cause: RAMSTKCause, parent_id: str) -> None:
         """Add a node to the treelib Tree() to hold a failure cause.
 
         This is a helper method to allow causes to be children of either a
         failure mode (functional FMEA) or a failure mechanism (hardware FMEA).
 
         :param cause: an instance of RAMSTKCause.
-        :type cause: :class:`ramstk.models.programdb.RAMSTKCause`
         :param str parent_id: the parent node ID the causes are associated
             with.
         :return: None
@@ -123,7 +182,7 @@ class DataManager(RAMSTKDataManager):
         self._do_select_all_control(_identifier)
         self._do_select_all_action(_identifier)
 
-    def _add_mode_node(self, mode: object) -> None:
+    def _add_mode_node(self, mode: RAMSTKMode) -> None:
         """Add a node to the treelib Tree() to hold a failure mode.
 
         This is a helper method to allow modes to be children of either a
@@ -147,7 +206,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete(self, node_id: int) -> None:
         """Remove a FMEA element.
 
-        :param int node_id: the node (FMEA action) ID to be removed from the
+        :param node_id: the node (FMEA action) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
@@ -476,59 +535,3 @@ class DataManager(RAMSTKDataManager):
             self._last_id[1] = max(self._last_id[1], _mechanism.mechanism_id)
 
             self._do_select_all_cause(_identifier)
-
-    def do_get_tree(self) -> None:
-        """Retrieve the FMEA treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_fmea_tree', dmtree=self.tree)
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all FMEA data from the RAMSTK Program database.
-
-        :param dict attributes: the attributes dict for the selected
-            function or hardware item.
-        :return: None
-        :rtype: None
-        """
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        self._last_id = [0, 0, 0, 0, 0]
-        self._revision_id = attributes['revision_id']
-
-        try:
-            self._is_functional = False
-            self._parent_id = attributes['hardware_id']
-            self._do_select_all_hardware_fmea()
-        except KeyError:
-            self._is_functional = True
-            self._parent_id = attributes['function_id']
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the node ID of the FMEA item to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _table = list(self.tree.get_node(node_id).data.keys())[0]
-
-            self.dao.session.add(self.tree.get_node(node_id).data[_table])
-
-            self.dao.do_update()
-            pub.sendMessage('succeed_update_fmea', node_id=node_id)
-        except AttributeError:
-            pub.sendMessage('fail_update_fmea',
-                            error_message=('Attempted to save non-existent '
-                                           'FMEA element with FMEA ID '
-                                           '{0:s}.').format(str(node_id)))
-        except TypeError:
-            if node_id != 0:
-                pub.sendMessage('fail_update_fmea',
-                                error_message=('No data package found for '
-                                               'FMEA ID {0:s}.').format(
-                                                   str(node_id)))

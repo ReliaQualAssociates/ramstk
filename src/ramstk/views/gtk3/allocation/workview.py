@@ -561,14 +561,14 @@ class AllocationPanel(RAMSTKPanel):
         self.tvwTreeView.visible = _dic_visible[self._method_id]
         self.tvwTreeView.do_set_visible_columns()
 
-    def _do_set_tree(self, dmtree: treelib.Tree) -> None:
+    def _do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the _allocation_tree equal to the datamanger Hardware tree.
 
         :param dmtree: the Hardware datamanger treelib.Tree() of data.
         :return: None
         :rtype: None
         """
-        self._allocation_tree = dmtree
+        self._allocation_tree = tree
 
     def __do_set_properties(self) -> None:
         """Set the properties of the General Data Work View and widgets.
@@ -661,7 +661,7 @@ class Allocation(RAMSTKWorkView):
         self._method_id: int = 0
 
         self._pnlGoalMethods: RAMSTKPanel = GoalMethodPanel()
-        self._pnlAllocation: RAMSTKPanel = AllocationPanel()
+        self._pnlPanel: RAMSTKPanel = AllocationPanel()
 
         # Initialize public dictionary attributes.
 
@@ -730,28 +730,12 @@ class Allocation(RAMSTKWorkView):
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
         self._pnlGoalMethods.fmt = self.fmt
+
+        self.do_embed_treeview_panel()
+        self._pnlPanel.do_set_callbacks()
+
+        self.remove(self.get_children()[-1])
         _hpaned.pack1(self._pnlGoalMethods, True, True)
-
-        _fmt_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
-
-        try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'fg']
-        except KeyError:
-            _bg_color = '#FFFFFF'
-            _fg_color = '#000000'
-
-        self._pnlAllocation.do_make_treeview(**{
-            'bg_color': _bg_color,
-            'fg_color': _fg_color,
-            'fmt_file': _fmt_file
-        })
-        self._pnlAllocation.do_set_callbacks()
-
-        _hpaned.pack2(self._pnlAllocation, True, True)
+        _hpaned.pack2(self._pnlPanel, True, True)
 
         self.show_all()

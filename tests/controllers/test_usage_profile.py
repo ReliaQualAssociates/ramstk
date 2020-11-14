@@ -139,26 +139,25 @@ class TestCreateControllers():
         assert DUT._tag == 'usage_profile'
         assert DUT._root == 0
         assert DUT._revision_id == 0
+        assert pub.isSubscribed(DUT.do_get_attributes,
+                                'request_get_usage_profile_attributes')
+        assert pub.isSubscribed(DUT.do_get_tree,
+                                'request_get_usage_profile_tree')
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT.do_insert_mission,
-                                'request_insert_mission')
-        assert pub.isSubscribed(DUT.do_insert_mission_phase,
-                                'request_insert_mission_phase')
-        assert pub.isSubscribed(DUT.do_insert_environment,
-                                'request_insert_environment')
         assert pub.isSubscribed(DUT.do_update, 'request_update_usage_profile')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_usage_profile')
-        assert pub.isSubscribed(DUT.do_get_tree,
-                                'request_get_usage_profile_tree')
-        assert pub.isSubscribed(DUT.do_set_attributes,
-                                'request_set_usage_profile_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_usage_profile_attributes')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_usage_profile')
-        assert pub.isSubscribed(DUT._do_get_attributes,
-                                'request_get_usage_profile_attributes')
-
+        assert pub.isSubscribed(DUT._do_insert_environment,
+                                'request_insert_environment')
+        assert pub.isSubscribed(DUT._do_insert_mission,
+                                'request_insert_mission')
+        assert pub.isSubscribed(DUT._do_insert_mission_phase,
+                                'request_insert_mission_phase')
+        assert pub.isSubscribed(DUT._do_set_attributes,
+                                'request_set_usage_profile_attributes')
+        assert pub.isSubscribed(DUT._do_set_all_attributes,
+                                'request_set_all_usage_profile_attributes')
 
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
@@ -396,21 +395,15 @@ class TestGetterSetter():
             "\033[36m\nsucceed_get_usage_profile_attributes topic was broadcast"
         )
 
-    def on_succeed_get_usage_profile_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_usage_profile_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node('1').data['usage_profile'], RAMSTKMission)
+            tree.get_node('1').data['usage_profile'], RAMSTKMission)
         assert isinstance(
-            dmtree.get_node('1.1').data['usage_profile'], RAMSTKMissionPhase)
+            tree.get_node('1.1').data['usage_profile'], RAMSTKMissionPhase)
         assert isinstance(
-            dmtree.get_node('1.1.1').data['usage_profile'], RAMSTKEnvironment)
+            tree.get_node('1.1.1').data['usage_profile'], RAMSTKEnvironment)
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
-
-    def on_succeed_get_last_id(self, last_id):
-        assert last_id['mission'] == 2
-        assert last_id['mission_phase'] == 3
-        assert last_id['environment'] == 3
-        print("\033[36m\nsucceed_get_last_id topic was broadcast")
 
     def on_fail_set_usage_profile_attrs(self, node_id):
         assert node_id == 0
@@ -426,7 +419,7 @@ class TestGetterSetter():
         DUT = dmUsageProfile()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_get_attributes('1', 'usage_profile')
+        DUT.do_get_attributes('1', 'usage_profile')
 
         pub.unsubscribe(self.on_succeed_get_usage_profile_attrs,
                         'succeed_get_usage_profile_attributes')
@@ -518,21 +511,6 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_usage_profile_tree,
                         'succeed_get_usage_profile_tree')
 
-    @pytest.mark.unit
-    def test_do_get_last_id(self, mock_program_dao):
-        """do_get_last_id() should broadcast the success message with the last
-        ID aste payload."""
-        pub.subscribe(self.on_succeed_get_last_id,
-                      'succeed_get_last_usage_profile_id')
-
-        DUT = dmUsageProfile()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_last_id('usage_profile')
-
-        pub.unsubscribe(self.on_succeed_get_last_id,
-                        'succeed_get_last_usage_profile_id')
-
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
@@ -558,7 +536,7 @@ class TestInsertMethods():
         DUT = dmUsageProfile()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_mission()
+        DUT._do_insert_mission()
 
         assert isinstance(
             DUT.tree.get_node('3').data['usage_profile'], RAMSTKMission)
@@ -576,7 +554,7 @@ class TestInsertMethods():
         DUT = dmUsageProfile()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_mission_phase(1)
+        DUT._do_insert_mission_phase(1)
 
         assert isinstance(DUT.tree, Tree)
         assert isinstance(
@@ -595,7 +573,7 @@ class TestInsertMethods():
         DUT = dmUsageProfile()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_environment(1, 1)
+        DUT._do_insert_environment(1, 1)
 
         assert isinstance(DUT.tree, Tree)
         assert isinstance(

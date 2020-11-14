@@ -136,22 +136,18 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
-        assert pub.isSubscribed(DUT._do_delete_validation,
-                                'request_delete_validation')
-        assert pub.isSubscribed(DUT.do_insert_validation,
-                                'request_insert_validation')
         assert pub.isSubscribed(DUT.do_update, 'request_update_validation')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_validation')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_validation_attributes')
-        assert pub.isSubscribed(DUT.do_get_all_attributes,
-                                'request_get_all_validation_attributes')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_validation_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_validation_attributes')
-        assert pub.isSubscribed(DUT.do_set_all_attributes,
-                                'request_set_all_validation_attributes')
+        assert pub.isSubscribed(DUT._do_delete_validation,
+                                'request_delete_validation')
+        assert pub.isSubscribed(DUT._do_insert_validation,
+                                'request_insert_validation')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_toml_user_configuration):
@@ -457,14 +453,14 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_validation(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a validation task."""
+        """_do_insert_validation() should send the success message after successfully inserting a validation task."""
         pub.subscribe(self.on_succeed_insert_validation,
                       'succeed_insert_validation')
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_insert_validation()
+        DUT._do_insert_validation()
 
         assert isinstance(
             DUT.tree.get_node(4).data['validation'], RAMSTKValidation)
@@ -560,18 +556,18 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
 
-    def on_succeed_get_all_attrs(self, attributes):
+    def on_succeed_get_all_validation_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['validation_id'] == 1
         assert attributes['name'] == 'PRF-0001'
+        assert attributes['time_average'] == 0.0
         print(
-            "\033[36m\nsucceed_get_all_validation_attributes topic was broadcast"
-        )
+            "\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
 
-    def on_succeed_get_validation_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_validation_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node(1).data['validation'], RAMSTKValidation)
+            tree.get_node(1).data['validation'], RAMSTKValidation)
         print("\033[36m\nsucceed_get_validation_tree topic was broadcast")
 
     def on_succeed_get_status_tree(self, stree):
@@ -601,17 +597,18 @@ class TestGetterSetter():
                         'succeed_get_validation_attributes')
 
     @pytest.mark.unit
-    def test_do_get_all_attributes_data_manager(self, mock_program_dao):
-        """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
-        pub.subscribe(self.on_succeed_get_all_attrs,
+    def test_do_get_all_attributes(self, mock_program_dao):
+        """_do_get_all_attributes() should return a dict of validation
+        attributes on success."""
+        pub.subscribe(self.on_succeed_get_all_validation_attrs,
                       'succeed_get_all_validation_attributes')
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_get_all_attributes(1)
+        DUT._do_get_all_attributes(1)
 
-        pub.unsubscribe(self.on_succeed_get_all_attrs,
+        pub.unsubscribe(self.on_succeed_get_all_validation_attrs,
                         'succeed_get_all_validation_attributes')
 
     @pytest.mark.unit
@@ -645,25 +642,16 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_do_set_all_attributes(self, mock_program_dao):
-        """do_set_all_attributes() should send the success message."""
+        """_do_set_all_attributes() should send the success message."""
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
         pub.sendMessage('request_set_all_validation_attributes',
-                        attributes={
-                            'validation_id':
-                            1,
-                            'task_specification':
-                            'MIL-STD-1629A',
-                            'description':
-                            'This is a description added by a test.',
-                        })
+                        attributes={'validation_id': 1,
+                                    'task_specification': 'NSWC-11'})
         assert DUT.do_select(
-            1, table='validation').task_specification == 'MIL-STD-1629A'
-        assert DUT.do_select(
-            1, table='validation'
-        ).description == 'This is a description added by a test.'
+            1, table='validation').task_specification == 'NSWC-11'
 
     @pytest.mark.unit
     def test_on_get_validation_tree(self, mock_program_dao):
@@ -866,7 +854,7 @@ class TestUpdateMethods():
 
         DUT.dic_matrices['vldtn_rqrmnt'].loc[1, 'REL-0001'] = 1
 
-        pub.sendMessage('do_request_update_matrix', revision_id=1,
+        pub.sendMessage('do_request_update_matrix',
                         matrix_type='vldtn_rqrmnt')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
@@ -928,7 +916,7 @@ class TestAnalysisMethods():
         _validation.confidence = 95.0
         DATAMGR.do_update(1)
 
-        pub.sendMessage('request_calculate_validation_task', task_id=1)
+        pub.sendMessage('request_calculate_validation_task', node_id=1)
 
         assert DUT._tree.get_node(
             1).data['validation'].time_ll == pytest.approx(11.86684674)

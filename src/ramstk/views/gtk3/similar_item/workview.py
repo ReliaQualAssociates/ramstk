@@ -417,14 +417,14 @@ class SimilarItemPanel(RAMSTKPanel):
         self.tvwTreeView.do_set_columns_editable(editable=None)
         self.tvwTreeView.do_set_visible_columns()
 
-    def _do_set_tree(self, dmtree: treelib.Tree) -> None:
+    def _do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the _similar_item_tree equal to the datamanger Hardware tree.
 
-        :param dmtree: the Hardware datamanger treelib.Tree() of data.
+        :param tree: the Hardware datamanger treelib.Tree() of data.
         :return: None
         :rtype: None
         """
-        self._similar_item_tree = dmtree
+        self._similar_item_tree = tree
 
     def __do_get_environment(self, environment_id: int) -> str:
         """Retrieve the environment name given the ID.
@@ -560,7 +560,7 @@ class SimilarItem(RAMSTKWorkView):
 
         # Initialize private scalar attributes.
         self._pnlMethod: RAMSTKPanel = MethodPanel()
-        self._pnlSimilarItemAnalysis: RAMSTKPanel = SimilarItemPanel()
+        self._pnlPanel: RAMSTKPanel = SimilarItemPanel()
 
         # Initialize public dictionary attributes.
 
@@ -594,7 +594,7 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model = self._pnlSimilarItemAnalysis.tvwTreeView.get_model()
+        _model = self._pnlPanel.tvwTreeView.get_model()
         _row = _model.get_iter_first()
 
         # Iterate through the assemblies and calculate the Similar Item hazard
@@ -615,26 +615,22 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_model,
-         _row) = self._pnlSimilarItemAnalysis.tvwTreeView.get_selection(
-         ).get_selected()  # noqa
+        (_model, _row
+         ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()  # noqa
 
         _dialog = EditFunction(
-            self._pnlSimilarItemAnalysis.tvwTreeView,
+            self._pnlPanel.tvwTreeView,
             dlgparent=self.get_parent().get_parent().get_parent().get_parent())
 
         if _dialog.do_run() == Gtk.ResponseType.OK:
-            _functions = _dialog.do_set_functions(
-                self._pnlSimilarItemAnalysis.tvwTreeView)
+            _functions = _dialog.do_set_functions(self._pnlPanel.tvwTreeView)
             if _dialog.chkApplyAll.get_active():
                 _row = _model.get_iter_first()
                 while _row is not None:
-                    self._pnlSimilarItemAnalysis.do_refresh_functions(
-                        _row, _functions)
+                    self._pnlPanel.do_refresh_functions(_row, _functions)
                     _row = _model.iter_next(_row)
             else:
-                self._pnlSimilarItemAnalysis.do_refresh_functions(
-                    _row, _functions)
+                self._pnlPanel.do_refresh_functions(_row, _functions)
 
         _dialog.do_destroy()
 
@@ -677,29 +673,12 @@ class SimilarItem(RAMSTKWorkView):
         """
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
+        self.do_embed_treeview_panel()
+        self._pnlPanel.do_load_combobox()
+        self._pnlPanel.do_set_callbacks()
+
+        self.remove(self.get_children()[-1])
         _hpaned.pack1(self._pnlMethod, True, True)
-
-        _fmt_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
-
-        try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'fg']
-        except KeyError:
-            _bg_color = '#FFFFFF'
-            _fg_color = '#000000'
-
-        self._pnlSimilarItemAnalysis.do_make_treeview(**{
-            'bg_color': _bg_color,
-            'fg_color': _fg_color,
-            'fmt_file': _fmt_file
-        })
-        self._pnlSimilarItemAnalysis.do_load_combobox()
-        self._pnlSimilarItemAnalysis.do_set_callbacks()
-
-        _hpaned.pack2(self._pnlSimilarItemAnalysis, True, True)
+        _hpaned.pack2(self._pnlPanel, True, True)
 
         self.show_all()

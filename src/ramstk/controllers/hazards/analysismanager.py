@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hazard Controller Package analysis manager."""
 
 # Standard Library Imports
@@ -49,10 +49,34 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_get_all_attributes,
-                      'succeed_get_all_hazard_attributes')
-        pub.subscribe(self.on_get_tree, 'succeed_get_hazard_tree')
+        pub.subscribe(super().on_get_all_attributes,
+                      'succeed_get_hazard_attributes')
+        pub.subscribe(super().on_get_tree, 'succeed_get_hazard_tree')
+
         pub.subscribe(self.do_calculate_fha, 'request_calculate_fha')
+
+    def do_calculate_fha(self, node_id: int) -> None:
+        """Perform a hazards analysis calculation for currently selected item.
+
+        :param int node_id: the node (hazard) ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        # Retrieve all the attributes from all the RAMSTK data tables for the
+        # requested hazard.  We need to build a comprehensive dict of
+        # attributes to pass to the various analysis methods/hazards.
+        pub.sendMessage('request_get_all_hazard_attributes', node_id=node_id)
+
+        self._do_calculate_hri()
+        self._do_calculate_user_defined()
+
+        # Update the hazard analysis record attributes.
+        self._attributes.pop('revision_id')
+        self._attributes.pop('function_id')
+
+        pub.sendMessage('request_set_all_hazard_attributes',
+                        attributes=self._attributes)
+        pub.sendMessage('succeed_calculate_hazard', node_id=node_id)
 
     def _do_calculate_hri(self) -> None:
         """Calculate the hazard risk index (HRI).
@@ -79,9 +103,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_calculate_user_defined(self) -> None:
         """Calculate the user-defined similar item hazard rate.
 
-        :param hazard: the hazard model to calculate the HRI for.
-        :return: hazard; the updated hazard dictionary.
-        :rtype: dict
+        :return: None
+        :rtype: None
         """
         _fha = OrderedDict({
             _key: ''
@@ -121,26 +144,3 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._attributes['result_3'] = float(_fha['res3'])
         self._attributes['result_4'] = float(_fha['res4'])
         self._attributes['result_5'] = float(_fha['res5'])
-
-    def do_calculate_fha(self, node_id: int) -> None:
-        """Perform a hazards analysis calculation for currently selected item.
-
-        :param int node_id: the node (hazard) ID to calculate.
-        :return: None
-        :rtype: None
-        """
-        # Retrieve all the attributes from all the RAMSTK data tables for the
-        # requested hazard.  We need to build a comprehensive dict of
-        # attributes to pass to the various analysis methods/hazards.
-        pub.sendMessage('request_get_all_hazard_attributes', node_id=node_id)
-
-        self._do_calculate_hri()
-        self._do_calculate_user_defined()
-
-        # Update the hazard analysis record attributes.
-        self._attributes.pop('revision_id')
-        self._attributes.pop('function_id')
-
-        pub.sendMessage('request_set_all_hazard_attributes',
-                        attributes=self._attributes)
-        pub.sendMessage('succeed_calculate_hazard', node_id=node_id)

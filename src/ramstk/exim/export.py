@@ -129,27 +129,26 @@ class Export:
         """
         pub.sendMessage('request_get_{0:s}_tree'.format(module.lower()))
 
-    def _do_load_data(self, dmtree: Tree) -> None:
+    def _do_load_data(self, tree: Tree) -> None:
         """
         Load the attribute data into a Pandas DataFrame.
 
-        :param dmtree: the data manager tree for the module to export.
-        :type dmtree: :class:`treelib.Tree`
+        :param tree: the data manager tree for the module to export.
         :return: None
         :rtype: None
         """
         _dic_temp = {}
-        _module = dmtree.get_node(0).tag.lower()
+        _module = tree.get_node(0).tag.lower()
         self._dic_output_data[_module] = {}
 
         # pylint: disable=unused-variable
-        for __, _node in enumerate(dmtree.nodes):
+        for __, _node in enumerate(tree.nodes):
             try:
-                _attributes = dmtree.nodes[_node].data[_module].get_attributes(
+                _attributes = tree.nodes[_node].data[_module].get_attributes(
                 )
                 for _key in _attributes:
                     _dic_temp[_key] = _attributes[_key]
             except TypeError:
                 pass
             self._dic_output_data[_module][
-                dmtree.nodes[_node].identifier] = _dic_temp
+                tree.nodes[_node].identifier] = _dic_temp

@@ -1135,7 +1135,7 @@ class FMEA(RAMSTKWorkView):
         self._item_hazard_rate: float = 0.0
 
         self._pnlMethods: RAMSTKPanel = MethodPanel()
-        self._pnlFMEA: RAMSTKPanel = FMEAPanel()
+        self._pnlPanel: RAMSTKPanel = FMEAPanel()
 
         # Initialize public dictionary attributes.
 
@@ -1184,7 +1184,8 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _model, _row = self._pnlFMEA.tvwTreeView.get_selection().get_selected()
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
+        )
         _node_id = _model.get_value(_row, 0)
 
         super().do_set_cursor_busy()
@@ -1200,7 +1201,8 @@ class FMEA(RAMSTKWorkView):
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
         # add a failure Mode.
-        _model, _row = self._pnlFMEA.tvwTreeView.get_selection().get_selected()
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
+        )
         try:
             _parent_id = _model.get_value(_row, 0)
             _attributes = _model.get_value(_row, 43).replace("'", '"')
@@ -1232,7 +1234,8 @@ class FMEA(RAMSTKWorkView):
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
         # add a failure Mode.
-        _model, _row = self._pnlFMEA.tvwTreeView.get_selection().get_selected()
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
+        )
         try:
             _attributes = _model.get_value(_row, 43).replace("'", '"')
             _attributes = json.loads("{0}".format(_attributes))
@@ -1289,6 +1292,17 @@ class FMEA(RAMSTKWorkView):
         """
         self._item_hazard_rate = attributes['hazard_rate_active']
 
+    def __do_set_callbacks(self) -> None:
+        """Set the callback methods and functions for the FMEA widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
+                "button_press_event",
+                super().on_button_press)
+
     def __make_ui(self) -> None:
         """Build the user interface for the FMEA tab.
 
@@ -1297,54 +1311,28 @@ class FMEA(RAMSTKWorkView):
         """
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
-        _hpaned.pack1(self._pnlMethods, True, True)
-
-        _fmt_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
-
-        try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'fg']
-        except KeyError:
-            _bg_color = '#FFFFFF'
-            _fg_color = '#000000'
-
-        self._pnlFMEA.dic_action_category = \
+        self._pnlPanel.dic_action_category = \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_CATEGORY
-        self._pnlFMEA.dic_action_status = \
+        self._pnlPanel.dic_action_status = \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS
-        self._pnlFMEA.dic_detection =  \
+        self._pnlPanel.dic_detection =  \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION
-        self._pnlFMEA.dic_occurrence =  \
+        self._pnlPanel.dic_occurrence =  \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE
-        self._pnlFMEA.dic_severity =  \
+        self._pnlPanel.dic_severity =  \
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY
-        self._pnlFMEA.dic_users = self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS
-        self._pnlFMEA.dic_icons = self._dic_icons
+        self._pnlPanel.dic_users = self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS
+        self._pnlPanel.dic_icons = self._dic_icons
 
-        self._pnlFMEA.do_make_treeview(bg_color=_bg_color,
-                                       fg_color=_fg_color,
-                                       fmt_file=_fmt_file)
-        self._pnlFMEA.do_load_combobox()
-        self._pnlFMEA.do_set_callbacks()
+        self.do_embed_treeview_panel()
+        self._pnlPanel.do_load_combobox()
+        self._pnlPanel.do_set_callbacks()
 
-        _hpaned.pack2(self._pnlFMEA, True, True)
+        self.remove(self.get_children()[-1])
+        _hpaned.pack1(self._pnlMethods, True, True)
+        _hpaned.pack2(self._pnlPanel, True, True)
 
         self.show_all()
-
-    def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions for the FMEA widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self._pnlFMEA.tvwTreeView.dic_handler_id[
-            'button-press'] = self._pnlFMEA.tvwTreeView.connect(
-                "button_press_event",
-                super().on_button_press)
 
     def __on_request_insert_control_action(self) -> str:
         """Raise dialog to select whether to add a control or action.
