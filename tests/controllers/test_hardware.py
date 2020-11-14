@@ -663,10 +663,10 @@ class TestGetterSetter():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
         DUT = amHardware(test_toml_user_configuration)
 
-        def on_message(dmtree):
-            assert isinstance(dmtree, Tree)
+        def on_message(tree):
+            assert isinstance(tree, Tree)
             assert isinstance(DUT._tree, Tree)
-            assert DUT._tree == dmtree
+            assert DUT._tree == tree
             assert isinstance(DUT._tree.get_node(1).data['nswc'], RAMSTKNSWC)
 
         pub.subscribe(on_message, 'succeed_get_hardware_tree')
@@ -1044,7 +1044,6 @@ class TestUpdateMethods():
         DUT.dic_matrices['hrdwr_rqrmnt'][3][5] = 1
 
         pub.sendMessage('request_update_hardware_matrix',
-                        revision_id=1,
                         matrix_type='hrdwr_rqrmnt')
 
 

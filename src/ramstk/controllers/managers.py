@@ -22,7 +22,7 @@ from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKMatrix
 
 
-class RAMSTKAnalysisManager():
+class RAMSTKAnalysisManager:
     """Contain the attributes and methods of an analysis manager.
 
     This class manages the analyses for RAMSTK modules.  Attributes of the
@@ -41,6 +41,7 @@ class RAMSTKAnalysisManager():
     RAMSTK_USER_CONFIGURATION = None
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[str, Any]) -> None:
         """Initialize an instance of the hardware analysis manager.
@@ -76,18 +77,17 @@ class RAMSTKAnalysisManager():
         """
         self._attributes = attributes
 
-    def on_get_tree(self, dmtree: treelib.Tree) -> None:
+    def on_get_tree(self, tree: treelib.Tree) -> None:
         """Set the analysis manager's treelib Tree().
 
-        :param dmtree: the data manager's treelib Tree().
-        :type dmtree: :class:`treelib.Tree`
+        :param tree: the data manager's treelib Tree().
         :return: None
         :rtype: None
         """
-        self._tree = dmtree
+        self._tree = tree
 
 
-class RAMSTKDataManager():
+class RAMSTKDataManager:
     """The meta-class for all RAMSTK Data Managers.
 
     :ivar tree: the treelib Tree()that will contain the structure of the RAMSTK
@@ -110,6 +110,7 @@ class RAMSTKDataManager():
     # Define public scalar class attributes.
 
     # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize an RAMSTK data model instance."""
         # Initialize private dictionary attributes.
@@ -171,6 +172,7 @@ class RAMSTKDataManager():
         :rtype: None
         """
         for _node in self.tree.all_nodes():
+            # noinspection PyUnresolvedReferences
             self.do_create_code(_node.identifier, prefix)  # type: ignore
 
     def do_delete(self, node_id: int, table: str) -> None:
@@ -278,7 +280,8 @@ class RAMSTKDataManager():
                 self.do_select(node_id[0],
                                table=_table).set_attributes(_attributes)
 
-        self.do_get_tree()
+        # noinspection PyUnresolvedReferences
+        self.do_get_tree()  # type: ignore
 
     def do_set_tree(self, module_tree: treelib.Tree) -> None:
         """Set the MODULE treelib Tree().
@@ -302,12 +305,9 @@ class RAMSTKDataManager():
         for _node in self.tree.all_nodes():
             self.do_update(_node.identifier)  # type: ignore
 
-    def do_update_matrix(self, revision_id: int, matrix_type: str,
-                         matrix: pd.DataFrame) -> None:
+    def do_update_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
         """Update the matrix values in the RAMSTK Program database.
 
-        :param int revision_id: the revisiond ID associated with the matrix to
-            update.
         :param str matrix_type: the type (name) of the matrix to update.
         :param matrix: the actual matrix whose values are being updated in the
             database.
@@ -328,7 +328,7 @@ class RAMSTKDataManager():
                         RAMSTKMatrix.column_item_id, RAMSTKMatrix.row_item_id
                     ],
                     value=[
-                        revision_id, matrix_type,
+                        self._revision_id, matrix_type,
                         int(_col_id) + 2,
                         int(_row_id)
                     ],
@@ -339,7 +339,7 @@ class RAMSTKDataManager():
                 # create a new RAMSTKMatrix record and add it.
                 if _entity is None:
                     _entity = RAMSTKMatrix()
-                    _entity.revision_id = revision_id
+                    _entity.revision_id = self._revision_id
                     _entity.matrix_id = _next_id
                     _entity.matrix_type = matrix_type
                     _entity.column_item_id = int(_col_id) + 2
@@ -355,7 +355,7 @@ class RAMSTKDataManager():
         self._revision_id = attributes['revision_id']
 
 
-class RAMSTKMatrixManager():
+class RAMSTKMatrixManager:
     """The meta-class for all RAMSTK Matrix Managers.
 
     The Matrix data model is an aggregate model of N x M cell data models.  The
@@ -415,6 +415,7 @@ class RAMSTKMatrixManager():
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._revision_id: int = 0
         self._row_table: Any = row_table
         self._row_tree: treelib.Tree = treelib.Tree()
 
@@ -430,6 +431,8 @@ class RAMSTKMatrixManager():
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load, 'succeed_retrieve_matrix')
         pub.subscribe(self.do_request_update, 'do_request_update_matrix')
+
+        pub.subscribe(self._on_select_revision, 'selected_revision')
 
     def do_create_columns(self, matrix_type: str) -> None:
         """Create the matrix columns.
@@ -601,12 +604,10 @@ class RAMSTKMatrixManager():
         except KeyError:
             pass
 
-    def do_request_update(self, revision_id: int, matrix_type: str) -> None:
+    def do_request_update(self, matrix_type: str) -> None:
         """Update the requested matrix in the RAMSTK program database.
 
-        :param int revision_id: the Revision ID the associated matrix
-            belongs to.
-        :param str matrix_type: the type of the Matrix to select from.  This
+        :param matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
             this matrix manager.
         :return: None
@@ -614,7 +615,6 @@ class RAMSTKMatrixManager():
         """
         if matrix_type in self.dic_matrices:
             pub.sendMessage('request_update_matrix',
-                            revision_id=revision_id,
                             matrix_type=matrix_type,
                             matrix=self.dic_matrices[matrix_type])
 
@@ -634,3 +634,7 @@ class RAMSTKMatrixManager():
             exist.
         """
         return self.dic_matrices[matrix_type].loc[row, col]
+
+    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
+        """Set the revision ID for the matrix manager."""
+        self._revision_id = attributes['revision_id']

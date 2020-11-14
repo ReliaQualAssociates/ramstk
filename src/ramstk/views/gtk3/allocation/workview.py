@@ -561,14 +561,14 @@ class AllocationPanel(RAMSTKPanel):
         self.tvwTreeView.visible = _dic_visible[self._method_id]
         self.tvwTreeView.do_set_visible_columns()
 
-    def _do_set_tree(self, dmtree: treelib.Tree) -> None:
+    def _do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the _allocation_tree equal to the datamanger Hardware tree.
 
         :param dmtree: the Hardware datamanger treelib.Tree() of data.
         :return: None
         :rtype: None
         """
-        self._allocation_tree = dmtree
+        self._allocation_tree = tree
 
     def __do_set_properties(self) -> None:
         """Set the properties of the General Data Work View and widgets.

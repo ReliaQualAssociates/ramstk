@@ -88,7 +88,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_validation_tree', dmtree=self.tree)
+        pub.sendMessage('succeed_get_validation_tree', tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Validation BoM data from the RAMSTK Program database.

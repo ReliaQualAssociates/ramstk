@@ -20,20 +20,17 @@ from ramstk.controllers import RAMSTKAnalysisManager
 
 
 class AnalysisManager(RAMSTKAnalysisManager):
-    """
-    Contain the attributes and methods of the Function analysis manager.
+    """Contain the attributes and methods of the Function analysis manager.
 
-    This class manages the functional analysis for functional hazards analysis
-    (FHA).  Attributes of the function Analysis Manager are:
+    This class manages the functional analysis for functional hazards
+    analysis (FHA).  Attributes of the function Analysis Manager are:
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[str, Any]) -> None:
-        """
-        Initialize an instance of the function analysis manager.
+        """Initialize an instance of the function analysis manager.
 
         :param configuration: the Configuration instance associated with the
             current instance of the RAMSTK application.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         super().__init__(configuration, **kwargs)
 
@@ -53,14 +50,14 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(super().on_get_all_attributes,
                       'succeed_get_stakeholder_attributes')
         pub.subscribe(super().on_get_tree, 'succeed_get_stakeholder_tree')
+
         pub.subscribe(self.do_calculate_stakeholder,
                       'request_calculate_stakeholder')
 
     def do_calculate_stakeholder(self, node_id: int) -> None:
-        """
-        Calculate improvement factor and weight for currently selected item.
+        """Calculate improvement factor and weight for currently selected item.
 
-        :param int node_id: the node (stakeholder) ID to calculate.
+        :param node_id: the node (stakeholder) ID to calculate.
         :return: None
         :rtype: None
         """
@@ -82,8 +79,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             package={'overall_weight': self._attributes['overall_weight']})
 
     def _do_calculate_improvement(self) -> None:
-        """
-        Calculate improvement factor and weight for currently selected item.
+        """Calculate improvement factor and weight for currently selected item.
 
         :return: None
         :rtype: None

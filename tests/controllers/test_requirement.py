@@ -327,11 +327,11 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_requirement_attributes topic was broadcast")
 
-    def on_succeed_get_requirement_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node(1).data, dict)
+    def on_succeed_get_requirement_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data, dict)
         assert isinstance(
-            dmtree.get_node(1).data['requirement'], RAMSTKRequirement)
+            tree.get_node(1).data['requirement'], RAMSTKRequirement)
         print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
 
     def on_succeed_create_requirement_code(self, requirement_code):
@@ -643,7 +643,7 @@ class TestUpdateMethods():
                       'succeed_retrieve_hardware')
 
         pub.sendMessage('selected_revision', attributes={'revision_id': 1})
-        pub.sendMessage('do_request_update_matrix', revision_id=1,
+        pub.sendMessage('do_request_update_matrix',
                         matrix_type='rqrmnt_hrdwr')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')

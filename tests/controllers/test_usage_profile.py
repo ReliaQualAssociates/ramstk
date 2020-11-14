@@ -395,14 +395,14 @@ class TestGetterSetter():
             "\033[36m\nsucceed_get_usage_profile_attributes topic was broadcast"
         )
 
-    def on_succeed_get_usage_profile_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_usage_profile_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node('1').data['usage_profile'], RAMSTKMission)
+            tree.get_node('1').data['usage_profile'], RAMSTKMission)
         assert isinstance(
-            dmtree.get_node('1.1').data['usage_profile'], RAMSTKMissionPhase)
+            tree.get_node('1.1').data['usage_profile'], RAMSTKMissionPhase)
         assert isinstance(
-            dmtree.get_node('1.1.1').data['usage_profile'], RAMSTKEnvironment)
+            tree.get_node('1.1.1').data['usage_profile'], RAMSTKEnvironment)
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
 
     def on_fail_set_usage_profile_attrs(self, node_id):

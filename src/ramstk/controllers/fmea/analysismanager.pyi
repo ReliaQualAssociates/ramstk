@@ -1,8 +1,11 @@
 # Standard Library Imports
 from typing import Any, Dict
 
+# Third Party Imports
+import treelib
+
 # RAMSTK Package Imports
-from ramstk.analyses import fha as fha
+from ramstk.analyses import criticality as criticality
 from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
 )
@@ -13,11 +16,12 @@ class AnalysisManager(RAMSTKAnalysisManager):
                  **kwargs: Dict[str, Any]) -> None:
         ...
 
-    def do_calculate_fha(self, node_id: int) -> None:
+    def _do_calculate_criticality(self, item_hr: float) -> None:
         ...
 
-    def _do_calculate_hri(self) -> None:
+    def _do_calculate_rpn(self, method: str = ...) -> None:
         ...
 
-    def _do_calculate_user_defined(self) -> None:
+    def __do_calculate_rpn(self, mode: treelib.Node, sod: Dict[str, int],
+                           method: str) -> None:
         ...

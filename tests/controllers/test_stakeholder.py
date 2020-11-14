@@ -242,11 +242,11 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_stakeholder_attributes topic was broadcast")
 
-    def on_succeed_get_stakeholder_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node(1).data, dict)
+    def on_succeed_get_stakeholder_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data, dict)
         assert isinstance(
-            dmtree.get_node(1).data['stakeholder'], RAMSTKStakeholder)
+            tree.get_node(1).data['stakeholder'], RAMSTKStakeholder)
         print("\033[36m\nsucceed_get_stakeholder_tree topic was broadcast")
 
     @pytest.mark.unit

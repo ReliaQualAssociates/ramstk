@@ -68,7 +68,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_revision_tree', dmtree=self.tree)
+        pub.sendMessage('succeed_get_revision_tree', tree=self.tree)
 
     def do_select_all(self) -> None:
         """Retrieve all the Revision data from the RAMSTK Program database.

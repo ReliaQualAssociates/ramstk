@@ -417,14 +417,14 @@ class SimilarItemPanel(RAMSTKPanel):
         self.tvwTreeView.do_set_columns_editable(editable=None)
         self.tvwTreeView.do_set_visible_columns()
 
-    def _do_set_tree(self, dmtree: treelib.Tree) -> None:
+    def _do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the _similar_item_tree equal to the datamanger Hardware tree.
 
-        :param dmtree: the Hardware datamanger treelib.Tree() of data.
+        :param tree: the Hardware datamanger treelib.Tree() of data.
         :return: None
         :rtype: None
         """
-        self._similar_item_tree = dmtree
+        self._similar_item_tree = tree
 
     def __do_get_environment(self, environment_id: int) -> str:
         """Retrieve the environment name given the ID.

@@ -238,10 +238,10 @@ class TestGetterSetter():
             "\033[36m\nsucceed_get_all_revision_attributes topic was broadcast"
         )
 
-    def on_succeed_get_failure_definition_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_failure_definition_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node(1).data['failure_definition'],
+            tree.get_node(1).data['failure_definition'],
             RAMSTKFailureDefinition)
         print(
             "\033[36m\nsucceed_get_failure_definition_tree topic was broadcast"

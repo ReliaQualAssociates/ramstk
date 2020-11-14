@@ -261,10 +261,10 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_all_hazard_attributes topic was broadcast")
 
-    def on_succeed_get_hazard_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_hazard_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node(1).data['hazard'], RAMSTKHazardAnalysis)
+            tree.get_node(1).data['hazard'], RAMSTKHazardAnalysis)
         print("\033[36m\nsucceed_get_hazard_tree topic was broadcast")
 
     @pytest.mark.unit

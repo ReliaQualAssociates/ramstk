@@ -1026,7 +1026,6 @@ class RAMSTKListView(RAMSTKBaseView):
         elif self._view_type == 'matrix':
             super().do_set_cursor_busy()
             pub.sendMessage('do_request_update_matrix',
-                            revision_id=self._revision_id,
                             matrix_type=self._module.lower())
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:

@@ -564,10 +564,10 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
 
-    def on_succeed_get_validation_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
+    def on_succeed_get_validation_tree(self, tree):
+        assert isinstance(tree, Tree)
         assert isinstance(
-            dmtree.get_node(1).data['validation'], RAMSTKValidation)
+            tree.get_node(1).data['validation'], RAMSTKValidation)
         print("\033[36m\nsucceed_get_validation_tree topic was broadcast")
 
     def on_succeed_get_status_tree(self, stree):
@@ -854,7 +854,7 @@ class TestUpdateMethods():
 
         DUT.dic_matrices['vldtn_rqrmnt'].loc[1, 'REL-0001'] = 1
 
-        pub.sendMessage('do_request_update_matrix', revision_id=1,
+        pub.sendMessage('do_request_update_matrix',
                         matrix_type='vldtn_rqrmnt')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
@@ -916,7 +916,7 @@ class TestAnalysisMethods():
         _validation.confidence = 95.0
         DATAMGR.do_update(1)
 
-        pub.sendMessage('request_calculate_validation_task', task_id=1)
+        pub.sendMessage('request_calculate_validation_task', node_id=1)
 
         assert DUT._tree.get_node(
             1).data['validation'].time_ll == pytest.approx(11.86684674)

@@ -68,7 +68,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_hazard_tree', dmtree=self.tree)
+        pub.sendMessage('succeed_get_hazard_tree', tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Hazard data from the RAMSTK Program database.

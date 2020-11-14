@@ -284,9 +284,9 @@ class TestGetterSetter():
         assert attributes['program_time'] == 2562
         print("\033[36m\nsucceed_get_revision_attributes topic was broadcast")
 
-    def on_succeed_get_revision_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node(1).data['revision'], RAMSTKRevision)
+    def on_succeed_get_revision_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data['revision'], RAMSTKRevision)
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
 
     @pytest.mark.unit

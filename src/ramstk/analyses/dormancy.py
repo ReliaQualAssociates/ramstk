@@ -7,7 +7,7 @@
 """Dormancy Calculations Module."""
 
 # Standard Library Imports
-from typing import Union
+from typing import List, Union
 
 # Third Party Imports
 import numpy as np
@@ -81,7 +81,7 @@ DORMANT_HR_MULT = np.array([[[0.0, 0.08, 0.0, 0.0], [0.0, 0.08, 0.0, 0.0],
 
 
 def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
-                                     env_info: Union[int, int]) -> float:
+                                     env_info: List[int]) -> float:
     r"""
     Calculate the dormant hazard rate for a hardware item.
 
@@ -126,7 +126,7 @@ def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
     |             4            | Space                   |
     +--------------------------+-------------------------+
 
-    :param list hw_info: the list of information relative to the hardware item
+    :param hw_info: the list of information relative to the hardware item
         to calculate the dormant hazard rate.  Index 0 is the category ID,
         index 1 is the subcategory ID, and index 3 is the predicted hazard
         rate.

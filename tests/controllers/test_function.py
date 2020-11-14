@@ -467,9 +467,9 @@ class TestGetterSetter():
         assert attributes['safety_critical'] == 0
         print("\033[36m\nsucceed_get_function_attributes topic was broadcast.")
 
-    def on_succeed_get_function_tree(self, dmtree):
-        assert isinstance(dmtree, Tree)
-        assert isinstance(dmtree.get_node(1).data['function'], RAMSTKFunction)
+    def on_succeed_get_function_tree(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data['function'], RAMSTKFunction)
         print("\033[36m\nsucceed_get_function_tree topic was broadcast")
 
     @pytest.mark.unit
@@ -623,7 +623,6 @@ class TestUpdateMethods():
 
         pub.sendMessage('selected_revision', attributes={'revision_id': 1})
         pub.sendMessage('do_request_update_matrix',
-                        revision_id=1,
                         matrix_type='fnctn_hrdwr')
 
         pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
