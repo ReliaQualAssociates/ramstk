@@ -295,7 +295,7 @@ class HazOps(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlHazOps: RAMSTKPanel = HazOpsPanel()
+        self._pnlPanel: RAMSTKPanel = HazOpsPanel()
 
         # Initialize public dictionary attributes.
 
@@ -338,7 +338,7 @@ class HazOps(RAMSTKWorkView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_delete_hazard',
                         function_id=self._parent_id,
-                        node_id=self._pnlHazOps._record_id)  # pylint: disable=protected-access
+                        node_id=self._pnlPanel._record_id)  # pylint: disable=protected-access
 
     def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
         """Request to insert a new hazard for the selected function.
@@ -402,31 +402,14 @@ class HazOps(RAMSTKWorkView):
             callbacks=self._lst_callbacks,
         )
 
-        _fmt_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module])
+        self.do_embed_treeview_panel()
+        self._pnlPanel.do_set_callbacks()
 
-        try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'bg']
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + 'fg']
-        except KeyError:
-            _bg_color = '#FFFFFF'
-            _fg_color = '#000000'
-
-        self._pnlHazOps.do_make_treeview(bg_color=_bg_color,
-                                         fg_color=_fg_color,
-                                         fmt_file=_fmt_file)
-
-        self._pnlHazOps.do_load_criticality(
+        self._pnlPanel.do_load_criticality(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_CRITICALITY)
-        self._pnlHazOps.do_load_hazards(
+        self._pnlPanel.do_load_hazards(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS)
-        self._pnlHazOps.do_load_probability(
+        self._pnlPanel.do_load_probability(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY)
 
-        self._pnlHazOps.do_set_callbacks()
-
-        self.pack_end(self._pnlHazOps, True, True, 0)
         self.show_all()

@@ -85,7 +85,7 @@ class RAMSTKBaseView(Gtk.HBox):
     }
 
     # Define public class scalar attributes.
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None   # type: ignore
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -115,7 +115,10 @@ class RAMSTKBaseView(Gtk.HBox):
             'save',
             'save-all',
         ]
-        self._lst_mnu_labels: List[str] = []
+        self._lst_mnu_labels: List[str] = [
+            _('Save'),
+            _('Save All'),
+        ]
         self._lst_tooltips: List[str] = []
 
         self._lst_col_order: List[int] = []
