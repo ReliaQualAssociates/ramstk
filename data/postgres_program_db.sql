@@ -664,7 +664,7 @@ CREATE TABLE ramstk_similar_item (
 );
 
 CREATE TABLE ramstk_mode (
-    fld_function_id INTEGER,
+    fld_revision_id INTEGER,
     fld_hardware_id INTEGER,
     fld_mode_id INTEGER PRIMARY KEY NOT NULL,
     fld_critical_item INTEGER,
