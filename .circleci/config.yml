@@ -1,12 +1,65 @@
+# Circle CI configuration file
+# https://circleci.com/docs/
+
 version: 2.1
 
-orbs:
-  python: circleci/python@0.2.1
+#######################################
+# Define some common steps as commands.
+#
+commands:
+  apt-install:
+    description: Install libraries needed by GUI components.
+    steps:
+      - run:
+          name: Install apt packages
+          command: |
+            sudo apt -qq update
+            sudo apt install -y \
+              libgirepository1.0-dev \
+              gir1.2-gtk-3.0 \
+              python3-gi \
+              python3-gi-cairo \
+              python3-pytest \
+              libenchant1c2a \
+              libenchant-dev
+  pip-install:
+    description: Upgrade pip and other Python packages to get as clean an install as possible.
+    steps:
+      - run:
+          name: Upgrade pip, setuptools, wheel, etc.
+          comand: |
+            python -mpip install --upgrade --user pip
+            python -mpip install --upgrade --user wheel
+            python -mpip install --upgrade --user setuptools
+            python -mpip install --upgrade --user urllib3
+            python -mpip install --upgrade --user pip-tools
 
+  deps-install:
+    steps:
+      - run:
+          name: Install RAMSTK dependencies
+          command: |
+            python -mpip install --user -r requirements.txt -r requirements-test.txt
+
+  ramstk-install:
+    steps:
+      - run:
+          name: Install RAMSTK
+          command: python -mpip install --user -ve .
+
+  make-coverage:
+    steps:
+      - run:
+          name: Test with coverage
+          command: make coverage
+
+##########################################
+# Define jobs.
+#
 jobs:
-  test_with_coverage:
+  test-with-coverage:
     docker:
-      - image: circleci/python:3.7.4
+      - image: circleci/python:3.7
         auth:
           username: weibullguy
           password: $DOCKERHUB_PASSWORD
@@ -15,18 +68,17 @@ jobs:
 
     steps:
       - checkout
-      - run: sudo apt-get update
-      - run: sudo apt-get install -y libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev
-      - run: sudo pip install -U pip
-      - run: sudo pip install -U setuptools>12.0
-      - run: sudo pip install -U urllib3
-      - run: sudo pip install -U pip-tools
-      - run: sudo pip install -r requirements.txt -r requirements-test.txt
-      - run: sudo pip install .
-      - run: make coverage
-
+      - apt-install
+      - pip-install
+      - deps-install
+      - ramstk-install
+      - make-coverage
+      -
+#########################################
+# Define workflows.
+#
 workflows:
-  test:
+  version: 2
+  build:
     jobs:
-      - test_with_coverage
-
+      - test-with-coverage
