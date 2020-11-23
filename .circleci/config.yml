@@ -22,12 +22,13 @@ commands:
               python3-pytest \
               libenchant1c2a \
               libenchant-dev
+
   pip-install:
     description: Upgrade pip and other Python packages to get as clean an install as possible.
     steps:
       - run:
           name: Upgrade pip, setuptools, wheel, etc.
-          comand: |
+          command: |
             python -mpip install --upgrade --user pip
             python -mpip install --upgrade --user wheel
             python -mpip install --upgrade --user setuptools
@@ -73,7 +74,7 @@ jobs:
       - deps-install
       - ramstk-install
       - make-coverage
-      -
+
 #########################################
 # Define workflows.
 #

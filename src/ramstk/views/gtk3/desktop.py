@@ -39,9 +39,7 @@ def destroy(__widget: Gtk.Widget, __event: Gdk.Event = None) -> None:
     corner is pressed or if this function is called as a callback.
 
     :param __widget: the Gtk.Widget() that called this method.
-    :type __widget: :class:`Gtk.Widget`
     :keyword __event: the Gdk.Event() that called this method.
-    :type __event: :class:`Gdk.Event`
     :return: None
     :rtype: None
     """
@@ -77,20 +75,21 @@ class RAMSTKDesktop(Gtk.Window):
     :type toolbar: :class:`Gtk.Toolbar`
     """
 
-    RAMSTK_USER_CONFIGURATION = None
+    RAMSTK_SITE_CONFIGURATION: RAMSTKSiteConfiguration = None  # type: ignore
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
 
     def __init__(self, configuration: Tconfiguration,
                  logger: RAMSTKLogManager) -> None:
         """Initialize an instance of the RAMSTK Book.
 
-        :param list configuration: a list containing the RAMSTK user
+        :param configuration: a list containing the RAMSTK user
             configuration and RAMSTK site configuration class instances.
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         # pylint: disable=non-parent-init-called
         GObject.GObject.__init__(self)
-        self.RAMSTK_USER_CONFIGURATION = configuration[0]
+        self.RAMSTK_USER_CONFIGURATION = configuration[0]   # type: ignore
+        self.RAMSTK_SITE_CONFIGURATION = configuration[1]   # type: ignore
 
         # Initialize private dictionary attributes.
 
@@ -124,10 +123,14 @@ class RAMSTKDesktop(Gtk.Window):
 
         self.icoStatus = Gtk.StatusIcon()
 
-        self.nbkListBook = RAMSTKListBook(configuration[0], logger)
-        self.nbkModuleBook = RAMSTKModuleBook(configuration[0], logger)
-        self.nbkWorkBook = RAMSTKWorkBook(configuration[0], logger)
-        self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION = configuration[1]
+        self.nbkListBook = RAMSTKListBook(self.RAMSTK_USER_CONFIGURATION,
+                                          logger)
+        self.nbkModuleBook = RAMSTKModuleBook(self.RAMSTK_USER_CONFIGURATION,
+                                              logger)
+        self.nbkWorkBook = RAMSTKWorkBook(self.RAMSTK_USER_CONFIGURATION,
+                                          logger)
+        self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION = \
+            self.RAMSTK_SITE_CONFIGURATION
 
         try:
             locale.setlocale(locale.LC_ALL,
@@ -196,7 +199,7 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', CreateProject,
-                           self.RAMSTK_USER_CONFIGURATION)
+                           self.RAMSTK_USER_CONFIGURATION, self)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -207,7 +210,7 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', OpenProject,
-                           self.RAMSTK_USER_CONFIGURATION)
+                           self.RAMSTK_USER_CONFIGURATION, self)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -305,7 +308,7 @@ class RAMSTKDesktop(Gtk.Window):
         _image.set_from_file(_icon_dir + '/32x32/new.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', CreateProject,
-                        self.RAMSTK_USER_CONFIGURATION)
+                        self.RAMSTK_USER_CONFIGURATION, self)
         self.toolbar.insert(_button, _position)
         _position += 1
 

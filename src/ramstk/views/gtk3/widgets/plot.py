@@ -12,9 +12,10 @@ from typing import Any, Dict, List, Tuple, Union
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk, Gtk, _
 
+# type: ignore
+# Third Party Imports
 try:
     # noinspection PyPackageRequirements
-    # Third Party Imports
     import matplotlib
     # noinspection PyPackageRequirements
     from matplotlib.backends.backend_gtk3cairo import (

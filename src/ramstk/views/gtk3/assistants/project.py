@@ -3,11 +3,8 @@
 #       ramstk.views.gtk3.assistants.project.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Open Project Assistant Module."""
-
-# Standard Library Imports
-import os
 
 # Third Party Imports
 from pubsub import pub
@@ -15,7 +12,6 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
-from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets.dialog import (
     RAMSTKDatabaseSelect, RAMSTKDialog, RAMSTKFileChooser, RAMSTKMessageDialog
@@ -24,25 +20,25 @@ from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 
 
 class CreateProject:
-    """This is the class used to create a new RAMSTK Project database."""
+    """The class used to create a new RAMSTK Project database."""
 
-    RAMSTK_USER_CONFIGURATION = None
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
 
     def __init__(self, __button: Gtk.ToolButton,
-                 configuration: RAMSTKUserConfiguration) -> None:
-        """
-        Initialize an instance of the Create Project Assistant.
+                 configuration: RAMSTKUserConfiguration,
+                 parent: object) -> None:
+        """Initialize an instance of the Create Project Assistant.
 
         :param __button: the Gtk.ToolButton() that launched this class.
-        :type __button: :class:`Gtk.ToolButton`
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
+        :param parent: the parent window associated with the dialog.
         """
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._parent: object = parent
 
         # Initialize public dictionary attributes.
 
@@ -51,96 +47,90 @@ class CreateProject:
         # Initialize public scalar attributes.
         self.RAMSTK_USER_CONFIGURATION = configuration
 
-        self._do_request_create_sqlite3_project()
+        self._do_request_create_project()
 
-    def _do_confirm_overwrite(self, new_program: str) -> None:
-        """
-        Raise dialog to confirm overwriting existing RAMSTK database.
+    def _do_confirm_overwrite(self, database: str) -> None:
+        """Raise dialog to confirm overwriting existing RAMSTK database.
 
-        :param str new_program: the absolute path to the new RAMSTK program
-            database.
+        :param database: the name of the existing database that is to be
+            confirmed for overwrite.
         :return: None
         :rtype: None
         """
-        if file_exists(new_program):
-            _dlgConfirm = RAMSTKDialog(
-                _("RAMSTK - Confirm Overwrite"),
-                dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES, Gtk.STOCK_NO,
-                            Gtk.ResponseType.NO))
+        _dialog = RAMSTKDialog(_("RAMSTK - Confirm Overwrite"),
+                               dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES,
+                                           Gtk.STOCK_NO, Gtk.ResponseType.NO),
+                               dlgparent=self._parent)
 
-            _label = RAMSTKLabel(
-                _("RAMSTK Program database already exists. "
-                  "\n\n{0:s}\n\nOverwrite?").format(new_program))
-            _label.do_set_properties(width=-1,
-                                     height=-1,
-                                     bold=False,
-                                     wrap=True)
-            _dlgConfirm.vbox.pack_start(_label, True, True, 0)
-            _label.show()
+        _label = RAMSTKLabel(
+            _("RAMSTK Program database already exists:"
+              "\n\n\t\t{0:s}\n\nOverwrite?").format(database))
+        _label.do_set_properties(width=-1, height=-1, bold=False, wrap=True)
+        _dialog.vbox.pack_start(_label, True, True, 0)
+        _dialog.show_all()
 
-            if _dlgConfirm.run() == Gtk.ResponseType.YES:
-                _dlgConfirm.destroy()
-                os.remove(new_program)
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'] = (
-                    new_program)
-            else:
-                _dlgConfirm.destroy()
-
-    def _do_request_create_sqlite3_project(self) -> None:
-        """Create a RAMSTK Project database using SQLite3."""
-        _dialog = RAMSTKFileChooser(_("Create a RAMSTK Program Database"),
-                                    parent=None)
-        _dialog.set_current_folder(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
-
-        if _dialog.do_run() == Gtk.ResponseType.ACCEPT:
-            _new_program = _dialog.get_filename()
-            _new_program = _new_program + '.ramstk'
-
-            self._do_confirm_overwrite(_new_program)
-
-            pub.sendMessage('request_create_program',
-                            program_db=BaseDatabase(),
-                            database=self.RAMSTK_USER_CONFIGURATION.
-                            RAMSTK_PROG_INFO['database'])
+        if _dialog.run() == Gtk.ResponseType.YES:
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
+                'database'] = database
+        else:
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'] = ''
 
         _dialog.destroy()
 
-    def _cancel(self, __button: Gtk.Button) -> None:
-        """
-        Destroy the Create Project Assistant.
+    def _do_request_create_project(self) -> None:
+        """Request to create a new RAMSTK Project Database.
 
-        :param __button: the Gtk.Button() that called this method.
-        :type __button: :class:`Gtk.Button`
         :return: None
         :rtype: None
         """
-        self.assistant.destroy()
+        _database: str = ''
+        _exists: bool = False
+
+        _dialog = RAMSTKDatabaseSelect(
+            dlgtitle=("Select RAMSTK Program "
+                      "Database on the {0:s} Server".format(
+                          self.RAMSTK_USER_CONFIGURATION.
+                          RAMSTK_PROG_INFO['dialect'])),
+            dlgparent=self._parent,
+            dao=BaseDatabase(),
+            database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+
+        _database, _exists = _dialog.do_run()  # type: ignore
+        if _exists:
+            self._do_confirm_overwrite(_database)
+        else:
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
+                'database'] = _database
+
+        if self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'] != '':
+            pub.sendMessage(
+                'request_create_program',
+                program_db=BaseDatabase(),
+                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+
+        _dialog.destroy()
 
 
-class OpenProject():
+class OpenProject:
     """Assistant to guide user through process of creating RAMSTK Project."""
 
-    RAMSTK_USER_CONFIGURATION = None
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
 
     def __init__(self, __button: Gtk.ToolButton,
                  configuration: RAMSTKUserConfiguration,
                  parent: object) -> None:
-        """
-        Initialize an instance of the Create Project Assistant.
+        """Initialize an instance of the Create Project Assistant.
 
         :param __button: the Gtk.ToolButton() that launched an instance of this
             class.
-        :type __button: :class:`Gtk.ToolButton`
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         """
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._parent = parent
+        self._parent: object = parent
 
         # Initialize public dictionary attributes.
 
@@ -152,8 +142,7 @@ class OpenProject():
         self._do_request_open_project()
 
     def _do_request_open_project(self) -> None:
-        """
-        Open or connect to a RAMSTK Program database.
+        """Open or connect to a RAMSTK Program database.
 
         :return: None
         :rtype: None
