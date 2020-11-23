@@ -14,7 +14,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets.dialog import (
-    RAMSTKDatabaseSelect, RAMSTKDialog, RAMSTKFileChooser, RAMSTKMessageDialog
+    RAMSTKDatabaseSelect, RAMSTKDialog, RAMSTKMessageDialog
 )
 from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 
@@ -159,19 +159,6 @@ class OpenProject:
             if _dialog.run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 
-        elif self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
-                'dialect'] == 'sqlite':
-            _dialog = RAMSTKFileChooser(_("RAMSTK - Open Program"),
-                                        parent=self._parent)
-            _dialog.set_current_folder(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
-
-            if _dialog.run() == Gtk.ResponseType.ACCEPT:
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'] = (
-                    _dialog.get_filename())
-
-            _dialog.destroy()
-
         else:
             _dialog = RAMSTKDatabaseSelect(
                 dlgtitle=("Select RAMSTK Program "
@@ -182,7 +169,7 @@ class OpenProject:
                 dao=BaseDatabase(),
                 database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
-                'database'] = _dialog.do_run()
+                'database'] = _dialog.do_run()[0]
 
             _dialog.destroy()
 

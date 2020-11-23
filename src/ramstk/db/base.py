@@ -354,10 +354,10 @@ class BaseDatabase:
             # pylint: disable=unused-variable
             __, _session = do_open_session(_database)
 
-            # Remove the databases not associated with RAMSTK.
+            # Make list of available databases, but only those associated with
+            # RAMSTK.
             for db in _session.execute(_query):
-                if (db[0] != 'postgres' and db[0] != 'template0'
-                        and db[0] != 'template1'):
+                if db[0] not in ['postgres', 'template0', 'template1']:
                     _databases.append(db[0])
 
         return _databases
