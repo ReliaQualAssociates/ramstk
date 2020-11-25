@@ -13,9 +13,6 @@ from ramstk.views.gtk3.widgets.dialog import (
 )
 from ramstk.views.gtk3.widgets.dialog import RAMSTKDialog as RAMSTKDialog
 from ramstk.views.gtk3.widgets.dialog import (
-    RAMSTKFileChooser as RAMSTKFileChooser
-)
-from ramstk.views.gtk3.widgets.dialog import (
     RAMSTKMessageDialog as RAMSTKMessageDialog
 )
 from ramstk.views.gtk3.widgets.label import RAMSTKLabel as RAMSTKLabel
@@ -46,4 +43,7 @@ class OpenProject:
         ...
 
     def _do_request_open_project(self) -> None:
+        ...
+
+    def __project_is_open(self) -> None:
         ...

@@ -148,17 +148,7 @@ class OpenProject:
         :rtype: None
         """
         if self.RAMSTK_USER_CONFIGURATION.loaded:
-            _prompt = _("A database is already open.  Only one database can "
-                        "be open at a time in RAMSTK.  You must close the "
-                        "currently open RAMSTK database before a new "
-                        "database can be opened.")
-            _dialog = RAMSTKMessageDialog(parent=self._parent)
-            _dialog.do_set_message(_prompt)
-            _dialog.do_set_message_type('information')
-
-            if _dialog.run() == Gtk.ResponseType.OK:
-                _dialog.destroy()
-
+            self.__project_is_open()
         else:
             _dialog = RAMSTKDatabaseSelect(
                 dlgtitle=("Select RAMSTK Program "
@@ -173,7 +163,23 @@ class OpenProject:
 
             _dialog.destroy()
 
-        pub.sendMessage(
-            'request_open_program',
-            program_db=BaseDatabase(),
-            database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+            pub.sendMessage(
+                'request_open_program',
+                program_db=BaseDatabase(),
+                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+
+    def __project_is_open(self) -> None:
+        """Raise dialog explaining a project is already open.
+
+        :return: None
+        """
+        _prompt = _("A database is already open.  Only one database can "
+                    "be open at a time in RAMSTK.  You must close the "
+                    "currently open RAMSTK database before a new "
+                    "database can be opened.")
+        _dialog = RAMSTKMessageDialog(parent=self._parent)
+        _dialog.do_set_message(_prompt)
+        _dialog.do_set_message_type('information')
+
+        if _dialog.run() == Gtk.ResponseType.OK:
+            _dialog.destroy()
