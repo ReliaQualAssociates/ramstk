@@ -73,8 +73,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_failure_definition_tree',
-                        tree=self.tree)
+        pub.sendMessage('succeed_get_failure_definition_tree', tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Failure Definitions from the RAMSTK Program database.
@@ -90,8 +89,8 @@ class DataManager(RAMSTKDataManager):
 
         for _failure_definition in self.dao.do_select_all(
                 RAMSTKFailureDefinition,
-                key=RAMSTKFailureDefinition.revision_id,
-                value=self._revision_id,
+                key=['revision_id'],
+                value=[self._revision_id],
                 order=RAMSTKFailureDefinition.definition_id):
 
             self.tree.create_node(

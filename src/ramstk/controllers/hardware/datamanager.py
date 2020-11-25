@@ -109,8 +109,8 @@ class DataManager(RAMSTKDataManager):
 
         for _hardware in self.dao.do_select_all(
                 RAMSTKHardware,
-                key=RAMSTKHardware.revision_id,
-                value=self._revision_id,
+                key=['revision_id'],
+                value=[self._revision_id],
                 order=RAMSTKHardware.parent_id):
 
             _design_e = self._do_select_all_electrical_attributes(
@@ -161,8 +161,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKAllocation
         """
         return self.dao.do_select_all(RAMSTKAllocation,
-                                      key=RAMSTKAllocation.hardware_id,
-                                      value=hardware_id,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
                                       order=None,
                                       _all=False)
 
@@ -176,8 +176,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKDesignElectric
         """
         return self.dao.do_select_all(RAMSTKDesignElectric,
-                                      key=RAMSTKDesignElectric.hardware_id,
-                                      value=hardware_id,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
                                       order=None,
                                       _all=False)
 
@@ -191,8 +191,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKDesignMechanic
         """
         return self.dao.do_select_all(RAMSTKDesignMechanic,
-                                      key=RAMSTKDesignMechanic.hardware_id,
-                                      value=hardware_id,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
                                       order=None,
                                       _all=False)
 
@@ -206,8 +206,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKDesignMilHdbkF
         """
         return self.dao.do_select_all(RAMSTKMilHdbkF,
-                                      key=RAMSTKMilHdbkF.hardware_id,
-                                      value=hardware_id,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
                                       order=None,
                                       _all=False)
 
@@ -221,8 +221,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKSWC
         """
         return self.dao.do_select_all(RAMSTKNSWC,
-                                      key=RAMSTKNSWC.hardware_id,
-                                      value=hardware_id,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
                                       order=None,
                                       _all=False)
 
@@ -236,8 +236,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKReliability
         """
         return self.dao.do_select_all(RAMSTKReliability,
-                                      key=RAMSTKReliability.hardware_id,
-                                      value=hardware_id,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
                                       order=None,
                                       _all=False)
 
@@ -251,8 +251,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKSimilarItem
         """
         return self.dao.do_select_all(RAMSTKSimilarItem,
-                                      key=RAMSTKSimilarItem.hardware_id,
-                                      value=hardware_id,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
                                       order=None,
                                       _all=False)
 

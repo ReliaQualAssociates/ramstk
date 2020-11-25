@@ -34,6 +34,33 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         ...
 
+    def _do_select_all_allocation_attributes(
+            self, hardware_id: int) -> RAMSTKAllocation:
+        ...
+
+    def _do_select_all_electrical_attributes(
+            self, hardware_id: int) -> RAMSTKDesignElectric:
+        ...
+
+    def _do_select_all_mechanical_attributes(
+            self, hardware_id: int) -> RAMSTKDesignMechanic:
+        ...
+
+    def _do_select_all_milhdbk217_attributes(
+            self, hardware_id: int) -> RAMSTKMilHdbkF:
+        ...
+
+    def _do_select_all_nswc_attributes(self, hardware_id: int) -> RAMSTKNSWC:
+        ...
+
+    def _do_select_all_reliability_attributes(
+            self, hardware_id: int) -> RAMSTKReliability:
+        ...
+
+    def _do_select_all_similar_item_attributes(
+            self, hardware_id: int) -> RAMSTKSimilarItem:
+        ...
+
     def do_update(self, node_id: int) -> None:
         ...
 

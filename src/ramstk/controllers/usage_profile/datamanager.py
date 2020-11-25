@@ -95,8 +95,8 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(_node.identifier)
 
         for _mission in self.dao.do_select_all(RAMSTKMission,
-                                               key=RAMSTKMission.revision_id,
-                                               value=self._revision_id):
+                                               key=['revision_id'],
+                                               value=[self._revision_id]):
             self.tree.create_node(tag=_mission.description,
                                   identifier='{0:d}'.format(
                                       _mission.mission_id),
@@ -104,10 +104,9 @@ class DataManager(RAMSTKDataManager):
                                   data={'usage_profile': _mission})
             self.last_id['mission'] = _mission.mission_id
 
-            for _phase in self.dao.do_select_all(
-                    RAMSTKMissionPhase,
-                    key=RAMSTKMissionPhase.mission_id,
-                    value=_mission.mission_id):
+            for _phase in self.dao.do_select_all(RAMSTKMissionPhase,
+                                                 key=['mission_id'],
+                                                 value=[_mission.mission_id]):
                 self.tree.create_node(tag=_phase.description,
                                       identifier='{0:d}.{1:d}'.format(
                                           _mission.mission_id,
@@ -118,8 +117,8 @@ class DataManager(RAMSTKDataManager):
 
                 for _environment in self.dao.do_select_all(
                         RAMSTKEnvironment,
-                        key=RAMSTKEnvironment.phase_id,
-                        value=_phase.phase_id):
+                        key=['phase_id'],
+                        value=[_phase.phase_id]):
                     self.tree.create_node(
                         tag=_environment.name,
                         identifier='{0:d}.{1:d}.{2:d}'.format(
