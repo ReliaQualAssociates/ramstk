@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, TypeVar
+from typing import Any, List, TypeVar
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
@@ -61,7 +61,15 @@ class RAMSTKDesktop(Gtk.Window):
     def __make_menu_file(self) -> Gtk.MenuItem:
         ...
 
+    def __make_menu_items(self, icons: List[str],
+                          labels: List[str]) -> List[Gtk.ImageMenuItem]:
+        ...
+
     def __make_menu_tools(self) -> Gtk.MenuItem:
+        ...
+
+    def __make_toolbuttons(self, icons: List[str],
+                           tooltips: List[str]) -> List[Gtk.ToolButton]:
         ...
 
     def __make_toolbar(self) -> None:
