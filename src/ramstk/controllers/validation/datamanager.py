@@ -104,8 +104,8 @@ class DataManager(RAMSTKDataManager):
 
         for _validation in self.dao.do_select_all(
                 RAMSTKValidation,
-                key=RAMSTKValidation.revision_id,
-                value=self._revision_id,
+                key=['revision_id'],
+                value=[self._revision_id],
                 order=RAMSTKValidation.validation_id):
 
             _data_package = {'validation': _validation}
@@ -256,8 +256,8 @@ class DataManager(RAMSTKDataManager):
 
         for _status in self.dao.do_select_all(
                 RAMSTKProgramStatus,
-                key=RAMSTKProgramStatus.revision_id,
-                value=self._revision_id,
+                key=['revision_id'],
+                value=[self._revision_id],
                 order=RAMSTKProgramStatus.date_status):
 
             _data_package = {'status': _status}

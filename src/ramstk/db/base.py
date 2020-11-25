@@ -11,21 +11,76 @@ import sqlite3
 from typing import Any, Dict, List, TextIO, Tuple
 
 # Third Party Imports
-import psycopg2
-from psycopg2 import sql
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import psycopg2  # type: ignore
+from psycopg2 import sql  # type: ignore
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT  # type: ignore
 from pubsub import pub
-from sqlalchemy import create_engine, exc
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+# noinspection PyPackageRequirements
+from sqlalchemy import create_engine, exc  # type: ignore
+# noinspection PyPackageRequirements,PyProtectedMember
+from sqlalchemy.engine import Engine  # type: ignore
+# noinspection PyPackageRequirements
+from sqlalchemy.orm import query, scoped_session, sessionmaker  # type: ignore
 
 # RAMSTK Package Imports
 from ramstk.exceptions import DataAccessError
 
 
+def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None:
+    """Create a shiny new, unpopulated RAMSTK program database.
+
+    :param database: a dict containing the database connection arguments.
+    :param sql_file: the absolute path to the text file containing the
+        SQL statements for creating a bare RAMSTK Program Database.
+    :return: None
+    :rtype: None
+    """
+    conn: Any = ''
+
+    if database['dialect'] == 'sqlite':
+        conn = sqlite3.connect(database['database'])
+        conn.executescript(sql_file.read().strip())
+    elif database['dialect'] == 'postgres':
+        # Create the database.
+        conn = psycopg2.connect(
+            host=database['host'],
+            dbname='postgres',
+            user=database['user'],
+            # deepcode ignore NoHardcodedPasswords:
+            password=database['password'])
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+        cursor = conn.cursor()
+        cursor.execute(
+            sql.SQL('DROP DATABASE IF EXISTS {}').format(
+                sql.Identifier(database['database'])))
+        cursor.execute(
+            sql.SQL('CREATE DATABASE {}').format(
+                sql.Identifier(database['database'])))
+        cursor.close()
+        conn.close()
+
+        # Populate the database.
+        conn = psycopg2.connect(
+            host=database['host'],
+            dbname=database['database'],
+            user=database['user'],
+            # deepcode ignore NoHardcodedPasswords:
+            password=database['password'])
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        conn.set_session(autocommit=True)
+
+        cursor = conn.cursor()
+        cursor.execute(sql_file.read())
+        cursor.close()
+
+    conn.close()
+
+
 def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
     """Create a session to be used with an instance of the BaseDatabase."""
-    engine = create_engine(database)
+    engine: Any = create_engine(database)
+    # deepcode ignore missing~close~connect: engines are disposed
     engine.connect()
 
     return (engine,
@@ -33,8 +88,9 @@ def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
                 sessionmaker(autocommit=False, autoflush=False, bind=engine)))
 
 
-class BaseDatabase():
-    """This is the BaseDatabase class."""
+# noinspection PyUnresolvedReferences
+class BaseDatabase:
+    """The BaseDatabase class."""
 
     # Define public class dict attributes.
     cxnargs: Dict[str, str] = {
@@ -72,8 +128,7 @@ class BaseDatabase():
         # Initialize public scalar instance attributes.
 
     def do_connect(self, database: Dict) -> None:
-        """
-        Connect to the database.
+        """Connect to the database.
 
         :param dict database: the connection information for the database to
             connect to.
@@ -111,55 +166,8 @@ class BaseDatabase():
         if self.database != '':
             self.engine, self.session = do_open_session(self.database)
 
-    @staticmethod
-    def do_create_program_db(database: Dict, sql_file: TextIO) -> None:
-        """
-        Create a shiny new, unpopulated RAMSTK program database.
-
-        :param str database: the absolute path to the database to connect to.
-        :param dict sql_file: a dict containing the database connection
-            arguments.
-        :return: None
-        :rtype: None
-        """
-        if database['dialect'] == 'sqlite':
-            conn = sqlite3.connect(database['database'])
-            conn.executescript(sql_file.read().strip())
-        elif database['dialect'] == 'postgres':
-            # Create the database.
-            conn = psycopg2.connect(host=database['host'],
-                                    dbname='postgres',
-                                    user=database['user'],
-                                    password=database['password'])
-            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-
-            cursor = conn.cursor()
-            cursor.execute(
-                sql.SQL('DROP DATABASE IF EXISTS {}').format(
-                    sql.Identifier(database['database'])))
-            cursor.execute(
-                sql.SQL('CREATE DATABASE {}').format(
-                    sql.Identifier(database['database'])))
-            cursor.close()
-            conn.close()
-
-            # Populate the database.
-            conn = psycopg2.connect(host=database['host'],
-                                    dbname=database['database'],
-                                    user=database['user'],
-                                    password=database['password'])
-            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-            conn.set_session(autocommit=True)
-
-            cursor = conn.cursor()
-            cursor.execute(sql_file.read())
-            cursor.close()
-
-        conn.close()
-
     def do_delete(self, item: object) -> None:
-        """
-        Delete a record from the RAMSTK Program database.
+        """Delete a record from the RAMSTK Program database.
 
         :param item: the item to remove from the RAMSTK Program database.
         :type item: Object()
@@ -201,19 +209,19 @@ class BaseDatabase():
             raise DataAccessError(_error_message) from _error
 
     def do_disconnect(self) -> None:
-        """
-        Close the current session.
+        """Close the current session.
 
         :return: None
         :rtype: None
         """
         self.session.close()
+        self.engine.dispose()
+        # noinspection PyTypeChecker
         self.session = None
         self.database = ''
 
     def do_insert(self, record: object) -> None:
-        """
-        Add a new record to a database table.
+        """Add a new record to a database table.
 
         :param record: the object to add to the RAMSTK Program database.
         :return: None
@@ -242,8 +250,7 @@ class BaseDatabase():
             raise DataAccessError(_error_message) from _error
 
     def do_insert_many(self, records: List[object]) -> None:
-        """
-        Add a group of new records to a database table.
+        """Add a group of new records to a database table.
 
         :param list records: the list of objects to add to the RAMSTK database.
         :return: None
@@ -252,46 +259,24 @@ class BaseDatabase():
         for _record in records:
             self.do_insert(_record)
 
-    def do_select_all(self, table, **kwargs) -> List[object]:
-        """
-        Select all records from the RAMSTK database for table.
+    def do_select_all(self, table, **kwargs) -> query.Query:
+        """Select all records from the RAMSTK database for table.
 
         :param table: the database table object to select all from.
         :return: a list of table instances; one for each record.
         """
-        _key = kwargs.get('key', None)
-        _value = kwargs.get('value', None)
-        _order = kwargs.get('order', None)
-        _all = kwargs.get('_all', True)
+        _keys: List[str] = kwargs.get('key', None)
+        _values: List[Any] = kwargs.get('value', None)
+        _order: Any = kwargs.get('order', None)
+        _all: bool = kwargs.get('_all', True)
 
-        _results = []
+        _filters = {}
+        if _keys is not None:
+            for _idx, _key in enumerate(_keys):
+                _filters[_key] = _values[_idx]
 
-        if isinstance(_key, list):
-            # TODO: Refactor db.base.do_select_all()
-            #
-            # The approach for dealing with multiple field=value filters
-            # needs to be fixed to accomodate an arbitrary number of pairs.
-            # It also needs to be simplified (if possible) as it is
-            # difficult to follow the logic.
-            try:
-                _results = self.session.query(table).filter(
-                    _key[0] == _value[0]).filter(_key[1] == _value[1]).filter(
-                        _key[2] == _value[2]).filter(_key[3] == _value[3])
-            except IndexError:
-                try:
-                    _results = self.session.query(table).filter(
-                        _key[0] == _value[0]).filter(
-                            _key[1] == _value[1]).filter(_key[2] == _value[2])
-                except IndexError:
-                    _results = self.session.query(table).filter(
-                        _key[0] == _value[0]).filter(_key[1] == _value[1])
-        elif _key is not None:
-            _results = self.session.query(table).filter(_key == _value)
-        else:
-            _results = self.session.query(table)
-
-        if _order is not None:
-            _results = _results.order_by(_order)
+        _results = self.session.query(table).filter_by(**_filters)
+        _results = _results.order_by(_order)
 
         if _all:
             _results = _results.all()
@@ -301,8 +286,7 @@ class BaseDatabase():
         return _results
 
     def do_update(self, record: object = None) -> None:
-        """
-        Update the RAMSTK database with any pending changes.
+        """Update the RAMSTK database with any pending changes.
 
         :keyword record: the record to update in the database.
         :return: None
@@ -324,14 +308,13 @@ class BaseDatabase():
             raise DataAccessError(_error_message) from _error
 
     def get_database_list(self, database: Dict[str, str]) -> List:
-        """
-        Retrieve the list of program databases available to RAMSTK.
+        """Retrieve the list of program databases available to RAMSTK.
 
         This method is used to create a user-selectable list of databases when
         using the postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses
         an open file dialog.
 
-        :param dict database: the connection information for the dialect's
+        :param database: the connection information for the dialect's
             administrative database.
         :return: the list of databases available to RAMSTK for the selected
             dialect.
@@ -342,23 +325,23 @@ class BaseDatabase():
         if database['dialect'] == 'postgres':
             _query = (self.sqlstatements['select'].format('datname')
                       + self.sqlstatements['from'].format('pg_database;'))
-            database = ('postgresql+psycopg2://' + database['user'] + ':'
-                        + database['password'] + '@' + database['host'] + ':'
-                        + database['port'] + '/' + database['database'])
+            _database: str = ('postgresql+psycopg2://' + database['user'] + ':'
+                              + database['password'] + '@' + database['host']
+                              + ':' + database['port'] + '/'
+                              + database['database'])
             # pylint: disable=unused-variable
-            __, _session = do_open_session(database)
+            __, _session = do_open_session(_database)
 
-            # Remove the databases not associated with RAMSTK.
+            # Make list of available databases, but only those associated with
+            # RAMSTK.
             for db in _session.execute(_query):
-                if (db[0] != 'postgres' and db[0] != 'template0'
-                        and db[0] != 'template1'):
+                if db[0] not in ['postgres', 'template0', 'template1']:
                     _databases.append(db[0])
 
         return _databases
 
     def get_last_id(self, table: str, id_column: str) -> Any:
-        """
-        Retrieve the last used value of the ID column.
+        """Retrieve the last used value of the ID column.
 
         .. hint:: This method could be used to select the last used value from
             any column in a table.

@@ -84,8 +84,8 @@ class DataManager(RAMSTKDataManager):
 
         for _function in self.dao.do_select_all(
                 RAMSTKFunction,
-                key=RAMSTKFunction.revision_id,
-                value=self._revision_id,
+                key=['revision_id'],
+                value=[self._revision_id],
                 order=RAMSTKFunction.function_id):
 
             self.tree.create_node(tag=_function.name,

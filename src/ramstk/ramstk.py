@@ -18,7 +18,7 @@ from sqlalchemy.exc import (  # type: ignore
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.db import BaseDatabase
+from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.exceptions import DataAccessError
 
 
@@ -134,7 +134,7 @@ class RAMSTKProgramManager:
             self.user_configuration.RAMSTK_CONF_DIR
             + '/{0:s}_program_db.sql'.format(database['dialect']), 'r')
         self.program_dao = program_db
-        self.program_dao.do_create_program_db(database, _sql_file)
+        do_create_program_db(database, _sql_file)
         pub.sendMessage('succeed_create_program_database',
                         program_db=self.program_dao,
                         database=database)

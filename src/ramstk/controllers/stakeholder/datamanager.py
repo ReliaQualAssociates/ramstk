@@ -83,8 +83,8 @@ class DataManager(RAMSTKDataManager):
 
         for _stakeholder in self.dao.do_select_all(
                 RAMSTKStakeholder,
-                key=RAMSTKStakeholder.revision_id,
-                value=self._revision_id,
+                key=['revision_id'],
+                value=[self._revision_id],
                 order=RAMSTKStakeholder.stakeholder_id):
             _data_package = {'stakeholder': _stakeholder}
 

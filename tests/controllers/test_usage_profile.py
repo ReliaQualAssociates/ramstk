@@ -62,7 +62,7 @@ class MockDao:
         self._all_missions = []
         for _key in MOCK_MISSIONS:
             _record = table()
-            _record.revision_id = value
+            _record.revision_id = value[0]
             _record.mission_id = _idx
             _record.set_attributes(MOCK_MISSIONS[_key])
             self._all_missions.append(_record)
@@ -158,6 +158,7 @@ class TestCreateControllers():
                                 'request_set_usage_profile_attributes')
         assert pub.isSubscribed(DUT._do_set_all_attributes,
                                 'request_set_all_usage_profile_attributes')
+
 
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""

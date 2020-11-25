@@ -6,6 +6,7 @@ from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
 )
 from ramstk.db import BaseDatabase as BaseDatabase
+from ramstk.db import do_create_program_db as do_create_program_db
 from ramstk.exceptions import DataAccessError as DataAccessError
 
 class RAMSTKProgramManager:

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.hardware.AnalysisManager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.manager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package analysis manager."""
 
 # Standard Library Imports
@@ -131,7 +130,7 @@ class RAMSTKDataManager:
         self.last_id: int = 0
         self.tree: treelib.Tree = treelib.Tree()
 
-        # Add the root to the Tree().  This is neccessary to allow multiple
+        # Add the root to the Tree().  This is necessary to allow multiple
         # entries at the top level as there can only be one root in a treelib
         # Tree().  Manipulation and viewing of a RAMSTK module tree needs to
         # ignore the root of the tree.
@@ -234,7 +233,7 @@ class RAMSTKDataManager:
         try:
             for _matrix in self.dao.do_select_all(
                     RAMSTKMatrix,
-                    key=[RAMSTKMatrix.revision_id, RAMSTKMatrix.matrix_type],
+                    key=['revision_id', 'matrix_type'],
                     value=[self._revision_id, matrix_type],
                     order=RAMSTKMatrix.row_id):
                 _lst_matrix.append((_matrix.column_item_id,
@@ -324,8 +323,8 @@ class RAMSTKDataManager:
                 _entity: List[object] = self.dao.do_select_all(
                     table=RAMSTKMatrix,
                     key=[
-                        RAMSTKMatrix.revision_id, RAMSTKMatrix.matrix_type,
-                        RAMSTKMatrix.column_item_id, RAMSTKMatrix.row_item_id
+                        'revision_id', 'matrix_type', 'column_item_id',
+                        'row_item_id'
                     ],
                     value=[
                         self._revision_id, matrix_type,
@@ -361,7 +360,7 @@ class RAMSTKMatrixManager:
     The Matrix data model is an aggregate model of N x M cell data models.  The
     attributes of a Matrix are:
 
-    :ivar object _row_table: the RAMSTK Progam database table to use for the
+    :ivar object _row_table: the RAMSTK Program database table to use for the
         matrix rows.  This is an SQLAlchemy object.
     :ivar column_tables: a list of RAMSTK data table objects that
         comprise the columns.  One table per matrix managed by an instance of
@@ -556,8 +555,7 @@ class RAMSTKMatrixManager:
         self.dic_matrices[matrix_type] = pd.concat([
             self.dic_matrices[matrix_type],
             pd.DataFrame({node_id: _lst_values})
-        ],
-                                                   axis=1)
+        ], axis=1)
 
     def do_insert_row(self, node_id: int) -> Any:
         """Insert a row into each matrix managed by this matrix manager.

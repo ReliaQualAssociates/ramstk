@@ -11,6 +11,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 
 # RAMSTK Local Imports
-from .base import BaseDatabase
+from .base import BaseDatabase, do_create_program_db
 
 RAMSTK_BASE = declarative_base()

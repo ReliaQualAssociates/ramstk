@@ -10,10 +10,13 @@
 # Standard Library Imports
 import os
 from datetime import datetime
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 # RAMSTK Package Imports
+from ramstk.db.base import BaseDatabase
 from ramstk.views.gtk3 import GObject, Gtk, Pango, _
+from ramstk.views.gtk3.widgets.entry import RAMSTKEntry
+from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 
 
 class RAMSTKDialog(Gtk.Dialog):
@@ -63,11 +66,20 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         super().__init__(dlgtitle, **kwargs)
 
         # Initialize private dict attributes.
-        self._dao = kwargs['dao']
+        self._dao: BaseDatabase = kwargs['dao']
 
         # Initialize private list attributes.
+        self._lst_databases: List[str] = []
 
         # Initialize private scalar attributes.
+        self._entry: RAMSTKEntry = RAMSTKEntry()
+        self._treeview: Gtk.TreeView = Gtk.TreeView()
+
+        # Initialize public dict attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
 
         self.__make_ui()
 
@@ -76,8 +88,8 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
     def __do_load_databases(self, database: Dict[str, str]) -> None:
         """Read the database server and load the database list.
 
-        :param dict database: a dict containing the connection information
-            for the RAMSTK program databases.
+        :param database: a dict containing the connection information for the
+            RAMSTK program databases.
         :return: None
         :rtype: None
         """
@@ -89,12 +101,22 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
         for _db in self._dao.get_database_list(database):
             _model.append([_db])
+            self._lst_databases.append(_db)
 
     def __make_ui(self) -> None:
         """Build the GUI."""
         self.set_modal(True)
 
-        self._treeview = Gtk.TreeView()
+        _fixed = Gtk.Fixed()
+        _label = RAMSTKLabel('Enter Database Name:')
+        _label.set_width_chars(len('Enter Database Name:'))
+        _x_pos = _label.get_attribute('width')
+
+        self._entry.do_set_properties(width=300)
+
+        _fixed.put(_label, 5, 5)
+        _fixed.put(self._entry, _x_pos, 5)
+        self.vbox.pack_start(_fixed, True, True, 0)
 
         _model = Gtk.ListStore(GObject.TYPE_STRING)
         self._treeview.set_model(_model)
@@ -107,7 +129,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         _cell.set_property('wrap-width', 250)
         _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
 
-        _column = Gtk.TreeViewColumn("RAMSTK Databases")
+        _column = Gtk.TreeViewColumn("Available Databases")
         _column.pack_start(_cell, True)
         _column.set_attributes(_cell, text=0)
 
@@ -118,7 +140,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         _scrollwindow.set_min_content_width(500)
         _scrollwindow.add(self._treeview)
 
-        self.vbox.pack_start(_scrollwindow, True, True, 0)
+        self.vbox.pack_end(_scrollwindow, True, True, 0)
         self.vbox.show_all()
 
     def _get_database(self) -> str:
@@ -127,29 +149,35 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         :return: the name of the selected database.
         :rtype: str
         """
-        (_model, _row) = self._treeview.get_selection().get_selected()
+        _database = self._entry.do_get_text()
+        if _database == '':
+            (_model, _row) = self._treeview.get_selection().get_selected()
+            _database = _model.get_value(_row, 0)
 
-        return _model.get_value(_row, 0)
+        return _database
 
     def do_destroy(self) -> None:  # pylint: disable=arguments-differ
         """Destroy the RAMSTKDateSelect dialog."""
         self.destroy()
 
-    def do_run(self) -> str:
+    def do_run(self) -> Tuple[str, bool]:
         """Run the RAMSTKFileChooser dialog.
 
-        :return: _dbname; the selected database name or empty string if none
-            selected.
-        :rtype: str
+        :return: _database, _exists; the selected database name or empty
+            string if none selected and a variable indicating whether the
+            database already exists.
+        :rtype: tuple
         """
-        _dbname = ''
+        _database: str = ''
+        _exists: bool = False
 
         if self.run() == Gtk.ResponseType.OK:
-            _dbname = self._get_database()
+            _database = self._get_database()
+            _exists = _database in self._lst_databases
         elif self.run() == Gtk.ResponseType.CANCEL:
             self.do_destroy()
 
-        return _dbname
+        return _database, _exists
 
 
 class RAMSTKDateSelect(Gtk.Dialog):

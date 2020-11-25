@@ -110,8 +110,8 @@ class DataManager(RAMSTKDataManager):
 
         for _requirement in self.dao.do_select_all(
                 RAMSTKRequirement,
-                key=RAMSTKRequirement.revision_id,
-                value=self._revision_id,
+                key=['revision_id'],
+                value=[self._revision_id],
                 order=RAMSTKRequirement.requirement_id):
             _data_package = {'requirement': _requirement}
 

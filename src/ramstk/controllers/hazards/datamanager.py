@@ -84,7 +84,7 @@ class DataManager(RAMSTKDataManager):
 
         for _hazard in self.dao.do_select_all(
                 RAMSTKHazardAnalysis,
-                key=RAMSTKHazardAnalysis.revision_id,
+                key=['revision_id'],
                 value=self._revision_id,
                 order=RAMSTKHazardAnalysis.hazard_id):
 
