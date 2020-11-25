@@ -265,40 +265,18 @@ class BaseDatabase:
         :param table: the database table object to select all from.
         :return: a list of table instances; one for each record.
         """
-        _key: List[str] = kwargs.get('key', None)
-        _value: List[Any] = kwargs.get('value', None)
+        _keys: List[str] = kwargs.get('key', None)
+        _values: List[Any] = kwargs.get('value', None)
         _order: Any = kwargs.get('order', None)
         _all: bool = kwargs.get('_all', True)
 
-        # noinspection PyTypeChecker
-        _results: query.Query = []
+        _filters = {}
+        if _keys is not None:
+            for _idx, _key in enumerate(_keys):
+                _filters[_key] = _values[_idx]
 
-        if isinstance(_key, list):
-            # TODO: Refactor db.base.do_select_all()
-            #
-            # The approach for dealing with multiple field=value filters
-            # needs to be fixed to accommodate an arbitrary number of pairs.
-            # It also needs to be simplified (if possible) as it is
-            # difficult to follow the logic.
-            try:
-                _results = self.session.query(table).filter(
-                    _key[0] == _value[0]).filter(_key[1] == _value[1]).filter(
-                        _key[2] == _value[2]).filter(_key[3] == _value[3])
-            except IndexError:
-                try:
-                    _results = self.session.query(table).filter(
-                        _key[0] == _value[0]).filter(
-                            _key[1] == _value[1]).filter(_key[2] == _value[2])
-                except IndexError:
-                    _results = self.session.query(table).filter(
-                        _key[0] == _value[0]).filter(_key[1] == _value[1])
-        elif _key is not None:
-            _results = self.session.query(table).filter(_key == _value)
-        else:
-            _results = self.session.query(table)
-
-        if _order is not None:
-            _results = _results.order_by(_order)
+        _results = self.session.query(table).filter_by(**_filters)
+        _results = _results.order_by(_order)
 
         if _all:
             _results = _results.all()
