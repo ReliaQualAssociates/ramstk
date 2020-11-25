@@ -119,8 +119,8 @@ class MockDao:
     def _do_select_all_design_electric(self, table, value):
         self._all_design_electric = []
         _record = table()
-        _record.hardware_id = value
-        _record.set_attributes(MOCK_DESIGN_ELECTRIC[value])
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_DESIGN_ELECTRIC[value[0]])
         self._all_design_electric.append(_record)
 
         return self._all_design_electric[0]
@@ -128,8 +128,8 @@ class MockDao:
     def _do_select_all_design_mechanic(self, table, value):
         self._all_design_mechanic = []
         _record = table()
-        _record.hardware_id = value
-        _record.set_attributes(MOCK_DESIGN_MECHANIC[value])
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_DESIGN_MECHANIC[value[0]])
         self._all_design_mechanic.append(_record)
 
         return self._all_design_mechanic[0]
@@ -137,8 +137,8 @@ class MockDao:
     def _do_select_all_217f(self, table, value):
         self._all_217f = []
         _record = table()
-        _record.hardware_id = value
-        _record.set_attributes(MOCK_217F[value])
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_217F[value[0]])
         self._all_217f.append(_record)
 
         return self._all_217f[0]
@@ -146,8 +146,8 @@ class MockDao:
     def _do_select_all_nswc(self, table, value):
         self._all_nswc = []
         _record = table()
-        _record.hardware_id = value
-        _record.set_attributes(MOCK_NSWC[value])
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_NSWC[value[0]])
         self._all_nswc.append(_record)
 
         return self._all_nswc[0]
@@ -155,8 +155,8 @@ class MockDao:
     def _do_select_all_reliability(self, table, value):
         self._all_reliability = []
         _record = table()
-        _record.hardware_id = value
-        _record.set_attributes(MOCK_RELIABILITY[value])
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_RELIABILITY[value[0]])
         self._all_reliability.append(_record)
 
         return self._all_reliability[0]
@@ -164,8 +164,8 @@ class MockDao:
     def _do_select_all_allocation(self, table, value):
         self._all_allocation = []
         _record = table()
-        _record.hardware_id = value
-        _record.set_attributes(MOCK_ALLOCATION[value])
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_ALLOCATION[value[0]])
         self._all_allocation.append(_record)
 
         return self._all_allocation[0]
@@ -173,8 +173,8 @@ class MockDao:
     def _do_select_all_similar_item(self, table, value):
         self._all_similar_item = []
         _record = table()
-        _record.hardware_id = value
-        _record.set_attributes(MOCK_SIMILAR_ITEM[value])
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_SIMILAR_ITEM[value[0]])
         self._all_similar_item.append(_record)
 
         return self._all_similar_item[0]

@@ -35,8 +35,8 @@ class TestRAMSTKMatrix():
         # function module tests.  This would cause a problem when the test
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
-                                             key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_type],
+                                             key=['revision_id',
+                                                  'matrix_type'],
                                              value=[1, 'fnctn_hrdwr'],
                                              order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
@@ -60,8 +60,8 @@ class TestRAMSTKMatrix():
         # function module tests.  This would cause a problem when the test
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
-                                             key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_type],
+                                             key=['revision_id',
+                                                  'matrix_type'],
                                              value=[1, 'fnctn_hrdwr'],
                                              order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
@@ -81,8 +81,8 @@ class TestRAMSTKMatrix():
         # function module tests.  This would cause a problem when the test
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
-                                             key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_type],
+                                             key=['revision_id',
+                                                  'matrix_type'],
                                              value=[1, 'fnctn_hrdwr'],
                                              order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
@@ -101,8 +101,8 @@ class TestRAMSTKMatrix():
         # function module tests.  This would cause a problem when the test
         # suite is run.
         DUT = test_program_dao.do_select_all(RAMSTKMatrix,
-                                             key=[RAMSTKMatrix.revision_id,
-                                                  RAMSTKMatrix.matrix_type],
+                                             key=['revision_id',
+                                                  'matrix_type'],
                                              value=[1, 'fnctn_hrdwr'],
                                              order=RAMSTKMatrix.row_id,
                                              _all=True)[-1]
