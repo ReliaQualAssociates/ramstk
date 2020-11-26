@@ -288,6 +288,7 @@ CREATE TABLE ramstk_allocation (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
+INSERT INTO "ramstk_allocation" VALUES(1,1,0.0,100.0,1,0,0.0,0.0,1,1,1,1.0,0.0,0.0,0,0,0,0.0,0.0,0.0,1,1,0.0);
 CREATE TABLE ramstk_design_electric (
     fld_hardware_id INTEGER,
     fld_application_id INTEGER,
@@ -662,7 +663,7 @@ CREATE TABLE ramstk_similar_item (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
-
+INSERT INTO "ramstk_similar_item" VALUES(1,1,'','','','','','','','','','',0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,'','','','','',0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'','','','','',0.0,0.0,0.0,0.0,0.0,0,0,0,0,0);
 CREATE TABLE ramstk_mode (
     fld_revision_id INTEGER,
     fld_hardware_id INTEGER,

@@ -687,17 +687,16 @@ class RAMSTKPanel(RAMSTKFrame):
         """
         _key: str = ''
         _new_text: Any = ''
-        _type: str = 'string'
 
         try:
-            _key = self._dic_attribute_keys[index][0]
-            _type = self._dic_attribute_keys[index][1]
+            _key = str(self._dic_attribute_keys[index][0])
 
-            _new_text = {
-                'float': float(entry.do_get_text()),
-                'integer': int(entry.do_get_text()),
-                'string': str(entry.do_get_text()),
-            }[_type]
+            if str(self._dic_attribute_keys[index][1]) == 'float':
+                _new_text = float(entry.do_get_text())
+            elif str(self._dic_attribute_keys[index][1]) == 'integer':
+                _new_text = int(entry.do_get_text())
+            elif str(self._dic_attribute_keys[index][1]) == 'string':
+                _new_text = str(entry.do_get_text())
 
             pub.sendMessage(message,
                             node_id=[self._record_id, -1, -1],

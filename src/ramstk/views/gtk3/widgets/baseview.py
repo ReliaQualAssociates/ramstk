@@ -85,7 +85,7 @@ class RAMSTKBaseView(Gtk.HBox):
     }
 
     # Define public class scalar attributes.
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None   # type: ignore
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
@@ -1089,7 +1089,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self._lst_callbacks.insert(0, super().do_request_insert_sibling)
         self._lst_callbacks.insert(1, self.do_request_delete)
         self._lst_icons.insert(0, 'add')
-        self._lst_icons.insert(0, 'remove')
+        self._lst_icons.insert(1, 'remove')
 
         # Initialize private scalar attributes.
 

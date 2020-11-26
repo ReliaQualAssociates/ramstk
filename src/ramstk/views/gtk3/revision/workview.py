@@ -55,7 +55,7 @@ class GeneralDataPanel(RAMSTKPanel):
         self._dic_attribute_updater = {
             'name': [self.txtName.do_update, 'changed', 0],
             'remarks': [self.txtRemarks.do_update, 'changed', 1],
-            'revision_code': [self.txtCode.do_update, 'changed'],
+            'revision_code': [self.txtCode.do_update, 'changed', 2],
         }
 
         self._lst_widgets: List[object] = [
@@ -176,28 +176,13 @@ class GeneralData(RAMSTKWorkView):
         """Initialize the Revision Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks: List[object] = [
-            super().do_request_update,
-            super().do_request_update_all,
-        ]
-        self._lst_icons: List[str] = [
-            'save',
-            'save-all',
-        ]
-        self._lst_mnu_labels: List[str] = [
-            _("Save"),
-            _("Save All"),
-        ]
         self._lst_tooltips: List[str] = [
             _("Save changes to the currently selected Revision."),
             _("Save changes to all Revisions."),
@@ -215,9 +200,20 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_revision')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active, 'succeed_update_revision')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_update_revision')
+
+        pub.subscribe(self._do_set_record_id, 'selected_revision')
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Revision's record ID.
+
+        :param attributes: the attributes dict for the selected Revision.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['revision_id']
 
     def __make_ui(self) -> None:
         """Build the user interface for the Revision General Data tab.
