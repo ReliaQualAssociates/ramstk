@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -56,6 +56,11 @@ class ModuleView(RAMSTKModuleView):
         ...
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        ...
+
+    _record_id: Any = ...
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         ...
 
     def _on_insert_revision(self,

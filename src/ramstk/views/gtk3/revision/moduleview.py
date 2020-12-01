@@ -3,11 +3,11 @@
 #       ramstk.views.gtk3.revision.moduleview.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Revision GTK3 module view."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -223,16 +223,17 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_revision')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_revision')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_revision')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active, 'succeed_delete_revision')
+        pub.subscribe(super().do_set_cursor_active, 'succeed_insert_revision')
+        pub.subscribe(super().do_set_cursor_active, 'succeed_update_revision')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_delete_revision')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_insert_revision')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_update_revision')
 
+        pub.subscribe(self._do_set_record_id, 'selected_revision')
         pub.subscribe(self._on_insert_revision, 'succeed_insert_revision')
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -256,6 +257,15 @@ class ModuleView(RAMSTKModuleView):
                             node_id=self._revision_id)
 
         _dialog.do_destroy()
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Revision's record ID.
+
+        :param attributes: the attributes dict for the selected Revision.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['revision_id']
 
     def _on_insert_revision(self,
                             node_id: int = 0,
