@@ -351,8 +351,9 @@ class TestInsertMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_failure_definition(self, node_id):
+    def on_succeed_update_failure_definition(self, node_id, tree):
         assert node_id == 1
+        assert isinstance(tree, Tree)
         print(
             "\033[36m\nsucceed_update_failure_definition topic was broadcast")
 

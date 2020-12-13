@@ -4,6 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# isort:skip_file
 """RAMSTK GTK3 Plot Module."""
 
 # Standard Library Imports
@@ -13,14 +14,13 @@ from typing import Any, Dict, List, Tuple, Union
 from ramstk.views.gtk3 import Gdk, Gtk, _
 
 # type: ignore
-# Third Party Imports
 try:
     # noinspection PyPackageRequirements
+    # Third Party Imports
     import matplotlib
     # noinspection PyPackageRequirements
-    from matplotlib.backends.backend_gtk3cairo import (
-        FigureCanvasGTK3Cairo as FigureCanvas
-    )
+    from matplotlib.backends.backend_gtk3cairo import (FigureCanvasGTK3Cairo as
+                                                       FigureCanvas)
     # noinspection PyPackageRequirements
     from matplotlib.figure import Figure
     # noinspection PyPackageRequirements

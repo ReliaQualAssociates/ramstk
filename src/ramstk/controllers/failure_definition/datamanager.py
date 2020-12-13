@@ -116,7 +116,8 @@ class DataManager(RAMSTKDataManager):
                 self.tree.get_node(node_id).data['failure_definition'])
 
             pub.sendMessage('succeed_update_failure_definition',
-                            node_id=node_id)
+                            node_id=node_id,
+                            tree=self.tree)
         except (AttributeError, KeyError, TypeError):
             if node_id != 0:
                 pub.sendMessage('fail_update_failure_definition',
@@ -166,7 +167,7 @@ class DataManager(RAMSTKDataManager):
                 parent=self._root,
                 data={'failure_definition': _failure_definition})
 
-            pub.sendMessage("succeed_insert_failure_definition",
+            pub.sendMessage('succeed_insert_failure_definition',
                             node_id=self.last_id,
                             tree=self.tree)
         except DataAccessError:

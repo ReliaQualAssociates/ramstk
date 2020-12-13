@@ -654,7 +654,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
         :return: None
         """
-        _sibling = kwargs['sibling']
+        _sibling = kwargs.get('sibling', True)
+
+        self.do_set_cursor_busy()
 
         if _sibling:
             pub.sendMessage('request_insert_{0:s}'.format(
@@ -664,8 +666,7 @@ class RAMSTKBaseView(Gtk.HBox):
                 self._module.lower()),
                             parent_id=self._parent_id)  # noqa
 
-    def do_request_insert_child(self, __button: Gtk.ToolButton,
-                                **kwargs: Any) -> Any:
+    def do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         """Request to insert a new child entity of the selected entity.
 
         :param __button: the Gtk.ToolButton() that called this method.
@@ -675,10 +676,9 @@ class RAMSTKBaseView(Gtk.HBox):
         self._parent_id = _model.get_value(_row,
                                            self._pnlPanel._lst_col_order[1])  # pylint: disable=protected-access
 
-        return self.do_request_insert(sibling=False, **kwargs)
+        return self.do_request_insert(sibling=False)
 
-    def do_request_insert_sibling(self, __button: Gtk.ToolButton,
-                                  **kwargs: Any) -> Any:
+    def do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         """Send request to insert a new sibling entity.
 
         :param __button: the Gtk.ToolButton() that called this method.
@@ -696,7 +696,7 @@ class RAMSTKBaseView(Gtk.HBox):
             self._parent_id = 0
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        return self.do_request_insert(sibling=True, **kwargs)
+        return self.do_request_insert(sibling=True)
 
     def do_request_update(self, __button: Gtk.ToolButton) -> None:
         """Request to update selected record to RAMSTK program database.
@@ -766,7 +766,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def do_set_cursor_active(self, node_id: Any = '', tree: Any = '') -> None:
+    def do_set_cursor_active(self,
+                             node_id: Any = '',
+                             tree: treelib.Tree = '') -> None:
         """Set active cursor for the Module, List, and Work Book Gdk.Window().
 
         :param node_id: the node ID passed in the PyPubSub message.  Only
@@ -892,39 +894,39 @@ class RAMSTKBaseView(Gtk.HBox):
             self.treeview.selection.select_iter(_row)
             self.show_all()
 
-    def on_insert(self, data: Any) -> None:
-        """Add row to module view for newly added work stream element.
+    # def on_insert(self, data: Any) -> None:
+    #    """Add row to module view for newly added work stream element.
 
-        :param data: the data package for the work stream element to add.
-        :return: None
-        """
-        _attributes = []
-        _model, _row = self.treeview.selection.get_selected()
+    #    :param data: the data package for the work stream element to add.
+    #    :return: None
+    #    """
+    #    _attributes = []
+    #    _model, _row = self.treeview.selection.get_selected()
 
-        try:
-            if self._record_id == self._parent_id:
-                _prow = _row
-            else:
-                _prow = _model.iter_parent(_row)
-        except TypeError:
-            _prow = None
+    #    try:
+    #        if self._record_id == self._parent_id:
+    #            _prow = _row
+    #        else:
+    #            _prow = _model.iter_parent(_row)
+    #    except TypeError:
+    #        _prow = None
 
-        for _key in self.treeview.korder:
-            if _key == 'dict':
-                _attributes.append(str(data))
-            else:
-                try:
-                    if isinstance(data[_key], datetime.date):
-                        data[_key] = data[_key].strftime("%Y-%m-%d")
-                    data[_key] = data[_key].decode('utf-8')
-                except (AttributeError, KeyError) as _error:
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+    #    for _key in self.treeview.korder:
+    #        if _key == 'dict':
+    #            _attributes.append(str(data))
+    #        else:
+    #            try:
+    #                if isinstance(data[_key], datetime.date):
+    #                    data[_key] = data[_key].strftime("%Y-%m-%d")
+    #                data[_key] = data[_key].decode('utf-8')
+    #            except (AttributeError, KeyError) as _error:
+    #                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-                _attributes.append(data[_key])
+    #            _attributes.append(data[_key])
 
-        _row = _model.append(_prow, _attributes)
+    #    _row = _model.append(_prow, _attributes)
 
-        self.treeview.selection.select_iter(_row)
+    #    self.treeview.selection.select_iter(_row)
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
         """Respond to RAMSTKTreeView() row changes.
@@ -998,12 +1000,11 @@ class RAMSTKListView(RAMSTKBaseView):
 
         # Initialize private list attributes.
         if self._view_type == 'list':
-            self._lst_callbacks.insert(0, super().do_request_insert)
+            self._lst_callbacks.insert(0, super().do_request_insert_sibling)
             self._lst_icons.insert(0, 'add')
         elif self._view_type == 'matrix':
-            self._lst_callbacks = [self.do_request_update]
-            self._lst_icons = ['save']
-            self._lst_mnu_labels = [_("Save Matrix")]
+            self._lst_callbacks[0] = self._do_request_update
+            self._lst_mnu_labels[0] = _("Save Matrix")
 
         # Initialize private scalar attributes.
 
@@ -1019,14 +1020,9 @@ class RAMSTKListView(RAMSTKBaseView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_matrix, 'succeed_load_matrix')
 
-    def do_request_update(self, __button: Gtk.ToolButton) -> None:
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
-        if self._view_type == 'list':
-            super().do_set_cursor_busy()
-            pub.sendMessage('request_update_{0:s}'.format(self._module),
-                            revision_id=self._revision_id,
-                            node_id=self._record_id)
-        elif self._view_type == 'matrix':
+        if self._view_type == 'matrix':
             super().do_set_cursor_busy()
             pub.sendMessage('do_request_update_matrix',
                             matrix_type=self._module.lower())
@@ -1035,8 +1031,7 @@ class RAMSTKListView(RAMSTKBaseView):
         """Send request to update the matrix."""
         if self._view_type == 'list':
             super().do_set_cursor_busy()
-            pub.sendMessage('request_update_all_{0:s}s'.format(self._module),
-                            revision_id=self._revision_id)
+            pub.sendMessage('request_update_all_{0:s}s'.format(self._module))
         elif self._view_type == 'matrix':
             self._do_request_update(__button)
 

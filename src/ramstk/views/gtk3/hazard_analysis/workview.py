@@ -114,15 +114,15 @@ class HazOpsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        _lst_column_order: List[int] = list(self.tvwTreeView.position.values())
+        _lst_col_order: List[int] = list(self.tvwTreeView.position.values())
 
         self.tvwTreeView.dic_handler_id[
             'changed'] = self.tvwTreeView.selection.connect(
                 'changed', self._on_row_change)
 
-        for i in _lst_column_order[3:]:
+        for i in _lst_col_order[3:]:
             _cell = self.tvwTreeView.get_column(
-                _lst_column_order[i]).get_cells()
+                _lst_col_order[i]).get_cells()
             try:
                 _cell[0].connect('edited',
                                  super().on_cell_edit, i, 'wvw_editing_hazard')
