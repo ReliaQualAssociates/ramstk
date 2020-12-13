@@ -114,6 +114,6 @@ class RAMSTKPanel(RAMSTKFrame):
                    message: str) -> Dict[Union[str, Any], Any]:
         ...
 
-    def __do_read_text(self, entry: RAMSTKEntry, index: int,
-                       message: str) -> Dict[str, Any]:
+    @staticmethod
+    def __do_read_text(entry: RAMSTKEntry, keys: List[str]) -> Dict[str, Any]:
         ...

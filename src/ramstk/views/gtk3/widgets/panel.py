@@ -384,7 +384,7 @@ class RAMSTKPanel(RAMSTKFrame):
             _cell = self.tvwTreeView.get_column(
                 self._lst_col_order[_idx]).get_cells()
             try:
-                _cell[0].connect('edited', self.on_cell_edit, message, _idx)
+                _cell[0].connect('edited', self.on_cell_edit, _idx, message)
             except TypeError:
                 _cell[0].connect('toggled', self.on_cell_edit, 'new text',
                                  message, _idx)
@@ -415,12 +415,11 @@ class RAMSTKPanel(RAMSTKFrame):
         :return: None
         """
         try:
-            _key = self._dic_attribute_keys[self._lst_column_order[position]]
-            if not self.tvwTreeView.do_edit_cell(cell, path, new_text,
-                                                 position):
-                pub.sendMessage(message,
-                                node_id=[self.parent_id, self._record_id, ''],
-                                package={_key: new_text})
+            _key = self._dic_attribute_keys[self._lst_col_order[position]][0]
+            self.tvwTreeView.do_edit_cell(cell, path, new_text, position)
+            pub.sendMessage(message,
+                            node_id=[self._record_id, ''],
+                            package={_key: new_text})
         except KeyError:
             pass
 
@@ -439,10 +438,10 @@ class RAMSTKPanel(RAMSTKFrame):
         :rtype: None
         """
         _new_text = boolean_to_integer(cell.get_active())
-        _lst_column_order: List[int] = list(self.tvwTreeView.position.values())
+        _lst_col_order: List[int] = list(self.tvwTreeView.position.values())
 
         try:
-            _key = self._dic_attribute_keys[_lst_column_order[position]]
+            _key = self._dic_attribute_keys[_lst_col_order[position]]
             if not self.tvwTreeView.do_edit_cell(cell, path, _new_text,
                                                  position):
                 pub.sendMessage(message,
@@ -521,9 +520,14 @@ class RAMSTKPanel(RAMSTKFrame):
         """
         entry.handler_block(entry.dic_handler_id['changed'])
 
-        _package: Dict[str, Any] = self.__do_read_text(entry, index, message)
+        _package: Dict[str, Any] = self.__do_read_text(
+            entry, self._dic_attribute_keys[index])
 
         entry.handler_unblock(entry.dic_handler_id['changed'])
+
+        pub.sendMessage(message,
+                        node_id=[self._record_id, -1, -1],
+                        package=_package)
 
         return _package
 
@@ -550,10 +554,14 @@ class RAMSTKPanel(RAMSTKFrame):
         """
         textview.handler_block(textview.dic_handler_id['changed'])
 
-        _package: Dict[str, Any] = self.__do_read_text(textview, index,
-                                                       message)
+        _package: Dict[str, Any] = self.__do_read_text(
+            textview, self._dic_attribute_keys[index])
 
         textview.handler_unblock(textview.dic_handler_id['changed'])
+
+        pub.sendMessage(message,
+                        node_id=[self._record_id, -1, -1],
+                        package=_package)
 
         return _package
 
@@ -602,22 +610,18 @@ class RAMSTKPanel(RAMSTKFrame):
         :param data: the data package for the work stream element to add.
         :return: None
         """
-        _attributes = []
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        try:
-            if self._record_id == self._parent_id:
-                _prow = _row
-            else:
-                _prow = _model.iter_parent(_row)
-        except TypeError:
-            _prow = None
+        # When inserting a child record, the selected row becomes the parent
+        # row.
+        if self._record_id == self._parent_id:
+            _prow = _row
+        # When inserting a sibling record, use the parent of the selected
+        # row.
+        else:
+            _prow = _model.iter_parent(_row)
 
-        _attributes = self.tvwTreeView.get_aggregate_attributes(data)
-
-        _row = _model.append(_prow, _attributes)
-
-        self.tvwTreeView.selection.select_iter(_row)
+        self.tvwTreeView.do_insert_row(data, _prow)
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
         """Get the attributes for the newly selected row.
@@ -673,15 +677,13 @@ class RAMSTKPanel(RAMSTKFrame):
 
         return {_key: _new_text}
 
-    def __do_read_text(self, entry: RAMSTKEntry, index: int,
-                       message: str) -> Dict[str, Any]:
+    @staticmethod
+    def __do_read_text(entry: RAMSTKEntry, keys: List[str]) -> Dict[str, Any]:
         """Read the text in a RAMSTKEntry() or Gtk.TextBuffer().
 
         :param entry: the RAMSTKEntry() or Gtk.TextBuffer() to read.
-        :param index: the position in the attribute key dict for the
-            attribute being updated.
-        :param message: the PyPubSub message to send along with the data
-            package.
+        :param keys: the list containing the key and data type for the entry to
+            be read.
         :return: {_key, _new_text}; a dict containing the attribute key and
             the new value (text) for that key.
         """
@@ -689,18 +691,15 @@ class RAMSTKPanel(RAMSTKFrame):
         _new_text: Any = ''
 
         try:
-            _key = str(self._dic_attribute_keys[index][0])
+            _key = str(keys[0])
 
-            if str(self._dic_attribute_keys[index][1]) == 'float':
+            if str(keys[1]) == 'float':
                 _new_text = float(entry.do_get_text())
-            elif str(self._dic_attribute_keys[index][1]) == 'integer':
+            elif str(keys[1]) == 'integer':
                 _new_text = int(entry.do_get_text())
-            elif str(self._dic_attribute_keys[index][1]) == 'string':
+            elif str(keys[1]) == 'string':
                 _new_text = str(entry.do_get_text())
 
-            pub.sendMessage(message,
-                            node_id=[self._record_id, -1, -1],
-                            package={_key: _new_text})
         except (KeyError, ValueError):
             pass
 

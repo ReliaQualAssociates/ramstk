@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 import treelib
@@ -49,6 +49,7 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs: Any) -> None:
 
 
 class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
+    _has_pixbuf: bool = ...
     datatypes: Any = ...
     editable: Any = ...
     headings: Any = ...
@@ -69,22 +70,27 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                      position: int) -> Any:
         ...
 
+    def do_expand_tree(self) -> None:
+        ...
+
     def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter:
         ...
 
-    def get_aggregate_attributes(self, entity: object) -> List[Any]:
-        ...
-
-    def get_simple_attributes(self, entity: object) -> List[Any]:
-        ...
-
-    def do_expand_tree(self) -> None:
+    def do_insert_row(self,
+                      data: Dict[str, Any],
+                      prow: Gtk.TreeIter = ...) -> None:
         ...
 
     def do_load_tree(self,
                      tree: treelib.Tree,
                      tag: str,
                      row: Gtk.TreeIter = ...) -> None:
+        ...
+
+    def do_make_columns(self, colors: Dict[str, str] = ...) -> None:
+        ...
+
+    def do_make_model(self) -> None:
         ...
 
     def do_parse_format(self, fmt_file: str) -> None:
@@ -99,13 +105,28 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def do_set_visible_columns(self) -> None:
         ...
 
+    def get_aggregate_attributes(self, entity: object) -> List[Any]:
+        ...
+
     def get_cell_model(self, column: int, clear: bool = ...) -> Gtk.TreeModel:
         ...
 
-    def do_make_model(self) -> None:
+    def get_simple_attributes(self, entity: object) -> List[Any]:
         ...
 
-    def do_make_columns(self, colors: Dict[str, str] = ...) -> None:
+    @staticmethod
+    def _do_format_cell(__column: Gtk.TreeViewColumn, cell: Gtk.CellRenderer,
+                        model: Gtk.TreeModel, row: Gtk.TreeIter,
+                        data: Tuple[Any]) -> None:
+        ...
+
+    def _do_set_column_properties(self, key: str,
+                                  column: Gtk.TreeViewColumn) -> None:
+        ...
+
+    @staticmethod
+    def _resize_wrap(column: Gtk.TreeViewColumn, __param: Any,
+                     cell: Gtk.CellRenderer) -> None:
         ...
 
 
@@ -126,4 +147,7 @@ class CellRendererML(Gtk.CellRendererText):
     def do_start_editing(self, __event: Any, treeview: Any, path: Any,
                          __background_area: Any, cell_area: Any,
                          __flags: Any) -> None:
+        ...
+
+    def _keyhandler(self, __widget: Any, event: Any) -> None:
         ...

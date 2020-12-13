@@ -4,6 +4,7 @@ from typing import Any, Union
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf
 from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3 import _ as _
 
 # RAMSTK Local Imports
 from .widget import RAMSTKWidget as RAMSTKWidget
@@ -14,6 +15,9 @@ def do_make_buttonbox(view: Any,
 
 
 class RAMSTKButton(Gtk.Button, RAMSTKWidget):
+    _default_height: int = ...
+    _default_width: int = ...
+
     def __init__(self, label: str = ...) -> None:
         ...
 
@@ -22,6 +26,9 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
 
 
 class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
+    _default_height: int = ...
+    _default_width: int = ...
+
     def __init__(self, label: str = ...) -> None:
         ...
 
@@ -38,6 +45,9 @@ class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
 
 
 class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
+    _default_height: int = ...
+    _default_width: int = ...
+
     def __init__(self) -> None:
         ...
 

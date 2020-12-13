@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 import matplotlib
@@ -7,8 +7,11 @@ import matplotlib
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk as Gdk
 from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3 import _ as _
 
 class RAMSTKPlot:
+    _lst_max: Any = ...
+    _lst_min: Any = ...
     figure: Any = ...
     canvas: Any = ...
     axis: Any = ...
@@ -46,4 +49,24 @@ class RAMSTKPlot:
                       title: str,
                       fontsize: int = ...,
                       fontweight: str = ...) -> matplotlib.text.Text:
+        ...
+
+    def _do_make_date_plot(self, x_values: List[float], y_values: List[float],
+                           **kwargs: Dict[str, str]) -> None:
+        ...
+
+    def _do_make_histogram(self, x_values: List[float], y_values: List[float],
+                           **kwargs: Dict[str, str]) -> None:
+        ...
+
+    def _do_make_scatter_plot(self, x_values: List[float],
+                              y_values: List[float],
+                              **kwargs: Dict[str, str]) -> None:
+        ...
+
+    def _do_make_step_plot(self, x_values: List[float], y_values: List[float],
+                           **kwargs: Dict[str, str]) -> None:
+        ...
+
+    def _get_minimax_ordinates(self) -> Tuple[float, float]:
         ...

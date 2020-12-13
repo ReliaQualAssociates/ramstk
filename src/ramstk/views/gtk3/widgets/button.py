@@ -58,8 +58,7 @@ def do_make_buttonbox(view: Any,
 
     _buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
 
-    i = 0
-    for _icon in _icons:
+    for _idx, _icon in enumerate(_icons):
         _image = Gtk.Image()
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(view._dic_icons[_icon],
                                                        _height, _width)
@@ -72,18 +71,16 @@ def do_make_buttonbox(view: Any,
         _button.props.height_request = _height
 
         try:
-            _button.set_tooltip_markup(_tooltips[i])
+            _button.set_tooltip_markup(_tooltips[_idx])
         except IndexError:
             _button.set_tooltip_markup("")
 
         try:
-            _button.connect('clicked', _callbacks[i])
+            _button.connect('clicked', _callbacks[_idx])
         except IndexError:
             _button.set_sensitive(False)
 
         _buttonbox.pack_start(_button, True, True, 0)
-
-        i += 1
 
     return _buttonbox
 

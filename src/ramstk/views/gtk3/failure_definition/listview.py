@@ -41,6 +41,9 @@ class FailureDefinitionPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
+        self._dic_attribute_keys = {
+            2: ['definition', 'string'],
+        }
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'definition_id': [None, 'edited', 1],
@@ -72,15 +75,8 @@ class FailureDefinitionPanel(RAMSTKPanel):
 
         :return: None
         """
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
-
-        _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position['col2']).get_cells()[0]
-        _cell.connect('edited',
-                      super().on_cell_edit, 'lvw_editing_failure_definition',
-                      2)
+        super().do_set_callbacks()
+        super().do_set_cell_callbacks('lvw_editing_failure_definition', [2])
 
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
         """Set up the RAMSTKTreeView() for Failure Definitions.
@@ -127,7 +123,6 @@ class FailureDefinitionPanel(RAMSTKPanel):
 
         if _attributes:
             self._record_id = _attributes['definition_id']
-            self._parent_id = _attributes['revision_id']
 
             pub.sendMessage('selected_failure_definition',
                             attributes=_attributes)
@@ -143,12 +138,6 @@ class FailureDefinition(RAMSTKListView):
     :cvar _tablabel: the text to display on the view's tab.
     :cvar _tabtooltip: the text to display in the tooltip for the view's tab.
 
-    :ivar _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
     :ivar _lst_tooltips: the list of tooltips for the view's
@@ -185,6 +174,8 @@ class FailureDefinition(RAMSTKListView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks.insert(1, self._do_request_delete)
+        self._lst_icons.insert(1, 'remove')
         self._lst_mnu_labels = [
             _("Add Definition"),
             _("Delete Selected"),
@@ -210,19 +201,20 @@ class FailureDefinition(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_delete_failure_definition_2')
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_insert_failure_definition_2')
-        pub.subscribe(self.do_set_cursor_active,
+        pub.subscribe(super().do_set_cursor_active,
+                      'succeed_delete_failure_definition')
+        pub.subscribe(super().do_set_cursor_active,
+                      'succeed_insert_failure_definition')
+        pub.subscribe(super().do_set_cursor_active,
                       'succeed_update_failure_definition')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_delete_failure_definition')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_insert_failure_definition')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_update_failure_definition')
 
+        pub.subscribe(self._do_set_record_id, 'selected_failure_definition')
         pub.subscribe(self._on_insert_failure_definition,
                       'succeed_insert_failure_definition')
 
@@ -245,45 +237,24 @@ class FailureDefinition(RAMSTKListView):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage('request_delete_failure_definition',
-                            revision_id=self._revision_id,
                             node_id=self._record_id)
 
         _dialog.do_destroy()
 
-    # pylint: disable=unused-argument
-    def _do_request_insert(self, __button: Gtk.ToolButton) -> None:
-        """Request to add a Failure Definition record.
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the failure definition's parent and record ID.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param attributes: the attributes dict for the selected failure
+            definition.
         :return: None
+        :rtype: None
         """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_insert_failure_definition',
-                        revision_id=self._revision_id)
+        self._parent_id = attributes['revision_id']
+        self._record_id = attributes['definition_id']
 
-    # pylint: disable=unused-argument
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected failure definition.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_failure_definition',
-                        node_id=self._record_id)
-
-    # pylint: disable=unused-argument
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the failure definitions.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: none
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_failure_definitions')
-
-    def _on_insert_failure_definition(self, node_id: int,
-                                      tree: treelib.Tree) -> None:
+    def _on_insert_failure_definition(self,
+                                      node_id: int = 0,
+                                      tree: treelib.Tree = '') -> None:
         """Add row to module view for newly added failure definition.
 
         :param node_id: the ID of the newly added failure definition.
@@ -304,3 +275,7 @@ class FailureDefinition(RAMSTKListView):
 
         self._pnlPanel.do_set_properties()
         self._pnlPanel.do_set_callbacks()
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
+                "button_press_event",
+                super().on_button_press)
