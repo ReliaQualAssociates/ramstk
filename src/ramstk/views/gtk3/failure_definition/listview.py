@@ -202,7 +202,7 @@ class FailureDefinition(RAMSTKListView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_set_cursor_active,
-                      'succeed_delete_failure_definition_2')
+                      'succeed_delete_failure_definition')
         pub.subscribe(super().do_set_cursor_active,
                       'succeed_insert_failure_definition')
         pub.subscribe(super().do_set_cursor_active,
@@ -237,7 +237,6 @@ class FailureDefinition(RAMSTKListView):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage('request_delete_failure_definition',
-                            revision_id=self._revision_id,
                             node_id=self._record_id)
 
         _dialog.do_destroy()
