@@ -4,8 +4,10 @@
 #       ramstk.__init__.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Reliability, Availability, Maintainability, and Safety ToolKit package."""
+
+__version__ = '1.0.0.alpha'
 
 # RAMSTK Local Imports
 from .configuration import (
