@@ -1,9 +1,6 @@
 # Standard Library Imports
 from typing import Any, Dict
 
-# Third Party Imports
-import treelib
-
 # RAMSTK Package Imports
 from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -53,15 +50,9 @@ class FailureDefinition(RAMSTKListView):
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         ...
 
-    _parent_id: Any = ...
     _record_id: Any = ...
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        ...
-
-    def _on_insert_failure_definition(self,
-                                      node_id: int = ...,
-                                      tree: treelib.Tree = ...) -> None:
         ...
 
     def __make_ui(self) -> None:

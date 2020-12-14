@@ -11,7 +11,6 @@
 from typing import Any, Dict
 
 # Third Party Imports
-import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -205,6 +204,7 @@ class FailureDefinition(RAMSTKListView):
                       'succeed_delete_failure_definition')
         pub.subscribe(super().do_set_cursor_active,
                       'succeed_insert_failure_definition')
+        pub.subscribe(super().on_insert, 'succeed_insert_failure_definition')
         pub.subscribe(super().do_set_cursor_active,
                       'succeed_update_failure_definition')
         pub.subscribe(super().do_set_cursor_active_on_fail,
@@ -215,8 +215,6 @@ class FailureDefinition(RAMSTKListView):
                       'fail_update_failure_definition')
 
         pub.subscribe(self._do_set_record_id, 'selected_failure_definition')
-        pub.subscribe(self._on_insert_failure_definition,
-                      'succeed_insert_failure_definition')
 
     # pylint: disable=unused-argument
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -242,29 +240,14 @@ class FailureDefinition(RAMSTKListView):
         _dialog.do_destroy()
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the failure definition's parent and record ID.
+        """Set the failure definition's record ID.
 
         :param attributes: the attributes dict for the selected failure
             definition.
         :return: None
         :rtype: None
         """
-        self._parent_id = attributes['revision_id']
         self._record_id = attributes['definition_id']
-
-    def _on_insert_failure_definition(self,
-                                      node_id: int = 0,
-                                      tree: treelib.Tree = '') -> None:
-        """Add row to module view for newly added failure definition.
-
-        :param node_id: the ID of the newly added failure definition.
-        :param tree: the treelib Tree() containing the work stream module's
-            data.
-        :return: None
-        """
-        _data = tree.get_node(
-            node_id).data['failure_definition'].get_attributes()
-        self._pnlPanel.on_insert(_data)
 
     def __make_ui(self) -> None:
         """Build the user interface for the failure definition list view.

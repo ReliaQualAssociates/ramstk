@@ -100,12 +100,10 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_request_insert(self, **kwargs: Any) -> None:
         ...
 
-    def do_request_insert_child(self, __button: Gtk.ToolButton,
-                                **kwargs: Any) -> Any:
+    def do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         ...
 
-    def do_request_insert_sibling(self, __button: Gtk.ToolButton,
-                                  **kwargs: Any) -> Any:
+    def do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         ...
 
     def do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -119,7 +117,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
     def do_set_cursor_active(self,
                              node_id: Any = ...,
-                             tree: Any = ...) -> None:
+                             tree: treelib.Tree = ...) -> None:
         ...
 
     def do_set_cursor_active_on_fail(self, error_message: str = ...) -> None:
@@ -141,7 +139,7 @@ class RAMSTKBaseView(Gtk.HBox):
     def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
         ...
 
-    def on_insert(self, data: Any) -> None:
+    def on_insert(self, node_id: int = ..., tree: treelib.Tree = ...) -> None:
         ...
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
@@ -152,9 +150,6 @@ class RAMSTKBaseView(Gtk.HBox):
 
 
 class RAMSTKListView(RAMSTKBaseView):
-    _lst_callbacks: Any = ...
-    _lst_icons: Any = ...
-    _lst_mnu_labels: Any = ...
     matrixview: Any = ...
     tab_label: Any = ...
 
@@ -162,7 +157,7 @@ class RAMSTKListView(RAMSTKBaseView):
                  logger: RAMSTKLogManager) -> None:
         ...
 
-    def do_request_update(self, __button: Gtk.ToolButton) -> None:
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         ...
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
