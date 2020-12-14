@@ -12,7 +12,7 @@ REQFILE		= requirements.txt
 DEVREQFILE	= requirements-dev.txt
 TSTREQFILE	= requirements-test.txt
 SRCFILE		= src/ramstk/
-TESTOPTS	= -x
+TESTOPTS	= -x -c ./setup.cfg
 TESTFILE	= tests/
 VIRTENV		= ramstk-venv
 COVDIR		= .reports/coverage/html
@@ -41,11 +41,11 @@ ICONS32		= $(shell ls ./data/icons/32x32)
 
 # Argument lists for tools.
 DOCFORMATTER_ARGS	= --in-place
-ISORT_ARGS	= --atomic --use-parentheses --balanced --multi-line 5
+ISORT_ARGS	= --settings-file ./setup.cfg --atomic --use-parentheses --balanced
 MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	=
 PYDOCSTYLE_ARGS	= --count
-PYLINT_ARGS	= -j0 --rcfile=./.pylintrc
+PYLINT_ARGS	= -j4 --rcfile=./setup.cfg
 YAPF_ARGS	= --in-place
 
 help:
@@ -130,7 +130,7 @@ clean-test:		## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 coverage: clean-test
-	py.test $(TESTOPTS) --cov=ramstk --cov-branch --cov-append --cov-report=xml --cov-report=term $(TESTFILE)
+	py.test $(TESTOPTS) $(TESTFILE)
 
 depends:
 	pip install -U pip-tools

@@ -8,7 +8,7 @@
 """Usage Profile Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -71,6 +71,7 @@ class DataManager(RAMSTKDataManager):
                       'request_insert_mission_phase')
         pub.subscribe(self._do_set_attributes,
                       'request_set_usage_profile_attributes')
+        pub.subscribe(self._do_set_attributes, 'lvw_editing_usage_profile')
         pub.subscribe(self._do_set_all_attributes,
                       'request_set_all_usage_profile_attributes')
 
@@ -194,11 +195,11 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_insert(_environment)
 
             _phase_id = '{0:s}.{1:s}'.format(str(mission_id), str(phase_id))
-            _environment_id = '{0:s}.{1:s}.{2:s}'.format(
+            _node_id = '{0:s}.{1:s}.{2:s}'.format(
                 str(mission_id), str(phase_id),
                 str(_environment.environment_id))
             self.tree.create_node(tag=_environment.name,
-                                  identifier=_environment_id,
+                                  identifier=_node_id,
                                   parent=_phase_id,
                                   data={'usage_profile': _environment})
             self.last_id['environment'] = _environment.environment_id
@@ -220,9 +221,10 @@ class DataManager(RAMSTKDataManager):
 
             self.dao.do_insert(_mission)
 
+            _node_id = '{0:d}'.format(_mission.mission_id)
+
             self.tree.create_node(tag=_mission.description,
-                                  identifier='{0:d}'.format(
-                                      _mission.mission_id),
+                                  identifier=_node_id,
                                   parent=self._root,
                                   data={'usage_profile': _mission})
             self.last_id['mission'] = _mission.mission_id
@@ -245,9 +247,9 @@ class DataManager(RAMSTKDataManager):
 
             self.dao.do_insert(_phase)
 
+            _node_id = '{0:d}.{1:d}'.format(mission_id, _phase.phase_id)
             self.tree.create_node(tag=_phase.description,
-                                  identifier='{0:d}.{1:d}'.format(
-                                      mission_id, _phase.phase_id),
+                                  identifier=_node_id,
                                   parent=str(mission_id),
                                   data={'usage_profile': _phase})
             self.last_id['mission_phase'] = _phase.phase_id
@@ -255,7 +257,7 @@ class DataManager(RAMSTKDataManager):
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_usage_profile", error_message=_error)
 
-    def _do_set_attributes(self, node_id: str, package: Dict) -> None:
+    def _do_set_attributes(self, node_id: List, package: Dict) -> None:
         """Set the attributes of the record associated with the Node ID.
 
         :param node_id: the ID of the record whose attributes are to be set.
@@ -267,26 +269,27 @@ class DataManager(RAMSTKDataManager):
 
         try:
             _attributes = self.do_select(
-                node_id, table='usage_profile').get_attributes()
+                node_id[0], table='usage_profile').get_attributes()
             if _key in _attributes:
                 _attributes[_key] = _value
 
-                if len(node_id.split('.')) == 1:
+                if len(node_id[0].split('.')) == 1:
                     _attributes.pop('revision_id')
                     _attributes.pop('mission_id')
-                elif len(node_id.split('.')) == 2:
+                elif len(node_id[0].split('.')) == 2:
                     _attributes.pop('mission_id')
                     _attributes.pop('phase_id')
-                elif len(node_id.split('.')) == 3:
+                elif len(node_id[0].split('.')) == 3:
                     _attributes.pop('phase_id')
                     _attributes.pop('environment_id')
 
                 self.do_select(
-                    node_id, table='usage_profile').set_attributes(_attributes)
+                    node_id[0],
+                    table='usage_profile').set_attributes(_attributes)
 
         except (AttributeError, TypeError):
             pub.sendMessage('fail_set_usage_profile_attributes',
-                            node_id=node_id)
+                            node_id=node_id[0])
 
     def _do_set_all_attributes(self, attributes: Dict[str, Any],
                                node_id: str) -> None:
@@ -303,5 +306,5 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self._do_set_attributes(node_id=node_id,
+            self._do_set_attributes(node_id=node_id,    # type: ignore
                                     package={_key: attributes[_key]})

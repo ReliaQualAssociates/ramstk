@@ -8,7 +8,6 @@
 """The RAMSTKBaseView Module."""
 
 # Standard Library Imports
-import datetime
 import locale
 from typing import Any, Dict, List, Tuple
 
@@ -894,39 +893,17 @@ class RAMSTKBaseView(Gtk.HBox):
             self.treeview.selection.select_iter(_row)
             self.show_all()
 
-    # def on_insert(self, data: Any) -> None:
-    #    """Add row to module view for newly added work stream element.
+    def on_insert(self, node_id: int = 0, tree: treelib.Tree = '') -> None:
+        """Add row to the RAMSTKTreeView for newly added element.
 
-    #    :param data: the data package for the work stream element to add.
-    #    :return: None
-    #    """
-    #    _attributes = []
-    #    _model, _row = self.treeview.selection.get_selected()
-
-    #    try:
-    #        if self._record_id == self._parent_id:
-    #            _prow = _row
-    #        else:
-    #            _prow = _model.iter_parent(_row)
-    #    except TypeError:
-    #        _prow = None
-
-    #    for _key in self.treeview.korder:
-    #        if _key == 'dict':
-    #            _attributes.append(str(data))
-    #        else:
-    #            try:
-    #                if isinstance(data[_key], datetime.date):
-    #                    data[_key] = data[_key].strftime("%Y-%m-%d")
-    #                data[_key] = data[_key].decode('utf-8')
-    #            except (AttributeError, KeyError) as _error:
-    #                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-    #            _attributes.append(data[_key])
-
-    #    _row = _model.append(_prow, _attributes)
-
-    #    self.treeview.selection.select_iter(_row)
+        :param node_id: the ID of the newly added element.
+        :param tree: the treelib Tree() containing the work stream module's
+            data.
+        :return: None
+        :rtype: None
+        """
+        _data = tree.get_node(node_id).data[self._module].get_attributes()
+        self._pnlPanel.on_insert(_data)
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
         """Respond to RAMSTKTreeView() row changes.

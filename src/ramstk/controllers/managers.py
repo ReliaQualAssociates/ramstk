@@ -555,7 +555,8 @@ class RAMSTKMatrixManager:
         self.dic_matrices[matrix_type] = pd.concat([
             self.dic_matrices[matrix_type],
             pd.DataFrame({node_id: _lst_values})
-        ], axis=1)
+        ],
+                                                   axis=1)
 
     def do_insert_row(self, node_id: int) -> Any:
         """Insert a row into each matrix managed by this matrix manager.

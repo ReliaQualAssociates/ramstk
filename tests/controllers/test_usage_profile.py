@@ -434,13 +434,13 @@ class TestGetterSetter():
 
         pub.sendMessage(
             'request_set_usage_profile_attributes',
-            node_id='1',
+            node_id=['1', ''],
             package={'description': 'This is the mission description.'})
         pub.sendMessage('request_set_usage_profile_attributes',
-                        node_id='1.1',
+                        node_id=['1.1', ''],
                         package={'phase_end': 5.12})
         pub.sendMessage('request_set_usage_profile_attributes',
-                        node_id='1.1.1',
+                        node_id=['1.1.1', ''],
                         package={'minimum': 5.12})
         assert DUT.do_select('1', table='usage_profile').description == (
             'This is the mission description.')
@@ -459,7 +459,7 @@ class TestGetterSetter():
 
         pub.sendMessage(
             'request_set_usage_profile_attributes',
-            node_id=0,
+            node_id=[0, ''],
             package={'description': 'This is the mission description.'})
 
         pub.unsubscribe(self.on_fail_set_usage_profile_attrs,
@@ -477,7 +477,7 @@ class TestGetterSetter():
                             'phase_start': 5.12,
                             'phase_end': 10.24
                         },
-                        node_id='1.1')
+                        node_id=['1.1', ''])
         assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
         assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
 
@@ -494,7 +494,7 @@ class TestGetterSetter():
                             'phase_end': 10.24,
                             'funpack': 'Fun Packer',
                         },
-                        node_id='1.1')
+                        node_id=['1.1', ''])
         assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
         assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
 
