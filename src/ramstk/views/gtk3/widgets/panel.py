@@ -387,7 +387,7 @@ class RAMSTKPanel(RAMSTKFrame):
                 _cell[0].connect('edited', self.on_cell_edit, _idx, message)
             except TypeError:
                 _cell[0].connect('toggled', self.on_cell_edit, 'new text',
-                                 message, _idx)
+                                 _idx, message)
 
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set properties of the RAMSTKPanel() widgets.

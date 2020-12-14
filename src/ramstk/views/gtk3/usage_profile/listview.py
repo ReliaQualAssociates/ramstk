@@ -24,7 +24,7 @@ from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKPanel
 
 
-# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences,PyTypeChecker
 class UsageProfilePanel(RAMSTKPanel):
     """Panel to display hierarchical list of usage profiles."""
 
@@ -47,77 +47,89 @@ class UsageProfilePanel(RAMSTKPanel):
         # Initialize private dictionary class attributes.
         self._dic_attributes: Dict[str, Dict[str, Any]] = {
             'mission': {
-                'description': [None, 'edited', 2],
-                'time_units': [None, 'edited', 4],
-                'mission_time': [None, 'edited', 6],
+                'description': [None, 'edited', 1],
+                'time_units': [None, 'edited', 3],
+                'mission_time': [None, 'edited', 5],
             },
             'phase': {
-                'name': [None, 'edited', 2],
-                'description': [None, 'edited', 3],
-                'phase_start': [None, 'edited', 5],
-                'phase_end': [None, 'edited', 6],
+                'name': [None, 'edited', 1],
+                'description': [None, 'edited', 2],
+                'phase_start': [None, 'edited', 4],
+                'phase_end': [None, 'edited', 5],
             },
             'environment': {
-                'name': [None, 'edited', 2],
-                'units': [None, 'edited', 4],
-                'minimum': [None, 'edited', 5],
-                'maximum': [None, 'edited', 6],
-                'mean': [None, 'edited', 7],
-                'variance': [None, 'edited', 8],
+                'name': [None, 'edited', 1],
+                'units': [None, 'edited', 3],
+                'minimum': [None, 'edited', 4],
+                'maximum': [None, 'edited', 5],
+                'mean': [None, 'edited', 6],
+                'variance': [None, 'edited', 7],
             }
         }
         self._dic_element_keys = {
             'mission': {
-                2: 'description',
-                4: 'time_units',
-                6: 'mission_time'
+                1: ['description', 'string'],
+                3: ['time_units', 'string'],
+                5: ['mission_time', 'float'],
             },
             'phase': {
-                2: 'name',
-                3: 'description',
-                5: 'phase_start',
-                6: 'phase_end'
+                1: ['name', 'string'],
+                2: ['description', 'string'],
+                4: ['phase_start', 'float'],
+                5: ['phase_end', 'float'],
             },
             'environment': {
-                2: 'name',
-                4: 'units',
-                5: 'minimum',
-                6: 'maximum',
-                7: 'mean',
-                8: 'variance'
+                1: ['name', 'string'],
+                3: ['units', 'string'],
+                4: ['minimum', 'float'],
+                5: ['maximum', 'float'],
+                6: ['mean', 'float'],
+                7: ['variance', 'float'],
             }
         }
         self._dic_headings = {
-            'mission': [
-                _("Mission ID"),
-                _("Mission Description"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _(""),
-            ],
-            'phase': [
-                _("Phase ID"),
-                _("Phase Description"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _(""),
-            ],
-            'environment': [
-                _("Environment ID"),
-                _("Condition Description"),
-                _("Units"),
-                _("Minimum Value"),
-                _("Maximum Value"),
-                _("Mean Value"),
-                _("Variance"),
-                _(""),
-            ],
+            'mission': {
+                'col0': [_("Mission ID"), True],
+                'col1': [_("Mission Description"), True],
+                'col2': [_(""), False],
+                'col3': [_("Units"), True],
+                'col4': [_("Start Time"), True],
+                'col5': [_("End Time"), True],
+                'col6': [_(""), False],
+                'col7': [_(""), False],
+                'col8': [_(""), False],
+                'col9': [_(""), False],
+                'col10': [_(""), False],
+                'pixbuf': [_(""), False],
+            },
+            'phase': {
+                'col0': [_("Phase ID"), True],
+                'col1': [_("Phase Name"), True],
+                'col2': [_("Phase Description"), True],
+                'col3': [_(""), False],
+                'col4': [_("Start Time"), True],
+                'col5': [_("End Time"), True],
+                'col6': [_(""), False],
+                'col7': [_(""), False],
+                'col8': [_(""), False],
+                'col9': [_(""), False],
+                'col10': [_(""), False],
+                'pixbuf': [_(""), False],
+            },
+            'environment': {
+                'col0': [_("Environment ID"), True],
+                'col1': [_("Condition Name"), True],
+                'col2': [_(""), False],
+                'col3': [_("Units"), True],
+                'col4': [_("Minimum Value"), True],
+                'col5': [_("Maximum Value"), True],
+                'col6': [_("Mean Value"), True],
+                'col7': [_("Variance"), True],
+                'col8': [_(""), False],
+                'col9': [_(""), False],
+                'col10': [_(""), False],
+                'pixbuf': [_(""), False],
+            },
         }
 
         # Initialize private list class attributes.
@@ -135,14 +147,10 @@ class UsageProfilePanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_delete, 'succeed_delete_environment')
-        pub.subscribe(super().on_delete, 'succeed_delete_mission')
-        pub.subscribe(super().on_delete, 'succeed_delete_mission_phase')
+        pub.subscribe(super().on_delete, 'succeed_delete_usage_profile')
 
         pub.subscribe(self._do_load_tree, 'succeed_retrieve_usage_profile')
-        pub.subscribe(self._do_load_tree, 'succeed_insert_environment')
-        pub.subscribe(self._do_load_tree, 'succeed_insert_mission')
-        pub.subscribe(self._do_load_tree, 'succeed_insert_mission_phase')
+        pub.subscribe(self._on_insert, 'succeed_insert_usage_profile')
         pub.subscribe(self._on_module_switch, 'lvwSwitchedPage')
 
     def do_set_callbacks(self) -> None:
@@ -150,21 +158,9 @@ class UsageProfilePanel(RAMSTKPanel):
 
         :return: None
         """
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
-
-        _idx = 1
-        for _key in [
-                'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8',
-                'col9', 'col10'
-        ]:
-            _cell = self.tvwTreeView.get_column(
-                self.tvwTreeView.position[_key]).get_cells()[0]
-            _cell.connect('edited',
-                          super().on_cell_edit, 'lvw_editing_usage_profile',
-                          _idx)
-            _idx += 1
+        super().do_set_callbacks()
+        super().do_set_cell_callbacks('lvw_editing_usage_profile',
+                                      [1, 2, 3, 4, 5, 6, 7])
 
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
         """Set properties of the RAMSTKPanel() widgets.
@@ -350,6 +346,14 @@ class UsageProfilePanel(RAMSTKPanel):
 
         super().do_expand_tree()
 
+    def _on_insert(self, tree: Tree) -> None:
+        """Wrap the _do_load_tree() method when an element is inserted.
+
+        :param tree: the Usage Profile treelib Tree().
+        :return: None
+        """
+        self._do_load_tree(tree)
+
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).
 
@@ -358,7 +362,7 @@ class UsageProfilePanel(RAMSTKPanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == 'stakeholder' and _row is not None:
+        if module == 'usage_profile' and _row is not None:
             _code = _model.get_value(_row, self._lst_col_order[1])
             _name = _model.get_value(_row, self._lst_col_order[3])
             _title = _("Analyzing Usage Profile item {0:s}: {1:s}").format(
@@ -380,10 +384,10 @@ class UsageProfilePanel(RAMSTKPanel):
         _model, _row = selection.get_selected()
 
         if _row is not None:
-            self._record_id = _model.get_value(_row, 9)
+            self._record_id = _model.get_value(_row, 8)
             try:
                 _prow = _model.iter_parent(_row)
-                self._parent_id = _model.get_value(_prow, 9)
+                self._parent_id = _model.get_value(_prow, 0)
             except TypeError:
                 self._parent_id = -1
 
@@ -399,18 +403,23 @@ class UsageProfilePanel(RAMSTKPanel):
             # Change the column headings depending on what is being selected.
             i = 0
             _columns = self.tvwTreeView.get_columns()
-            for _heading in self._dic_headings[_level]:
+            _headings = self._dic_headings[_level]
+            for _key in self.tvwTreeView.korder:
                 _label = Gtk.Label()
                 _label.set_line_wrap(True)
                 _label.set_alignment(xalign=0.5, yalign=0.5)
                 _label.set_justify(Gtk.Justification.CENTER)
-                _label.set_markup("<span weight='bold'>" + _heading
+                _label.set_markup("<span weight='bold'>" + _headings[_key][0]
                                   + "</span>")
                 _label.set_use_markup(True)
                 _label.show_all()
                 _columns[i].set_widget(_label)
+                _columns[i].set_visible(_headings[_key][1])
 
                 i += 1
+
+        pub.sendMessage('selected_usage_profile',
+                        attributes={'record_id': _model.get_value(_row, 8)})
 
 
 class UsageProfile(RAMSTKListView):
@@ -420,12 +429,6 @@ class UsageProfile(RAMSTKListView):
 
     :cvar _module: the name of the module.
 
-    :ivar _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
     :ivar _lst_tooltips: the list of tooltips for the view's
@@ -496,24 +499,20 @@ class UsageProfile(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active,
+        pub.subscribe(super().do_set_cursor_active,
                       'succeed_delete_usage_profile')
-        pub.subscribe(self.do_set_cursor_active,
+        pub.subscribe(super().do_set_cursor_active,
                       'succeed_insert_usage_profile')
-        pub.subscribe(self.do_set_cursor_active,
+        pub.subscribe(super().do_set_cursor_active,
                       'succeed_update_usage_profile')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_delete_environment')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_delete_mission')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_delete_mission_phase')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_environment')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_mission')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_mission_phase')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active_on_fail,
+                      'fail_delete_usage_profile')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
+                      'fail_insert_usage_profile')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_update_usage_profile')
+
+        pub.subscribe(self._do_set_record_id, 'selected_usage_profile')
 
     # pylint: disable=unused-argument
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -522,9 +521,9 @@ class UsageProfile(RAMSTKListView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _model, _row = self.tvwTreeView.selection.get_selected()
-        _node_id = _model.get_value(_row, 9)
-        _level = _model.get_value(_row, 11)
+        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
+        _node_id = _model.get_value(_row, 8)
+        _level = _model.get_value(_row, 10)
 
         _parent = self.get_parent().get_parent().get_parent().get_parent(
         ).get_parent()
@@ -536,7 +535,8 @@ class UsageProfile(RAMSTKListView):
         _dialog.do_set_message_type(message_type='question')
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
-            self.__do_request_delete(_level)
+            super().do_set_cursor_busy()
+            pub.sendMessage('request_delete_usage_profile', node_id=_node_id)
 
         _dialog.do_destroy()
 
@@ -548,32 +548,31 @@ class UsageProfile(RAMSTKListView):
         """
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
-        _model, _row = self.tvwTreeView.selection.get_selected()
-        _level = _model.get_value(_row, 11)
+        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
+        _level = _model.get_value(_row, 10)
         _prow = _model.iter_parent(_row)
 
         super().do_set_cursor_busy()
         if _level == 'mission':
-            _mission_id = _model.get_value(_row, 9)
+            _mission_id = _model.get_value(_row, 0)
             pub.sendMessage('request_insert_mission_phase',
-                            revision_id=self._revision_id,
                             mission_id=_mission_id)
         elif _level == 'phase':
-            _phase_id = _model.get_value(_row, 1)
-            _mission_id = _model.get_value(_prow, 9)
+            _phase_id = _model.get_value(_row, 0)
+            _mission_id = _model.get_value(_prow, 0)
             pub.sendMessage('request_insert_environment',
-                            revision_id=self._revision_id,
                             mission_id=_mission_id,
                             phase_id=_phase_id)
         elif _level == 'environment':
+            _error = _("An environmental condition cannot have a child.")
             _parent = self.get_parent().get_parent().get_parent().get_parent(
             ).get_parent()
             _dialog = super().do_raise_dialog(parent=_parent)
-            _dialog.do_set_message(
-                message=_("An environmental condition cannot have a child."))
+            _dialog.do_set_message(message=_error)
             _dialog.do_set_message_type(message_type='error')
             _dialog.do_run()
             _dialog.do_destroy()
+            pub.sendMessage("fail_insert_usage_profile", error_message=_error)
 
     # pylint: disable=unused-argument
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
@@ -583,9 +582,9 @@ class UsageProfile(RAMSTKListView):
         """
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
-        _model, _row = self.tvwTreeView.selection.get_selected()
+        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
         try:
-            _level = _model.get_value(_row, 11)
+            _level = _model.get_value(_row, 10)
             _prow = _model.iter_parent(_row)
         except TypeError:
             _level = 'mission'
@@ -593,47 +592,28 @@ class UsageProfile(RAMSTKListView):
 
         super().do_set_cursor_busy()
         if _level == 'mission':
-            pub.sendMessage('request_insert_mission',
-                            revision_id=self._revision_id)
+            pub.sendMessage('request_insert_mission')
         elif _level == 'phase':
-            _mission_id = _model.get_value(_prow, 9)
+            _mission_id = _model.get_value(_prow, 0)
             pub.sendMessage('request_insert_mission_phase',
-                            revision_id=self._revision_id,
                             mission_id=_mission_id)
         elif _level == 'environment':
             _gprow = _model.iter_parent(_prow)
-            _mission_id = _model.get_value(_gprow, 9)
-            _phase_id = _model.get_value(_prow, 9).split('.')[1]
+            _mission_id = _model.get_value(_gprow, 0)
+            _phase_id = _model.get_value(_prow, 0)
             pub.sendMessage('request_insert_environment',
-                            revision_id=self._revision_id,
                             mission_id=_mission_id,
                             phase_id=_phase_id)
 
-    def __do_request_delete(self, level: str) -> None:
-        """Send the correct delete message.
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the failure definition's record ID.
 
-        :param level: the indenture level of the Usage Profile element to
-            delete.
+        :param attributes: the attributes dict for the selected failure
+            definition.
         :return: None
+        :rtype: None
         """
-        _model, _row = self.tvwTreeView.selection.get_selected()
-        _node_id = _model.get_value(_row, 9)
-
-        super().do_set_cursor_busy()
-        if level == 'mission':
-            pub.sendMessage('request_delete_mission',
-                            revision_id=self._revision_id,
-                            node_id=_node_id)
-        elif level == 'phase':
-            pub.sendMessage('request_delete_mission_phase',
-                            revision_id=self._revision_id,
-                            mission_id=self._parent_id,
-                            node_id=_node_id)
-        elif level == 'environment':
-            pub.sendMessage('request_delete_environment',
-                            revision_id=self._revision_id,
-                            phase_id=self._parent_id,
-                            node_id=_node_id)
+        self._record_id = attributes['record_id']
 
     def __make_ui(self):
         """Build the user interface for the usage profile list view.
@@ -644,5 +624,9 @@ class UsageProfile(RAMSTKListView):
 
         self._pnlPanel.do_set_properties()
         self._pnlPanel.do_set_callbacks()
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
+                "button_press_event",
+                super().on_button_press)
         for _element in ['mission', 'phase', 'environment']:
             self._pnlPanel.dic_icons[_element] = self._dic_icons[_element]

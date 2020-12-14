@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from treelib import Tree as Tree
@@ -41,7 +41,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_mission_phase(self, mission_id: int) -> None:
         ...
 
-    def _do_set_attributes(self, node_id: str, package: Dict) -> None:
+    def _do_set_attributes(self, node_id: List, package: Dict) -> None:
         ...
 
     def _do_set_all_attributes(self, attributes: Dict[str, Any],

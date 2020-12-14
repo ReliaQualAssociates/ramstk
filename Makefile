@@ -45,7 +45,7 @@ ISORT_ARGS	= --settings-file ./setup.cfg --atomic --use-parentheses --balanced
 MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	=
 PYDOCSTYLE_ARGS	= --count
-PYLINT_ARGS	= -j0 --rcfile=./setup.cfg
+PYLINT_ARGS	= -j4 --rcfile=./setup.cfg
 YAPF_ARGS	= --in-place
 
 help:
