@@ -23,8 +23,7 @@ from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
 class RAMSTKModuleBook(RAMSTKBaseBook):
-    """
-    Display Module Views for the RAMSTK modules.
+    """Display Module Views for the RAMSTK modules.
 
     Attributes of the Module Book are:
 
@@ -35,13 +34,10 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize an instance of the Module Book class.
+        """Initialize an instance of the Module Book class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKBaseBook.__init__(self, configuration)
 
@@ -59,7 +55,6 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_handler_id = {'': 0}
 
         # Initialize public list attributes.
 
@@ -75,8 +70,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         pub.subscribe(self._on_close, 'succeed_closed_program')
 
     def __make_ui(self) -> None:
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
@@ -90,8 +84,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self.set_current_page(0)
 
     def __set_callbacks(self) -> None:
-        """
-        Set the callback functions/methods for the RAMSTKListBook and widgets.
+        """Set callback methods for the RAMSTKListBook and widgets.
 
         :return: None
         :rtype: None
@@ -102,8 +95,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
             'switch-page', self._on_switch_page)
 
     def _on_close(self) -> None:
-        """
-        Update the Module View when a RAMSTK Program database is closed.
+        """Update the Module View when a RAMSTK Program database is closed.
 
         :return: None
         :rtype: None
@@ -121,8 +113,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_open(self, tree: Tree) -> None:
-        """
-        Insert a page in the module book for each active work stream module.
+        """Insert a page in the module book for each active work stream module.
 
         :param tree: the work stream module's treelib Tree() containing all
             the data for the work stream module.  Unused in this method,
@@ -145,8 +136,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
 
     def _on_switch_page(self, __notebook: Gtk.Notebook, __page: Gtk.Widget,
                         page_num: int) -> None:
-        """
-        Handle page changes in the Module Book Gtk.Notebook().
+        """Handle page changes in the Module Book Gtk.Notebook().
 
         :param __notebook: the Tree Book notebook widget.
         :type __notebook: :class:`Gtk.Notebook`

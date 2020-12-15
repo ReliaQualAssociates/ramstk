@@ -8,7 +8,7 @@
 """The RAMSTK Usage Profile list view."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -139,6 +139,7 @@ class UsageProfilePanel(RAMSTKPanel):
 
         # Initialize public dictionary class attributes.
         self.dic_icons = {'mission': None, 'phase': None, 'environment': None}
+        self.dic_units: Dict[str, Tuple[str, str, str]] = {}
 
         # Initialize public list class attributes.
 
@@ -151,7 +152,16 @@ class UsageProfilePanel(RAMSTKPanel):
 
         pub.subscribe(self._do_load_tree, 'succeed_retrieve_usage_profile')
         pub.subscribe(self._on_insert, 'succeed_insert_usage_profile')
-        pub.subscribe(self._on_module_switch, 'lvwSwitchedPage')
+
+    def do_load_combobox(self) -> None:
+        """Load the Gtk.CellRendererCombo()s.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.tvwTreeView.get_cell_model(self._lst_col_order[3])
+        for _unit in self.dic_units:
+            _model.append([self.dic_units[_unit][1]])
 
     def do_set_callbacks(self) -> None:
         """Set callbacks for the stakeholder input list view.
@@ -353,22 +363,6 @@ class UsageProfilePanel(RAMSTKPanel):
         :return: None
         """
         self._do_load_tree(tree)
-
-    def _on_module_switch(self, module: str = '') -> None:
-        """Respond to changes in selected Module View module (tab).
-
-        :param module: the name of the module that was just selected.
-        :return: None
-        """
-        _model, _row = self.tvwTreeView.selection.get_selected()
-
-        if module == 'usage_profile' and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[1])
-            _name = _model.get_value(_row, self._lst_col_order[3])
-            _title = _("Analyzing Usage Profile item {0:s}: {1:s}").format(
-                str(_code), str(_name))
-
-            pub.sendMessage('request_set_title', title=_title)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle row changes for the Usage Profile package List View.
@@ -622,7 +616,11 @@ class UsageProfile(RAMSTKListView):
         """
         super().make_ui()
 
+        self._pnlPanel.dic_units = \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
+
         self._pnlPanel.do_set_properties()
+        self._pnlPanel.do_load_combobox()
         self._pnlPanel.do_set_callbacks()
         self._pnlPanel.tvwTreeView.dic_handler_id[
             'button-press'] = self._pnlPanel.tvwTreeView.connect(
