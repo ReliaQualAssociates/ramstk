@@ -1350,3 +1350,6 @@ def do_load_variables(site_db: BaseDatabase,
     _do_load_rpn_variables(site_db, site_configuration)
     _do_load_severity(site_db, site_configuration)
     _do_load_user_workgroups(site_db, site_configuration)
+
+    pub.sendMessage('do_log_info_msg', logger_name='INFO',
+                    message="Loaded global RAMSTK configuration variables.")
