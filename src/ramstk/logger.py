@@ -139,9 +139,7 @@ class RAMSTKLogManager:
 
         :param logger_name: the name of the logger used in the application.
         :param log_level: the level of messages to log.
-        :param log_file: the full path of the log file for this logger
-            instance to write to.
-        :keyword to_tty: boolean indicating whether this logger will
+        :param to_tty: boolean indicating whether this logger will
             also dump messages to the terminal.
         :return: None
         :rtype: None

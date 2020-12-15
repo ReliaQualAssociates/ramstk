@@ -89,46 +89,90 @@ class UsageProfilePanel(RAMSTKPanel):
         }
         self._dic_headings = {
             'mission': {
-                'col0': [_("Mission ID"), True],
-                'col1': [_("Mission Description"), True],
-                'col2': [_(""), False],
-                'col3': [_("Units"), True],
-                'col4': [_("Start Time"), True],
-                'col5': [_("End Time"), True],
-                'col6': [_(""), False],
-                'col7': [_(""), False],
-                'col8': [_(""), False],
-                'col9': [_(""), False],
-                'col10': [_(""), False],
-                'pixbuf': [_(""), False],
+                'col0': _("Mission ID"),
+                'col1': _("Mission Description"),
+                'col2': _(""),
+                'col3': _("Units"),
+                'col4': _("Start Time"),
+                'col5': _("End Time"),
+                'col6': _(""),
+                'col7': _(""),
+                'col8': _(""),
+                'col9': _(""),
+                'col10': _(""),
+                'pixbuf': _(""),
             },
             'phase': {
-                'col0': [_("Phase ID"), True],
-                'col1': [_("Phase Name"), True],
-                'col2': [_("Phase Description"), True],
-                'col3': [_(""), False],
-                'col4': [_("Start Time"), True],
-                'col5': [_("End Time"), True],
-                'col6': [_(""), False],
-                'col7': [_(""), False],
-                'col8': [_(""), False],
-                'col9': [_(""), False],
-                'col10': [_(""), False],
-                'pixbuf': [_(""), False],
+                'col0': _("Phase ID"),
+                'col1': _("Phase Name"),
+                'col2': _("Phase Description"),
+                'col3': _(""),
+                'col4': _("Start Time"),
+                'col5': _("End Time"),
+                'col6': _(""),
+                'col7': _(""),
+                'col8': _(""),
+                'col9': _(""),
+                'col10': _(""),
+                'pixbuf': _(""),
             },
             'environment': {
-                'col0': [_("Environment ID"), True],
-                'col1': [_("Condition Name"), True],
-                'col2': [_(""), False],
-                'col3': [_("Units"), True],
-                'col4': [_("Minimum Value"), True],
-                'col5': [_("Maximum Value"), True],
-                'col6': [_("Mean Value"), True],
-                'col7': [_("Variance"), True],
-                'col8': [_(""), False],
-                'col9': [_(""), False],
-                'col10': [_(""), False],
-                'pixbuf': [_(""), False],
+                'col0': _("Environment ID"),
+                'col1': _("Condition Name"),
+                'col2': _(""),
+                'col3': _("Units"),
+                'col4': _("Minimum Value"),
+                'col5': _("Maximum Value"),
+                'col6': _("Mean Value"),
+                'col7': _("Variance"),
+                'col8': _(""),
+                'col9': _(""),
+                'col10': _(""),
+                'pixbuf': _(""),
+            },
+        }
+        self._dic_visible = {
+            'mission': {
+                'col0': True,
+                'col1': True,
+                'col2': False,
+                'col3': True,
+                'col4': True,
+                'col5': True,
+                'col6': False,
+                'col7': False,
+                'col8': False,
+                'col9': False,
+                'col10': False,
+                'pixbuf': False,
+            },
+            'phase': {
+                'col0': True,
+                'col1': True,
+                'col2': True,
+                'col3': False,
+                'col4': True,
+                'col5': True,
+                'col6': False,
+                'col7': False,
+                'col8': False,
+                'col9': False,
+                'col10': False,
+                'pixbuf': False,
+            },
+            'environment': {
+                'col0': True,
+                'col1': True,
+                'col2': False,
+                'col3': True,
+                'col4': True,
+                'col5': True,
+                'col6': True,
+                'col7': True,
+                'col8': False,
+                'col9': False,
+                'col10': False,
+                'pixbuf': False,
             },
         }
 
@@ -395,22 +439,9 @@ class UsageProfilePanel(RAMSTKPanel):
                 self._dic_attribute_updater = {}
 
             # Change the column headings depending on what is being selected.
-            i = 0
-            _columns = self.tvwTreeView.get_columns()
-            _headings = self._dic_headings[_level]
-            for _key in self.tvwTreeView.korder:
-                _label = Gtk.Label()
-                _label.set_line_wrap(True)
-                _label.set_alignment(xalign=0.5, yalign=0.5)
-                _label.set_justify(Gtk.Justification.CENTER)
-                _label.set_markup("<span weight='bold'>" + _headings[_key][0]
-                                  + "</span>")
-                _label.set_use_markup(True)
-                _label.show_all()
-                _columns[i].set_widget(_label)
-                _columns[i].set_visible(_headings[_key][1])
-
-                i += 1
+            self.tvwTreeView.headings = self._dic_headings[_level]
+            self.tvwTreeView.visible = self._dic_visible[_level]
+            super().do_set_headings()
 
         pub.sendMessage('selected_usage_profile',
                         attributes={'record_id': _model.get_value(_row, 8)})

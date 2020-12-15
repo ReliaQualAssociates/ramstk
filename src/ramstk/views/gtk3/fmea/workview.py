@@ -495,18 +495,7 @@ class FMEAPanel(RAMSTKPanel):
 
         self._do_load_mission_phases(_mission)
 
-        _columns = self.tvwTreeView.get_columns()
-        i = 0
-        for _key in self.tvwTreeView.headings:
-            _label = RAMSTKLabel(self.tvwTreeView.headings[_key])
-            _label.do_set_properties(height=-1,
-                                     justify=Gtk.Justification.CENTER,
-                                     wrap=True)
-            _label.show_all()
-            _columns[i].set_widget(_label)
-            _columns[i].set_visible(self.tvwTreeView.visible[_key])
-
-            i += 1
+        super().do_set_headings()
 
     def __do_get_mission(self, entity: object) -> None:
         """Retrieve the mission information.

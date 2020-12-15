@@ -19,7 +19,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddStressTestMethod
-from ramstk.views.gtk3.widgets import RAMSTKLabel, RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
 
 
 def get_indenture_level(record_id: str) -> str:
@@ -184,7 +184,7 @@ class PoFPanel(RAMSTKPanel):
                      row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Determine which type of row to load and loads the data.
 
-        :param node: the FMEA treelib Node() whose data is to be loaded.
+        :param node: the PoF treelib Node() whose data is to be loaded.
         :param row: the parent row for the row to be loaded.
         :return: _new_row; the row that was just added to the FMEA treeview.
         """
@@ -247,18 +247,7 @@ class PoFPanel(RAMSTKPanel):
         else:
             _cell.set_property('editable', False)
 
-        _columns = self.tvwTreeView.get_columns()
-        i = 0
-        for _key in self.tvwTreeView.headings:
-            _label = RAMSTKLabel(self.tvwTreeView.headings[_key])
-            _label.do_set_properties(height=-1,
-                                     justify=Gtk.Justification.CENTER,
-                                     wrap=True)
-            _label.show_all()
-            _columns[i].set_widget(_label)
-            _columns[i].set_visible(self.tvwTreeView.visible[_key])
-
-            i += 1
+        super().do_set_headings()
 
     def __do_load_damage_models(self) -> None:
         """Load the RAMSTKTreeView() damage model CellRendererCombo().

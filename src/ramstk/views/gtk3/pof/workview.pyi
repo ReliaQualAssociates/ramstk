@@ -15,7 +15,6 @@ from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.assistants import (
     AddStressTestMethod as AddStressTestMethod
 )
-from ramstk.views.gtk3.widgets import RAMSTKLabel as RAMSTKLabel
 from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 

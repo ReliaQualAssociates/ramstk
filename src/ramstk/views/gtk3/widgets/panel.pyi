@@ -15,6 +15,7 @@ from .combo import RAMSTKComboBox as RAMSTKComboBox
 from .entry import RAMSTKEntry as RAMSTKEntry
 from .entry import RAMSTKTextView as RAMSTKTextView
 from .frame import RAMSTKFrame as RAMSTKFrame
+from .label import RAMSTKLabel as RAMSTKLabel
 from .label import do_make_label_group as do_make_label_group
 from .matrixview import RAMSTKMatrixView as RAMSTKMatrixView
 from .plot import RAMSTKPlot as RAMSTKPlot
@@ -72,6 +73,9 @@ class RAMSTKPanel(RAMSTKFrame):
         ...
 
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
+        ...
+
+    def do_set_headings(self) -> None:
         ...
 
     def do_set_properties(self, **kwargs: Any) -> None:
