@@ -612,21 +612,17 @@ class FMEAPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("FMEA action {0:s} was missing it's data "
-                           "package.").format(str(_entity.action_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for FMEA action ID {0:s} is the wrong type for one or "
-                "more columns.".format(str(_entity.action_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for FMEA action "
-                          "ID {0:s}.".format(str(_entity.action_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading failure cause action {0:s} "
+                "in the FMEA.  This might indicate it was missing it's data "
+                "package, some of the data in the package was missing, or "
+                "some of the data was the wrong type.  Row data was: "
+                "{1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -673,21 +669,17 @@ class FMEAPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Failure cause {0:s} was missing it's data "
-                           "package.").format(str(_entity.cause_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for failure cause ID {0:s} is the wrong type for one or "
-                "more columns.".format(str(_entity.cause_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for failure "
-                          "cause ID {0:s}.".format(str(_entity.cause_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading failure cause {0:s} in the "
+                "FMEA.  This might indicate it was missing it's data package, "
+                "some of the data in the package was missing, or some of the "
+                "data was the wrong type.  Row data was: {1}").format(
+                    str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -720,21 +712,17 @@ class FMEAPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("FMEA control {0:s} was missing it's data "
-                           "package.").format(str(_entity.control_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for FMEA control ID {0:s} is the wrong type for one or "
-                "more columns.".format(str(_entity.control_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for FMEA "
-                          "control ID {0:s}.".format(str(_entity.control_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading failure cause control {0:s} "
+                "in the FMEA.  This might indicate it was missing it's data "
+                "package, some of the data in the package was missing, or "
+                "some of the data was the wrong type.  Row data was: {1}"
+            ).format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -791,22 +779,17 @@ class FMEAPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Failure mechanism {0:s} was missing it's data "
-                           "package.").format(str(_entity.mechanism_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for failure mechanism ID {0:s} is the wrong type for "
-                "one or more columns.".format(str(_entity.mechanism_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for "
-                          "failure mechanism ID {0:s}.".format(
-                              str(_entity.mechanism_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading failure mechanism {0:s} in "
+                "the FMEA.  This might indicate it was missing it's data "
+                "package, some of the data in the package was missing, or "
+                "some of the data was the wrong type.  Row data was: {1}"
+            ).format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -848,9 +831,7 @@ class FMEAPanel(RAMSTKPanel):
         """Load a failure mode record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
-        :type node: :class:`treelib.Node`
         :param row: the parent row of the mode to load into the FMEA form.
-        :type row: :class:`Gtk.TreeIter`
         :return: _new_row; the row that was just populated with mode data.
         :rtype: :class:`Gtk.TreeIter`
         """
@@ -883,21 +864,17 @@ class FMEAPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Failure mode {0:s} was missing it's data "
-                           "package.").format(str(_entity.mode_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = ("Data for failure mode ID {0:s} is the wrong "
-                          "type for one or more columns.".format(
-                              str(_entity.mode_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for Mode ID "
-                          "{0:s}.".format(str(_entity.mode_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading failure mode {0:s} in the "
+                "FMEA.  This might indicate it was missing it's data package, "
+                "some of the data in the package was missing, or some of the "
+                "data was the wrong type.  Row data was: {1}").format(
+                    str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
