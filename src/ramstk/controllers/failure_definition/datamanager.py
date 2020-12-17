@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKFailureDefinition data models.
     """
 
-    _tag = 'failure_definition'
+    _tag = 'failure_definitions'
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Failure Definition data manager instance."""
@@ -94,7 +94,7 @@ class DataManager(RAMSTKDataManager):
                 order=RAMSTKFailureDefinition.definition_id):
 
             self.tree.create_node(
-                tag=_failure_definition.definition,
+                tag='definition',
                 identifier=_failure_definition.definition_id,
                 parent=self._root,
                 data={'failure_definition': _failure_definition})
