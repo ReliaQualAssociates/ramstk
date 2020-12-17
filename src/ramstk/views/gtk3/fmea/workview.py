@@ -256,6 +256,7 @@ class FMEAPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module: str = 'fmea'
 
     # Define public dictionary class attributes.
 
@@ -312,6 +313,13 @@ class FMEAPanel(RAMSTKPanel):
             41: ['remarks', 'text'],
         }
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
+        self._dic_row_loader = {
+            'mode': self.__do_load_mode,
+            'mechanism': self.__do_load_mechanism,
+            'cause': self.__do_load_cause,
+            'control': self.__do_load_control,
+            'action': self.__do_load_action,
+        }
 
         # Initialize private list attributes.
         self._lst_fmea_data: List[Any] = [
@@ -352,11 +360,11 @@ class FMEAPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_hardware_fmea')
+        pub.subscribe(super().do_load_panel, 'succeed_calculate_rpn')
 
-        pub.subscribe(self._do_load_panel, 'succeed_retrieve_hardware_fmea')
         # pub.subscribe(self._do_load_panel,
         #              'succeed_calculate_fmea_criticality')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_rpn')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_action')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_cause')
         pub.subscribe(self._on_delete_insert_fmea, 'succeed_insert_control')
@@ -407,55 +415,6 @@ class FMEAPanel(RAMSTKPanel):
 
             _cell[0].connect('edited', self.__on_cell_edit, _column)
 
-    def _do_load_panel(self,
-                       tree: treelib.Tree,
-                       row: Gtk.TreeIter = None) -> None:
-        """Iterate through tree and load the FMEA RAMSTKTreeView().
-
-        :param tree: the treelib.Tree() containing the data packages for the
-            (D)FME(C)A.
-        :param row: the last row to be loaded with FMEA data.
-        :return: None
-        :rtype: None
-        """
-        _node = tree.nodes[list(tree.nodes.keys())[0]]
-
-        _new_row = self._do_load_row(_node, row)
-
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_panel(_child_tree, row=_new_row)
-
-        super().do_expand_tree()
-
-    def _do_load_row(self, node: treelib.Node,
-                     row: Gtk.TreeIter) -> Gtk.TreeIter:
-        """Determine which type of row to load and loads the data.
-
-        :param node: the FMEA treelib Node() whose data is to be loaded.
-        :param row: the parent row for the row to be loaded.
-        :return: _new_row; the row that was just added to the FMEA treeview.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _new_row = None
-
-        # The root node will have no data package, so this indicates the need
-        # to clear the tree in preparation for the load.
-        if node.tag == 'fmea':
-            super().do_clear_tree()
-        else:
-            _method = {
-                'mode': self.__do_load_mode,
-                'mechanism': self.__do_load_mechanism,
-                'cause': self.__do_load_cause,
-                'control': self.__do_load_control,
-                'action': self.__do_load_action
-            }[node.tag]
-            # noinspection PyArgumentList
-            _new_row = _method(node, row)
-
-        return _new_row
-
     # pylint: disable=unused-argument
     def _on_delete_insert_fmea(self, node_id: int, tree: treelib.Tree) -> None:
         """Update FMEA worksheet whenever an element is inserted or deleted.
@@ -467,7 +426,7 @@ class FMEAPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._do_load_panel(tree)
+        super().do_load_panel(tree)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the FMEA Work View RAMSTKTreeView().

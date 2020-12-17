@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""This is the main program for the RAMSTK application."""
+"""The main program for the RAMSTK application."""
 
 # Standard Library Imports
 import os
@@ -150,10 +150,9 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
     :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     """
     def on_fail_create_site_configuration(error_message: str) -> None:
-        """Logs the error message when there's a failure to create the site
-        conf.
+        """Log error message when there's a failure to create the site conf.
 
-        :param str error_message: the error message raised by the failure.
+        :param error_message: the error message raised by the failure.
         :return: None
         :rtype: None
         """
@@ -188,10 +187,9 @@ def do_read_user_configuration(
     :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
     def on_fail_create_user_configuration(error_message: str) -> None:
-        """Logs the error message when there's a failure to create the user
-        conf.
+        """Log error message when there's a failure to create the user conf.
 
-        :param str error_message: the error message raised by the failure.
+        :param error_message: the error message raised by the failure.
         :return: None
         :rtype: None
         """
@@ -233,9 +231,6 @@ def the_one_ring() -> None:
     pub.sendMessage('do_log_debug_msg',
                     logger_name='DEBUG',
                     message="Validated the RAMSTK license.")
-    pub.sendMessage('do_log_info_msg',
-                    logger_name='INFO',
-                    message="Loading global RAMSTK configuration variables.")
 
     do_load_variables(site_db, site_configuration)
 

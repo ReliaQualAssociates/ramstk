@@ -11,15 +11,12 @@
 from typing import Any, Dict, Tuple
 
 # Third Party Imports
+import treelib
 from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models.programdb import (
-    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
-)
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKListView, RAMSTKPanel
 
@@ -33,6 +30,7 @@ class UsageProfilePanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module: str = 'usage_profile'
 
     # Define public dictionary class attributes.
 
@@ -131,6 +129,11 @@ class UsageProfilePanel(RAMSTKPanel):
                 'pixbuf': _(""),
             },
         }
+        self._dic_row_loader = {
+            'mission': self.__do_load_mission,
+            'mission_phase': self.__do_load_phase,
+            'environment': self.__do_load_environment,
+        }
         self._dic_visible = {
             'mission': {
                 'col0': True,
@@ -193,8 +196,8 @@ class UsageProfilePanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().on_delete, 'succeed_delete_usage_profile')
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_usage_profile')
 
-        pub.subscribe(self._do_load_tree, 'succeed_retrieve_usage_profile')
         pub.subscribe(self._on_insert, 'succeed_insert_usage_profile')
 
     def do_load_combobox(self) -> None:
@@ -229,184 +232,17 @@ class UsageProfilePanel(RAMSTKPanel):
         self.tvwTreeView.set_tooltip_text(
             _("Displays the usage profiles for the selected revision."))
 
-    def _do_load_environment(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
-        """Load an environmental condition into the RAMSTK TreeView.
+    def _on_insert(self, tree: treelib.Tree) -> None:
+        """Wrap the do_load_panel() method when an element is inserted.
 
-        :return: _new_row; the Gtk.Iter() pointing to the next row to load.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _entity: RAMSTKEnvironment = kwargs.get('entity', None)
-        _identifier: int = kwargs.get('identifier', 0)  # type: ignore
-        _row: Gtk.TreeIter = kwargs.get('row', None)
-
-        _model = self.tvwTreeView.get_model()
-
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons['environment'], 22, 22)
-        _attributes = [
-            _entity.environment_id, _entity.name, '', _entity.units,
-            _entity.minimum, _entity.maximum, _entity.mean, _entity.variance,
-            _identifier, 1, 'environment', _icon
-        ]
-
-        try:
-            _new_row = _model.append(_row, _attributes)
-        except TypeError:
-            _debug_msg = (
-                "RAMSTK ERROR: Data for Environment ID {0:s} is the wrong "
-                "type for one or more columns.".format(
-                    str(_entity.environment_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
-        except ValueError:
-            _debug_msg = (
-                "RAMSTK ERROR: Too few fields for Environment ID {0:s}.".
-                format(str(_entity.environment_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
-
-        return _new_row
-
-    def _do_load_mission(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
-        """Load a mission into the RAMSTK TreeView.
-
-        :return: _new_row; the Gtk.Iter() pointing to the next row to load.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _entity: RAMSTKMission = kwargs.get('entity', None)
-        _identifier: int = kwargs.get('identifier', 0)  # type: ignore
-        _row: Gtk.TreeIter = kwargs.get('row', None)
-
-        _model = self.tvwTreeView.get_model()
-
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons['mission'], 22, 22)
-        _attributes = [
-            _entity.mission_id, _entity.description, '', _entity.time_units,
-            0.0, _entity.mission_time, 0.0, 0.0, _identifier, 0, 'mission',
-            _icon
-        ]
-
-        try:
-            _new_row = _model.append(_row, _attributes)
-        except TypeError:
-            _user_msg = _("One or more Missions had the wrong data type in "
-                          "it's data package and is not displayed in the "
-                          "Usage Profile.")
-            _debug_msg = ("Data for Mission ID {0:s} is the wrong "
-                          "type for one or more columns.".format(
-                              str(_entity.mission_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
-        except ValueError:
-            _user_msg = _("One or more Missions was missing some of it's data "
-                          "and is not displayed in the Usage Profile.")
-            _debug_msg = ("Too few fields for Mission ID {0:s}.".format(
-                str(_entity.mission_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
-
-        return _new_row
-
-    def _do_load_phase(self, **kwargs: Dict[str, Any]) -> Gtk.TreeIter:
-        """Load a mission phase into the RAMSTK TreeView.
-
-        :return: _new_row; the Gtk.Iter() pointing to the next row to load.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _entity: RAMSTKMissionPhase = kwargs.get('entity', None)
-        _identifier: int = kwargs.get('identifier', 0)  # type: ignore
-        _row: Gtk.TreeIter = kwargs.get('row', None)
-
-        _model = self.tvwTreeView.get_model()
-
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons['phase'],
-                                                       22, 22)
-        _attributes = [
-            _entity.phase_id, _entity.name, _entity.description, '',
-            _entity.phase_start, _entity.phase_end, 0.0, 0.0, _identifier, 0,
-            'phase', _icon
-        ]
-
-        try:
-            _new_row = _model.append(_row, _attributes)
-        except TypeError:
-            _user_msg = _("One or more Mission Phases had the wrong data type "
-                          "in it's data package and is not displayed in the "
-                          "Usage Profile.")
-            _debug_msg = (
-                "RAMSTK ERROR: Data for Mission Phase ID {0:s} is the wrong "
-                "type for one or more columns.".format(str(_entity.phase_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
-        except ValueError:
-            _user_msg = _("One or more Mission Phases was missing some of "
-                          "it's data and is not displayed in the Usage "
-                          "Profile.")
-            _debug_msg = (
-                "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s}.".
-                format(str(_entity.phase_id)))
-            self.RAMSTK_LOGGER.do_log_info(__name__, _user_msg)
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
-
-        return _new_row
-
-    def _do_load_tree(self, tree: Tree, row: Gtk.TreeIter = None) -> None:
-        """Recursively load the Usage Profile List View's Gtk.TreeModel.
-
-        :param tree: the Usage Profile treelib Tree().
-        :param row: the parent row in the Usage Profile Gtk.TreeView() to add
-            the new item.
-        :return: None
-        """
-        _new_row: Gtk.TreeIter = None
-        _model = self.tvwTreeView.get_model()
-
-        _node = tree.nodes[list(tree.nodes.keys())[0]]
-        _entity = _node.data
-        # The root node will have no data package, so this indicates the need
-        # to clear the tree in preparation for the load.
-        if _entity is None:
-            _model.clear()
-        elif _entity['usage_profile'].is_mission:
-            _new_row = self._do_load_mission(
-                **{
-                    'entity': _entity['usage_profile'],
-                    'identifier': _node.identifier,
-                    'row': row
-                })
-        elif _entity['usage_profile'].is_phase:
-            _new_row = self._do_load_phase(
-                **{
-                    'entity': _entity['usage_profile'],
-                    'identifier': _node.identifier,
-                    'row': row
-                })
-        elif _entity['usage_profile'].is_env:
-            _new_row = self._do_load_environment(
-                **{
-                    'entity': _entity['usage_profile'],
-                    'identifier': _node.identifier,
-                    'row': row
-                })
-
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, row=_new_row)
-
-        super().do_expand_tree()
-
-    def _on_insert(self, tree: Tree) -> None:
-        """Wrap the _do_load_tree() method when an element is inserted.
+        The do_set_cursor_active() method responds to the same message,
+        but one less argument in it's call.  This results in a PyPubSub
+        error and is the reason this wrapper method is needed.
 
         :param tree: the Usage Profile treelib Tree().
         :return: None
         """
-        self._do_load_tree(tree)
+        super().do_load_panel(tree)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle row changes for the Usage Profile package List View.
@@ -445,6 +281,125 @@ class UsageProfilePanel(RAMSTKPanel):
 
         pub.sendMessage('selected_usage_profile',
                         attributes={'record_id': _model.get_value(_row, 8)})
+
+    def __do_load_environment(self, node: treelib.Node,
+                              row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load an environmental condition into the RAMSTK TreeView.
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the mode to load into the FMEA form.
+        :return: _new_row; the row that was just populated with mode data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.tvwTreeView.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self.dic_icons['environment'], 22, 22)
+
+        _attributes = [
+            _entity.environment_id, _entity.name, '', _entity.units,
+            _entity.minimum, _entity.maximum, _entity.mean, _entity.variance,
+            node.identifier, 1, 'environment', _icon
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _new_row = None
+            _message = _(
+                "An error occurred when loading environment {0:s} in the "
+                "usage profile.  This might indicate it was missing it's data "
+                "package, some of the data in the package was missing, or "
+                "some of the data was the wrong type.  Row data was: "
+                "{1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
+
+        return _new_row
+
+    def __do_load_mission(self, node: treelib.Node,
+                          row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a mission into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the mode to load into the FMEA form.
+        :return: _new_row; the row that was just populated with mode data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.tvwTreeView.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self.dic_icons['mission'], 22, 22)
+
+        _attributes = [
+            _entity.mission_id, _entity.description, '', _entity.time_units,
+            0.0, _entity.mission_time, 0.0, 0.0, node.identifier, 0, 'mission',
+            _icon
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _new_row = None
+            _message = _(
+                "An error occurred when loading mission {0:s} in the usage "
+                "profile.  This might indicate it was missing it's data "
+                "package, some of the data in the package was missing, or "
+                "some of the data was the wrong type.  Row data was: "
+                "{1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
+
+        return _new_row
+
+    def __do_load_phase(self, node: treelib.Node,
+                        row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a mission phase into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the mode to load into the FMEA form.
+        :return: _new_row; the row that was just populated with mode data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.tvwTreeView.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons['phase'],
+                                                       22, 22)
+        _attributes = [
+            _entity.phase_id, _entity.name, _entity.description, '',
+            _entity.phase_start, _entity.phase_end, 0.0, 0.0, node.identifier,
+            0, 'phase', _icon
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _new_row = None
+            _message = _(
+                "An error occurred when loading mission phase {0:s} in the "
+                "usage profile.  This might indicate it was missing it's data "
+                "package, some of the data in the package was missing, or "
+                "some of the data was the wrong type.  Row data was: "
+                "{1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
+
+        return _new_row
 
 
 class UsageProfile(RAMSTKListView):

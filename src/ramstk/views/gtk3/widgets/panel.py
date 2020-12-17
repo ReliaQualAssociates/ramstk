@@ -120,6 +120,7 @@ class RAMSTKPanel(RAMSTKFrame):
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
         self._dic_attribute_updater: Dict[str, Any] = {}
+        self._dic_row_loader: Dict[str, Any] = {}
 
         # Initialize private list instance attributes.
         self._lst_col_order: List[int] = []
@@ -166,6 +167,24 @@ class RAMSTKPanel(RAMSTKFrame):
             _column = self.tvwTreeView.get_column(0)
             self.tvwTreeView.set_cursor(_path, None, False)
             self.tvwTreeView.row_activated(_path, _column)
+
+    def do_load_panel(self, tree: treelib.Tree, row: Gtk.TreeIter = None) -> \
+            None:
+        """Load data into the RAMSTKPanel() widgets.
+
+        :param tree: the module's treelib Tree().
+        :param row: the parent row in the RAMSTKTreeView() to add the new item.
+        :return: None
+        """
+        _node = tree.nodes[list(tree.nodes.keys())[0]]
+
+        _new_row = self._do_load_row(_node, row)
+
+        for _n in tree.children(_node.identifier):
+            _child_tree = tree.subtree(_n.identifier)
+            self.do_load_panel(_child_tree, row=_new_row)
+
+        self.do_expand_tree()
 
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Load the data into a RAMSTKTreeView row.
@@ -700,6 +719,30 @@ class RAMSTKPanel(RAMSTKFrame):
             pass
 
         return {_key: _new_text}
+
+    def _do_load_row(self, node: treelib.Node,
+                     row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Determine which type of row to load and loads the data.
+
+        :param node: the usage profile treelib Node() whose data is to be
+            loaded.
+        :param row: the parent row for the row to be loaded.
+        :return: _new_row; the row that was just added to the usage profile
+            treeview.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        # The root node will have no data package, so this indicates the need
+        # to clear the tree in preparation for the load.
+        if node.tag == self._module:
+            self.do_clear_tree()
+        else:
+            _method = self._dic_row_loader[node.tag]
+            # noinspection PyArgumentList
+            _new_row = _method(node, row)
+
+        return _new_row
 
     @staticmethod
     def __do_read_text(entry: RAMSTKEntry, keys: List[str]) -> Dict[str, Any]:
