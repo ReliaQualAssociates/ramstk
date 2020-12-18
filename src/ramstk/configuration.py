@@ -412,15 +412,17 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize private list attributes.
         self._lst_colors = [
-            "functionbg", "functionfg", "hardwarebg", "hardwarefg", "hazardbg",
-            "hazardfg", "revisionbg", "revisionfg", "requirementfg",
-            "requirementbg", "validationbg", "validationfg", "stakeholderbg",
-            "stakeholderfg"
+            'allocationbg', 'allocationfg', 'fmeabg', 'fmeafg',
+            'failure_definitionbg', 'failure_definitionfg', 'functionbg',
+            'functionfg', 'hardwarebg', 'hardwarefg', 'hazardbg', 'hazardfg',
+            'pofbg', 'poffg', 'revisionbg', 'revisionfg', 'requirementfg',
+            'requirementbg', 'validationbg', 'validationfg', 'similar_itembg',
+            'similar_itemfg', 'stakeholderbg', 'stakeholderfg'
         ]
         self._lst_format_files = [
-            "allocation", "failure_definition", "fmea", "function", "hardware",
-            "hazard", "pof", "requirement", "revision", "similar_item",
-            "stakeholder", "usage_profile", "validation"
+            "allocation", "failure_definitions", "fmea", "function",
+            "hardware", "hazard", "pof", "requirement", "revision",
+            "similar_item", "stakeholders", "usage_profile", "validation"
         ]
         self._lst_categories = [
             'integratedcircuit', 'semiconductor', 'resistor', 'capacitor',

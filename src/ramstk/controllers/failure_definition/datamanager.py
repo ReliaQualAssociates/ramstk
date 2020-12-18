@@ -162,7 +162,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id = _failure_definition.definition_id
 
             self.tree.create_node(
-                tag=_failure_definition.definition,
+                tag='definition',
                 identifier=self.last_id,
                 parent=self._root,
                 data={'failure_definition': _failure_definition})

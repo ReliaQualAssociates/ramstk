@@ -25,7 +25,7 @@ class DataManager(RAMSTKDataManager):
     and RAMSTKStakeholder data models.
     """
 
-    _tag = 'stakeholder'
+    _tag = 'stakeholders'
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Stakeholder data manager instance."""
@@ -54,7 +54,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_get_tree, 'request_get_stakeholder_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_update, 'request_update_stakeholder')
+        pub.subscribe(self.do_update, 'request_update_stakeholders')
 
         pub.subscribe(self._do_delete_stakeholder,
                       'request_delete_stakeholder')
@@ -88,7 +88,7 @@ class DataManager(RAMSTKDataManager):
                 order=RAMSTKStakeholder.stakeholder_id):
             _data_package = {'stakeholder': _stakeholder}
 
-            self.tree.create_node(tag=_stakeholder.description,
+            self.tree.create_node(tag='stakeholder',
                                   identifier=_stakeholder.stakeholder_id,
                                   parent=self._root,
                                   data=_data_package)
@@ -123,8 +123,8 @@ class DataManager(RAMSTKDataManager):
     def _do_delete_stakeholder(self, node_id: int) -> None:
         """Remove a stakeholder.
 
-        :param int node_id: the node (stakeholder) ID to be removed from the
-            RAMSTK Program database.
+        :param node_id: the node (stakeholder) ID to be removed from the RAMSTK
+            Program database.
         :return: None
         :rtype: None
         """
@@ -134,7 +134,6 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_stakeholder_', node_id=node_id)
             pub.sendMessage('succeed_delete_stakeholder',
                             node_id=node_id,
                             tree=self.tree)
@@ -159,15 +158,11 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_insert(_stakeholder)
 
             self.last_id = _stakeholder.stakeholder_id
-            self.tree.create_node(tag=_stakeholder.description,
+            self.tree.create_node(tag='stakeholder',
                                   identifier=self.last_id,
                                   parent=0,
                                   data={'stakeholder': _stakeholder})
-            pub.sendMessage('succeed_insert_stakeholder_2',
-                            node_id=self.last_id)
-            pub.sendMessage('succeed_insert_stakeholder',
-                            node_id=self.last_id,
-                            tree=self.tree)
+            pub.sendMessage('succeed_insert_stakeholder', tree=self.tree)
         except DataAccessError as _error:
             pub.sendMessage("fail_insert_stakeholder",
                             error_message=_error.msg)

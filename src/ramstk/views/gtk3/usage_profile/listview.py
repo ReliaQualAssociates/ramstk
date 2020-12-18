@@ -586,10 +586,10 @@ class UsageProfile(RAMSTKListView):
                             phase_id=_phase_id)
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the failure definition's record ID.
+        """Set the usage profile's record ID.
 
-        :param attributes: the attributes dict for the selected failure
-            definition.
+        :param attributes: the attributes dict for the selected usage
+            profile element.
         :return: None
         :rtype: None
         """

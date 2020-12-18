@@ -190,7 +190,7 @@ class FailureDefinition(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'failure_definition'
+    _module: str = 'failure_definitions'
     _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
     _tabtooltip = _("Displays failure definitions for the "
                     "selected revision.")
