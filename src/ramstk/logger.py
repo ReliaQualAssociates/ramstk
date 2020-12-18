@@ -216,5 +216,4 @@ class RAMSTKLogManager:
         :return: None
         :rtype: None
         """
-        if self.loggers[logger_name].isEnabledFor(logging.CRITICAL):
-            self.loggers[logger_name].critical(message)
+        self.loggers[logger_name].critical(message)
