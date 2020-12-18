@@ -5,17 +5,6 @@ on:
     branches: master
 
 jobs:
-  codacy_coverage_reporter:
-    name: Report Coverage to Codacy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@master
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: cobertura.xml
-
   tag_with_milestone:
     name: Tag and Create New Milestone
     runs-on: ubuntu-latest

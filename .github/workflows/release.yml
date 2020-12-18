@@ -32,7 +32,7 @@ jobs:
         uses: zwaldowski/match-label-action@v1
         with:
           allowed: MAJOR, MINOR, PATCH
-        run: echo ${{ steps.current_version.match }}
+      - run: echo ${{ steps.current_version.match }}
       - id: bsv
         uses: jessicalostinspace/bump-semantic-version-action@v1.0.1
         with:
