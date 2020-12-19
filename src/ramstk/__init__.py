@@ -23,6 +23,6 @@ from .logger import RAMSTKLogManager
 from .ramstk import RAMSTKProgramManager
 from .utilities import (
     boolean_to_integer, date_to_ordinal, dir_exists, file_exists,
-    integer_to_boolean, none_to_default, none_to_string,
+    get_install_prefix, integer_to_boolean, none_to_default, none_to_string,
     ordinal_to_date, split_string, string_to_boolean
 )
