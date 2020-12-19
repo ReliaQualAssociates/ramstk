@@ -142,7 +142,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :type __notebook: :class:`Gtk.Notebook`
         :param __page: the newly selected page's child widget.
         :type __page: :class:`Gtk.Widget`
-        :param int page_num: the newly selected page number.
+        :param page_num: the newly selected page number.
             0 = Revision Tree
             1 = Function Tree
             2 = Requirements Tree

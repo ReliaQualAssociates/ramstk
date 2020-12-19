@@ -43,8 +43,7 @@ class RAMSTKRPN(RAMSTK_BASE, RAMSTKBaseTable):
     value = Column('fld_value', Integer, default=__defaults__['value'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKRPN data model attributes.
+        """Retrieve the current values of the RAMSTKRPN data model attributes.
 
         :return: {}rpn_id, name, description, rpn_type, value} key:value pairs
         :rtype: dict

@@ -17,8 +17,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_hazard_analysis table in the Program database.
+    """Class to represent ramstk_hazard_analysis table in the Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     This table shares a Many-to-One relationship with ramstk_function.
@@ -193,12 +192,13 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseTable):
                         default=__defaults__['user_int_3'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='hazard')
-    function = relationship('RAMSTKFunction', back_populates='hazard')
+    revision = relationship(  # type: ignore
+        'RAMSTKRevision', back_populates='hazard')
+    function = relationship(  # type: ignore
+        'RAMSTKFunction', back_populates='hazard')
 
     def get_attributes(self):
-        """
-        Retrieve current values of RAMSTKHazardAnalysis data model attributes.
+        """Retrieve current values of RAMSTKHazardAnalysis model attributes.
 
         :return: {revision_id, hardware_id, hazard_id, potential_hazard,
                   potential_cause, assembly_effect, assembly_severity_id,

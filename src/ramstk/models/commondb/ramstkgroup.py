@@ -15,8 +15,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKGroup(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent the table ramstk_group in the RAMSTK Common database.
+    """Class to represent the table ramstk_group in the RAMSTK Common database.
 
     This table shares a Many-to-One relationship with ramstk_user.
     """
@@ -40,8 +39,7 @@ class RAMSTKGroup(RAMSTK_BASE, RAMSTKBaseTable):
                         default=__defaults__['group_type'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKGroup data model attributes.
+        """Retrieve current values of the RAMSTKGroup data model attributes.
 
         :return: {workgroup_id, description, group_type} pairs
         :rtype: dict

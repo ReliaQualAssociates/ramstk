@@ -133,7 +133,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     def do_update(self, value: int, signal: str = '') -> None:
         """Update the RAMSTK Combo with a new value.
 
-        :param str value: the information to update the RAMSTKCombo() to
+        :param value: the information to update the RAMSTKCombo() to
             display.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKComboBox() needs to block.

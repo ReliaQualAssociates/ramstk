@@ -24,8 +24,7 @@ class EditFunction(RAMSTKDialog):
     """Assistant for editing similar item functions."""
     def __init__(self, treeview: RAMSTKTreeView,
                  **kwargs: Dict[str, Any]) -> None:
-        """
-        Initialize instance of the Similar Item Function Editor Assistant.
+        """Initialize instance of the Similar Item Function Editor Assistant.
 
         :param treeview: the Similar Item Work View RAMSTKTreeView().
         :type treeview: :class:`ramstk.views.gtk3.RAMSTKTreeView`
@@ -58,8 +57,7 @@ class EditFunction(RAMSTKDialog):
         self._do_load_functions(treeview)
 
     def __make_ui(self) -> None:
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
@@ -136,8 +134,7 @@ class EditFunction(RAMSTKDialog):
         self.vbox.pack_start(_fixed, True, True, 0)
 
     def _cancel(self, __button: Gtk.Button) -> None:
-        """
-        Destroy the assistant when the 'Cancel' button is pressed.
+        """Destroy the assistant when the 'Cancel' button is pressed.
 
         :param Gtk.Button __button: the Gtk.Button() that called this method.
         :return: None
@@ -146,8 +143,7 @@ class EditFunction(RAMSTKDialog):
         self.destroy()
 
     def _do_load_functions(self, treeview: RAMSTKTreeView) -> None:
-        """
-        Load any existing user-defined functions.
+        """Load any existing user-defined functions.
 
         :param treeview: the Similar Item Work View RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.TreeView.RAMSTKTreeView`
@@ -177,10 +173,9 @@ class EditFunction(RAMSTKDialog):
             self.txtFunction5.set_text("")
 
     def _on_set_function(self, hardware_id: int) -> None:
-        """
-        Send PyPubSub messages to update the similar item attributes.
+        """Send PyPubSub messages to update the similar item attributes.
 
-        :param int hardware_id: the Hardware ID for the Similar Item to update.
+        :param hardware_id: the Hardware ID for the Similar Item to update.
         :return: None
         :rtype: None
         """
@@ -206,8 +201,7 @@ class EditFunction(RAMSTKDialog):
             package={'function_5': str(self.txtFunction5.get_text())})
 
     def do_set_functions(self, treeview: RAMSTKTreeView) -> List[str]:
-        """
-        Set the user-defined functions.
+        """Set the user-defined functions.
 
         :return: functions; a tuple of the five user-defined functions.
         :rtype: list

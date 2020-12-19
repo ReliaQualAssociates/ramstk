@@ -20,9 +20,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_program_status in the RAMSTK Program
-    database.
+    """Class represent table ramstk_program_status in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -35,35 +33,31 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
     __tablename__ = 'ramstk_program_status'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column(
-        'fld_revision_id',
-        Integer,
-        ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False
-    )
-    status_id = Column(
-        'fld_status_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False
-    )
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         ForeignKey('ramstk_revision.fld_revision_id'),
+                         nullable=False)
+    status_id = Column('fld_status_id',
+                       Integer,
+                       primary_key=True,
+                       autoincrement=True,
+                       nullable=False)
 
     cost_remaining = Column('fld_cost_remaining', Float, default=0.0)
-    date_status = Column(
-        'fld_date_status',
-        Date,
-        unique=True,
-        default=date.today()
-    )
+    date_status = Column('fld_date_status',
+                         Date,
+                         unique=True,
+                         default=date.today())
     time_remaining = Column('fld_time_remaining', Float, default=0.0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='program_status')
+    revision: relationship = relationship(
+        'RAMSTKRevision',
+        back_populates='program_status',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve current values of RAMSTKProgramStatus data model attributes.
+        """Retrieve current values of RAMSTKProgramStatus model attributes.
 
         :return: {revision_id, cost_remaining, date_status, time_remaining}
             pairs.

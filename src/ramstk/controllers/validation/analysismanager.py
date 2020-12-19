@@ -23,8 +23,7 @@ from ramstk.controllers import RAMSTKAnalysisManager
 
 
 class AnalysisManager(RAMSTKAnalysisManager):
-    """
-    Contain the attributes and methods of the Validation analysis manager.
+    """Contain the attributes and methods of the Validation analysis manager.
 
     This class manages the validation analysis for Allocation, MIL-HDBK-217F,
     NSWC, and Similar Item.  Attributes of the validation Analysis Manager are:
@@ -34,8 +33,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[str, Any]) -> None:
-        """
-        Initialize an instance of the validation analysis manager.
+        """Initialize an instance of the validation analysis manager.
 
         :param configuration: the Configuration instance associated with the
             current instance of the RAMSTK application.
@@ -67,13 +65,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_validation_tasks')
         pub.subscribe(self._do_calculate_task,
                       'request_calculate_validation_task')
-        pub.subscribe(self._do_request_trees,
-                      'succeed_retrieve_validations')
+        pub.subscribe(self._do_request_trees, 'succeed_retrieve_validations')
         pub.subscribe(self._on_get_status_tree, 'succeed_get_status_tree')
 
     def do_calculate_plan(self) -> None:
-        """
-        Calculate the planned burndown of the overall validation effort.
+        """Calculate the planned burndown of the overall validation effort.
 
         This method will calculate three values for each scheduled end date
         in the validation plan, the lower bound, average, and upper bound
@@ -84,7 +80,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             burndown hours for the entire validation effort.
         """
         _dic_plan = {}
-        _dic_planned = {}
+        _dic_planned = {}   # type: ignore
         _time_ll = 0.0
         _time_mean = 0.0
         _time_ul = 0.0
@@ -147,8 +143,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.sendMessage('succeed_calculate_validation_plan')
 
     def _do_calculate_all_tasks(self) -> None:
-        """
-        Calculate mean, standard error, and bounds on all task's time and cost.
+        """Calculate mean, standard error, and bounds on all task's time/cost.
 
         These values are calculated assuming a beta distribution (typical
         project management assumption).  This method also calculates the
@@ -167,19 +162,18 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 self._do_calculate_task(_node.identifier)
 
                 _program_cost_remaining += (
-                    _node.data['validation'].cost_average
-                    * (1.0 - _node.data['validation'].status / 100.0))
+                    _node.data['validation'].cost_average *
+                    (1.0 - _node.data['validation'].status / 100.0))
                 _program_time_remaining += (
-                    _node.data['validation'].time_average
-                    * (1.0 - _node.data['validation'].status / 100.0))
+                    _node.data['validation'].time_average *
+                    (1.0 - _node.data['validation'].status / 100.0))
 
         pub.sendMessage('succeed_calculate_all_tasks',
                         cost_remaining=_program_cost_remaining,
                         time_remaining=_program_time_remaining)
 
     def _do_calculate_task(self, node_id: int) -> None:
-        """
-        Calculate the mean, standard error, and bounds on task time and cost.
+        """Calculate mean, standard error, and bounds on task time and cost.
 
         These values are calculated assuming a beta distribution (typical
         project management assumption).
@@ -196,28 +190,28 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.sendMessage('request_set_validation_attributes',
                         node_id=[node_id, -1],
                         package={'time_ll': _node.data['validation'].time_ll})
-        pub.sendMessage('request_set_validation_attributes',
-                        node_id=[node_id, -1],
-                        package={'time_mean': _node.data[
-                            'validation'].time_mean})
+        pub.sendMessage(
+            'request_set_validation_attributes',
+            node_id=[node_id, -1],
+            package={'time_mean': _node.data['validation'].time_mean})
         pub.sendMessage('request_set_validation_attributes',
                         node_id=[node_id, -1],
                         package={'time_ul': _node.data['validation'].time_ul})
         pub.sendMessage('request_set_validation_attributes',
                         node_id=[node_id, -1],
                         package={'cost_ll': _node.data['validation'].cost_ll})
-        pub.sendMessage('request_set_validation_attributes',
-                        node_id=[node_id, -1],
-                        package={'cost_mean': _node.data[
-                            'validation'].cost_mean})
+        pub.sendMessage(
+            'request_set_validation_attributes',
+            node_id=[node_id, -1],
+            package={'cost_mean': _node.data['validation'].cost_mean})
         pub.sendMessage('request_set_validation_attributes',
                         node_id=[node_id, -1],
                         package={'cost_ul': _node.data['validation'].cost_ul})
-        pub.sendMessage('succeed_calculate_validation_task', node_id=[node_id, -1])
+        pub.sendMessage('succeed_calculate_validation_task',
+                        node_id=[node_id, -1])
 
     def _do_request_trees(self, tree: treelib.Tree) -> None:
-        """
-        Send the request to retrieve the Validation and Status trees.
+        """Send the request to retrieve the Validation and Status trees.
 
         :param tree: the Validation treelib Tree().
         :return: None
@@ -229,8 +223,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.sendMessage('request_get_status_tree')
 
     def _do_select_actuals(self) -> pd.DataFrame:
-        """
-        Select the actual program status remaining time and cost.
+        """Select the actual program status remaining time and cost.
 
         :return: a pandas DataFrame() containing the actual status update
             dates and the remaining time/cost.
@@ -248,8 +241,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                             columns=['cost', 'time']).sort_index()
 
     def _do_select_assessed(self) -> pd.DataFrame:
-        """
-        Select the targets for all tasks of Reliability Assessment type.
+        """Select the targets for all tasks of Reliability Assessment type.
 
         :return: _assessed; a pandas DataFrame() containing the assessment
             dates as the index and associated targets.
@@ -269,8 +261,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                             columns=['lower', 'mean', 'upper']).sort_index()
 
     def _on_get_status_tree(self, stree: treelib.Tree) -> None:
-        """
-        Set the analysis manager's status treelib Tree().
+        """Set the analysis manager's status treelib Tree().
 
         :param stree: the data manager's status treelib Tree().
         :type stree: :class:`treelib.Tree`

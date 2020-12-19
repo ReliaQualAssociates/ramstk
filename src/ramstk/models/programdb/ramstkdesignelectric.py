@@ -18,8 +18,7 @@ from ramstk.models import RAMSTKBaseTable
 
 # pylint: disable=R0902
 class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Represent the ramstk_design_electric table in the RAMSTK Program database.
+    """Represent ramstk_design_electric table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -247,11 +246,11 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
                                  default=__defaults__['years_in_production'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship('RAMSTKHardware', back_populates='design_electric')
+    hardware = relationship(  # type: ignore
+        'RAMSTKHardware', back_populates='design_electric')
 
     def get_attributes(self):
-        """
-        Retrieve current values of RAMSTKDesignElectric data model attributes.
+        """Retrieve current values of RAMSTKDesignElectric model attributes.
 
         :return: {hardware_id, application_id, area, capacitance,
                   configuration_id, construction_id, contact_form_id,

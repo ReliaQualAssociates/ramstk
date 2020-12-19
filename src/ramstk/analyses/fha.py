@@ -10,9 +10,8 @@
 from typing import Any, Dict, List
 
 # Third Party Imports
-# Third Party imports
 # noinspection PyPackageRequirements
-from sympy import symbols, sympify
+from sympy import symbols, sympify  # type: ignore
 
 # RAMSTK Package Imports
 from ramstk.exceptions import OutOfRangeError
@@ -35,13 +34,12 @@ SEVERITY = {
 
 
 def calculate_hri(probability: str, severity: str) -> int:
-    """
-    Calculate the hazard risk index (HRI).
+    """Calculate the hazard risk index (HRI).
 
     .. note:: See MIL-STD-882.
 
-    :param str probability: the hazard probability expressed in text.
-    :param str severity: the hazard severity expressed in text.
+    :param probability: the hazard probability expressed in text.
+    :param severity: the hazard severity expressed in text.
     :return: _hri; the calculated hazard risk index.
     :rtype: int
     :raise: OutOfRangeError if passed an unknown probability or severity
@@ -57,10 +55,9 @@ def calculate_hri(probability: str, severity: str) -> int:
 
 
 def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the user-defined hazards analysis.
+    """Calculate the user-defined hazards analysis.
 
-    :param dict fha: the user-defined functional hazards assessment dict.  The
+    :param fha: the user-defined functional hazards assessment dict.  The
         calling method/function should create the fha dict as follows:
 
         fha = OrderedDict({
@@ -155,10 +152,9 @@ def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
 
 def set_user_defined_floats(fha: Dict[str, Any],
                             floats: List[float]) -> Dict[str, Any]:
-    """
-    Set the user-defined float values for the user-defined calculations.
+    """Set the user-defined float values for the user-defined calculations.
 
-    :param dict fha: the functional hazard assessment dict.
+    :param fha: the functional hazard assessment dict.
     :param list floats: the list of float values.
     :return: fha; the functional hazard assessment dict with updated float
         values.
@@ -177,10 +173,9 @@ def set_user_defined_floats(fha: Dict[str, Any],
 
 def set_user_defined_ints(fha: Dict[str, Any],
                           ints: List[int]) -> Dict[str, Any]:
-    """
-    Set the user-defined integer values for the user-defined calculations.
+    """Set the user-defined integer values for the user-defined calculations.
 
-    :param dict fha: the functional hazard assessment dict.
+    :param fha: the functional hazard assessment dict.
     :param list ints: the list of integer values.
     :return: fha; the functional hazard assessment dict with updated integer
         values.
@@ -199,13 +194,12 @@ def set_user_defined_ints(fha: Dict[str, Any],
 
 def set_user_defined_functions(fha: Dict[str, Any],
                                functions: List[str]) -> Dict[str, Any]:
-    """
-    Set the user-defined functions for the user-defined calculations.
+    """Set the user-defined functions for the user-defined calculations.
 
     .. note:: by default we set the function equal to 0.0.  This prevents Sympy
         errors resulting from empty strings.
 
-    :param dict fha: the functional hazard assessment dict.
+    :param fha: the functional hazard assessment dict.
     :param list functions: the list of functions; list items are str.
     :return: fha; the functional hazard assessment dict with updated functions.
     :rtype: dict
@@ -226,14 +220,13 @@ def set_user_defined_functions(fha: Dict[str, Any],
 
 def set_user_defined_results(fha: Dict[str, Any],
                              results: List[float]) -> Dict[str, Any]:
-    """
-    Set the user-defined results for the user-defined calculations.
+    """Set the user-defined results for the user-defined calculations.
 
     This allows the use of the results fields to be manually set to float
     values by the user essentially creating five more user-defined float
     values.
 
-    :param dict fha: the functional hazard assessment dict.
+    :param fha: the functional hazard assessment dict.
     :param list results: the list of results.
     :return: fha; the functional hazard assessment dict with updated results.
     :rtype: dict

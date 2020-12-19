@@ -292,9 +292,9 @@ class DataManager(RAMSTKDataManager):
             day.  If no status record exists for the current day, it will
             create one.
 
-        :param float cost_remaining: the calculated remaining cost of the
+        :param cost_remaining: the calculated remaining cost of the
             program.
-        :param float time_remaining: the calculate remaining time to completion
+        :param time_remaining: the calculate remaining time to completion
             of the program.
         :return: None
         :rtype: None

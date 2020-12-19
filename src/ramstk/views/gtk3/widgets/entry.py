@@ -166,7 +166,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
     def do_update(self, value: str, signal: str = '') -> None:
         """Update the RAMSTK TextView with a new value.
 
-        :param str value: the information to update the RAMSTKTextView() to
+        :param value: the information to update the RAMSTKTextView() to
             display.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKTextView() needs to block.

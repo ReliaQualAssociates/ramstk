@@ -339,8 +339,8 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_hardware(self, parent_id: int, part: int) -> None:
         """Add a new hardware item.
 
-        :param int parent_id: the parent hardware item'd ID.
-        :param int part: whether to insert a part (1) or assembly (0).
+        :param parent_id: the parent hardware item'd ID.
+        :param part: whether to insert a part (1) or assembly (0).
         :return: None
         :rtype: None
         """

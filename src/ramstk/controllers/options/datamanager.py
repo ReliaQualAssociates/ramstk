@@ -70,7 +70,7 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Options data from the RAMSTK Program database.
 
-        :param dict attributes: the RAMSTK option attributes for the
+        :param attributes: the RAMSTK option attributes for the
             selected Revision.
         :return: None
         :rtype: None
@@ -102,7 +102,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: str) -> None:
         """Update the record associated with node ID in RAMSTK databases.
 
-        :param str node_id: the node ID of the Options item to save.
+        :param node_id: the node ID of the Options item to save.
         :return: None
         :rtype: None
         """

@@ -22,8 +22,7 @@ from ramstk.models.programdb import (
 
 
 class MatrixManager(RAMSTKMatrixManager):
-    """
-    Contain the attributes and methods of the Hardware matrix manager.
+    """Contain the attributes and methods of the Hardware matrix manager.
 
     This class manages the hardware matrices for Requirements and Validation.
     Attributes of the hardware Matrix Manager are:
@@ -73,8 +72,7 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
 
     def _do_create_hardware_matrix_columns(self, tree: treelib.Tree) -> None:
-        """
-        Create the Hardware data matrix columns.
+        """Create the Hardware data matrix columns.
 
         :param tree: the treelib Tree() containing the correlated workflow
             module's data.
@@ -100,10 +98,9 @@ class MatrixManager(RAMSTKMatrixManager):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_delete_hardware(self, node_id: int, tree: treelib.Tree) -> None:
-        """
-        Delete the matrix row associated with the deleted hardware.
+        """Delete the matrix row associated with the deleted hardware.
 
-        :param int node_id: the treelib Tree() node ID associated with the
+        :param node_id: the treelib Tree() node ID associated with the
             deleted hardware.
         :param tree: the treelib Tree() containing the remaining hardware data.
         :type tree: :class:`treelib.Tree`
@@ -113,10 +110,9 @@ class MatrixManager(RAMSTKMatrixManager):
         self.do_delete_row(node_id)
 
     def _on_delete_requirement(self, node_id: int, tree: treelib.Tree) -> Any:
-        """
-        Delete the node ID column from the Hardware::Requirement matrix.
+        """Delete the node ID column from the Hardware::Requirement matrix.
 
-        :param int node_id: the requirement treelib Node ID that was deleted.
+        :param node_id: the requirement treelib Node ID that was deleted.
             Note that node ID = requirement ID = matrix row ID.
         :return: None
         :rtype: None
@@ -125,10 +121,9 @@ class MatrixManager(RAMSTKMatrixManager):
         return super().do_delete_column(_tag, 'hrdwr_rqrmnt')
 
     def _on_delete_validation(self, node_id: int, tree: treelib.Tree) -> Any:
-        """
-        Delete the node ID column from the Hardware::Validation matrix.
+        """Delete the node ID column from the Hardware::Validation matrix.
 
-        :param int node_id: the validation treelib Node ID that was deleted.
+        :param node_id: the validation treelib Node ID that was deleted.
             Note that node ID = validation ID = matrix row ID.
         :return: None
         :rtype: None
@@ -139,10 +134,9 @@ class MatrixManager(RAMSTKMatrixManager):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_insert_hardware(self, node_id: int, tree: treelib.Tree) -> None:
-        """
-        Insert a matrix row associated with the inserted hardware.
+        """Insert a matrix row associated with the inserted hardware.
 
-        :param int node_id: the treelib Tree() node ID associated with the
+        :param node_id: the treelib Tree() node ID associated with the
             inserted hardware.
         :param tree: the treelib Tree() containing the remaining hardware data.
         :type tree: :class:`treelib.Tree`
@@ -152,10 +146,9 @@ class MatrixManager(RAMSTKMatrixManager):
         self.do_insert_row(node_id)
 
     def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> Any:
-        """
-        Insert the node ID column to the Hardware::Requirement matrix.
+        """Insert the node ID column to the Hardware::Requirement matrix.
 
-        :param int node_id: the requirement treelib Node ID that is to be
+        :param node_id: the requirement treelib Node ID that is to be
             inserted.  Note that node ID = requirement ID = matrix row ID.
         :return: None
         :rtype: None
@@ -164,10 +157,9 @@ class MatrixManager(RAMSTKMatrixManager):
         return super().do_insert_column(_tag, 'hrdwr_rqrmnt')
 
     def _on_insert_validation(self, node_id: int, tree: treelib.Tree) -> Any:
-        """
-        Insert the node ID column to the Hardware::Validation matrix.
+        """Insert the node ID column to the Hardware::Validation matrix.
 
-        :param int node_id: the validation treelib Node ID that is to be
+        :param node_id: the validation treelib Node ID that is to be
             inserted.  Note that node ID = validation ID = matrix row ID.
         :return: None
         :rtype: None

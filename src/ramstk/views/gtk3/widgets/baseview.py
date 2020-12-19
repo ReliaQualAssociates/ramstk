@@ -420,7 +420,7 @@ class RAMSTKBaseView(Gtk.HBox):
         a "worksheet" manner.  See the Allocation and Similar Item work views
         for examples.
 
-        :param dict attributes: the Hardware attributes dict for the row to
+        :param attributes: the Hardware attributes dict for the row to
             be loaded in the WorkView worksheet.
         :return: None
         :rtype: None
@@ -631,7 +631,7 @@ class RAMSTKBaseView(Gtk.HBox):
         the proper column of the RAMSTKTreeView with the new data.
 
         :param list node_id: unused in this method.
-        :param dict package: the key:value for the data being updated.
+        :param package: the key:value for the data being updated.
         :return: None
         :rtype: None
         """
@@ -879,7 +879,7 @@ class RAMSTKBaseView(Gtk.HBox):
     def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
         """Update the RAMSTKTreeView after deleting a line item.
 
-        :param int node_id: the treelib Tree() node ID that was deleted.
+        :param node_id: the treelib Tree() node ID that was deleted.
         :param tree: the treelib Tree() containing the workflow module data.
         :type tree: :class:`treelib.Tree`
         :return: None
@@ -1015,7 +1015,7 @@ class RAMSTKListView(RAMSTKBaseView):
     def do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
         """Load the RAMSTKMatrixView() with matrix data.
 
-        :param str matrix_type: the type of matrix to load.
+        :param matrix_type: the type of matrix to load.
         :param matrix: the data matrix to display.
         :return: None
         :rtype: None
@@ -1139,7 +1139,7 @@ class RAMSTKWorkView(RAMSTKBaseView):
             parameter is required to allow the PyPubSub signals to call this
             method and the request_set_attributes() method in the
             RAMSTKDataController.
-        :param dict package: the index in the module attributes list of the
+        :param package: the index in the module attributes list of the
             attribute that was edited and the new text to update the
             Gtk.Widget() with.
         :return: None

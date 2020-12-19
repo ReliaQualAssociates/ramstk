@@ -173,7 +173,7 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
     def do_update(self, value: int, signal: str = '') -> None:
         """Update the RAMSTK CheckButton with a new value.
 
-        :param int value: the information to update the RAMSTKCheckButton() to
+        :param value: the information to update the RAMSTKCheckButton() to
             display.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKCheckButton() needs to block.
@@ -259,7 +259,7 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
     def do_update(self, value: int, signal: str = '') -> None:
         """Update the RAMSTK Spin Button with a new value.
 
-        :param int value: the information to update the RAMSTKSpinButton() to
+        :param value: the information to update the RAMSTKSpinButton() to
             display.
         :keyword str signal: the name of the signal whose handler ID the
             RAMSTKSpinButton() needs to block.

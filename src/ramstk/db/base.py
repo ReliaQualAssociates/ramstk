@@ -130,7 +130,7 @@ class BaseDatabase:
     def do_connect(self, database: Dict) -> None:
         """Connect to the database.
 
-        :param dict database: the connection information for the database to
+        :param database: the connection information for the database to
             connect to.
         :return: None
         :rtype: None
@@ -346,8 +346,8 @@ class BaseDatabase:
         .. hint:: This method could be used to select the last used value from
             any column in a table.
 
-        :param str table: the name of the table to get the last ID from.
-        :param str id_column: the name of the field to use as the ID column.
+        :param table: the name of the table to get the last ID from.
+        :param id_column: the name of the field to use as the ID column.
         :return: _last_id; the last used value of the ID column.
         :rtype: int
         :raise: :class:`sqlalchemy.exc.OperationalError` if passed an unknown

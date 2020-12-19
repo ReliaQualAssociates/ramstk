@@ -72,7 +72,7 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Stakeholder data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes dict for the selected Revision.
+        :param attributes: the attributes dict for the selected Revision.
         :return: None
         :rtype: None
         """

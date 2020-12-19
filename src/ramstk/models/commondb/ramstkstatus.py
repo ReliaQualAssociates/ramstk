@@ -41,8 +41,7 @@ class RAMSTKStatus(RAMSTK_BASE, RAMSTKBaseTable):
                          default=__defaults__['status_type'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKStatus data model attributes.
+        """Retrieve current values of the RAMSTKStatus data model attributes.
 
         :return: {status_id, name, description, status_type} pairs.
         :rtype: dict

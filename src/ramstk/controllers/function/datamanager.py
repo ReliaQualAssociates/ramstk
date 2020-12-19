@@ -73,7 +73,7 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Function data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes for the selected Function.
+        :param attributes: the attributes for the selected Function.
         :return: None
         :rtype: None
         """
@@ -123,7 +123,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete(self, node_id: int) -> None:
         """Remove a function.
 
-        :param int node_id: the node (function) ID to be removed from the
+        :param node_id: the node (function) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
@@ -146,7 +146,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_function(self, parent_id: int = 0) -> None:
         """Add a new function as child of the parent ID function.
 
-        :param int parent_id: the parent (function) ID of the function to
+        :param parent_id: the parent (function) ID of the function to
             insert the child.  Default is to add a top-level function.
         :return: None
         :rtype: None

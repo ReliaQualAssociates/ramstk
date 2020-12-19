@@ -73,7 +73,7 @@ class HazOpsPanel(RAMSTKPanel):
     def do_load_criticality(self, criticalities: List[List[str]]) -> None:
         """Load the Gtk.CellRendererCombo() containing severities.
 
-        :param dict criticalities: the dict containing the hazard severity
+        :param criticalities: the dict containing the hazard severity
             categories and values.
         :return: None
         :rtype: None
@@ -86,7 +86,7 @@ class HazOpsPanel(RAMSTKPanel):
     def do_load_hazards(self, hazards: Dict[Any, Any]) -> None:
         """Load the Gtk.CellRendererCombos() containing hazards.
 
-        :param dict hazards: the dict containing the hazards and hazard types
+        :param hazards: the dict containing the hazards and hazard types
             to be considered.
         :return: None
         :rtype: None
@@ -143,7 +143,7 @@ class HazOpsPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hazard Analysis page widgets.
 
-        :param dict attributes: the Hazard attributes to load.
+        :param attributes: the Hazard attributes to load.
         :return: None
         :rtype: None
         """
@@ -209,7 +209,7 @@ class HazOpsPanel(RAMSTKPanel):
         that loads them into the RAMSTKTreeView().  Once the Hazards are
         split out from the Function tree, this method is not longer needed.
 
-        :param int node_id: the hazard ID that was deleted or inserted.
+        :param node_id: the hazard ID that was deleted or inserted.
             This argument is broadcast with the PyPubSub message and must
             remain with it's current spelling.
         :return: None
@@ -376,7 +376,7 @@ class HazOps(RAMSTKWorkView):
     def __do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """Set the hazard's parent ID when a function is selected.
 
-        :param dict attributes: the function dict for the selected function ID.
+        :param attributes: the function dict for the selected function ID.
         :return: None
         :rtype: None
         """

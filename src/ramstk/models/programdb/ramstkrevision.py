@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_revision table in the RAMSTK Program database.
+    """Class to represent ramstk_revision table in the RAMSTK Program database.
 
     This table shares a:
         * One-to-Many relationship with ramstk_mission.
@@ -178,34 +177,58 @@ class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseTable):
                              default=__defaults__['program_cost_sd'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mission = relationship(
+    mission: relationship = relationship(
         'RAMSTKMission',
         back_populates='revision',
         cascade='delete',
     )
-    failures = relationship(
+    failures: relationship = relationship(
         'RAMSTKFailureDefinition',
         back_populates='revision',
     )
-    function = relationship('RAMSTKFunction', back_populates='revision')
-    requirement = relationship('RAMSTKRequirement', back_populates='revision')
-    stakeholder = relationship('RAMSTKStakeholder', back_populates='revision')
-    hardware = relationship('RAMSTKHardware', back_populates='revision')
-    # software = relationship('RAMSTKSoftware', back_populates='revision')
-    validation = relationship('RAMSTKValidation', back_populates='revision')
-    # incident = relationship('RAMSTKIncident', back_populates='revision')
-    # test = relationship('RAMSTKTest', back_populates='revision')
-    # survival = relationship('RAMSTKSurvival', back_populates='revision')
-    matrix = relationship('RAMSTKMatrix', back_populates='revision')
-    hazard = relationship('RAMSTKHazardAnalysis', back_populates='revision')
-    program_status = relationship(
+    function: relationship = relationship(
+        'RAMSTKFunction',
+        back_populates='revision',
+    )
+    requirement: relationship = relationship(
+        'RAMSTKRequirement',
+        back_populates='revision',
+    )
+    stakeholder: relationship = relationship(
+        'RAMSTKStakeholder',
+        back_populates='revision',
+    )
+    hardware: relationship = relationship(
+        'RAMSTKHardware',
+        back_populates='revision',
+    )
+    # software: relationship = relationship('RAMSTKSoftware',
+    # back_populates='revision',)
+    validation: relationship = relationship(
+        'RAMSTKValidation',
+        back_populates='revision',
+    )
+    # incident: relationship = relationship('RAMSTKIncident',
+    # back_populates='revision',)
+    # test: relationship = relationship('RAMSTKTest',
+    # back_populates='revision',)
+    # survival: relationship = relationship('RAMSTKSurvival',
+    # back_populates='revision',)
+    matrix: relationship = relationship(
+        'RAMSTKMatrix',
+        back_populates='revision',
+    )
+    hazard: relationship = relationship(
+        'RAMSTKHazardAnalysis',
+        back_populates='revision',
+    )
+    program_status: relationship = relationship(
         'RAMSTKProgramStatus',
         back_populates='revision',
     )
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKRevision data model attributes.
+        """Retrieve current values of the RAMSTKRevision data model attributes.
 
         :return: {revision_id, availability, mission_availability, cost,
                   cost_per_failure, cost_per_hour, active_hazard_rate,

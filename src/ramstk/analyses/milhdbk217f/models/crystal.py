@@ -23,45 +23,44 @@ PI_E = [
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the crystal being calculated.
+    :param attributes: the attributes for the crystal being calculated.
     :return: _base_hr; the list of base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['environment_active_id'])
+    return get_part_count_lambda_b(
+        attributes['environment_active_id'])  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress hazard rate for a crystal.
+    """Calculate the part stress hazard rate for a crystal.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
-    :param dict attributes: the attributes for the crystal being calculated.
+    :param attributes: the attributes for the crystal being calculated.
     :return: attributes; the keyword argument (hardware attribute)
              dictionary with updated values.
     :rtype: dict
     """
-    attributes['lambda_b'] = 0.013 * attributes['frequency_operating']**0.23
+    attributes['lambda_b'] = 0.013 * attributes[  # type: ignore
+        'frequency_operating']**0.23
 
-    attributes['hazard_rate_active'] = (attributes['lambda_b']
-                                        * attributes['piQ']
-                                        * attributes['piE'])
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b']  # type: ignore
+        * attributes['piQ'] * attributes['piE'])
 
     return attributes
 
 
 def get_part_count_lambda_b(environment_active_id: int) -> float:
-    """
-    Retrieve the part count base hazard rate for a crystal.
+    """Retrieve the part count base hazard rate for a crystal.
 
-    :param int environment_active_id: the active environment identifier.
+    :param environment_active_id: the active environment identifier.
     :return: _base_hr; the part count base hazard rate for the active
         environment.
     :rtype: float

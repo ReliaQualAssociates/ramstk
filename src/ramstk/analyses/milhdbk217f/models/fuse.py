@@ -20,22 +20,21 @@ PI_E = [
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the fuse being calculated.
+    :param attributes: the attributes for the fuse being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['environment_active_id'])
+    return get_part_count_lambda_b(
+        attributes['environment_active_id'])  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress hazard rate for a fuse.
+    """Calculate the part stress hazard rate for a fuse.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -44,16 +43,17 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         with updated values.
     :rtype: dict
     """
-    attributes['hazard_rate_active'] = (0.010 * attributes['piE'])
+    attributes['hazard_rate_active'] = (
+        0.010 * attributes['piE']  # type: ignore
+    )
 
     return attributes
 
 
 def get_part_count_lambda_b(environment_active_id: int) -> float:
-    """
-    Retrieve the part count hazard rate for a fuse.
+    """Retrieve the part count hazard rate for a fuse.
 
-    :param int environment_active_id: the active environment identifer.
+    :param environment_active_id: the active environment identifer.
     :return: _base_hr; the part count base hazard rate.
     :rtype: float
     :raise: IndexError when passed an unkown active environment ID.

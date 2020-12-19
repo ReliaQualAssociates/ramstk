@@ -287,7 +287,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the meter assessment results page.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Meter.
         :return: None
         :rtype: None

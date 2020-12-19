@@ -16,15 +16,10 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent the table ramstk_category in the RAMSTK Common database.
+    """Class to represent table ramstk_category in the RAMSTK Common database.
 
-    Types of category are:
-        # 1. Hardware
-        # 2. Risk
-        # 3. Software
-        # 4. Incident
-        # 5. Action
+    Types of category are:     # 1. Hardware     # 2. Risk     # 3.
+    Software     # 4. Incident     # 5. Action
     """
 
     __defaults__ = {
@@ -93,20 +88,19 @@ class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseTable):
                              default=__defaults__['mild_maxt_limit'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    subcategory = relationship(
+    subcategory = relationship(  # type: ignore
         'RAMSTKSubCategory',
         back_populates='category',
         cascade='delete',
     )
-    mode = relationship(
+    mode = relationship(  # type: ignore
         'RAMSTKFailureMode',
         back_populates='category',
         cascade='delete',
     )
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKCategory data model attributes.
+        """Retrieve current values of the RAMSTKCategory data model attributes.
 
         :return: {category_id, name, description, category_type, value,
                   harsh_ir_limit, mild_ir_limit, harsh_pr_limit,

@@ -125,7 +125,7 @@ class RAMSTKProgramManager:
         :param program_db: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
         :type program_db: :class:`ramstk.db.base.BaseDatabase`
-        :param dict database: a dict containing the database connection
+        :param database: a dict containing the database connection
             arguments.
         :return: None
         :rtype: None

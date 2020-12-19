@@ -20,30 +20,26 @@ from ramstk.models import RAMSTKBaseTable
 class RAMSTKModel(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to represent ramstk_model in the RAMSTK Common database."""
 
-    __defaults__ = {
-        'description': 'Model Description',
-        'model_type': 0
-    }
+    __defaults__ = {'description': 'Model Description', 'model_type': 0}
     __tablename__ = 'ramstk_model'
     __table_args__ = {'extend_existing': True}
 
-    model_id: int = Column(
+    model_id = Column(
         'fld_model_id',
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    description: str = Column('fld_description',
-                              String(512),
-                              default=__defaults__['description'])
-    model_type: int = Column('fld_model_type',
-                             Integer,
-                             default=__defaults__['model_type'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    model_type = Column('fld_model_type',
+                        Integer,
+                        default=__defaults__['model_type'])
 
     def get_attributes(self) -> Dict[str, object]:
-        """
-        Retrieve the current values of the RAMSTKModel data model attributes.
+        """Retrieve current values of the RAMSTKModel data model attributes.
 
         :return: {model_id, description, model_type} pairs.
         :rtype: dict

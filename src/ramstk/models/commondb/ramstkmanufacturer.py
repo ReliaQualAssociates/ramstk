@@ -44,8 +44,7 @@ class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseTable):
                        default=__defaults__['cage_code'])
 
     def get_attributes(self):
-        """
-        Retrieve current values of RAMSTKManufacturer data model attributes.
+        """Retrieve current values of RAMSTKManufacturer data model attributes.
 
         :return: {manufacturer_id, description, location, cage_code} pairs
         :rtype: dict

@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_mode in the RAMSTK Program database.
+    """Class to represent table ramstk_mode in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_function.
     This table shares a Many-to-One relationship with ramstk_hardware.
@@ -147,9 +146,11 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
     type_id = Column('fld_type_id', Integer, default=__defaults__['type_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mechanism = relationship('RAMSTKMechanism',
-                             back_populates='mode',
-                             cascade='all,delete')
+    mechanism = relationship(  # type: ignore
+        'RAMSTKMechanism',
+        back_populates='mode',
+        cascade='all,delete',
+    )
     # cause = relationship('RAMSTKCause',
     #                      back_populates='mode',
     #                      cascade='all,delete')
@@ -164,8 +165,7 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
     is_testmethod = False
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKMode data model attributes.
+        """Retrieve the current values of the RAMSTKMode data model attributes.
 
         :return: {revision_id, hardware_id, mode_id, critical_item,
                   description, design_provisions, detection_method,

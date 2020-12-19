@@ -297,7 +297,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Integrated Circuit assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -420,7 +420,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_eeprom(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display EEPROM information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -441,7 +441,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_gaas(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display GaAs IC information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -457,7 +457,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_linear(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display linear (analog) information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -474,7 +474,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_logic(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display digital IC information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -492,7 +492,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display microprocessor information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -509,7 +509,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_pal_pla(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display DRAM information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -526,7 +526,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_rom(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display ROM information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -537,7 +537,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_sram(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display SRAM information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -548,7 +548,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_vhsic_vlsi(self, attributes: Dict[str, Any]) -> None:
         """Load the widgets that display VHSIC/VLSI information.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None
@@ -992,7 +992,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the integrated circuit assessment results page.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Integrated Circuit.
         :return: None
         :rtype: None

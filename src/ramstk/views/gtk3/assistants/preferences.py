@@ -445,10 +445,10 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
         :param __cell: the Gtk.CellRenderer() that was edited.
         :type __cell: :class:`Gtk.CellRenderer`
-        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
+        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer()
             that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
+        :param new_text: the new text in the edited Gtk.CellRenderer().
+        :param position: the column position of the edited
             Gtk.CellRenderer().
         :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
         :type model: :class:`Gtk.TreeModel`
@@ -465,7 +465,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
     def _do_load_format(self, module: str) -> None:
         """Load the selected Module View format file for editing.
 
-        :param str module: the name of the RAMSTK workstream module whose
+        :param module: the name of the RAMSTK workstream module whose
             Module View layout is to be edited.
         :return: None
         :rtype: None
@@ -651,7 +651,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
         :param button: the Gtk.FileChooserButton() that called this method.
         :type button: :class:`Gtk.FileChooserButton`
-        :param int index: the index of the Gtk.FileChooserButton() that called
+        :param index: the index of the Gtk.FileChooserButton() that called
             this method.
         :return: None
         :rtyp: None
@@ -675,7 +675,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
         :param colorbutton: the Gtk.ColorButton() that called this method.
         :type colorbutton: :class:`Gtk.ColorButton`
-        :param str ramstk_color: the name of the color to set.
+        :param ramstk_color: the name of the color to set.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -717,7 +717,7 @@ class EditPreferences(Gtk.Window, RAMSTKBaseView):
 
         :param combo: the RAMSTKComboBox() that called this method.
         :type combo: :class:`gui.gtk.RAMSTKComboBox`
-        :param int index: the index in the signal handler list associated with
+        :param index: the index in the signal handler list associated with
             the RAMSTKComboBox() calling this method.
         :return: None
         :rtype: None

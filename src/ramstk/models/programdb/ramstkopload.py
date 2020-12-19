@@ -16,12 +16,12 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_op_load in the RAMSTK Program database.
+    """Class to represent table ramstk_op_load in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mechanism.
     This table shares a One-to-Many relationship with ramstk_op_stress.
-    This table shares a One-to-Many relationship with ramstk_test_method.
+    This table shares a One-to-Many relationship with
+    ramstk_test_method.
     """
 
     __defaults__ = {'description': '', 'damage_model': '', 'priority_id': 0}
@@ -71,13 +71,20 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
                          default=__defaults__['priority_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mechanism = relationship('RAMSTKMechanism', back_populates='op_load')
-    op_stress = relationship('RAMSTKOpStress',
-                             back_populates='op_load',
-                             cascade='all,delete')
-    test_method = relationship('RAMSTKTestMethod',
-                               back_populates='op_load',
-                               cascade='all,delete')
+    mechanism = relationship(  # type: ignore
+        'RAMSTKMechanism',
+        back_populates='op_load',
+    )
+    op_stress = relationship(  # type: ignore
+        'RAMSTKOpStress',
+        back_populates='op_load',
+        cascade='all,delete',
+    )
+    test_method = relationship(  # type: ignore
+        'RAMSTKTestMethod',
+        back_populates='op_load',
+        cascade='all,delete',
+    )
 
     is_mode = False
     is_mechanism = False
@@ -86,8 +93,7 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
     is_testmethod = False
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKOpLoad data model attributes.
+        """Retrieve current values of the RAMSTKOpLoad data model attributes.
 
         :return: {mechanism_id, load_id, description, damage_model,
                   priority_id} pairs

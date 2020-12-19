@@ -34,8 +34,7 @@ class RAMSTKStakeholders(RAMSTK_BASE, RAMSTKBaseTable):
                          default=__defaults__['stakeholder'])
 
     def get_attributes(self):
-        """
-        Retrieve current values of RAMSTKStakeholders data model attributes.
+        """Retrieve current values of RAMSTKStakeholders data model attributes.
 
         :return: {stakeholders_id, stakeholder} pairs.
         :rtype: dict

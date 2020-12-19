@@ -32,11 +32,11 @@ def do_request_insert(attributes: Dict[str, Any], level: str,
                       parent_id: str) -> None:
     """Send the correct request for the FMEA item to insert.
 
-    :param dict attributes: the attributes of the currently selected
+    :param attributes: the attributes of the currently selected
         element in the FMEA.
-    :param str level: the indenture level in the FMEA of the new element to
+    :param level: the indenture level in the FMEA of the new element to
         insert.
-    :param str parent_id: the node ID in the FMEA treelib Tree() of the
+    :param parent_id: the node ID in the FMEA treelib Tree() of the
         parent element.
     :return: None
     :rtype: None
@@ -504,7 +504,7 @@ class FMEAPanel(RAMSTKPanel):
     def __do_get_rpn_values(self, position: int, name: str) -> int:
         """Retrieve the RPN value for the selected SOD description.
 
-        :param str name: the noun name in the severity, detection,
+        :param name: the noun name in the severity, detection,
             or occurrence list.
         :return: _value
         :rtype: int
@@ -761,7 +761,7 @@ class FMEAPanel(RAMSTKPanel):
     def __do_load_mission_phases(self, mission: str) -> None:
         """Load the mission phase Gtk.CellRendererCombo().
 
-        :param str mission: the mission that was selected.
+        :param mission: the mission that was selected.
         :return: None
         :rtype: None
         """
@@ -1202,7 +1202,7 @@ class FMEA(RAMSTKWorkView):
     def _do_set_parent(self, attributes: Dict[str, Any]) -> None:
         """Set the parent (hardware) ID when a new hardware item is selected.
 
-        :param dict attributes: the attributes of the newly selected hardware
+        :param attributes: the attributes of the newly selected hardware
             item.
         :return: None
         :rtype: None

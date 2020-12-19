@@ -124,7 +124,7 @@ class GeneralDataPanel(RAMSTKPanel):
             self, requirement_types: Dict[int, Tuple[str]]) -> None:
         """Load the requirement types RAMSTKComboBox().
 
-        :param dict requirement_types:
+        :param requirement_types:
         :return: None
         :rtype: None
         """
@@ -139,7 +139,7 @@ class GeneralDataPanel(RAMSTKPanel):
     def do_load_workgroups(self, workgroups: Dict[int, Tuple[str]]) -> None:
         """Load the workgroups RAMSTKComboBox().
 
-        :param dict workgroups:
+        :param workgroups:
         :return: None
         :rtype: None
         """
@@ -173,7 +173,7 @@ class GeneralDataPanel(RAMSTKPanel):
     def _do_load_code(self, requirement_code: int) -> None:
         """Load the Requirement code RAMSTKEntry().
 
-        :param str requirement_code: the Requirement code to load.
+        :param requirement_code: the Requirement code to load.
         :return: None
         :rtype: None
         """
@@ -182,7 +182,7 @@ class GeneralDataPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Requirement General Data page widgets.
 
-        :param dict attributes: the Requirement attributes to load into the
+        :param attributes: the Requirement attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None

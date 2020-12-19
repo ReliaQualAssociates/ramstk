@@ -24,8 +24,7 @@ from ramstk.models.programdb import (
 
 
 def do_make_programdb_tables(engine: Engine) -> None:
-    """
-    Create all the tables in the RAMSTK Program database.
+    """Create all the tables in the RAMSTK Program database.
 
     :param engine: the SQLAlchemy database engine to use to create the program
         database tables.
@@ -70,8 +69,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
 
 
 def do_create_program_db(engine: Engine, session: scoped_session) -> None:
-    """
-    Create and initialize a RAMSTK Program database.
+    """Create and initialize a RAMSTK Program database.
 
     :param engine: the SQLAlchemy Engine connected to the database.
     :type engine: :class:`sqlalchemy.engine.Engine`

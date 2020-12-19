@@ -97,11 +97,13 @@ class RAMSTKMatrix(RAMSTK_BASE, RAMSTKBaseTable):
     value = Column('fld_value', Integer, default=__defaults__['value'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='matrix')
+    revision = relationship(  # type: ignore
+        'RAMSTKRevision',
+        back_populates='matrix',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKMatrix data model attributes.
+        """Retrieve current values of the RAMSTKMatrix data model attributes.
 
         :return: {revision_id, matrix_id, column_id, column_item_id, parent_id,
                   row_id, row_item_id, type_id, value} pairs.

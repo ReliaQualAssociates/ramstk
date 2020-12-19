@@ -1,4 +1,3 @@
-# TODO: Remove the type ignore after refactoring.  See issue #324
 # type: ignore
 # -*- coding: utf-8 -*-
 #
@@ -23,10 +22,9 @@ from .models import (
 
 # noinspection PyTypeChecker
 def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the MIL-HDBK-217F parts count active hazard rate.
+    """Calculate the MIL-HDBK-217F parts count active hazard rate.
 
-    :param dict attributes: the attributes dict for the component being
+    :param attributes: the attributes dict for the component being
         calculated.
     :return: attributes; the attributes dict with updated values.
     :rtype: dict
@@ -75,10 +73,9 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 # noinspection PyTypeChecker
 def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the MIL-HDBK-217F parts stress active hazard rate.
+    """Calculate the MIL-HDBK-217F parts stress active hazard rate.
 
-    :param dict attributes: the attributes dict for the component being
+    :param attributes: the attributes dict for the component being
         calculated.
     :return: attributes; the attributes dict with updated values.
     :rtype: dict
@@ -128,14 +125,13 @@ def _get_environment_factor(category_id: int,
                             environment_active_id: int,
                             subcategory_id: int = -1,
                             quality_id: int = -1) -> float:
-    """
-    Retrieve the MIL-HDBK-217F environment factor (piE) for the component.
+    """Retrieve the MIL-HDBK-217F environment factor (piE) for the component.
 
     Most component types have a single list of piE factors, but some require
     additional indices to select the correct list of factors.
 
-    :param int category_id: the category ID of the component.
-    :param int environment_active_id: the active environment ID for the
+    :param category_id: the category ID of the component.
+    :param environment_active_id: the active environment ID for the
         component.
     :keyword int subcategory_id: the subcategory ID of the component.
     :keyword int quality_id: the quality level ID of the component.
@@ -179,8 +175,7 @@ def _get_environment_factor(category_id: int,
 
 def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
                                    quality_id: int) -> float:
-    """
-    Retrieve the MIL-HDBK-217F parts count quality factor (piQ).
+    """Retrieve the MIL-HDBK-217F parts count quality factor (piQ).
 
     .. note:: Fuses and Lamps have no piQ input.
 
@@ -188,9 +183,9 @@ def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
         function to select the correct value is included in the semiconductor
         model file.
 
-    :param int category_id: the category ID of the component.
-    :param int subcategory_id: the subcategory ID of the component.
-    :param int quality_id: the quality level ID for the component.
+    :param category_id: the category ID of the component.
+    :param subcategory_id: the subcategory ID of the component.
+    :param quality_id: the quality level ID for the component.
     :return: _pi_q; the selected piQ value.
     :rtype: float
     :raise: IndexError if there is no list entry for the passed active
@@ -226,14 +221,13 @@ def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
 
 def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
                                     quality_id: int) -> float:
-    """
-    Retrieve the MIL-HDBK-217F part stress quality factor (piQ).
+    """Retrieve the MIL-HDBK-217F part stress quality factor (piQ).
 
     .. note:: Fuses and Lamps have no piQ input.
 
-    :param int category_id: the category ID of the component.
-    :param int subcategory_id: the subcategory ID of the component.
-    :param int quality_id: the quality level ID for the component.
+    :param category_id: the category ID of the component.
+    :param subcategory_id: the subcategory ID of the component.
+    :param quality_id: the quality level ID for the component.
     :return: _pi_q; the selected piQ value.
     :rtype: float
     :raise: IndexError if there is no list entry for the passed quality ID.
@@ -275,8 +269,7 @@ def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
 
 # noinspection PyTypeChecker
 def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> None:
-    """
-    Calculate the active hazard rate for a hardware item.
+    """Calculate the active hazard rate for a hardware item.
 
     .. attention:: The programmer is responsible for ensuring appropriate
         stress analyses (e.g., voltage ratios) are performed and results

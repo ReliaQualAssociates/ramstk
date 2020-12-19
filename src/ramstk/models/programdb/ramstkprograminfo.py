@@ -19,8 +19,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_program_info in RAMSTK Program database.
+    """Class to represent table ramstk_program_info in RAMSTK Program database.
 
     This table has a one-to-one relationship with RAMSTKProgramStatus.
     """
@@ -103,8 +102,7 @@ class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseTable):
     method = Column('fld_method', String(512), default=__defaults__['method'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of RAMSTKProgramInfo data model attributes.
+        """Retrieve current values of RAMSTKProgramInfo data model attributes.
 
         :return: {revision_id, function_active, requirement_active,
                   hardware_active, software_active, vandv_active,

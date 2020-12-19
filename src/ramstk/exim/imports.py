@@ -31,8 +31,7 @@ from ramstk.models.programdb import (
 
 
 def _do_replace_nan(value: Any, default: Any) -> Any:
-    """
-    Checks for NaN values and replaces any with the default value.
+    """Check for NaN values and replace any with the default value.
 
     :param value: the value to check for NaN.
     :param default: the default value to replace NaN.
@@ -58,14 +57,13 @@ def _do_replace_nan(value: Any, default: Any) -> Any:
 
 def _get_input_value(mapper: Dict[str, Any], df_row: pd.Series, field: str,
                      default: Any) -> Any:
-    """
-    Retrieve the input value for a field from the Pandas dataframe.
+    """Retrieve the input value for a field from the Pandas dataframe.
 
-    :param dict mapper: the field mapping dict to use as the Rosetta stone.
+    :param mapper: the field mapping dict to use as the Rosetta stone.
     :param df_row: the row from the pandas DataFrame containing the input
         data.
     :type df_row: :class:`pandas.Series`
-    :param str field: the name of the RAMSTK database field to retrieve the
+    :param field: the name of the RAMSTK database field to retrieve the
         data for.
     :param default: the default value to assign to the field.
     :return: _value
@@ -225,8 +223,7 @@ class Import:
         pub.subscribe(self._do_import, 'request_import')
 
     def _do_connect(self, dao: BaseDatabase) -> None:
-        """
-        Connect data manager to a database.
+        """Connect data manager to a database.
 
         :param dao: the BaseDatabase() instance (data access object)
             representing the connected RAMSTK Program database.
@@ -235,10 +232,9 @@ class Import:
         self._dao = dao
 
     def _do_import(self, module: str) -> None:
-        """
-        Insert a new entity to the RAMSTK db with values from external file.
+        """Insert a new entity to the RAMSTK db with values from external file.
 
-        :param str module: the name of the RAMSTK module to import.
+        :param module: the name of the RAMSTK module to import.
         :return: None
         :rtype: None
         """
@@ -280,8 +276,7 @@ class Import:
             pub.sendMessage('fail_import_module', module=module)
 
     def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation:
-        """
-        Insert a new Allocation record to the RAMSTK database.
+        """Insert a new Allocation record to the RAMSTK database.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -302,8 +297,7 @@ class Import:
 
     def _do_insert_design_electric(self,
                                    row: pd.Series) -> RAMSTKDesignElectric:
-        """
-        Insert a new Design Electric entity to the RAMSTK db.
+        """Insert a new Design Electric entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -434,8 +428,7 @@ class Import:
 
     def _do_insert_design_mechanic(self,
                                    row: pd.Series) -> RAMSTKDesignMechanic:
-        """
-        Insert a new Design Mechanic entity to the RAMSTK db.
+        """Insert a new Design Mechanic entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -560,8 +553,7 @@ class Import:
         return _design_mechanic
 
     def _do_insert_function(self, row: pd.Series) -> RAMSTKFunction:
-        """
-        Insert a new Function entity to the RAMSTK db.
+        """Insert a new Function entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -587,8 +579,7 @@ class Import:
         return _function
 
     def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardware:
-        """
-        Insert a new Hardware entity to the RAMSTK db.
+        """Insert a new Hardware entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -642,8 +633,7 @@ class Import:
         return _hardware
 
     def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbkF:
-        """
-        Insert a new MIL-HDBK-217F entity to the RAMSTK db.
+        """Insert a new MIL-HDBK-217F entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -659,8 +649,7 @@ class Import:
         return _mil_hdbk_f
 
     def _do_insert_nswc(self, row: pd.Series) -> RAMSTKNSWC:
-        """
-        Insert a new NSWC entity to the RAMSTK db.
+        """Insert a new NSWC entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -676,8 +665,7 @@ class Import:
         return _nswc
 
     def _do_insert_reliability(self, row: pd.Series) -> RAMSTKReliability:
-        """
-        Insert a new Reliability entity to the RAMSTK db.
+        """Insert a new Reliability entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -725,8 +713,7 @@ class Import:
         return _reliability
 
     def _do_insert_requirement(self, row: pd.Series) -> RAMSTKRequirement:
-        """
-        Insert a new Requirement entity to the RAMSTK db.
+        """Insert a new Requirement entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -765,8 +752,7 @@ class Import:
         return _requirement
 
     def _do_insert_similar_item(self, row: pd.Series) -> RAMSTKSimilarItem:
-        """
-        Insert a new Similar Item record to the RAMSTK db.
+        """Insert a new Similar Item record to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -788,8 +774,7 @@ class Import:
         return _similar_item
 
     def _do_insert_validation(self, row: pd.Series) -> RAMSTKValidation:
-        """
-        Insert a new Validation entity to the RAMSTK db.
+        """Insert a new Validation entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
@@ -843,13 +828,12 @@ class Import:
 
     def _do_map_to_field(self, module: str, import_field: str,
                          format_field: str) -> None:
-        """
-        Map the external column to the RAMSTK database table field.
+        """Map the external column to the RAMSTK database table field.
 
-        :param str module: the RAMSTK module to map header fields for.
-        :param str import_field: the string used for the column header in the
+        :param module: the RAMSTK module to map header fields for.
+        :param import_field: the string used for the column header in the
             import file.
-        :param str format_field: the string used for default titles in the
+        :param format_field: the string used for default titles in the
             RAMSTK layout file.
         :return: None
         :rtype: None
@@ -857,10 +841,9 @@ class Import:
         self._dic_field_map[module][format_field] = import_field
 
     def _do_read_db_fields(self, module: str) -> None:
-        """
-        Returns the database field names in a list.
+        """Return the database field names in a list.
 
-        :param str module: the name of the work stream module to return
+        :param module: the name of the work stream module to return
             database field names for.
         :return: None
         :rtype: None
@@ -872,14 +855,13 @@ class Import:
         pub.sendMessage('succeed_read_db_fields', db_fields=_db_fields)
 
     def _do_read_file(self, file_type: str, file_name: str) -> None:
-        """
-        Read contents of input file into a pandas DataFrame().
+        """Read contents of input file into a pandas DataFrame().
 
-        :param str file_type: the type of file to import from.  Supported files
+        :param file_type: the type of file to import from.  Supported files
             types are:
                 - CSV (using a semi-colon (;) delimiter)
                 - Excel
-        :param str file_name: the name, with full path, of the file to export
+        :param file_name: the name, with full path, of the file to export
             the RAMSTK Program database data to.
         :return: None
         :rtype: None

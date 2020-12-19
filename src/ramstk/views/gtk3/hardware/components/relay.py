@@ -241,7 +241,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Relay assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
         Relay.
         :return: None
         :rtype: None

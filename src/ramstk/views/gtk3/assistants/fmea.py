@@ -38,8 +38,7 @@ class AddControlAction(RAMSTKDialog):
         self.__make_ui()
 
     def __make_ui(self):
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
@@ -72,11 +71,8 @@ class AddControlAction(RAMSTKDialog):
         _fixed.show_all()
 
     def _cancel(self, __button):
-        """
-        Method to destroy the assistant when the 'Cancel' button is
-        pressed.
+        """Destroy the assistant when the 'Cancel' button is pressed.
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         """
-
         self.destroy()

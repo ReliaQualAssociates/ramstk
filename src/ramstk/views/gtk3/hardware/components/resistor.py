@@ -222,7 +222,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Resistor assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Resistor.
         :return: None
         :rtype: None
@@ -603,7 +603,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Resistor assessment results page.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Resistor.
         :return: None
         :rtype: None

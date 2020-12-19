@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent the table ramstk_cause in the RAMSTK Program database.
+    """Class to represent table ramstk_cause in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mechanism.
     This table shared a One-to-Many relationship with ramstk_control.
@@ -89,13 +88,16 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     # mode = relationship('RAMSTKMode', back_populates='cause')
-    mechanism = relationship('RAMSTKMechanism', back_populates='cause')
-    control = relationship('RAMSTKControl',
-                           back_populates='cause',
-                           cascade='delete, delete-orphan')
-    action = relationship('RAMSTKAction',
-                          back_populates='cause',
-                          cascade='delete, delete-orphan')
+    mechanism = relationship(  # type: ignore
+        'RAMSTKMechanism', back_populates='cause')
+    control = relationship(  # type: ignore
+        'RAMSTKControl',
+        back_populates='cause',
+        cascade='delete, delete-orphan')
+    action = relationship(  # type: ignore
+        'RAMSTKAction',
+        back_populates='cause',
+        cascade='delete, delete-orphan')
 
     is_mode = False
     is_mechanism = False
@@ -104,8 +106,7 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseTable):
     is_action = False
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKCause data model attributes.
+        """Retrieve current values of the RAMSTKCause data model attributes.
 
         :return: {mode_id, mechanism_id, cause_id, description, rpn_occurrence,
                   rpn_detection, rpn, rpn_occurrence_new, rpn_detection_new,

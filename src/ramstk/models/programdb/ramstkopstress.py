@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_op_stress in the RAMSTK Program database.
+    """Class to represent table ramstk_op_stress in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_op_load.
     """
@@ -80,7 +79,10 @@ class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseTable):
     remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    op_load = relationship('RAMSTKOpLoad', back_populates='op_stress')
+    op_load = relationship(  # type: ignore
+        'RAMSTKOpLoad',
+        back_populates='op_stress',
+    )
 
     is_mode = False
     is_mechanism = False
@@ -89,8 +91,7 @@ class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseTable):
     is_testmethod = False
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the Op Stress data model attributes.
+        """Retrieve the current values of the Op Stress data model attributes.
 
         :return: {load_id, stress_id, description, load_history,
                   measurable_parameter, remarks} pairs

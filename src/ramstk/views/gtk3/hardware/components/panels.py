@@ -77,7 +77,7 @@ class RAMSTKAssessmentInputPanel(RAMSTKPanel):
     def do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the component common widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Component.
         :return: None
         :rtype: None
@@ -248,7 +248,7 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Component stress input widgets.
 
-        :param dict attributes: the attributes dict for the selected Hardware.
+        :param attributes: the attributes dict for the selected Hardware.
         :return: None
         :rtype: None
         """
@@ -416,7 +416,7 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
     def do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Hardware assessment results page.
 
-        :param dict attributes: the attributes dict for the selected Hardware.
+        :param attributes: the attributes dict for the selected Hardware.
         :return: None
         :rtype: None
         """
@@ -625,7 +625,7 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Hardware stress results page common widgets.
 
-        :param dict attributes: the attributes dict for the selected Hardware.
+        :param attributes: the attributes dict for the selected Hardware.
         :return: None
         :rtype: None
         """

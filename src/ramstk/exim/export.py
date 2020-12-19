@@ -46,15 +46,14 @@ class Export:
         pub.subscribe(self._do_export, 'request_export_data')
 
     def _do_export(self, file_type: str, file_name: str) -> None:
-        """
-        Export selected RAMSTK module data to external file.
+        """Export selected RAMSTK module data to external file.
 
-        :param str file_type: the type of file to export the data to.
+        :param file_type: the type of file to export the data to.
             Supported files types are:
                 - CSV (using a semi-colon (;) delimiter)
                 - Excel
                 - Text (using a blank space delimiter)
-        :param str file_name: the name, with full path, of the file to export
+        :param file_name: the name, with full path, of the file to export
             the RAMSTK Program database data to.
         :return: None
         :rtype: None
@@ -67,11 +66,10 @@ class Export:
             self._do_export_to_delimited_text(file_name, separator=' ')
 
     def _do_export_to_delimited_text(self, file_name: str, separator: str):
-        """
-        Export RAMSTK project data to a delimited text file.
+        """Export RAMSTK project data to a delimited text file.
 
-        :param str file_name: the name of the file to export data.
-        :param str separator: the field delimiter to use.
+        :param file_name: the name of the file to export data.
+        :param separator: the field delimiter to use.
         :return: None
         :rtype: None
         """
@@ -80,11 +78,11 @@ class Export:
 
             self._df_output_data.to_csv(file_name, sep=separator, index=True)
 
+    # pylint: disable=abstract-class-instantiated
     def _do_export_to_excel(self, file_name: str) -> None:
-        """
-        Export RAMSTK project data to an Excel file.
+        """Export RAMSTK project data to an Excel file.
 
-        :param str file_name: the name of the file to export data.
+        :param file_name: the name of the file to export data.
         :return: None
         :rtype: None
         """
@@ -120,18 +118,16 @@ class Export:
 
     @staticmethod
     def _do_load_output(module: str) -> None:
-        """
-        Load the data from the requested RAMSTK module into a Pandas DataFrame.
+        """Load data from the requested RAMSTK module into a Pandas DataFrame.
 
-        :param str module: the RAMSTK module to load for export.
+        :param module: the RAMSTK module to load for export.
         :return: None
         :rtype: None
         """
         pub.sendMessage('request_get_{0:s}_tree'.format(module.lower()))
 
     def _do_load_data(self, tree: Tree) -> None:
-        """
-        Load the attribute data into a Pandas DataFrame.
+        """Load the attribute data into a Pandas DataFrame.
 
         :param tree: the data manager tree for the module to export.
         :return: None
@@ -144,8 +140,7 @@ class Export:
         # pylint: disable=unused-variable
         for __, _node in enumerate(tree.nodes):
             try:
-                _attributes = tree.nodes[_node].data[_module].get_attributes(
-                )
+                _attributes = tree.nodes[_node].data[_module].get_attributes()
                 for _key in _attributes:
                     _dic_temp[_key] = _attributes[_key]
             except TypeError:

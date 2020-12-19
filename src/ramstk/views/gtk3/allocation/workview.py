@@ -109,7 +109,7 @@ class GoalMethodPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Allocation goals and methods panel.
 
-        :param dict attributes: the attributes dict for the selected
+        :param attributes: the attributes dict for the selected
             Hardware item.
         :return: None
         :rtype: None
@@ -303,7 +303,7 @@ class AllocationPanel(RAMSTKPanel):
     def _do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Load the Allocation RAMSTKTreeView().
 
-        :param dict attributes: the attributes dict for the row to be loaded.
+        :param attributes: the attributes dict for the row to be loaded.
         :return: None
         :rtype: None
         """

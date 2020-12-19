@@ -156,7 +156,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Miscellaneous assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Miscellaneous item.
         :return: None
         :rtype: None
@@ -199,7 +199,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_crystal(self, attributes: Dict[str, Any]) -> None:
         """Load the Crystal assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Miscellaneous item.
         :return: None
         :rtype: None
@@ -212,7 +212,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_filter(self, attributes: Dict[str, Any]) -> None:
         """Load the Filter assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Miscellaneous item.
         :return: None
         :rtype: None
@@ -222,7 +222,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def __do_load_lamp(self, attributes: Dict[str, Any]) -> None:
         """Load the Lamp assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Miscellaneous item.
         :return: None
         :rtype: None
@@ -403,7 +403,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the miscellaneous devices assessment results page.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Miscellaneous item.
         :return: None
         :rtype: None

@@ -57,12 +57,13 @@ class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseTable):
     source = Column('fld_source', String(128), default=__defaults__['source'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    category = relationship('RAMSTKCategory', back_populates='mode')
-    subcategory = relationship('RAMSTKSubCategory', back_populates='mode')
+    category = relationship(  # type: ignore
+        'RAMSTKCategory', back_populates='mode')
+    subcategory = relationship(  # type: ignore
+        'RAMSTKSubCategory', back_populates='mode')
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKFailureMode data model attributes.
+        """Retrieve current values of RAMSTKFailureMode data model attributes.
 
         :return: {failuremode_id, description, type} pairs
         :rtype: dict

@@ -138,11 +138,10 @@ REF_TEMPS = {
 
 def calculate_capacitance_factor(subcategory_id: int,
                                  capacitance: float) -> float:
-    """
-    Calculate the capacitance factor (piCV).
+    """Calculate the capacitance factor (piCV).
 
-    :param int subcategory_id: the capacitor subcategory identifier.
-    :param float capacitance: the capacitance value in Farads.
+    :param subcategory_id: the capacitor subcategory identifier.
+    :param capacitance: the capacitance value in Farads.
     :return: _pi_cv; the calculated capacitance factor.
     :rtype: float
     :raise: KeyError if passed an unknown subcategor ID.
@@ -176,57 +175,64 @@ def calculate_capacitance_factor(subcategory_id: int,
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrapper function for get_part_count_lambda_b_list.
+    """Wrap get_part_count_lambda_b_list function.
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the capacitor being calculated.
+    :param attributes: the attributes for the capacitor being calculated.
     :return: _base_hr; the base hazard rate.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
     """
-    return get_part_count_lambda_b(attributes['subcategory_id'],
-                                   attributes['environment_active_id'],
-                                   attributes['specification_id'])
+    return get_part_count_lambda_b(
+        attributes['subcategory_id'],   # type: ignore
+        attributes['environment_active_id'],  # type: ignore
+        attributes['specification_id'])  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress active hazard rate for a capacitor.
+    """Calculate the part stress active hazard rate for a capacitor.
 
-    :param dict attributes: the attributes for the capacitor being calculated.
+    :param attributes: the attributes for the capacitor being calculated.
     :return: attributes; the keyword argument (hardware attribute)
         dictionary with updated values.
     :rtype: dict
     :raise: KeyError if the attribute dict is missing one or more keys.
     """
-    attributes['lambda_b'] = calculate_part_stress_lambda_b(
-        attributes['subcategory_id'], attributes['temperature_rated_max'],
-        attributes['temperature_active'], attributes['voltage_ratio'])
-    attributes['piCV'] = calculate_capacitance_factor(
-        attributes['subcategory_id'], attributes['capacitance'])
+    attributes['lambda_b'] = calculate_part_stress_lambda_b(  # type: ignore
+        attributes['subcategory_id'],  # type: ignore
+        attributes['temperature_rated_max'],  # type: ignore
+        attributes['temperature_active'],  # type: ignore
+        attributes['voltage_ratio'])  # type: ignore
+    attributes['piCV'] = calculate_capacitance_factor(  # type: ignore
+        attributes['subcategory_id'],  # type: ignore
+        attributes['capacitance'])  # type: ignore
 
-    attributes['hazard_rate_active'] = (attributes['lambda_b']
-                                        * attributes['piQ'] * attributes['piE']
-                                        * attributes['piCV'])
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b']  # type: ignore
+        * attributes['piQ'] * attributes['piE'] * attributes['piCV'])
     if attributes['subcategory_id'] == 12:
-        attributes['piSR'] = calculate_series_resistance_factor(
-            attributes['resistance'], attributes['voltage_dc_operating'],
-            attributes['voltage_ac_operating'])
-        attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
-                                            * attributes['piSR'])
+        attributes[
+            'piSR'] = calculate_series_resistance_factor(  # type: ignore
+                attributes['resistance'],  # type: ignore
+                attributes['voltage_dc_operating'],  # type: ignore
+                attributes['voltage_ac_operating'])  # type: ignore
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piSR'])  # type: ignore
     elif attributes['subcategory_id'] == 13:
-        attributes['piC'] = get_construction_factor(attributes['construction_id'])
-        attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
-                                            * attributes['piC'])
+        attributes['piC'] = get_construction_factor(  # type: ignore
+            attributes['construction_id'])  # type: ignore
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piC'])
     elif attributes['subcategory_id'] == 19:
-        attributes['piCF'] = get_configuration_factor(
-            attributes['configuration_id'])
-        attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
-                                            * attributes['piCF']
-                                            / attributes['piCV'])
+        attributes['piCF'] = get_configuration_factor(  # type: ignore
+            attributes['configuration_id'])  # type: ignore
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piCF'] / attributes['piCV'])
 
     return attributes
 
@@ -235,15 +241,14 @@ def calculate_part_stress_lambda_b(subcategory_id: int,
                                    temperature_rated_max: float,
                                    temperature_active: float,
                                    voltage_ratio: float) -> float:
-    """
-    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
-    :param int subcategory_id: the capacitor subcategory identifier.
-    :param float temperature_rated_max: the maximum rated temperature of the
+    :param subcategory_id: the capacitor subcategory identifier.
+    :param temperature_rated_max: the maximum rated temperature of the
         capacitor.
-    :param float temperature_active: the operating ambient temperature of the
+    :param temperature_active: the operating ambient temperature of the
         capacitor.
-    :param float voltage_ratio: the ratio of operating to rated voltage for the
+    :param voltage_ratio: the ratio of operating to rated voltage for the
         capacitor.
     :return: _base_hr; the calculates base hazard rate.
     :rtype: float
@@ -286,12 +291,11 @@ def calculate_part_stress_lambda_b(subcategory_id: int,
 def calculate_series_resistance_factor(resistance: float,
                                        voltage_dc_operating: float,
                                        voltage_ac_operating: float) -> float:
-    """
-    Calculate the series resistance factor (piSR).
+    """Calculate the series resistance factor (piSR).
 
-    :param float resistance: the equivalent series resistance of the capacitor.
-    :param float voltage_dc_operating: the operating DC voltage.
-    :param float voltage_ac_operating: the operating ac voltage (ripple
+    :param resistance: the equivalent series resistance of the capacitor.
+    :param voltage_dc_operating: the operating DC voltage.
+    :param voltage_ac_operating: the operating ac voltage (ripple
         voltage).
     :return: _pi_sr, _error_msg; the series resistance factor and any error
         message raised by this function.
@@ -319,10 +323,9 @@ def calculate_series_resistance_factor(resistance: float,
 
 
 def get_configuration_factor(configuration_id: int) -> float:
-    """
-    Retrieves the configuration factor (piCF) for the capacitor.
+    """Retrieve the configuration factor (piCF) for the capacitor.
 
-    :param int configuration_id: the capacitor configuration identifier.
+    :param configuration_id: the capacitor configuration identifier.
     :return: _pi_cf; the configuration factor value.
     :rtype: float
     :raise: KeyError if passed an unknown configuration ID.
@@ -331,10 +334,9 @@ def get_configuration_factor(configuration_id: int) -> float:
 
 
 def get_construction_factor(construction_id: int) -> float:
-    """
-    Retrieves the configuration factor (piC) for the capacitor.
+    """Retrieve the configuration factor (piC) for the capacitor.
 
-    :param int construction_id: the capacitor construction identifier.
+    :param construction_id: the capacitor construction identifier.
     :return: _pi_c; the construction factor value.
     :rtype: float
     :raise: KeyError if passed an unknown construction ID.
@@ -345,8 +347,7 @@ def get_construction_factor(construction_id: int) -> float:
 def get_part_count_lambda_b(subcategory_id: int,
                             environment_active_id: int,
                             specification_id: int = -1) -> float:
-    r"""
-    Retrieves the MIL-HDBK-217F parts count base hazard rate (lambda b).
+    """Retrieve the MIL-HDBK-217F parts count base hazard rate (lambda b).
 
     The dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217F parts count
     base hazard rates.  Keys are for PART_COUNT_LAMBDA_B are:
@@ -417,20 +418,20 @@ def get_part_count_lambda_b(subcategory_id: int,
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param int subcategory_id: the capacitor subcategory identifier.
-    :param int environment_active_id: the ID of the active (operating)
+    :param subcategory_id: the capacitor subcategory identifier.
+    :param environment_active_id: the ID of the active (operating)
         environment.
-    :param int specification_id: the capacitor specification identifier.
+    :param specification_id: the capacitor specification identifier.
         Default is -1.
     :return: _base_hr; the MIL-HDBK-217F part count base hazard rate.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
     """
     if subcategory_id == 1:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][specification_id][
-            environment_active_id - 1]
+        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][  # type: ignore
+            specification_id][environment_active_id - 1]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][
+        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][  # type: ignore
             environment_active_id - 1]
 
     return _base_hr

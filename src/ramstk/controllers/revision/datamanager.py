@@ -97,7 +97,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
 
-        :param int node_id: the node (revision) ID of the revision to save.
+        :param node_id: the node (revision) ID of the revision to save.
         :return: None
         :rtype: None
         """
@@ -119,7 +119,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete_revision(self, node_id: int) -> None:
         """Remove a revision.
 
-        :param int node_id: the node (revision) ID to be removed from the
+        :param node_id: the node (revision) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None

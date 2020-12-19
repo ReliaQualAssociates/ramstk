@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKControl(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent the table ramstk_control in the RAMSTK Program database.
+    """Class to represent table ramstk_control in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_cause.
     """
@@ -71,7 +70,8 @@ class RAMSTKControl(RAMSTK_BASE, RAMSTKBaseTable):
                      default=__defaults__['type_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    cause = relationship('RAMSTKCause', back_populates='control')
+    cause = relationship(  # type: ignore
+        'RAMSTKCause', back_populates='control')
 
     is_mode = False
     is_mechanism = False
@@ -80,8 +80,7 @@ class RAMSTKControl(RAMSTK_BASE, RAMSTKBaseTable):
     is_action = False
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKControl data model attributes.
+        """Retrieve current values of the RAMSTKControl data model attributes.
 
         :return: {cause_id, control_id, description, type_id} pairs.
         :rtype: dict
