@@ -19,8 +19,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_action in the RAMSTK Program database.
+    """Class to represent table ramstk_action in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_cause.
     """
@@ -109,7 +108,8 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
                                default=__defaults__['action_close_date'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    cause = relationship('RAMSTKCause', back_populates='action')
+    cause = relationship(  # type: ignore
+        'RAMSTKCause', back_populates='action')
 
     is_mode = False
     is_mechanism = False
@@ -118,8 +118,7 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseTable):
     is_action = True
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKAction data model attributes.
+        """Retrieve current values of the RAMSTKAction data model attributes.
 
         :return: {cause_id, action_id, action_recommended,
                   action_category, action_owner, action_due_date,

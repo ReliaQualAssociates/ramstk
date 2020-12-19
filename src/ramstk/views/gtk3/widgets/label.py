@@ -27,7 +27,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
     def __init__(self, text: str) -> None:
         """Create RAMSTKLabel widget.
 
-        :param str text: the text to display in the label.
+        :param text: the text to display in the label.
         """
         RAMSTKWidget.__init__(self)
 
@@ -37,7 +37,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
     def get_attribute(self, attribute: str) -> Any:
         """Get the value of the requested attribute.
 
-        :param str attribute: the name of the attribute to retrieve.
+        :param attribute: the name of the attribute to retrieve.
         :return: the value of the requested attribute.
         """
         # The natural size = default size and the requested size = minimum size

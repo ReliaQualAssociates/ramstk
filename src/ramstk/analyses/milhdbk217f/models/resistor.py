@@ -1,3 +1,4 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.prediction.Resistor.py is part of the RAMSTK Project
@@ -237,13 +238,12 @@ REF_TEMPS_FILM: Dict[int, float] = {1: 343.0, 2: 343.0, 3: 398.0, 4: 398.0}
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
@@ -251,8 +251,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress hazard rate for a resistor.
+    """Calculate the part stress hazard rate for a resistor.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -302,15 +301,15 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
+# pylint: disable=too-many-locals
 def calculate_part_stress_lambda_b(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     stress method.
 
-    :param dict attributes: the attributes of the switch being calculated.
+    :param attributes: the attributes of the switch being calculated.
     :return attributes: the updated attributes of the switch being calculated.
     :rtype: dict
     :raise: IndexError if passed an unknown quality ID or application ID.
@@ -377,12 +376,11 @@ def calculate_part_stress_lambda_b(
 
 
 def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the temperature factor (piT).
+    """Calculate the temperature factor (piT).
 
-    :param float temperature_active: the ambient operating temperature of the
+    :param temperature_active: the ambient operating temperature of the
         resistor in C.
-    :param float power_ratio: the ratio of the power dissipated by the resistor
+    :param power_ratio: the ratio of the power dissipated by the resistor
         and it's rated power; both in W.
     :return: (temperature_case, _pi_c); the calculated surface temperature of
         the rsistor and it's resistance factor.
@@ -402,8 +400,7 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
-    r"""
-    Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
@@ -421,12 +418,12 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |            Resistor \         | MIL-HDBK-217F \ |
+    | Subcategory    |            Resistor           | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Fixed, Composition (RC, RCR)  |        9.1      |
     +----------------+-------------------------------+-----------------+
-    |        2       | Fixed, Film (RL, RLR, RN, \   |        9.2      |
+    |        2       | Fixed, Film (RL, RLR, RN,     |        9.2      |
     |                | RNC, RNN, RNR)                |                 |
     +----------------+-------------------------------+-----------------+
     |        3       | Fixed, Film, Power (RD)       |        9.3      |
@@ -435,37 +432,37 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     +----------------+-------------------------------+-----------------+
     |        5       | Fixed, Wirewound (RB, RBR)    |        9.5      |
     +----------------+-------------------------------+-----------------+
-    |        6       | Fixed, Wirewound, Power \     |        9.6      |
+    |        6       | Fixed, Wirewound, Power       |        9.6      |
     |                | (RW, RWR)                     |                 |
     +----------------+-------------------------------+-----------------+
-    |        7       | Fixed, Wirewound, Power, \    |        9.7      |
+    |        7       | Fixed, Wirewound, Power,      |        9.7      |
     |                | Chassis Mounted (RE, RER)     |                 |
     +----------------+-------------------------------+-----------------+
     |        8       | Thermistor                    |        9.8      |
     +----------------+-------------------------------+-----------------+
     |        9       | Variable, Wirewound (RT, RTR) |        9.9      |
     +----------------+-------------------------------+-----------------+
-    |       10       | Variable, Wirewound, \        |       9.10      |
+    |       10       | Variable, Wirewound,          |       9.10      |
     |                | Precision (RR)                |                 |
     +----------------+-------------------------------+-----------------+
-    |       11       | Variable, Wirewound, \        |       9.11      |
+    |       11       | Variable, Wirewound,          |       9.11      |
     |                | Semiprecision (RA, RK)        |                 |
     +----------------+-------------------------------+-----------------+
-    |       12       | Variable, Wirewound, Power \  |       9.12      |
+    |       12       | Variable, Wirewound, Power    |       9.12      |
     |                | (RP)                          |                 |
     +----------------+-------------------------------+-----------------+
-    |       13       | Variable, Non-Wirewound \     |       9.13      |
+    |       13       | Variable, Non-Wirewound       |       9.13      |
     |                | (RJ, RJR)                     |                 |
     +----------------+-------------------------------+-----------------+
     |       14       | Variable, Composition (RV)    |       9.14      |
     +----------------+-------------------------------+-----------------+
-    |       15       | Variable,Non-Wirewound, \     |       9.15      |
+    |       15       | Variable,Non-Wirewound,       |       9.15      |
     |                | Film and Precision (RQ, RVC)  |                 |
     +----------------+-------------------------------+-----------------+
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int environment_active_id: the active environment identifier.
-    "param int specification_id: the resistor spectification identifier.
+    :param subcategory_id: the subcategory identifier.
+    :param environment_active_id: the active environment identifier.
+    :param specification_id: the resistor spectification identifier.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.
@@ -488,14 +485,13 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Retrieve the resistance factor (piR).
+    """Retrieve the resistance factor (piR).
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int specification_id: the resistor's governing specification
+    :param subcategory_id: the subcategory identifier.
+    :param specification_id: the resistor's governing specification
         identifier.
-    :param int family_id: the resistor family identifier.
-    :param float resistance: the resistance in ohms of the resistor.
+    :param family_id: the resistor family identifier.
+    :param resistance: the resistance in ohms of the resistor.
     :return: _pi_r; the calculated resistance factor value.
     :rtype: float
     :raise: IndexError if passed an unknown specification ID or family ID.
@@ -554,11 +550,10 @@ def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_voltage_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Retrieve the voltage factor (piV).
+    """Retrieve the voltage factor (piV).
 
-    :param int subcategory_id: the subcategory identifier.
-    :param float voltage_ratio: the ratio of voltages on each half of the
+    :param subcategory_id: the subcategory identifier.
+    :param voltage_ratio: the ratio of voltages on each half of the
         potentiometer.
     :return: _pi_v; the selected voltage factor.
     :rtype: float

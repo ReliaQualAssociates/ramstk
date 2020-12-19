@@ -109,7 +109,7 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all FMEA data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes dict for the selected
+        :param attributes: the attributes dict for the selected
             function or hardware item.
         :return: None
         :rtype: None
@@ -161,7 +161,7 @@ class DataManager(RAMSTKDataManager):
         failure mode (functional FMEA) or a failure mechanism (hardware FMEA).
 
         :param cause: an instance of RAMSTKCause.
-        :param str parent_id: the parent node ID the causes are associated
+        :param parent_id: the parent node ID the causes are associated
             with.
         :return: None
         :rtype: None
@@ -229,7 +229,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_action(self, parent_id: str) -> None:
         """Add a new action to FMEA cause ID.
 
-        :param str parent_id: the parent node ID the control is associated
+        :param parent_id: the parent node ID the control is associated
             with.
         :return: None
         :rtype: None
@@ -350,7 +350,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_mechanism(self, mode_id: str) -> None:
         """Add a new failure mechanism to FMEA mode ID.
 
-        :param str mode_id: the FMEA mode ID to associate the new mechanism
+        :param mode_id: the FMEA mode ID to associate the new mechanism
             with.
         :return: None
         :rtype: None
@@ -515,7 +515,7 @@ class DataManager(RAMSTKDataManager):
     def _do_select_all_mechanism(self, mode_id: int) -> None:
         """Retrieve all the failure mechanisms for the mode ID.
 
-        :param int mode_id: the mode ID to select the mechanisms for.
+        :param mode_id: the mode ID to select the mechanisms for.
         :return: None
         :rtype: None
         """

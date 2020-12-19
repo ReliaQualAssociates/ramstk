@@ -208,7 +208,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Validation General Data page widgets.
 
-        :param dict attributes: the Validation attributes to load into the
+        :param attributes: the Validation attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -537,7 +537,7 @@ class TaskEffortPanel(RAMSTKPanel):
     def _do_load_code(self, task_code: int) -> None:
         """Load the Validation code RAMSTKEntry().
 
-        :param str task_code: the Validation code to load.
+        :param task_code: the Validation code to load.
         :return: None
         :rtype: None
         """
@@ -546,7 +546,7 @@ class TaskEffortPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Validation General Data page widgets.
 
-        :param dict attributes: the Validation attributes to load into the
+        :param attributes: the Validation attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -592,7 +592,7 @@ class TaskEffortPanel(RAMSTKPanel):
 
             task type 3-letter abbreviation-task ID
 
-        :param str task_type: the three letter abbreviation for the task type.
+        :param task_type: the three letter abbreviation for the task type.
         :return: _code
         :rtype: str
         """
@@ -783,7 +783,7 @@ class ProgramEffortPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Validation General Data page widgets.
 
-        :param dict attributes: the Validation attributes to load into the
+        :param attributes: the Validation attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None

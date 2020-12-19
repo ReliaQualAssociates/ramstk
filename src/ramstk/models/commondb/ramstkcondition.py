@@ -39,8 +39,7 @@ class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseTable):
                             default=__defaults__['condition_type'])
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKCondition data model attributes.
+        """Retrieve current values of RAMSTKCondition data model attributes.
 
         :return: {condition_id, description, condition_type} pairs
         :rtype: dict

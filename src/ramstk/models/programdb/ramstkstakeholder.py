@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKStakeholder(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_stakeholder table in the RAMSTK Program database.
+    """Class to represent ramstk_stakeholder table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -97,11 +96,13 @@ class RAMSTKStakeholder(RAMSTK_BASE, RAMSTKBaseTable):
                           default=__defaults__['user_float_5'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='stakeholder')
+    revision: relationship = relationship(
+        'RAMSTKRevision',
+        back_populates='stakeholder',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKStakeholder data model attributes.
+        """Retrieve current values of RAMSTKStakeholder data model attributes.
 
         :return: {revision_id, stakeholder_id, customer_rank, description,
                   group, improvement, overall_weight, planned_rank, priority,

@@ -15,8 +15,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent the table ramstk_user in the RAMSTK Common database.
+    """Class to represent the table ramstk_user in the RAMSTK Common database.
 
     This table shares a One-to-Many relationship with ramstk_workgroup.
     """
@@ -55,8 +54,7 @@ class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseTable):
                            default=__defaults__['user_group_id'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKUser data model attributes.
+        """Retrieve the current values of the RAMSTKUser data model attributes.
 
         :return: {user_id, user_lname, user_fname, user_email, user_phone,
                   user_group_id} pairs.

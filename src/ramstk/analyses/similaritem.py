@@ -11,7 +11,7 @@ from typing import Dict, List, Tuple
 
 # Third Party Imports
 # noinspection PyPackageRequirements
-from sympy import symbols, sympify
+from sympy import symbols, sympify  # type: ignore
 
 ENVIRONMENT_FROM_TO: Dict[Tuple[int, int], float] = {
     (0, 0): 1.0,
@@ -125,22 +125,21 @@ TEMPERATURE_FROM_TO: Dict[Tuple[float, float], float] = {
 
 
 # noinspection PyTypeChecker
-def calculate_topic_633(environment: Dict[str, float],
-                        quality: Dict[str, float],
-                        temperature: Dict[str, float], hazard_rate: float
-                        ) -> Tuple[float, float, float, float]:
-    """
-    Calculate the Similar Item analysis using Topic 6.3.3 approach.
+def calculate_topic_633(
+        environment: Dict[str, float], quality: Dict[str, float],
+        temperature: Dict[str, float],
+        hazard_rate: float) -> Tuple[float, float, float, float]:
+    """Calculate the Similar Item analysis using Topic 6.3.3 approach.
 
     This method calculates the new hazard rate using the approach found
     in The Reliability Toolkit: Commercial Practices Edition, Topic 6.3.3.
 
-    :param dict environment: the active environment ID for the from and to
+    :param environment: the active environment ID for the from and to
         environments.
-    :param dict quality: the quality level ID for the from and to quality.
-    :param dict temperature: the ambient operating temperature (in C) for the
+    :param quality: the quality level ID for the from and to quality.
+    :param temperature: the ambient operating temperature (in C) for the
         from and to temperatures.
-    :param float hazard_rate: the current hazard rate of the hardware item
+    :param hazard_rate: the current hazard rate of the hardware item
         being calculated.
     :return: (_change_factor_1, _change_factor_2, _change_factor_3, _result_1);
         the three change factors (quality, environment, and temperature) and
@@ -154,8 +153,8 @@ def calculate_topic_633(environment: Dict[str, float],
     temperature['from'] = round(temperature['from'] / 10.0) * 10.0
     temperature['to'] = round(temperature['to'] / 10.0) * 10.0
 
-    _change_factor_1 = QUALITY_FROM_TO[(quality['from'], quality['to'])]
-    _change_factor_2 = ENVIRONMENT_FROM_TO[(environment['from'],
+    _change_factor_1 = QUALITY_FROM_TO[(quality['from'], quality['to'])]    # type: ignore
+    _change_factor_2 = ENVIRONMENT_FROM_TO[(environment['from'],    # type: ignore
                                             environment['to'])]
     _change_factor_3 = TEMPERATURE_FROM_TO[(temperature['from'],
                                             temperature['to'])]
@@ -168,10 +167,9 @@ def calculate_topic_633(environment: Dict[str, float],
 
 # pylint: disable=too-many-locals
 def calculate_user_defined(sia: Dict[str, float]):
-    """
-    Calculate the user-defined similar item analysis.
+    """Calculate the user-defined similar item analysis.
 
-    :param dict sia: the user-defined similar item assessment dict.  The
+    :param sia: the user-defined similar item assessment dict.  The
         calling method/function should create the sia dict as follows:
 
         sia = OrderedDict({
@@ -349,10 +347,9 @@ def calculate_user_defined(sia: Dict[str, float]):
 
 def set_user_defined_change_factors(sia: Dict[str, float],
                                     factors: List[float]) -> Dict[str, float]:
-    """
-    Set the change factors for the user-defined calculations.
+    """Set the change factors for the user-defined calculations.
 
-    :param dict sia: the similar item assessment dict.
+    :param sia: the similar item assessment dict.
     :param list factors: the list of change factors; the list items are float
         or int.
     :return: sia; the similar item assessment dict with updated factor values.
@@ -371,10 +368,9 @@ def set_user_defined_change_factors(sia: Dict[str, float],
 
 def set_user_defined_floats(sia: Dict[str, float],
                             floats: List[float]) -> Dict[str, float]:
-    """
-    Set the user-defined float values for the user-defined calculations.
+    """Set the user-defined float values for the user-defined calculations.
 
-    :param dict sia: the similar item assessment dict.
+    :param sia: the similar item assessment dict.
     :param list floats: the list of float values.
     :return: sia; the similar item assessment dict with updated float values.
     :rtype: dict
@@ -391,10 +387,9 @@ def set_user_defined_floats(sia: Dict[str, float],
 
 def set_user_defined_ints(sia: Dict[str, int],
                           ints: List[int]) -> Dict[str, int]:
-    """
-    Set the user-defined integer values for the user-defined calculations.
+    """Set the user-defined integer values for the user-defined calculations.
 
-    :param dict sia: the similar item assessment dict.
+    :param sia: the similar item assessment dict.
     :param list ints: the list of integer values.
     :return: sia; the similar item assessment dict with updated integer values.
     :rtype: dict
@@ -411,10 +406,9 @@ def set_user_defined_ints(sia: Dict[str, int],
 
 def set_user_defined_functions(sia: Dict[str, str],
                                functions: List[str]) -> Dict[str, str]:
-    """
-    Set the user-defined functions for the user-defined calculations.
+    """Set the user-defined functions for the user-defined calculations.
 
-    :param dict sia: the similar item assessment dict.
+    :param sia: the similar item assessment dict.
     :param list functions: the list of functions; list items are str.
     :return: sia; the similar item assessment dict with updated functions.
     :rtype: dict
@@ -431,14 +425,13 @@ def set_user_defined_functions(sia: Dict[str, str],
 
 def set_user_defined_results(sia: Dict[str, float],
                              results: List[float]) -> Dict[str, float]:
-    """
-    Set the user-defined results for the user-defined calculations.
+    """Set the user-defined results for the user-defined calculations.
 
     This allows the use of the results fields to be manually set to float
     values by the user essentially creating five more user-defined float
     values.
 
-    :param dict sia: the similar item assessment dict.
+    :param sia: the similar item assessment dict.
     :param list results: the list of results.
     :return: sia; the similar item assessment dict with updated results.
     :rtype: dict

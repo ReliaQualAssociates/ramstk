@@ -24,18 +24,15 @@ from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKLabel
 class ImportProject(Gtk.Assistant):
     """Assistant to walk user through the process of importing records."""
 
-    RAMSTK_USER_CONFIGURATION = None
+    RAMSTK_USER_CONFIGURATION = RAMSTKUserConfiguration()
 
     def __init__(self, __button: Gtk.ToolButton,
                  configuration: RAMSTKUserConfiguration, parent: object):
-        """
-        Initialize an instance of the Import Assistant.
+        """Initialize an instance of the Import Assistant.
 
         :param __button: the Gtk.ToolButton() that launched an instance of this
             class.
-        :type __button: :class:`Gtk.ToolButton`
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param parent: the parent window to associate this dialog with.
         """
         super().__init__()
@@ -57,7 +54,7 @@ class ImportProject(Gtk.Assistant):
         # Initialize public list variables.
 
         # Initialize public scalar variables.
-        self.RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = configuration
+        self.RAMSTK_USER_CONFIGURATION = configuration
 
         self.__set_properties()
         self.__make_ui()
@@ -68,8 +65,7 @@ class ImportProject(Gtk.Assistant):
         pub.subscribe(self._do_load_import_fields, 'succeed_read_import_file')
 
     def __load_combobox(self) -> None:
-        """
-        Load the RAMSTKComboBox() widgets.
+        """Load the RAMSTKComboBox() widgets.
 
         :return: None
         :rtype: None
@@ -81,8 +77,7 @@ class ImportProject(Gtk.Assistant):
         self.cmbSelectModule.set_active(1)
 
     def __make_confirm_page(self):
-        """
-        Make the Import Assistant confirmation page.
+        """Make the Import Assistant confirmation page.
 
         :return: _page
         :rtype: :class:`Gtk.Fixed`
@@ -101,8 +96,7 @@ class ImportProject(Gtk.Assistant):
         self.set_page_complete(_page, True)
 
     def __make_input_file_select_page(self) -> None:
-        """
-        Make the Import Assistant page to select the input file.
+        """Make the Import Assistant page to select the input file.
 
         :return: _page
         :rtype: :class:`Gtk.ScrolledWindow`
@@ -120,8 +114,7 @@ class ImportProject(Gtk.Assistant):
         self.set_page_title(_page, _("Select Input File"))
 
     def __make_introduction_page(self) -> None:
-        """
-        Make the Import Assistant introduction page.
+        """Make the Import Assistant introduction page.
 
         :return: _page
         :rtype: :class:`Gtk.Fixed`
@@ -144,8 +137,7 @@ class ImportProject(Gtk.Assistant):
         self.set_page_complete(_page, True)
 
     def __make_map_field_page(self):
-        """
-        Make the Import Assistant page to map fields.
+        """Make the Import Assistant page to map fields.
 
         This method allows the user to map input file fields to RAMSTK
         database table fields.
@@ -199,8 +191,7 @@ class ImportProject(Gtk.Assistant):
             _page, _("Map Input File Fields to RAMSTK Database Fields"))
 
     def __make_ui(self):
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
@@ -214,8 +205,7 @@ class ImportProject(Gtk.Assistant):
         self.show_all()
 
     def __set_callbacks(self) -> None:
-        """
-        Set the callback methods and functions.
+        """Set the callback methods and functions.
 
         :return: None
         :rtype: None
@@ -233,8 +223,7 @@ class ImportProject(Gtk.Assistant):
         self._filechooser.connect('selection_changed', self._do_select_file)
 
     def __set_properties(self) -> None:
-        """
-        Set the properties of the Import Assistant and widgets.
+        """Set the properties of the Import Assistant and widgets.
 
         :return: None
         :rtype: None
@@ -259,14 +248,13 @@ class ImportProject(Gtk.Assistant):
 
     def _do_edit_cell(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
                       model: Gtk.TreeModel) -> None:
-        """
-        Handle Gtk.CellRenderer() edits.
+        """Handle Gtk.CellRenderer() edits.
 
         :param __cell: the Gtk.CellRenderer() that was edited.
         :type __cell: :class:`Gtk.CellRenderer`
-        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
+        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
                          was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param new_text: the new text in the edited Gtk.CellRenderer().
         :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
         :type model: :class:`Gtk.TreeModel`
         :return: None
@@ -285,8 +273,7 @@ class ImportProject(Gtk.Assistant):
         self.set_page_complete(_page, True)
 
     def _do_load_db_fields(self, db_fields: List[str]) -> None:
-        """
-        Loads the Rosetta stone with the names of database fields.
+        """Load the Rosetta stone with the names of database fields.
 
         :param list db_fields: the list of database field names.
         :return: None
@@ -299,8 +286,7 @@ class ImportProject(Gtk.Assistant):
             _model.append(None, [_field, ''])
 
     def _do_load_import_fields(self, import_fields: List[str]) -> None:
-        """
-        Loads the Rosetta stone with the import file field names.
+        """Load the Rosetta stone with the import file field names.
 
         :param list import_fields: the list of field names found in the
             import file.
@@ -317,8 +303,7 @@ class ImportProject(Gtk.Assistant):
             _cellmodel.append([_field])
 
     def _do_quit(self, __widget: Gtk.Widget) -> None:
-        """
-        Quit the RAMSTK Import Assistant.
+        """Quit the RAMSTK Import Assistant.
 
         :param __widget: the Gtk.Widget() that called this method.
         :type __widget: :class:`Gtk.Widget`
@@ -328,8 +313,7 @@ class ImportProject(Gtk.Assistant):
         self.destroy()
 
     def _do_request_import(self, __assistant: Gtk.Assistant) -> None:
-        """
-        Request the data controller import new records.
+        """Request the data controller import new records.
 
         :param __assistant: this Gtk.Assistant() instance.
         :type __assistant: :class:`Gtk.Assistant`
@@ -339,8 +323,7 @@ class ImportProject(Gtk.Assistant):
         pub.sendMessage('request_import', module=self._module)
 
     def _do_select_file(self, filechooser: Gtk.FileChooser) -> None:
-        """
-        Select the input file to be read.
+        """Select the input file to be read.
 
         :param filechooser: the Gtk.FileChooser() that called this method.
         :type filechooser: :class:`Gtk.FileChooser`
@@ -369,8 +352,7 @@ class ImportProject(Gtk.Assistant):
         self.set_page_complete(_page, True)
 
     def _on_combo_changed(self, combo: RAMSTKComboBox) -> None:
-        """
-        Respond to Gtk.ComboBox() 'changed' signals.
+        """Respond to Gtk.ComboBox() 'changed' signals.
 
         :param Gtk.ComboBox combo: the Gtk.ComboBox() that called this method.
         :return: None

@@ -28,46 +28,45 @@ PI_E = [
 PI_Q = [1.0, 2.9]
 
 
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+def calculate_part_count(**attributes: Dict[str, int]) -> float:
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the filter being calculated.
+    :param attributes: the attributes for the filter being calculated.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes['type_id'],
-                                   attributes['environment_active_id'])
+    return get_part_count_lambda_b(
+        attributes['type_id'],  # type: ignore
+        attributes['environment_active_id'])  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress active hazard rate for a filter.
+    """Calculate the part stress active hazard rate for a filter.
 
-    :param dict attributes: the attributes for the filter being calculated.
+    :param attributes: the attributes for the filter being calculated.
     :return: attributes; the keyword argument (hardware attribute)
              dictionary with updated values.
     :rtype: dict
     :raise: KeyError if an unknown type ID is passed.
     """
-    attributes['lambda_b'] = PART_STRESS_LAMBDA_B[attributes['type_id']]
+    attributes['lambda_b'] = PART_STRESS_LAMBDA_B[  # type: ignore
+        attributes['type_id']]  # type: ignore
 
-    attributes['hazard_rate_active'] = (attributes['lambda_b']
-                                        * attributes['piQ']
-                                        * attributes['piE'])
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b']  # type: ignore
+        * attributes['piQ'] * attributes['piE'])
 
     return attributes
 
 
 def get_part_count_lambda_b(type_id: int, environment_active_id: int) -> float:
-    """
-    Retrievee the part count base hazard rate for a filter.
+    """Retrievee the part count base hazard rate for a filter.
 
-    :param int type_id: the filter type identifer.
-    :param int environment_active_id: the active environment identifier.
+    :param type_id: the filter type identifer.
+    :param environment_active_id: the active environment identifier.
     :return: _base_hr; the part count base hazard rate for the active
         environment.
     :rtype: float

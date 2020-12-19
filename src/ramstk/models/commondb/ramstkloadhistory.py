@@ -32,8 +32,7 @@ class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseTable):
                          default=__defaults__['description'])
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKLoadHistory data model attributes.
+        """Retrieve current values of RAMSTKLoadHistory data model attributes.
 
         :return: {load_history_id, description} pairs
         :rtype: dict

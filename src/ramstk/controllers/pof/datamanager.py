@@ -98,7 +98,7 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the PoF data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes dict for the selected
+        :param attributes: the attributes dict for the selected
             function or hardware item.
         :return: None
         :rtype: None
@@ -125,7 +125,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
 
-        :param int node_id: the node ID of the PoF item to save.
+        :param node_id: the node ID of the PoF item to save.
         :return: None
         :rtype: None
         """
@@ -145,7 +145,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete(self, node_id: int) -> None:
         """Remove a PoF element.
 
-        :param int node_id: the node (PoF element) ID to be removed from the
+        :param node_id: the node (PoF element) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
@@ -168,7 +168,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_opload(self, parent_id: str) -> None:
         """Add a new operating to PoF mechanism ID.
 
-        :param str parent_id: the parent node ID the operating load is
+        :param parent_id: the parent node ID the operating load is
             associated with.
         :return: None
         :rtype: None
@@ -288,7 +288,7 @@ class DataManager(RAMSTKDataManager):
     def _do_select_all_mechanism(self, mode_id: int) -> None:
         """Retrieve all the failure mechanisms for the mode ID.
 
-        :param int mode_id: the mode ID to select the mechanisms for.
+        :param mode_id: the mode ID to select the mechanisms for.
         :return: None
         :rtype: None
         """

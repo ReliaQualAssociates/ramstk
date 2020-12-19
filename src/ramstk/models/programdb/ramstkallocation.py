@@ -19,8 +19,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKAllocation(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_allocation table in RAMSTK Program database.
+    """Class to represent ramstk_allocation table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -132,11 +131,11 @@ class RAMSTKAllocation(RAMSTK_BASE, RAMSTKBaseTable):
                            default=__defaults__['weight_factor'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship('RAMSTKHardware', back_populates='allocation')
+    hardware = relationship(  # type: ignore
+        'RAMSTKHardware', back_populates='allocation')
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKAllocation data model attributes.
+        """Retrieve current values of RAMSTKAllocation data model attributes.
 
         :return: {revision_id, hardware_id, availability_alloc, env_factor,
                   goal_measure_id, hazard_rate_alloc, hazard_rate_goal,

@@ -31,7 +31,7 @@ def do_make_cell(
            Gtk.CellRendererCombo]:
     """Create the appropriate type of Gtk.CellRenderer().
 
-    :param str cell_type: the name of the type of cell to create.
+    :param cell_type: the name of the type of cell to create.
     :return: the Gtk.CellRenderer() created by this method.
     :rtype: :class:`Gtk.CellRenderer`
     """
@@ -285,7 +285,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter:
         """Find the row in the RAMSTKTreeView() containing the passed value.
 
-        :param int search_col: the column number to search for the desired
+        :param search_col: the column number to search for the desired
             value.
         :param value: the value to match.
         :return: _iter; the Gtk.TreeIter() for the matching row.
@@ -332,7 +332,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         :param tree: the Module's treelib Tree().
         :type tree: :class:`treelib.Tree`
-        :param str tag: the tag for the treelib Tree() to load.
+        :param tag: the tag for the treelib Tree() to load.
         :param row: the parent row in the Gtk.TreeView() to add the new item.
         :type row: :class:`Gtk.TreeIter`
         :return: None
@@ -434,7 +434,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def do_parse_format(self, fmt_file: str) -> None:
         """Parse the format file for the RAMSTKTreeView().
 
-        :param str fmt_file: the absolute path to the format file to read.
+        :param fmt_file: the absolute path to the format file to read.
         :return: None
         :rtype: None
         """
@@ -632,7 +632,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                                   column: Gtk.TreeViewColumn) -> None:
         """Set the properties of the RAMSTKTreeView() column.
 
-        :param str key: the value of the key in the widgets and position dicts.
+        :param key: the value of the key in the widgets and position dicts.
         :param column: the Gtk.TreeViewColumn() to set properties.
         :type column: :class:`Gtk.TreeViewColumn`
         :return: None

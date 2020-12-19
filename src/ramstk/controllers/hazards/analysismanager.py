@@ -58,7 +58,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def do_calculate_fha(self, node_id: int) -> None:
         """Perform a hazards analysis calculation for currently selected item.
 
-        :param int node_id: the node (hazard) ID to calculate.
+        :param node_id: the node (hazard) ID to calculate.
         :return: None
         :rtype: None
         """

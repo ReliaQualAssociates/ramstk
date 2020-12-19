@@ -222,7 +222,7 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
     def __init__(self, title: str, parent: object) -> None:
         """Initialize an instance of the RAMSTKFileChooser dialog.
 
-        :param str title: the title of the dialog.
+        :param title: the title of the dialog.
         :param object parent: the parent window for the dialog.
         """
         Gtk.FileChooserDialog.__init__(self)
@@ -298,7 +298,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
     def do_set_message(self, message: str) -> None:
         """Set the message to display in the dialog.
 
-        :param str message: the message to display.
+        :param message: the message to display.
         :return: None
         :rtype: None
         """
@@ -307,7 +307,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
     def do_set_message_type(self, message_type: str = 'error') -> None:
         """Set RAMSTKMessageDialog message type.
 
-        :param str message_type: the RAMSTKMessageDialog message type.
+        :param message_type: the RAMSTKMessageDialog message type.
             Options are error, warning, information, or question.  Default
             is error.
         :return: None

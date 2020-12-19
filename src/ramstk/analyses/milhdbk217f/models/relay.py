@@ -1,3 +1,4 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.milhdbk217f.models.Relay.py is part of the RAMSTK
@@ -142,11 +143,10 @@ PI_F = {
 
 
 def calculate_cycling_factor(quality_id: int, n_cycles: float) -> float:
-    """
-    Calculate the cycling factor (piCYC) for the relay.
+    """Calculate the cycling factor (piCYC) for the relay.
 
-    :param int quality_id: the quality level identifier.
-    :param float n_cycles: the number of relay cycles per hour in application.
+    :param quality_id: the quality level identifier.
+    :param n_cycles: the number of relay cycles per hour in application.
     :return: _pi_cyc; the calculate cycling factor.
     :rtype: float
     """
@@ -164,13 +164,12 @@ def calculate_cycling_factor(quality_id: int, n_cycles: float) -> float:
 
 def calculate_load_stress_factor(technology_id: int,
                                  current_ratio: float) -> float:
-    """
-    Calculate the load stress factor (piL).
+    """Calculate the load stress factor (piL).
 
     Only subcategory 1 relays use this in their calculation.
 
-    :param int technology_id: the relay technology identifier.
-    :param float current_ratio: the operating current ratio of the relay.
+    :param technology_id: the relay technology identifier.
+    :param current_ratio: the operating current ratio of the relay.
     :return: _pi_l; the calculate value of piL.
     :rtype: float
     """
@@ -187,25 +186,23 @@ def calculate_load_stress_factor(technology_id: int,
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(subcategory_id=attributes['subcategory_id'],
-                                   type_id=attributes['type_id'],
-                                   environment_active_id=attributes[
-                                       'environment_active_id'])
+    return get_part_count_lambda_b(
+        subcategory_id=attributes['subcategory_id'],
+        type_id=attributes['type_id'],
+        environment_active_id=attributes['environment_active_id'])
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress hazard rate for a relay.
+    """Calculate the part stress hazard rate for a relay.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -247,12 +244,11 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 def calculate_part_stress_lambda_b(subcategory_id: int, type_id: int,
                                    temperature_active: float) -> float:
-    """
-    Calculate the base hazard rate for the relay.
+    """Calculate the base hazard rate for the relay.
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int type_id: the relay type identifier.
-    :param float temperature_active: the operating ambient temperature of the
+    :param subcategory_id: the subcategory identifier.
+    :param type_id: the relay type identifier.
+    :param temperature_active: the operating ambient temperature of the
         relay in C.
     :return: _lambda_b; the calculated part stress base hazard rate or 0.0 if
         passed an unknown subcategory ID.
@@ -279,13 +275,12 @@ def get_application_construction_factor(quality_id: int,
                                         contact_rating_id: int,
                                         construction_id: int,
                                         application_id: int) -> float:
-    """
-    Calculate the construction factor (piF) for the relay.
+    """Calculate the construction factor (piF) for the relay.
 
-    :param int quality_id: the quality level identifier.
-    :param int contact_rating_id: the relay contact current rating identifier.
-    :param int construction_id: the relay construction identifier.
-    :param int application_id: the relay application identifier.
+    :param quality_id: the quality level identifier.
+    :param contact_rating_id: the relay contact current rating identifier.
+    :param construction_id: the relay construction identifier.
+    :param application_id: the relay application identifier.
     :return: _pi_f; the selected application factor.
     :rtype: float
     :raise: KeyError if passed an unknown contact rating ID, construction ID,
@@ -302,12 +297,11 @@ def get_application_construction_factor(quality_id: int,
 
 def get_environment_factor(subcategory_id: int, quality_id: int,
                            environment_active_id: int) -> float:
-    """
-    Retrieve the environment factor (pi_E).
+    """Retrieve the environment factor (pi_E).
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int quality_id: the quality level identifier.
-    :param int environment_active_id: the active environment identifier.
+    :param subcategory_id: the subcategory identifier.
+    :param quality_id: the quality level identifier.
+    :param environment_active_id: the active environment identifier.
     :return: _pi_e; the selected environment factor.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.
@@ -327,8 +321,7 @@ def get_environment_factor(subcategory_id: int, quality_id: int,
 
 
 def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
-    r"""
-    Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
@@ -346,7 +339,7 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |              Relay \          | MIL-HDBK-217F \ |
+    | Subcategory    |              Relay            | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Mechanical                    |       13.1      |
@@ -354,9 +347,9 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     |        2       | Solid State                   |       13.2      |
     +----------------+-------------------------------+-----------------+
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int type_id: the relay type identifier.
-    :param int environment_active_id: the active environment identifier.
+    :param subcategory_id: the subcategory identifier.
+    :param type_id: the relay type identifier.
+    :param environment_active_id: the active environment identifier.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.

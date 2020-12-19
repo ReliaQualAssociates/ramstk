@@ -17,10 +17,10 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_environment table in the RAMSTK Program database.
+    """Class to represent ramstk_environment table in RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mission_phase.
+    This table shares a Many-to-One relationship with
+    ramstk_mission_phase.
     """
 
     __defaults__ = {
@@ -71,15 +71,15 @@ class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseTable):
                              default=__defaults__['high_dwell_time'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    phase = relationship('RAMSTKMissionPhase', back_populates='environment')
+    phase = relationship(  # type: ignore
+        'RAMSTKMissionPhase', back_populates='environment')
 
     is_mission = False
     is_phase = False
     is_env = True
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKEnvironment data model attributes.
+        """Retrieve current values of RAMSTKEnvironment data model attributes.
 
         :return: {phase_id, environment_id, name, units, minimum,
                   maximum, mean, variance, ramp_rate, low_dwell_time,

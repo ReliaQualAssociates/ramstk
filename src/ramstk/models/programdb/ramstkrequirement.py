@@ -21,8 +21,7 @@ from ramstk.utilities import none_to_default
 
 
 class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_requirement table in the RAMSTK Program database.
+    """Class to represent ramstk_requirement table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -78,19 +77,15 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
     __tablename__ = 'ramstk_requirement'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column(
-        'fld_revision_id',
-        Integer,
-        ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False
-    )
-    requirement_id = Column(
-        'fld_requirement_id',
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False
-    )
+    revision_id = Column('fld_revision_id',
+                         Integer,
+                         ForeignKey('ramstk_revision.fld_revision_id'),
+                         nullable=False)
+    requirement_id = Column('fld_requirement_id',
+                            Integer,
+                            primary_key=True,
+                            autoincrement=True,
+                            nullable=False)
 
     derived = Column('fld_derived', Integer, default=__defaults__['derived'])
     description = Column('fld_description',
@@ -236,11 +231,13 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
                             default=__defaults__['q_verifiable_5'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='requirement')
+    revision: relationship = relationship(
+        'RAMSTKRevision',
+        back_populates='requirement',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the Requirement data model attributes.
+        """Retrieve current values of the Requirement data model attributes.
 
         :return: {revision_id, requirement_id, derived, description,
                   figure_number, owner, page_number, parent_id, priority,
@@ -311,10 +308,9 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseTable):
         return _attributes
 
     def create_code(self, prefix: str) -> None:
-        """
-        Create the Requirement code based on the requirement type and it's ID.
+        """Create Requirement code based on the requirement type and it's ID.
 
-        :param str prefix: the prefix to use for the Requirement code.
+        :param prefix: the prefix to use for the Requirement code.
         :return: None
         :rtype: None
         """

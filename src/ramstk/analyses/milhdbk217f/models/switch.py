@@ -81,10 +81,9 @@ PI_E = {
 
 
 def calculate_load_stress_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the load stress factor (piL).
+    """Calculate the load stress factor (piL).
 
-    :param dict attributes: the attributes of the switch being calculated.
+    :param attributes: the attributes of the switch being calculated.
     :return attributes: the updated attributes of the switch being calculated.
     :rtype: dict
     """
@@ -105,13 +104,12 @@ def calculate_load_stress_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
@@ -120,13 +118,12 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
 
 def calculate_part_stress_lambda_b(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     stress method.
 
-    :param dict attributes: the attributes of the switch being calculated.
+    :param attributes: the attributes of the switch being calculated.
     :return attributes: the updated attributes of the switch being calculated.
     :rtype: dict
     :raise: IndexError if passed an unknown quality ID or application ID.
@@ -170,13 +167,12 @@ def calculate_part_stress_lambda_b(
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress hazard rate for a switch.
+    """Calculate the part stress hazard rate for a switch.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
-    :param dict attributes: the attributes of the switch being calculated.
+    :param attributes: the attributes of the switch being calculated.
     :return attributes: the updated attributes of the switch being calculated.
     :rtype: dict
     """
@@ -196,7 +192,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     # Determine the contact form and quantity factor (piC).
     if _subcategory_id in [1, 5]:
         _contact_form_id: Any = attributes['contact_form_id']
-        _pi_c: Any = PI_C[_subcategory_id][_contact_form_id]
+        _pi_c = PI_C[_subcategory_id][_contact_form_id]
         attributes['piC'] = _pi_c
 
     # Determine the cycling factor (piCYC).
@@ -222,8 +218,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
-    r"""
-    Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
@@ -241,7 +236,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |             Switch \          | MIL-HDBK-217F \ |
+    | Subcategory    |             Switch            | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Toggle or Pushbutton          |       15.1      |
@@ -255,7 +250,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
     |        5       | Circuit Breaker               |       17.1      |
     +----------------+-------------------------------+-----------------+
 
-    :param dict attributes: the attributes of the switch being calculated.
+    :param attributes: the attributes of the switch being calculated.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.

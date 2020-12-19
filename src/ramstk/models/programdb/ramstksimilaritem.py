@@ -20,8 +20,7 @@ from ramstk.models import RAMSTKBaseTable
 
 # pylint: disable=R0902
 class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_similar_item table in RAMSTK Program database.
+    """Class to represent ramstk_similar_item table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_hardware.
     """
@@ -247,11 +246,13 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseTable):
                         default=__defaults__['user_int_5'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship('RAMSTKHardware', back_populates='sia')
+    hardware: relationship = relationship(
+        'RAMSTKHardware',
+        back_populates='sia',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKSimilarItem data model attributes.
+        """Retrieve current values of RAMSTKSimilarItem data model attributes.
 
         :return: {hardware_id, change_description_1, change_description_2,
                   change_description_3, change_description_4,

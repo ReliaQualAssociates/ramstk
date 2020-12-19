@@ -10,8 +10,7 @@
 class RAMSTKError(Exception):
     """Basic exception for errors raised by RAMSTK."""
     def __init__(self, msg: str = '') -> None:
-        """
-        Initialize the basic RAMSTK exception.
+        """Initialize the basic RAMSTK exception.
 
         :keyword str msg: the message to display to the user when this
             exception is raised.
@@ -26,14 +25,13 @@ class RAMSTKError(Exception):
 class DataAccessError(RAMSTKError):
     """Exception raised when attempting to access non-existent data."""
     def __init__(self, msg: str) -> None:
-        """
-        Initialize DataAccessError instance.
+        """Initialize DataAccessError instance.
 
         This exception is intended for use for non-existent data in the data
         access object and the treelib Tree()'s.  Use it to override the
         native exceptions.
 
-        :param str msg: the message to display to the user when this
+        :param msg: the message to display to the user when this
             exception is raised.
         """
         super().__init__(msg=msg)
@@ -44,10 +42,9 @@ class DataAccessError(RAMSTKError):
 class OutOfRangeError(RAMSTKError):
     """Exception raised when an input value is outside legal limits."""
     def __init__(self, msg: str) -> None:
-        """
-        Initialize OutOfRangeError instance.
+        """Initialize OutOfRangeError instance.
 
-        :param str msg: the message to display to the user when this
+        :param msg: the message to display to the user when this
             exception is raised.
         """
         super().__init__(msg=msg)

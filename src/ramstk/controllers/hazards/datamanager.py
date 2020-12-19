@@ -73,7 +73,7 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Hazard data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes for the selected Hazard.
+        :param attributes: the attributes for the selected Hazard.
         :return: None
         :rtype: None
         """
@@ -123,7 +123,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete_hazard(self, node_id: int) -> None:
         """Remove a hazard.
 
-        :param int node_id: the node (hazard) ID to be removed from the
+        :param node_id: the node (hazard) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None

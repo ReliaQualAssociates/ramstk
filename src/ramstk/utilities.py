@@ -21,10 +21,9 @@ _ = gettext.gettext
 
 
 def date_to_ordinal(date: str) -> int:
-    """
-    Convert date strings to ordinal dates for use in the database.
+    """Convert date strings to ordinal dates for use in the database.
 
-    :param str date: the date string to convert.
+    :param date: the date string to convert.
     :return: ordinal representation of the passed date.
     :rtype: int
     """
@@ -35,10 +34,9 @@ def date_to_ordinal(date: str) -> int:
 
 
 def dir_exists(directory: str) -> bool:
-    """
-    Check if a directory exists.
+    """Check if a directory exists.
 
-    :param str directory: a string representing the directory path to check
+    :param directory: a string representing the directory path to check
                           for.
     :return: False if the directory does not exist, True otherwise.
     :rtype: bool
@@ -47,10 +45,9 @@ def dir_exists(directory: str) -> bool:
 
 
 def file_exists(_file: str) -> bool:
-    """
-    Check if a file exists.
+    """Check if a file exists.
 
-    :param str _file: a string representing the filepath to check for.
+    :param _file: a string representing the filepath to check for.
     :return: True if the file exists, False otherwise.
     :rtype: bool
     """
@@ -58,8 +55,7 @@ def file_exists(_file: str) -> bool:
 
 
 def none_to_default(field: Any, default: Any) -> Any:
-    """
-    Convert None values into default values.
+    """Convert None values into default values.
 
     :param field: the original value that may be None.
     :param default: the new, default, value.
@@ -75,10 +71,9 @@ def none_to_default(field: Any, default: Any) -> Any:
 
 
 def none_to_string(string: None) -> str:
-    """
-    Convert None types to an empty string.
+    """Convert None types to an empty string.
 
-    :param str string: the string to convert.
+    :param string: the string to convert.
     :return: string; the converted string.
     :rtype: str
     """
@@ -90,12 +85,11 @@ def none_to_string(string: None) -> str:
 
 
 def ordinal_to_date(ordinal: int) -> str:
-    """
-    Convert ordinal dates to date strings in ISO-8601 format.
+    """Convert ordinal dates to date strings in ISO-8601 format.
 
     Defaults to the current date if a bad value is passed as the argument.
 
-    :param int ordinal: the ordinal date to convert.
+    :param ordinal: the ordinal date to convert.
     :return: the ISO-8601 date representation of the passed ordinal.
     :rtype: str
     """
@@ -107,10 +101,9 @@ def ordinal_to_date(ordinal: int) -> str:
 
 
 def split_string(string: str) -> List[str]:
-    """
-    Split a colon-delimited string into its constituent parts.
+    """Split a colon-delimited string into its constituent parts.
 
-    :param str string: the colon delimited string that needs to be split into
+    :param string: the colon delimited string that needs to be split into
         a list.
     :return: _strlist
     :rtype: list of strings
@@ -121,8 +114,7 @@ def split_string(string: str) -> List[str]:
 
 
 def boolean_to_integer(boolean: bool) -> int:
-    """
-    Convert boolean representations of TRUE/FALSE to an integer value.
+    """Convert boolean representations of TRUE/FALSE to an integer value.
 
     :param bool boolean: the boolean to convert.
     :return: _result
@@ -137,13 +129,12 @@ def boolean_to_integer(boolean: bool) -> int:
 
 
 def integer_to_boolean(integer: int) -> bool:
-    """
-    Convert an integer to boolean value.
+    """Convert an integer to boolean value.
 
     Any value greater than zero is returned as True, all others are returned as
     False.
 
-    :param int integer: the integer to convert.
+    :param integer: the integer to convert.
     :return: _result
     :rtype: bool
     :raise: TypeError if passed a string.
@@ -157,10 +148,9 @@ def integer_to_boolean(integer: int) -> bool:
 
 
 def string_to_boolean(string: str) -> bool:
-    """
-    Convert string representations of TRUE/FALSE to an boolean value.
+    """Convert string representations of TRUE/FALSE to an boolean value.
 
-    :param str string: the string to convert.
+    :param string: the string to convert.
     :return: _result
     :rtype: bool
     """
@@ -186,7 +176,7 @@ def get_install_prefix() -> str:
     _rules: List[Any] = [
         # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
         # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
-        lambda x: x in ['lib64', 'lib'],
+        lambda x: x in ['lib64', 'lib'],    # nosec
         lambda x: x == ('python%s' % sys.version[:3]),
         lambda x: x in ['site-packages', 'dist-packages'],
         lambda x: x == _name,  # 'project'

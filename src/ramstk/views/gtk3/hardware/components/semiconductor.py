@@ -676,7 +676,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the semiconductor assessment results page.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
             Semiconductor.
         :return: None
         :rtype: None

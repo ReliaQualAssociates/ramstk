@@ -1,3 +1,4 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.prediction.Connection.py is part of the RAMSTK Project
@@ -112,10 +113,9 @@ REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
 
 
 def calculate_active_pins_factor(n_active_pins: int) -> float:
-    """
-    Calculate the active pins factor (piP).
+    """Calculate the active pins factor (piP).
 
-    :param int n_active_pins: the number of active pins in the connector.
+    :param n_active_pins: the number of active pins in the connector.
     :return: _pi_p; the calculated value of piP.
     :rtype: float
     """
@@ -123,10 +123,9 @@ def calculate_active_pins_factor(n_active_pins: int) -> float:
 
 
 def calculate_complexity_factor(n_circuit_planes: int) -> float:
-    """
-    Calculate the complexity factor (piC).
+    """Calculate the complexity factor (piC).
 
-    :param int n_circuit_planes: the number of planes in the PCB/PWA.
+    :param n_circuit_planes: the number of planes in the PCB/PWA.
     :return: _pi_c; the calculated value of the complexity factor.
     :rtype: float
     """
@@ -140,8 +139,7 @@ def calculate_complexity_factor(n_circuit_planes: int) -> float:
 
 def calculate_insert_temperature(contact_gauge: int,
                                  current_operating: float) -> float:
-    """
-    Calculate the insert temperature.
+    """Calculate the insert temperature.
 
     Operating current can be passed as float or integer:
     >>> calculate_insert_temperature(1, 16, 0.05)
@@ -161,8 +159,8 @@ def calculate_insert_temperature(contact_gauge: int,
         ...
     TypeError: unsupported operand type(s) for ** or pow(): 'str' and 'float'
 
-    :param int contact_gauge: the standard gauge of the connection contact.
-    :param float current_operating: the nominal current carried by each
+    :param contact_gauge: the standard gauge of the connection contact.
+    :param current_operating: the nominal current carried by each
         connection contact.
     :return: _temperature_rise; the calculated temperature of the connection's
         insert.
@@ -179,13 +177,12 @@ def calculate_insert_temperature(contact_gauge: int,
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
@@ -196,13 +193,12 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress active hazard rate for a connection.
+    """Calculate the part stress active hazard rate for a connection.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param attributes: the attributes for the connection being calculated.
     :return: attributes; the keyword argument (hardware attribute)
         dictionary with updated values.
     :rtype: dict
@@ -253,8 +249,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 def calculate_part_stress_lambda_b(subcategory_id: int, type_id: int,
                                    contact_temperature: float,
                                    factor_key: int) -> float:
-    """
-    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F base hazard rate for the parts
     stress method.
@@ -262,9 +257,9 @@ def calculate_part_stress_lambda_b(subcategory_id: int, type_id: int,
     .. important:: the contact temperature must be calculated by the calling
         function as it is not an attribute of a Connection.
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int type_id: the connection type identifier.
-    :param float contact_temperature: the operating temperature of the
+    :param subcategory_id: the subcategory identifier.
+    :param type_id: the connection type identifier.
+    :param contact_temperature: the operating temperature of the
         contacts.
     :return: _base_hr; the calculates base hazard rate.
     :rtype: float
@@ -299,14 +294,13 @@ def calculate_part_stress_lambda_b(subcategory_id: int, type_id: int,
 
 
 def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
-    """
-    Retrieve the reference temperature key for the connection.
+    """Retrieve the reference temperature key for the connection.
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int type_id: the connection type identifier.
-    :param int specification_id: the connection governing specification
+    :param subcategory_id: the subcategory identifier.
+    :param type_id: the connection type identifier.
+    :param specification_id: the connection governing specification
         identifier.
-    :param int insert_id: the insert material identifier.
+    :param insert_id: the insert material identifier.
     :return: _key; the key to use to select the reference temperature and other
         factors.
     :rtype: int
@@ -354,10 +348,9 @@ def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
 
 
 def get_mate_unmate_factor(n_cycles: float) -> float:
-    """
-    Retrieve the mating/unmating factor (piK).
+    """Retrieve the mating/unmating factor (piK).
 
-    :param float n_cycles: the average number of mate/unmate cycles expected
+    :param n_cycles: the average number of mate/unmate cycles expected
         per hour of operation.
     :return: _pi_k; the mate_unmate_factor.
     :rtype: float
@@ -377,8 +370,7 @@ def get_mate_unmate_factor(n_cycles: float) -> float:
 
 
 def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
-    r"""
-    Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function retrieves the MIL-HDBK-217F parts count base hazard rate.
     The dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217F parts count
@@ -392,10 +384,10 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |           Connection \        | MIL-HDBK-217F \ |
+    | Subcategory    |           Connection          | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
-    |        1       | Circular, Rack and Panel, \   |       15.1      |
+    |        1       | Circular, Rack and Panel,     |       15.1      |
     |                | Coaxial, Triaxial             |                 |
     +----------------+-------------------------------+-----------------+
     |        2       | PCB/PWA Edge                  |       15.2      |
@@ -407,7 +399,7 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     |        5       | Non-PTH                       |       17.1      |
     +----------------+-------------------------------+-----------------+
 
-    :param dict id_keys: the ID's used as keys when selecting
+    :param id_keys: the ID's used as keys when selecting
         the base hazard rate.  The keys are subcategory_id,
         environment_active_id, and type_id.
     :return: _base_hr; the parts count base hazard rate.

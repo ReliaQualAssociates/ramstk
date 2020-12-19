@@ -41,8 +41,7 @@ class RAMSTKMethod(RAMSTK_BASE, RAMSTKBaseTable):
                          default=__defaults__['method_type'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKMethod data model attributes.
+        """Retrieve current values of the RAMSTKMethod data model attributes.
 
         :return: {method_id, name, description, method_type} pairs.
         :rtype: dict

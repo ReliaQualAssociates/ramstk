@@ -17,8 +17,7 @@ from ramstk.models import RAMSTKBaseTable
 
 # pylint: disable=R0902
 class RAMSTKNSWC(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_nswc table in the RAMSTK Program database.
+    """Class to represent ramstk_nswc table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -152,11 +151,13 @@ class RAMSTKNSWC(RAMSTK_BASE, RAMSTKBaseTable):
     Cy = Column('fld_c_y', Float, default=__defaults__['Cy'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship('RAMSTKHardware', back_populates='nswc')
+    hardware = relationship(  # type: ignore
+        'RAMSTKHardware',
+        back_populates='nswc',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKNSWC data model attributes.
+        """Retrieve the current values of the RAMSTKNSWC data model attributes.
 
         :return: {hardware_id, Cac, Calt, Cb, Cbl, Cbt, Cbv, Cc, Ccf, Ccp, Ccs,
                   Ccv, Ccw, Cd, Cdc, Cdl, Cdp, Cds, Cdw, Cdy, Ce, Cf, Cg, Cga,

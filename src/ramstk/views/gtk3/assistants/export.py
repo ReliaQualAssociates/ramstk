@@ -26,8 +26,7 @@ class ExportProject(RAMSTKFileChooser):
     def __init__(self, __button: Gtk.ToolButton,
                  configuration: RAMSTKUserConfiguration,
                  parent: object) -> None:
-        """
-        Initialize an instance of the Export Assistant.
+        """Initialize an instance of the Export Assistant.
 
         :param __button: the Gtk.ToolButton() that launched an instance of this
             class.
@@ -60,8 +59,7 @@ class ExportProject(RAMSTKFileChooser):
         self._do_select_file()
 
     def _do_quit(self) -> None:
-        """
-        Quit the RAMSTK Export Assistant.
+        """Quit the RAMSTK Export Assistant.
 
         :return: None
         :rtype: None
@@ -69,8 +67,7 @@ class ExportProject(RAMSTKFileChooser):
         self.destroy()
 
     def _do_select_file(self) -> None:
-        """
-        Select the input file to export data to.
+        """Select the input file to export data to.
 
         :return: None
         :rtype: None

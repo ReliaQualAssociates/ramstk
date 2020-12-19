@@ -88,7 +88,7 @@ class GeneralDataPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Revision General Data page widgets.
 
-        :param dict attributes: the Revision attributes to load into the Work
+        :param attributes: the Revision attributes to load into the Work
             View widgets.
         :return: None
         :rtype: None

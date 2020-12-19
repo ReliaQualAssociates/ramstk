@@ -166,7 +166,7 @@ class RAMSTKDataManager:
     def do_create_all_codes(self, prefix: str) -> None:
         """Create codes for all MODULE data table records.
 
-        :param str prefix: the string to use as a prefix for each code.
+        :param prefix: the string to use as a prefix for each code.
         :return: None
         :rtype: None
         """
@@ -177,9 +177,9 @@ class RAMSTKDataManager:
     def do_delete(self, node_id: int, table: str) -> None:
         """Remove a RAMSTK data table record.
 
-        :param int node_id: the node ID to be removed from the RAMSTK Program
+        :param node_id: the node ID to be removed from the RAMSTK Program
             database.
-        :param str table: the key in the module's treelib Tree() data package
+        :param table: the key in the module's treelib Tree() data package
             for the RAMSTK data table to remove the record from.
         :return: None
         :rtype: None
@@ -189,9 +189,9 @@ class RAMSTKDataManager:
     def do_get_attributes(self, node_id: int, table: str) -> None:
         """Retrieve the RAMSTK data table attributes for node ID.
 
-        :param str node_id: the node ID in the treelib Tree to get the
+        :param node_id: the node ID in the treelib Tree to get the
             attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
+        :param table: the RAMSTK data table to retrieve the attributes
             from.
         :return: None
         :rtype: None
@@ -221,7 +221,7 @@ class RAMSTKDataManager:
     def do_select_matrix(self, matrix_type: str) -> None:
         """Retrieve all the values for the matrix.
 
-        :param str matrix_type: the type of the Matrix to select from.  This
+        :param matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
             this matrix manager.
         :return: None
@@ -307,7 +307,7 @@ class RAMSTKDataManager:
     def do_update_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
         """Update the matrix values in the RAMSTK Program database.
 
-        :param str matrix_type: the type (name) of the matrix to update.
+        :param matrix_type: the type (name) of the matrix to update.
         :param matrix: the actual matrix whose values are being updated in the
             database.
         :type matrix: :class:`pandas.DataFrame`
@@ -320,7 +320,7 @@ class RAMSTKDataManager:
         _next_id = self.dao.get_last_id('ramstk_matrix', 'matrix_id') + 1
         for _row_id in _row_ids:
             for _col_id in _column_ids:
-                _entity: List[object] = self.dao.do_select_all(
+                _entity: List[object] = self.dao.do_select_all(  # type: ignore
                     table=RAMSTKMatrix,
                     key=[
                         'revision_id', 'matrix_type', 'column_item_id',
@@ -343,7 +343,8 @@ class RAMSTKDataManager:
                     _entity.matrix_type = matrix_type
                     _entity.column_item_id = int(_col_id) + 2
                     _entity.row_item_id = int(_row_id)
-                _entity.value = int(matrix.iloc[_row_id, _col_id + 2])
+                _entity.value = int(matrix.iloc[_row_id,  # type: ignore
+                                                _col_id + 2])
 
                 self.dao.do_update(_entity)
 
@@ -400,7 +401,7 @@ class RAMSTKMatrixManager:
                  row_table: object) -> None:
         """Initialize a Matrix data model instance.
 
-        :param dict column_tables: a dict of RAMSTK data table objects that
+        :param column_tables: a dict of RAMSTK data table objects that
             comprise the columns.
         :param row_table: the RAMSTK data table object that comprises the rows
             of the matrix(ces) managed by this manager.
@@ -441,7 +442,7 @@ class RAMSTKMatrixManager:
         matrix will be zero.  Call do_load() to load the actual values into
         the matrix.
 
-        :param str matrix_type: the type (name) of the matrix to create the
+        :param matrix_type: the type (name) of the matrix to create the
             columns for.
         :return: None
         :rtype: None
@@ -514,9 +515,9 @@ class RAMSTKMatrixManager:
     def do_delete_column(self, node_id: int, matrix_type: str) -> Any:
         """Delete a column from the requested matrix.
 
-        :param int node_id: the MODULE treelib Node ID that was deleted.
+        :param node_id: the MODULE treelib Node ID that was deleted.
             Note that node ID = MODULE ID = matrix row ID.
-        :param str matrix_type: the type of the Matrix to delete the column.
+        :param matrix_type: the type of the Matrix to delete the column.
         :return: None
         :rtype: None
         :raise: KeyError if passed a node ID or matrix type that doesn't exist.
@@ -527,7 +528,7 @@ class RAMSTKMatrixManager:
     def do_delete_row(self, node_id: int) -> Any:
         """Delete a row from all the matrices.
 
-        :param int node_id: the MODULE treelib Node ID that was deleted.
+        :param node_id: the MODULE treelib Node ID that was deleted.
             Note that node ID = MODULE ID = matrix row ID.
         :return: None
         :rtype: None
@@ -540,9 +541,9 @@ class RAMSTKMatrixManager:
     def do_insert_column(self, node_id: str, matrix_type: str) -> Any:
         """Insert a column into the requested matrix.
 
-        :param int node_id: the MODULE treelib Node ID that was inserted.
+        :param node_id: the MODULE treelib Node ID that was inserted.
             Note that node ID = MODULE ID = matrix row ID.
-        :param str matrix_type: the type of the Matrix to select from.  This
+        :param matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
             this matrix manager.
         :return: None
@@ -561,7 +562,7 @@ class RAMSTKMatrixManager:
     def do_insert_row(self, node_id: int) -> Any:
         """Insert a row into each matrix managed by this matrix manager.
 
-        :param int node_id: the MODULE treelib Node ID that was inserted.
+        :param node_id: the MODULE treelib Node ID that was inserted.
             Note that node ID = MODULE ID = matrix row ID.
         :return: None
         :rtype: None
@@ -581,7 +582,7 @@ class RAMSTKMatrixManager:
     def do_load(self, matrix_type: str, matrix: List[Tuple[int]]) -> None:
         """Load the matrix values.
 
-        :param str matrix_type: the type of the Matrix to select from.  This
+        :param matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
             this matrix manager.
         :param list matrix: a list of tuples (column ID, row ID, value) for the
@@ -595,8 +596,9 @@ class RAMSTKMatrixManager:
             _n_columns = len(self.dic_matrices[matrix_type].columns)
             if _n_columns > 2:
                 for _col in matrix:
-                    self.dic_matrices[matrix_type].iloc[_col[1],
-                                                        _col[0]] = _col[2]
+                    self.dic_matrices[matrix_type].iloc[
+                        _col[1],  # type: ignore
+                        _col[0]] = _col[2]  # type: ignore
                 pub.sendMessage('succeed_load_matrix',
                                 matrix_type=matrix_type,
                                 matrix=self.dic_matrices[matrix_type])
@@ -620,12 +622,12 @@ class RAMSTKMatrixManager:
     def do_select(self, matrix_type: str, row: int, col: str) -> Any:
         """Select the value from the cell identified by col and row.
 
-        :param str matrix_type: the type of the Matrix to select from.  This
+        :param matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
             this matrix manager.
-        :param str row: the row of the cell.  This is the second index of the
+        :param row: the row of the cell.  This is the second index of the
             Pandas DataFrame.
-        :param str col: the column of the cell.  This is the first index of the
+        :param col: the column of the cell.  This is the first index of the
             Pandas DataFrame.
         :return: the value in the cell at (col, row).
         :rtype: int

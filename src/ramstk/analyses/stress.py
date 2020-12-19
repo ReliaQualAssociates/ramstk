@@ -8,8 +8,7 @@
 
 
 def calculate_stress_ratio(stress_operating, stress_rated):
-    """
-    Calculate the operating electrical stress ratio of a device.
+    """Calculate the operating electrical stress ratio of a device.
 
     Inputs can be floats, integers, or a combination.
 
@@ -34,8 +33,8 @@ def calculate_stress_ratio(stress_operating, stress_rated):
         ...
     TypeError: unsupported operand type(s) for /: 'float' and 'str'
 
-    :param float stress_operating: the device's operating level of the stress.
-    :param float stress_rated: the devices's rated stress.
+    :param stress_operating: the device's operating level of the stress.
+    :param stress_rated: the devices's rated stress.
     :return: _stress_ratio; the ratio of operating stress to rated stress.
     :rtype: float
     :raise: TypeError if an input value is non-numerical.

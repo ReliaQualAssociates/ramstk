@@ -22,8 +22,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_validation in the RAMSTK Program database.
+    """Class to represent table ramstk_validation in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -143,11 +142,13 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
                            default=__defaults__['time_variance'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='validation')
+    revision: relationship = relationship(
+        'RAMSTKRevision',
+        back_populates='validation',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKValidation data model attributes.
+        """Retrieve current values of RAMSTKValidation data model attributes.
 
         :return: {revision_id, validation_id, acceptable_maximum,
                   acceptable_mean, acceptable_minimum, acceptable_variance,
@@ -193,8 +194,7 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
         return _attributes
 
     def calculate_task_time(self):
-        """
-        Calculate the mean, standard error, and bounds on the task time.
+        """Calculate the mean, standard error, and bounds on the task time.
 
         These values are calculated assuming a beta distribution (typical
         project management assumption).
@@ -209,8 +209,7 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
         self.time_variance = _sd**2.0
 
     def calculate_task_cost(self):
-        """
-        Calculate the mean, standard error, and bounds on the task cost.
+        """Calculate the mean, standard error, and bounds on the task cost.
 
         These values are calculated assuming a beta distribution (typical
         project management assumption).

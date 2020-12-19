@@ -440,7 +440,7 @@ class RAMSTKDesktop(Gtk.Window):
     def _do_set_status(self, status: str) -> None:
         """Set the status message.
 
-        :param str status: the status message to display.
+        :param status: the status message to display.
         :return: None
         :rtype: None
         """

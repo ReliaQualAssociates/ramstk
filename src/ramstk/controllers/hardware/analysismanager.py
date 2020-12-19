@@ -490,7 +490,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_calculate_similar_item(self, node_id: int) -> None:
         """Perform a similar item calculates for currently selected item.
 
-        :param int node_id: the node (hardware) ID to calculate.
+        :param node_id: the node (hardware) ID to calculate.
         :return: None
         :rtype: None
         """
@@ -636,9 +636,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       stress_type: str) -> None:
             """Check the overstress condition and build a reason message.
 
-            :param dict overstress: the dict containing the results of the
+            :param overstress: the dict containing the results of the
                 overstress analysis.
-            :param str stress_type: the overstress type being checked.
+            :param stress_type: the overstress type being checked.
             :return: None
             :rtype: None
             """
@@ -794,7 +794,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _on_predict_reliability(self, attributes: Dict[str, Any]) -> None:
         """Respond to a successful reliability prediction message.
 
-        :param dict attributes: the aggregate attributes dict updated with
+        :param attributes: the aggregate attributes dict updated with
             predicted values.
         :return: None
         :rtype: None

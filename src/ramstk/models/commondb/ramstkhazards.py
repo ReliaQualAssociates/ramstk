@@ -39,8 +39,7 @@ class RAMSTKHazards(RAMSTK_BASE, RAMSTKBaseTable):
                                 default='Hazard Subcategory')
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKHazard data model attributes.
+        """Retrieve current values of the RAMSTKHazard data model attributes.
 
         :return: {hazard_id, category, subcategory} pairs
         :rtype: tuple

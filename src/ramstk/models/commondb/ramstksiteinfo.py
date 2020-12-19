@@ -60,8 +60,7 @@ class RAMSTKSiteInfo(RAMSTK_BASE, RAMSTKBaseTable):
                           default=__defaults__['fmea_enabled'])
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKSiteInfo data model attributes.
+        """Retrieve current values of the RAMSTKSiteInfo data model attributes.
 
         :return: {site_id, product_key, expire_on, function_enabled,
                   requirement_enabled, vandv_enabled, fmea_enabled} pairs.

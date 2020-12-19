@@ -17,12 +17,11 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKMechanism(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_mechanism in the RAMSTK Program database.
+    """Class to represent table ramstk_mechanism in RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mode.
-    This table shares a One-to-Many relationship with ramstk_cause.
-    This table shares a One-to-Many relationship with ramstk_op_load.
+    This table shares a Many-to-One relationship with ramstk_mode. This
+    table shares a One-to-Many relationship with ramstk_cause. This
+    table shares a One-to-Many relationship with ramstk_op_load.
     """
 
     __defaults__ = {
@@ -85,13 +84,20 @@ class RAMSTKMechanism(RAMSTK_BASE, RAMSTKBaseTable):
                                 default=__defaults__['rpn_occurrence_new'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mode = relationship('RAMSTKMode', back_populates='mechanism')
-    cause = relationship('RAMSTKCause',
-                         back_populates='mechanism',
-                         cascade='all,delete')
-    op_load = relationship('RAMSTKOpLoad',
-                           back_populates='mechanism',
-                           cascade='all,delete')
+    mode = relationship(  # type: ignore
+        'RAMSTKMode',
+        back_populates='mechanism',
+    )
+    cause = relationship(  # type: ignore
+        'RAMSTKCause',
+        back_populates='mechanism',
+        cascade='all,delete',
+    )
+    op_load = relationship(  # type: ignore
+        'RAMSTKOpLoad',
+        back_populates='mechanism',
+        cascade='all,delete',
+    )
 
     is_mode = False
     is_mechanism = True
@@ -103,8 +109,7 @@ class RAMSTKMechanism(RAMSTK_BASE, RAMSTKBaseTable):
     is_testmethod = False
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the Mechanism data model attributes.
+        """Retrieve the current values of the Mechanism data model attributes.
 
         :return: {mode_id, mechanism_id, description, pof_include, rpn,
                   rpn_detection, rpn_detection_new, rpn_new, rpn_occurrence,

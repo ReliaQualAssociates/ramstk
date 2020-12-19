@@ -68,8 +68,8 @@ class DataManager(RAMSTKDataManager):
     def do_create_code(self, node_id: int, prefix: str) -> None:
         """Request to create the requirement code.
 
-        :param int node_id: the Requirement ID to create the code for.
-        :param str prefix: the code prefix to use for the requested code.
+        :param node_id: the Requirement ID to create the code for.
+        :param prefix: the code prefix to use for the requested code.
         :return: None
         :rtype: None
         """
@@ -99,7 +99,7 @@ class DataManager(RAMSTKDataManager):
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Requirement data from the RAMSTK Program database.
 
-        :param dict attributes: the attributes for the selected Requirement.
+        :param attributes: the attributes for the selected Requirement.
         :return: None
         :rtype: None
         """
@@ -150,7 +150,7 @@ class DataManager(RAMSTKDataManager):
     def _do_delete_requirement(self, node_id: int) -> None:
         """Remove a requirement.
 
-        :param int node_id: the node (requirement) ID to be removed from the
+        :param node_id: the node (requirement) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
@@ -173,7 +173,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_requirement(self, parent_id: int = 0) -> None:
         """Add a new requirement.
 
-        :param int parent_id: the parent (requirement) ID the new requirement
+        :param parent_id: the parent (requirement) ID the new requirement
             will be a child (derived) of.
         :return: None
         :rtype: None

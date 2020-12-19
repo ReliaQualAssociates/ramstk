@@ -16,23 +16,18 @@ from scipy.stats import chi2, norm
 
 
 def calculate_variance_covariance(n_failures, max_time, alpha, beta):
-    """
-    Function to calculate the variance-covariance matrix for the:
+    """Calculate variance-covariance matrix for NHPP and Crow-AMSAA models.
 
-        * NHPP - Power Law model parameters
-        * Crow-AMSAA model model parameters
-
-    :param int n_failures: total number of failures in the data set.
-    :param float max_time: total observation time or maximum failure time.
-    :param float alpha: the point estimate of the alpha (scale) parameter.
-    :param float beta: the point estimate of the beta (shape) parameter.
+    :param n_failures: total number of failures in the data set.
+    :param max_time: total observation time or maximum failure time.
+    :param alpha: the point estimate of the alpha (scale) parameter.
+    :param beta: the point estimate of the beta (shape) parameter.
     :return: the variance-covariance matrix for alpha and beta.  It has the
              form:
                     [[Var(alpha), Cov(alpha, beta)],
                      [Cov(alpha, beta), Var(beta)]]
     :rtype: list of lists
     """
-
     try:
         _del_alpha = -n_failures / alpha**2.0
     except ZeroDivisionError:
@@ -54,23 +49,18 @@ def calculate_variance_covariance(n_failures, max_time, alpha, beta):
 
 
 def calculate_nhpp_mean_variance(n_failures, max_time, alpha, beta, metric=1):
-    """
-    Function to calculate the variance for the:
+    """Calculate the variance for the NHPP and Crow-AMSAA models.
 
-        * NHPP - Power Law model cumulative or instantaneous means
-        * Crow-AMSAA model
-
-    :param int n_failures: total number of failures in the data set.
-    :param float max_time: total observation time or maximum failure time.
-    :param float alpha: the point estimate of the alpha (scale) parameter.
-    :param float beta: the point estimate of the beta (shape) parameter.
-    :param int metric: the metric to calculate the variance for.
+    :param n_failures: total number of failures in the data set.
+    :param max_time: total observation time or maximum failure time.
+    :param alpha: the point estimate of the alpha (scale) parameter.
+    :param beta: the point estimate of the beta (shape) parameter.
+    :param metric: the metric to calculate the variance for.
                        - 1 = Cumulative MTBF.
                        - 2 = Instantaneous MTBF.
     :return: the variance of the selected mean.
     :rtype: float
     """
-
     _var_covar = calculate_variance_covariance(n_failures, max_time, alpha,
                                                beta)
 
@@ -92,18 +82,15 @@ def calculate_nhpp_mean_variance(n_failures, max_time, alpha, beta, metric=1):
 
 
 def calculate_fisher_bounds(metric, variance, alpha):
-    """
-    Function to calculate the Fisher Information Matrix based confidence
-    bounds.
+    """Calculate the Fisher Information Matrix based confidence bounds.
 
-    :param float metric: the point estimate of the metric to calculate bounds
+    :param metric: the point estimate of the metric to calculate bounds
                          for.
-    :param float variance: the variance of the metric to calculate bounds for.
-    :param float alpha: the confidence level of the calculated bounds.
+    :param variance: the variance of the metric to calculate bounds for.
+    :param alpha: the confidence level of the calculated bounds.
     :return: _fisher_l, _fisher_u; the lower and upper Fisher bounds.
     :rtype: tuple of floats
     """
-
     # Ensure the confidence level is expressed as a decimal, then find the
     # standard normal value for constructing the confidence bounds.
     if alpha > 1.0:
@@ -127,28 +114,24 @@ def calculate_crow_bounds(n_failures,
                           alpha,
                           metric,
                           data=2):
-    """
-    Function to calculate confidence bounds based on Dr. Larry Crow's methods.
+    """Calculate confidence bounds based on Dr. Larry Crow's methods.
 
-    :param int n_failures: the total number of failures in the data set.
-    :param float t_star: termination time.
-    :param float _lambda: the estimated scale parameter.
-    :param float beta: the estimated shape parameter.
-    :param float alpha: the desired confidence level of the bounds.
-    :param int metric: indicates which metric the bounds are being calculated
-                       for.
+    :param n_failures: the total number of failures in the data set.
+    :param t_star: termination time.
+    :param _lambda: the estimated scale parameter.
+    :param beta: the estimated shape parameter.
+    :param alpha: the desired confidence level of the bounds.
+    :param metric: indicates which metric the bounds are being calculated for.
                         1 = shape (beta)
                         2 = scale (lambda)
                         3 = cumulative failure intensity
                         4 = instantaneous MTBF (future)
-    :param int data: the type of data set being passed.
+    :param data: the type of data set being passed.
                         1 = Type I or time terminated test
                         2 = Type II or failure terminated test (default)
     :return: _crow_l, _crow_u; the lower and upper bound on the metric.
     :rtype: tuple of floats
     """
-    # WARNING: Refactor calculate_crow_bounds; current McCabe Complexity metric=11.
-    # Set default values so a value is returned in case something goes wrong.
     _crow_l = 1.0
     _crow_u = 1.0
 
@@ -204,15 +187,14 @@ def calculate_crow_bounds(n_failures,
 
 
 def do_calculate_beta_bounds(minimum, likely, maximum, alpha):
-    """
-    Calculate the mean, standard error, and bounds of the beta distribution.
+    """Calculate the mean, standard error, and bounds of the beta distribution.
 
     These are the project management estimators, not exact calculations.
 
-    :param float minimum: the minimum expected value.
-    :param float likely: most likely value.
-    :param float maximum: the maximum expected value.
-    :param float alpha: the desired confidence level.
+    :param minimum: the minimum expected value.
+    :param likely: most likely value.
+    :param maximum: the maximum expected value.
+    :param alpha: the desired confidence level.
     :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and
                                            standard error.
     :rtype: tuple of floats

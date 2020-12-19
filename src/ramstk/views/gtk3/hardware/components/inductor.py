@@ -185,7 +185,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Inductor assessment input widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
         Inductor.
         :return: None
         :rtype: None
@@ -431,7 +431,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the inductive device assessment results widgets.
 
-        :param dict attributes: the attributes dictionary for the selected
+        :param attributes: the attributes dictionary for the selected
                                 Inductor.
         :return: None
         :rtype: None

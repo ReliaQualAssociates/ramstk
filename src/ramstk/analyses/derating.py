@@ -8,8 +8,7 @@
 
 
 def check_overstress(op_stress, limits):
-    """
-    Check if an operating condition results in an overstressed condition.
+    """Check if an operating condition results in an overstressed condition.
 
     Checks if the operating stress is less than the lower limit or greater than
     the upper limit.  Limits and operating stresses may be integers or floats.
@@ -51,8 +50,8 @@ def check_overstress(op_stress, limits):
         op_stress = (operating temperature - maximum junction temperature) with
         limits provided as a delta T.
 
-    :param float op_stress: the level of the operating stress.
-    :param dict limits: a dict containing the stress limits.  Key is the name
+    :param op_stress: the level of the operating stress.
+    :param limits: a dict containing the stress limits.  Key is the name
         of the environment (mild, harsh, protected, etc.) and the value is a
         list of [lower limit, upper limit].
     :return: _overstress; dict of indicators whether or not an overstress

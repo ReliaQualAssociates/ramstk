@@ -17,8 +17,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class representing ramstk_failure_definition table in RAMSTK Program db.
+    """Class representing ramstk_failure_definition table in RAMSTK Program db.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -46,11 +45,11 @@ class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseTable):
                         default=__defaults__['definition'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='failures')
+    revision = relationship(  # type: ignore
+        'RAMSTKRevision', back_populates='failures')
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKFailureDefinition attributes.
+        """Retrieve current values of the RAMSTKFailureDefinition attributes.
 
         :return: {revision_id, definition_id, definition} pairs.
         :rtype: (int, int, str)

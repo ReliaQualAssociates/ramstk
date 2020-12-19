@@ -42,8 +42,7 @@ class RAMSTKMeasurement(RAMSTK_BASE, RAMSTKBaseTable):
                               default=__defaults__['measurement_type'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of RAMSTKMeasurement data model attributes.
+        """Retrieve current values of RAMSTKMeasurement data model attributes.
 
         :return: {measurement_id, description} pairs.
         :rtype: dict

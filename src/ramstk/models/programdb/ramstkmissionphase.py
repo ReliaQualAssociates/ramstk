@@ -17,11 +17,11 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_mission_phase in the RAMSTK Program database.
+    """Class to represent ramstk_mission_phase in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mission.
-    This table shares a One-to-Many relationship with ramstk_environment.
+    This table shares a One-to-Many relationship with
+    ramstk_environment.
     """
 
     __defaults__ = {
@@ -59,8 +59,11 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
                        default=__defaults__['phase_end'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mission = relationship('RAMSTKMission', back_populates='phase')
-    environment = relationship(
+    mission = relationship(  # type: ignore
+        'RAMSTKMission',
+        back_populates='phase',
+    )
+    environment = relationship(  # type: ignore
         'RAMSTKEnvironment',
         back_populates='phase',
         cascade='delete',
@@ -71,8 +74,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
     is_env = False
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the Mission Phase data model attributes.
+        """Retrieve current values of the Mission Phase data model attributes.
 
         :return: value of instance attributes
         :rtype: tuple

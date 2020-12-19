@@ -41,8 +41,7 @@ class RAMSTKType(RAMSTK_BASE, RAMSTKBaseTable):
                        default=__defaults__['type_type'])
 
     def get_attributes(self):
-        """
-        Retrieve the current values of the RAMSTKType data model attributes.
+        """Retrieve the current values of the RAMSTKType data model attributes.
 
         :return: {type_id, description, type_type} pairs.
         :rtype: dict

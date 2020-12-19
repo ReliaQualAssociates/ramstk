@@ -1,3 +1,4 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.,ilhdbk217f.models.IntegratedCircuit.py is part of the
@@ -338,11 +339,10 @@ PI_Q = [0.25, 1.0, 2.0]
 
 
 def calculate_die_complexity_factor(area: float, feature_size: float) -> float:
-    """
-    Calculate the die complexity correction factor (piCD).
+    """Calculate the die complexity correction factor (piCD).
 
-    :param float area: the area of the die in sq. cm.
-    :param float feature_size: the size of the die features in microns.
+    :param area: the area of the die in sq. cm.
+    :param feature_size: the size of the die features in microns.
     :return: _pi_cd; the die complexity factor.
     :rtype: float
     :raise: ZeroDivisionError if feature_size is zero.
@@ -353,12 +353,11 @@ def calculate_die_complexity_factor(area: float, feature_size: float) -> float:
 def calculate_junction_temperature(temperature_case: float,
                                    power_operating: float,
                                    theta_jc: float) -> float:
-    """
-    Calculate the junction temperature (Tj).
+    """Calculate the junction temperature (Tj).
 
-    :param float temperature_case: the temperature of the IC case in C.
-    :param float power_operating: the operating power if the IC in W.
-    :param float theta_jc: the junction-case thermal resistance in C / W.
+    :param temperature_case: the temperature of the IC case in C.
+    :param power_operating: the operating power if the IC in W.
+    :param theta_jc: the junction-case thermal resistance in C / W.
     :return: _t_j; the calculate junction temperature in C.
     :rtype: float
     """
@@ -368,13 +367,12 @@ def calculate_junction_temperature(temperature_case: float,
 def calculate_lambda_cyclic_factors(
         n_cycles: int, construction_id: int, n_elements: int,
         temperature_junction: float) -> Tuple[float, float, float, float]:
-    """
-    Calculate the write cycle hazard rate A and B factors for EEPROMs.
+    """Calculate the write cycle hazard rate A and B factors for EEPROMs.
 
-    :param int n_cycles: the expected number of lifetime write cycles.
-    :param int construction_id: the construction type identifier.
-    :param int n_elements: the number of elements (bits) in the memory device.
-    :param float temperature_junction: the junction temperature in C.
+    :param n_cycles: the expected number of lifetime write cycles.
+    :param construction_id: the construction type identifier.
+    :param n_elements: the number of elements (bits) in the memory device.
+    :param temperature_junction: the junction temperature in C.
     :return: (_a_1, _a_2, _b_1, _b_2); the calculated factors.
     :rtype: tuple
     """
@@ -410,13 +408,12 @@ def calculate_lambda_cyclic_factors(
 def calculate_temperature_factor(subcategory_id: int, family_id: int,
                                  type_id: int,
                                  temperature_junction: float) -> float:
-    """
-    Calculate the temperature factor (piT).
+    """Calculate the temperature factor (piT).
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int family_id: the IC family identifier.
-    :param int type_id: the IC type identifier.
-    :param float temperature_junction: the junction temperature in C.
+    :param subcategory_id: the subcategory identifier.
+    :param family_id: the IC family identifier.
+    :param type_id: the IC type identifier.
+    :param temperature_junction: the junction temperature in C.
     :return: _pi_t; the calculated temperature factor.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID.
@@ -438,10 +435,9 @@ def calculate_temperature_factor(subcategory_id: int, family_id: int,
 
 
 def calculate_eos_hazard_rate(voltage_esd: float) -> float:
-    """
-    Calculate the electrical overstress hazard rate (lambdaEOS).
+    """Calculate the electrical overstress hazard rate (lambdaEOS).
 
-    :param float voltage_esd: the ESD withstand voltage.
+    :param voltage_esd: the ESD withstand voltage.
     :return: _lambda_eos; the electrical overstress hazard rate.
     :rtype: float
     """
@@ -449,10 +445,9 @@ def calculate_eos_hazard_rate(voltage_esd: float) -> float:
 
 
 def calculate_package_base_hazard_rate(n_active_pins: int) -> float:
-    """
-    Calculate the package base hazard rate (lambdaBP).
+    """Calculate the package base hazard rate (lambdaBP).
 
-    :param int n_active_pins: the number of active (current carrying) pins.
+    :param n_active_pins: the number of active (current carrying) pins.
     :return: _lambda_bd; the calculated package base hazard rate.
     :rtype: float
     """
@@ -460,11 +455,10 @@ def calculate_package_base_hazard_rate(n_active_pins: int) -> float:
 
 
 def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
-    """
-    Calculate the package factor (C2).
+    """Calculate the package factor (C2).
 
-    :param int package_id: the package type identifier.
-    :param int n_active_pins: the number of active (current carying) pins in
+    :param package_id: the package type identifier.
+    :param n_active_pins: the number of active (current carying) pins in
         the application.
     :result: _c2; the calculated package factor.
     :rtype: float
@@ -487,13 +481,12 @@ def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the integrated circuit being
+    :param attributes: the attributes for the integrated circuit being
         calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
@@ -510,8 +503,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress active hazard rate for a integrated circuit.
+    """Calculate the part stress active hazard rate for a integrated circuit.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -597,11 +589,10 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_application_factor(type_id: int, application_id: int) -> float:
-    """
-    Retrieve the application factor (piA).
+    """Retrieve the application factor (piA).
 
-    :param int type_id: the IC type identifier.
-    :param int application_id: the IC application identifier.
+    :param type_id: the IC type identifier.
+    :param application_id: the IC application identifier.
     :return: _pi_a; the retrieved application factor.
     :rtype: float
     :raise: IndexError if passed an unknown application ID.
@@ -612,13 +603,12 @@ def get_application_factor(type_id: int, application_id: int) -> float:
 
 def get_die_complexity_factor(subcategory_id: int, technology_id: int,
                               application_id: int, n_elements: int) -> float:
-    """
-    Retrieve the die complexity hazard rate (C1).
+    """Retrieve the die complexity hazard rate (C1).
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int technology_id: the technology identifier.
-    :param int application_id: the application identifier.
-    :param int n_elements: the number of elements (transistors/gates) in the
+    :param subcategory_id: the subcategory identifier.
+    :param technology_id: the technology identifier.
+    :param application_id: the application identifier.
+    :param n_elements: the number of elements (transistors/gates) in the
         device.
     :return: _c1; the selected die complexity factor.
     :rtype: float
@@ -665,10 +655,9 @@ def get_die_complexity_factor(subcategory_id: int, technology_id: int,
 
 
 def get_die_base_hazard_rate(type_id: int) -> float:
-    """
-    Retrieve the base hazard rate for a VHISC/VLSI die.
+    """Retrieve the base hazard rate for a VHISC/VLSI die.
 
-    :param int type_id: the VHISC/VLSI type identifier.
+    :param type_id: the VHISC/VLSI type identifier.
     :return: _lambda_bd; the base die hazard rate.
     :rtype: float
     """
@@ -681,10 +670,9 @@ def get_die_base_hazard_rate(type_id: int) -> float:
 
 
 def get_error_correction_factor(type_id: int) -> float:
-    """
-    Retrieve the error code correction factor (piECC).
+    """Retrieve the error code correction factor (piECC).
 
-    :param int type_id: the error correction type identifier.
+    :param type_id: the error correction type identifier.
     :return: _pi_ecc; the value of piECC.
     :rtype: float
     :raise: KeyError if passed an unknown type_id.
@@ -693,10 +681,9 @@ def get_error_correction_factor(type_id: int) -> float:
 
 
 def get_manufacturing_process_factor(manufacturing_id: int) -> float:
-    """
-    Retrive teh the manufacturing process correction factor (piMFG).
+    """Retrive teh the manufacturing process correction factor (piMFG).
 
-    :param int manufacturing_id: the manufacturing process identifier.
+    :param manufacturing_id: the manufacturing process identifier.
     :return: _pi_mfg; the manufacturing process correction factor.
     :rtype: float
     """
@@ -709,10 +696,9 @@ def get_manufacturing_process_factor(manufacturing_id: int) -> float:
 
 
 def get_package_type_correction_factor(package_id: int) -> float:
-    """
-    Retrieve the package type correction factor (piPT).
+    """Retrieve the package type correction factor (piPT).
 
-    :param int package_id: the package type identifier.
+    :param package_id: the package type identifier.
     :return: _pi_pt; the package type correction factor.
     :rtype: float
     :raise: KeyError if passed an unknown package ID.
@@ -721,8 +707,7 @@ def get_package_type_correction_factor(package_id: int) -> float:
 
 
 def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
-    r"""
-    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
@@ -740,7 +725,7 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |       Integrated Circuit \    | MIL-HDBK-217F \ |
+    | Subcategory    |       Integrated Circuit      | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Linear                        |        5.1      |
@@ -764,9 +749,9 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
     |       10       | VHSIC/VLSI                    |        5.3      |
     +----------------+-------------------------------+-----------------+
 
-    :param int n_elements: the number of elements (transistors/gates) in the
+    :param n_elements: the number of elements (transistors/gates) in the
         device.
-    :param dict id_keys: the ID's used as keys when selecting
+    :param id_keys: the ID's used as keys when selecting
         the base hazard rate.  The keys are subcategory_id,
         environment_active_id, and technology_id.
     :return: _base_hr; the parts count base hazard rate.

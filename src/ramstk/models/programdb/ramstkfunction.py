@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_function table in the RAMSTK Program database.
+    """Class to represent ramstk_function table in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     This table shares a One-to-Many relationship with ramstk_mode.
@@ -114,14 +113,15 @@ class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseTable):
     type_id = Column('fld_type_id', Integer, default=__defaults__['type_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='function')
-    hazard = relationship('RAMSTKHazardAnalysis',
-                          back_populates='function',
-                          cascade='all,delete')
+    revision = relationship(  # type: ignore
+        'RAMSTKRevision', back_populates='function')
+    hazard = relationship(  # type: ignore
+        'RAMSTKHazardAnalysis',
+        back_populates='function',
+        cascade='all,delete')
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKFunction data model attributes.
+        """Retrieve current values of the RAMSTKFunction data model attributes.
 
         :return: {revision_id, function_id, availability_logistics,
                   availability_mission, cost, function_code,

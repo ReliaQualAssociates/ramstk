@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKReliability(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_reliability table in the RAMSTK Program database.
+    """Class to represent ramstk_reliability table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -221,11 +220,13 @@ class RAMSTKReliability(RAMSTK_BASE, RAMSTKBaseTable):
                                   default=__defaults__['survival_analysis_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship('RAMSTKHardware', back_populates='reliability')
+    hardware: relationship = relationship(
+        'RAMSTKHardware',
+        back_populates='reliability',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve RAMSTKReliability attributes from the RAMSTK Program database.
+        """Retrieve RAMSTKReliability attributes from RAMSTK Program database.
 
         :return: {hardware_id, add_adj_factor, availability_logistics,
                   availability_mission, avail_log_variance, avail_mis_variance,

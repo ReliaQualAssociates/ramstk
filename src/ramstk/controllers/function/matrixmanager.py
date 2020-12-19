@@ -20,8 +20,7 @@ from ramstk.models.programdb import RAMSTKFunction, RAMSTKHardware
 
 
 class MatrixManager(RAMSTKMatrixManager):
-    """
-    Contain the attributes and methods of the Function matrix manager.
+    """Contain the attributes and methods of the Function matrix manager.
 
     This class manages the function matrices for Hardware and Validation.
     Attributes of the function Matrix Manager are:
@@ -31,12 +30,10 @@ class MatrixManager(RAMSTKMatrixManager):
     """
     def __init__(self) -> None:
         """Initialize an instance of the function matrix manager."""
-        super().__init__(
-            column_tables={
-                'fnctn_hrdwr':
-                [RAMSTKHardware, 'hardware_id', 'comp_ref_des']
-            },
-            row_table=RAMSTKFunction)
+        super().__init__(column_tables={
+            'fnctn_hrdwr': [RAMSTKHardware, 'hardware_id', 'comp_ref_des']
+        },
+                         row_table=RAMSTKFunction)
 
         # Initialize private dictionary attributes.
 
@@ -60,8 +57,7 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
     def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
-        """
-        Create the Function data matrix columns.
+        """Create the Function data matrix columns.
 
         :param tree: the treelib Tree() containing the correlated workflow
             module's data.
@@ -81,10 +77,9 @@ class MatrixManager(RAMSTKMatrixManager):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None:
-        """
-        Delete the matrix row associated with the deleted function.
+        """Delete the matrix row associated with the deleted function.
 
-        :param int node_id: the treelib Tree() node ID associated with the
+        :param node_id: the treelib Tree() node ID associated with the
             deleted function.
         :param tree: the treelib Tree() containing the remaining function data.
         :type tree: :class:`treelib.Tree`
@@ -94,10 +89,9 @@ class MatrixManager(RAMSTKMatrixManager):
         self.do_delete_row(node_id)
 
     def _on_delete_hardware(self, node_id: int, tree: treelib.Tree) -> Any:
-        """
-        Delete the node ID column from the Function::Hardware matrix.
+        """Delete the node ID column from the Function::Hardware matrix.
 
-        :param int node_id: the hardware treelib Node ID that was deleted.
+        :param node_id: the hardware treelib Node ID that was deleted.
             Note that node ID = hardware ID = matrix row ID.
         :return: None
         :rtype: None
@@ -108,22 +102,20 @@ class MatrixManager(RAMSTKMatrixManager):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
-        """
+        """Insert row into matrix when new function is added.
 
-        :param int node_id: the treelib Tree() node ID associated with the
+        :param node_id: the treelib Tree() node ID associated with the
             inserted function.
         :param tree: the treelib Tree() containing the remaining function data.
-        :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
         self.do_insert_row(node_id)
 
     def _on_insert_hardware(self, node_id: int, tree: treelib.Tree) -> Any:
-        """
-        Insert the node ID column to the Function::Hardware matrix.
+        """Insert the node ID column to the Function::Hardware matrix.
 
-        :param int node_id: the hardware treelib Node ID that is to be
+        :param node_id: the hardware treelib Node ID that is to be
             inserted.  Note that node ID = hardware ID = matrix row ID.
         :return: None
         :rtype: None

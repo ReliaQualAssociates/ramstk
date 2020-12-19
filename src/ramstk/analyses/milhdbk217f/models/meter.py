@@ -1,3 +1,4 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.prediction.Meter.py is part of the RAMSTK Project
@@ -52,13 +53,12 @@ PI_F = [1.0, 1.0, 2.8]
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
-    """
-    Wrap get_part_count_lambda_b().
+    """Wrap get_part_count_lambda_b().
 
     This wrapper allows us to pass an attributes dict from a generic parts
     count function.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
@@ -69,8 +69,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress hazard rate for a meter.
+    """Calculate the part stress hazard rate for a meter.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -104,8 +103,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
-    r"""
-    Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
@@ -122,7 +120,7 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |              Meter \          | MIL-HDBK-217F \ |
+    | Subcategory    |              Meter            | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Elapsed Time                  |       12.4      |
@@ -130,9 +128,9 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     |        2       | Panel                         |       18.1      |
     +----------------+-------------------------------+-----------------+
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int type_id: the type of meter identifier.
-    :param int environment_active_id: the active environment identifier.
+    :param subcategory_id: the subcategory identifier.
+    :param type_id: the type of meter identifier.
+    :param environment_active_id: the active environment identifier.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.
@@ -147,14 +145,13 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
 
 
 def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:
-    """
-    Retrieve the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     stress method.
 
-    :param int subcategory_id: the subcategory identifier.
-    :param int type_id: the meter type identifier.
+    :param subcategory_id: the subcategory identifier.
+    :param type_id: the meter type identifier.
     :return: _lambda_b; the part stress base hazard rate or 0.0 if an unknown
         subcategory ID is passed.
     :rtype: float
@@ -172,12 +169,11 @@ def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:
 
 def get_temperature_stress_factor(temperature_active: float,
                                   temperature_rated_max: float) -> float:
-    """
-    Retrieve the temperature stress factor (piT).
+    """Retrieve the temperature stress factor (piT).
 
-    :param int subcategory_id: the subcategory identifier.
-    :param float temperature_active: the operating ambient temperature in C.
-    :param float temperature_rated_max: the maxmimum rated operating
+    :param subcategory_id: the subcategory identifier.
+    :param temperature_active: the operating ambient temperature in C.
+    :param temperature_rated_max: the maxmimum rated operating
         temperature in C.
     :return: _pi_t; the value of piT associated with the operating temperature.
     :rtype: float

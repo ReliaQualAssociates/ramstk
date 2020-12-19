@@ -17,8 +17,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKTestMethod(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent table ramstk_test_method in the RAMSTK Program database.
+    """Class to represent table ramstk_test_method in RAMSTK Program database.
 
     This table shared a Many-to-One relationship with ramstk_op_stress.
     """
@@ -77,7 +76,10 @@ class RAMSTKTestMethod(RAMSTK_BASE, RAMSTKBaseTable):
     remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    op_load = relationship('RAMSTKOpLoad', back_populates='test_method')
+    op_load: relationship = relationship(
+        'RAMSTKOpLoad',
+        back_populates='test_method',
+    )
 
     is_mode = False
     is_mechanism = False
@@ -86,8 +88,7 @@ class RAMSTKTestMethod(RAMSTK_BASE, RAMSTKBaseTable):
     is_testmethod = True
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKTestMethod data model attributes.
+        """Retrieve current values of RAMSTKTestMethod data model attributes.
 
         :return: {stress_id, test_id, description, boundary_conditions,
                   remarks} pairs

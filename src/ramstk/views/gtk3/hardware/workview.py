@@ -177,7 +177,7 @@ class GeneralDataPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
 
-        :param dict attributes: the Hardware attributes to load into the
+        :param attributes: the Hardware attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -469,7 +469,7 @@ class LogisticsPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
 
-        :param dict attributes: the Hardware attributes to load into the
+        :param attributes: the Hardware attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -621,7 +621,7 @@ class MiscellaneousPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
 
-        :param dict attributes: the Hardware attributes to load into the
+        :param attributes: the Hardware attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -846,7 +846,7 @@ class AssessmentInputPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
 
-        :param dict attributes: the Hardware attributes to load into the
+        :param attributes: the Hardware attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -896,7 +896,7 @@ class AssessmentInputPanel(RAMSTKPanel):
     def _do_set_sensitive_assessed(self, type_id: int) -> None:
         """Set the widgets used in handbook assessments sensitive.
 
-        :param int type_id: the hazard rate type (source).
+        :param type_id: the hazard rate type (source).
         :return: None
         :rtype: None
         """
@@ -914,7 +914,7 @@ class AssessmentInputPanel(RAMSTKPanel):
     def _do_set_sensitive_specified_ht(self, type_id: int) -> None:
         """Set the widgets used for specifying a hazard rate sensitive.
 
-        :param int type_id: the hazard rate type (source).
+        :param type_id: the hazard rate type (source).
         :return: None
         :rtype: None
         """
@@ -932,7 +932,7 @@ class AssessmentInputPanel(RAMSTKPanel):
     def _do_set_sensitive_specified_mtbf(self, type_id: int) -> None:
         """Set the widgets used for specifying an MTBF sensitive.
 
-        :param int type_id: the hazard rate type (source).
+        :param type_id: the hazard rate type (source).
         :return: None
         :rtype: None
         """
@@ -950,7 +950,7 @@ class AssessmentInputPanel(RAMSTKPanel):
     def _do_set_sensitive_specified_distribution(self, type_id: int) -> None:
         """Set widgets used for specifying a failure distribution sensitive.
 
-        :param int type_id: the hazard rate type (source).
+        :param type_id: the hazard rate type (source).
         :return: None
         :rtype: None
         """
@@ -1201,7 +1201,7 @@ class EnvironmentalInputPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
 
-        :param dict attributes: the Hardware attributes to load into the
+        :param attributes: the Hardware attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -1397,7 +1397,7 @@ class ReliabilityResultsPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
 
-        :param dict attributes: the Hardware attributes to load into the
+        :param attributes: the Hardware attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -1622,7 +1622,7 @@ class AvailabilityResultsPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
 
-        :param dict attributes: the Hardware attributes to load into the
+        :param attributes: the Hardware attributes to load into the
             Work View widgets.
         :return: None
         :rtype: None
@@ -1828,7 +1828,7 @@ class GeneralData(RAMSTKWorkView):
 
         :param combo: the RAMSTKComboBox() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKComboBox`
-        :param int index: the position in the Requirement class Gtk.TreeModel()
+        :param index: the position in the Requirement class Gtk.TreeModel()
             associated with the data from the calling Gtk.Entry().  Indices
             are:
 
@@ -2112,7 +2112,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
+        :param index: the position in the Hardware class Gtk.TreeModel()
             associated with the data from the calling Gtk.Entry().  Indices
             are:
 
@@ -2287,7 +2287,7 @@ class AssessmentResults(RAMSTKWorkView):
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """Load the assessment result page widgets with attribute values.
 
-        :param dict attributes: a dict of attribute key:value pairs for the
+        :param attributes: a dict of attribute key:value pairs for the
             selected Hardware item.
         :return: None
         :rtype: None
@@ -2304,7 +2304,7 @@ class AssessmentResults(RAMSTKWorkView):
     def _do_load_component_results(self, attributes: Dict[str, Any]) -> None:
         """Load the results specific to hardware components.
 
-        :param dict attributes:
+        :param attributes:
         :return: None
         :rtype: None
         """

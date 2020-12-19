@@ -24,8 +24,7 @@ from ramstk.views.gtk3.widgets import (
 
 
 class EditOptions(RAMSTKDialog):
-    """
-    An assistant to provide a GUI to set various RAMSTK configuration options.
+    """Provide a GUI to set various RAMSTK configuration options.
 
     RAMSTK options are stored in the RAMSTK Common database and the RAMSTK
     Program database.  RAMSTK options are site-specific or program-specific and
@@ -47,8 +46,7 @@ class EditOptions(RAMSTKDialog):
     }
 
     def __init__(self, parent: object = None) -> None:
-        """
-        Initialize an instance of the Options assistant.
+        """Initialize an instance of the Options assistant.
 
         :param parent: the parent window for this assistant.
         """
@@ -91,13 +89,11 @@ class EditOptions(RAMSTKDialog):
         pub.subscribe(self._do_load_page, 'succeed_get_options_tree')
 
     def __make_ui(self) -> None:
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
         """
-
         self.set_default_size(250, -1)
 
         _fixed = Gtk.Fixed()
@@ -123,8 +119,7 @@ class EditOptions(RAMSTKDialog):
         self.show_all()
 
     def __set_callbacks(self) -> None:
-        """
-        Set EditOption widgets callback methods.
+        """Set EditOption widgets callback methods.
 
         :return: None
         :rtype: None
@@ -146,8 +141,7 @@ class EditOptions(RAMSTKDialog):
             'toggled', self._on_toggled, 5)
 
     def _cancel(self, __button: Gtk.Button):
-        """
-        Destroy the assistant when the 'Cancel' button is pressed.
+        """Destroy the assistant when the 'Cancel' button is pressed.
 
         :param __button: the Gtk.Button() that called this method.
         :type __button: :class:`Gtk.Button`
@@ -155,8 +149,7 @@ class EditOptions(RAMSTKDialog):
         self.do_destroy()
 
     def _do_load_page(self, tree: Tree) -> None:
-        """
-        Load the current options.
+        """Load the current options.
 
         :return: None
         :rtype: None
@@ -184,12 +177,11 @@ class EditOptions(RAMSTKDialog):
             integer_to_boolean(_program_options['fmea_active']))
 
     def _on_toggled(self, checkbutton: RAMSTKCheckButton, index: int) -> None:
-        """
-        Handle RAMSTKCheckButton() 'toggle' signals.
+        """Handle RAMSTKCheckButton() 'toggle' signals.
 
         :param checkbutton: the RAMSTKCheckButton() that called this method.
         :type: :class:`gui.gtk.ramstk.Button.RAMSTKToggleButton`
-        :param int index: the index of the Gtk.CheckButton() in the list
+        :param index: the index of the Gtk.CheckButton() in the list
             handler list.
         :return: None
         :rtype: None

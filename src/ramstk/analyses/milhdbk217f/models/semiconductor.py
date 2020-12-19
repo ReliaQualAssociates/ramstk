@@ -289,10 +289,9 @@ PI_M = [1.0, 2.0, 4.0]
 
 
 def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the application factor (piA) for the semiconductor device.
+    """Calculate the application factor (piA) for the semiconductor device.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
@@ -326,10 +325,9 @@ def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 def calculate_electrical_stress_factor(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the electrical stress factor for the semiconductor device.
+    """Calculate the electrical stress factor for the semiconductor device.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
@@ -364,8 +362,7 @@ def calculate_electrical_stress_factor(
 
 def calculate_junction_temperature(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the junction temperature of the semiconductor device.
+    """Calculate the junction temperature of the semiconductor device.
 
     .. note:: This function will also estimate the case temperature if it is
         passed in at less than or equal to zero.
@@ -373,7 +370,7 @@ def calculate_junction_temperature(
     .. note:: This function will also estimate the junction-case thermal
         resistance (thetaJC) if it is passed in at less than or equal to zero.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
@@ -403,8 +400,7 @@ def calculate_junction_temperature(
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the parts count hazard rate for a semiconductor.
+    """Calculate the parts count hazard rate for a semiconductor.
 
     :return: attributes; the keyword argument (hardware attribute) dictionary
         with updated values.
@@ -416,9 +412,9 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
+# pylint: disable=too-many-locals
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the part stress active hazard rate for a semiconductor.
+    """Calculate the part stress active hazard rate for a semiconductor.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -486,10 +482,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 def calculate_part_stress_lambda_b(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.
+    """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
@@ -549,10 +544,9 @@ def calculate_part_stress_lambda_b(
 
 def calculate_power_rating_factor(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the power rating factor for the semiconductor device.
+    """Calculate the power rating factor for the semiconductor device.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
@@ -587,10 +581,9 @@ def calculate_power_rating_factor(
 
 
 def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Calculate the temperature factor for the semiconductor device.
+    """Calculate the temperature factor for the semiconductor device.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
@@ -632,8 +625,7 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
-    r"""
-    Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.
+    """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
 
     This function retrieves the MIL-HDBK-217F hazard rate from the dictionary
     PART_COUNT_LAMBDA_B.  Keys are for PART_COUNT_LAMBDA_B are:
@@ -646,45 +638,45 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |          Semiconductor \      | MIL-HDBK-217F \ |
+    | Subcategory    |          Semiconductor        | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Diode, Low Frequency          |        6.1      |
     +----------------+-------------------------------+-----------------+
     |        2       | Diode, High Frequency         |        6.2      |
     +----------------+-------------------------------+-----------------+
-    |        3       | Transistor, Low Frequency, \  |        6.3      |
+    |        3       | Transistor, Low Frequency,    |        6.3      |
     |                | Bipolar                       |                 |
     +----------------+-------------------------------+-----------------+
-    |        4       | Transistor, Low Frequency, \  |        6.4      |
+    |        4       | Transistor, Low Frequency,    |        6.4      |
     |                | Si FET                        |                 |
     +----------------+-------------------------------+-----------------+
     |        5       | Transistor, Unijunction       |        6.5      |
     +----------------+-------------------------------+-----------------+
-    |        6       | Transistor, High Frequency, \ |        6.6      |
+    |        6       | Transistor, High Frequency,   |        6.6      |
     |                | Low Noise,Bipolar             |                 |
     +----------------+-------------------------------+-----------------+
-    |        7       | Transistor, High Frequency, \ |        6.7      |
+    |        7       | Transistor, High Frequency,   |        6.7      |
     |                | High Power, Bipolar           |                 |
     +----------------+-------------------------------+-----------------+
-    |        8       | Transistor, High Frequency, \ |        6.8      |
+    |        8       | Transistor, High Frequency,   |        6.8      |
     |                | GaAs FET                      |                 |
     +----------------+-------------------------------+-----------------+
-    |        9       | Transistor, High Frequency, \ |        6.9      |
+    |        9       | Transistor, High Frequency,   |        6.9      |
     |                | Si FET                        |                 |
     +----------------+-------------------------------+-----------------+
     |       10       | Thyristor/SCR                 |       6.10      |
     +----------------+-------------------------------+-----------------+
-    |       11       | Optoelectronic, Detector, \   |       6.11      |
+    |       11       | Optoelectronic, Detector,     |       6.11      |
     |                | Isolator, Emitter             |                 |
     +----------------+-------------------------------+-----------------+
-    |       12       | Optoelectronic, Alphanumeric \|       6.12      |
+    |       12       | Optoelectronic, Alphanumeric  |       6.12      |
     |                | Display                       |                 |
     +----------------+-------------------------------+-----------------+
     |       13       | Optoelectronic, Laser Diode   |       6.13      |
     +----------------+-------------------------------+-----------------+
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
@@ -708,10 +700,9 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
 
 def get_part_count_quality_factor(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Retrieve the parts count quality factor for the semiconductor device.
+    """Retrieve the parts count quality factor for the semiconductor device.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
@@ -739,10 +730,9 @@ def get_part_count_quality_factor(
 
 def get_part_stress_quality_factor(
         attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Select the part stress quality factor for the semiconductor device.
+    """Select the part stress quality factor for the semiconductor device.
 
-    :param dict attributes: the attributes of the semiconductor being
+    :param attributes: the attributes of the semiconductor being
         calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.

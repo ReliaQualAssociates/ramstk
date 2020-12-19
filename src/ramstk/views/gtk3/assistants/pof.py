@@ -38,8 +38,7 @@ class AddStressTestMethod(RAMSTKDialog):
         self.__make_ui()
 
     def __make_ui(self):
-        """
-        Build the user interface.
+        """Build the user interface.
 
         :return: None
         :rtype: None
@@ -72,8 +71,7 @@ class AddStressTestMethod(RAMSTKDialog):
         self.set_default_size(250, -1)
 
     def _cancel(self, __button):
-        """
-        Destroy the assistant when the 'Cancel' button is pressed.
+        """Destroy the assistant when the 'Cancel' button is pressed.
 
         :param __button: the Gtk.Button() that called this method.
         :type __button: :class:`Gtk.Button`

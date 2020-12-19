@@ -43,7 +43,7 @@ ICONS32		= $(shell ls ./data/icons/32x32)
 DOCFORMATTER_ARGS	= --in-place
 ISORT_ARGS	= --settings-file ./setup.cfg --atomic --use-parentheses --balanced
 MYPY_ARGS	= --config-file ./setup.cfg
-PYCODESTYLE_ARGS	=
+PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count
 PYLINT_ARGS	= -j4 --rcfile=./setup.cfg
 YAPF_ARGS	= --in-place

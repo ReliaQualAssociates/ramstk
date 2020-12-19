@@ -80,7 +80,7 @@ class MethodPanel(RAMSTKPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Similar Item Work View page.
 
-        :param dict attributes: a dict of attributes key:value pairs for the
+        :param attributes: a dict of attributes key:value pairs for the
             displayed Hardware item's Similar Item analysis.
         :return: None
         :rtype: None
@@ -245,7 +245,7 @@ class SimilarItemPanel(RAMSTKPanel):
     def _do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Load the Similar Item RAMSTKTreeView() and other widgets.
 
-        :param dict attributes: the attributes dict for the row to be loaded.
+        :param attributes: the attributes dict for the row to be loaded.
         :return: None
         :rtype: None
         """
@@ -429,7 +429,7 @@ class SimilarItemPanel(RAMSTKPanel):
     def __do_get_environment(self, environment_id: int) -> str:
         """Retrieve the environment name given the ID.
 
-        :param int environment_id: the ID number of the environment to return.
+        :param environment_id: the ID number of the environment to return.
         :return: _environment; the noun name of the environment.
         :rtype; str
         """
@@ -444,7 +444,7 @@ class SimilarItemPanel(RAMSTKPanel):
     def __do_get_quality(self, quality_id: int) -> str:
         """Retrieve the quality name given the ID.
 
-        :param int quality_id: the ID number of the quality level to return.
+        :param quality_id: the ID number of the quality level to return.
         :return: _quality; the noun name of the quality level.
         :rtype; str
         """

@@ -21,8 +21,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_hardware table in the RAMSTK Program database.
+    """Class to represent ramstk_hardware table in the RAMSTK Program database.
 
     This table shares a:
         * Many-to-One relationship with ramstk_revision.
@@ -177,44 +176,47 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseTable):
                                  default=__defaults__['year_of_manufacture'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship('RAMSTKRevision', back_populates='hardware')
+    revision = relationship(  # type: ignore
+        'RAMSTKRevision',
+        back_populates='hardware',
+    )
 
     # One-to-one relationships.
-    allocation = relationship(
+    allocation = relationship(  # type: ignore
         'RAMSTKAllocation',
         back_populates='hardware',
         cascade='all,delete',
     )
-    sia = relationship(
+    sia = relationship(  # type: ignore
         'RAMSTKSimilarItem',
         back_populates='hardware',
         cascade='all,delete',
     )
-    reliability = relationship(
+    reliability = relationship(  # type: ignore
         'RAMSTKReliability',
         uselist=False,
         back_populates='hardware',
         cascade='all,delete',
     )
-    milhdbkf = relationship(
+    milhdbkf = relationship(  # type: ignore
         'RAMSTKMilHdbkF',
         uselist=False,
         back_populates='hardware',
         cascade='all,delete',
     )
-    nswc = relationship(
+    nswc = relationship(  # type: ignore
         'RAMSTKNSWC',
         uselist=False,
         back_populates='hardware',
         cascade='all,delete',
     )
-    design_electric = relationship(
+    design_electric = relationship(  # type: ignore
         'RAMSTKDesignElectric',
         uselist=False,
         back_populates='hardware',
         cascade='all,delete',
     )
-    design_mechanic = relationship(
+    design_mechanic = relationship(  # type: ignore
         'RAMSTKDesignMechanic',
         uselist=False,
         back_populates='hardware',
@@ -222,8 +224,7 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseTable):
     )
 
     def get_attributes(self):
-        """
-        Retrieve the current values of RAMSTKHardware data model attributes.
+        """Retrieve the current values of RAMSTKHardware data model attributes.
 
         :return: {revision_id, hardware_id, alt_part_number, attachments,
                   cage_code, category_id, comp_ref_des, cost, cost_failure,

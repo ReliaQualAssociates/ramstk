@@ -23,8 +23,7 @@ from . import treeview
 
 # noinspection PyUnresolvedReferences
 class RAMSTKMatrixView(Gtk.TreeView):
-    """
-    The RAMSTK base widget for displaying RAMSTK Matrix views.
+    """The RAMSTK base widget for displaying RAMSTK Matrix views.
 
     The attributes of an RAMSTKBaseMatrix are:
 
@@ -39,8 +38,7 @@ class RAMSTKMatrixView(Gtk.TreeView):
 
     # noinspection PyMissingConstructor
     def __init__(self, module: str) -> None:
-        """
-        Initialize a RAMSTKMatrixView() instance.
+        """Initialize a RAMSTKMatrixView() instance.
 
         :return: None
         :rtype: None
@@ -70,8 +68,7 @@ class RAMSTKMatrixView(Gtk.TreeView):
 
     @staticmethod
     def _do_make_combo_cell() -> Gtk.CellRendererCombo:
-        """
-        Make a Gtk.CellRendererCombo().
+        """Make a Gtk.CellRendererCombo().
 
         :return: _cell
         :rtype: :class:`Gtk.CellRendererCombo`
@@ -91,8 +88,7 @@ class RAMSTKMatrixView(Gtk.TreeView):
     @staticmethod
     def _resize_wrap(column: Gtk.TreeViewColumn, __param: Any,
                      cell: Gtk.CellRenderer) -> None:
-        """
-        Dynamically set the wrap-width property for a Gtk.CellRenderer().
+        """Dynamically set the wrap-width property for a Gtk.CellRenderer().
 
         This method is called when the column width is resized.
 
@@ -115,17 +111,16 @@ class RAMSTKMatrixView(Gtk.TreeView):
     def do_edit_cell(self, cell: Gtk.CellRenderer, path: str,
                      row: Gtk.TreeIter, position: int,
                      idx_column: str) -> None:
-        """
-        Respond to `changed` signals for the Gtk.CellRendererCombo()s.
+        """Respond to `changed` signals for the Gtk.CellRendererCombo()s.
 
         :param cell: the Gtk.CellRendererCombo() calling this method.
         :type cell: :class:`Gtk.CellRendererCombo`
-        :param str path: the path of the selected row in the RAMSTKMatrix.
+        :param path: the path of the selected row in the RAMSTKMatrix.
         :param row: the Gtk.TreeIter() for the Gtk.CellRendererCombo() in the
             selected row in the RAMSTKMatrix.
         :type row: :class:`Gtk.TreeIter`
-        :param int position: the position of the cell in the RAMSTKMatrix.
-        :param int idx_column: the column_item_id of the Matrix cell to be
+        :param position: the position of the cell in the RAMSTKMatrix.
+        :param idx_column: the column_item_id of the Matrix cell to be
             edited.
         :return: None
         :rtype: None
@@ -150,8 +145,7 @@ class RAMSTKMatrixView(Gtk.TreeView):
         _treemodel[path][position - 1] = _pixbuf
 
     def do_load_matrix(self, matrix: pd.DataFrame) -> None:
-        """
-        Load the RAMSTKMatrixView with the values from the data matrix.
+        """Load the RAMSTKMatrixView with the values from the data matrix.
 
         :param matrix: the data to display in the RAMSTKMatrixView() widget.
         :type matrix: :class:`pandas.DataFrame`

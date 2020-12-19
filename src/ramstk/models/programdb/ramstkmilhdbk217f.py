@@ -16,8 +16,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKMilHdbkF(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Class to represent ramstk_mil_hdbk_f table in the RAMSTK Program database.
+    """Class to represent ramstk_mil_hdbk_f table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -111,11 +110,13 @@ class RAMSTKMilHdbkF(RAMSTK_BASE, RAMSTKBaseTable):
     piV = Column('fld_pi_v', Float, default=__defaults__['piV'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship('RAMSTKHardware', back_populates='milhdbkf')
+    hardware = relationship(  # type: ignore
+        'RAMSTKHardware',
+        back_populates='milhdbkf',
+    )
 
     def get_attributes(self):
-        """
-        Retrieve the current values of RAMSTKMilHdbkF data model attributes.
+        """Retrieve the current values of RAMSTKMilHdbkF data model attributes.
 
         :return: {hardware_id, A2, A2, B1, B2, C1, C2, lambdaBD, lambdaBP,
                   lambdaCYC, lambdaEOS, piA, piC, piCD, piCF, piCR, piCV,

@@ -41,16 +41,16 @@ class RAMSTKSubCategory(RAMSTK_BASE, RAMSTKBaseTable):
                          default=__defaults__['description'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    category = relationship('RAMSTKCategory', back_populates='subcategory')
-    mode = relationship(
+    category = relationship(  # type: ignore
+        'RAMSTKCategory', back_populates='subcategory')
+    mode = relationship(  # type: ignore
         'RAMSTKFailureMode',
         back_populates='subcategory',
         cascade='delete',
     )
 
     def get_attributes(self):
-        """
-        Retrieve current values of the RAMSTKSubCategory data model attributes.
+        """Retrieve current values of RAMSTKSubCategory data model attributes.
 
         :return: {category_id, subcategory, description} pairs.
         :rtype: dict

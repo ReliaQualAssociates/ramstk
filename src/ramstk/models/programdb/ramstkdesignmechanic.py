@@ -18,8 +18,7 @@ from ramstk.models import RAMSTKBaseTable
 
 
 class RAMSTKDesignMechanic(RAMSTK_BASE, RAMSTKBaseTable):
-    """
-    Represent the ramstk_design_mechanic table in the RAMSTK Program database.
+    """Represent ramstk_design_mechanic table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -235,11 +234,11 @@ class RAMSTKDesignMechanic(RAMSTK_BASE, RAMSTKBaseTable):
                            default=__defaults__['width_minimum'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship('RAMSTKHardware', back_populates='design_mechanic')
+    hardware = relationship(  # type: ignore
+        'RAMSTKHardware', back_populates='design_mechanic')
 
     def get_attributes(self):
-        """
-        Retrieve current values of RAMSTKDesignMechanic data model attributes.
+        """Retrieve current values of RAMSTKDesignMechanic model attributes.
 
         :return: {hardware_id, altitude_operating, application_id, balance_id,
                   clearance, casing_id, contact_pressure, deflection,
