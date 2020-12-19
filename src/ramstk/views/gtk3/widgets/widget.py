@@ -15,11 +15,14 @@ from ramstk.views.gtk3 import GObject, _
 
 
 class RAMSTKWidget():
-    """This is the RAMSTK Base Widget class."""
+    """The RAMSTK Base Widget class."""
+
+    # Define private scalar class attributes.
+    _default_height = -1
+    _default_width = -1
+
     def __init__(self) -> None:
-        r"""
-        Create RAMSTK Base widgets.
-        """
+        """Create RAMSTK Base widgets."""
         GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
@@ -38,10 +41,9 @@ class RAMSTKWidget():
         self.width: int = -1
 
     def do_set_properties(self, **kwargs: Any) -> None:
-        r"""
-        Set the properties of the RAMSTK combobox.
+        """Set the properties of the RAMSTK combobox.
 
-        :param \**kwargs: See below
+        :param **kwargs: See below
 
         :Keyword Arguments:
             * *height* (int) -- height of the RAMSTKWidget().
@@ -65,6 +67,6 @@ class RAMSTKWidget():
 
         self.height = _height
         self.width = _width
-        self.set_property('height-request', _height)
-        self.set_property('tooltip-markup', _tooltip)
-        self.set_property('width-request', _width)
+        self.set_property('height-request', _height)  # type: ignore
+        self.set_property('tooltip-markup', _tooltip)  # type: ignore
+        self.set_property('width-request', _width)  # type: ignore

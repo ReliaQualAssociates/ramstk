@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: snyk/release-notes-preview@v1.6.1
+      - uses: snyk/release-notes-preview@v1.6.2
         with:
           releaseBranch: master
         env:
@@ -24,17 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - id: lrb
-        uses: jessicalostinspace/github-action-get-regex-branch@v1.0.8
-        with:
-          regex-string: 'release'
       - id: current_version
         uses: zwaldowski/match-label-action@v1
         with:
-          allowed: MAJOR, MINOR, PATCH
+          allowed: major, minor, patch
       - run: echo ${{ steps.current_version.match }}
       - id: bsv
-        uses: jessicalostinspace/bump-semantic-version-action@v1.0.1
+        uses: zwaldowski/semver-release-action@v1
         with:
-          semantic-version: ${{ steps.lrb.outputs.last-semver }}
-          version-type: ${{ steps.current_version.match }}
+          bump: ${{ steps.current_version.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

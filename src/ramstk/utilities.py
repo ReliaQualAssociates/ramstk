@@ -176,11 +176,11 @@ def get_install_prefix() -> str:
     _rules: List[Any] = [
         # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
         # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
-        lambda x: x in ['lib64', 'lib'],    # nosec
+        lambda x: x in ['lib64', 'lib'],  # nosec
         lambda x: x == ('python%s' % sys.version[:3]),
         lambda x: x in ['site-packages', 'dist-packages'],
         lambda x: x == _name,  # 'project'
-        lambda x: x == _this   # 'prefix.py'
+        lambda x: x == _this  # 'prefix.py'
     ]
 
     # Matching engine
@@ -189,7 +189,7 @@ def get_install_prefix() -> str:
         _rule = _rules.pop()
         # To account for the possibility python is using lib instead of lib64
         # on a 64-bit or multilib system.
-        if not _rule(_token) and _token != 'lib64':
+        if not _rule(_token) and _token != 'lib64':  # nosec
             _path = '/usr'
 
     return _path
