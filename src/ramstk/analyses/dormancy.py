@@ -1,9 +1,10 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.Dormancy.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Dormancy Calculations Module."""
 
 # Standard Library Imports
@@ -82,8 +83,7 @@ DORMANT_HR_MULT = np.array([[[0.0, 0.08, 0.0, 0.0], [0.0, 0.08, 0.0, 0.0],
 
 def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
                                      env_info: List[int]) -> float:
-    r"""
-    Calculate the dormant hazard rate for a hardware item.
+    """Calculate the dormant hazard rate for a hardware item.
 
     .. attention:: The semiconductor category will return a list of two
         dormancy multipliers.  The value at index 0 is for diodes and the
@@ -98,7 +98,7 @@ def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
     Environment indexes are:
 
     +-------------------------+-------------------------+
-    | environment_active_id \ |   Active Environment \  |
+    | environment_active_id   |   Active Environment    |
     |     in attributes       |           Type          |
     +=========================+=========================+
     |          1 - 3          | Ground                  |
@@ -109,12 +109,12 @@ def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
     +-------------------------+-------------------------+
     |           11            | Space                   |
     +-------------------------+-------------------------+
-    |         12 - 13         | Missile  \              |
+    |         12 - 13         | Missile                 |
     |                         | (no conversion factors) |
     +-------------------------+-------------------------+
 
     +--------------------------+-------------------------+
-    | environment_dormant_id \ |   Active Environment \  |
+    | environment_dormant_id   |   Active Environment    |
     |      in attributes       |           Type          |
     +==========================+=========================+
     |             1            | Ground                  |

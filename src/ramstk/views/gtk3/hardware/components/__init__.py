@@ -6,6 +6,8 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTK GTK3 hardware component package."""
+
 # RAMSTK Local Imports
 from . import (
     capacitor, connection, inductor, integrated_circuit, meter,
