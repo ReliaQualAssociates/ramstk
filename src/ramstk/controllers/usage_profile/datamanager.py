@@ -98,7 +98,7 @@ class DataManager(RAMSTKDataManager):
         for _mission in self.dao.do_select_all(RAMSTKMission,
                                                key=['revision_id'],
                                                value=[self._revision_id]):
-            self.tree.create_node(tag=_mission.description,
+            self.tree.create_node(tag='mission',
                                   identifier='{0:d}'.format(
                                       _mission.mission_id),
                                   parent=self._root,
@@ -108,7 +108,7 @@ class DataManager(RAMSTKDataManager):
             for _phase in self.dao.do_select_all(RAMSTKMissionPhase,
                                                  key=['mission_id'],
                                                  value=[_mission.mission_id]):
-                self.tree.create_node(tag=_phase.description,
+                self.tree.create_node(tag='mission_phase',
                                       identifier='{0:d}.{1:d}'.format(
                                           _mission.mission_id,
                                           _phase.phase_id),
@@ -121,7 +121,7 @@ class DataManager(RAMSTKDataManager):
                         key=['phase_id'],
                         value=[_phase.phase_id]):
                     self.tree.create_node(
-                        tag=_environment.name,
+                        tag='environment',
                         identifier='{0:d}.{1:d}.{2:d}'.format(
                             _mission.mission_id, _phase.phase_id,
                             _environment.environment_id),
@@ -198,7 +198,7 @@ class DataManager(RAMSTKDataManager):
             _node_id = '{0:s}.{1:s}.{2:s}'.format(
                 str(mission_id), str(phase_id),
                 str(_environment.environment_id))
-            self.tree.create_node(tag=_environment.name,
+            self.tree.create_node(tag='environment',
                                   identifier=_node_id,
                                   parent=_phase_id,
                                   data={'usage_profile': _environment})
@@ -223,7 +223,7 @@ class DataManager(RAMSTKDataManager):
 
             _node_id = '{0:d}'.format(_mission.mission_id)
 
-            self.tree.create_node(tag=_mission.description,
+            self.tree.create_node(tag='mission',
                                   identifier=_node_id,
                                   parent=self._root,
                                   data={'usage_profile': _mission})
@@ -248,7 +248,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_insert(_phase)
 
             _node_id = '{0:d}.{1:d}'.format(mission_id, _phase.phase_id)
-            self.tree.create_node(tag=_phase.description,
+            self.tree.create_node(tag='mission_phase',
                                   identifier=_node_id,
                                   parent=str(mission_id),
                                   data={'usage_profile': _phase})
@@ -306,5 +306,6 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self._do_set_attributes(node_id=node_id,    # type: ignore
-                                    package={_key: attributes[_key]})
+            self._do_set_attributes(
+                node_id=node_id,  # type: ignore
+                package={_key: attributes[_key]})

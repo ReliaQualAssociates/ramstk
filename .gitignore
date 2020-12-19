@@ -54,6 +54,7 @@ out/
 _temp/
 devtools/update_docs.txt
 pylintout
+cobertura.xml
 
 # Override settings for some specific files.
 /.gtm/

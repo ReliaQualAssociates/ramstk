@@ -81,7 +81,7 @@ class TestCreateControllers():
         assert isinstance(DUT, dmFailureDefinition)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'failure_definition'
+        assert DUT._tag == 'failure_definitions'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_get_attributes,

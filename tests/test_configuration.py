@@ -584,16 +584,26 @@ class TestGetterSetter():
 
         assert DUT.get_user_configuration() is None
         assert DUT.RAMSTK_COLORS == {
+            'allocationbg': '#FFFFFF',
+            'allocationfg': '#000000',
+            'failure_definitionbg': '#FFFFFF',
+            'failure_definitionfg': '#000000',
+            'fmeabg': '#FFFFFF',
+            'fmeafg': '#000000',
             'functionbg': '#FFFFFF',
             'functionfg': '#000000',
             'hardwarebg': '#FFFFFF',
             'hardwarefg': '#000000',
             'hazardbg': '#FFFFFF',
             'hazardfg': '#000000',
+            'pofbg': '#FFFFFF',
+            'poffg': '#000000',
             'requirementbg': '#FFFFFF',
             'requirementfg': '#000000',
             'revisionbg': '#FFFFFF',
             'revisionfg': '#000000',
+            'similar_itembg': '#FFFFFF',
+            'similar_itemfg': '#000000',
             'stakeholderbg': '#FFFFFF',
             'stakeholderfg': '#000000',
             'validationbg': '#FFFFFF',
@@ -601,7 +611,7 @@ class TestGetterSetter():
         }
         assert DUT.RAMSTK_FORMAT_FILE == {
             'allocation': 'allocation.toml',
-            'failure_definition': 'failure_definition.toml',
+            'failure_definitions': 'failure_definition.toml',
             'fmea': 'fmea.toml',
             'function': 'function.toml',
             'hardware': 'hardware.toml',
@@ -610,7 +620,7 @@ class TestGetterSetter():
             'requirement': 'requirement.toml',
             'revision': 'revision.toml',
             'similar_item': 'similar_item.toml',
-            'stakeholder': 'stakeholder.toml',
+            'stakeholders': 'stakeholder.toml',
             'usage_profile': 'usage_profile.toml',
             'validation': 'validation.toml',
         }

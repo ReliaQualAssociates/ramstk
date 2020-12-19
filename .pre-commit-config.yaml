@@ -21,4 +21,4 @@ repos:
       rev: v2.6.0
       hooks:
           - id: pylint
-            args: [-d, E0401, -f, colorized, --ignore-patterns, 'test_*?.py']
+            args: [-d, E0401, -f, colorized, --rcfile=./setup.cfg, --ignore-patterns, 'test_*?.py']

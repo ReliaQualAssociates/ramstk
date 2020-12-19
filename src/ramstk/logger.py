@@ -8,26 +8,24 @@
 
 # Standard Library Imports
 import logging
-import os
 import sys
+from typing import Dict
 
 # Third Party Imports
 from pubsub import pub
 
-# RAMSTK Package Imports
-from ramstk.utilities import file_exists
-
 LOGFORMAT = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(lineno)s : %(message)s')
+    '%(asctime)s - %(name)s - %(lineno)s : %(message)s')
 
 
 class RAMSTKLogManager:
     """Class to manage logging of RAMSTK messages."""
-    def __init__(self, log_file: str) -> None:
-        """
-        Initialize an instance of the LogManager.
+    loggers: Dict[str, logging.Logger] = {}
 
-        :param str log_file: the absolute path to the log file to use with this
+    def __init__(self, log_file: str) -> None:
+        """Initialize an instance of the LogManager.
+
+        :param log_file: the absolute path to the log file to use with this
             log manager.
         """
         # Initialize private dictionary attributes.
@@ -37,7 +35,6 @@ class RAMSTKLogManager:
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.loggers = {}
 
         # Initialize public list attributes.
 
@@ -84,8 +81,11 @@ class RAMSTKLogManager:
         pub.subscribe(self._do_log_fail_message, 'fail_update_requirement')
         pub.subscribe(self._do_log_fail_message, 'fail_update_revision')
 
-        if file_exists(self.log_file):
-            os.remove(self.log_file)
+        pub.subscribe(self.do_log_debug, 'do_log_debug_msg')
+        pub.subscribe(self.do_log_info, 'do_log_info_msg')
+        pub.subscribe(self.do_log_warning, 'do_log_warning_msg')
+        pub.subscribe(self.do_log_error, 'do_log_error_msg')
+        pub.subscribe(self.do_log_critical, 'do_log_critical_msg')
 
         # Create a logger for the pypubsub fail_* messages.
         self.do_create_logger(__name__, "WARN")
@@ -97,10 +97,9 @@ class RAMSTKLogManager:
     #// These need to be updated so all fail_XX_XX messages broadcast an
     #// error_message.
     def _do_log_fail_message(self, error_message: str) -> None:
-        """
-        Log PyPubSub broadcast fail messages.
+        """Log PyPubSub broadcast fail messages.
 
-        :param str error_message: the error message that was part of the
+        :param error_message: the error message that was part of the
             broadcast package.
         :return: None
         :rtype: None
@@ -108,26 +107,26 @@ class RAMSTKLogManager:
         self.loggers[__name__].warning(error_message)
 
     @staticmethod
-    def _get_console_handler() -> logging.Handler:
-        """
-        Create the log handler for console output.
+    def _get_console_handler(log_level: str) -> logging.Handler:
+        """Create the log handler for console output.
 
         :return: _c_handler
         :rtype: :class:`logging.Handler`
         """
         _c_handler = logging.StreamHandler(sys.stdout)
+        _c_handler.setLevel(log_level)
         _c_handler.setFormatter(LOGFORMAT)
 
         return _c_handler
 
-    def _get_file_handler(self) -> logging.Handler:
-        """
-        Create the log handler for file output.
+    def _get_file_handler(self, log_level: str) -> logging.Handler:
+        """Create the log handler for file output.
 
         :return: _f_handler
         :rtype: :class:`logging.Handler`
         """
         _f_handler = logging.FileHandler(self.log_file)
+        _f_handler.setLevel(log_level)
         _f_handler.setFormatter(LOGFORMAT)
 
         return _f_handler
@@ -136,14 +135,11 @@ class RAMSTKLogManager:
                          logger_name: str,
                          log_level: str,
                          to_tty: bool = False) -> None:
-        """
-        Create a logger instance.
+        """Create a logger instance.
 
-        :param str logger_name: the name of the logger used in the application.
-        :param str log_level: the level of messages to log.
-        :param str log_file: the full path of the log file for this logger
-            instance to write to.
-        :keyword boolean to_tty: boolean indicating whether this logger will
+        :param logger_name: the name of the logger used in the application.
+        :param log_level: the level of messages to log.
+        :param to_tty: boolean indicating whether this logger will
             also dump messages to the terminal.
         :return: None
         :rtype: None
@@ -151,73 +147,72 @@ class RAMSTKLogManager:
         _logger = logging.getLogger(logger_name)
         _logger.setLevel(log_level)
 
-        _logger.addHandler(self._get_file_handler())
+        _logger.addHandler(self._get_file_handler(log_level))
         if to_tty:
-            _logger.addHandler(self._get_console_handler())
+            _logger.addHandler(self._get_console_handler(log_level))
 
         self.loggers[logger_name] = _logger
 
     def do_log_debug(self, logger_name: str, message: str) -> None:
-        """
-        Log DEBUG level messages.
+        """Log DEBUG level messages.
 
-        :param str logger_name: the name of the logger used in the application.
-        :param str message: the message to log.
+        :param logger_name: the name of the logger used in the application.
+        :param message: the message to log.
         :return: None
         :rtype: None
         """
-        self.loggers[logger_name].debug(message)
+        if self.loggers[logger_name].isEnabledFor(logging.DEBUG):
+            self.loggers[logger_name].debug(message)
 
     def do_log_exception(self, logger_name: str, exception: object) -> None:
-        """
-        Log EXCEPTIONS.
+        """Log EXCEPTIONS.
 
-        :param str logger_name: the name of the logger used in the application.
-        :param str exception: the exception to log.
+        :param logger_name: the name of the logger used in the application.
+        :param exception: the exception to log.
         :return: None
         :rtype: None
         """
-        self.loggers[logger_name].exception(exception)
+        if self.loggers[logger_name].isEnabledFor(logging.WARNING):
+            self.loggers[logger_name].exception(exception)
 
     def do_log_info(self, logger_name: str, message: str) -> None:
-        """
-        Log INFO level messages.
+        """Log INFO level messages.
 
-        :param str logger_name: the name of the logger used in the application.
-        :param str message: the message to log.
+        :param logger_name: the name of the logger used in the application.
+        :param message: the message to log.
         :return: None
         :rtype: None
         """
-        self.loggers[logger_name].info(message)
+        if self.loggers[logger_name].isEnabledFor(logging.INFO):
+            self.loggers[logger_name].info(message)
 
     def do_log_warning(self, logger_name: str, message: str) -> None:
-        """
-        Log WARN level messages.
+        """Log WARN level messages.
 
-        :param str logger_name: the name of the logger used in the application.
-        :param str message: the message to log.
+        :param logger_name: the name of the logger used in the application.
+        :param message: the message to log.
         :return: None
         :rtype: None
         """
-        self.loggers[logger_name].warning(message)
+        if self.loggers[logger_name].isEnabledFor(logging.WARNING):
+            self.loggers[logger_name].warning(message)
 
     def do_log_error(self, logger_name: str, message: str) -> None:
-        """
-        Log ERROR level messages.
+        """Log ERROR level messages.
 
-        :param str logger_name: the name of the logger used in the application.
-        :param str message: the message to log.
+        :param logger_name: the name of the logger used in the application.
+        :param message: the message to log.
         :return: None
         :rtype: None
         """
-        self.loggers[logger_name].error(message)
+        if self.loggers[logger_name].isEnabledFor(logging.ERROR):
+            self.loggers[logger_name].error(message)
 
     def do_log_critical(self, logger_name: str, message: str) -> None:
-        """
-        Log CRITICAL level messages.
+        """Log CRITICAL level messages.
 
-        :param str logger_name: the name of the logger used in the application.
-        :param str message: the message to log.
+        :param logger_name: the name of the logger used in the application.
+        :param message: the message to log.
         :return: None
         :rtype: None
         """

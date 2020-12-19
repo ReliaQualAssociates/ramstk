@@ -25,8 +25,7 @@ from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
 class RAMSTKListBook(RAMSTKBaseBook):
-    """
-    This is the List Book class for the GTK3 multiple window interface.
+    """The List Book class for the GTK3 multiple window interface.
 
     The List Book provides the container for any List Views and Matrix Views
     associated with the RAMSTK module selected in the RAMSTK Module View.
@@ -39,13 +38,10 @@ class RAMSTKListBook(RAMSTKBaseBook):
     """
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        """
-        Initialize an instance of the RAMSTK List View class.
+        """Initialize an instance of the RAMSTK List View class.
 
         :param configuration: the RAMSTKUserConfiguration() class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         RAMSTKBaseBook.__init__(self, configuration)
 
@@ -70,6 +66,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._module: str = ''
 
         # Initialize public dictionary attributes.
 
@@ -84,8 +81,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
         pub.subscribe(self._on_close, 'succeed_closed_program')
 
     def _on_close(self) -> None:
-        """
-        Clear the List Views when a RAMSTK Program database is closed.
+        """Clear the List Views when a RAMSTK Program database is closed.
 
         :return: None
         :rtype: None
@@ -105,14 +101,15 @@ class RAMSTKListBook(RAMSTKBaseBook):
                 _model.clear()
 
     def _on_module_change(self, module: str = '') -> None:
-        """
-        Load the List Views for the RAMSTK module selected in the Module Book.
+        """Load List Views for the RAMSTK module selected in the Module Book.
 
-        :param str module: the name of the RAMSTK workflow module that has
+        :param module: the name of the RAMSTK workflow module that has
             been selected in the Module Book.
         :return: None
         :rtype: None
         """
+        self._module = module
+
         for _page in self.get_children():
             self.remove(_page)
 

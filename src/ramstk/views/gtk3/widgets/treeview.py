@@ -227,7 +227,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                      position: int) -> Any:
         """Handle Gtk.CellRenderer() edits.
 
-        :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
+        :param cell: the Gtk.CellRenderer() that was edited.
         :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
             was edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
@@ -375,12 +375,12 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     ) -> None:
         """Make the columns for the RAMSTKTreeView().
 
-        :keyword dict colors: the background and foreground (text) color to
+        :param colors: the background and foreground (text) color to
             use for each row.  Defaults to white and black.
         :return: None
         :rtype: None
         """
-        for _key in self.widgets:
+        for _key in self.position:
             _cell = do_make_cell(self.widgets[_key])
             do_set_cell_properties(_cell,
                                    bg_color=colors['bg_color'],
@@ -421,7 +421,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _types = []
 
         # Create a list of GObject data types to pass to the model.
-        for _key in self.datatypes:
+        for _key in self.position:
             if self.datatypes[_key] == 'pixbuf':
                 _types.append(GdkPixbuf.Pixbuf)
             else:
@@ -442,11 +442,15 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         self._has_pixbuf = string_to_boolean(_format['pixbuf'])
 
+        self.position = {}
+        _keys = sorted(_format['position'], key=_format['position'].get)
+        for _key in _keys:
+            self.position[_key] = _format['position'][_key]
+
         self.datatypes = _format['datatype']
         self.editable = _format['editable']
         self.headings = _format['usertitle']
         self.korder = _format['key']
-        self.position = _format['position']
         self.visible = _format['visible']
         self.widgets = _format['widget']
 
@@ -697,7 +701,7 @@ class CellRendererML(Gtk.CellRendererText):
 
         return size_tuple
 
-    # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ,too-many-locals
     def do_start_editing(self, __event, treeview, path, __background_area,
                          cell_area, __flags):
         """Handle edits of the CellRendererML.

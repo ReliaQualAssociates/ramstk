@@ -412,15 +412,17 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize private list attributes.
         self._lst_colors = [
-            "functionbg", "functionfg", "hardwarebg", "hardwarefg", "hazardbg",
-            "hazardfg", "revisionbg", "revisionfg", "requirementfg",
-            "requirementbg", "validationbg", "validationfg", "stakeholderbg",
-            "stakeholderfg"
+            'allocationbg', 'allocationfg', 'fmeabg', 'fmeafg',
+            'failure_definitionbg', 'failure_definitionfg', 'functionbg',
+            'functionfg', 'hardwarebg', 'hardwarefg', 'hazardbg', 'hazardfg',
+            'pofbg', 'poffg', 'revisionbg', 'revisionfg', 'requirementfg',
+            'requirementbg', 'validationbg', 'validationfg', 'similar_itembg',
+            'similar_itemfg', 'stakeholderbg', 'stakeholderfg'
         ]
         self._lst_format_files = [
-            "allocation", "failure_definition", "fmea", "function", "hardware",
-            "hazard", "pof", "requirement", "revision", "similar_item",
-            "stakeholder", "usage_profile", "validation"
+            "allocation", "failure_definitions", "fmea", "function",
+            "hardware", "hazard", "pof", "requirement", "revision",
+            "similar_item", "stakeholders", "usage_profile", "validation"
         ]
         self._lst_categories = [
             'integratedcircuit', 'semiconductor', 'resistor', 'capacitor',
@@ -650,7 +652,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             },
             "layouts": {
                 "allocation": "allocation.toml",
-                "failure_definition": "failure_definition.toml",
+                "failure_definitions": "failure_definition.toml",
                 "fmea": "fmea.toml",
                 "function": "function.toml",
                 "hardware": "hardware.toml",
@@ -659,25 +661,35 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "requirement": "requirement.toml",
                 "revision": "revision.toml",
                 "similar_item": "similar_item.toml",
-                "stakeholder": "stakeholder.toml",
+                "stakeholders": "stakeholder.toml",
                 "usage_profile": "usage_profile.toml",
                 "validation": "validation.toml"
             },
             "colors": {
-                "functionbg": "#FFFFFF",
-                "functionfg": "#000000",
-                "hardwarebg": "#FFFFFF",
-                "hardwarefg": "#000000",
-                "hazardbg": "#FFFFFF",
-                "hazardfg": "#000000",
-                "requirementbg": "#FFFFFF",
-                "requirementfg": "#000000",
-                "revisionbg": "#FFFFFF",
-                "revisionfg": "#000000",
-                "stakeholderbg": "#FFFFFF",
-                "stakeholderfg": "#000000",
-                "validationbg": "#FFFFFF",
-                "validationfg": "#000000"
+                'allocationbg': '#FFFFFF',
+                'allocationfg': '#000000',
+                'failure_definitionbg': '#FFFFFF',
+                'failure_definitionfg': '#000000',
+                'fmeabg': '#FFFFFF',
+                'fmeafg': '#000000',
+                'functionbg': '#FFFFFF',
+                'functionfg': '#000000',
+                'hardwarebg': '#FFFFFF',
+                'hardwarefg': '#000000',
+                'hazardbg': '#FFFFFF',
+                'hazardfg': '#000000',
+                'pofbg': '#FFFFFF',
+                'poffg': '#000000',
+                'requirementbg': '#FFFFFF',
+                'requirementfg': '#000000',
+                'revisionbg': '#FFFFFF',
+                'revisionfg': '#000000',
+                'similar_itembg': '#FFFFFF',
+                'similar_itemfg': '#000000',
+                'stakeholderbg': '#FFFFFF',
+                'stakeholderfg': '#000000',
+                'validationbg': '#FFFFFF',
+                'validationfg': '#000000'
             },
             "stress": {
                 'integratedcircuit':
@@ -813,8 +825,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             },
             "layouts": {
                 "allocation": self.RAMSTK_FORMAT_FILE['allocation'],
-                "failure_definition":
-                self.RAMSTK_FORMAT_FILE['failure_definition'],
+                "failure_definitions":
+                self.RAMSTK_FORMAT_FILE['failure_definitions'],
                 "fmea": self.RAMSTK_FORMAT_FILE['fmea'],
                 "function": self.RAMSTK_FORMAT_FILE['function'],
                 "hardware": self.RAMSTK_FORMAT_FILE['hardware'],
@@ -823,21 +835,32 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "requirement": self.RAMSTK_FORMAT_FILE['requirement'],
                 "revision": self.RAMSTK_FORMAT_FILE['revision'],
                 "similar_item": self.RAMSTK_FORMAT_FILE['similar_item'],
-                "stakeholder": self.RAMSTK_FORMAT_FILE['stakeholder'],
+                "stakeholders": self.RAMSTK_FORMAT_FILE['stakeholders'],
                 "usage_profile": self.RAMSTK_FORMAT_FILE['usage_profile'],
                 "validation": self.RAMSTK_FORMAT_FILE['validation']
             },
             "colors": {
+                'allocationbg': self.RAMSTK_COLORS['allocationbg'],
+                'allocationfg': self.RAMSTK_COLORS['allocationbg'],
+                'failure_definitionbg': self.RAMSTK_COLORS['failure_definitionbg'],
+                'failure_definitionfg': self.RAMSTK_COLORS[
+                    'failure_definitionbg'],
+                'fmeabg': self.RAMSTK_COLORS['fmeabg'],
+                'fmeafg': self.RAMSTK_COLORS['fmeafg'],
                 "functionbg": self.RAMSTK_COLORS['functionbg'],
                 "functionfg": self.RAMSTK_COLORS['functionfg'],
                 "hardwarebg": self.RAMSTK_COLORS['hardwarebg'],
                 "hardwarefg": self.RAMSTK_COLORS['hardwarefg'],
                 "hazardbg": self.RAMSTK_COLORS['hazardbg'],
                 "hazardfg": self.RAMSTK_COLORS['hazardfg'],
+                'pofbg': self.RAMSTK_COLORS['pofbg'],
+                'poffg': self.RAMSTK_COLORS['poffg'],
                 "requirementbg": self.RAMSTK_COLORS['requirementbg'],
                 "requirementfg": self.RAMSTK_COLORS['requirementfg'],
                 "revisionbg": self.RAMSTK_COLORS['revisionbg'],
                 "revisionfg": self.RAMSTK_COLORS['revisionfg'],
+                'similar_itembg': self.RAMSTK_COLORS['similar_itembg'],
+                'similar_itemfg': self.RAMSTK_COLORS['similar_itemfg'],
                 "stakeholderbg": self.RAMSTK_COLORS['stakeholderbg'],
                 "stakeholderfg": self.RAMSTK_COLORS['stakeholderfg'],
                 "validationbg": self.RAMSTK_COLORS['validationbg'],

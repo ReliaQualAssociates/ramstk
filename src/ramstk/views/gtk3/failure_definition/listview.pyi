@@ -1,6 +1,9 @@
 # Standard Library Imports
 from typing import Any, Dict
 
+# Third Party Imports
+import treelib
+
 # RAMSTK Package Imports
 from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -12,8 +15,10 @@ from ramstk.views.gtk3.widgets import RAMSTKListView as RAMSTKListView
 from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 
 class FailureDefinitionPanel(RAMSTKPanel):
+    _module: str = ...
     _dic_attribute_keys: Any = ...
     _dic_attribute_updater: Any = ...
+    _dic_row_loader: Any = ...
     _title: Any = ...
 
     def __init__(self) -> None:
@@ -31,6 +36,10 @@ class FailureDefinitionPanel(RAMSTKPanel):
     _record_id: Any = ...
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        ...
+
+    def __do_load_failure_definition(self, node: treelib.Node,
+                                     row: Gtk.TreeIter) -> Gtk.TreeIter:
         ...
 
 

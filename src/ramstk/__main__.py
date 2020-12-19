@@ -5,9 +5,10 @@
 #
 # All rights reserved.
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""This is the main program for the RAMSTK application."""
+"""The main program for the RAMSTK application."""
 
 # Standard Library Imports
+import os
 from time import sleep
 from typing import Tuple
 
@@ -30,24 +31,28 @@ from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
 
 
-def do_connect_to_site_db(conn_info, logger) -> BaseDatabase:
+def do_connect_to_site_db(conn_info) -> BaseDatabase:
     """Connect to the site (common) database.
 
-    :param dict conn_info: the site database connection information.
-    :param logger: the RAMSTKLogManager() to use for logging status.
-    :type logger: :class:`RAMSTKLogManager`
+    :param conn_info: the site database connection information.
     :return:
     """
-    logger.do_log_info(
-        __name__, "Connecting to the RAMSTK common database {0:s}.".format(
+    pub.sendMessage(
+        'do_log_info_msg',
+        logger_name='INFO',
+        message="Connecting to the RAMSTK common database {0:s}.".format(
             conn_info['database']))
+
     _site_db = BaseDatabase()
     _site_db.do_connect(conn_info)
-    logger.do_log_info(
-        __name__, "Connected to the RAMSTK common database {0:s}.".format(
+    pub.sendMessage(
+        'do_log_info_msg',
+        logger_name='INFO',
+        message="Connected to the RAMSTK common database {0:s}.".format(
             conn_info['database']))
 
     return _site_db
@@ -109,37 +114,66 @@ def do_copy_configuration_values(
     return user_configuration
 
 
-def do_read_site_configuration(logger: RAMSTKLogManager) -> \
-        RAMSTKSiteConfiguration:
+def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
+    """Initialize the loggers for the current instance of RAMSTK.
+
+    :param log_file: the absolute path to the file used to capture logs.
+    :param log_level: the lowest level of messages to log as defined by the
+        user's configuration.
+    :return: _logger; the RAMSTKLogManager() managing the loggers.
+    :rtype: :class:`RAMSTKLogManager`
+    """
+    if file_exists(log_file):
+        os.remove(log_file)
+
+    _logger: RAMSTKLogManager = RAMSTKLogManager(log_file)
+
+    for _level in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+        _logger.do_create_logger(_level,
+                                 log_level,
+                                 to_tty={
+                                     'DEBUG': False,
+                                     'INFO': False,
+                                     'WARNING': False,
+                                     'ERROR': True,
+                                     'CRITICAL': True
+                                 }[_level])
+
+    return _logger
+
+
+def do_read_site_configuration() -> RAMSTKSiteConfiguration:
     """Create a site configuration instance.
 
-    :param logger: the logging.Logger() instance to use for writing to the
-        runtime log file.
-    :type logger: :class:`logging.Logger`
     :return: _configuration; the RAMSTKSiteConfiguraion() instance to use for
         this run of RAMSTK.
     :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     """
     def on_fail_create_site_configuration(error_message: str) -> None:
-        """Logs the error message when there's a failure to create the site
-        conf.
+        """Log error message when there's a failure to create the site conf.
 
-        :param str error_message: the error message raised by the failure.
+        :param error_message: the error message raised by the failure.
         :return: None
         :rtype: None
         """
-        logger.do_log_error(__name__, error_message)
+        pub.sendMessage('do_log_debug_msg',
+                        logger_name='DEBUG',
+                        message=error_message)
 
     pub.subscribe(on_fail_create_site_configuration,
                   'fail_create_site_configuration')
 
-    logger.do_log_info(__name__, "Reading the site configuration file.")
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Reading the site configuration file.")
 
     _configuration = RAMSTKSiteConfiguration()
     _configuration.set_site_directories()
     _configuration.get_site_configuration()
 
-    logger.do_log_info(__name__, "Read the site configuration file.")
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Read the site configuration file.")
 
     return _configuration
 
@@ -153,10 +187,9 @@ def do_read_user_configuration(
     :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
     def on_fail_create_user_configuration(error_message: str) -> None:
-        """Logs the error message when there's a failure to create the user
-        conf.
+        """Log error message when there's a failure to create the user conf.
 
-        :param str error_message: the error message raised by the failure.
+        :param error_message: the error message raised by the failure.
         :return: None
         :rtype: None
         """
@@ -169,11 +202,8 @@ def do_read_user_configuration(
     _configuration.set_user_directories()
     _configuration.get_user_configuration()
 
-    _logger: RAMSTKLogManager = RAMSTKLogManager(
-        _configuration.RAMSTK_USER_LOG)
-    _logger.do_create_logger(__name__,
-                             _configuration.RAMSTK_LOGLEVEL,
-                             to_tty=False)
+    _logger = do_initialize_loggers(_configuration.RAMSTK_USER_LOG,
+                                    _configuration.RAMSTK_LOGLEVEL)
 
     return _configuration, _logger
 
@@ -191,19 +221,18 @@ def the_one_ring() -> None:
     # configuration file contains information needed to create the logger so
     # it must come first.
     user_configuration, _logger = do_read_user_configuration()
-    site_configuration = do_read_site_configuration(_logger)
+    site_configuration = do_read_site_configuration()
 
-    site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO,
-                                    _logger)
+    site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO)
 
-    _logger.do_log_debug(__name__, "Validating the RAMSTK license.")
-    _logger.do_log_debug(__name__, "Validated the RAMSTK license.")
+    pub.sendMessage('do_log_debug_msg',
+                    logger_name='DEBUG',
+                    message="Validating the RAMSTK license.")
+    pub.sendMessage('do_log_debug_msg',
+                    logger_name='DEBUG',
+                    message="Validated the RAMSTK license.")
 
-    _logger.do_log_info(__name__,
-                        "Loading global RAMSTK configuration variables.")
     do_load_variables(site_db, site_configuration)
-    _logger.do_log_info(__name__,
-                        "Loaded global RAMSTK configuration variables.")
 
     # Copy some site-level configuration variables to the user-level
     # configuration.  These are used to load RAMSTKComboBox widgets with
@@ -214,7 +243,10 @@ def the_one_ring() -> None:
     user_configuration = do_copy_configuration_values(user_configuration,
                                                       site_configuration)
 
-    _logger.do_log_info(__name__, "Initializing the RAMSTK application.")
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Initializing the RAMSTK application.")
+
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
     _program_mgr.dic_managers['function']['data'] = dmFunction()
@@ -249,9 +281,13 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['exim']['export'] = Export()
     _program_mgr.dic_managers['exim']['import'] = Import()
     _program_mgr.user_configuration = user_configuration
-    _logger.do_log_info(__name__, "Initialized the RAMSTK application.")
 
-    _logger.do_log_info(__name__, "Launching RAMSTK GUI.")
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Initialized the RAMSTK application.")
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Launching RAMSTK GUI.")
 
     # If you don't do this, the splash screen will show, but won't render it's
     # contents
@@ -265,6 +301,7 @@ def the_one_ring() -> None:
     # configuration and creating the logger.
     RAMSTKDesktop([user_configuration, site_configuration], _logger)
 
-    _logger.do_log_info(__name__, "Launched RAMSTK GUI.")
-
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Launched RAMSTK GUI.")
     Gtk.main()

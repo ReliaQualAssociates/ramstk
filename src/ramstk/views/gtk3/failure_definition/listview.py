@@ -11,6 +11,7 @@
 from typing import Any, Dict
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -28,6 +29,7 @@ class FailureDefinitionPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module: str = 'failure_definitions'
 
     # Define public dictionary class attributes.
 
@@ -48,6 +50,9 @@ class FailureDefinitionPanel(RAMSTKPanel):
             'definition_id': [None, 'edited', 1],
             'definition': [None, 'edited', 2],
         }
+        self._dic_row_loader = {
+            'definition': self.__do_load_failure_definition,
+        }
 
         # Initialize private list class attributes.
 
@@ -63,7 +68,7 @@ class FailureDefinitionPanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_tree,
+        pub.subscribe(super().do_load_panel,
                       'succeed_retrieve_failure_definitions')
         pub.subscribe(super().on_delete, 'succeed_delete_failure_definition')
 
@@ -126,6 +131,42 @@ class FailureDefinitionPanel(RAMSTKPanel):
             pub.sendMessage('selected_failure_definition',
                             attributes=_attributes)
 
+    def __do_load_failure_definition(self, node: treelib.Node,
+                                     row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a failure definition into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the definition data to load.
+        :param row: the parent row of the definition to load.
+        :return: _new_row; the row that was just populated with definition
+            data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.tvwTreeView.get_model()
+
+        _attributes = [
+            _entity.revision_id, _entity.definition_id, _entity.definition
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _new_row = None
+            _message = _(
+                "An error occurred when loading failure definition {0:s}.  "
+                "This might indicate it was missing it's data package, some "
+                "of the data in the package was missing, or some of the data "
+                "was the wrong type.  Row data was: {1}").format(
+                    str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
+
+        return _new_row
+
 
 class FailureDefinition(RAMSTKListView):
     """Display failure definitions associated with the selected revision.
@@ -149,7 +190,7 @@ class FailureDefinition(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'failure_definition'
+    _module: str = 'failure_definitions'
     _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
     _tabtooltip = _("Displays failure definitions for the "
                     "selected revision.")

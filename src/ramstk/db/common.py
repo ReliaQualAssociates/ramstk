@@ -944,13 +944,10 @@ def do_add_administrator(session: scoped_session) -> None:
 
 
 def do_create_common_db(engine: Engine, session: scoped_session) -> None:
-    """
-    Create and populate the RAMSTK Common database.
+    """Create and populate the RAMSTK Common database.
 
     :param engine: the SQLAlchemy Engine connected to the database.
-    :type engine: :class:`sqlalchemy.engine.Engine`
     :param session: the SQLAlchemy session to use when creating the database.
-    :type session: :class:`sqlalchemy.orm.Session
     :return: None
     :rtype: None
     """
@@ -972,8 +969,7 @@ def do_create_common_db(engine: Engine, session: scoped_session) -> None:
 
 
 def do_make_commondb_tables(engine: Engine) -> None:
-    """
-    Create all the tables in the RAMSTK Common database.
+    """Create all the tables in the RAMSTK Common database.
 
     :param engine: the SQLAlchemy database engine to use to create the common
         database tables.
@@ -1003,8 +999,7 @@ def do_make_commondb_tables(engine: Engine) -> None:
 def _do_load_action_variables(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load the RAMSTK_ACTION_CATEGORY variable.
+    """Load the RAMSTK_ACTION_CATEGORY variable.
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1037,8 +1032,7 @@ def _do_load_action_variables(
 def _do_load_hardware_variables(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load variables associated with hardware categories and failure modes.
+    """Load variables associated with hardware categories and failure modes.
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
@@ -1089,8 +1083,7 @@ def _do_load_hardware_variables(
 def _do_load_incident_variables(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load the RAMSTK_INCIDENT_CATEGORY variable.
+    """Load the RAMSTK_INCIDENT_CATEGORY variable.
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
@@ -1131,8 +1124,7 @@ def _do_load_incident_variables(
 def _do_load_miscellaneous_variables(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load miscellaneous variables that don't fit in another grouping.
+    """Load miscellaneous variables that don't fit in another grouping.
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
@@ -1177,8 +1169,7 @@ def _do_load_miscellaneous_variables(
 def _do_load_pof_variables(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load the RAMSTK_DAMAGE_MODELS variable.
+    """Load the RAMSTK_DAMAGE_MODELS variable.
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
@@ -1210,8 +1201,7 @@ def _do_load_pof_variables(
 def _do_load_requirement_variables(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load variables related to requiremetents and stakeholders.
+    """Load variables related to requiremetents and stakeholders.
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1244,8 +1234,7 @@ def _do_load_requirement_variables(
 def _do_load_rpn_variables(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load the RPN detection, occurremce, and severity variables.
+    """Load the RPN detection, occurremce, and severity variables.
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
@@ -1274,8 +1263,7 @@ def _do_load_rpn_variables(
 
 def _do_load_severity(site_db: BaseDatabase,
                       site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load the RAMSTK_SEVERITY variable.
+    """Load the RAMSTK_SEVERITY variable.
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
@@ -1297,8 +1285,7 @@ def _do_load_severity(site_db: BaseDatabase,
 def _do_load_user_workgroups(
         site_db: BaseDatabase,
         site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load the RAMSTK_USERS and RAMSTK_WORKGROUPS variables.
+    """Load the RAMSTK_USERS and RAMSTK_WORKGROUPS variables.
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
@@ -1329,8 +1316,7 @@ def _do_load_user_workgroups(
 
 def do_load_variables(site_db: BaseDatabase,
                       site_configuration: RAMSTKSiteConfiguration) -> None:
-    """
-    Load the RAMSTKSiteConfiguration global variables from the site db.
+    """Load the RAMSTKSiteConfiguration global variables from the site db.
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1341,6 +1327,10 @@ def do_load_variables(site_db: BaseDatabase,
     :return: None
     :rtype: None
     """
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Loading global RAMSTK configuration variables.")
+
     _do_load_action_variables(site_db, site_configuration)
     _do_load_hardware_variables(site_db, site_configuration)
     _do_load_incident_variables(site_db, site_configuration)
@@ -1350,3 +1340,7 @@ def do_load_variables(site_db: BaseDatabase,
     _do_load_rpn_variables(site_db, site_configuration)
     _do_load_severity(site_db, site_configuration)
     _do_load_user_workgroups(site_db, site_configuration)
+
+    pub.sendMessage('do_log_info_msg',
+                    logger_name='INFO',
+                    message="Loaded global RAMSTK configuration variables.")

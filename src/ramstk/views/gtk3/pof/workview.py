@@ -19,7 +19,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddStressTestMethod
-from ramstk.views.gtk3.widgets import RAMSTKLabel, RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
 
 
 def get_indenture_level(record_id: str) -> str:
@@ -83,6 +83,7 @@ class PoFPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module: str = 'pof'
 
     # Define public dictionary class attributes.
 
@@ -103,6 +104,13 @@ class PoFPanel(RAMSTKPanel):
             8: ['boundary_conditions', 'text'],
             9: ['priority_id', 'integer'],
             10: ['remarks', 'text'],
+        }
+        self._dic_row_loader = {
+            'mode': self.__do_load_mode,
+            'mechanism': self.__do_load_mechanism,
+            'opload': self.__do_load_opload,
+            'opstress': self.__do_load_opstress,
+            'method': self.__do_load_test_method,
         }
 
         # Initialize private list instance attributes.
@@ -125,8 +133,8 @@ class PoFPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_pof')
 
-        pub.subscribe(self._do_load_panel, 'succeed_retrieve_pof')
         pub.subscribe(self._on_delete_insert_pof, 'succeed_delete_pof')
         pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_opload')
         pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_opstress')
@@ -160,53 +168,6 @@ class PoFPanel(RAMSTKPanel):
                 _cell[0].connect('edited',
                                  super().on_cell_edit, 'wvw_editing_pof', i)
 
-    def _do_load_panel(self,
-                       tree: treelib.Tree,
-                       row: Gtk.TreeIter = None) -> None:
-        """Iterate through tree and load the PoF RAMSTKTreeView().
-
-        :param tree: the treelib.Tree() containing the data packages for the
-            PoF analysis.
-        :param row: the last row to be loaded with PoF data.
-        :return: None
-        """
-        _node = tree.nodes[list(tree.nodes.keys())[0]]
-
-        _new_row = self._do_load_row(_node, row)
-
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_panel(_child_tree, row=_new_row)
-
-        super().do_expand_tree()
-
-    def _do_load_row(self, node: treelib.Node,
-                     row: Gtk.TreeIter) -> Gtk.TreeIter:
-        """Determine which type of row to load and loads the data.
-
-        :param node: the FMEA treelib Node() whose data is to be loaded.
-        :param row: the parent row for the row to be loaded.
-        :return: _new_row; the row that was just added to the FMEA treeview.
-        """
-        _new_row = None
-
-        # The root node will have no data package, so this indicates the need
-        # to clear the tree in preparation for the load.
-        if node.tag == 'pof':
-            super().do_clear_tree()
-        else:
-            _method = {
-                'mode': self.__do_load_mode,
-                'mechanism': self.__do_load_mechanism,
-                'opload': self.__do_load_opload,
-                'opstress': self.__do_load_opstress,
-                'method': self.__do_load_test_method,
-            }[node.tag]
-            # noinspection PyArgumentList
-            _new_row = _method(node, row)
-
-        return _new_row
-
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_delete_insert_pof(self, node_id: int, tree: treelib.Tree) -> None:
@@ -216,7 +177,7 @@ class PoFPanel(RAMSTKPanel):
         :param tree: the treelib Tree() containing the PoF module's data.
         :return: None
         """
-        self._do_load_panel(tree)
+        super().do_load_panel(tree)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the PoF Work View RAMSTKTreeView().
@@ -247,18 +208,7 @@ class PoFPanel(RAMSTKPanel):
         else:
             _cell.set_property('editable', False)
 
-        _columns = self.tvwTreeView.get_columns()
-        i = 0
-        for _key in self.tvwTreeView.headings:
-            _label = RAMSTKLabel(self.tvwTreeView.headings[_key])
-            _label.do_set_properties(height=-1,
-                                     justify=Gtk.Justification.CENTER,
-                                     wrap=True)
-            _label.show_all()
-            _columns[i].set_widget(_label)
-            _columns[i].set_visible(self.tvwTreeView.visible[_key])
-
-            i += 1
+        super().do_set_headings()
 
     def __do_load_damage_models(self) -> None:
         """Load the RAMSTKTreeView() damage model CellRendererCombo().
@@ -312,22 +262,18 @@ class PoFPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Failure mechanism {0:s} was missing it's data "
-                           "package.").format(str(_entity.mechanism_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for failure mechanism ID {0:s} is the wrong type for "
-                "one or more columns.".format(str(_entity.mechanism_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for "
-                          "failure mechanism ID {0:s}.".format(
-                              str(_entity.mechanism_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading failure mechanism {0:s} in "
+                "the "
+                "physics of failure analysis.  This might indicate it was "
+                "missing it's data package, some of the data in the package "
+                "was missing, or some of the data was the wrong type.  Row "
+                "data was: {1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -356,21 +302,17 @@ class PoFPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Failure mode {0:s} was missing it's data "
-                           "package.").format(str(_entity.mode_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = ("Data for failure mode ID {0:s} is the wrong "
-                          "type for one or more columns.".format(
-                              str(_entity.mode_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for Mode ID "
-                          "{0:s}.".format(str(_entity.mode_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading failure mode {0:s} in the "
+                "physics of failure analysis.  This might indicate it was "
+                "missing it's data package, some of the data in the package "
+                "was missing, or some of the data was the wrong type.  Row "
+                "data was: {1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -398,22 +340,17 @@ class PoFPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Operating load {0:s} was missing it's data "
-                           "package.").format(str(_entity.load_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for operating load ID {0:s} is the wrong type for "
-                "one or more columns.".format(str(_entity.load_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for "
-                          "operating load ID {0:s}.".format(
-                              str(_entity.load_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading operating load {0:s} in the "
+                "physics of failure analysis.  This might indicate it was "
+                "missing it's data package, some of the data in the package "
+                "was missing, or some of the data was the wrong type.  Row "
+                "data was: {1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -442,22 +379,17 @@ class PoFPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Operating stress ID {0:s} was missing it's "
-                           "data package.").format(str(_entity.stress_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for operating stress ID {0:s} is the wrong type for "
-                "one or more columns.".format(str(_entity.stress_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for "
-                          "operating stress ID {0:s}.".format(
-                              str(_entity.stress_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading operating stress {0:s} in the "
+                "physics of failure analysis.  This might indicate it was "
+                "missing it's data package, some of the data in the package "
+                "was missing, or some of the data was the wrong type.  Row "
+                "data was: {1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 
@@ -485,21 +417,17 @@ class PoFPanel(RAMSTKPanel):
 
         try:
             _new_row = _model.append(row, _attributes)
-        except AttributeError:
-            _debug_msg = _("Test method ID {0:s} was missing it's "
-                           "data package.").format(str(_entity.test_id))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-        except TypeError:
-            _debug_msg = (
-                "Data for test method ID {0:s} is the wrong type for "
-                "one or more columns.".format(str(_entity.test_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
+        except (AttributeError, TypeError, ValueError):
             _new_row = None
-        except ValueError:
-            _debug_msg = ("Too few fields in the data package for "
-                          "test method ID {0:s}.".format(str(_entity.test_id)))
-            self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
-            _new_row = None
+            _message = _(
+                "An error occurred when loading test method {0:s} in the "
+                "physics of failure analysis.  This might indicate it was "
+                "missing it's data package, some of the data in the package "
+                "was missing, or some of the data was the wrong type.  Row "
+                "data was: {1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
 
         return _new_row
 

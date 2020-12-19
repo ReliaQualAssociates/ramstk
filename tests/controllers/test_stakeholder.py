@@ -92,12 +92,12 @@ class TestCreateControllers():
         assert isinstance(DUT, dmStakeholder)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'stakeholder'
+        assert DUT._tag == 'stakeholders'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update,
-                                'request_update_stakeholder')
+                                'request_update_stakeholders')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_stakeholders')
         assert pub.isSubscribed(DUT.do_get_attributes,
@@ -293,8 +293,7 @@ class TestGetterSetter():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_stakeholder(self, node_id, tree):
-        assert node_id == 3
+    def on_succeed_insert_stakeholder(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_stakeholder topic was broadcast")
 
