@@ -140,7 +140,6 @@ ramstk.models.commondb.ramstkuser module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

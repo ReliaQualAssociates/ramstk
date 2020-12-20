@@ -28,7 +28,6 @@ ramstk.controllers.validation.matrixmanager module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

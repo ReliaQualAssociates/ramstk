@@ -28,7 +28,6 @@ ramstk.views.gtk3.books.workbook module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

@@ -28,7 +28,6 @@ ramstk.db.program module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

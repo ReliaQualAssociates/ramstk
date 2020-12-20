@@ -108,7 +108,6 @@ ramstk.analyses.milhdbk217f.models.switch module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

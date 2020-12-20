@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    ramstk.analyses.milhdbk217f
    ramstk.analyses.statistics
@@ -75,7 +76,6 @@ ramstk.analyses.stress module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

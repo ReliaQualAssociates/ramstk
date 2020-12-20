@@ -56,7 +56,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes,
                       'lvw_editing_failure_definition')
         pub.subscribe(super().do_update_all,
-                      'request_update_all_failure_definitions')
+                      'request_update_all_failure_definitionss')
 
         pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')

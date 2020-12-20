@@ -28,7 +28,6 @@ jobs:
         uses: zwaldowski/match-label-action@v1
         with:
           allowed: major, minor, patch
-      - run: echo ${{ steps.current_version.match }}
       - id: bsv
         uses: zwaldowski/semver-release-action@v1
         with:

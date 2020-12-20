@@ -57,7 +57,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_get_attributes,
                       'request_get_usage_profile_attributes')
         pub.subscribe(super().do_update_all,
-                      'request_update_all_usage_profile')
+                      'request_update_all_usage_profiles')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_get_tree, 'request_get_usage_profile_tree')
