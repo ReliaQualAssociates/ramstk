@@ -242,7 +242,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_revision(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent revision ID 300.')
+            '_do_delete_revision: Attempted to delete non-existent revision ID 300.')
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
     @pytest.mark.unit
@@ -367,12 +367,12 @@ class TestUpdateMethods():
 
     def on_fail_update_revision(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent revision with revision ID 100.')
+            'do_update: Attempted to save non-existent revision with revision ID 100.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     def on_fail_update_revision_no_data_package(self, error_message):
         assert error_message == (
-            'No data package found for revision ID 1.')
+            'do_update: No data package found for revision ID 1.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     @pytest.mark.integration

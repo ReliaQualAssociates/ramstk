@@ -250,12 +250,12 @@ class TestDeleteMethods():
 
     def on_fail_delete_function(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent function ID 300.')
+            '_do_delete: Attempted to delete non-existent function ID 300.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     def on_fail_delete_function_no_tree(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent function ID 2.')
+            '_do_delete: Attempted to delete non-existent function ID 2.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     @pytest.mark.unit
@@ -356,7 +356,7 @@ class TestInsertMethods():
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
     def on_fail_insert_function(self, error_message):
-        assert error_message == ('Attempting to add a function as a child of '
+        assert error_message == ('_do_insert_function: Attempting to add a function as a child of '
                                  'non-existent parent node 40.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
@@ -544,11 +544,11 @@ class TestUpdateMethods():
 
     def on_fail_update_function(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent function with function ID 100.')
+            'do_update: Attempted to save non-existent function with function ID 100.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
     def on_fail_update_function_no_data(self, error_message):
-        assert error_message == ('No data package found for function ID 0.')
+        assert error_message == ('do_update: No data package found for function ID 0.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
     def on_succeed_update_matrix(self):

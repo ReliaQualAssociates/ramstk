@@ -174,7 +174,7 @@ class TestDeleteMethods():
             "\033[36m\nsucceed_delete_failure_definition topic was broadcast.")
 
     def on_fail_delete_failure_definition(self, error_message):
-        assert error_message == ('Attempted to delete non-existent failure '
+        assert error_message == ('_do_delete_failure_definition: Attempted to delete non-existent failure '
                                  'definition ID 10.')
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
@@ -359,7 +359,7 @@ class TestUpdateMethods():
 
     def on_fail_update_failure_definition(self, error_message):
         assert error_message == (
-            'No data package found for failure definition ID 100.')
+            'do_update: No data package found for failure definition ID 100.')
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     @pytest.mark.integration

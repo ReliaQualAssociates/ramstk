@@ -263,7 +263,7 @@ class TestDeleteMethods():
         print("\033[36m\nsucceed_delete_mission topic was broadcast.")
 
     def on_fail_delete_mission(self, error_message):
-        assert error_message == ('Attempted to delete non-existent usage '
+        assert error_message == ('_do_delete: Attempted to delete non-existent usage '
                                  'profile ID 10.')
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
@@ -274,7 +274,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_mission_phase(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent usage profile '
+            '_do_delete: Attempted to delete non-existent usage profile '
             'ID 2.20.')
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
@@ -285,7 +285,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_environment(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent usage profile ID 3.3.30.')
+            '_do_delete: Attempted to delete non-existent usage profile ID 3.3.30.')
         print("\033[35m\nfail_delete_environment topic was broadcast.")
 
     @pytest.mark.unit
@@ -477,7 +477,7 @@ class TestGetterSetter():
                             'phase_start': 5.12,
                             'phase_end': 10.24
                         },
-                        node_id=['1.1', ''])
+                        node_id='1.1')
         assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
         assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
 
@@ -494,7 +494,7 @@ class TestGetterSetter():
                             'phase_end': 10.24,
                             'funpack': 'Fun Packer',
                         },
-                        node_id=['1.1', ''])
+                        node_id='1.1')
         assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
         assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
 
@@ -594,17 +594,17 @@ class TestUpdateMethods():
 
     def on_fail_update_usage_profile(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent usage profile ID 1.10.')
+            'do_update: Attempted to save non-existent usage profile ID 1.10.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     def on_fail_update_usage_profile_no_data_package(self, error_message):
         assert error_message == (
-            'No data package found for usage profile ID 1.1.')
+            'do_update: No data package found for usage profile ID 1.1.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     def on_fail_update_usage_profile_root_node(self, error_message):
         assert error_message == (
-            'No data package found for usage profile ID 0.')
+            'do_update: No data package found for usage profile ID 0.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     @pytest.mark.integration
