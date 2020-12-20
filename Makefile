@@ -41,10 +41,10 @@ ICONS32		= $(shell ls ./data/icons/32x32)
 
 # Argument lists for tools.
 DOCFORMATTER_ARGS	= --in-place
-ISORT_ARGS	= --settings-file ./setup.cfg --atomic --use-parentheses --balanced
+ISORT_ARGS	= --settings-file ./setup.cfg --atomic
 MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
-PYDOCSTYLE_ARGS	= --count
+PYDOCSTYLE_ARGS	= --count --config=./setup.cfg
 PYLINT_ARGS	= -j4 --rcfile=./setup.cfg
 YAPF_ARGS	= --in-place
 
@@ -236,7 +236,7 @@ format:
 # This target is for use with IDE integration.
 stylecheck:
 	$(info Style checking $(SRCFILE) ...)
-	$(PYCODESTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
+	$(PYCODESTYLE) $(PYCODESTYLE_ARGS) $(SRCFILE)
 	$(PYDOCSTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.

@@ -501,12 +501,12 @@ class RAMSTKDesktop(Gtk.Window):
         :rtype: None
         """
         _message = _("Opening Program Database {0:s}"). \
-            format(self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])
+            format(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'])
         # noinspection PyDeepBugsSwappedArgs
         self.statusbar.push(1, _message)
         self.set_title(
             _("RAMSTK - Analyzing {0:s}").format(
-                self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']))
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']))
 
     def _on_select(self, title: str) -> None:
         """Respond to load the Work View Gtk.Notebook() widgets.

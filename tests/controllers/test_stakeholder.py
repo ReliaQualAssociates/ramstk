@@ -117,7 +117,7 @@ class TestCreateControllers():
         DUT = amStakeholder(test_toml_user_configuration)
 
         assert isinstance(DUT, amStakeholder)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}

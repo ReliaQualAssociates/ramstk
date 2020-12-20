@@ -94,7 +94,7 @@ class TestCreateControllers():
         DUT = amFMEA(test_toml_user_configuration)
 
         assert isinstance(DUT, amFMEA)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
