@@ -8,6 +8,7 @@
 """Revision Package Data Model."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict
 
 # Third Party Imports
@@ -92,7 +93,10 @@ class DataManager(RAMSTKDataManager):
 
         self.last_id = max(self.tree.nodes.keys())
 
-        pub.sendMessage('succeed_retrieve_revisions', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_revisions',
+            tree=self.tree,
+        )
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
@@ -101,20 +105,41 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        _method_name: str = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
+
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['revision'])
-            pub.sendMessage('succeed_update_revision', node_id=node_id)
+            pub.sendMessage(
+                'succeed_update_revision',
+                node_id=node_id,
+            )
         except AttributeError:
-            pub.sendMessage('fail_update_revision',
-                            error_message=('Attempted to save non-existent '
-                                           'revision with revision ID '
-                                           '{0:s}.').format(str(node_id)))
+            _error_msg: str = (
+                '{1}: Attempted to save non-existent revision with revision '
+                'ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_revision',
+                error_message=_error_msg,
+            )
         except (KeyError, TypeError):
             if node_id != 0:
-                pub.sendMessage('fail_update_revision',
-                                error_message=('No data package found for '
-                                               'revision ID {0:s}.').format(
-                                                   str(node_id)))
+                _error_msg = ('{1}: No data package found for revision '
+                              'ID {0}.').format(str(node_id), _method_name)
+                pub.sendMessage(
+                    'do_log_debug',
+                    logger_name='DEBUG',
+                    message=_error_msg,
+                )
+                pub.sendMessage(
+                    'fail_update_revision',
+                    error_message=_error_msg,
+                )
 
     def _do_delete_revision(self, node_id: int) -> None:
         """Remove a revision.
@@ -124,19 +149,33 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        _method_name: str = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
+
         try:
             super().do_delete(node_id, 'revision')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_revision',
-                            node_id=node_id,
-                            tree=self.tree)
+            pub.sendMessage(
+                'succeed_delete_revision',
+                node_id=node_id,
+                tree=self.tree,
+            )
         except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ("Attempted to delete non-existent revision ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_revision', error_message=_error_msg)
+            _error_msg: str = (
+                '{1}: Attempted to delete non-existent revision ID {'
+                '0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_delete_revision',
+                error_message=_error_msg,
+            )
 
     def _do_insert_revision(self) -> None:
         """Add a new revision.
@@ -145,6 +184,9 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         :raise: AttributeError if not connected to a RAMSTK program database.
         """
+        _method_name: str = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
+
         try:
             _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
             _revision = RAMSTKRevision()
@@ -158,10 +200,20 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data={'revision': _revision})
             self.last_id = _revision.revision_id
-            pub.sendMessage('succeed_insert_revision',
-                            node_id=self.last_id,
-                            tree=self.tree)
+            pub.sendMessage(
+                'succeed_insert_revision',
+                node_id=self.last_id,
+                tree=self.tree,
+            )
         except DataAccessError:
-            pub.sendMessage("fail_insert_revision",
-                            error_message=("Failed to insert revision into "
-                                           "program database."))
+            _error_msg: str = ('{0}: Failed to insert revision into program '
+                               'database.'.format(_method_name))
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_insert_revision",
+                error_message=_error_msg,
+            )

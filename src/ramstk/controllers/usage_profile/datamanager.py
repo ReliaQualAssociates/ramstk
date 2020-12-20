@@ -8,11 +8,11 @@
 """Usage Profile Package Data Model."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
@@ -130,7 +130,10 @@ class DataManager(RAMSTKDataManager):
                         data={'usage_profile': _environment})
                     self.last_id['environment'] = _environment.environment_id
 
-        pub.sendMessage('succeed_retrieve_usage_profile', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_usage_profile',
+            tree=self.tree,
+        )
 
     def do_update(self, node_id: str) -> None:
         """Update record associated with node ID in RAMSTK Program database.
@@ -139,30 +142,54 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        _method_name: str = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
+
         try:
             self.dao.do_update(
                 self.tree.get_node(node_id).data['usage_profile'])
-            pub.sendMessage('succeed_update_usage_profile', node_id=node_id)
+            pub.sendMessage(
+                'succeed_update_usage_profile',
+                node_id=node_id,
+            )
         except AttributeError:
-            pub.sendMessage('fail_update_usage_profile',
-                            error_message=('Attempted to save non-existent '
-                                           'usage profile ID '
-                                           '{0:s}.').format(str(node_id)))
+            _error_msg: str = (
+                '{1}: Attempted to save non-existent usage profile ID {'
+                '0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_usage_profile',
+                error_message=_error_msg,
+            )
         except (KeyError, TypeError):
             if node_id != 0:
-                pub.sendMessage('fail_update_usage_profile',
-                                error_message=('No data package found for '
-                                               'usage profile ID '
-                                               '{0:s}.').format(str(node_id)))
+                _error_msg = (
+                    '{1}: No data package found for usage profile ID {'
+                    '0}.').format(str(node_id), _method_name)
+                pub.sendMessage(
+                    'do_log_debug',
+                    logger_name='DEBUG',
+                    message=_error_msg,
+                )
+                pub.sendMessage(
+                    'fail_update_usage_profile',
+                    error_message=_error_msg,
+                )
 
-    def _do_delete(self, node_id: int) -> Tree:
+    def _do_delete(self, node_id: int) -> None:
         """Remove a usage profile element.
 
         :param node_id: the usage profile element ID to remove.
-        :return: _profile_tree; the treelib.Tree() holding the usage profile
-            for revision_id.
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
+        _method_name: str = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
+
         try:
             super().do_delete(node_id, 'usage_profile')
 
@@ -172,10 +199,18 @@ class DataManager(RAMSTKDataManager):
                             node_id=node_id,
                             tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ("Attempted to delete non-existent usage profile ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_usage_profile',
-                            error_message=_error_msg)
+            _error_msg: str = (
+                '{1}: Attempted to delete non-existent usage profile ID {0}.'
+            ).format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_delete_usage_profile',
+                error_message=_error_msg,
+            )
 
     def _do_insert_environment(self, mission_id: int, phase_id: int) -> None:
         """Add a new environment for phase ID.
@@ -203,9 +238,20 @@ class DataManager(RAMSTKDataManager):
                                   parent=_phase_id,
                                   data={'usage_profile': _environment})
             self.last_id['environment'] = _environment.environment_id
-            pub.sendMessage("succeed_insert_usage_profile", tree=self.tree)
+            pub.sendMessage(
+                "succeed_insert_usage_profile",
+                tree=self.tree,
+            )
         except DataAccessError as _error:
-            pub.sendMessage("fail_insert_usage_profile", error_message=_error)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error,
+            )
+            pub.sendMessage(
+                "fail_insert_usage_profile",
+                error_message=_error,
+            )
 
     def _do_insert_mission(self) -> None:
         """Add a new mission for revision ID.
@@ -228,9 +274,20 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data={'usage_profile': _mission})
             self.last_id['mission'] = _mission.mission_id
-            pub.sendMessage("succeed_insert_usage_profile", tree=self.tree)
+            pub.sendMessage(
+                "succeed_insert_usage_profile",
+                tree=self.tree,
+            )
         except DataAccessError as _error:
-            pub.sendMessage("fail_insert_usage_profile", error_message=_error)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error,
+            )
+            pub.sendMessage(
+                "fail_insert_usage_profile",
+                error_message=_error,
+            )
 
     def _do_insert_mission_phase(self, mission_id: int) -> None:
         """Add a new mission phase for mission ID.
@@ -253,9 +310,20 @@ class DataManager(RAMSTKDataManager):
                                   parent=str(mission_id),
                                   data={'usage_profile': _phase})
             self.last_id['mission_phase'] = _phase.phase_id
-            pub.sendMessage("succeed_insert_usage_profile", tree=self.tree)
+            pub.sendMessage(
+                "succeed_insert_usage_profile",
+                tree=self.tree,
+            )
         except DataAccessError as _error:
-            pub.sendMessage("fail_insert_usage_profile", error_message=_error)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error,
+            )
+            pub.sendMessage(
+                "fail_insert_usage_profile",
+                error_message=_error,
+            )
 
     def _do_set_attributes(self, node_id: List, package: Dict) -> None:
         """Set the attributes of the record associated with the Node ID.
@@ -287,9 +355,16 @@ class DataManager(RAMSTKDataManager):
                     node_id[0],
                     table='usage_profile').set_attributes(_attributes)
 
-        except (AttributeError, TypeError):
-            pub.sendMessage('fail_set_usage_profile_attributes',
-                            node_id=node_id[0])
+        except (AttributeError, TypeError) as _error:
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error,
+            )
+            pub.sendMessage(
+                'fail_set_usage_profile_attributes',
+                node_id=node_id[0],
+            )
 
     def _do_set_all_attributes(self, attributes: Dict[str, Any],
                                node_id: str) -> None:
@@ -306,6 +381,5 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self._do_set_attributes(
-                node_id=node_id,  # type: ignore
-                package={_key: attributes[_key]})
+            self._do_set_attributes(node_id=[node_id, ''],
+                                    package={_key: attributes[_key]})

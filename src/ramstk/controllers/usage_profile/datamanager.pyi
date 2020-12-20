@@ -1,9 +1,6 @@
 # Standard Library Imports
 from typing import Any, Dict, List
 
-# Third Party Imports
-from treelib import Tree as Tree
-
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
 from ramstk.exceptions import DataAccessError as DataAccessError
@@ -29,7 +26,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: str) -> None:
         ...
 
-    def _do_delete(self, node_id: int) -> Tree:
+    def _do_delete(self, node_id: int) -> None:
         ...
 
     def _do_insert_environment(self, mission_id: int, phase_id: int) -> None:

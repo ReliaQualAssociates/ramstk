@@ -7,6 +7,7 @@
 """Hardware Controller Package analysis manager."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
@@ -32,9 +33,9 @@ class RAMSTKAnalysisManager:
     :ivar tree: the treelib Tree() used to hold a copy of the data manager's
         tree.  This do not remain in-sync automatically.
     :type tree: :class:`treelib.Tree`
-    :ivar RAMSTK_CONFIGURATION: the instance of the RAMSTKUserConfiguration
-        class associated with this analysis manager.
-    :type RAMSTK_CONFIGURATION: :class:`ramstk.RAMSTKUserConfiguration`
+    :ivar RAMSTK_USER_CONFIGURATION: the instance of the
+        RAMSTKUserConfiguration class associated with this analysis manager.
+    :type RAMSTK_USER_CONFIGURATION: :class:`ramstk.RAMSTKUserConfiguration`
     """
 
     RAMSTK_USER_CONFIGURATION = None
@@ -63,9 +64,6 @@ class RAMSTKAnalysisManager:
 
         # Initialize public scalar attributes.
         self.RAMSTK_USER_CONFIGURATION = configuration
-        # TODO: Remove the following statement when all the controllers are
-        #  updated to use RAMSTK
-        self.RAMSTK_CONFIGURATION = self.RAMSTK_USER_CONFIGURATION
 
     def on_get_all_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set all the attributes for the analysis manager.
@@ -196,9 +194,10 @@ class RAMSTKDataManager:
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
-                        attributes=self.do_select(
-                            node_id, table=table).get_attributes())
+        pub.sendMessage(
+            'succeed_get_{0:s}_attributes'.format(table),
+            attributes=self.do_select(node_id, table=table).get_attributes(),
+        )
 
     def do_select(self, node_id: Any, table: str) -> Any:
         """Retrieve the RAMSTK data table record for the Node ID passed.
@@ -211,9 +210,20 @@ class RAMSTKDataManager:
         :raise: KeyError if passed the name of a table that isn't managed by
             this manager.
         """
+        _method_name = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
+
         try:
             _entity = self.tree.get_node(node_id).data[table]
         except (AttributeError, treelib.tree.NodeIDAbsentError, TypeError):
+            _error_msg: str = (
+                '{2}: No data package for node ID {0} in module {1}.'.format(
+                    node_id, table, _method_name))
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
             _entity = None
 
         return _entity
@@ -227,6 +237,8 @@ class RAMSTKDataManager:
         :return: None
         :rtype: None
         """
+        _method_name = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
         _lst_matrix = []
 
         # Retrieve the matrix values for the desired Matrix ID.
@@ -240,13 +252,24 @@ class RAMSTKDataManager:
                                     _matrix.row_item_id, _matrix.value))
 
             if self._mtx_prefix in matrix_type:
-                pub.sendMessage('succeed_retrieve_matrix',
-                                matrix_type=matrix_type,
-                                matrix=_lst_matrix)
+                pub.sendMessage(
+                    'succeed_retrieve_matrix',
+                    matrix_type=matrix_type,
+                    matrix=_lst_matrix,
+                )
         except TypeError:
-            pub.sendMessage('fail_retrieve_matrix',
-                            error_message=("No matrix returned for {0:s} "
-                                           "matrix.".format(str(matrix_type))))
+            _error_msg: str = ('{1}: No matrix returned for {0} '
+                               'matrix.'.format(str(matrix_type),
+                                                _method_name))
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_retrieve_matrix',
+                error_message=_error_msg,
+            )
 
     def do_set_attributes(self, node_id: List, package: Dict[str,
                                                              Any]) -> None:
@@ -258,6 +281,8 @@ class RAMSTKDataManager:
         :return: None
         :rtype: None
         """
+        _method_name = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
         [[_key, _value]] = package.items()
 
         for _table in self._pkey:
@@ -265,6 +290,14 @@ class RAMSTKDataManager:
                 _attributes = self.do_select(node_id[0],
                                              table=_table).get_attributes()
             except (AttributeError, KeyError):
+                _error_msg: str = (
+                    '{2}: No data package for node ID {0} in module {'
+                    '1}.'.format(node_id[0], _table, _method_name))
+                pub.sendMessage(
+                    'do_log_debug',
+                    logger_name='DEBUG',
+                    message=_error_msg,
+                )
                 _attributes = {}
 
             for _field in self._pkey[_table]:
