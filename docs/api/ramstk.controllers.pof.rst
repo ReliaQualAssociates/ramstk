@@ -12,7 +12,6 @@ ramstk.controllers.pof.datamanager module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

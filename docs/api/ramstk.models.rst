@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    ramstk.models.commondb
    ramstk.models.programdb
@@ -19,7 +20,6 @@ ramstk.models.tables module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

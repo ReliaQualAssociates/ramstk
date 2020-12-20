@@ -20,7 +20,6 @@ ramstk.controllers.fmea.datamanager module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

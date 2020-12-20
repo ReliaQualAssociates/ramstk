@@ -76,6 +76,14 @@ ramstk.views.gtk3.widgets.matrixview module
    :undoc-members:
    :show-inheritance:
 
+ramstk.views.gtk3.widgets.panel module
+--------------------------------------
+
+.. automodule:: ramstk.views.gtk3.widgets.panel
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 ramstk.views.gtk3.widgets.plot module
 -------------------------------------
 
@@ -100,6 +108,13 @@ ramstk.views.gtk3.widgets.treeview module
    :undoc-members:
    :show-inheritance:
 
+ramstk.views.gtk3.widgets.widget module
+---------------------------------------
+
+.. automodule:: ramstk.views.gtk3.widgets.widget
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

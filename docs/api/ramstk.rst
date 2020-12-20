@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    ramstk.analyses
    ramstk.controllers
@@ -55,7 +56,6 @@ ramstk.utilities module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

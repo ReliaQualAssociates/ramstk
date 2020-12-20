@@ -20,7 +20,6 @@ ramstk.controllers.stakeholder.datamanager module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

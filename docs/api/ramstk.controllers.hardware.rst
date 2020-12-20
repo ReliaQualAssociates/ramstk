@@ -28,7 +28,6 @@ ramstk.controllers.hardware.matrixmanager module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

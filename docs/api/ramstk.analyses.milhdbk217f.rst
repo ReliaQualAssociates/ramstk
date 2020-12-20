@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    ramstk.analyses.milhdbk217f.models
 
@@ -18,7 +19,6 @@ ramstk.analyses.milhdbk217f.milhdbk217f module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

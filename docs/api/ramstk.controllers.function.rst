@@ -4,14 +4,6 @@ ramstk.controllers.function package
 Submodules
 ----------
 
-ramstk.controllers.function.analysismanager module
---------------------------------------------------
-
-.. automodule:: ramstk.controllers.function.analysismanager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ramstk.controllers.function.datamanager module
 ----------------------------------------------
 
@@ -27,7 +19,6 @@ ramstk.controllers.function.matrixmanager module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

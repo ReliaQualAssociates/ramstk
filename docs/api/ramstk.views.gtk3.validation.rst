@@ -28,7 +28,6 @@ ramstk.views.gtk3.validation.workview module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

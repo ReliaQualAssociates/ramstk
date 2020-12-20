@@ -12,7 +12,6 @@ ramstk.controllers.options.datamanager module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 
