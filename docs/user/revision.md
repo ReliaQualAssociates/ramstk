@@ -5,7 +5,7 @@ used.  All other RAMSTK modules are optional and are relative to the Revision
 module.
 
 A Revision could be used to represent many things depending on your industry.
-A Revision could represent:
+ A Revision could represent:
 
 * Model Year
 * Configuration
@@ -30,8 +30,9 @@ a Usage Profile, reliability specifications and analyses have no real meaning.
 
 The Usage Profile(s) should be defined and documented early in the
 development program.  Each mission can be broken down into one or more mission
-phase.  For each mission phase, one or more environmental conditions can be
-defined.  A simple usage profile, for example, might be:
+phases.  For each mission phase, one or more environmental conditions can be
+defined.  A simple [usage profile](#usage_profile) (highlighted in red in
+ the image), for example, might be:
 
 * Drive to work (Mission)
   + Start car (Mission Phase)
@@ -48,9 +49,11 @@ defined.  A simple usage profile, for example, might be:
     - Humidity
     - Precipitation
 
+![Usage Profile](./figures/usage_profile.png)
+<a name="usage_profile"></a>
+
 In the Usage Profile module, the following information is editable
 for each entity:
-
 
 | **Entity**        | **Attribute**                             |
 | ----------------- | ----------------------------------------- |
@@ -69,8 +72,11 @@ for each entity:
 |                   | Variance of design value                  |
 
 In addition to defining the usage profile, the mission and mission
-phase will be used in Hardware FMECA's to calculate a failure mode's mission
-time.
+phase will be used in Hardware FMEA's to calculate a failure mode's mission
+time.  Measurement units for environmental conditions and mission times are
+stored in the RAMSTK Site database so a consistent set of units are available
+for all RAMSTK Programs.  Design values for environmental conditions can be
+defined as minimum, maximum, or using a mean and a variance.
 
 ### Failure Definitions
 
