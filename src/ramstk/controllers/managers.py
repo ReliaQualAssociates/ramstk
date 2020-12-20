@@ -303,6 +303,7 @@ class RAMSTKDataManager:
         """
         for _node in self.tree.all_nodes():
             self.do_update(_node.identifier)  # type: ignore
+        pub.sendMessage('succeed_update_all')
 
     def do_update_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
         """Update the matrix values in the RAMSTK Program database.

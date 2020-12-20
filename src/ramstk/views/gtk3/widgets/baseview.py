@@ -162,6 +162,7 @@ class RAMSTKBaseView(Gtk.HBox):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_select_revision, 'selected_revision')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_matrix')
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_matrix')
 
     def __set_callbacks(self) -> None:
