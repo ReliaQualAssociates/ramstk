@@ -146,7 +146,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update, 'request_update_usage_profile')
         assert pub.isSubscribed(DUT.do_update_all,
-                                'request_update_all_usage_profile')
+                                'request_update_all_usage_profiles')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_usage_profile')
         assert pub.isSubscribed(DUT._do_insert_environment,
                                 'request_insert_environment')
@@ -683,4 +683,4 @@ class TestUpdateMethods():
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        pub.sendMessage('request_update_all_usage_profiles', revision_id=1)
+        pub.sendMessage('request_update_all_usage_profiles')

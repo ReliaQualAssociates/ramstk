@@ -90,7 +90,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_update,
                                 'request_update_failure_definition')
         assert pub.isSubscribed(DUT.do_update_all,
-                                'request_update_all_failure_definitions')
+                                'request_update_all_failure_definitionss')
         assert pub.isSubscribed(DUT.do_get_tree,
                                 'request_get_failure_definition_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
