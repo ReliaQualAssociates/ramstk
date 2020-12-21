@@ -1088,6 +1088,8 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
+        self._lst_icons.insert(0, 'add')
         self._lst_widgets: List[object] = []
 
         # Initialize private scalar attributes.

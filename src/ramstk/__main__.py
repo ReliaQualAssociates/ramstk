@@ -102,6 +102,7 @@ def do_copy_configuration_values(
         site_configuration.RAMSTK_RPN_OCCURRENCE
     user_configuration.RAMSTK_RPN_SEVERITY = \
         site_configuration.RAMSTK_RPN_SEVERITY
+    user_configuration.RAMSTK_SEVERITY = site_configuration.RAMSTK_SEVERITY
     user_configuration.RAMSTK_STAKEHOLDERS = \
         site_configuration.RAMSTK_STAKEHOLDERS
     user_configuration.RAMSTK_SUBCATEGORIES = \

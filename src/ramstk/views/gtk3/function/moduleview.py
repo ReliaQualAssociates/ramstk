@@ -7,7 +7,7 @@
 """RAMSTK Function GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -46,7 +46,7 @@ class FunctionPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
+        self._dic_attribute_keys = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'function_id': [None, 'edited', 1],
@@ -155,11 +155,6 @@ class FunctionPanel(RAMSTKPanel):
             pub.sendMessage(
                 'selected_function',
                 attributes=_attributes,
-            )
-            pub.sendMessage(
-                'request_get_hazard_attributes',
-                node_id=self._record_id,
-                table='hazards',
             )
             pub.sendMessage(
                 'request_set_title',

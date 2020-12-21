@@ -309,7 +309,7 @@ class TestGetterSetter():
         assert DUT.do_select(1,
                              table='hazard').potential_hazard == 'Donald Trump'
 
-    @pytest.mark.skip
+    @pytest.mark.unit
     def test_do_set_all_attributes(self, mock_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmHazards()
