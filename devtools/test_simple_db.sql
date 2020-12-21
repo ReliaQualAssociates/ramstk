@@ -39,3 +39,5 @@ CREATE TABLE ramstk_site_info (
     fld_fmea_enabled INTEGER,
     PRIMARY KEY (fld_site_id)
 );
+CREATE TABLE ramstk_empty_table(
+    fld_empty_id INTEGER NOT NULL)

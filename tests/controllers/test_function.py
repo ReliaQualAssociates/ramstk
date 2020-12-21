@@ -1,3 +1,4 @@
+# type: ignore
 # pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
