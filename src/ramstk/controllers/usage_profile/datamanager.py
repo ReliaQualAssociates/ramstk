@@ -340,16 +340,14 @@ class DataManager(RAMSTKDataManager):
                 node_id[0], table='usage_profile').get_attributes()
             if _key in _attributes:
                 _attributes[_key] = _value
+                _level = len(node_id[0].split('.'))
 
-                if len(node_id[0].split('.')) == 1:
-                    _attributes.pop('revision_id')
-                    _attributes.pop('mission_id')
-                elif len(node_id[0].split('.')) == 2:
-                    _attributes.pop('mission_id')
-                    _attributes.pop('phase_id')
-                elif len(node_id[0].split('.')) == 3:
-                    _attributes.pop('phase_id')
-                    _attributes.pop('environment_id')
+                for _attribute in {
+                        1: ['revision_id', 'mission_id'],
+                        2: ['mission_id', 'phase_id'],
+                        3: ['phase_id', 'environment_id'],
+                }[_level]:
+                    _attributes.pop(_attribute)
 
                 self.do_select(
                     node_id[0],

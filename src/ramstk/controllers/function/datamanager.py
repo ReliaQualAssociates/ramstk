@@ -136,7 +136,8 @@ class DataManager(RAMSTKDataManager):
         except TypeError:
             if node_id != 0:
                 _error_msg = (
-                    '{1}: No data package found for function ID {0}.').format(
+                    '{1}: The value for one or more attributes for function '
+                    'ID {0} was the wrong type.').format(
                         str(node_id), _method_name)
                 pub.sendMessage(
                     'do_log_debug',
@@ -191,54 +192,38 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        if self.tree.get_node(parent_id) is not None:
-            _last_id = self.dao.get_last_id('ramstk_function', 'function_id')
-            try:
-                _function = RAMSTKFunction()
-                _function.revision_id = self._revision_id
-                _function.function_id = _last_id + 1
-                _function.name = 'New Function'
-                _function.parent_id = parent_id
+        _last_id = self.dao.get_last_id('ramstk_function', 'function_id')
+        try:
+            _function = RAMSTKFunction()
+            _function.revision_id = self._revision_id
+            _function.function_id = _last_id + 1
+            _function.name = 'New Function'
+            _function.parent_id = parent_id
 
-                self.dao.do_insert(_function)
+            self.dao.do_insert(_function)
 
-                self.tree.create_node(tag='function',
-                                      identifier=_function.function_id,
-                                      parent=_function.parent_id,
-                                      data={'function': _function})
+            self.tree.create_node(tag='function',
+                                  identifier=_function.function_id,
+                                  parent=_function.parent_id,
+                                  data={'function': _function})
 
-                self.last_id = _function.function_id
+            self.last_id = _function.function_id
 
-                pub.sendMessage(
-                    'succeed_insert_function',
-                    tree=self.tree,
-                )
-                pub.sendMessage(
-                    'insert_function_matrix_row',
-                    node_id=self.last_id,
-                )
-            except DataAccessError as _error:
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error,
-                )
-                pub.sendMessage(
-                    "fail_insert_function",
-                    error_message=_error,
-                )
-        else:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = (
-                '{1}: Attempting to add a function as a child of non-existent '
-                'parent node {0}.'.format(str(parent_id), _method_name))
+            pub.sendMessage(
+                'succeed_insert_function',
+                tree=self.tree,
+            )
+            pub.sendMessage(
+                'insert_function_matrix_row',
+                node_id=self.last_id,
+            )
+        except DataAccessError as _error:
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
-                message=_error_msg,
+                message=_error.msg,
             )
             pub.sendMessage(
                 "fail_insert_function",
-                error_message=_error_msg,
+                error_message=_error.msg,
             )

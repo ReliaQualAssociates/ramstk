@@ -1,6 +1,6 @@
-bug-labels=type:bug
-enhancement-labels=type:enhancement,type:quality
-include-labels=type:bug,type:enhancement,type:quality,status:closed,severity:blocker,severity:major,severity:normal
-exclude-labels=dependencies
+bug-labels=bug
+enhancement-labels=enhancement,quality
+include-labels=bug,enhancement,quality,closed,blocker,high,normal
+exclude-labels=dependencies,todo
 pr-wo-labels=false
 issues-wo-labels=false

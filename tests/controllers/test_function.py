@@ -14,7 +14,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import dmFunction, dmHardware, mmFunction
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
@@ -33,10 +32,13 @@ class MockDao:
         try:
             self._do_delete_function(record)
         except AttributeError:
-            raise DataAccessError('')
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def do_insert(self, record):
-        self._all_functions.append(record)
+        if record.parent_id < 10:
+            self._all_functions.append(record)
+        else:
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def do_select_all(self,
                       table,
@@ -58,7 +60,8 @@ class MockDao:
     def do_update(self, record):
         for _key in MOCK_FUNCTIONS:
             if _key == record.function_id:
-                MOCK_FUNCTIONS[_key]['name'] = record.name
+                MOCK_FUNCTIONS[_key]['name'] = str(record.name)
+                MOCK_FUNCTIONS[_key]['cost'] = float(record.cost)
 
     def get_last_id(self, table, id_column):
         return max(MOCK_FUNCTIONS.keys())
@@ -355,8 +358,7 @@ class TestInsertMethods():
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
     def on_fail_insert_function(self, error_message):
-        assert error_message == ('_do_insert_function: Attempting to add a function as a child of '
-                                 'non-existent parent node 40.')
+        assert error_message == ('An error occured with RAMSTK.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
@@ -403,6 +405,8 @@ class TestInsertMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_function(parent_id=40)
+
+        pub.unsubscribe(self.on_fail_insert_function, 'fail_insert_function')
 
     @pytest.mark.unit
     def test_do_insert_matrix_row(self, mock_program_dao):
@@ -546,7 +550,7 @@ class TestUpdateMethods():
         print("\033[35m\nfail_update_function topic was broadcast")
 
     def on_fail_update_function_no_data(self, error_message):
-        assert error_message == ('do_update: No data package found for function ID 0.')
+        assert error_message == ('do_update: The value for one or more attributes for function ID 1 was the wrong type.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
     def on_succeed_update_matrix(self):
@@ -585,7 +589,24 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_function, 'fail_update_function')
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_wrong_data_type(self, mock_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Function ID that has no data package."""
+        pub.subscribe(self.on_fail_update_function_no_data,
+                      'fail_update_function')
+
+        DUT = dmFunction()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.get_node(1).data['function'].cost = None
+
+        DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_function_no_data,
+                        'fail_update_function')
+
+    @pytest.mark.unit
+    def test_do_update_root_node(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
         pub.subscribe(self.on_fail_update_function_no_data,

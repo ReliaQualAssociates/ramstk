@@ -5,7 +5,7 @@
 PREFIX		= /usr/local
 
 GITHUB_USER = ReliaQualAssociates
-TOKEN		=
+TOKEN		= $(shell echo $(GITHUB_TOKEN))
 CHANGELOG	= CHANGELOG.md
 REPO		= ramstk
 REQFILE		= requirements.txt
@@ -79,8 +79,10 @@ help:
 	@echo "	maintain SRCFILE=<file>			check maintainability using mccabe and radon.  Helpful to keymap in IDE or editor."
 	@echo "						Pass wildcard (*) at end of FILE=<file> path to analyze all files in directory."
 	@echo "Targets related to documentation:"
-	@echo "	docs					generate API documentation and build it. <FUTURE>"
-	@echo "	servdocs				update documentation on gh-pages branch; serves it to the public. <FUTURE>"
+	@echo "	api					generate API documentation and build it. <FUTURE>"
+	@echo "	user    				build user documentation. <FUTURE>"
+	@echo "	servapi					update api documentation on gh-pages branch; serves it to the public. <FUTURE>"
+	@echo "	servuser     				update user documentation on gh-pages branch; serves it to the public. <FUTURE>"
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
@@ -94,7 +96,7 @@ help:
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
 	@echo ""
 	@echo "	GITHUB_USER				set the name of the Github user.  Defaults to $(GITHUB_USER)"
-	@echo "	TOKEN					set the Github API token to use.  Defaults to $(TOKEN)"
+	@echo "	TOKEN					set the Github API token to use.  Defaults to environment variable GITHUB_TOKEN"
 	@echo "	CHANGELOG				set the name of the file for the change log.  Defaults to $(CHANGELOG)"
 	@echo "	REPO					set the name of the GitHub repository to generate the change log from.  Defaults to $(REPO)"
 	@echo "	REQFILE					set the name of the requirements file to write required runtime packages.  Defaults to $(REQFILE)"
