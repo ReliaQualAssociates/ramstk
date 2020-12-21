@@ -7,7 +7,6 @@
 """RAMSTK Function GTK3 module view."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict, List
 
 # Third Party Imports
@@ -72,8 +71,16 @@ class FunctionPanel(RAMSTKPanel):
             'total_part_count': [None, 'edited', 20],
             'type': [None, 'edited', 21],
         }
+        self._dic_error_messages = {
+            'load_row':
+            ("{3}: An error occurred when loading function {0}.  "
+             "This might indicate it was missing it's data package, some "
+             "of the data in the package was missing, or some of the data "
+             "was the wrong type.  Row data was: {1}.  Error was: {2}."
+             ""),
+        }
         self._dic_row_loader = {
-            'function': self.__do_load_function,
+            'function': super()._do_load_treerow,
         }
 
         # Initialize private list class attributes.
@@ -158,47 +165,6 @@ class FunctionPanel(RAMSTKPanel):
                 'request_set_title',
                 title=_title,
             )
-
-    def __do_load_function(self, node: treelib.Node,
-                           row: Gtk.TreeIter) -> Gtk.TreeIter:
-        """Load a function into the RAMSTKTreeView().
-
-        :param node: the treelib Node() with the function data to load.
-        :param row: the parent row of the function to load.
-        :return: _new_row; the row that was just populated with function
-            data.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _new_row = None
-        _data: List[Any] = []
-
-        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-        _attributes = _entity.get_attributes()
-
-        _model = self.tvwTreeView.get_model()
-        for _col, _attr in self.tvwTreeView.korder.items():
-            _pos = self.tvwTreeView.position[_col]
-            _data.insert(_pos, _attributes[_attr])
-
-        try:
-            _new_row = _model.append(row, _data)
-        except (AttributeError, TypeError, ValueError) as _error:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg = (
-                "{3}: An error occurred when loading function {0}.  "
-                "This might indicate it was missing it's data package, some "
-                "of the data in the package was missing, or some of the data "
-                "was the wrong type.  Row data was: {1}.  Error was: {2}."
-                "").format(str(node.identifier), _data, _error, _method_name)
-            pub.sendMessage(
-                'do_log_warning_msg',
-                logger_name='WARNING',
-                message=_error_msg,
-            )
-            _new_row = None
-
-        return _new_row
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.

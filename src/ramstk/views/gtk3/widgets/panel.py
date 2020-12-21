@@ -8,6 +8,7 @@
 """The RAMSTK GTK3 panel Module."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict, List, Union
 
 # Third Party Imports
@@ -82,17 +83,40 @@ class RAMSTKPanel(RAMSTKFrame):
 
         'name': [self.txtName.do_update, 'changed', 0]
 
+    :ivar _dic_error_messages: contains the debug and error messages where
+        the key is the name of the error message and the value is the
+        message itself.  The message can have placeholders to use with
+        format().  An example entry in this dict might be:
+
+        'load_row': ('{0}: There was an error loading a row for module {1}.')
+
+    :ivar _dic_row_loader: contains the methods used to load the row data
+        into a RAMSTKTreeView() where the key is the name of the module and
+        the value is the method.  This is necessary for those views that
+        combine different tables such as the usage profile or FMEA.  Having
+        different loader methods for each type of entity may be needed to
+        load the data for each entity in the correct order.  Most work
+        stream modules will simple use the do_load_row() method of this
+        meta-class.  Example entries in this dict might be:
+
+        'mission': self.__do_load_mission
+        'function': super().do_load_row
+
     :ivar _lst_labels: the list of text to display in the labels
         for each widget in a panel.
     :ivar _lst_widgets: the list of widgets to display in a panel.
+    :ivar _parent_id: the ID of the parent entity for the selected work stream
+        entity.  This is needed for hierarchical modules such as the
+        function module.  For flat modules, this will always be zero.
     :ivar _record_id: the work stream module ID whose attributes
         this panel is displaying.
     :ivar _title: the title to place on the RAMSTKFrame() that is
         this panel's container.
 
+    :ivar fmt: the formatting string for displaying float values.
+    :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
     :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
         treeview.
-    :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
     """
 
     # Define private dict class attributes.
@@ -120,6 +144,7 @@ class RAMSTKPanel(RAMSTKFrame):
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
         self._dic_attribute_updater: Dict[str, Any] = {}
+        self._dic_error_messages: Dict[str, str] = {}
         self._dic_row_loader: Dict[str, Any] = {}
 
         # Initialize private list instance attributes.
@@ -741,6 +766,42 @@ class RAMSTKPanel(RAMSTKFrame):
             _method = self._dic_row_loader[node.tag]
             # noinspection PyArgumentList
             _new_row = _method(node, row)
+
+        return _new_row
+
+    def _do_load_treerow(self, node: treelib.Node,
+                         row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a row into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the data to load.
+        :param row: the parent row of the row to load.
+        :return: _new_row; the row that was just populated with data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+        _data: List[Any] = []
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+        _attributes = _entity.get_attributes()
+
+        _model = self.tvwTreeView.get_model()
+        for _col, _attr in self.tvwTreeView.korder.items():
+            _pos = self.tvwTreeView.position[_col]
+            _data.insert(_pos, _attributes[_attr])
+
+        try:
+            _new_row = _model.append(row, _data)
+        except (AttributeError, TypeError, ValueError) as _error:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = self._dic_error_messages['load_row'].format(
+                str(node.identifier), _data, _error, _method_name)
+            pub.sendMessage(
+                'do_log_warning_msg',
+                logger_name='WARNING',
+                message=_error_msg,
+            )
+            _new_row = None
 
         return _new_row
 
