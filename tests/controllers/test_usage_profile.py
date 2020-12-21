@@ -16,6 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmUsageProfile
 from ramstk.db.base import BaseDatabase
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
 )
@@ -50,12 +51,16 @@ class MockDao:
             self._do_delete_environments(record)
 
     def do_insert(self, record):
-        if record == RAMSTKMission:
+        if isinstance(record, RAMSTKMission) and record.revision_id == 1:
             self._all_missions.append(record)
-        elif record == RAMSTKMissionPhase:
+            print(self._all_missions)
+        elif isinstance(record, RAMSTKMissionPhase) and record.mission_id <\
+                10:
             self._all_mission_phases.append(record)
-        elif record == RAMSTKEnvironment:
+        elif isinstance(record, RAMSTKEnvironment) and record.phase_id < 10:
             self._all_environments.append(record)
+        else:
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def _do_select_all_missions(self, table, value):
         _idx = 1
@@ -519,13 +524,25 @@ class TestInsertMethods():
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
 
+    def on_fail_insert_mission(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
     def on_succeed_insert_mission_phase(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mission_phase topic was broadcast")
 
+    def on_fail_insert_mission_phase(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
     def on_succeed_insert_environment(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
+
+    def on_fail_insert_environment(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
     def test_do_insert_mission(self, mock_program_dao):
@@ -544,6 +561,22 @@ class TestInsertMethods():
 
         pub.unsubscribe(self.on_succeed_insert_mission,
                         'succeed_insert_usage_profile')
+
+    @pytest.mark.unit
+    def test_do_insert_mission_no_revision(self, mock_program_dao):
+        """do_insert() should send the success message after successfully
+        inserting a new mission."""
+        pub.subscribe(self.on_fail_insert_mission,
+                      'fail_insert_usage_profile')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._revision_id = 4
+        DUT._do_insert_mission()
+
+        pub.unsubscribe(self.on_fail_insert_mission,
+                        'fail_insert_usage_profile')
 
     @pytest.mark.unit
     def test_do_insert_mission_phase(self, mock_program_dao):
@@ -565,6 +598,21 @@ class TestInsertMethods():
                         'succeed_insert_mission_phase')
 
     @pytest.mark.unit
+    def test_do_insert_mission_phase_no_mission(self, mock_program_dao):
+        """do_insert() should send the success message after successfully
+        inserting a new mission phase."""
+        pub.subscribe(self.on_fail_insert_mission_phase,
+                      'fail_insert_mission_phase')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_insert_mission_phase(mission_id=40)
+
+        pub.unsubscribe(self.on_fail_insert_mission_phase,
+                        'fail_insert_mission_phase')
+
+    @pytest.mark.unit
     def test_do_insert_environment(self, mock_program_dao):
         """do_insert() should send the success message after successfully
         inserting a new environment."""
@@ -583,6 +631,21 @@ class TestInsertMethods():
 
         pub.unsubscribe(self.on_succeed_insert_environment,
                         'succeed_insert_environment')
+
+    @pytest.mark.unit
+    def test_do_insert_environment(self, mock_program_dao):
+        """do_insert() should send the success message after successfully
+        inserting a new environment."""
+        pub.subscribe(self.on_fail_insert_environment,
+                      'fail_insert_environment')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_insert_environment(mission_id=1, phase_id=40)
+
+        pub.unsubscribe(self.on_fail_insert_environment,
+                        'fail_insert_environment')
 
 
 @pytest.mark.usefixtures('test_program_dao')

@@ -246,11 +246,11 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
-                message=_error,
+                message=_error.msg,
             )
             pub.sendMessage(
                 "fail_insert_usage_profile",
-                error_message=_error,
+                error_message=_error.msg,
             )
 
     def _do_insert_mission(self) -> None:
@@ -282,11 +282,11 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
-                message=_error,
+                message=_error.msg,
             )
             pub.sendMessage(
                 "fail_insert_usage_profile",
-                error_message=_error,
+                error_message=_error.msg,
             )
 
     def _do_insert_mission_phase(self, mission_id: int) -> None:
@@ -318,11 +318,11 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
-                message=_error,
+                message=_error.msg,
             )
             pub.sendMessage(
                 "fail_insert_usage_profile",
-                error_message=_error,
+                error_message=_error.msg,
             )
 
     def _do_set_attributes(self, node_id: List, package: Dict) -> None:
