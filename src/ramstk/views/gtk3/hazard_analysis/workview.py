@@ -374,26 +374,6 @@ class HazOps(RAMSTKWorkView):
         super().do_set_cursor_busy()
         pub.sendMessage('request_calculate_fha', node_id=self._record_id)
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the selected Hazard.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_hazard', node_id=self._parent_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the entities in the HazOps.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hazops')
-
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record ID when a hazard is selected.
 

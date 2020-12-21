@@ -17,8 +17,8 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKPanel,
-    RAMSTKTextView, RAMSTKWorkView
+    RAMSTKCheckButton, RAMSTKEntry, RAMSTKMessageDialog,
+    RAMSTKPanel, RAMSTKTextView, RAMSTKWorkView
 )
 
 # RAMSTK Local Imports
@@ -208,18 +208,24 @@ class GeneralData(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            super().do_request_update,
-            super().do_request_update_all,
-        ]
-        self._lst_icons = ['save', 'save-all']
-        self._lst_mnu_labels: List[str] = [
-            _("Save"),
-            _("Save All"),
+        self._lst_callbacks.insert(1, super().do_request_insert_child)
+        self._lst_callbacks.insert(2, self.do_request_delete)
+        self._lst_icons[0] = 'insert_sibling'
+        self._lst_icons.insert(1, 'insert_child')
+        self._lst_icons.insert(2, 'remove')
+        self._lst_mnu_labels = [
+            _("Add Sibling Function"),
+            _("Add Child Function"),
+            _("Delete Selected Function"),
+            _("Save Selected Function"),
+            _("Save All Functions"),
         ]
         self._lst_tooltips = [
-            _("Save changes to the currently selected Function."),
-            _("Save changes to all Functions."),
+            _("Add a new sibling function."),
+            _("Add a new child function."),
+            _("Delete the currently selected function."),
+            _("Save changes to the currently selected function."),
+            _("Save changes to all functions."),
         ]
 
         # Initialize private scalar attributes.
@@ -234,11 +240,41 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_set_cursor_active, 'succeed_delete_function')
+        pub.subscribe(super().do_set_cursor_active, 'succeed_insert_function')
         pub.subscribe(super().do_set_cursor_active, 'succeed_update_function')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
+                      'fail_delete_function')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
+                      'fail_insert_function')
         pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_update_function')
 
         pub.subscribe(self._do_set_record_id, 'selected_function')
+
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        """Request to delete selected record from the RAMSTKFunction table.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
+        _prompt = _("You are about to delete Function {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._record_id)
+        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog.do_set_message(_prompt)
+        _dialog.do_set_message_type('question')
+
+        if _dialog.do_run() == Gtk.ResponseType.YES:
+            super().do_set_cursor_busy()
+            pub.sendMessage(
+                'request_delete_function',
+                node_id=self._record_id,
+            )
+
+        _dialog.do_destroy()
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
