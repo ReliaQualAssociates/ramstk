@@ -201,10 +201,7 @@ class GeneralData(RAMSTKWorkView):
         """Initialize the Function Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 
@@ -237,9 +234,22 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
+        pub.subscribe(super().do_set_cursor_active, 'succeed_update_function')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
                       'fail_update_function')
+
+        pub.subscribe(self._do_set_record_id, 'selected_function')
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the stakeholder input's record ID.
+
+        :param attributes: the attributes dict for the selected stakeholder
+            input.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['function_id']
+        self._parent_id = attributes['parent_id']
 
     def __make_ui(self) -> None:
         """Build the user interface for the Function General Data tab.
