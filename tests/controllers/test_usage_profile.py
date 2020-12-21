@@ -54,8 +54,7 @@ class MockDao:
         if isinstance(record, RAMSTKMission) and record.revision_id == 1:
             self._all_missions.append(record)
             print(self._all_missions)
-        elif isinstance(record, RAMSTKMissionPhase) and record.mission_id <\
-                10:
+        elif isinstance(record, RAMSTKMissionPhase) and record.mission_id < 10:
             self._all_mission_phases.append(record)
         elif isinstance(record, RAMSTKEnvironment) and record.phase_id < 10:
             self._all_environments.append(record)
@@ -633,7 +632,7 @@ class TestInsertMethods():
                         'succeed_insert_environment')
 
     @pytest.mark.unit
-    def test_do_insert_environment(self, mock_program_dao):
+    def test_do_insert_environment_no_phase(self, mock_program_dao):
         """do_insert() should send the success message after successfully
         inserting a new environment."""
         pub.subscribe(self.on_fail_insert_environment,

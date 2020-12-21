@@ -184,9 +184,6 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         :raise: AttributeError if not connected to a RAMSTK program database.
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
             _revision = RAMSTKRevision()
@@ -206,6 +203,8 @@ class DataManager(RAMSTKDataManager):
                 tree=self.tree,
             )
         except DataAccessError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = ('{0}: Failed to insert revision into program '
                                'database.'.format(_method_name))
             pub.sendMessage(

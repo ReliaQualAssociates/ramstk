@@ -16,6 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmFailureDefinition
 from ramstk.db.base import BaseDatabase
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFailureDefinition
 
 
@@ -28,7 +29,10 @@ class MockDao:
                 self._all_failure_definitions.pop(_idx)
 
     def do_insert(self, record):
-        self._all_failure_definitions.append(record)
+        if record.revision_id == 1:
+            self._all_failure_definitions.append(record)
+        else:
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def _do_select_all_failure_definitions(self, table, value):
         _idx = 1
@@ -329,6 +333,10 @@ class TestInsertMethods():
         print(
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
+    def on_fail_insert_failure_definition(self, error_message):
+        assert error_message == ('_do_insert_failure_definition: Attempting to add failure definition to non-existent revision 4.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
     @pytest.mark.unit
     def test_do_insert(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new failure definition."""
@@ -346,6 +354,21 @@ class TestInsertMethods():
 
         pub.unsubscribe(self.on_succeed_insert_failure_definition,
                         'succeed_insert_failure_definition')
+
+    @pytest.mark.unit
+    def test_do_insert_no_revision(self, mock_program_dao):
+        """do_insert() should send the success message after successfully inserting a new failure definition."""
+        pub.subscribe(self.on_fail_insert_failure_definition,
+                      'fail_insert_failure_definition')
+
+        DUT = dmFailureDefinition()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._revision_id = 4
+        DUT._do_insert_failure_definition()
+
+        pub.unsubscribe(self.on_fail_insert_failure_definition,
+                        'fail_insert_failure_definition')
 
 
 @pytest.mark.usefixtures('test_program_dao')
