@@ -660,11 +660,12 @@ class RAMSTKBaseView(Gtk.HBox):
 
         if _sibling:
             pub.sendMessage('request_insert_{0:s}'.format(
-                self._module.lower()))
+                self._module.lower()),
+                            parent_id=self._parent_id)
         else:
             pub.sendMessage('request_insert_{0:s}'.format(
                 self._module.lower()),
-                            parent_id=self._parent_id)  # noqa
+                            parent_id=self._record_id)  # noqa
 
     def do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         """Request to insert a new child entity of the selected entity.
@@ -672,10 +673,6 @@ class RAMSTKBaseView(Gtk.HBox):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
-        self._parent_id = _model.get_value(_row,
-                                           self._pnlPanel._lst_col_order[1])  # pylint: disable=protected-access
-
         return self.do_request_insert(sibling=False)
 
     def do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
@@ -684,18 +681,6 @@ class RAMSTKBaseView(Gtk.HBox):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        # If the sibling is nested below the top level, get the parent ID from
-        # the previous row.  Otherwise, this is a top level item and the parent
-        # ID is zero.
-        try:
-            _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
-            _prow = _model.iter_parent(_row)
-            self._parent_id = _model.get_value(
-                _prow, self._pnlPanel._lst_col_order[1])  # pylint: disable=protected-access
-        except TypeError as _error:
-            self._parent_id = 0
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
         return self.do_request_insert(sibling=True)
 
     def do_request_update(self, __button: Gtk.ToolButton) -> None:

@@ -80,7 +80,7 @@ class TestCreateControllers():
         assert isinstance(DUT, dmFunction)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'function'
+        assert DUT._tag == 'functions'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
@@ -89,7 +89,7 @@ class TestCreateControllers():
                                 'request_update_all_functions')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_function_attributes')
-        assert pub.isSubscribed(DUT.do_get_tree, 'request_get_function_tree')
+        assert pub.isSubscribed(DUT.do_get_tree, 'request_get_functions_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_function_attributes')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
@@ -118,7 +118,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._on_delete_hardware,
                                 'succeed_delete_hardware')
         assert pub.isSubscribed(DUT._on_insert_function,
-                                'succeed_insert_function')
+                                'insert_function_matrix_row')
         assert pub.isSubscribed(DUT._on_insert_hardware,
                                 'succeed_insert_hardware')
 
@@ -350,8 +350,7 @@ class TestDeleteMethods():
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_function(self, node_id, tree):
-        assert node_id == 3
+    def on_succeed_insert_function(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
@@ -424,9 +423,8 @@ class TestInsertMethods():
                                  identifier=4,
                                  parent=1,
                                  data=None)
-        pub.sendMessage('succeed_insert_function',
-                        node_id=4,
-                        tree=DATAMGR.tree)
+        pub.sendMessage('insert_function_matrix_row',
+                        node_id=4)
 
         assert DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4') == 0
 

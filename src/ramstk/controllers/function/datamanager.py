@@ -28,7 +28,8 @@ class DataManager(RAMSTKDataManager):
     RAMSTKHazardAnalysis data models.
     """
 
-    _tag = 'function'
+    # Define private scalar class attributes.
+    _tag = 'functions'
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Function data manager instance."""
@@ -57,7 +58,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_function')
-        pub.subscribe(self.do_get_tree, 'request_get_function_tree')
+        pub.subscribe(self.do_get_tree, 'request_get_functions_tree')
 
         pub.subscribe(self._do_delete, 'request_delete_function')
         pub.subscribe(self._do_insert_function, 'request_insert_function')
@@ -69,7 +70,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage(
-            'succeed_get_function_tree',
+            'succeed_get_functions_tree',
             tree=self.tree,
         )
 
@@ -91,7 +92,7 @@ class DataManager(RAMSTKDataManager):
                 value=[self._revision_id],
                 order=RAMSTKFunction.function_id):
 
-            self.tree.create_node(tag=_function.name,
+            self.tree.create_node(tag='function',
                                   identifier=_function.function_id,
                                   parent=_function.parent_id,
                                   data={'function': _function})
@@ -155,9 +156,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             super().do_delete(node_id, 'function')
 
@@ -170,6 +168,8 @@ class DataManager(RAMSTKDataManager):
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempted to delete non-existent function ID {'
                 '0}.').format(str(node_id), _method_name)
@@ -191,9 +191,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         if self.tree.get_node(parent_id) is not None:
             _last_id = self.dao.get_last_id('ramstk_function', 'function_id')
             try:
@@ -205,7 +202,7 @@ class DataManager(RAMSTKDataManager):
 
                 self.dao.do_insert(_function)
 
-                self.tree.create_node(tag=_function.name,
+                self.tree.create_node(tag='function',
                                       identifier=_function.function_id,
                                       parent=_function.parent_id,
                                       data={'function': _function})
@@ -214,8 +211,11 @@ class DataManager(RAMSTKDataManager):
 
                 pub.sendMessage(
                     'succeed_insert_function',
-                    node_id=self.last_id,
                     tree=self.tree,
+                )
+                pub.sendMessage(
+                    'insert_function_matrix_row',
+                    node_id=self.last_id,
                 )
             except DataAccessError as _error:
                 pub.sendMessage(
@@ -228,6 +228,8 @@ class DataManager(RAMSTKDataManager):
                     error_message=_error,
                 )
         else:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempting to add a function as a child of non-existent '
                 'parent node {0}.'.format(str(parent_id), _method_name))

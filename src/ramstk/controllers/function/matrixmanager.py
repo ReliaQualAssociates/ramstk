@@ -53,7 +53,7 @@ class MatrixManager(RAMSTKMatrixManager):
                       'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
         pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
-        pub.subscribe(self._on_insert_function, 'succeed_insert_function')
+        pub.subscribe(self._on_insert_function, 'insert_function_matrix_row')
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
     def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
@@ -99,14 +99,11 @@ class MatrixManager(RAMSTKMatrixManager):
         _tag = self._col_tree['fnctn_hrdwr'].get_node(node_id).tag
         return super().do_delete_column(_tag, 'fnctn_hrdwr')
 
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_insert_function(self, node_id: int) -> None:
         """Insert row into matrix when new function is added.
 
         :param node_id: the treelib Tree() node ID associated with the
             inserted function.
-        :param tree: the treelib Tree() containing the remaining function data.
         :return: None
         :rtype: None
         """

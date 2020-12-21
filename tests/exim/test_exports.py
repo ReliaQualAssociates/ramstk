@@ -31,10 +31,10 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='function')
-
+        pub.sendMessage('request_load_output', module='functions')
+        print(DUT._dic_output_data)
         assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data['function'], dict)
+        assert isinstance(DUT._dic_output_data['functions'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_requirement(self, test_program_dao):
@@ -158,7 +158,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='Function')
+        pub.sendMessage('request_load_output', module='Functions')
 
         _test_text = test_export_dir + 'test_export_function.txt'
         assert DUT._do_export('text', _test_text) is None
@@ -172,7 +172,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='Function')
+        pub.sendMessage('request_load_output', module='FunctionS')
 
         _test_text = test_export_dir + 'test_export_function.txt'
         assert DUT._do_export('pdf', _test_text) is None
@@ -191,7 +191,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='Function')
+        pub.sendMessage('request_load_output', module='FunctionS')
         pub.sendMessage('request_load_output', module='Requirement')
 
         _test_multi = test_export_dir + 'test_export_multi.xlsx'

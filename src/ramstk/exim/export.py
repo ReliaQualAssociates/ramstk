@@ -38,7 +38,7 @@ class Export:
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_data, 'succeed_get_function_tree')
+        pub.subscribe(self._do_load_data, 'succeed_get_functions_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_requirement_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_hardware_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_validation_tree')
@@ -139,11 +139,14 @@ class Export:
 
         # pylint: disable=unused-variable
         for __, _node in enumerate(tree.nodes):
+            _tag = tree.nodes[_node].tag
             try:
-                _attributes = tree.nodes[_node].data[_module].get_attributes()
+                _attributes = tree.nodes[_node].data[_tag].get_attributes()
                 for _key in _attributes:
                     _dic_temp[_key] = _attributes[_key]
-            except TypeError:
+            # TODO: Remove KeyError once all modules are updated to use
+            #  plural form for _module attribute.
+            except (KeyError, TypeError):
                 pass
             self._dic_output_data[_module][
                 tree.nodes[_node].identifier] = _dic_temp

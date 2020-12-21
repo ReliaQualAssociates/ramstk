@@ -194,10 +194,22 @@ class RAMSTKDataManager:
         :return: None
         :rtype: None
         """
-        pub.sendMessage(
-            'succeed_get_{0:s}_attributes'.format(table),
-            attributes=self.do_select(node_id, table=table).get_attributes(),
-        )
+        try:
+            pub.sendMessage(
+                'succeed_get_{0}_attributes'.format(table),
+                attributes=self.do_select(node_id,
+                                          table=table).get_attributes(),
+            )
+        except AttributeError:
+            _method_name = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{0}: No attributes found for record ID {1} in '
+                          'table {2}.'.format(_method_name, node_id, table))
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
 
     def do_select(self, node_id: Any, table: str) -> Any:
         """Retrieve the RAMSTK data table record for the Node ID passed.
@@ -210,12 +222,11 @@ class RAMSTKDataManager:
         :raise: KeyError if passed the name of a table that isn't managed by
             this manager.
         """
-        _method_name = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             _entity = self.tree.get_node(node_id).data[table]
         except (AttributeError, treelib.tree.NodeIDAbsentError, TypeError):
+            _method_name = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{2}: No data package for node ID {0} in module {1}.'.format(
                     node_id, table, _method_name))

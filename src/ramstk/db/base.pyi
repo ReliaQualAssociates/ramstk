@@ -2,7 +2,7 @@
 from typing import Any, Dict, List, TextIO, Tuple
 
 # Third Party Imports
-from sqlalchemy.engine import Engine as Engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import query as query
 from sqlalchemy.orm import scoped_session
 
