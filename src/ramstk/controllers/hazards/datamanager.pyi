@@ -28,7 +28,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: int) -> None:
         ...
 
-    def _do_delete_hazard(self, node_id: int) -> None:
+    def _do_delete(self, node_id: int) -> None:
         ...
 
     def _do_insert_hazard(self, parent_id: int = ...) -> None:

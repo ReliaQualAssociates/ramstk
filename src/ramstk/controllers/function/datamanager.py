@@ -111,9 +111,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['function'])
             pub.sendMessage(
@@ -121,6 +118,8 @@ class DataManager(RAMSTKDataManager):
                 node_id=node_id,
             )
         except AttributeError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempted to save non-existent function with function '
                 'ID {0}.').format(str(node_id), _method_name)
@@ -135,6 +134,8 @@ class DataManager(RAMSTKDataManager):
             )
         except TypeError:
             if node_id != 0:
+                _method_name: str = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
                 _error_msg = (
                     '{1}: The value for one or more attributes for function '
                     'ID {0} was the wrong type.').format(
