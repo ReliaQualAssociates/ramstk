@@ -24,7 +24,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: int) -> None:
         ...
 
-    def _do_delete_revision(self, node_id: int) -> None:
+    def _do_delete(self, node_id: int) -> None:
         ...
 
     def _do_insert_revision(self) -> None:

@@ -101,7 +101,7 @@ class TestCreateControllers():
                                 'request_set_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'lvw_editing_failure_definition')
-        assert pub.isSubscribed(DUT._do_delete_failure_definition,
+        assert pub.isSubscribed(DUT._do_delete,
                                 'request_delete_failure_definition')
         assert pub.isSubscribed(DUT._do_insert_failure_definition,
                                 'request_insert_failure_definition')
@@ -178,7 +178,7 @@ class TestDeleteMethods():
             "\033[36m\nsucceed_delete_failure_definition topic was broadcast.")
 
     def on_fail_delete_failure_definition(self, error_message):
-        assert error_message == ('_do_delete_failure_definition: Attempted to delete non-existent failure '
+        assert error_message == ('_do_delete: Attempted to delete non-existent failure '
                                  'definition ID 10.')
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
@@ -192,7 +192,7 @@ class TestDeleteMethods():
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_failure_definition(1)
+        DUT._do_delete(1)
 
         with pytest.raises(AttributeError):
             __ = DUT.tree.get_node(1).data['failure_definition']
@@ -211,7 +211,7 @@ class TestDeleteMethods():
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_failure_definition(10)
+        DUT._do_delete(10)
 
         pub.unsubscribe(self.on_fail_delete_failure_definition,
                         'fail_delete_failure_definition')

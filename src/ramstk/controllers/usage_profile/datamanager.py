@@ -187,9 +187,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             super().do_delete(node_id, 'usage_profile')
 
@@ -199,6 +196,8 @@ class DataManager(RAMSTKDataManager):
                             node_id=node_id,
                             tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempted to delete non-existent usage profile ID {0}.'
             ).format(str(node_id), _method_name)
@@ -340,8 +339,8 @@ class DataManager(RAMSTKDataManager):
                 node_id[0], table='usage_profile').get_attributes()
             if _key in _attributes:
                 _attributes[_key] = _value
-                _level = len(node_id[0].split('.'))
 
+                _level = len(node_id[0].split('.'))
                 for _attribute in {
                         1: ['revision_id', 'mission_id'],
                         2: ['mission_id', 'phase_id'],

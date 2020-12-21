@@ -63,8 +63,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_failure_definition')
 
-        pub.subscribe(self._do_delete_failure_definition,
-                      'request_delete_failure_definition')
+        pub.subscribe(self._do_delete, 'request_delete_failure_definition')
         pub.subscribe(self._do_insert_failure_definition,
                       'request_insert_failure_definition')
 
@@ -142,15 +141,12 @@ class DataManager(RAMSTKDataManager):
                     error_message=_error_msg,
                 )
 
-    def _do_delete_failure_definition(self, node_id: int) -> None:
+    def _do_delete(self, node_id: int) -> None:
         """Remove a failure definition.
 
         :param node_id: the failure definition ID to remove.
         :return: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             super().do_delete(node_id, 'failure_definition')
 
@@ -163,6 +159,8 @@ class DataManager(RAMSTKDataManager):
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = ('{1}: Attempted to delete non-existent failure '
                                'definition ID {0}.'.format(
                                    str(node_id), _method_name))

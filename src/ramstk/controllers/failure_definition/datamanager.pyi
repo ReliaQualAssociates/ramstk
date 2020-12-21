@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: int) -> None:
         ...
 
-    def _do_delete_failure_definition(self, node_id: int) -> None:
+    def _do_delete(self, node_id: int) -> None:
         ...
 
     def _do_insert_failure_definition(self) -> None:

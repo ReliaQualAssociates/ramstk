@@ -60,7 +60,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
         pub.subscribe(self.do_update, 'request_update_revision')
 
-        pub.subscribe(self._do_delete_revision, 'request_delete_revision')
+        pub.subscribe(self._do_delete, 'request_delete_revision')
         pub.subscribe(self._do_insert_revision, 'request_insert_revision')
 
     def do_get_tree(self) -> None:
@@ -105,9 +105,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['revision'])
             pub.sendMessage(
@@ -115,6 +112,8 @@ class DataManager(RAMSTKDataManager):
                 node_id=node_id,
             )
         except AttributeError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempted to save non-existent revision with revision '
                 'ID {0}.').format(str(node_id), _method_name)
@@ -129,6 +128,8 @@ class DataManager(RAMSTKDataManager):
             )
         except (KeyError, TypeError):
             if node_id != 0:
+                _method_name: str = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
                 _error_msg = ('{1}: No data package found for revision '
                               'ID {0}.').format(str(node_id), _method_name)
                 pub.sendMessage(
@@ -141,7 +142,7 @@ class DataManager(RAMSTKDataManager):
                     error_message=_error_msg,
                 )
 
-    def _do_delete_revision(self, node_id: int) -> None:
+    def _do_delete(self, node_id: int) -> None:
         """Remove a revision.
 
         :param node_id: the node (revision) ID to be removed from the
@@ -149,9 +150,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             super().do_delete(node_id, 'revision')
 
@@ -164,6 +162,8 @@ class DataManager(RAMSTKDataManager):
                 tree=self.tree,
             )
         except (DataAccessError, NodeIDAbsentError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempted to delete non-existent revision ID {'
                 '0}.').format(str(node_id), _method_name)

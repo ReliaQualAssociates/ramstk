@@ -91,7 +91,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_revision_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_revision_attributes')
-        assert pub.isSubscribed(DUT._do_delete_revision,
+        assert pub.isSubscribed(DUT._do_delete,
                                 'request_delete_revision')
         assert pub.isSubscribed(DUT._do_insert_revision,
                                 'request_insert_revision')
@@ -151,7 +151,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_revision(self, error_message):
         assert error_message == (
-            '_do_delete_revision: Attempted to delete non-existent revision ID 300.')
+            '_do_delete: Attempted to delete non-existent revision ID 300.')
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
     @pytest.mark.unit
@@ -163,7 +163,7 @@ class TestDeleteMethods():
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-        DUT._do_delete_revision(DUT.last_id)
+        DUT._do_delete(DUT.last_id)
 
         assert DUT.last_id == 1
 
