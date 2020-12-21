@@ -132,11 +132,7 @@ class RAMSTKDataManager:
         # entries at the top level as there can only be one root in a treelib
         # Tree().  Manipulation and viewing of a RAMSTK module tree needs to
         # ignore the root of the tree.
-        try:
-            self.tree.create_node(tag=self._tag, identifier=self._root)
-        except (treelib.tree.MultipleRootError, treelib.tree.NodeIDAbsentError,
-                treelib.tree.DuplicatedNodeIdError):
-            pass
+        self.tree.create_node(tag=self._tag, identifier=self._root)
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_matrix, 'request_select_matrix')
@@ -189,8 +185,7 @@ class RAMSTKDataManager:
 
         :param node_id: the node ID in the treelib Tree to get the
             attributes for.
-        :param table: the RAMSTK data table to retrieve the attributes
-            from.
+        :param table: the RAMSTK data table to retrieve the attributes from.
         :return: None
         :rtype: None
         """
@@ -204,11 +199,15 @@ class RAMSTKDataManager:
             _method_name = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg = ('{0}: No attributes found for record ID {1} in '
-                          'table {2}.'.format(_method_name, node_id, table))
+                          '{2} table.'.format(_method_name, node_id, table))
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
                 message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_get_{0}_attributes'.format(table),
+                error_message=_error_msg,
             )
 
     def do_select(self, node_id: Any, table: str) -> Any:
@@ -555,7 +554,7 @@ class RAMSTKMatrixManager:
             if self._col_tree:
                 self.do_create_columns(_matrix_type)
                 pub.sendMessage('request_select_matrix',
-                                matrix_type=_matrix_type)
+                                matrix_type=_matrix_type,)
 
     def do_delete_column(self, node_id: int, matrix_type: str) -> Any:
         """Delete a column from the requested matrix.
@@ -630,7 +629,7 @@ class RAMSTKMatrixManager:
         :param matrix_type: the type of the Matrix to select from.  This
             selects the correct matrix from the dict of matrices managed by
             this matrix manager.
-        :param list matrix: a list of tuples (column ID, row ID, value) for the
+        :param matrix: a list of tuples (column ID, row ID, value) for the
             selected matrix.
         :return: None
         :rtype: None
@@ -662,7 +661,7 @@ class RAMSTKMatrixManager:
         if matrix_type in self.dic_matrices:
             pub.sendMessage('request_update_matrix',
                             matrix_type=matrix_type,
-                            matrix=self.dic_matrices[matrix_type])
+                            matrix=self.dic_matrices[matrix_type],)
 
     def do_select(self, matrix_type: str, row: int, col: str) -> Any:
         """Select the value from the cell identified by col and row.

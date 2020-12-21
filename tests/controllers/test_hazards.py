@@ -251,6 +251,10 @@ class TestGetterSetter():
         assert attributes['potential_hazard'] == ''
         print("\033[36m\nsucceed_get_hazards_attributes topic was broadcast.")
 
+    def on_fail_get_hazard_attrs(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[36m\nfail_get_hazards_attributes topic was broadcast.")
+
     def on_succeed_get_all_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['hazard_id'] == 1
@@ -278,6 +282,21 @@ class TestGetterSetter():
 
         pub.unsubscribe(self.on_succeed_get_hazard_attrs,
                         'succeed_get_hazards_attributes')
+
+    @pytest.mark.unit
+    def test_do_get_attributes_no_attributes(self, mock_program_dao):
+        """_do_get_attributes() should return a dict of failure definition
+        records on success."""
+        pub.subscribe(self.on_fail_get_hazard_attrs,
+                      'fail_get_hazards_attributes')
+
+        DUT = dmHazards()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
+        DUT.do_get_attributes(3, 'hazard')
+
+        pub.unsubscribe(self.on_fail_get_hazard_attrs,
+                        'fail_get_hazards_attributes')
 
     @pytest.mark.skip
     def test_do_get_all_attributes_data_manager(self, mock_program_dao):
