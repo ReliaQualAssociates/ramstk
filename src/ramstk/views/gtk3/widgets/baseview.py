@@ -806,7 +806,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self.hbx_tab_label.pack_end(_label, True, True, 0)
         self.hbx_tab_label.show_all()
 
-    def make_toolbuttons(self, **kwargs: List[Any]) -> None:
+    def make_toolbuttons(self, **kwargs: Dict[str, Any]) -> None:
         """Create the RAMSTKBaseView() tool buttons.
 
         Keyword arguments are passed along to the do_make_buttonbox() function.
@@ -1088,8 +1088,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
-        self._lst_icons.insert(0, 'add')
         self._lst_widgets: List[object] = []
 
         # Initialize private scalar attributes.

@@ -129,7 +129,7 @@ class RAMSTKBaseView(Gtk.HBox):
     def make_tab_label(self, **kwargs: Dict[str, Any]) -> None:
         ...
 
-    def make_toolbuttons(self, **kwargs: List[Any]) -> None:
+    def make_toolbuttons(self, **kwargs: Dict[str, Any]) -> None:
         ...
 
     def on_button_press(self, __treeview: RAMSTKTreeView,

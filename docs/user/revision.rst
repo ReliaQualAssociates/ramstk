@@ -1,8 +1,8 @@
-The Revision Module
-===================
+Revision Module
+===============
 
-The Revision Module is the only RAMSTK module **required** to be used.  All
-other RAMSTK modules are optional and are relative to the Revision module.  A
+The Revision module is the only `RAMSTK` module **required** to be used.  All
+other `RAMSTK` modules are optional and are relative to the Revision module.  A
 Revision could be used to represent many things depending on your needs.  A
 Revision could represent:
 
@@ -10,110 +10,135 @@ Revision could represent:
 * Configuration
 * Variant
 
-The Revision Module Work Book only has a General Data page where the following
-information is available for editing for the selected Revision:
+It's certainly possible to have one `RAMSTK` Program database for each model
+year, configuration, variant, etc. in which case there would only be one
+Revision in each database.  Regardless of how you choose to structure your
+work flow, a Revision represents a collection of work streams and their data
+specific to that Revision.
 
-* Name
-* Description
-* Remarks
+Module Book
+-----------
+.. figure:: ./figures/revision_module_book.png
 
-There are no analyses associated with the Revision Module.  Support
-information associated with a Revision includes Usage Profiles and Failure
-Definitions.  Each is discussed in greater detail in the next two sections.
+When the Revision tab is selected in the Module Book, a flat list of all the
+Revisions associated with the open RAMSTK Program database is displayed.  The
+attributes displayed for each Revision are determined by the settings in the
+:ref:`sec-ramstk-user-configuration` file.  The following attributes are
+available for display in the Revision tab of the Module Book.
 
-Usage Profile
--------------
+.. tabularcolumns:: |r|l|
+.. table:: **Revision Attributes Available to Module Book**
 
-The Usage Profile describes the tasks, durations, and environments in which
-the system being developed is expected to perform each mission.  Without a
-Usage Profile, reliability specifications and analyses have no real meaning.
+   +----------------------------------+----------+
+   | Attribute                        | Editable |
+   +==================================+==========+
+   | Revision ID                      | No       |
+   +----------------------------------+----------+
+   | Predicted Availability           | No       |
+   +----------------------------------+----------+
+   | Mission Availability             | No       |
+   +----------------------------------+----------+
+   | Total Cost                       | No       |
+   +----------------------------------+----------+
+   | Active Failure Rate              | No       |
+   +----------------------------------+----------+
+   | Dormant Failure Rate             | No       |
+   +----------------------------------+----------+
+   | Mission Failure Rate             | No       |
+   +----------------------------------+----------+
+   | Predicted Failure Rate           | No       |
+   +----------------------------------+----------+
+   | Software Failure Rate            | No       |
+   +----------------------------------+----------+
+   | Mean Maintenance Time            | No       |
+   +----------------------------------+----------+
+   | Mean Corrective Maintenance Time | No       |
+   +----------------------------------+----------+
+   | Mean Predictive Maintenance Time | No       |
+   +----------------------------------+----------+
+   | Mission MTBF                     | No       |
+   +----------------------------------+----------+
+   | Predicted MTBF                   | No       |
+   +----------------------------------+----------+
+   | Mean Time to Repair              | No       |
+   +----------------------------------+----------+
+   | Revision Name                    | Yes      |
+   +----------------------------------+----------+
+   | Mission Reliability              | No       |
+   +----------------------------------+----------+
+   | Predicted Reliability            | No       |
+   +----------------------------------+----------+
+   | Remarks                          | Yes      |
+   +----------------------------------+----------+
+   | Revision Code                    | Yes      |
+   +----------------------------------+----------+
 
-The Usage Profile(s) should be defined and documented early in the
-development program.  Each mission can be broken down into one or more mission
-phases.  For each mission phase, one or more environmental conditions can be
-defined.  A simple :ref:`fig_usage_profile` (highlighted in red), for example,
-might be::
+Selecting the Revision you wish to work with from the displayed list will
+load the other work stream modules with their revision-specific data.  This
+will also cause the Revision module Work Book to display the attributes of
+the selected Revision.
 
-  Drive to work (Mission)
-    |
-    +- Start car (Mission Phase)
-    |    |
-    |    +- Temperature, Ambient (Environment)
-    |    +- Humidity
-    +- Transit from home to work (Mission Phase)
-    |    |
-    |    +- Temperature, Ambient
-    |    +- Humidity
-    |    +- Precipitation
-    |    +- Vibration
-    |    +- Shock
-    +- Stop car (Mission Phase)
-         |
-         +- Temperature, Ambient
-         +- Humidity
-         +- Precipitation
+Adding and Removing Revisions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To add a new Revision to the open `RAMSTK` Program database, press the 'Add'
+button to the left of the revision list.
 
-.. _fig_usage_profile:
+To remove the currently selected Revision from the open `RAMSTK` Program
+database, press the 'Remove' button to the left of the revision list.  You
+will be presented with a dialog confirming you want to delete the selected
+Revision and all associated data.  This includes all the revision-specific
+data for every work stream as well.  Confirm your intentions to complete the
+removal.
 
-.. figure:: ./figures/usage_profile.png
+Saving Revisions
+^^^^^^^^^^^^^^^^
+To save changes to the currently selected Revision, press the 'Save' button
+to the left of the revision list.  All pending changes are committed to the
+open `RAMSTK` Program database.
 
-   Usage Profile
+To save changes to all Revisions, press the 'Save All' button to the left of
+the revision list.  All pending changes to all Revisions are committed to the
+open `RAMSTK` Program database.
 
-In the Usage Profile module, the following information is editable
-for each entity:
+Work Book
+---------
+.. figure:: ./figures/revision_work_book.png
 
-+-------------------+-------------------------------------------+
-| **Entity**        | **Attribute**                             |
-+===================+===========================================+
-| **Mission**       | Mission description                       |
-|                   +-------------------------------------------+
-|                   | Mission start time                        |
-|                   +-------------------------------------------+
-|                   | Mission end time                          |
-+-------------------+-------------------------------------------+
-| **Mission Phase** | Mission phase code                        |
-|                   +-------------------------------------------+
-|                   | Mission phase description                 |
-|                   +-------------------------------------------+
-|                   | Mission phase start time                  |
-|                   +-------------------------------------------+
-|                   | Mission phase end time                    |
-+-------------------+-------------------------------------------+
-| **Environment**   | Environmental condition description       |
-|                   +-------------------------------------------+
-|                   | Environmental condition measurement units |
-|                   +-------------------------------------------+
-|                   | Minimum design value                      |
-|                   +-------------------------------------------+
-|                   | Maximum design value                      |
-|                   +-------------------------------------------+
-|                   | Mean design value                         |
-|                   +-------------------------------------------+
-|                   | Variance of design value                  |
-+-------------------+-------------------------------------------+
+The Revision module Work Book only has a General Data page.  The
+following attributes are displayed in the Revision's General Data page.
 
-In addition to defining the usage profile, the mission and mission phase will
-be used in Hardware FMEA's to calculate a failure mode's mission time.
-Measurement units for environmental conditions and mission times are stored
-in the RAMSTK Site database so a consistent set of units are available for
-all RAMSTK Programs.  Design values for environmental conditions can be
-defined as minimum, maximum, or using a mean and a variance.
+.. tabularcolumns:: |r|l|
+.. table:: **Revision Attributes in the Work Book**
 
-Failure Definitions
--------------------
+   +-------------+----------+
+   | Attribute   | Editable |
+   +=============+==========+
+   | Name        | Yes      |
+   +-------------+----------+
+   | Description | Yes      |
+   +-------------+----------+
+   | Remarks     | Yes      |
+   +-------------+----------+
 
-Failure definitions should be developed and agreed upon early in the
-development program.  These failure definitions should be used throughout the
-entire life-cycle of the product.  It is best to define failures as the
-functions are being defined.  Functional failure definitions will fall into
-one of the following categories:
+Saving Revisions
+^^^^^^^^^^^^^^^^
+To save changes to the currently selected Revision, press the 'Save' button
+to the left of the work space.  All pending changes are committed to the
+open `RAMSTK` Program database.
 
-#. Too much function.
-#. Too little function.
-#. Intermittent functionality.
-#. Function not there when required.
-#. Function present when not required.
+To save changes to all Revisions, press the 'Save All' button to the left of
+the work space.  All pending changes to all Revisions are committed to the
+open `RAMSTK` Program database.
 
-As requirements/specifications are identified these functional failure
-definitions can be amended with performance values or new, performance-based
-failure definitions can be added.
+List & Matrices Book
+--------------------
+There are two lists associated with the Revision work stream.  These are the
+:ref:`sec-usage-profile` and :ref:`sec-failure-definitions`.
+
+There are no matrices associated with the Revision work stream.
+
+Analyzing the Revision
+----------------------
+There are no analyses associated with the Revision module.  The RAMS metrics
+displayed with the Revision are the top-level (system) Hardware work stream
+results.

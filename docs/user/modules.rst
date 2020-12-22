@@ -8,6 +8,8 @@ This chapter describes each of the `RAMSTK` modules in detail.
    :maxdepth: 2
 
    revision
+   usage_profile
+   failure_definition
    function
    requirement
    hardware
