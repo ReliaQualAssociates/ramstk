@@ -1,6 +1,6 @@
-******************
-The RAMSTK Modules
-******************
+**************************
+RAMSTK Work Stream Modules
+**************************
 
 This chapter describes each of the `RAMSTK` modules in detail.
 

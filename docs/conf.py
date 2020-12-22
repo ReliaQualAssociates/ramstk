@@ -32,13 +32,16 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'recommonmark',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
-source_suffix = ['.rst']
+source_suffix = {'.rst': 'restructuredtext',
+                 '.md': 'markdown',
+                 }
 
 # The master toctree document.
 master_doc = 'index'

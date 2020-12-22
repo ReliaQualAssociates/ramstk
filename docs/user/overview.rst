@@ -2,40 +2,6 @@
 RAMSTK Overview
 ***************
 
-Installing RAMSTK
-=================
-
-`RAMSTK` is available via PyPi and can be installed on a Linux machine using one of the following commands:
-
-.. code-block:: bash
-
-    pip install ramstk
-
-Or the source code can be checked-out from GitHub and installed the
-old-fashioned way.
-
-.. code-block:: bash
-
-    git checkout https://github.com/ReliaQualAssociates/ramstk.git ramstk.git
-    cd ramstk.git
-    python setup.py install --user
-
-where the *--user* switch is optional if you're sure you want to install
-`RAMSTK` in a system-wide location.
-
-Once the RAMSTK application is installed, it may be launched from the
-desktop icon, menu entry, or a shell.  On first launch, RAMSTK should detect first
-run status, setup some user-specific configurations, and copy system-wide
-configuration files into the user's profile.  Simply follow the prompts,
-selecting default options if unsure.
-
-License
-=======
-
-`RAMSTK` is provided to you under the BSD, 3-clause license, reproduced below.
-
-.. literalinclude:: ../../LICENSE
-
 Getting Started
 ===============
 

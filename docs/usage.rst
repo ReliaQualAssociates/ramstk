@@ -1,4 +1,4 @@
-Usage
-=====
+.. toctree::
+   :maxdepth: 3
 
-**COMING SOON**
+   user/index
