@@ -284,12 +284,7 @@ servdocs:
 	#cd docs
 	#git checkout $(WORKBRANCH) .
 	#make html
-	#mv -fv _build/html/* ../
-	#mv -fv _build/html/_modules/* ../_modules/
-	#mv -fv _build/html/_sources/* ../_sources/
-	#mv -fv _build/html/_static/* ../_static/
-	#mv -fv _build/html/api/* ../api/
-	#mv -fv _build/html/api/gui/* ../api/gui/
+	#cp -fvr _build/html/* ../
 	#cd ../
 	#rm -fr docs/
 	#git add -Af _modules/ _sources/ _static/ api/ requirements/ *.inv *.js *.md *.html *.xml
