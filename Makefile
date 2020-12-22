@@ -33,6 +33,7 @@ PYDOCSTYLE	= $(shell which pydocstyle)
 PYLINT		= $(shell which pylint)
 RADON		= $(shell which radon)
 YAPF        = $(shell which yapf)
+WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
 
 # Data files.
 LAYOUTS		= $(shell ls ./data/layouts)
@@ -79,10 +80,7 @@ help:
 	@echo "	maintain SRCFILE=<file>			check maintainability using mccabe and radon.  Helpful to keymap in IDE or editor."
 	@echo "						Pass wildcard (*) at end of FILE=<file> path to analyze all files in directory."
 	@echo "Targets related to documentation:"
-	@echo "	api					generate API documentation and build it. <FUTURE>"
-	@echo "	user    				build user documentation. <FUTURE>"
-	@echo "	servapi					update api documentation on gh-pages branch; serves it to the public. <FUTURE>"
-	@echo "	servuser     				update user documentation on gh-pages branch; serves it to the public. <FUTURE>"
+	@echo "	docs					build API and user documentation."
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
@@ -276,21 +274,6 @@ tag:
 docs:
 	sphinx-apidoc -f -o docs/api src/ramstk
 	cd docs; make html -e
-
-servdocs:
-	WORKBRANCH=$(shell git rev-parse --abbrev-ref HEAD)
-	#git checkout gh-pages
-	#mkdir docs
-	#cd docs
-	#git checkout $(WORKBRANCH) .
-	#make html
-	#cp -fvr _build/html/* ../
-	#cd ../
-	#rm -fr docs/
-	#git add -Af _modules/ _sources/ _static/ api/ requirements/ *.inv *.js *.md *.html *.xml
-	#git commit --no-verify
-	#git push --no-verify origin gh-pages
-	#git checkout $WORKBRANCH
 
 dist: clean
 	python setup.py sdist
