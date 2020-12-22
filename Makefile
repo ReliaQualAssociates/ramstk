@@ -271,9 +271,14 @@ bumpver:
 tag:
 	$(shell sh ./devtools/bump_version.sh -t)
 
-docs:
+apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk
-	cd docs; make html -e
+
+docs: cleandocs
+	cd docs; $(MAKE) html -e
+
+cleandocs:
+	cd docs; rm -fr _build/html/*
 
 dist: clean
 	python setup.py sdist

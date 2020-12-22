@@ -1,30 +1,16 @@
-ramstk.models package
-=====================
-
-Subpackages
------------
+RAMSTK Data Model Package
+=========================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ramstk.models.commondb
    ramstk.models.programdb
 
-Submodules
-----------
-
-ramstk.models.tables module
----------------------------
+Database Table Module
+---------------------
 
 .. automodule:: ramstk.models.tables
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.models
    :members:
    :undoc-members:
    :show-inheritance:

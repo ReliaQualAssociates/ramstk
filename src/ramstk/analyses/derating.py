@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.Derating.py is part of the RAMSTK Project
+#       ramstk.analyses.derating.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Component Derating Calculations Module."""
 
 

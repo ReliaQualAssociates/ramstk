@@ -1,8 +1,5 @@
-ramstk.controllers package
+RAMSTK Controllers Package
 ==========================
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 4
@@ -20,21 +17,10 @@ Subpackages
    ramstk.controllers.usage_profile
    ramstk.controllers.validation
 
-Submodules
-----------
-
-ramstk.controllers.managers module
-----------------------------------
+RAMSTK Manager Classes Module
+-----------------------------
 
 .. automodule:: ramstk.controllers.managers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.controllers
    :members:
    :undoc-members:
    :show-inheritance:

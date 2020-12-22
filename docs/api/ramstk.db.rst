@@ -1,37 +1,26 @@
-ramstk.db package
-=================
+RAMSTK Database Package
+=======================
 
-Submodules
-----------
-
-ramstk.db.base module
----------------------
+Base Database Module
+--------------------
 
 .. automodule:: ramstk.db.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.db.common module
------------------------
+Common Database Module
+----------------------
 
 .. automodule:: ramstk.db.common
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.db.program module
-------------------------
+Program Database Module
+-----------------------
 
 .. automodule:: ramstk.db.program
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.db
    :members:
    :undoc-members:
    :show-inheritance:

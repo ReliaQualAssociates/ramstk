@@ -1,8 +1,5 @@
-ramstk package
-==============
-
-Subpackages
------------
+RAMSTK Packages
+===============
 
 .. toctree::
    :maxdepth: 2
@@ -14,27 +11,24 @@ Subpackages
    ramstk.models
    ramstk.views
 
-Submodules
-----------
-
-ramstk.configuration module
----------------------------
+RAMSTK Configuration
+--------------------
 
 .. automodule:: ramstk.configuration
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.exceptions module
-------------------------
+RAMSTK Exceptions
+-----------------
 
 .. automodule:: ramstk.exceptions
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.logger module
---------------------
+RAMSTK Logger
+-------------
 
 .. automodule:: ramstk.logger
    :members:
@@ -49,15 +43,15 @@ ramstk.ramstk module
    :undoc-members:
    :show-inheritance:
 
-ramstk.utilities module
------------------------
+RAMSTK Utilities
+----------------
 
 .. automodule:: ramstk.utilities
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
+Module Contents
 ---------------
 
 .. automodule:: ramstk

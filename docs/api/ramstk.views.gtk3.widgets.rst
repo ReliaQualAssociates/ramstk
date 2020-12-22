@@ -1,125 +1,114 @@
-ramstk.views.gtk3.widgets package
-=================================
+RAMSTK Widgets Package
+======================
 
-Submodules
-----------
-
-ramstk.views.gtk3.widgets.basebook module
------------------------------------------
+RAMSTK Basebook Module
+----------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.basebook
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.baseview module
------------------------------------------
+RAMSTK Baseview Module
+----------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.baseview
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.button module
----------------------------------------
+RAMSTK Button Module
+--------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.button
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.combo module
---------------------------------------
+RAMSTK Combobox Module
+----------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.combo
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.dialog module
----------------------------------------
+RAMSTK Dialog Module
+--------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.dialog
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.entry module
---------------------------------------
+RAMSTK Entry Module
+-------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.entry
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.frame module
---------------------------------------
+RAMSTK Frame Module
+-------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.frame
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.label module
---------------------------------------
+RAMSTK Label Module
+-------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.label
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.matrixview module
--------------------------------------------
+RAMSTK Matrixview Module
+------------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.matrixview
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.panel module
---------------------------------------
+RAMSTK Panel Module
+-------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.plot module
--------------------------------------
+RAMSTK Plot Module
+------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.plot
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.scrolledwindow module
------------------------------------------------
+RAMSTK Scrolledwindow Module
+----------------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.scrolledwindow
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.treeview module
------------------------------------------
+RAMSTK Treeview Module
+----------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.treeview
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.widgets.widget module
----------------------------------------
+RAMSTK Base Widget Module
+-------------------------
 
 .. automodule:: ramstk.views.gtk3.widgets.widget
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.widgets
    :members:
    :undoc-members:
    :show-inheritance:

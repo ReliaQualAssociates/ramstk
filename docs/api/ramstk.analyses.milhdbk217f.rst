@@ -1,29 +1,15 @@
-ramstk.analyses.milhdbk217f package
-===================================
-
-Subpackages
------------
+MIL-HDBK-217F Prediction Package
+================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ramstk.analyses.milhdbk217f.models
 
-Submodules
-----------
-
-ramstk.analyses.milhdbk217f.milhdbk217f module
-----------------------------------------------
+MIL-HDBK-217F Calculation Module
+--------------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.milhdbk217f
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.analyses.milhdbk217f
    :members:
    :undoc-members:
    :show-inheritance:

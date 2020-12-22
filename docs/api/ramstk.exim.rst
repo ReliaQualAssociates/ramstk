@@ -1,29 +1,18 @@
-ramstk.exim package
-===================
+RAMSTK Export/Import Package
+============================
 
-Submodules
-----------
-
-ramstk.exim.export module
--------------------------
+Export Module
+-------------
 
 .. automodule:: ramstk.exim.export
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.exim.imports module
---------------------------
+Import Module
+-------------
 
 .. automodule:: ramstk.exim.imports
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.exim
    :members:
    :undoc-members:
    :show-inheritance:

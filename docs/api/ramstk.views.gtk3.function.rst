@@ -1,37 +1,26 @@
-ramstk.views.gtk3.function package
-==================================
+Function View Package
+=====================
 
-Submodules
-----------
-
-ramstk.views.gtk3.function.listview module
-------------------------------------------
+Function Listview Module
+------------------------
 
 .. automodule:: ramstk.views.gtk3.function.listview
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.function.moduleview module
---------------------------------------------
+Function Moduleview Module
+--------------------------
 
 .. automodule:: ramstk.views.gtk3.function.moduleview
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.function.workview module
-------------------------------------------
+Function Workview Module
+------------------------
 
 .. automodule:: ramstk.views.gtk3.function.workview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.function
    :members:
    :undoc-members:
    :show-inheritance:
