@@ -17,7 +17,6 @@ from .entry import RAMSTKTextView as RAMSTKTextView
 from .frame import RAMSTKFrame as RAMSTKFrame
 from .label import RAMSTKLabel as RAMSTKLabel
 from .label import do_make_label_group as do_make_label_group
-from .matrixview import RAMSTKMatrixView as RAMSTKMatrixView
 from .plot import RAMSTKPlot as RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow as RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView as RAMSTKTreeView
@@ -63,9 +62,6 @@ class RAMSTKPanel(RAMSTKFrame):
         ...
 
     def do_make_panel_plot(self) -> None:
-        ...
-
-    def do_make_panel_matrixview(self, matrix: RAMSTKMatrixView) -> None:
         ...
 
     def do_make_panel_treeview(self) -> None:

@@ -28,7 +28,6 @@ from .combo import RAMSTKComboBox
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
-from .matrixview import RAMSTKMatrixView
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
@@ -191,6 +190,7 @@ class RAMSTKPanel(RAMSTKFrame):
             _path = _model.get_path(_row)
             _column = self.tvwTreeView.get_column(0)
             self.tvwTreeView.set_cursor(_path, None, False)
+
             self.tvwTreeView.row_activated(_path, _column)
 
     # noinspection PyUnusedLocal
@@ -322,19 +322,6 @@ class RAMSTKPanel(RAMSTKFrame):
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.pltPlot.canvas)
-
-        self.add(_scrollwindow)
-
-    def do_make_panel_matrixview(self, matrix: RAMSTKMatrixView) -> None:
-        """Create a panel with a RAMSTKMatrixView().
-
-        :param matrix: the matrix to display in the panel.
-        :return: None
-        """
-        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(matrix)
 
         self.add(_scrollwindow)
 

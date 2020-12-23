@@ -17,7 +17,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from __mocks__ import MOCK_HRDWR_TREE, MOCK_REQUIREMENTS
-from ramstk.controllers import dmRequirement, mmRequirement
+from ramstk.controllers import dmRequirement
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKRequirement
@@ -75,8 +75,6 @@ class MockDao:
                     MOCK_REQUIREMENTS[_key]['validated'] = record.validate
                     MOCK_REQUIREMENTS[_key][
                         'validated_date'] = record.validated_date
-        elif isinstance(record, RAMSTKMatrix):
-            pass
 
     def get_last_id(self, table, id_column):
         if table == 'ramstk_requirement':

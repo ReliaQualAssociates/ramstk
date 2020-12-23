@@ -140,6 +140,20 @@ class TestSelectMethods():
                         'succeed_retrieve_hazards')
 
     @pytest.mark.unit
+    def test_do_select_all_populated_tree(self, mock_program_dao):
+        """do_select_all() should clear nodes from an existing Hazards tree."""
+        pub.subscribe(self.on_succeed_retrieve_hazards,
+                      'succeed_retrieve_hazards')
+
+        DUT = dmHazards()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 2})
+
+        pub.unsubscribe(self.on_succeed_retrieve_hazards,
+                        'succeed_retrieve_hazards')
+
+    @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""

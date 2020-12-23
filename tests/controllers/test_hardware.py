@@ -25,7 +25,7 @@ from __mocks__ import (MOCK_217F, MOCK_ALLOCATION, MOCK_DESIGN_ELECTRIC,
                        MOCK_DESIGN_MECHANIC, MOCK_HARDWARE, MOCK_NSWC,
                        MOCK_RELIABILITY, MOCK_RQRMNT_TREE, MOCK_SIMILAR_ITEM)
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amHardware, dmHardware, mmHardware
+from ramstk.controllers import amHardware, dmHardware
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (

@@ -38,7 +38,6 @@ class DataManager(RAMSTKDataManager):
         self._pkey = {'hazard': ['revision_id', 'function_id', 'hazard_id']}
 
         # Initialize private list attributes.
-        self._last_id = [0, 0]
 
         # Initialize private scalar attributes.
 
@@ -97,7 +96,6 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data={'hazard': _hazard})
 
-        self._last_id[0] = max(self.tree.nodes.keys())
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage(
@@ -217,7 +215,6 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data={'hazard': _hazard})
 
-            self._last_id[0] = _hazard.hazard_id
             self.last_id = _hazard.hazard_id
 
             pub.sendMessage(

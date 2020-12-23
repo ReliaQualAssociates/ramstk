@@ -9,7 +9,7 @@
 
 # RAMSTK Package Imports
 from ramstk.controllers.managers import (
-    RAMSTKAnalysisManager, RAMSTKDataManager, RAMSTKMatrixManager
+    RAMSTKAnalysisManager, RAMSTKDataManager
 )
 
 # RAMSTK Local Imports
@@ -17,20 +17,16 @@ from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .fmea.analysismanager import AnalysisManager as amFMEA
 from .fmea.datamanager import DataManager as dmFMEA
 from .function.datamanager import DataManager as dmFunction
-from .function.matrixmanager import MatrixManager as mmFunction
 from .hardware.analysismanager import AnalysisManager as amHardware
 from .hardware.datamanager import DataManager as dmHardware
-from .hardware.matrixmanager import MatrixManager as mmHardware
 from .hazards.analysismanager import AnalysisManager as amHazards
 from .hazards.datamanager import DataManager as dmHazards
 from .options.datamanager import DataManager as dmOptions
 from .pof.datamanager import DataManager as dmPoF
 from .requirement.datamanager import DataManager as dmRequirement
-from .requirement.matrixmanager import MatrixManager as mmRequirement
 from .revision.datamanager import DataManager as dmRevision
 from .stakeholder.analysismanager import AnalysisManager as amStakeholder
 from .stakeholder.datamanager import DataManager as dmStakeholder
 from .usage_profile.datamanager import DataManager as dmUsageProfile
 from .validation.analysismanager import AnalysisManager as amValidation
 from .validation.datamanager import DataManager as dmValidation
-from .validation.matrixmanager import MatrixManager as mmValidation

@@ -30,10 +30,6 @@ from ramstk.controllers import dmRevision as dmRevision
 from ramstk.controllers import dmStakeholder as dmStakeholder
 from ramstk.controllers import dmUsageProfile as dmUsageProfile
 from ramstk.controllers import dmValidation as dmValidation
-from ramstk.controllers import mmFunction as mmFunction
-from ramstk.controllers import mmHardware as mmHardware
-from ramstk.controllers import mmRequirement as mmRequirement
-from ramstk.controllers import mmValidation as mmValidation
 from ramstk.db.base import BaseDatabase as BaseDatabase
 from ramstk.db.common import do_load_variables as do_load_variables
 from ramstk.exim import Export as Export

@@ -214,10 +214,6 @@ class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseTable):
     # back_populates='revision',)
     # survival: relationship = relationship('RAMSTKSurvival',
     # back_populates='revision',)
-    matrix: relationship = relationship(
-        'RAMSTKMatrix',
-        back_populates='revision',
-    )
     hazard: relationship = relationship(
         'RAMSTKHazardAnalysis',
         back_populates='revision',

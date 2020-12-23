@@ -13,7 +13,6 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 # noinspection PyPackageRequirements
-import pandas as pd
 import treelib
 from pubsub import pub
 
@@ -26,7 +25,6 @@ from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from .button import do_make_buttonbox
 from .dialog import RAMSTKMessageDialog
 from .label import RAMSTKLabel
-from .matrixview import RAMSTKMatrixView
 from .panel import RAMSTKPanel
 from .treeview import RAMSTKTreeView
 
@@ -969,13 +967,10 @@ class RAMSTKListView(RAMSTKBaseView):
     This is the meta class for all RAMSTK List View classes.  Attributes of the
     RAMSTKListView are:
 
-    :ivar str _matrix_type: the name of the matrix displayed by this view.
     :ivar str _module: the capitalized name of the RAMSTK module the List View
         is associated with.
     :ivar int _n_columns: the number of columns in a matrix.
     :ivar int _n_rows: the number of rows in a matrix.
-    :ivar matrixview: the MatrixView() displaying the matrix data.
-    :type matrixview: :class:`ramstk.views.gtk3.widgets.RAMSTKMatrixView`
     :ivar int n_fixed_columns: the number of matrix columns on the left that
         contain fixed data.
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
@@ -1007,12 +1002,9 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.matrixview: RAMSTKMatrixView = RAMSTKMatrixView(
-            module=self._module)
         self.tab_label: Gtk.Label = Gtk.Label()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_matrix, 'succeed_load_matrix')
 
     def _do_request_update(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
@@ -1028,17 +1020,6 @@ class RAMSTKListView(RAMSTKBaseView):
             pub.sendMessage('request_update_all_{0:s}s'.format(self._module))
         elif self._view_type == 'matrix':
             self._do_request_update(__button)
-
-    def do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
-        """Load the RAMSTKMatrixView() with matrix data.
-
-        :param matrix_type: the type of matrix to load.
-        :param matrix: the data matrix to display.
-        :return: None
-        :rtype: None
-        """
-        if matrix_type.capitalize() == self._module.capitalize():
-            self.matrixview.do_load_matrix(matrix)
 
     def make_ui(self) -> None:
         """Build the list view user interface.

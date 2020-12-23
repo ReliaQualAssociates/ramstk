@@ -15,7 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmFunction, dmHardware, mmFunction
+from ramstk.controllers import dmFunction, dmHardware
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFunction
@@ -100,32 +100,6 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_insert_function,
                                 'request_insert_function')
 
-    @pytest.mark.skip
-    def test_matrix_manager_create(self):
-        """__init__() should create an instance of the function matrix
-        manager."""
-        DUT = mmFunction()
-
-        assert isinstance(DUT, mmFunction)
-        assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, dict)
-        assert isinstance(DUT._row_tree, Tree)
-        assert DUT.dic_matrices == {}
-        assert DUT.n_row == 1
-        assert DUT.n_col == 1
-        assert pub.isSubscribed(DUT.do_create_rows,
-                                'succeed_retrieve_functions')
-        assert pub.isSubscribed(DUT._do_create_function_matrix_columns,
-                                'succeed_retrieve_hardware')
-        assert pub.isSubscribed(DUT._on_delete_function,
-                                'succeed_delete_function')
-        assert pub.isSubscribed(DUT._on_delete_hardware,
-                                'succeed_delete_hardware')
-        assert pub.isSubscribed(DUT._on_insert_function,
-                                'insert_function_matrix_row')
-        assert pub.isSubscribed(DUT._on_insert_hardware,
-                                'succeed_insert_hardware')
-
 
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
@@ -133,11 +107,6 @@ class TestSelectMethods():
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data['function'], RAMSTKFunction)
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
-
-    def on_request_select_matrix(self, matrix_type):
-        assert matrix_type == 'fnctn_hrdwr'
-        print("\033[36m\nrequest_select_matrix topic was broadcast for the "
-              "fnctn_hrdwr matrix.")
 
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
@@ -187,62 +156,6 @@ class TestSelectMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
 
         assert DUT.do_select(100, table='function') is None
-
-    @pytest.mark.skip
-    def test_do_create_matrix(self, mock_program_dao):
-        """_do_create() should create an instance of the function matrix
-        manager."""
-        pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
-
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        pub.unsubAll('request_select_matrix')
-
-        assert DUT._col_tree['fnctn_hrdwr'] == MOCK_HRDWR_TREE
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS3') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A1') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A2') == 0
-
-    @pytest.mark.skip
-    def test_do_create_matrix_no_row_tree_hardware(self, mock_program_dao):
-        """_do_create_validation_matrix_columns() should not create a vldtn-
-        hrdwr matrix unless there is a row tree already populated."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-        DUT._row_tree = Tree()
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT._col_tree['fnctn_hrdwr'] == MOCK_HRDWR_TREE
-
-    @pytest.mark.skip
-    def test_do_create_matrix_wrong_column_tree(self, mock_program_dao):
-        """_do_create_validation_matrix_columns() should not create a matrix
-        when passed a column tree that doesn't exist in the matrix dict."""
-        DUT = mmFunction()
-        DUT._row_tree = Tree()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
-
-        with pytest.raises(KeyError):
-            DUT._col_tree['fcntn_rqrmnt']
 
 
 class TestDeleteMethods():
@@ -307,49 +220,6 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_function_no_tree,
                         'fail_delete_function')
 
-    @pytest.mark.skip
-    def test_do_delete_matrix_row(self, mock_program_dao):
-        """do_delete_row() should remove the appropriate row from the hardware
-        matrices."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4') == 0
-
-        DATAMGR.tree.remove_node(1)
-        pub.sendMessage('succeed_delete_function',
-                        node_id=1,
-                        tree=DATAMGR.tree)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4')
-
-    @pytest.mark.skip
-    def test_do_delete_matrix_hardware_column(self, test_program_dao):
-        """do_delete_column() should remove the appropriate column from the
-        requested hardware matrix."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2') == 0
-
-        pub.sendMessage('succeed_delete_hardware',
-                        node_id=3,
-                        tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2')
-
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
@@ -408,56 +278,6 @@ class TestInsertMethods():
         DUT._do_insert_function(parent_id=40)
 
         pub.unsubscribe(self.on_fail_insert_function, 'fail_insert_function')
-
-    @pytest.mark.skip
-    def test_do_insert_matrix_row(self, mock_program_dao):
-        """do_insert_row() should add a row to the end of each hardware
-        matrix."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4')
-
-        DATAMGR.tree.create_node(tag='Test Insert Function',
-                                 identifier=4,
-                                 parent=1,
-                                 data=None)
-        pub.sendMessage('insert_function_matrix_row',
-                        node_id=4)
-
-        assert DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4') == 0
-
-    @pytest.mark.skip
-    def test_do_insert_matrix_hardware_column(self, mock_program_dao):
-        """do_insert_column() should add a column to the right of the requested
-        validation matrix."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 1, 'S1:SS15')
-
-        MOCK_HRDWR_TREE.create_node(tag='S1:SS15',
-                                    identifier=15,
-                                    parent=0,
-                                    data=None)
-
-        pub.sendMessage('succeed_insert_hardware',
-                        node_id=15,
-                        tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS15') == 0
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -554,9 +374,6 @@ class TestUpdateMethods():
         assert error_message == ('do_update: The value for one or more attributes for function ID 1 was the wrong type.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
-    def on_succeed_update_matrix(self):
-        print("\033[36m\nsucceed_update_matrix topic was broadcast")
-
     @pytest.mark.unit
     def test_do_update_data_manager(self, mock_program_dao):
         """do_update() should return a zero error code on success."""
@@ -621,29 +438,3 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_fail_update_function_no_data,
                         'fail_update_function')
-
-    @pytest.mark.skip
-    def test_do_update_matrix_manager(self, test_program_dao):
-        """do_update() should broadcast the 'succeed_update_matrix' on
-        success."""
-        pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
-
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(test_program_dao)
-
-        HRDWRMGR = dmHardware()
-        HRDWRMGR.do_connect(test_program_dao)
-
-        def on_succeed_load_matrix(matrix_type, matrix):
-            DUT.dic_matrices['fnctn_hrdwr'].loc[1, 'S1:SS2'] = 1
-
-        pub.subscribe(on_succeed_load_matrix, 'succeed_load_matrix')
-
-        pub.sendMessage('selected_revision', attributes={'revision_id': 1})
-        pub.sendMessage('do_request_update_matrix',
-                        matrix_type='fnctn_hrdwr')
-
-        pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
-        pub.unsubscribe(on_succeed_load_matrix, 'succeed_load_matrix')

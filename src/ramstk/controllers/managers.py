@@ -8,18 +8,16 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 # Third Party Imports
 # noinspection PyPackageRequirements
-import pandas as pd
 import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
-from ramstk.models.programdb import RAMSTKMatrix
 
 
 class RAMSTKAnalysisManager:
@@ -135,18 +133,10 @@ class RAMSTKDataManager:
         self.tree.create_node(tag=self._tag, identifier=self._root)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_matrix, 'request_select_matrix')
-        pub.subscribe(self.do_update_matrix, 'request_update_matrix')
         pub.subscribe(self.do_connect, 'succeed_connect_program_database')
         pub.subscribe(self.do_update_all, 'request_save_project')
 
         pub.subscribe(self._on_select_revision, 'selected_revision')
-
-        self._mtx_prefix = self._tag
-        for _letter in self._tag.lower():
-            if _letter in ('a', 'e', 'i', 'o', 'u'):
-                self._mtx_prefix = self._mtx_prefix.replace(_letter, "")
-        self._mtx_prefix = self._mtx_prefix + '_'
 
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
@@ -238,49 +228,6 @@ class RAMSTKDataManager:
 
         return _entity
 
-    def do_select_matrix(self, matrix_type: str) -> None:
-        """Retrieve all the values for the matrix.
-
-        :param matrix_type: the type of the Matrix to select from.  This
-            selects the correct matrix from the dict of matrices managed by
-            this matrix manager.
-        :return: None
-        :rtype: None
-        """
-        _method_name = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-        _lst_matrix = []
-
-        # Retrieve the matrix values for the desired Matrix ID.
-        try:
-            for _matrix in self.dao.do_select_all(
-                    RAMSTKMatrix,
-                    key=['revision_id', 'matrix_type'],
-                    value=[self._revision_id, matrix_type],
-                    order=RAMSTKMatrix.row_id):
-                _lst_matrix.append((_matrix.column_item_id,
-                                    _matrix.row_item_id, _matrix.value))
-
-            if self._mtx_prefix in matrix_type:
-                pub.sendMessage(
-                    'succeed_retrieve_matrix',
-                    matrix_type=matrix_type,
-                    matrix=_lst_matrix,
-                )
-        except TypeError:
-            _error_msg: str = ('{1}: No matrix returned for {0} '
-                               'matrix.'.format(str(matrix_type),
-                                                _method_name))
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_retrieve_matrix',
-                error_message=_error_msg,
-            )
-
     def do_set_attributes(self, node_id: List, package: Dict[str,
                                                              Any]) -> None:
         """Set the attributes of the record associated with node ID.
@@ -291,8 +238,6 @@ class RAMSTKDataManager:
         :return: None
         :rtype: None
         """
-        _method_name = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
         [[_key, _value]] = package.items()
 
         for _table in self._pkey:
@@ -300,6 +245,8 @@ class RAMSTKDataManager:
                 _attributes = self.do_select(node_id[0],
                                              table=_table).get_attributes()
             except (AttributeError, KeyError):
+                _method_name = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
                 _error_msg: str = (
                     '{2}: No data package for node ID {0} in module {'
                     '1}.'.format(node_id[0], _table, _method_name))
@@ -348,338 +295,6 @@ class RAMSTKDataManager:
             self.do_update(_node.identifier)  # type: ignore
         pub.sendMessage('succeed_update_all')
 
-    def do_update_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
-        """Update the matrix values in the RAMSTK Program database.
-
-        :param matrix_type: the type (name) of the matrix to update.
-        :param matrix: the actual matrix whose values are being updated in the
-            database.
-        :type matrix: :class:`pandas.DataFrame`
-        :return: None
-        :rtype: None
-        """
-        _row_ids = list(matrix.index)[1:]
-        _column_ids = list(matrix.loc[0, :])[2:]
-
-        _next_id = self.dao.get_last_id('ramstk_matrix', 'matrix_id') + 1
-        for _row_id in _row_ids:
-            for _col_id in _column_ids:
-                _entity: List[object] = self.dao.do_select_all(  # type: ignore
-                    table=RAMSTKMatrix,
-                    key=[
-                        'revision_id', 'matrix_type', 'column_item_id',
-                        'row_item_id'
-                    ],
-                    value=[
-                        self._revision_id, matrix_type,
-                        int(_col_id) + 2,
-                        int(_row_id)
-                    ],
-                    order=None,
-                    _all=False)
-
-                # If there is no corresponding record in RAMSTKMatrix, then
-                # create a new RAMSTKMatrix record and add it.
-                if _entity is None:
-                    _entity = RAMSTKMatrix()
-                    _entity.revision_id = self._revision_id
-                    _entity.matrix_id = _next_id
-                    _entity.matrix_type = matrix_type
-                    _entity.column_item_id = int(_col_id) + 2
-                    _entity.row_item_id = int(_row_id)
-                _entity.value = int(matrix.iloc[_row_id,  # type: ignore
-                                                _col_id + 2])
-
-                self.dao.do_update(_entity)
-
-        pub.sendMessage('succeed_update_matrix')
-
     def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
         """Set the revision ID for the data manager."""
-        self._revision_id = attributes['revision_id']
-
-
-class RAMSTKMatrixManager:
-    """The meta-class for all RAMSTK Matrix Managers.
-
-    The Matrix data model is an aggregate model of N x M cell data models.  The
-    attributes of a Matrix are:
-
-    :ivar object _row_table: the RAMSTK Program database table to use for the
-        matrix rows.  This is an SQLAlchemy object.
-    :ivar column_tables: a list of RAMSTK data table objects that
-        comprise the columns.  One table per matrix managed by an instance of
-        the matrix manager.
-    :ivar dic_matrices: the dictionary containing all the matrices managed
-        by an instance of the matrix manager.
-    :ivar n_row: the number of rows in the Matrix.
-    :ivar n_col: the number of columns in the Matrix.
-
-    There are currently 10 matrices as defined by their matrix type.  These
-    are:
-
-        +-----------+-------------+--------------+--------------+
-        | Matrix ID |  Row Table  | Column Table |  Matrix Type |
-        +-----------+-------------+--------------+--------------+
-        |     1     | Function    | Hardware     | fnctn_hrdwr  |
-        +-----------+-------------+--------------+--------------+
-        |     2     | Function    | Validation   | fnctn_vldtn  |
-        +-----------+-------------+--------------+--------------+
-        |     3     | Requirement | Hardware     | rqrmnt_hrdwr |
-        +-----------+-------------+--------------+--------------+
-        |     4     | Requirement | Validation   | rqrmnt_vldtn |
-        +-----------+-------------+--------------+--------------+
-        |     5     | Hardware    | Requirement  | hrdwr_rqrmnt |
-        +-----------+-------------+--------------+--------------+
-        |     6     | Hardware    | Validation   | hrdwr_vldtn  |
-        +-----------+-------------+--------------+--------------+
-        |     7     | Validation  | Requirement  | vldtn_rqrmnt |
-        +-----------+-------------+--------------+--------------+
-        |     8     | Validation  | Hardware     | vldtn_hrdwr  |
-        +-----------+-------------+--------------+--------------+
-    """
-
-    _tag = 'matrix'
-
-    def __init__(self, column_tables: Dict[str, List[Any]],
-                 row_table: object) -> None:
-        """Initialize a Matrix data model instance.
-
-        :param column_tables: a dict of RAMSTK data table objects that
-            comprise the columns.
-        :param row_table: the RAMSTK data table object that comprises the rows
-            of the matrix(ces) managed by this manager.
-        """
-        # Initialize private dictionary attributes.
-        self._col_tree: Dict[str, treelib.Tree] = {}
-        self._column_tables: Dict = column_tables
-        self._dic_columns: Dict = {}
-        self._dic_matrix: Dict = {}
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-        self._revision_id: int = 0
-        self._row_table: Any = row_table
-        self._row_tree: treelib.Tree = treelib.Tree()
-
-        # Initialize public dictionary attributes.
-        self.dic_matrices: Dict[str, Any] = {}
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.n_row: int = 1
-        self.n_col: int = 1
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load, 'succeed_retrieve_matrix')
-        pub.subscribe(self.do_request_update, 'do_request_update_matrix')
-
-        pub.subscribe(self._on_select_revision, 'selected_revision')
-
-    def do_create_columns(self, matrix_type: str) -> None:
-        """Create the matrix columns.
-
-        This will effectively create the requested matrix since the row
-        headings column was already created.  All values in the resulting
-        matrix will be zero.  Call do_load() to load the actual values into
-        the matrix.
-
-        :param matrix_type: the type (name) of the matrix to create the
-            columns for.
-        :return: None
-        :rtype: None
-        """
-        self._dic_matrix = {
-            'id': self._dic_matrix['id'],
-            'display_name': self._dic_matrix['display_name']
-        }
-
-        try:
-            _lst_columns = [
-                self._col_tree[matrix_type].get_node(_node).tag
-                for _node in self._col_tree[matrix_type].nodes
-            ][1:]
-        except KeyError:
-            _lst_columns = []
-
-        for _idx, _column in enumerate(_lst_columns):
-            _values = [0] * (self.n_row - 1)
-            _values.insert(0, _idx)
-            self._dic_matrix[_column] = _values
-
-        self.dic_matrices[matrix_type] = pd.DataFrame(self._dic_matrix)
-        # pylint: disable=unused-variable
-        (__, self.n_col) = self.dic_matrices[matrix_type].shape
-
-    def do_create_rows(self, tree: treelib.Tree) -> None:
-        """Create the matrix rows.
-
-        All matrices for a given workflow module will have the same row
-        headings.  This method will create a matrix with only one column
-        containing the row headings.
-
-        :param tree: the treelib Tree() containing the workflow module's data.
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        self._row_tree = tree
-
-        # Build a dict containing the record ID's of the row module items
-        # and the name to display in the RAMSTKMatrixView() for the rows.
-        # We do not want the ID/tag of the root node in the tree as this is
-        # simply the name of the work flow module.
-        _row_ids = [
-            self._row_tree.get_node(_node).identifier
-            for _node in self._row_tree.nodes
-        ][1:]
-        _row_ids.insert(0, -1)
-        _display_names = [
-            self._row_tree.get_node(_node).tag
-            for _node in self._row_tree.nodes
-        ][1:]
-        _display_names.insert(0, 'column_id')
-        self._dic_matrix = {'id': _row_ids, 'display_name': _display_names}
-
-        for _matrix_type in self._column_tables.keys():
-            self.dic_matrices[_matrix_type] = pd.DataFrame(self._dic_matrix)
-            # pylint: disable=unused-variable
-            (self.n_row, __) = self.dic_matrices[_matrix_type].shape
-
-            # If the column tree has already been loaded, we can build the
-            # matrix.  Otherwise the matrix will be built when the column
-            # tree is loaded.
-            if self._col_tree:
-                self.do_create_columns(_matrix_type)
-                pub.sendMessage('request_select_matrix',
-                                matrix_type=_matrix_type,)
-
-    def do_delete_column(self, node_id: int, matrix_type: str) -> Any:
-        """Delete a column from the requested matrix.
-
-        :param node_id: the MODULE treelib Node ID that was deleted.
-            Note that node ID = MODULE ID = matrix row ID.
-        :param matrix_type: the type of the Matrix to delete the column.
-        :return: None
-        :rtype: None
-        :raise: KeyError if passed a node ID or matrix type that doesn't exist.
-        """
-        self.dic_matrices[matrix_type] = self.dic_matrices[matrix_type].drop(
-            [node_id], axis=1)
-
-    def do_delete_row(self, node_id: int) -> Any:
-        """Delete a row from all the matrices.
-
-        :param node_id: the MODULE treelib Node ID that was deleted.
-            Note that node ID = MODULE ID = matrix row ID.
-        :return: None
-        :rtype: None
-        :raise: KeyError if passed a node ID that doesn't exist.
-        """
-        for _matrix in self.dic_matrices:
-            self.dic_matrices[_matrix] = self.dic_matrices[_matrix].drop(
-                [node_id])
-
-    def do_insert_column(self, node_id: str, matrix_type: str) -> Any:
-        """Insert a column into the requested matrix.
-
-        :param node_id: the MODULE treelib Node ID that was inserted.
-            Note that node ID = MODULE ID = matrix row ID.
-        :param matrix_type: the type of the Matrix to select from.  This
-            selects the correct matrix from the dict of matrices managed by
-            this matrix manager.
-        :return: None
-        :rtype: None
-        :raise: KeyError if passed a node ID or matrix type that doesn't exist.
-        """
-        _lst_values: List[Any] = [0] * self.n_row
-        _lst_values[0] = ''
-
-        self.dic_matrices[matrix_type] = pd.concat([
-            self.dic_matrices[matrix_type],
-            pd.DataFrame({node_id: _lst_values})
-        ],
-                                                   axis=1)
-
-    def do_insert_row(self, node_id: int) -> Any:
-        """Insert a row into each matrix managed by this matrix manager.
-
-        :param node_id: the MODULE treelib Node ID that was inserted.
-            Note that node ID = MODULE ID = matrix row ID.
-        :return: None
-        :rtype: None
-        """
-        for _matrix in self.dic_matrices:
-            # pylint: disable=unused-variable
-            (__, _n_col) = self.dic_matrices[_matrix].shape
-            _lst_values = [0] * _n_col
-
-            _new_row = pd.DataFrame([_lst_values],
-                                    columns=list(
-                                        self.dic_matrices[_matrix].columns),
-                                    index=[node_id])
-            self.dic_matrices[_matrix] = self.dic_matrices[_matrix].append(
-                _new_row)
-
-    def do_load(self, matrix_type: str, matrix: List[Tuple[int]]) -> None:
-        """Load the matrix values.
-
-        :param matrix_type: the type of the Matrix to select from.  This
-            selects the correct matrix from the dict of matrices managed by
-            this matrix manager.
-        :param matrix: a list of tuples (column ID, row ID, value) for the
-            selected matrix.
-        :return: None
-        :rtype: None
-        """
-        # If the matrix type exists in the dict of matrices, then build it.
-        # Otherwise just keep going.
-        try:
-            _n_columns = len(self.dic_matrices[matrix_type].columns)
-            if _n_columns > 2:
-                for _col in matrix:
-                    self.dic_matrices[matrix_type].iloc[
-                        _col[1],  # type: ignore
-                        _col[0]] = _col[2]  # type: ignore
-                pub.sendMessage('succeed_load_matrix',
-                                matrix_type=matrix_type,
-                                matrix=self.dic_matrices[matrix_type])
-        except KeyError:
-            pass
-
-    def do_request_update(self, matrix_type: str) -> None:
-        """Update the requested matrix in the RAMSTK program database.
-
-        :param matrix_type: the type of the Matrix to select from.  This
-            selects the correct matrix from the dict of matrices managed by
-            this matrix manager.
-        :return: None
-        :rtype: None
-        """
-        if matrix_type in self.dic_matrices:
-            pub.sendMessage('request_update_matrix',
-                            matrix_type=matrix_type,
-                            matrix=self.dic_matrices[matrix_type],)
-
-    def do_select(self, matrix_type: str, row: int, col: str) -> Any:
-        """Select the value from the cell identified by col and row.
-
-        :param matrix_type: the type of the Matrix to select from.  This
-            selects the correct matrix from the dict of matrices managed by
-            this matrix manager.
-        :param row: the row of the cell.  This is the second index of the
-            Pandas DataFrame.
-        :param col: the column of the cell.  This is the first index of the
-            Pandas DataFrame.
-        :return: the value in the cell at (col, row).
-        :rtype: int
-        :raise: KeyError if passed a matrix type, column, or row that doesn't
-            exist.
-        """
-        return self.dic_matrices[matrix_type].loc[row, col]
-
-    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        """Set the revision ID for the matrix manager."""
         self._revision_id = attributes['revision_id']

@@ -123,6 +123,17 @@ class TestSelectMethods():
         assert _revision.name == 'Original Revision'
 
     @pytest.mark.unit
+    def test_on_select_revision(self, mock_program_dao):
+        """_on_select_revision() should set the _revision_id attribute."""
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+
+        pub.sendMessage('selected_revision', attributes={'revision_id': 5})
+
+        assert DUT._revision_id == 5
+
+    @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmRevision()

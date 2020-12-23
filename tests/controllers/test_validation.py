@@ -23,7 +23,7 @@ from __mocks__ import (
 )
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import (
-    amValidation, dmRequirement, dmValidation, mmValidation
+    amValidation, dmRequirement, dmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
