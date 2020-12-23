@@ -17,9 +17,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel
 
 # RAMSTK Local Imports
 from . import ATTRIBUTE_KEYS
@@ -100,10 +98,10 @@ class FunctionPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, 'succeed_retrieve_functions')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_function')
         pub.subscribe(super().do_refresh_tree, 'wvw_editing_function')
         pub.subscribe(super().on_delete, 'succeed_delete_function')
 
-        pub.subscribe(self._on_insert, 'succeed_insert_function')
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
 
     def _on_insert(self, tree: treelib.Tree) -> None:
@@ -251,41 +249,8 @@ class ModuleView(RAMSTKModuleView):
                                              [5, 15, 17])
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active, 'succeed_delete_function')
-        pub.subscribe(super().do_set_cursor_active, 'succeed_insert_function')
-        pub.subscribe(super().do_set_cursor_active, 'succeed_update_function')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_delete_function')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_insert_function')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_update_function')
-
-        pub.subscribe(self._do_set_record_id, 'selected_function')
-
-    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
-        """Request to delete selected record from the RAMSTKFunction table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        _parent = self.get_parent().get_parent().get_parent().get_parent(
-        ).get_parent()
-        _prompt = _("You are about to delete Function {0:d} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(parent=_parent)
-        _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type('question')
-
-        if _dialog.do_run() == Gtk.ResponseType.YES:
-            super().do_set_cursor_busy()
-            pub.sendMessage(
-                'request_delete_function',
-                node_id=self._record_id,
-            )
-
-        _dialog.do_destroy()
+        pub.subscribe(self._do_set_record_id,
+                      'selected_{0}'.format(self._module))
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.

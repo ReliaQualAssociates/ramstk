@@ -70,6 +70,8 @@ class FailureDefinitionPanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel,
                       'succeed_retrieve_failure_definitions')
+        pub.subscribe(super().do_load_panel,
+                      'succeed_insert_failure_definition')
         pub.subscribe(super().on_delete, 'succeed_delete_failure_definition')
 
         pub.subscribe(self._on_module_switch, 'lvwSwitchedPage')
@@ -241,20 +243,6 @@ class FailureDefinition(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_delete_failure_definition')
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_insert_failure_definition')
-        pub.subscribe(super().on_insert, 'succeed_insert_failure_definition')
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_update_failure_definition')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_delete_failure_definition')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_insert_failure_definition')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_update_failure_definition')
-
         pub.subscribe(self._do_set_record_id, 'selected_failure_definition')
 
     # pylint: disable=unused-argument

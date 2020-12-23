@@ -134,11 +134,9 @@ class PoFPanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
         pub.subscribe(super().do_load_panel, 'succeed_retrieve_pof')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_pof')
 
         pub.subscribe(self._on_delete_insert_pof, 'succeed_delete_pof')
-        pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_opload')
-        pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_opstress')
-        pub.subscribe(self._on_delete_insert_pof, 'succeed_insert_test_method')
 
     def do_load_combobox(self) -> None:
         """Load the RAMSTKComboBox() widgets.
@@ -170,7 +168,7 @@ class PoFPanel(RAMSTKPanel):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def _on_delete_insert_pof(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_delete_insert_pof(self, tree: treelib.Tree) -> None:
         """Update PoF worksheet whenever an element is inserted or deleted.
 
         :param node_id: the ID of the inserted/deleted PoF element.
@@ -583,16 +581,6 @@ class PoF(RAMSTKWorkView):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_pof_2')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_pof')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_pof')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_delete_pof')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_insert_opload')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_opstress')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_test_method')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_pof')
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete the selected entity from the PoF.

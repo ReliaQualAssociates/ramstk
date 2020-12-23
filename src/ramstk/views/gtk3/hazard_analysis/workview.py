@@ -126,10 +126,10 @@ class HazOpsPanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, 'succeed_retrieve_hazards')
         pub.subscribe(super().do_load_panel, 'succeed_get_hazard_tree')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_hazard')
         pub.subscribe(super().on_delete, 'succeed_delete_hazard')
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._on_insert, 'succeed_insert_hazard')
 
     def do_load_severity(
             self, criticalities: Dict[int, Tuple[str, str, int]]) -> None:
@@ -328,17 +328,6 @@ class HazOps(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active, 'succeed_calculate_hazard')
-        pub.subscribe(super().do_set_cursor_active, 'succeed_delete_hazard')
-        pub.subscribe(super().do_set_cursor_active, 'succeed_insert_hazard')
-        pub.subscribe(super().do_set_cursor_active, 'succeed_update_hazard')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_delete_hazard')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_insert_hazard')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_update_function')
-
         pub.subscribe(self._do_set_record_id, 'selected_hazard')
         pub.subscribe(self._on_select_function, 'selected_function')
 

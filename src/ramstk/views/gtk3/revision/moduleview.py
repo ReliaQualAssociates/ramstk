@@ -223,16 +223,6 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active, 'succeed_delete_revision')
-        pub.subscribe(super().do_set_cursor_active, 'succeed_insert_revision')
-        pub.subscribe(super().do_set_cursor_active, 'succeed_update_revision')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_delete_revision')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_insert_revision')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_update_revision')
-
         pub.subscribe(self._do_set_record_id, 'selected_revision')
         pub.subscribe(self._on_insert_revision, 'succeed_insert_revision')
 

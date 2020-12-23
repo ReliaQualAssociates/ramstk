@@ -193,11 +193,17 @@ class RAMSTKPanel(RAMSTKFrame):
             self.tvwTreeView.set_cursor(_path, None, False)
             self.tvwTreeView.row_activated(_path, _column)
 
-    def do_load_panel(self, tree: treelib.Tree, row: Gtk.TreeIter = None) -> \
-            None:
+    # noinspection PyUnusedLocal
+    # pylint: disable=unused-argument
+    def do_load_panel(self,
+                      tree: treelib.Tree = treelib.Tree(),
+                      node_id: Any = '',
+                      row: Gtk.TreeIter = None) -> None:
         """Load data into the RAMSTKPanel() widgets.
 
         :param tree: the module's treelib Tree().
+        :param node_id: unused in this function.  Required so this method
+            can be used as the subscriber for 'succeed_insert_{0}' messages.
         :param row: the parent row in the RAMSTKTreeView() to add the new item.
         :return: None
         """
@@ -635,10 +641,9 @@ class RAMSTKPanel(RAMSTKFrame):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
+    def on_delete(self, tree: treelib.Tree) -> None:
         """Update the RAMSTKTreeView after deleting a line item.
 
-        :param node_id: the treelib Tree() node ID that was deleted.
         :param tree: the treelib Tree() containing the workflow module data.
         :return: None
         """
@@ -690,6 +695,8 @@ class RAMSTKPanel(RAMSTKFrame):
             _prow = _model.iter_parent(_row)
 
         self.tvwTreeView.do_insert_row(data, _prow)
+
+        pub.sendMessage('request_set_cursor_active')
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
         """Get the attributes for the newly selected row.

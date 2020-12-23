@@ -96,13 +96,13 @@ class StakeholderPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, 'succeed_retrieve_stakeholders')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_stakeholder')
         pub.subscribe(super().do_refresh_tree, 'succeed_calculate_stakeholder')
         pub.subscribe(super().do_refresh_tree, 'wvw_editing_stakeholder')
         pub.subscribe(super().on_delete, 'succeed_delete_stakeholder')
 
         pub.subscribe(self._do_load_requirements,
                       'succeed_retrieve_requirements')
-        pub.subscribe(self._on_insert, 'succeed_insert_stakeholder')
         pub.subscribe(self._on_module_switch, 'lvwSwitchedPage')
 
     def do_load_affinity_groups(
@@ -362,19 +362,6 @@ class Stakeholders(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_delete_stakeholder')
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_insert_stakeholder')
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_update_stakeholder')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_delete_stakeholder')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_insert_stakeholder')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_update_stakeholder')
-
         pub.subscribe(self._do_set_record_id, 'selected_stakeholder')
 
     def _do_add_to_affinity_group(self, new_text: str) -> None:

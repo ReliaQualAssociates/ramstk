@@ -48,7 +48,8 @@ class RAMSTKPanel(RAMSTKFrame):
         ...
 
     def do_load_panel(self,
-                      tree: treelib.Tree,
+                      tree: treelib.Tree = ...,
+                      node_id: Any = ...,
                       row: Gtk.TreeIter = ...) -> None:
         ...
 
@@ -109,7 +110,7 @@ class RAMSTKPanel(RAMSTKFrame):
             textview: RAMSTKTextView) -> Dict[Union[str, Any], Any]:
         ...
 
-    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
+    def on_delete(self, tree: treelib.Tree) -> None:
         ...
 
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:

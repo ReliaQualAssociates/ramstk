@@ -195,10 +195,10 @@ class UsageProfilePanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_delete, 'succeed_delete_usage_profile')
+        #pub.subscribe(super().on_delete, 'succeed_delete_usage_profile')
         pub.subscribe(super().do_load_panel, 'succeed_retrieve_usage_profile')
 
-        pub.subscribe(self._on_insert, 'succeed_insert_usage_profile')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_usage_profile')
 
     def do_load_combobox(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -479,18 +479,18 @@ class UsageProfile(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_delete_usage_profile')
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_insert_usage_profile')
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_update_usage_profile')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_delete_usage_profile')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_insert_usage_profile')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_update_usage_profile')
+        #pub.subscribe(super().do_set_cursor_active,
+        #             'succeed_delete_usage_profile')
+        #pub.subscribe(super().do_set_cursor_active,
+        #             'succeed_insert_usage_profile')
+        #pub.subscribe(super().do_set_cursor_active,
+        #             'succeed_update_usage_profile')
+        #pub.subscribe(super().do_set_cursor_active_on_fail,
+        #             'fail_delete_usage_profile')
+        #pub.subscribe(super().do_set_cursor_active_on_fail,
+        #             'fail_insert_usage_profile')
+        #pub.subscribe(super().do_set_cursor_active_on_fail,
+        #             'fail_update_usage_profile')
 
         pub.subscribe(self._do_set_record_id, 'selected_usage_profile')
 

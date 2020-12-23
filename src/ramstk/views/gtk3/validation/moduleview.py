@@ -226,16 +226,6 @@ class ModuleView(RAMSTKModuleView):
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_validation_2')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_validation_2')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_validation')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_delete_validation')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_validation')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_validation')
-
         pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:

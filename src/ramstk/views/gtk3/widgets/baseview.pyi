@@ -52,6 +52,9 @@ class RAMSTKBaseView(Gtk.HBox):
                  logger: RAMSTKLogManager) -> None:
         ...
 
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        ...
+
     def __set_callbacks(self) -> None:
         ...
 
@@ -115,9 +118,7 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         ...
 
-    def do_set_cursor_active(self,
-                             node_id: Any = ...,
-                             tree: treelib.Tree = ...) -> None:
+    def do_set_cursor_active(self, tree: treelib.Tree = ...) -> None:
         ...
 
     def do_set_cursor_active_on_fail(self, error_message: str = ...) -> None:

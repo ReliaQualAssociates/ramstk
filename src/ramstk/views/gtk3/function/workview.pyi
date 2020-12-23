@@ -10,9 +10,6 @@ from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKCheckButton as RAMSTKCheckButton
 from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog as RAMSTKMessageDialog
-)
 from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 from ramstk.views.gtk3.widgets import RAMSTKTextView as RAMSTKTextView
 from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
@@ -59,9 +56,6 @@ class GeneralData(RAMSTKWorkView):
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        ...
-
-    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         ...
 
     _record_id: Any = ...

@@ -160,10 +160,43 @@ class RAMSTKBaseView(Gtk.HBox):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_set_cursor_active, 'request_set_cursor_active')
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_{0}'.format(self._module))
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_{0}'.format(self._module))
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_{0}'.format(self._module))
+
         pub.subscribe(self.on_select_revision, 'selected_revision')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_matrix')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
         pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_matrix')
+
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        """Request to delete selected record from the RAMSTKFunction table.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
+        _prompt = _("You are about to delete {1} {0} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._record_id,
+                                              self._module.title())
+        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog.do_set_message(_prompt)
+        _dialog.do_set_message_type('question')
+
+        if _dialog.do_run() == Gtk.ResponseType.YES:
+            self.do_set_cursor_busy()
+            pub.sendMessage(
+                'request_delete_{0}'.format(self._module),
+                node_id=self._record_id,
+            )
+
+        _dialog.do_destroy()
 
     def __set_callbacks(self) -> None:
         """Set common callback methods.
@@ -751,9 +784,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def do_set_cursor_active(self,
-                             node_id: Any = '',
-                             tree: treelib.Tree = '') -> None:
+    def do_set_cursor_active(self, tree: treelib.Tree = '') -> None:
         """Set active cursor for the Module, List, and Work Book Gdk.Window().
 
         :param node_id: the node ID passed in the PyPubSub message.  Only
