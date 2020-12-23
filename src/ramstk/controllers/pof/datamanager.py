@@ -135,7 +135,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
             self.dao.do_update()
-            pub.sendMessage('succeed_update_pof', node_id=node_id)
+            pub.sendMessage('succeed_update_pof', tree=self.tree)
         except AttributeError:
             pub.sendMessage('fail_update_pof',
                             error_message=('Attempted to save non-existent '
@@ -158,7 +158,6 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             pub.sendMessage('succeed_delete_pof_2', node_id=node_id)
             pub.sendMessage('succeed_delete_pof',
-                            node_id=node_id,
                             tree=self.tree)
         except AttributeError:
             _error_msg = ("Attempted to delete non-existent PoF element ID "
@@ -194,10 +193,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opload': _opload})
 
+            pub.sendMessage('succeed_insert_pof', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_opload',
                             node_id=_identifier,
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_pof', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = (
                 'An error occurred when attempting to add an operating load '
@@ -235,10 +235,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opstress': _opstress})
 
+            pub.sendMessage('succeed_insert_pof', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_opstress',
                             node_id=_identifier,
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_pof', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('An error occurred when attempting to add an '
                           'operating stress to operating load '
@@ -274,10 +275,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'testmethod': _method})
 
+            pub.sendMessage('succeed_insert_pof', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_test_method',
                             node_id=_identifier,
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_pof', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('An error occurred when attempting to add a test '
                           'method to operating load '

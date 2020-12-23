@@ -123,7 +123,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage(
                 'succeed_update_failure_definition',
-                node_id=node_id,
                 tree=self.tree,
             )
         except (AttributeError, KeyError, TypeError):
@@ -155,7 +154,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage(
                 'succeed_delete_failure_definition',
-                node_id=node_id,
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
@@ -180,9 +178,6 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
         try:
             _failure_definition = RAMSTKFailureDefinition()
             _failure_definition.revision_id = self._revision_id
@@ -205,6 +200,8 @@ class DataManager(RAMSTKDataManager):
                 tree=self.tree,
             )
         except DataAccessError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempting to add failure definition to non-existent '
                 'revision {0}.'.format(self._revision_id, _method_name))

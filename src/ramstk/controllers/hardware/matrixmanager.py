@@ -62,14 +62,14 @@ class MatrixManager(RAMSTKMatrixManager):
                       'succeed_retrieve_requirements')
         pub.subscribe(self._do_create_hardware_matrix_columns,
                       'succeed_retrieve_validations')
-        pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
-        pub.subscribe(self._on_delete_requirement,
-                      'succeed_delete_requirement')
-        pub.subscribe(self._on_delete_validation, 'succeed_delete_validation')
-        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
-        pub.subscribe(self._on_insert_requirement,
-                      'succeed_insert_requirement')
-        pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
+        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        # pub.subscribe(self._on_delete_requirement,
+        #               'succeed_delete_requirement')
+        # pub.subscribe(self._on_delete_validation, 'succeed_delete_validation')
+        # pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
+        # pub.subscribe(self._on_insert_requirement,
+        #               'succeed_insert_requirement')
+        # pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
 
     def _do_create_hardware_matrix_columns(self, tree: treelib.Tree) -> None:
         """Create the Hardware data matrix columns.
@@ -109,7 +109,7 @@ class MatrixManager(RAMSTKMatrixManager):
         """
         self.do_delete_row(node_id)
 
-    def _on_delete_requirement(self, node_id: int, tree: treelib.Tree) -> Any:
+    def _on_delete_requirement(self, tree: treelib.Tree) -> Any:
         """Delete the node ID column from the Hardware::Requirement matrix.
 
         :param node_id: the requirement treelib Node ID that was deleted.

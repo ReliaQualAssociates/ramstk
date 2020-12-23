@@ -57,14 +57,14 @@ class MatrixManager(RAMSTKMatrixManager):
                       'succeed_retrieve_hardware')
         pub.subscribe(self._do_create_validation_matrix_columns,
                       'succeed_retrieve_requirements')
-        pub.subscribe(self._on_delete_validation, 'succeed_delete_validation')
-        pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
-        pub.subscribe(self._on_delete_requirement,
-                      'succeed_delete_requirement')
-        pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
-        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
-        pub.subscribe(self._on_insert_requirement,
-                      'succeed_insert_requirement')
+        # pub.subscribe(self._on_delete_validation, 'succeed_delete_validation')
+        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        # pub.subscribe(self._on_delete_requirement,
+        #               'succeed_delete_requirement')
+        # pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
+        # pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
+        # pub.subscribe(self._on_insert_requirement,
+        #               'succeed_insert_requirement')
 
     def _do_create_validation_matrix_columns(self, tree: treelib.Tree) -> None:
         """Create the Validation data matrix columns.

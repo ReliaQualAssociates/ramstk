@@ -141,7 +141,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
             self.dao.do_update()
-            pub.sendMessage('succeed_update_fmea', node_id=node_id)
+            pub.sendMessage('succeed_update_fmea', tree=self.tree)
         except AttributeError:
             pub.sendMessage('fail_update_fmea',
                             error_message=('Attempted to save non-existent '
@@ -218,7 +218,6 @@ class DataManager(RAMSTKDataManager):
 
             self.tree.remove_node(node_id)
             pub.sendMessage('succeed_delete_fmea',
-                            node_id=node_id,
                             tree=self.tree)
 
         except (AttributeError, DataAccessError):
@@ -257,10 +256,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
+            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_action',
                             node_id=_identifier,
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_fmea', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add an action to unknown failure '
                           'cause ID {0:d}.'.format(int(_cause_id)))
@@ -295,10 +295,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
+            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_cause',
                             node_id=_identifier,
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_fmea', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = (
                 'Attempting to add a failure cause to unknown '
@@ -338,10 +339,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
+            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_control',
                             node_id=_identifier,
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_fmea', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a control to unknown failure '
                           'cause ID {0:d}.'.format(int(_cause_id)))
@@ -376,10 +378,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=mode_id,
                                   data=_data_package)
 
+            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_mechanism',
                             node_id=_identifier,
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_fmea', node_id=_identifier)
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a failure mechanism to unknown '
                           'failure mode ID {0:s}.'.format(str(mode_id)))
@@ -408,10 +411,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data=_data_package)
 
+            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
+                            tree=self.tree)
             pub.sendMessage('succeed_insert_mode',
                             node_id=str(_mode.mode_id),
                             tree=self.tree)
-            pub.sendMessage('succeed_insert_fmea', node_id=str(_mode.mode_id))
         except (DataAccessError, NodeIDAbsentError):
             _error_msg = ('Attempting to add a failure mode to unknown '
                           'hardware ID {0:s}.'.format(str(self._root)))

@@ -150,7 +150,7 @@ class DataManager(RAMSTKDataManager):
                 self.tree.get_node(node_id).data['usage_profile'])
             pub.sendMessage(
                 'succeed_update_usage_profile',
-                node_id=node_id,
+                tree=self.tree,
             )
         except AttributeError:
             _error_msg: str = (
@@ -192,9 +192,7 @@ class DataManager(RAMSTKDataManager):
 
             self.tree.remove_node(node_id)
 
-            pub.sendMessage('succeed_delete_usage_profile',
-                            node_id=node_id,
-                            tree=self.tree)
+            pub.sendMessage('succeed_delete_usage_profile', tree=self.tree)
         except (DataAccessError, NodeIDAbsentError):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
@@ -239,6 +237,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id['environment'] = _environment.environment_id
             pub.sendMessage(
                 "succeed_insert_usage_profile",
+                node_id=self.last_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
@@ -275,6 +274,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id['mission'] = _mission.mission_id
             pub.sendMessage(
                 "succeed_insert_usage_profile",
+                node_id=self.last_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
@@ -311,6 +311,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id['mission_phase'] = _phase.phase_id
             pub.sendMessage(
                 "succeed_insert_usage_profile",
+                node_id=self.last_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:

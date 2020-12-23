@@ -52,7 +52,7 @@ class MatrixManager(RAMSTKMatrixManager):
         pub.subscribe(self._do_create_function_matrix_columns,
                       'succeed_retrieve_hardware')
         pub.subscribe(self._on_delete_function, 'succeed_delete_function')
-        pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
+        # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         pub.subscribe(self._on_insert_function, 'insert_function_matrix_row')
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
@@ -76,7 +76,7 @@ class MatrixManager(RAMSTKMatrixManager):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def _on_delete_function(self, node_id: int, tree: treelib.Tree) -> None:
+    def _on_delete_function(self, tree: treelib.Tree) -> None:
         """Delete the matrix row associated with the deleted function.
 
         :param node_id: the treelib Tree() node ID associated with the

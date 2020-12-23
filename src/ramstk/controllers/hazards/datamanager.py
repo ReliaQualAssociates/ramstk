@@ -130,7 +130,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update(self.tree.get_node(node_id).data['hazard'])
             pub.sendMessage(
                 'succeed_update_hazard',
-                node_id=node_id,
+                tree=self.tree,
             )
         except AttributeError:
             _method_name: str = inspect.currentframe(  # type: ignore
@@ -178,7 +178,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage(
                 'succeed_delete_hazard',
-                node_id=node_id,
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
@@ -223,6 +222,7 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage(
                 'succeed_insert_hazard',
+                node_id=self.last_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
