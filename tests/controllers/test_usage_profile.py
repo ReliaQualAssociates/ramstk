@@ -517,8 +517,10 @@ class TestGetterSetter():
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_mission(self, node_id, tree):
-        assert node_id == {'environment': 3, 'mission': 3, 'mission_phase': 3}
+        assert node_id == '3'
         assert isinstance(tree, Tree)
+        assert isinstance(
+            tree.get_node('3').data['usage_profile'], RAMSTKMission)
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
 
     def on_fail_insert_mission(self, error_message):
@@ -526,8 +528,10 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     def on_succeed_insert_mission_phase(self, node_id, tree):
-        assert node_id == {'environment': 3, 'mission': 3, 'mission_phase': 3}
+        assert node_id == '1.4'
         assert isinstance(tree, Tree)
+        assert isinstance(
+            tree.get_node('1.4').data['usage_profile'], RAMSTKMissionPhase)
         print("\033[36m\nsucceed_insert_mission_phase topic was broadcast")
 
     def on_fail_insert_mission_phase(self, error_message):
@@ -535,8 +539,11 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     def on_succeed_insert_environment(self, node_id, tree):
-        assert node_id == {'environment': 3, 'mission': 3, 'mission_phase': 3}
+        assert node_id == '1.1.4'
         assert isinstance(tree, Tree)
+        assert isinstance(
+            tree.get_node('1.1.4').data['usage_profile'],
+            RAMSTKEnvironment)
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
 
     def on_fail_insert_environment(self, error_message):
@@ -554,9 +561,6 @@ class TestInsertMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_mission()
-
-        assert isinstance(
-            DUT.tree.get_node('3').data['usage_profile'], RAMSTKMission)
 
         pub.unsubscribe(self.on_succeed_insert_mission,
                         'succeed_insert_usage_profile')
@@ -589,10 +593,6 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_mission_phase(1)
 
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(
-            DUT.tree.get_node('1.4').data['usage_profile'], RAMSTKMissionPhase)
-
         pub.unsubscribe(self.on_succeed_insert_mission_phase,
                         'succeed_insert_mission_phase')
 
@@ -622,11 +622,6 @@ class TestInsertMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_environment(1, 1)
-
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(
-            DUT.tree.get_node('1.1.4').data['usage_profile'],
-            RAMSTKEnvironment)
 
         pub.unsubscribe(self.on_succeed_insert_environment,
                         'succeed_insert_environment')

@@ -123,6 +123,7 @@ class RAMSTKPanel(RAMSTKFrame):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module: str = ''
 
     # Define public dict class attributes.
 
@@ -166,6 +167,8 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.pltPlot: RAMSTKPlot = RAMSTKPlot()
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
+
+        # Subscribe to PyPubSub messages.
 
     def do_clear_tree(self) -> None:
         """Clear the contents of a RAMSTKTreeView().
@@ -216,6 +219,8 @@ class RAMSTKPanel(RAMSTKFrame):
             self.do_load_panel(_child_tree, row=_new_row)
 
         self.do_expand_tree()
+
+        pub.sendMessage('request_set_cursor_active')
 
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Load the data into a RAMSTKTreeView row.
@@ -641,6 +646,8 @@ class RAMSTKPanel(RAMSTKFrame):
         if _row is not None:
             self.tvwTreeView.selection.select_iter(_row)
             self.show_all()
+
+        pub.sendMessage('request_set_cursor_active')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

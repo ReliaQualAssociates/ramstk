@@ -195,10 +195,19 @@ class UsageProfilePanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        #pub.subscribe(super().on_delete, 'succeed_delete_usage_profile')
-        pub.subscribe(super().do_load_panel, 'succeed_retrieve_usage_profile')
-
-        pub.subscribe(super().do_load_panel, 'succeed_insert_usage_profile')
+        #// TODO: Move PyPubSub subscribers up to RAMSTKPanel() class.
+        #//
+        #// The subscribers in each List, Module, and Work View for the
+        #// succeed_retrieve_{0}, succeed_insert_{0}, and succeed_delete_{0}
+        #// topics should be moved to the RAMSTKPanel() class once all the
+        #// data managers have been refactored so the applicable methods are
+        #// publishing the correct MDS.
+        pub.subscribe(super().do_load_panel,
+                      'succeed_retrieve_{0}'.format(self._module))
+        pub.subscribe(super().do_load_panel,
+                      'succeed_insert_{0}'.format(self._module))
+        pub.subscribe(super().on_delete,
+                      'succeed_delete_{0}'.format(self._module))
 
     def do_load_combobox(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -269,18 +278,19 @@ class UsageProfilePanel(RAMSTKPanel):
                 _level = _model.get_value(_row, 10)
                 self._dic_attribute_keys = self._dic_element_keys[_level]
                 self._dic_attribute_updater = self._dic_attributes[_level]
+
+                # Change the column headings depending on what is being
+                # selected.
+                self.tvwTreeView.headings = self._dic_headings[_level]
+                self.tvwTreeView.visible = self._dic_visible[_level]
+                super().do_set_headings()
+
+                pub.sendMessage('selected_usage_profile',
+                                attributes={'record_id': self._record_id})
             except TypeError:
                 _level = ''
                 self._dic_attribute_keys = {}
                 self._dic_attribute_updater = {}
-
-            # Change the column headings depending on what is being selected.
-            self.tvwTreeView.headings = self._dic_headings[_level]
-            self.tvwTreeView.visible = self._dic_visible[_level]
-            super().do_set_headings()
-
-        pub.sendMessage('selected_usage_profile',
-                        attributes={'record_id': _model.get_value(_row, 8)})
 
     def __do_load_environment(self, node: treelib.Node,
                               row: Gtk.TreeIter) -> Gtk.TreeIter:
@@ -479,19 +489,6 @@ class UsageProfile(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        #pub.subscribe(super().do_set_cursor_active,
-        #             'succeed_delete_usage_profile')
-        #pub.subscribe(super().do_set_cursor_active,
-        #             'succeed_insert_usage_profile')
-        #pub.subscribe(super().do_set_cursor_active,
-        #             'succeed_update_usage_profile')
-        #pub.subscribe(super().do_set_cursor_active_on_fail,
-        #             'fail_delete_usage_profile')
-        #pub.subscribe(super().do_set_cursor_active_on_fail,
-        #             'fail_insert_usage_profile')
-        #pub.subscribe(super().do_set_cursor_active_on_fail,
-        #             'fail_update_usage_profile')
-
         pub.subscribe(self._do_set_record_id, 'selected_usage_profile')
 
     # pylint: disable=unused-argument
@@ -516,7 +513,10 @@ class UsageProfile(RAMSTKListView):
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage('request_delete_usage_profile', node_id=_node_id)
+            pub.sendMessage(
+                'request_delete_usage_profile',
+                node_id=_node_id,
+            )
 
         _dialog.do_destroy()
 
@@ -535,14 +535,18 @@ class UsageProfile(RAMSTKListView):
         super().do_set_cursor_busy()
         if _level == 'mission':
             _mission_id = _model.get_value(_row, 0)
-            pub.sendMessage('request_insert_mission_phase',
-                            mission_id=_mission_id)
+            pub.sendMessage(
+                'request_insert_mission_phase',
+                mission_id=_mission_id,
+            )
         elif _level == 'phase':
             _phase_id = _model.get_value(_row, 0)
             _mission_id = _model.get_value(_prow, 0)
-            pub.sendMessage('request_insert_environment',
-                            mission_id=_mission_id,
-                            phase_id=_phase_id)
+            pub.sendMessage(
+                'request_insert_environment',
+                mission_id=_mission_id,
+                phase_id=_phase_id,
+            )
         elif _level == 'environment':
             _error = _("An environmental condition cannot have a child.")
             _parent = self.get_parent().get_parent().get_parent().get_parent(
@@ -552,7 +556,10 @@ class UsageProfile(RAMSTKListView):
             _dialog.do_set_message_type(message_type='error')
             _dialog.do_run()
             _dialog.do_destroy()
-            pub.sendMessage("fail_insert_usage_profile", error_message=_error)
+            pub.sendMessage(
+                "fail_insert_usage_profile",
+                error_message=_error,
+            )
 
     # pylint: disable=unused-argument
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
@@ -572,18 +579,22 @@ class UsageProfile(RAMSTKListView):
 
         super().do_set_cursor_busy()
         if _level == 'mission':
-            pub.sendMessage('request_insert_mission')
+            pub.sendMessage('request_insert_mission', )
         elif _level == 'phase':
             _mission_id = _model.get_value(_prow, 0)
-            pub.sendMessage('request_insert_mission_phase',
-                            mission_id=_mission_id)
+            pub.sendMessage(
+                'request_insert_mission_phase',
+                mission_id=_mission_id,
+            )
         elif _level == 'environment':
             _gprow = _model.iter_parent(_prow)
             _mission_id = _model.get_value(_gprow, 0)
             _phase_id = _model.get_value(_prow, 0)
-            pub.sendMessage('request_insert_environment',
-                            mission_id=_mission_id,
-                            phase_id=_phase_id)
+            pub.sendMessage(
+                'request_insert_environment',
+                mission_id=_mission_id,
+                phase_id=_phase_id,
+            )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the usage profile's record ID.

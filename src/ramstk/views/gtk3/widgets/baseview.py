@@ -159,6 +159,8 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, 'request_set_cursor_active')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_update_{0}'.format(self._module))
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_delete_{0}'.format(self._module))
         pub.subscribe(self.do_set_cursor_active_on_fail,
@@ -167,9 +169,7 @@ class RAMSTKBaseView(Gtk.HBox):
                       'fail_update_{0}'.format(self._module))
 
         pub.subscribe(self.on_select_revision, 'selected_revision')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_matrix')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_matrix')
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKFunction table.

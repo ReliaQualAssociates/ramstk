@@ -81,7 +81,10 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_usage_profile_tree', tree=self.tree)
+        pub.sendMessage(
+            'succeed_get_usage_profile_tree',
+            tree=self.tree,
+        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve the Usage Profile data from the RAMSTK Program database.
@@ -192,7 +195,10 @@ class DataManager(RAMSTKDataManager):
 
             self.tree.remove_node(node_id)
 
-            pub.sendMessage('succeed_delete_usage_profile', tree=self.tree)
+            pub.sendMessage(
+                'succeed_delete_usage_profile',
+                tree=self.tree,
+            )
         except (DataAccessError, NodeIDAbsentError):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
@@ -237,7 +243,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id['environment'] = _environment.environment_id
             pub.sendMessage(
                 "succeed_insert_usage_profile",
-                node_id=self.last_id,
+                node_id=_node_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
@@ -274,7 +280,7 @@ class DataManager(RAMSTKDataManager):
             self.last_id['mission'] = _mission.mission_id
             pub.sendMessage(
                 "succeed_insert_usage_profile",
-                node_id=self.last_id,
+                node_id=_node_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
@@ -310,8 +316,8 @@ class DataManager(RAMSTKDataManager):
                                   data={'usage_profile': _phase})
             self.last_id['mission_phase'] = _phase.phase_id
             pub.sendMessage(
-                "succeed_insert_usage_profile",
-                node_id=self.last_id,
+                'succeed_insert_usage_profile',
+                node_id=_node_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
