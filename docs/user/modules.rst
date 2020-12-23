@@ -11,6 +11,7 @@ This chapter describes each of the `RAMSTK` modules in detail.
    usage_profile
    failure_definition
    function
+   hazards
    requirement
    hardware
    validation

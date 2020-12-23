@@ -1,3 +1,5 @@
+.. _sec-revision:
+
 Revision Module
 ===============
 
@@ -6,6 +8,7 @@ other `RAMSTK` modules are optional and are relative to the Revision module.  A
 Revision could be used to represent many things depending on your needs.  A
 Revision could represent:
 
+* Revision
 * Model Year
 * Configuration
 * Variant
@@ -78,27 +81,42 @@ load the other work stream modules with their revision-specific data.  This
 will also cause the Revision module Work Book to display the attributes of
 the selected Revision.
 
-Adding and Removing Revisions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To add a new Revision to the open `RAMSTK` Program database, press the 'Add'
-button to the left of the revision list.
+Adding and Removing Revisions from the Module Book
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To add a new Revision to the open `RAMSTK` Program database:
+
+* Press the 'Add' button to the left of the revision list.
+* Right click on the revision list and select 'Add' from the pop-up menu.
 
 To remove the currently selected Revision from the open `RAMSTK` Program
-database, press the 'Remove' button to the left of the revision list.  You
-will be presented with a dialog confirming you want to delete the selected
+database:
+
+* Press the 'Remove' button to the left of the revision list.
+* Right click on the revision list and select 'Remove' from the pop-up menu.
+
+You will be presented with a dialog confirming you want to delete the selected
 Revision and all associated data.  This includes all the revision-specific
 data for every work stream as well.  Confirm your intentions to complete the
 removal.
 
-Saving Revisions
-^^^^^^^^^^^^^^^^
-To save changes to the currently selected Revision, press the 'Save' button
-to the left of the revision list.  All pending changes are committed to the
+Saving Revisions from the Module Book
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To save changes to the currently selected Revision:
+
+* Press the 'Save' button to the left of the revision list.
+* Right click on the revision list and select 'Save' from the pop-up menu.
+
+All pending changes to the currently selected Revision are committed to the
 open `RAMSTK` Program database.
 
-To save changes to all Revisions, press the 'Save All' button to the left of
-the revision list.  All pending changes to all Revisions are committed to the
-open `RAMSTK` Program database.
+To save changes to all Revisions:
+
+* Press the 'Save All' button to the left of the revision list.
+* Right click on the revision list and select 'Save All' from the pop-up
+menu.
+
+Pending changes to all Revisions are committed to the open `RAMSTK` Program
+database.
 
 Work Book
 ---------
@@ -110,18 +128,60 @@ following attributes are displayed in the Revision's General Data page.
 .. tabularcolumns:: |r|l|
 .. table:: **Revision Attributes in the Work Book**
 
-   +-------------+----------+
-   | Attribute   | Editable |
-   +=============+==========+
-   | Name        | Yes      |
-   +-------------+----------+
-   | Description | Yes      |
-   +-------------+----------+
-   | Remarks     | Yes      |
-   +-------------+----------+
+   +----------------------+----------+
+   | Attribute            | Editable |
+   +======================+==========+
+   | Revision Code        | Yes      |
+   +----------------------+----------+
+   | Revision Name        | Yes      |
+   +----------------------+----------+
+   | Remarks              | Yes      |
+   +----------------------+----------+
 
-Saving Revisions
-^^^^^^^^^^^^^^^^
+The revision code is used as identifier for a specific Revision.  The coding
+scheme is defined by you depending on your concept of a revision.  The table
+below has some examples of revision codes for different revision concepts.
+
+.. tabularcolumns:: |r|l|
+.. table:: **Revision Concept Example Codes**
+
+   +------------------+------------------------+
+   | Revision Concept | Example Revision Codes |
+   +==================+========================+
+   | Revision         | \-                     |
+   |                  +------------------------+
+   |                  | A                      |
+   |                  +------------------------+
+   |                  | B                      |
+   +------------------+------------------------+
+   | Model Year       | MY2018                 |
+   |                  +------------------------+
+   |                  | MY2019                 |
+   |                  +------------------------+
+   |                  | MT2020                 |
+   +------------------+------------------------+
+   | Configuration    | PN1401.101             |
+   |                  +------------------------+
+   |                  | PN1401.101-1           |
+   |                  +------------------------+
+   |                  | PN1401.101-2           |
+   +------------------+------------------------+
+   | Variant          | ICV                    |
+   |                  +------------------------+
+   |                  | MGS                    |
+   |                  +------------------------+
+   |                  | ESV                    |
+   +------------------+------------------------+
+
+The revision name is a description of the Revision.  Enter a meaningful name
+or description in this field.  For example, using the variant concept, the
+names of each revision above would be Infantry Carrier Vehicle, Mobile Gun
+System, Engineer Squad Vehicle.
+
+Remarks can be entered in the revision remarks field.
+
+Saving Revisions from the Work Book
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To save changes to the currently selected Revision, press the 'Save' button
 to the left of the work space.  All pending changes are committed to the
 open `RAMSTK` Program database.
@@ -130,8 +190,8 @@ To save changes to all Revisions, press the 'Save All' button to the left of
 the work space.  All pending changes to all Revisions are committed to the
 open `RAMSTK` Program database.
 
-List & Matrices Book
---------------------
+List Book
+---------
 There are two lists associated with the Revision work stream.  These are the
 :ref:`sec-usage-profile` and :ref:`sec-failure-definitions`.
 

@@ -37,7 +37,7 @@ class GeneralDataPanel(RAMSTKPanel):
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
             _("Function Code:"),
-            _("Function Name:"),
+            _("Function Description:"),
             _("Remarks:"),
             '',
         ]
@@ -208,22 +208,11 @@ class GeneralData(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks.insert(1, super().do_request_insert_child)
-        self._lst_callbacks.insert(2, self.do_request_delete)
-        self._lst_icons[0] = 'insert_sibling'
-        self._lst_icons.insert(1, 'insert_child')
-        self._lst_icons.insert(2, 'remove')
         self._lst_mnu_labels = [
-            _("Add Sibling Function"),
-            _("Add Child Function"),
-            _("Delete Selected Function"),
             _("Save Selected Function"),
             _("Save All Functions"),
         ]
         self._lst_tooltips = [
-            _("Add a new sibling function."),
-            _("Add a new child function."),
-            _("Delete the currently selected function."),
             _("Save changes to the currently selected function."),
             _("Save changes to all functions."),
         ]

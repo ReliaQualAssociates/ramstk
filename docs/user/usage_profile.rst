@@ -41,18 +41,17 @@ Work Book
 ---------
 The Usage Profile currently has no work space to display in the Work Book.
 
-Lists & Matrices Book
----------------------
+List Book
+---------
 .. _fig-usage-profile:
 
 .. figure:: ./figures/usage_profile.png
 
    Usage Profile
 
-The Usage Profile is displayed in the Lists & Matrices Book when the
-Revision work stream is selected in the Module Book.  The following
-attributes are displayed for each entity in the Usage Profile.  All
-attributes are editable.
+The Usage Profile is displayed in the List Book when the Revision work stream
+is selected in the Module Book.  The following attributes are displayed for
+each entity in the Usage Profile.  All attributes are editable.
 
 .. tabularcolumns:: |r|l|
 .. table:: **Usage Profile Attributes**

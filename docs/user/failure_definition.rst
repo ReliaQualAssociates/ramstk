@@ -28,12 +28,12 @@ Work Book
 ---------
 Failure Definitions currently has no work space to display in the Work Book.
 
-Lists & Matrices Book
----------------------
+List Book
+---------
 .. figure:: ./figures/failure_definitions.png
 
-Failure Definitions are displayed in the Lists & Matrices Book when the Revision
-work stream is selected in the Module Book.  The following attributes are
+Failure Definitions are displayed in the List Book when the Revision work
+stream is selected in the Module Book.  The following attributes are
 displayed for each Failure Definition.
 
 .. tabularcolumns:: |r|l|
@@ -47,28 +47,43 @@ displayed for each Failure Definition.
    | Definition    | Yes      |
    +---------------+----------+
 
-Adding and Removing Failure Definitions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To add a new Failure Definition to the open `RAMSTK` Program database, press
-the 'Add' button to the left of the definition list.  This will add a new
-Failure Definition that is associated with the selected Revision.
+Adding and Removing Failure Definitions from the List Book
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To add a new Failure Definition to the open `RAMSTK` Program database:
+
+* Press the 'Add' button to the left of the definition list.
+* Right click on the definition list and select 'Add' from the pop-up menu.
+
+This will add a new Failure Definition that is associated with the selected
+Revision.
 
 To remove the currently selected Failure Definition from the open `RAMSTK`
-Program database, press the 'Remove' button to the left of the definition list.
+Program database:
+
+* Press the 'Remove' button to the left of the definition list.
+* Right click on the definition list and select 'Remove' from the pop-up menu.
+
 You will be presented with a dialog confirming you want to delete the selected
 Failure Definition and all associated data.  Confirm your intentions to complete
 the removal.
 
-Saving Revisions
-^^^^^^^^^^^^^^^^
-To save changes to the currently selected Failure Definition, press the 'Save'
-button to the left of the definition list.  All pending changes are committed to
-the open `RAMSTK` Program database.
+Saving Failure Definitions from the List Book
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To save changes to the currently selected Failure Definition
 
-To save changes to all Failure Definitions, press the 'Save All' button to the
-left of the definition list.  All pending changes to all Failure Definitions
-associated with the selected Revision are committed to the open `RAMSTK` Program
-database.
+* Press the 'Save' button to the left of the definition list.
+* Right click on the definition list and select 'Save' from the pop-up menu.
+
+All pending changes to the currently selected Failure Definition are committed
+to the open `RAMSTK` Program database.
+
+To save changes to all Failure Definitions:
+
+* Press the 'Save All' button to the left of the definition list.
+* Right click on the definition list and select 'Save All' from the pop-up menu.
+
+All pending changes to all Failure Definitions associated with the selected
+Revision are committed to the open `RAMSTK` Program database.
 
 Analyzing Failure Definitions
 -----------------------------

@@ -167,33 +167,12 @@ white background using normal weight font.  Text fields that display
 calculated results will be displayed with a light blue background using bold
 font.  The background color is a user-specific option and may be changed.
 
-The Lists and Matrices Book
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The List Book
+^^^^^^^^^^^^^
 
-The Lists & Matrices Book contains the supporting information for the selected
-RAMSTK module.  Lists may be flat such as Failure Definitions or hierarchical
-such as the Usage Profile.
-
-The Matrices are used to show relationships between the selected RAMSTK
-Module and other RAMSTK Modules.  Matrices will show the items in the
-selected RAMSTK Module along the left side (rows).  The other RAMSTK Module
-items are listed along the top (columns).  In the intersection of the row and
-column, the user may select 'Partial' or 'Complete' to indicate the strength
-of the relationship.  Selecting nothing would indicate a lack of relationship
-.  Each Matrix will have its own page in the Lists & Matrices Book and there
-may be multiple matrices for a selected RAMSTK Module.
-
-For example, if the Module Book Function page is selected, the Lists &
-Matrices Book will have a page displaying Functions along the left side
-(rows) and Verification tasks along the top (columns).  Selecting 'Partial'
-in the intersection of a Function and Verification task indicates the
-Verification task partially verifies the function while selecting 'Complete'
-indicates the task completely verifies the function.  If nothing is selected,
-this would indicate a lack of a Verification task for that Function.  Cells
-with no relationship are shown in white, partial cells are shown in pink, and
-complete cells are shown in green.  This provides a quick visual
-representation of the Verification plan as it is related to the system's
-Functions.
+The List Book contains the supporting information for the selected RAMSTK
+module.  Lists may be flat such as Failure Definitions or hierarchical such
+as the Usage Profile.
 
 .. _sec-ramstk-configuration:
 
