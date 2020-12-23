@@ -27,5 +27,5 @@ class DataManager(RAMSTKDataManager):
     def _do_delete(self, node_id: int) -> None:
         ...
 
-    def _do_insert_revision(self) -> None:
+    def _do_insert_revision(self, parent_id: int = ...) -> None:
         ...

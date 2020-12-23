@@ -30,5 +30,5 @@ class DataManager(RAMSTKDataManager):
     def _do_delete(self, node_id: int) -> None:
         ...
 
-    def _do_insert_failure_definition(self) -> None:
+    def _do_insert_failure_definition(self, parent_id: int = ...) -> None:
         ...

@@ -241,18 +241,6 @@ class UsageProfilePanel(RAMSTKPanel):
         self.tvwTreeView.set_tooltip_text(
             _("Displays the usage profiles for the selected revision."))
 
-    def _on_insert(self, tree: treelib.Tree) -> None:
-        """Wrap the do_load_panel() method when an element is inserted.
-
-        The do_set_cursor_active() method responds to the same message,
-        but one less argument in it's call.  This results in a PyPubSub
-        error and is the reason this wrapper method is needed.
-
-        :param tree: the Usage Profile treelib Tree().
-        :return: None
-        """
-        super().do_load_panel(tree)
-
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle row changes for the Usage Profile package List View.
 
@@ -432,7 +420,6 @@ class UsageProfile(RAMSTKListView):
     _module: str = 'usage_profile'
     _tablabel = "<span weight='bold'>" + _("Usage\nProfiles") + "</span>"
     _tabtooltip = _("Displays usage profiles for the selected revision.")
-    _view_type = 'list'
 
     # Define public dictionary class attributes.
 

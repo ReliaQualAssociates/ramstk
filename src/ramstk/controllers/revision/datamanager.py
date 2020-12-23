@@ -176,9 +176,14 @@ class DataManager(RAMSTKDataManager):
                 error_message=_error_msg,
             )
 
-    def _do_insert_revision(self) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _do_insert_revision(self, parent_id: int = 0) -> None:
         """Add a new revision.
 
+        :param parent_id: the ID of the parent entity.  Unused in this
+            method as failure definitions are not hierarchical.  Included to
+            keep method generic and compatible with PyPubSub MDS.
         :return: None
         :rtype: None
         :raise: AttributeError if not connected to a RAMSTK program database.

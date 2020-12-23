@@ -988,12 +988,8 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        if self._view_type == 'list':
-            self._lst_callbacks.insert(0, super().do_request_insert_sibling)
-            self._lst_icons.insert(0, 'add')
-        elif self._view_type == 'matrix':
-            self._lst_callbacks[0] = self._do_request_update
-            self._lst_mnu_labels[0] = _("Save Matrix")
+        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
+        self._lst_icons.insert(0, 'add')
 
         # Initialize private scalar attributes.
 
@@ -1006,20 +1002,10 @@ class RAMSTKListView(RAMSTKBaseView):
 
         # Subscribe to PyPubSub messages.
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to update the matrix."""
-        if self._view_type == 'matrix':
-            super().do_set_cursor_busy()
-            pub.sendMessage('do_request_update_matrix',
-                            matrix_type=self._module.lower())
-
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
-        if self._view_type == 'list':
-            super().do_set_cursor_busy()
-            pub.sendMessage('request_update_all_{0:s}s'.format(self._module))
-        elif self._view_type == 'matrix':
-            self._do_request_update(__button)
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_update_all_{0:s}s'.format(self._module))
 
     def make_ui(self) -> None:
         """Build the list view user interface.
@@ -1027,11 +1013,7 @@ class RAMSTKListView(RAMSTKBaseView):
         :return: None
         """
         super().do_make_layout()
-
-        if self._view_type == 'matrix':
-            super().do_embed_matrixview_panel()
-        else:
-            super().do_embed_treeview_panel()
+        super().do_embed_treeview_panel()
 
 
 class RAMSTKModuleView(RAMSTKBaseView):

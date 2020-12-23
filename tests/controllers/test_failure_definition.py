@@ -92,7 +92,7 @@ class TestCreateControllers():
                                 'request_get_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update,
-                                'request_update_failure_definition')
+                                'request_update_failure_definitions')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_failure_definitionss')
         assert pub.isSubscribed(DUT.do_get_tree,
@@ -102,9 +102,9 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'lvw_editing_failure_definition')
         assert pub.isSubscribed(DUT._do_delete,
-                                'request_delete_failure_definition')
+                                'request_delete_failure_definitions')
         assert pub.isSubscribed(DUT._do_insert_failure_definition,
-                                'request_insert_failure_definition')
+                                'request_insert_failure_definitions')
 
 
 class TestSelectMethods():

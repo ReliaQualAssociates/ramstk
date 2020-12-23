@@ -69,7 +69,7 @@ class FailureDefinitionPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel,
-                      'succeed_retrieve_failure_definitions')
+                      'succeed_retrieve_{0}'.format(self._module))
         pub.subscribe(super().do_load_panel,
                       'succeed_insert_failure_definition')
         pub.subscribe(super().on_delete, 'succeed_delete_failure_definition')
@@ -196,7 +196,6 @@ class FailureDefinition(RAMSTKListView):
     _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
     _tabtooltip = _("Displays failure definitions for the "
                     "selected revision.")
-    _view_type: str = 'list'
 
     # Define public dictionary class attributes.
 
@@ -220,8 +219,8 @@ class FailureDefinition(RAMSTKListView):
         self._lst_icons.insert(1, 'remove')
         self._lst_mnu_labels = [
             _("Add Definition"),
-            _("Delete Selected"),
-            _("Save Definition"),
+            _("Delete Selected Definition"),
+            _("Save Selected Definition"),
             _("Save All Definitions"),
         ]
         self._lst_tooltips = [
@@ -263,8 +262,10 @@ class FailureDefinition(RAMSTKListView):
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage('request_delete_failure_definition',
-                            node_id=self._record_id)
+            pub.sendMessage(
+                'request_delete_failure_definitions',
+                node_id=self._record_id,
+            )
 
         _dialog.do_destroy()
 

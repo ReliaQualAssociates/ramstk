@@ -61,11 +61,11 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_get_tree, 'request_get_failure_definition_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_update, 'request_update_failure_definition')
+        pub.subscribe(self.do_update, 'request_update_failure_definitions')
 
-        pub.subscribe(self._do_delete, 'request_delete_failure_definition')
+        pub.subscribe(self._do_delete, 'request_delete_failure_definitions')
         pub.subscribe(self._do_insert_failure_definition,
-                      'request_insert_failure_definition')
+                      'request_insert_failure_definitions')
 
     def do_get_tree(self) -> None:
         """Retrieve the failure definition treelib Tree.
@@ -122,7 +122,7 @@ class DataManager(RAMSTKDataManager):
                 self.tree.get_node(node_id).data['failure_definition'])
 
             pub.sendMessage(
-                'succeed_update_failure_definition',
+                'succeed_update_failure_definitions',
                 tree=self.tree,
             )
         except (AttributeError, KeyError, TypeError):
@@ -172,9 +172,14 @@ class DataManager(RAMSTKDataManager):
                 error_message=_error_msg,
             )
 
-    def _do_insert_failure_definition(self) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _do_insert_failure_definition(self, parent_id: int = 0) -> None:
         """Add a new failure definition for the selected revision.
 
+        :param parent_id: the ID of the parent entity.  Unused in this
+            method as failure definitions are not hierarchical.  Included to
+            keep method generic and compatible with PyPubSub MDS.
         :return: None
         :rtype: None
         """

@@ -155,9 +155,6 @@ class RAMSTKListView(RAMSTKBaseView):
                  logger: RAMSTKLogManager) -> None:
         ...
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        ...
-
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         ...
 
