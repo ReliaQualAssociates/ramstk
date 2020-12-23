@@ -77,7 +77,7 @@ def mock_program_dao(monkeypatch):
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self):
+    def test_data_manager_create(self):
         """__init__() should return a Function data manager."""
         DUT = dmFunction()
 
@@ -100,7 +100,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_insert_function,
                                 'request_insert_function')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_matrix_manager_create(self):
         """__init__() should create an instance of the function matrix
         manager."""
@@ -188,7 +188,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='function') is None
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix(self, mock_program_dao):
         """_do_create() should create an instance of the function matrix
         manager."""
@@ -213,7 +213,7 @@ class TestSelectMethods():
         assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A1') == 0
         assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A2') == 0
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix_no_row_tree_hardware(self, mock_program_dao):
         """_do_create_validation_matrix_columns() should not create a vldtn-
         hrdwr matrix unless there is a row tree already populated."""
@@ -228,7 +228,7 @@ class TestSelectMethods():
 
         assert DUT._col_tree['fnctn_hrdwr'] == MOCK_HRDWR_TREE
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix_wrong_column_tree(self, mock_program_dao):
         """_do_create_validation_matrix_columns() should not create a matrix
         when passed a column tree that doesn't exist in the matrix dict."""
@@ -247,8 +247,7 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_function(self, node_id, tree):
-        assert node_id == 2
+    def on_succeed_delete_function(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_function topic was broadcast.")
 
@@ -308,7 +307,7 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_function_no_tree,
                         'fail_delete_function')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_matrix_row(self, mock_program_dao):
         """do_delete_row() should remove the appropriate row from the hardware
         matrices."""
@@ -330,7 +329,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_matrix_hardware_column(self, test_program_dao):
         """do_delete_column() should remove the appropriate column from the
         requested hardware matrix."""
@@ -354,7 +353,8 @@ class TestDeleteMethods():
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_function(self, tree):
+    def on_succeed_insert_function(self, node_id, tree):
+        assert node_id == 3
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
@@ -409,7 +409,7 @@ class TestInsertMethods():
 
         pub.unsubscribe(self.on_fail_insert_function, 'fail_insert_function')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_matrix_row(self, mock_program_dao):
         """do_insert_row() should add a row to the end of each hardware
         matrix."""
@@ -433,7 +433,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4') == 0
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_matrix_hardware_column(self, mock_program_dao):
         """do_insert_column() should add a column to the right of the requested
         validation matrix."""
@@ -541,8 +541,8 @@ class TestGetterSetter():
 
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_function(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_function(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_function topic was broadcast")
 
     def on_fail_update_function(self, error_message):
@@ -622,7 +622,7 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_function_no_data,
                         'fail_update_function')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should broadcast the 'succeed_update_matrix' on
         success."""

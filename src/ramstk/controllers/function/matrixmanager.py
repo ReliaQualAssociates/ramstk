@@ -48,13 +48,13 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
-        pub.subscribe(self._do_create_function_matrix_columns,
-                      'succeed_retrieve_hardware')
-        pub.subscribe(self._on_delete_function, 'succeed_delete_function')
+        # pub.subscribe(self.do_create_rows, 'succeed_retrieve_functions')
+        # pub.subscribe(self._do_create_function_matrix_columns,
+        #               'succeed_retrieve_hardware')
+        # pub.subscribe(self._on_delete_function, 'succeed_delete_function')
         # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
-        pub.subscribe(self._on_insert_function, 'insert_function_matrix_row')
-        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
+        # pub.subscribe(self._on_insert_function, 'insert_function_matrix_row')
+        # pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
     def _do_create_function_matrix_columns(self, tree: treelib.Tree) -> None:
         """Create the Function data matrix columns.

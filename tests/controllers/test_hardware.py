@@ -288,7 +288,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_roll_up_change_descriptions,
                                 'request_roll_up_change_descriptions')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_matrix_manager_create(self):
         """__init__() should create an instance of the hardware matrix manager."""
         DUT = mmHardware()
@@ -498,8 +498,7 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_hardware(self, node_id, tree):
-        assert node_id == 2
+    def on_succeed_delete_hardware(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_hardware topic was broadcast.")
 
@@ -957,10 +956,10 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        def on_message(node_id):
+        def on_message(tree):
             DUT.do_select_all(attributes={'revision_id': 1})
             _hardware = DUT.do_select(node_id, table='hardware')
-            assert node_id == 2
+            assert isinstance(tree, Tree)
             assert _hardware.parent_id == 1
             assert _hardware.cost == 0.9832
             _hardware = DUT.do_select(node_id, table='allocation')
@@ -999,9 +998,8 @@ class TestUpdateMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        def on_message(node_id):
-            assert DUT.do_select(node_id,
-                                 table='hardware').hardware_id == node_id
+        def on_message(tree):
+            assert isinstance(tree, Tree)
 
         pub.subscribe(on_message, 'succeed_update_hardware')
 

@@ -57,11 +57,11 @@ class MatrixManager(RAMSTKMatrixManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_create_rows, 'succeed_retrieve_hardware')
-        pub.subscribe(self._do_create_hardware_matrix_columns,
-                      'succeed_retrieve_requirements')
-        pub.subscribe(self._do_create_hardware_matrix_columns,
-                      'succeed_retrieve_validations')
+        # pub.subscribe(self.do_create_rows, 'succeed_retrieve_hardware')
+        # pub.subscribe(self._do_create_hardware_matrix_columns,
+        #               'succeed_retrieve_requirements')
+        # pub.subscribe(self._do_create_hardware_matrix_columns,
+        #               'succeed_retrieve_validations')
         # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         # pub.subscribe(self._on_delete_requirement,
         #               'succeed_delete_requirement')

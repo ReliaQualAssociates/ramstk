@@ -172,7 +172,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_calculate_plan,
                                 'request_calculate_plan')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_matrix_manager_create(self):
         """__init__() should create an instance of the validation matrix manager."""
         DUT = mmValidation()
@@ -270,7 +270,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='validation') is None
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix(self, mock_program_dao):
         """_do_create() should create an instance of the validation matrix manager."""
         pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
@@ -294,7 +294,7 @@ class TestSelectMethods():
         assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS1:A1') == 0
         assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS1:A2') == 0
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix_no_row_tree_hardware(self, mock_program_dao):
         """_do_create_validation_matrix_columns() should not create a vldtn-hrdwr matrix unless there is a row tree already populated."""
         DUT = mmValidation()
@@ -308,7 +308,7 @@ class TestSelectMethods():
 
         assert DUT._col_tree['vldtn_hrdwr'] == MOCK_HRDWR_TREE
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix_no_row_tree_requirement(self, mock_program_dao):
         """_do_create_validation_matrix_columns() should not create a vldtn-rqrmnt matrix unless there is a row tree already populated."""
         DUT = mmValidation()
@@ -322,7 +322,7 @@ class TestSelectMethods():
 
         assert DUT._col_tree['vldtn_rqrmnt'] == MOCK_RQRMNT_TREE
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix_wrong_column_tree(self, mock_program_dao):
         """_do_create_validation_matrix_columns() should not create a matrix when passed a column tree that doesn't exist in the matrix dict."""
         DUT = mmValidation()
@@ -341,8 +341,7 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_validation(self, node_id, tree):
-        assert node_id == 3
+    def on_succeed_delete_validation(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_validation topic was broadcast.")
 
@@ -380,7 +379,7 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_validation,
                         'fail_delete_validation')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_matrix_hardware_column(self, mock_program_dao):
         """do_delete_matrix_column() should remove the appropriate column from the requested validation matrix."""
         DUT = mmValidation()
@@ -398,7 +397,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_hrdwr', 1, 'S1')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_matrix_requirement_column(self, mock_program_dao):
         """do_delete_matrix_column() should remove the appropriate column from the requested validation matrix."""
         DUT = mmValidation()
@@ -416,7 +415,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('vldtn_rqrmnt', 1, 'REL-0001')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_matrix_row(self, mock_program_dao):
         """do_delete_row() should remove the appropriate row from the validation matrices."""
         DUT = mmValidation()
@@ -471,7 +470,7 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_validation,
                         'succeed_insert_validation')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_matrix_hardware_column(self, mock_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
         DUT = mmValidation()
@@ -495,7 +494,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('vldtn_hrdwr', 1, 'S1:SS20') == 0
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_matrix_requirement_column(self, mock_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
         DUT = mmValidation()
@@ -520,7 +519,7 @@ class TestInsertMethods():
 
         assert DUT.do_select('vldtn_rqrmnt', 1, 'FUN-0004') == 0
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_matrix_row(self, mock_program_dao):
         """do_insert_row() should add a row to the end of each validation matrix."""
         DUT = mmValidation()
@@ -730,8 +729,8 @@ class TestGetterSetter():
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_validation(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_validation(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_validation topic was broadcast")
 
     def on_fail_update_validation(self, error_message):
@@ -837,7 +836,7 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_succeed_update_status,
                         'succeed_update_program_status')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should broadcast the 'succeed_update_matrix' on success."""
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')

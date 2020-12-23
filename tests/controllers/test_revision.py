@@ -144,8 +144,7 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_revision(self, node_id, tree):
-        assert node_id == 2
+    def on_succeed_delete_revision(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_revision topic was broadcast.")
 
@@ -289,8 +288,8 @@ class TestInsertMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_revision(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_revision(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_revision topic was broadcast")
 
     def on_fail_update_revision(self, error_message):

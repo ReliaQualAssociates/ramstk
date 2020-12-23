@@ -163,8 +163,7 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_hazard(self, node_id, tree):
-        assert node_id == 1
+    def on_succeed_delete_hazard(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_hazard topic was broadcast.")
 
@@ -204,7 +203,8 @@ class TestDeleteMethods():
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_hazard(self, tree):
+    def on_succeed_insert_hazard(self, node_id, tree):
+        assert node_id == 2
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_hazard topic was broadcast.")
 
@@ -401,8 +401,9 @@ class TestGetterSetter():
 
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_hazard(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_hazard(self, tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(1).data['hazard'].potential_hazard == 'Big Hazard'
         print("\033[36m\nsucceed_update_hazard topic was broadcast")
 
     def on_fail_update_hazard(self, error_message):
@@ -426,9 +427,7 @@ class TestUpdateMethods():
         DUT.tree.get_node(1).data['hazard'].potential_hazard = 'Big Hazard'
         DUT.do_update(1)
 
-        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
-        assert DUT.tree.get_node(
-            1).data['hazard'].potential_hazard == 'Big Hazard'
+        #DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         pub.unsubscribe(self.on_succeed_update_hazard, 'succeed_update_hazard')
 

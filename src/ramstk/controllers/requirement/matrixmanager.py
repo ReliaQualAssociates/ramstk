@@ -51,15 +51,15 @@ class MatrixManager(RAMSTKMatrixManager):
         # // to Requirement module pubsub messages.  Ensure the Requirement
         # // module matrix manager is updated to respond to Hardware module
         # // pubsub messages when the Hardware module is refactored.
-        pub.subscribe(self.do_create_rows, 'succeed_retrieve_requirements')
-        pub.subscribe(self._do_create_requirement_matrix_columns,
-                      'succeed_retrieve_hardware')
+        # pub.subscribe(self.do_create_rows, 'succeed_retrieve_requirements')
+        # pub.subscribe(self._do_create_requirement_matrix_columns,
+        #               'succeed_retrieve_hardware')
         # pub.subscribe(self._on_delete_requirement,
         #               'succeed_delete_requirement')
         # pub.subscribe(self._on_delete_hardware, 'succeed_delete_hardware')
         # pub.subscribe(self._on_insert_requirement,
         #               'succeed_insert_requirement')
-        pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
+        # pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
     def _do_create_requirement_matrix_columns(self,
                                               tree: treelib.Tree) -> None:

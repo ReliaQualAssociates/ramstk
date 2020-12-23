@@ -261,8 +261,7 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_mission(self, node_id, tree):
-        assert node_id == '1'
+    def on_succeed_delete_mission(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_mission topic was broadcast.")
 
@@ -271,8 +270,7 @@ class TestDeleteMethods():
                                  'profile ID 10.')
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
-    def on_succeed_delete_mission_phase(self, node_id, tree):
-        assert node_id == '2.2'
+    def on_succeed_delete_mission_phase(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_mission_phase topic was broadcast.")
 
@@ -282,8 +280,7 @@ class TestDeleteMethods():
             'ID 2.20.')
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
-    def on_succeed_delete_environment(self, node_id, tree):
-        assert node_id == '1.1.1'
+    def on_succeed_delete_environment(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_environment topic was broadcast.")
 
@@ -519,7 +516,8 @@ class TestGetterSetter():
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_mission(self, tree):
+    def on_succeed_insert_mission(self, node_id, tree):
+        assert node_id == {'environment': 3, 'mission': 3, 'mission_phase': 3}
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
 
@@ -527,7 +525,8 @@ class TestInsertMethods():
         assert error_message == ('An error occured with RAMSTK.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
-    def on_succeed_insert_mission_phase(self, tree):
+    def on_succeed_insert_mission_phase(self, node_id, tree):
+        assert node_id == {'environment': 3, 'mission': 3, 'mission_phase': 3}
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mission_phase topic was broadcast")
 
@@ -535,7 +534,8 @@ class TestInsertMethods():
         assert error_message == ('An error occured with RAMSTK.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
-    def on_succeed_insert_environment(self, tree):
+    def on_succeed_insert_environment(self, node_id, tree):
+        assert node_id == {'environment': 3, 'mission': 3, 'mission_phase': 3}
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
 
@@ -650,8 +650,8 @@ class TestInsertMethods():
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_usage_profile(self, node_id):
-        assert node_id == '1'
+    def on_succeed_update_usage_profile(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_usage_profile topic was broadcast")
 
     def on_fail_update_usage_profile(self, error_message):
