@@ -177,8 +177,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = self.get_parent().get_parent().get_parent().get_parent(
-        ).get_parent()
+        _parent = self.get_parent().get_parent().get_parent().get_parent()
         _prompt = _("You are about to delete {1} {0} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._record_id,

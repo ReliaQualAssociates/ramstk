@@ -18,9 +18,7 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKPanel, RAMSTKWorkView
-)
+from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
 
 
 class HazOpsPanel(RAMSTKPanel):
@@ -330,30 +328,6 @@ class HazOps(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, 'selected_hazard')
         pub.subscribe(self._on_select_function, 'selected_function')
-
-    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
-        """Request to delete the selected hazard from the HazOps.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        _parent = self.get_parent().get_parent().get_parent().get_parent()
-        _prompt = _("You are about to delete Hazard {0} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(parent=_parent)
-        _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type('question')
-
-        if _dialog.do_run() == Gtk.ResponseType.YES:
-            super().do_set_cursor_busy()
-            pub.sendMessage(
-                'request_delete_hazard',
-                node_id=self._record_id,
-            )
-
-        _dialog.do_destroy()
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate the HazOps HRI.
