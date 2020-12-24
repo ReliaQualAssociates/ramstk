@@ -200,10 +200,6 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active, 'succeed_update_revision')
-        pub.subscribe(super().do_set_cursor_active_on_fail,
-                      'fail_update_revision')
-
         pub.subscribe(self._do_set_record_id, 'selected_revision')
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:

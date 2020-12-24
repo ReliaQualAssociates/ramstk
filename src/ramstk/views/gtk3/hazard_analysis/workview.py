@@ -363,17 +363,9 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().make_tab_label(
-            tablabel=self._tablabel,
-            tooltip=self._tabtooltip,
-        )
-        super().make_toolbuttons(
-            icons=self._lst_icons,
-            tooltips=self._lst_tooltips,
-            callbacks=self._lst_callbacks,
-        )
-
+        super().do_make_layout()
         super().do_embed_treeview_panel()
+
         self._pnlPanel.do_set_callbacks()
 
         self._pnlPanel.do_load_severity(
