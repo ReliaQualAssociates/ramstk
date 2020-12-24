@@ -13,7 +13,6 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 # noinspection PyPackageRequirements
-import pandas as pd
 import treelib
 from pubsub import pub
 
@@ -26,7 +25,6 @@ from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from .button import do_make_buttonbox
 from .dialog import RAMSTKMessageDialog
 from .label import RAMSTKLabel
-from .matrixview import RAMSTKMatrixView
 from .panel import RAMSTKPanel
 from .treeview import RAMSTKTreeView
 
@@ -160,10 +158,42 @@ class RAMSTKBaseView(Gtk.HBox):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_set_cursor_active, 'request_set_cursor_active')
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_update_{0}'.format(self._module))
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_delete_{0}'.format(self._module))
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_insert_{0}'.format(self._module))
+        pub.subscribe(self.do_set_cursor_active_on_fail,
+                      'fail_update_{0}'.format(self._module))
+
         pub.subscribe(self.on_select_revision, 'selected_revision')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_matrix')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
-        pub.subscribe(self.do_set_cursor_active_on_fail, 'fail_update_matrix')
+
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        """Request to delete selected record from the RAMSTKFunction table.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        _parent = self.get_parent().get_parent().get_parent().get_parent()
+        _prompt = _("You are about to delete {1} {0} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._record_id,
+                                              self._module.title())
+        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog.do_set_message(_prompt)
+        _dialog.do_set_message_type('question')
+
+        if _dialog.do_run() == Gtk.ResponseType.YES:
+            self.do_set_cursor_busy()
+            pub.sendMessage(
+                'request_delete_{0}'.format(self._module),
+                node_id=self._record_id,
+            )
+
+        _dialog.do_destroy()
 
     def __set_callbacks(self) -> None:
         """Set common callback methods.
@@ -660,11 +690,12 @@ class RAMSTKBaseView(Gtk.HBox):
 
         if _sibling:
             pub.sendMessage('request_insert_{0:s}'.format(
-                self._module.lower()))
+                self._module.lower()),
+                            parent_id=self._parent_id)
         else:
             pub.sendMessage('request_insert_{0:s}'.format(
                 self._module.lower()),
-                            parent_id=self._parent_id)  # noqa
+                            parent_id=self._record_id)  # noqa
 
     def do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         """Request to insert a new child entity of the selected entity.
@@ -672,10 +703,6 @@ class RAMSTKBaseView(Gtk.HBox):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
-        self._parent_id = _model.get_value(_row,
-                                           self._pnlPanel._lst_col_order[1])  # pylint: disable=protected-access
-
         return self.do_request_insert(sibling=False)
 
     def do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
@@ -684,18 +711,6 @@ class RAMSTKBaseView(Gtk.HBox):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        # If the sibling is nested below the top level, get the parent ID from
-        # the previous row.  Otherwise, this is a top level item and the parent
-        # ID is zero.
-        try:
-            _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
-            _prow = _model.iter_parent(_row)
-            self._parent_id = _model.get_value(
-                _prow, self._pnlPanel._lst_col_order[1])  # pylint: disable=protected-access
-        except TypeError as _error:
-            self._parent_id = 0
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
         return self.do_request_insert(sibling=True)
 
     def do_request_update(self, __button: Gtk.ToolButton) -> None:
@@ -766,9 +781,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def do_set_cursor_active(self,
-                             node_id: Any = '',
-                             tree: treelib.Tree = '') -> None:
+    def do_set_cursor_active(self, tree: treelib.Tree = '') -> None:
         """Set active cursor for the Module, List, and Work Book Gdk.Window().
 
         :param node_id: the node ID passed in the PyPubSub message.  Only
@@ -821,7 +834,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self.hbx_tab_label.pack_end(_label, True, True, 0)
         self.hbx_tab_label.show_all()
 
-    def make_toolbuttons(self, **kwargs: List[Any]) -> None:
+    def make_toolbuttons(self, **kwargs: Dict[str, Any]) -> None:
         """Create the RAMSTKBaseView() tool buttons.
 
         Keyword arguments are passed along to the do_make_buttonbox() function.
@@ -953,13 +966,10 @@ class RAMSTKListView(RAMSTKBaseView):
     This is the meta class for all RAMSTK List View classes.  Attributes of the
     RAMSTKListView are:
 
-    :ivar str _matrix_type: the name of the matrix displayed by this view.
     :ivar str _module: the capitalized name of the RAMSTK module the List View
         is associated with.
     :ivar int _n_columns: the number of columns in a matrix.
     :ivar int _n_rows: the number of rows in a matrix.
-    :ivar matrixview: the MatrixView() displaying the matrix data.
-    :type matrixview: :class:`ramstk.views.gtk3.widgets.RAMSTKMatrixView`
     :ivar int n_fixed_columns: the number of matrix columns on the left that
         contain fixed data.
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
@@ -977,12 +987,8 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        if self._view_type == 'list':
-            self._lst_callbacks.insert(0, super().do_request_insert_sibling)
-            self._lst_icons.insert(0, 'add')
-        elif self._view_type == 'matrix':
-            self._lst_callbacks[0] = self._do_request_update
-            self._lst_mnu_labels[0] = _("Save Matrix")
+        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
+        self._lst_icons.insert(0, 'add')
 
         # Initialize private scalar attributes.
 
@@ -991,38 +997,14 @@ class RAMSTKListView(RAMSTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.matrixview: RAMSTKMatrixView = RAMSTKMatrixView(
-            module=self._module)
         self.tab_label: Gtk.Label = Gtk.Label()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_matrix, 'succeed_load_matrix')
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Send request to update the matrix."""
-        if self._view_type == 'matrix':
-            super().do_set_cursor_busy()
-            pub.sendMessage('do_request_update_matrix',
-                            matrix_type=self._module.lower())
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
-        if self._view_type == 'list':
-            super().do_set_cursor_busy()
-            pub.sendMessage('request_update_all_{0:s}s'.format(self._module))
-        elif self._view_type == 'matrix':
-            self._do_request_update(__button)
-
-    def do_load_matrix(self, matrix_type: str, matrix: pd.DataFrame) -> None:
-        """Load the RAMSTKMatrixView() with matrix data.
-
-        :param matrix_type: the type of matrix to load.
-        :param matrix: the data matrix to display.
-        :return: None
-        :rtype: None
-        """
-        if matrix_type.capitalize() == self._module.capitalize():
-            self.matrixview.do_load_matrix(matrix)
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_update_all_{0:s}s'.format(self._module))
 
     def make_ui(self) -> None:
         """Build the list view user interface.
@@ -1030,11 +1012,7 @@ class RAMSTKListView(RAMSTKBaseView):
         :return: None
         """
         super().do_make_layout()
-
-        if self._view_type == 'matrix':
-            super().do_embed_matrixview_panel()
-        else:
-            super().do_embed_treeview_panel()
+        super().do_embed_treeview_panel()
 
 
 class RAMSTKModuleView(RAMSTKBaseView):

@@ -16,6 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmUsageProfile
 from ramstk.db.base import BaseDatabase
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
 )
@@ -50,12 +51,15 @@ class MockDao:
             self._do_delete_environments(record)
 
     def do_insert(self, record):
-        if record == RAMSTKMission:
+        if isinstance(record, RAMSTKMission) and record.revision_id == 1:
             self._all_missions.append(record)
-        elif record == RAMSTKMissionPhase:
+            print(self._all_missions)
+        elif isinstance(record, RAMSTKMissionPhase) and record.mission_id < 10:
             self._all_mission_phases.append(record)
-        elif record == RAMSTKEnvironment:
+        elif isinstance(record, RAMSTKEnvironment) and record.phase_id < 10:
             self._all_environments.append(record)
+        else:
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def _do_select_all_missions(self, table, value):
         _idx = 1
@@ -257,35 +261,32 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_mission(self, node_id, tree):
-        assert node_id == '1'
+    def on_succeed_delete_mission(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_mission topic was broadcast.")
 
     def on_fail_delete_mission(self, error_message):
-        assert error_message == ('Attempted to delete non-existent usage '
+        assert error_message == ('_do_delete: Attempted to delete non-existent usage '
                                  'profile ID 10.')
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
-    def on_succeed_delete_mission_phase(self, node_id, tree):
-        assert node_id == '2.2'
+    def on_succeed_delete_mission_phase(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_mission_phase topic was broadcast.")
 
     def on_fail_delete_mission_phase(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent usage profile '
+            '_do_delete: Attempted to delete non-existent usage profile '
             'ID 2.20.')
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
-    def on_succeed_delete_environment(self, node_id, tree):
-        assert node_id == '1.1.1'
+    def on_succeed_delete_environment(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_environment topic was broadcast.")
 
     def on_fail_delete_environment(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent usage profile ID 3.3.30.')
+            '_do_delete: Attempted to delete non-existent usage profile ID 3.3.30.')
         print("\033[35m\nfail_delete_environment topic was broadcast.")
 
     @pytest.mark.unit
@@ -477,7 +478,7 @@ class TestGetterSetter():
                             'phase_start': 5.12,
                             'phase_end': 10.24
                         },
-                        node_id=['1.1', ''])
+                        node_id='1.1')
         assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
         assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
 
@@ -494,7 +495,7 @@ class TestGetterSetter():
                             'phase_end': 10.24,
                             'funpack': 'Fun Packer',
                         },
-                        node_id=['1.1', ''])
+                        node_id='1.1')
         assert DUT.do_select('1.1', table='usage_profile').phase_end == 10.24
         assert DUT.do_select('1.1', table='usage_profile').phase_start == 5.12
 
@@ -515,17 +516,39 @@ class TestGetterSetter():
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_mission(self, tree):
+    def on_succeed_insert_mission(self, node_id, tree):
+        assert node_id == '3'
         assert isinstance(tree, Tree)
+        assert isinstance(
+            tree.get_node('3').data['usage_profile'], RAMSTKMission)
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
 
-    def on_succeed_insert_mission_phase(self, tree):
+    def on_fail_insert_mission(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
+    def on_succeed_insert_mission_phase(self, node_id, tree):
+        assert node_id == '1.4'
         assert isinstance(tree, Tree)
+        assert isinstance(
+            tree.get_node('1.4').data['usage_profile'], RAMSTKMissionPhase)
         print("\033[36m\nsucceed_insert_mission_phase topic was broadcast")
 
-    def on_succeed_insert_environment(self, tree):
+    def on_fail_insert_mission_phase(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
+    def on_succeed_insert_environment(self, node_id, tree):
+        assert node_id == '1.1.4'
         assert isinstance(tree, Tree)
+        assert isinstance(
+            tree.get_node('1.1.4').data['usage_profile'],
+            RAMSTKEnvironment)
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
+
+    def on_fail_insert_environment(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
     def test_do_insert_mission(self, mock_program_dao):
@@ -539,11 +562,24 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_mission()
 
-        assert isinstance(
-            DUT.tree.get_node('3').data['usage_profile'], RAMSTKMission)
-
         pub.unsubscribe(self.on_succeed_insert_mission,
                         'succeed_insert_usage_profile')
+
+    @pytest.mark.unit
+    def test_do_insert_mission_no_revision(self, mock_program_dao):
+        """do_insert() should send the success message after successfully
+        inserting a new mission."""
+        pub.subscribe(self.on_fail_insert_mission,
+                      'fail_insert_usage_profile')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._revision_id = 4
+        DUT._do_insert_mission()
+
+        pub.unsubscribe(self.on_fail_insert_mission,
+                        'fail_insert_usage_profile')
 
     @pytest.mark.unit
     def test_do_insert_mission_phase(self, mock_program_dao):
@@ -557,12 +593,23 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_mission_phase(1)
 
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(
-            DUT.tree.get_node('1.4').data['usage_profile'], RAMSTKMissionPhase)
-
         pub.unsubscribe(self.on_succeed_insert_mission_phase,
                         'succeed_insert_mission_phase')
+
+    @pytest.mark.unit
+    def test_do_insert_mission_phase_no_mission(self, mock_program_dao):
+        """do_insert() should send the success message after successfully
+        inserting a new mission phase."""
+        pub.subscribe(self.on_fail_insert_mission_phase,
+                      'fail_insert_mission_phase')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_insert_mission_phase(mission_id=40)
+
+        pub.unsubscribe(self.on_fail_insert_mission_phase,
+                        'fail_insert_mission_phase')
 
     @pytest.mark.unit
     def test_do_insert_environment(self, mock_program_dao):
@@ -576,35 +623,45 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_environment(1, 1)
 
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(
-            DUT.tree.get_node('1.1.4').data['usage_profile'],
-            RAMSTKEnvironment)
-
         pub.unsubscribe(self.on_succeed_insert_environment,
                         'succeed_insert_environment')
+
+    @pytest.mark.unit
+    def test_do_insert_environment_no_phase(self, mock_program_dao):
+        """do_insert() should send the success message after successfully
+        inserting a new environment."""
+        pub.subscribe(self.on_fail_insert_environment,
+                      'fail_insert_environment')
+
+        DUT = dmUsageProfile()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_insert_environment(mission_id=1, phase_id=40)
+
+        pub.unsubscribe(self.on_fail_insert_environment,
+                        'fail_insert_environment')
 
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_usage_profile(self, node_id):
-        assert node_id == '1'
+    def on_succeed_update_usage_profile(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_usage_profile topic was broadcast")
 
     def on_fail_update_usage_profile(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent usage profile ID 1.10.')
+            'do_update: Attempted to save non-existent usage profile ID 1.10.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     def on_fail_update_usage_profile_no_data_package(self, error_message):
         assert error_message == (
-            'No data package found for usage profile ID 1.1.')
+            'do_update: No data package found for usage profile ID 1.1.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     def on_fail_update_usage_profile_root_node(self, error_message):
         assert error_message == (
-            'No data package found for usage profile ID 0.')
+            'do_update: No data package found for usage profile ID 0.')
         print("\033[35m\nfail_update_usage_profile topic was broadcast")
 
     @pytest.mark.integration

@@ -32,7 +32,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         :param configuration: the Configuration instance associated with the
             current instance of the RAMSTK application.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         super().__init__(configuration, **kwargs)
 
@@ -65,17 +64,16 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hazard.  We need to build a comprehensive dict of
         # attributes to pass to the various analysis methods/hazards.
-        pub.sendMessage('request_get_all_hazard_attributes', node_id=node_id)
+        pub.sendMessage('request_get_hazard_attributes',
+                        node_id=node_id,
+                        table='hazard')
 
         self._do_calculate_hri()
         self._do_calculate_user_defined()
 
-        # Update the hazard analysis record attributes.
-        self._attributes.pop('revision_id')
-        self._attributes.pop('function_id')
-
         pub.sendMessage('request_set_all_hazard_attributes',
                         attributes=self._attributes)
+        pub.sendMessage('request_get_hazard_tree')
         pub.sendMessage('succeed_calculate_hazard', node_id=node_id)
 
     def _do_calculate_hri(self) -> None:

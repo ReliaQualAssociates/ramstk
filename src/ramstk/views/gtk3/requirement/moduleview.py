@@ -254,18 +254,6 @@ class ModuleView(RAMSTKModuleView):
         self._pnlPanel.do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_delete_requirement_2')
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_insert_requirement_2')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_delete_requirement')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_requirement')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_requirement')
-
         pub.subscribe(self._on_insert_requirement,
                       'succeed_insert_requirement')
 

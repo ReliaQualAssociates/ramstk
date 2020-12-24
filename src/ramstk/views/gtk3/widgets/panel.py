@@ -8,6 +8,7 @@
 """The RAMSTK GTK3 panel Module."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict, List, Union
 
 # Third Party Imports
@@ -27,7 +28,6 @@ from .combo import RAMSTKComboBox
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
-from .matrixview import RAMSTKMatrixView
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
@@ -82,17 +82,40 @@ class RAMSTKPanel(RAMSTKFrame):
 
         'name': [self.txtName.do_update, 'changed', 0]
 
+    :ivar _dic_error_messages: contains the debug and error messages where
+        the key is the name of the error message and the value is the
+        message itself.  The message can have placeholders to use with
+        format().  An example entry in this dict might be:
+
+        'load_row': ('{0}: There was an error loading a row for module {1}.')
+
+    :ivar _dic_row_loader: contains the methods used to load the row data
+        into a RAMSTKTreeView() where the key is the name of the module and
+        the value is the method.  This is necessary for those views that
+        combine different tables such as the usage profile or FMEA.  Having
+        different loader methods for each type of entity may be needed to
+        load the data for each entity in the correct order.  Most work
+        stream modules will simple use the do_load_row() method of this
+        meta-class.  Example entries in this dict might be:
+
+        'mission': self.__do_load_mission
+        'function': super().do_load_row
+
     :ivar _lst_labels: the list of text to display in the labels
         for each widget in a panel.
     :ivar _lst_widgets: the list of widgets to display in a panel.
+    :ivar _parent_id: the ID of the parent entity for the selected work stream
+        entity.  This is needed for hierarchical modules such as the
+        function module.  For flat modules, this will always be zero.
     :ivar _record_id: the work stream module ID whose attributes
         this panel is displaying.
     :ivar _title: the title to place on the RAMSTKFrame() that is
         this panel's container.
 
+    :ivar fmt: the formatting string for displaying float values.
+    :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
     :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
         treeview.
-    :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
     """
 
     # Define private dict class attributes.
@@ -100,6 +123,7 @@ class RAMSTKPanel(RAMSTKFrame):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module: str = ''
 
     # Define public dict class attributes.
 
@@ -120,6 +144,7 @@ class RAMSTKPanel(RAMSTKFrame):
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
         self._dic_attribute_updater: Dict[str, Any] = {}
+        self._dic_error_messages: Dict[str, str] = {}
         self._dic_row_loader: Dict[str, Any] = {}
 
         # Initialize private list instance attributes.
@@ -142,6 +167,8 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.pltPlot: RAMSTKPlot = RAMSTKPlot()
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
+
+        # Subscribe to PyPubSub messages.
 
     def do_clear_tree(self) -> None:
         """Clear the contents of a RAMSTKTreeView().
@@ -166,13 +193,20 @@ class RAMSTKPanel(RAMSTKFrame):
             _path = _model.get_path(_row)
             _column = self.tvwTreeView.get_column(0)
             self.tvwTreeView.set_cursor(_path, None, False)
+
             self.tvwTreeView.row_activated(_path, _column)
 
-    def do_load_panel(self, tree: treelib.Tree, row: Gtk.TreeIter = None) -> \
-            None:
+    # noinspection PyUnusedLocal
+    # pylint: disable=unused-argument
+    def do_load_panel(self,
+                      tree: treelib.Tree = treelib.Tree(),
+                      node_id: Any = '',
+                      row: Gtk.TreeIter = None) -> None:
         """Load data into the RAMSTKPanel() widgets.
 
         :param tree: the module's treelib Tree().
+        :param node_id: unused in this function.  Required so this method
+            can be used as the subscriber for 'succeed_insert_{0}' messages.
         :param row: the parent row in the RAMSTKTreeView() to add the new item.
         :return: None
         """
@@ -185,6 +219,8 @@ class RAMSTKPanel(RAMSTKFrame):
             self.do_load_panel(_child_tree, row=_new_row)
 
         self.do_expand_tree()
+
+        pub.sendMessage('request_set_cursor_active')
 
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Load the data into a RAMSTKTreeView row.
@@ -291,19 +327,6 @@ class RAMSTKPanel(RAMSTKFrame):
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.pltPlot.canvas)
-
-        self.add(_scrollwindow)
-
-    def do_make_panel_matrixview(self, matrix: RAMSTKMatrixView) -> None:
-        """Create a panel with a RAMSTKMatrixView().
-
-        :param matrix: the matrix to display in the panel.
-        :return: None
-        """
-        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(matrix)
 
         self.add(_scrollwindow)
 
@@ -610,10 +633,9 @@ class RAMSTKPanel(RAMSTKFrame):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
+    def on_delete(self, tree: treelib.Tree) -> None:
         """Update the RAMSTKTreeView after deleting a line item.
 
-        :param node_id: the treelib Tree() node ID that was deleted.
         :param tree: the treelib Tree() containing the workflow module data.
         :return: None
         """
@@ -624,6 +646,8 @@ class RAMSTKPanel(RAMSTKFrame):
         if _row is not None:
             self.tvwTreeView.selection.select_iter(_row)
             self.show_all()
+
+        pub.sendMessage('request_set_cursor_active')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -665,6 +689,8 @@ class RAMSTKPanel(RAMSTKFrame):
             _prow = _model.iter_parent(_row)
 
         self.tvwTreeView.do_insert_row(data, _prow)
+
+        pub.sendMessage('request_set_cursor_active')
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
         """Get the attributes for the newly selected row.
@@ -741,6 +767,42 @@ class RAMSTKPanel(RAMSTKFrame):
             _method = self._dic_row_loader[node.tag]
             # noinspection PyArgumentList
             _new_row = _method(node, row)
+
+        return _new_row
+
+    def _do_load_treerow(self, node: treelib.Node,
+                         row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a row into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the data to load.
+        :param row: the parent row of the row to load.
+        :return: _new_row; the row that was just populated with data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+        _data: List[Any] = []
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+        _attributes = _entity.get_attributes()
+
+        _model = self.tvwTreeView.get_model()
+        for _col, _attr in self.tvwTreeView.korder.items():
+            _pos = self.tvwTreeView.position[_col]
+            _data.insert(_pos, _attributes[_attr])
+
+        try:
+            _new_row = _model.append(row, _data)
+        except (AttributeError, TypeError, ValueError) as _error:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = self._dic_error_messages['load_row'].format(
+                str(node.identifier), _data, _error, _method_name)
+            pub.sendMessage(
+                'do_log_warning_msg',
+                logger_name='WARNING',
+                message=_error_msg,
+            )
+            _new_row = None
 
         return _new_row
 

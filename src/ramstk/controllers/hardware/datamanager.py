@@ -277,7 +277,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_update(
                 self.tree.get_node(node_id).data['similar_item'])
 
-            pub.sendMessage('succeed_update_hardware', node_id=node_id)
+            pub.sendMessage('succeed_update_hardware', tree=self.tree)
         except (AttributeError, DataAccessError):
             pub.sendMessage('fail_update_hardware',
                             error_message=('Attempted to save non-existent '
@@ -305,7 +305,6 @@ class DataManager(RAMSTKDataManager):
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_hardware',
-                            node_id=node_id,
                             tree=self.tree)
         except (AttributeError, DataAccessError, NodeIDAbsentError):
             _error_msg = ("Attempted to delete non-existent hardware ID "

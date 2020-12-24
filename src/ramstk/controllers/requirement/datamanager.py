@@ -134,7 +134,7 @@ class DataManager(RAMSTKDataManager):
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['requirement'])
 
-            pub.sendMessage('succeed_update_requirement', node_id=node_id)
+            pub.sendMessage('succeed_update_requirement', tree=self.tree)
         except AttributeError:
             pub.sendMessage('fail_update_requirement',
                             error_message=('Attempted to save non-existent '
@@ -162,7 +162,6 @@ class DataManager(RAMSTKDataManager):
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_requirement',
-                            node_id=node_id,
                             tree=self.tree)
         except DataAccessError:
             _error_msg = ("Attempted to delete non-existent requirement ID "
@@ -192,9 +191,10 @@ class DataManager(RAMSTKDataManager):
                                   identifier=self.last_id,
                                   parent=parent_id,
                                   data={'requirement': _requirement})
+
             pub.sendMessage('succeed_insert_requirement',
                             node_id=self.last_id,
-                            tree=self.tree)
+                            tree=self.tree,)
         except NodeIDAbsentError:
             pub.sendMessage(
                 "fail_insert_requirement",

@@ -1,6 +1,3 @@
-ramstk
-======
-
 .. toctree::
    :maxdepth: 4
 

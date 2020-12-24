@@ -17,7 +17,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from __mocks__ import MOCK_HRDWR_TREE, MOCK_REQUIREMENTS
-from ramstk.controllers import dmRequirement, mmRequirement
+from ramstk.controllers import dmRequirement
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKRequirement
@@ -75,8 +75,6 @@ class MockDao:
                     MOCK_REQUIREMENTS[_key]['validated'] = record.validate
                     MOCK_REQUIREMENTS[_key][
                         'validated_date'] = record.validated_date
-        elif isinstance(record, RAMSTKMatrix):
-            pass
 
     def get_last_id(self, table, id_column):
         if table == 'ramstk_requirement':
@@ -122,7 +120,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_insert_requirement,
                                 'request_insert_requirement')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_matrix_manager_create(self):
         """__init__() should create an instance of the requirement matrix manager."""
         DUT = mmRequirement()
@@ -209,7 +207,7 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='requirement') is None
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_create_matrix(self, mock_program_dao):
         """_do_create() should create an instance of the requirement matrix manager."""
         pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
@@ -236,8 +234,7 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_requirement(self, node_id, tree):
-        assert node_id == 2
+    def on_succeed_delete_requirement(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_requirement topic was broadcast.")
 
@@ -277,7 +274,7 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_requirement,
                         'fail_delete_requirement')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_matrix_hardware_column(self, mock_program_dao):
         """do_delete_column() should remove the appropriate column from the requested requirement matrix."""
         DUT = mmRequirement()
@@ -295,7 +292,7 @@ class TestDeleteMethods():
         with pytest.raises(KeyError):
             DUT.do_select('rqrmnt_hrdwr', 1, 'S1')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_matrix_row(self, mock_program_dao):
         """do_delete_row() should remove the appropriate row from the requirement matrices."""
         DUT = mmRequirement()
@@ -500,7 +497,7 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_requirement(parent_id=32)
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_matrix_hardware_column(self, mock_program_dao):
         """do_insert_column() should add a column to the right of the requested validation matrix."""
         DUT = mmRequirement()
@@ -525,7 +522,7 @@ class TestInsertMethods():
         assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS9') == 0
 
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_matrix_row(self, mock_program_dao):
         """do_insert_row() should add a row to the end of each hardware matrix."""
         DUT = mmRequirement()
@@ -552,8 +549,8 @@ class TestInsertMethods():
 
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_requirement(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_requirement(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_requirement topic was broadcast")
 
     def on_fail_update_requirement_no_id(self, error_message):
@@ -623,7 +620,7 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_requirement_no_package,
                         'fail_update_requirement')
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_update_matrix_manager(self, test_program_dao):
         """do_update() should send the success message when the matrix is updated successfully."""
         pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')

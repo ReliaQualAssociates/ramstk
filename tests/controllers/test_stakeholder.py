@@ -117,7 +117,7 @@ class TestCreateControllers():
         DUT = amStakeholder(test_toml_user_configuration)
 
         assert isinstance(DUT, amStakeholder)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
@@ -189,8 +189,7 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_stakeholder(self, node_id, tree):
-        assert node_id == 2
+    def on_succeed_delete_stakeholder(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_stakeholder topic was broadcast.")
 
@@ -293,7 +292,8 @@ class TestGetterSetter():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_stakeholder(self, tree):
+    def on_succeed_insert_stakeholder(self, node_id, tree):
+        assert node_id == 3
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_stakeholder topic was broadcast")
 
@@ -340,8 +340,8 @@ class TestInsertMethods():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_stakeholder(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_stakeholder(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_stakeholder topic was broadcast")
 
     def on_fail_update_stakeholder(self, error_message):

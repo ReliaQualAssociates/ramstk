@@ -7,7 +7,7 @@
 """RAMSTK Function GTK3 module view."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -17,9 +17,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel
 
 # RAMSTK Local Imports
 from . import ATTRIBUTE_KEYS
@@ -33,6 +31,7 @@ class FunctionPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module = 'functions'
 
     # Define public dictionary class attributes.
 
@@ -45,7 +44,7 @@ class FunctionPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
+        self._dic_attribute_keys = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'function_id': [None, 'edited', 1],
@@ -70,6 +69,17 @@ class FunctionPanel(RAMSTKPanel):
             'total_part_count': [None, 'edited', 20],
             'type': [None, 'edited', 21],
         }
+        self._dic_error_messages = {
+            'load_row':
+            ("{3}: An error occurred when loading function {0}.  "
+             "This might indicate it was missing it's data package, some "
+             "of the data in the package was missing, or some of the data "
+             "was the wrong type.  Row data was: {1}.  Error was: {2}."
+             ""),
+        }
+        self._dic_row_loader = {
+            'function': super()._do_load_treerow,
+        }
 
         # Initialize private list class attributes.
 
@@ -87,11 +97,24 @@ class FunctionPanel(RAMSTKPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_tree, 'succeed_retrieve_functions')
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_functions')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_function')
         pub.subscribe(super().do_refresh_tree, 'wvw_editing_function')
         pub.subscribe(super().on_delete, 'succeed_delete_function')
 
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+
+    def _on_insert(self, tree: treelib.Tree) -> None:
+        """Wrap the do_load_panel() method when an element is inserted.
+
+        The do_set_cursor_active() method responds to the same message,
+        but one less argument in it's call.  This results in a PyPubSub
+        error and is the reason this wrapper method is needed.
+
+        :param tree: the module's treelib Tree().
+        :return: None
+        """
+        super().do_load_panel(tree)
 
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).
@@ -101,7 +124,7 @@ class FunctionPanel(RAMSTKPanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == 'function' and _row is not None:
+        if module == 'functions' and _row is not None:
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
             _title = _("Analyzing Function {0:s}: {1:s}").format(
@@ -127,11 +150,14 @@ class FunctionPanel(RAMSTKPanel):
             _title = _("Analyzing Function {0:s}: {1:s}").format(
                 str(_attributes['function_code']), str(_attributes['name']))
 
-            pub.sendMessage('selected_function', attributes=_attributes)
-            pub.sendMessage('request_get_function_attributes',
-                            node_id=self._record_id,
-                            table='hazards')
-            pub.sendMessage('request_set_title', title=_title)
+            pub.sendMessage(
+                'selected_function',
+                attributes=_attributes,
+            )
+            pub.sendMessage(
+                'request_set_title',
+                title=_title,
+            )
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.
@@ -191,7 +217,7 @@ class ModuleView(RAMSTKModuleView):
             + '/32x32/function.png')
 
         # Initialize private list attributes.
-        self._lst_callbacks.insert(1, self.do_request_insert_child)
+        self._lst_callbacks.insert(1, super().do_request_insert_child)
         self._lst_icons[0] = 'insert_sibling'
         self._lst_icons.insert(1, 'insert_child')
         self._lst_mnu_labels = [
@@ -223,38 +249,19 @@ class ModuleView(RAMSTKModuleView):
                                              [5, 15, 17])
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_function')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_function')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_delete_function')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_function')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_function')
+        pub.subscribe(self._do_set_record_id,
+                      'selected_{0}'.format(self._module))
 
-        pub.subscribe(self._on_insert_function, 'succeed_insert_function')
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the stakeholder input's record ID.
 
-    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
-        """Request to delete selected record from the RAMSTKFunction table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
+        :param attributes: the attributes dict for the selected stakeholder
+            input.
         :return: None
+        :rtype: None
         """
-        _parent = self.get_parent().get_parent().get_parent().get_parent(
-        ).get_parent()
-        _prompt = _("You are about to delete Function {0:d} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._record_id)
-        _dialog = RAMSTKMessageDialog(parent=_parent)
-        _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type('question')
-
-        if _dialog.do_run() == Gtk.ResponseType.YES:
-            super().do_set_cursor_busy()
-            pub.sendMessage('request_delete_function', node_id=self._record_id)
-
-        _dialog.do_destroy()
+        self._record_id = attributes['function_id']
+        self._parent_id = attributes['parent_id']
 
     def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
         """Add row to module view for newly added function.

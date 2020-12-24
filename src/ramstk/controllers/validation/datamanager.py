@@ -131,7 +131,7 @@ class DataManager(RAMSTKDataManager):
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['validation'])
 
-            pub.sendMessage('succeed_update_validation', node_id=node_id)
+            pub.sendMessage('succeed_update_validation', tree=self.tree)
         except AttributeError:
             pub.sendMessage(
                 'fail_update_validation',
@@ -166,7 +166,6 @@ class DataManager(RAMSTKDataManager):
 
             pub.sendMessage('succeed_delete_validation_2', node_id=node_id)
             pub.sendMessage('succeed_delete_validation',
-                            node_id=node_id,
                             tree=self.tree)
         except DataAccessError:
             pub.sendMessage('fail_delete_validation',

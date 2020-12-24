@@ -5,7 +5,7 @@
 PREFIX		= /usr/local
 
 GITHUB_USER = ReliaQualAssociates
-TOKEN		=
+TOKEN		= $(shell echo $(GITHUB_TOKEN))
 CHANGELOG	= CHANGELOG.md
 REPO		= ramstk
 REQFILE		= requirements.txt
@@ -33,6 +33,7 @@ PYDOCSTYLE	= $(shell which pydocstyle)
 PYLINT		= $(shell which pylint)
 RADON		= $(shell which radon)
 YAPF        = $(shell which yapf)
+WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
 
 # Data files.
 LAYOUTS		= $(shell ls ./data/layouts)
@@ -41,10 +42,10 @@ ICONS32		= $(shell ls ./data/icons/32x32)
 
 # Argument lists for tools.
 DOCFORMATTER_ARGS	= --in-place
-ISORT_ARGS	= --settings-file ./setup.cfg --atomic --use-parentheses --balanced
+ISORT_ARGS	= --settings-file ./setup.cfg --atomic
 MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
-PYDOCSTYLE_ARGS	= --count
+PYDOCSTYLE_ARGS	= --count --config=./setup.cfg
 PYLINT_ARGS	= -j4 --rcfile=./setup.cfg
 YAPF_ARGS	= --in-place
 
@@ -79,8 +80,7 @@ help:
 	@echo "	maintain SRCFILE=<file>			check maintainability using mccabe and radon.  Helpful to keymap in IDE or editor."
 	@echo "						Pass wildcard (*) at end of FILE=<file> path to analyze all files in directory."
 	@echo "Targets related to documentation:"
-	@echo "	docs					generate API documentation and build it. <FUTURE>"
-	@echo "	servdocs				update documentation on gh-pages branch; serves it to the public. <FUTURE>"
+	@echo "	docs					build API and user documentation."
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
@@ -94,7 +94,7 @@ help:
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
 	@echo ""
 	@echo "	GITHUB_USER				set the name of the Github user.  Defaults to $(GITHUB_USER)"
-	@echo "	TOKEN					set the Github API token to use.  Defaults to $(TOKEN)"
+	@echo "	TOKEN					set the Github API token to use.  Defaults to environment variable GITHUB_TOKEN"
 	@echo "	CHANGELOG				set the name of the file for the change log.  Defaults to $(CHANGELOG)"
 	@echo "	REPO					set the name of the GitHub repository to generate the change log from.  Defaults to $(REPO)"
 	@echo "	REQFILE					set the name of the requirements file to write required runtime packages.  Defaults to $(REQFILE)"
@@ -236,7 +236,7 @@ format:
 # This target is for use with IDE integration.
 stylecheck:
 	$(info Style checking $(SRCFILE) ...)
-	$(PYCODESTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
+	$(PYCODESTYLE) $(PYCODESTYLE_ARGS) $(SRCFILE)
 	$(PYDOCSTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
@@ -271,29 +271,14 @@ bumpver:
 tag:
 	$(shell sh ./devtools/bump_version.sh -t)
 
-docs:
+apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk
-	cd docs; make html -e
 
-servdocs:
-	WORKBRANCH=$(shell git rev-parse --abbrev-ref HEAD)
-	#git checkout gh-pages
-	#mkdir docs
-	#cd docs
-	#git checkout $(WORKBRANCH) .
-	#make html
-	#mv -fv _build/html/* ../
-	#mv -fv _build/html/_modules/* ../_modules/
-	#mv -fv _build/html/_sources/* ../_sources/
-	#mv -fv _build/html/_static/* ../_static/
-	#mv -fv _build/html/api/* ../api/
-	#mv -fv _build/html/api/gui/* ../api/gui/
-	#cd ../
-	#rm -fr docs/
-	#git add -Af _modules/ _sources/ _static/ api/ requirements/ *.inv *.js *.md *.html *.xml
-	#git commit --no-verify
-	#git push --no-verify origin gh-pages
-	#git checkout $WORKBRANCH
+docs: cleandocs
+	cd docs; $(MAKE) html -e
+
+cleandocs:
+	cd docs; rm -fr _build/html/*
 
 dist: clean
 	python setup.py sdist

@@ -22,7 +22,7 @@ def calculate_stress_ratio(stress_operating, stress_rated):
     0.7751937984496123
 
     Rated stress must not be zero:
-    >>> calculate_stress_ratio(0.382, 0.o)
+    >>> calculate_stress_ratio(0.382, 0.0)
     Traceback (most recent call last):
         ...
     ZeroDivisionError: float division by zero

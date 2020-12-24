@@ -1,117 +1,106 @@
-ramstk.analyses.milhdbk217f.models package
-==========================================
+MIL-HDBK-217F Component Models
+==============================
 
-Submodules
-----------
-
-ramstk.analyses.milhdbk217f.models.capacitor module
----------------------------------------------------
+MIL-HDBK-217F Capacitor Models
+------------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.capacitor
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.connection module
-----------------------------------------------------
+MIL-HDBK-217F Connection Models
+-------------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.connection
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.crystal module
--------------------------------------------------
+MIL-HDBK-217F Crystal Models
+----------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.crystal
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.efilter module
--------------------------------------------------
+MIL-HDBK-217F Electronic Filter Models
+--------------------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.efilter
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.fuse module
-----------------------------------------------
+MIL-HDBK-217F Fuse Models
+-------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.fuse
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.inductor module
---------------------------------------------------
+MIL-HDBK-217F Inductor Models
+-----------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.inductor
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.integratedcircuit module
------------------------------------------------------------
+MIL-HDBK-217F Integrated Circuit Models
+---------------------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.integratedcircuit
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.lamp module
-----------------------------------------------
+MIL-HDBK-217F Lamp Models
+-------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.lamp
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.meter module
------------------------------------------------
+MIL-HDBK-217F Meter Models
+--------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.meter
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.relay module
------------------------------------------------
+MIL-HDBK-217F Relay Models
+--------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.relay
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.resistor module
---------------------------------------------------
+MIL-HDBK-217F Resistor Models
+-----------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.resistor
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.semiconductor module
--------------------------------------------------------
+MIL-HDBK-217F Semiconductor Models
+----------------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.semiconductor
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.milhdbk217f.models.switch module
-------------------------------------------------
+MIL-HDBK-217F Switch Models
+---------------------------
 
 .. automodule:: ramstk.analyses.milhdbk217f.models.switch
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.analyses.milhdbk217f.models
    :members:
    :undoc-members:
    :show-inheritance:

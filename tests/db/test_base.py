@@ -1,3 +1,4 @@
+# type: ignore
 # pylint: disable=protected-access, no-self-use
 # -*- coding: utf-8 -*-
 #
@@ -481,3 +482,22 @@ class TestSelectMethods():
 
         with pytest.raises(exc.ProgrammingError):
             DUT.get_last_id(RAMSTKFunction.__tablename__, "fld_function_id")
+
+    @pytest.mark.unit
+    def test_get_last_id_empty_table(self, test_simple_database,
+                                       test_toml_user_configuration):
+        """get_last_id() should raise an SQLAlchemy OperationalError when passed an unknown table."""
+        test_toml_user_configuration.get_user_configuration()
+        test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['password'] = 'postgres'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
+        test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
+        test_toml_user_configuration.RAMSTK_PROG_INFO[
+            'database'] = 'simple_test_db'
+        DUT = BaseDatabase()
+        DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
+
+        _last_id = DUT.get_last_id('ramstk_empty_table', "fld_empty_id")
+
+        assert _last_id == 0

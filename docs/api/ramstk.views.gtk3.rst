@@ -1,11 +1,8 @@
-ramstk.views.gtk3 package
-=========================
-
-Subpackages
------------
+GTK3/PyGobject View Package
+===========================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ramstk.views.gtk3.allocation
    ramstk.views.gtk3.assistants
@@ -24,21 +21,10 @@ Subpackages
    ramstk.views.gtk3.validation
    ramstk.views.gtk3.widgets
 
-Submodules
-----------
-
-ramstk.views.gtk3.desktop module
---------------------------------
+GTK3/PyGobject Desktop Module
+-----------------------------
 
 .. automodule:: ramstk.views.gtk3.desktop
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3
    :members:
    :undoc-members:
    :show-inheritance:

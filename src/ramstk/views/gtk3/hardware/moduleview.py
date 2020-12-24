@@ -252,20 +252,6 @@ class ModuleView(RAMSTKModuleView):
         ])
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_calculate_hardware_2')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_delete_hardware')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_insert_hardware')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_calculate_hardware')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_delete_hardware')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_insert_hardware')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_hardware')
-
         pub.subscribe(self._on_insert_hardware, 'succeed_insert_hardware')
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:

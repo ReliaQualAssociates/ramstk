@@ -94,7 +94,7 @@ class TestCreateControllers():
         DUT = amFMEA(test_toml_user_configuration)
 
         assert isinstance(DUT, amFMEA)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
@@ -873,8 +873,8 @@ class TestGetterSetter():
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_fmea(self, node_id):
-        assert node_id == '5'
+    def on_succeed_update_fmea(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_fmea topic was broadcast")
 
     def on_fail_update_fmea(self, error_message):

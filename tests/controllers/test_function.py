@@ -1,3 +1,4 @@
+# type: ignore
 # pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
@@ -14,8 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import dmFunction, dmHardware, mmFunction
+from ramstk.controllers import dmFunction, dmHardware
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFunction
@@ -33,10 +33,13 @@ class MockDao:
         try:
             self._do_delete_function(record)
         except AttributeError:
-            raise DataAccessError('')
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def do_insert(self, record):
-        self._all_functions.append(record)
+        if record.parent_id < 10:
+            self._all_functions.append(record)
+        else:
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def do_select_all(self,
                       table,
@@ -58,7 +61,8 @@ class MockDao:
     def do_update(self, record):
         for _key in MOCK_FUNCTIONS:
             if _key == record.function_id:
-                MOCK_FUNCTIONS[_key]['name'] = record.name
+                MOCK_FUNCTIONS[_key]['name'] = str(record.name)
+                MOCK_FUNCTIONS[_key]['cost'] = float(record.cost)
 
     def get_last_id(self, table, id_column):
         return max(MOCK_FUNCTIONS.keys())
@@ -73,14 +77,14 @@ def mock_program_dao(monkeypatch):
 class TestCreateControllers():
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self):
+    def test_data_manager_create(self):
         """__init__() should return a Function data manager."""
         DUT = dmFunction()
 
         assert isinstance(DUT, dmFunction)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'function'
+        assert DUT._tag == 'functions'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
@@ -89,38 +93,12 @@ class TestCreateControllers():
                                 'request_update_all_functions')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_function_attributes')
-        assert pub.isSubscribed(DUT.do_get_tree, 'request_get_function_tree')
+        assert pub.isSubscribed(DUT.do_get_tree, 'request_get_functions_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_function_attributes')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
         assert pub.isSubscribed(DUT._do_insert_function,
                                 'request_insert_function')
-
-    @pytest.mark.unit
-    def test_matrix_manager_create(self):
-        """__init__() should create an instance of the function matrix
-        manager."""
-        DUT = mmFunction()
-
-        assert isinstance(DUT, mmFunction)
-        assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, dict)
-        assert isinstance(DUT._row_tree, Tree)
-        assert DUT.dic_matrices == {}
-        assert DUT.n_row == 1
-        assert DUT.n_col == 1
-        assert pub.isSubscribed(DUT.do_create_rows,
-                                'succeed_retrieve_functions')
-        assert pub.isSubscribed(DUT._do_create_function_matrix_columns,
-                                'succeed_retrieve_hardware')
-        assert pub.isSubscribed(DUT._on_delete_function,
-                                'succeed_delete_function')
-        assert pub.isSubscribed(DUT._on_delete_hardware,
-                                'succeed_delete_hardware')
-        assert pub.isSubscribed(DUT._on_insert_function,
-                                'succeed_insert_function')
-        assert pub.isSubscribed(DUT._on_insert_hardware,
-                                'succeed_insert_hardware')
 
 
 class TestSelectMethods():
@@ -129,11 +107,6 @@ class TestSelectMethods():
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data['function'], RAMSTKFunction)
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
-
-    def on_request_select_matrix(self, matrix_type):
-        assert matrix_type == 'fnctn_hrdwr'
-        print("\033[36m\nrequest_select_matrix topic was broadcast for the "
-              "fnctn_hrdwr matrix.")
 
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
@@ -184,78 +157,21 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='function') is None
 
-    @pytest.mark.unit
-    def test_do_create_matrix(self, mock_program_dao):
-        """_do_create() should create an instance of the function matrix
-        manager."""
-        pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
-
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        pub.unsubAll('request_select_matrix')
-
-        assert DUT._col_tree['fnctn_hrdwr'] == MOCK_HRDWR_TREE
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS3') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A1') == 0
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS1:A2') == 0
-
-    @pytest.mark.unit
-    def test_do_create_matrix_no_row_tree_hardware(self, mock_program_dao):
-        """_do_create_validation_matrix_columns() should not create a vldtn-
-        hrdwr matrix unless there is a row tree already populated."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-        DUT._row_tree = Tree()
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT._col_tree['fnctn_hrdwr'] == MOCK_HRDWR_TREE
-
-    @pytest.mark.unit
-    def test_do_create_matrix_wrong_column_tree(self, mock_program_dao):
-        """_do_create_validation_matrix_columns() should not create a matrix
-        when passed a column tree that doesn't exist in the matrix dict."""
-        DUT = mmFunction()
-        DUT._row_tree = Tree()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_requirements', tree=MOCK_RQRMNT_TREE)
-
-        with pytest.raises(KeyError):
-            DUT._col_tree['fcntn_rqrmnt']
-
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_function(self, node_id, tree):
-        assert node_id == 2
+    def on_succeed_delete_function(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_function topic was broadcast.")
 
     def on_fail_delete_function(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent function ID 300.')
+            '_do_delete: Attempted to delete non-existent function ID 300.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     def on_fail_delete_function_no_tree(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent function ID 2.')
+            '_do_delete: Attempted to delete non-existent function ID 2.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     @pytest.mark.unit
@@ -304,49 +220,6 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_fail_delete_function_no_tree,
                         'fail_delete_function')
 
-    @pytest.mark.unit
-    def test_do_delete_matrix_row(self, mock_program_dao):
-        """do_delete_row() should remove the appropriate row from the hardware
-        matrices."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4') == 0
-
-        DATAMGR.tree.remove_node(1)
-        pub.sendMessage('succeed_delete_function',
-                        node_id=1,
-                        tree=DATAMGR.tree)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 1, 'S1:SS4')
-
-    @pytest.mark.unit
-    def test_do_delete_matrix_hardware_column(self, test_program_dao):
-        """do_delete_column() should remove the appropriate column from the
-        requested hardware matrix."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(test_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2') == 0
-
-        pub.sendMessage('succeed_delete_hardware',
-                        node_id=3,
-                        tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 1, 'S1:SS2')
-
 
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
@@ -356,8 +229,7 @@ class TestInsertMethods():
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
     def on_fail_insert_function(self, error_message):
-        assert error_message == ('Attempting to add a function as a child of '
-                                 'non-existent parent node 40.')
+        assert error_message == ('An error occured with RAMSTK.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
@@ -405,56 +277,7 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_function(parent_id=40)
 
-    @pytest.mark.unit
-    def test_do_insert_matrix_row(self, mock_program_dao):
-        """do_insert_row() should add a row to the end of each hardware
-        matrix."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4')
-
-        DATAMGR.tree.create_node(tag='Test Insert Function',
-                                 identifier=4,
-                                 parent=1,
-                                 data=None)
-        pub.sendMessage('succeed_insert_function',
-                        node_id=4,
-                        tree=DATAMGR.tree)
-
-        assert DUT.do_select('fnctn_hrdwr', 4, 'S1:SS4') == 0
-
-    @pytest.mark.unit
-    def test_do_insert_matrix_hardware_column(self, mock_program_dao):
-        """do_insert_column() should add a column to the right of the requested
-        validation matrix."""
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('fnctn_hrdwr', 1, 'S1:SS15')
-
-        MOCK_HRDWR_TREE.create_node(tag='S1:SS15',
-                                    identifier=15,
-                                    parent=0,
-                                    data=None)
-
-        pub.sendMessage('succeed_insert_hardware',
-                        node_id=15,
-                        tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('fnctn_hrdwr', 1, 'S1:SS15') == 0
+        pub.unsubscribe(self.on_fail_insert_function, 'fail_insert_function')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
@@ -538,21 +361,18 @@ class TestGetterSetter():
 
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_function(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_function(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_function topic was broadcast")
 
     def on_fail_update_function(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent function with function ID 100.')
+            'do_update: Attempted to save non-existent function with function ID 100.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
     def on_fail_update_function_no_data(self, error_message):
-        assert error_message == ('No data package found for function ID 0.')
+        assert error_message == ('do_update: The value for one or more attributes for function ID 1 was the wrong type.')
         print("\033[35m\nfail_update_function topic was broadcast")
-
-    def on_succeed_update_matrix(self):
-        print("\033[36m\nsucceed_update_matrix topic was broadcast")
 
     @pytest.mark.unit
     def test_do_update_data_manager(self, mock_program_dao):
@@ -587,7 +407,24 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_function, 'fail_update_function')
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_wrong_data_type(self, mock_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Function ID that has no data package."""
+        pub.subscribe(self.on_fail_update_function_no_data,
+                      'fail_update_function')
+
+        DUT = dmFunction()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.get_node(1).data['function'].cost = None
+
+        DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_function_no_data,
+                        'fail_update_function')
+
+    @pytest.mark.unit
+    def test_do_update_root_node(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
         pub.subscribe(self.on_fail_update_function_no_data,
@@ -601,29 +438,3 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_fail_update_function_no_data,
                         'fail_update_function')
-
-    @pytest.mark.integration
-    def test_do_update_matrix_manager(self, test_program_dao):
-        """do_update() should broadcast the 'succeed_update_matrix' on
-        success."""
-        pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
-
-        DUT = mmFunction()
-
-        DATAMGR = dmFunction()
-        DATAMGR.do_connect(test_program_dao)
-
-        HRDWRMGR = dmHardware()
-        HRDWRMGR.do_connect(test_program_dao)
-
-        def on_succeed_load_matrix(matrix_type, matrix):
-            DUT.dic_matrices['fnctn_hrdwr'].loc[1, 'S1:SS2'] = 1
-
-        pub.subscribe(on_succeed_load_matrix, 'succeed_load_matrix')
-
-        pub.sendMessage('selected_revision', attributes={'revision_id': 1})
-        pub.sendMessage('do_request_update_matrix',
-                        matrix_type='fnctn_hrdwr')
-
-        pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
-        pub.unsubscribe(on_succeed_load_matrix, 'succeed_load_matrix')

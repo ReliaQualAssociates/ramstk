@@ -1,18 +1,7 @@
-ramstk.views package
-====================
-
-Subpackages
------------
+RAMSTK View Package
+===================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ramstk.views.gtk3
-
-Module contents
----------------
-
-.. automodule:: ramstk.views
-   :members:
-   :undoc-members:
-   :show-inheritance:

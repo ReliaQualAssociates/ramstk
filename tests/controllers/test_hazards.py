@@ -34,21 +34,10 @@ class MockDao:
 
     def do_insert(self, record):
         record.revision_id = 1
-        self._all_hazards.append(record)
-
-    def _do_select_all_hazards(self, table, value):
-        _idx = 1
-        self._all_hazards = []
-        for _key in MOCK_HAZARDS:
-            _record = table()
-            _record.revision_id = 1
-            _record.function_id = value
-            _record.hazard_id = _idx
-            _record.set_attributes(MOCK_HAZARDS[_key])
-            self._all_hazards.append(_record)
-            _idx += 1
-
-        return self._all_hazards
+        if record.function_id < 10:
+            self._all_hazards.append(record)
+        else:
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def do_select_all(self,
                       table,
@@ -57,7 +46,18 @@ class MockDao:
                       order=None,
                       _all=False):
         if table == RAMSTKHazardAnalysis:
-            return self._do_select_all_hazards(table, value)
+            self._all_hazards = []
+            _idx = 1
+            for _key in MOCK_HAZARDS:
+                _record = table()
+                _record.revision_id = value[0]
+                _record.function_id = value[1]
+                _record.hazard_id = _idx
+                _record.set_attributes(MOCK_HAZARDS[_key])
+                self._all_hazards.append(_record)
+                _idx += 1
+
+        return self._all_hazards
 
     def do_update(self, record):
         for _key in MOCK_HAZARDS:
@@ -88,7 +88,7 @@ class TestCreateControllers():
         assert DUT._tag == 'hazards'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_function')
         assert pub.isSubscribed(DUT.do_update, 'request_update_hazard')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_hazards')
@@ -97,7 +97,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_hazard_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_hazard_attributes')
-        assert pub.isSubscribed(DUT._do_delete_hazard, 'request_delete_hazard')
+        assert pub.isSubscribed(DUT._do_delete, 'request_delete_hazard')
         assert pub.isSubscribed(DUT._do_insert_hazard, 'request_insert_hazard')
 
     @pytest.mark.unit
@@ -107,7 +107,7 @@ class TestCreateControllers():
         DUT = amHazards(test_toml_user_configuration)
 
         assert isinstance(DUT, amHazards)
-        assert isinstance(DUT.RAMSTK_CONFIGURATION, RAMSTKUserConfiguration)
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT._attributes, dict)
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
@@ -134,7 +134,21 @@ class TestSelectMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
+
+        pub.unsubscribe(self.on_succeed_retrieve_hazards,
+                        'succeed_retrieve_hazards')
+
+    @pytest.mark.unit
+    def test_do_select_all_populated_tree(self, mock_program_dao):
+        """do_select_all() should clear nodes from an existing Hazards tree."""
+        pub.subscribe(self.on_succeed_retrieve_hazards,
+                      'succeed_retrieve_hazards')
+
+        DUT = dmHazards()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 2})
 
         pub.unsubscribe(self.on_succeed_retrieve_hazards,
                         'succeed_retrieve_hazards')
@@ -145,7 +159,7 @@ class TestSelectMethods():
         requested."""
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         with pytest.raises(KeyError):
             DUT.do_select(1, table='scibbidy-bibbidy-doo')
@@ -156,21 +170,20 @@ class TestSelectMethods():
         requested."""
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         assert DUT.do_select(100, table='hazard') is None
 
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_hazard(self, node_id, tree):
-        assert node_id == 1
+    def on_succeed_delete_hazard(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_hazard topic was broadcast.")
 
     def on_fail_delete_hazard(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent hazard ID 10.')
+            '_do_delete: Attempted to delete non-existent hazard ID 10.')
         print("\033[35m\nfail_delete_hazard topic was broadcast.")
 
     @pytest.mark.unit
@@ -181,8 +194,8 @@ class TestDeleteMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_hazard(1)
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
+        DUT._do_delete(1)
 
         assert DUT.tree.get_node(1) is None
 
@@ -196,8 +209,8 @@ class TestDeleteMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_hazard(10)
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
+        DUT._do_delete(10)
 
         pub.unsubscribe(self.on_fail_delete_hazard, 'fail_delete_hazard')
 
@@ -210,9 +223,7 @@ class TestInsertMethods():
         print("\033[36m\nsucceed_insert_hazard topic was broadcast.")
 
     def on_fail_insert_hazard(self, error_message):
-        assert error_message == (
-            'Attempting to add a hazard to a non-existent '
-            'function ID 10.')
+        assert error_message == ('An error occured with RAMSTK.')
         print("\033[35m\nfail_insert_hazard topic was broadcast.")
 
     @pytest.mark.unit
@@ -223,11 +234,11 @@ class TestInsertMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT._do_insert_hazard(parent_id=1)
 
         assert isinstance(
-            DUT.tree.get_node(1).data['hazard'], RAMSTKHazardAnalysis)
+            DUT.tree.get_node(2).data['hazard'], RAMSTKHazardAnalysis)
 
         pub.unsubscribe(self.on_succeed_insert_hazard, 'succeed_insert_hazard')
 
@@ -239,7 +250,7 @@ class TestInsertMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT._do_insert_hazard(parent_id=10)
 
         pub.unsubscribe(self.on_fail_insert_hazard, 'fail_insert_hazard')
@@ -253,6 +264,10 @@ class TestGetterSetter():
         assert attributes['function_id'] == 1
         assert attributes['potential_hazard'] == ''
         print("\033[36m\nsucceed_get_hazards_attributes topic was broadcast.")
+
+    def on_fail_get_hazard_attrs(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[36m\nfail_get_hazards_attributes topic was broadcast.")
 
     def on_succeed_get_all_attrs(self, attributes):
         assert isinstance(attributes, dict)
@@ -276,11 +291,26 @@ class TestGetterSetter():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT.do_get_attributes(1, 'hazard')
 
         pub.unsubscribe(self.on_succeed_get_hazard_attrs,
                         'succeed_get_hazards_attributes')
+
+    @pytest.mark.unit
+    def test_do_get_attributes_no_attributes(self, mock_program_dao):
+        """_do_get_attributes() should return a dict of failure definition
+        records on success."""
+        pub.subscribe(self.on_fail_get_hazard_attrs,
+                      'fail_get_hazards_attributes')
+
+        DUT = dmHazards()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
+        DUT.do_get_attributes(3, 'hazard')
+
+        pub.unsubscribe(self.on_fail_get_hazard_attrs,
+                        'fail_get_hazards_attributes')
 
     @pytest.mark.skip
     def test_do_get_all_attributes_data_manager(self, mock_program_dao):
@@ -291,7 +321,7 @@ class TestGetterSetter():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT.do_get_all_attributes(1)
 
         pub.unsubscribe(self.on_succeed_get_all_attrs,
@@ -302,7 +332,7 @@ class TestGetterSetter():
         """do_set_attributes() should send the success message."""
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         pub.sendMessage('request_set_hazard_attributes',
                         node_id=[
@@ -312,12 +342,12 @@ class TestGetterSetter():
         assert DUT.do_select(1,
                              table='hazard').potential_hazard == 'Donald Trump'
 
-    @pytest.mark.skip
+    @pytest.mark.unit
     def test_do_set_all_attributes(self, mock_program_dao):
         """do_set_all_attributes() should send the success message."""
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         pub.sendMessage('request_set_all_hazard_attributes',
                         attributes={
@@ -344,7 +374,7 @@ class TestGetterSetter():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_hazard_tree,
@@ -357,7 +387,7 @@ class TestGetterSetter():
         success."""
         DATAMGR = dmHazards()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT = amHazards(test_toml_user_configuration)
 
         pub.sendMessage('request_get_all_hazard_attributes', node_id=1)
@@ -374,7 +404,7 @@ class TestGetterSetter():
         attribute in response to the succeed_get_function_tree message."""
         DATAMGR = dmHazards()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT = amHazards(test_toml_user_configuration)
         DATAMGR.do_get_tree()
 
@@ -385,17 +415,18 @@ class TestGetterSetter():
 
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_hazard(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_hazard(self, tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(1).data['hazard'].potential_hazard == 'Big Hazard'
         print("\033[36m\nsucceed_update_hazard topic was broadcast")
 
     def on_fail_update_hazard(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent hazard with hazard ID 100.')
+            'do_update: Attempted to delete non-existent hazard ID 100.')
         print("\033[35m\nfail_update_hazard topic was broadcast")
 
     def on_fail_update_hazard_no_data(self, error_message):
-        assert error_message == ('No data package found for hazard ID 1.')
+        assert error_message == ('do_update: No data package found for hazard ID 1.')
         print("\033[35m\nfail_update_hazard topic was broadcast")
 
     @pytest.mark.unit
@@ -405,14 +436,12 @@ class TestUpdateMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         DUT.tree.get_node(1).data['hazard'].potential_hazard = 'Big Hazard'
         DUT.do_update(1)
 
-        DUT.do_select_all(attributes={'revision_id': 1})
-        assert DUT.tree.get_node(
-            1).data['hazard'].potential_hazard == 'Big Hazard'
+        #DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         pub.unsubscribe(self.on_succeed_update_hazard, 'succeed_update_hazard')
 
@@ -424,7 +453,7 @@ class TestUpdateMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT.do_update(100)
 
         pub.unsubscribe(self.on_fail_update_hazard, 'fail_update_hazard')
@@ -437,7 +466,7 @@ class TestUpdateMethods():
 
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT.tree.get_node(1).data = None
 
         DUT.do_update(1)
@@ -451,7 +480,7 @@ class TestUpdateMethods():
         ID that has no data package."""
         DUT = dmHazards()
         DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
 
         DUT.do_update(0)
 
@@ -466,7 +495,7 @@ class TestAnalysisMethods():
         analysis."""
         DATAMGR = dmHazards()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT = amHazards(test_toml_user_configuration)
 
         _hazard = DATAMGR.do_select(1, 'hazard')
@@ -497,7 +526,7 @@ class TestAnalysisMethods():
         analysis."""
         DATAMGR = dmHazards()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
         DUT = amHazards(test_toml_user_configuration)
 
         _hazard = DATAMGR.do_select(1, 'hazard')

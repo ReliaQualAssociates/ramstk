@@ -17,14 +17,15 @@ from .entry import RAMSTKTextView as RAMSTKTextView
 from .frame import RAMSTKFrame as RAMSTKFrame
 from .label import RAMSTKLabel as RAMSTKLabel
 from .label import do_make_label_group as do_make_label_group
-from .matrixview import RAMSTKMatrixView as RAMSTKMatrixView
 from .plot import RAMSTKPlot as RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow as RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView as RAMSTKTreeView
 
 class RAMSTKPanel(RAMSTKFrame):
+    _module: str = ...
     _dic_attribute_keys: Any = ...
     _dic_attribute_updater: Any = ...
+    _dic_error_messages: Any = ...
     _dic_row_loader: Any = ...
     _lst_col_order: Any = ...
     _lst_labels: Any = ...
@@ -47,7 +48,8 @@ class RAMSTKPanel(RAMSTKFrame):
         ...
 
     def do_load_panel(self,
-                      tree: treelib.Tree,
+                      tree: treelib.Tree = ...,
+                      node_id: Any = ...,
                       row: Gtk.TreeIter = ...) -> None:
         ...
 
@@ -61,9 +63,6 @@ class RAMSTKPanel(RAMSTKFrame):
         ...
 
     def do_make_panel_plot(self) -> None:
-        ...
-
-    def do_make_panel_matrixview(self, matrix: RAMSTKMatrixView) -> None:
         ...
 
     def do_make_panel_treeview(self) -> None:
@@ -108,7 +107,7 @@ class RAMSTKPanel(RAMSTKFrame):
             textview: RAMSTKTextView) -> Dict[Union[str, Any], Any]:
         ...
 
-    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
+    def on_delete(self, tree: treelib.Tree) -> None:
         ...
 
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
@@ -126,6 +125,10 @@ class RAMSTKPanel(RAMSTKFrame):
 
     def _do_load_row(self, node: treelib.Node,
                      row: Gtk.TreeIter) -> Gtk.TreeIter:
+        ...
+
+    def _do_load_treerow(self, node: treelib.Node,
+                         row: Gtk.TreeIter) -> Gtk.TreeIter:
         ...
 
     @staticmethod

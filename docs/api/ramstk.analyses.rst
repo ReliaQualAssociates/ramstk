@@ -1,86 +1,72 @@
-ramstk.analyses package
+RAMSTK Analysis Package
 =======================
 
-Subpackages
------------
-
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ramstk.analyses.milhdbk217f
    ramstk.analyses.statistics
 
-Submodules
-----------
-
-ramstk.analyses.allocation module
----------------------------------
+Reliability Allocation Module
+-----------------------------
 
 .. automodule:: ramstk.analyses.allocation
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.criticality module
-----------------------------------
+FMEA Criticality Analysis Module
+--------------------------------
 
 .. automodule:: ramstk.analyses.criticality
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.derating module
--------------------------------
+Component Stress Derating Module
+--------------------------------
 
 .. automodule:: ramstk.analyses.derating
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.dormancy module
--------------------------------
+Dormant Hazard Rate Module
+--------------------------
 
 .. automodule:: ramstk.analyses.dormancy
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.fha module
---------------------------
+Functional Hazard Analysis Module
+---------------------------------
 
 .. automodule:: ramstk.analyses.fha
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.improvementfactor module
-----------------------------------------
+Improvement Factor Module
+-------------------------
 
 .. automodule:: ramstk.analyses.improvementfactor
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.similaritem module
-----------------------------------
+Similar Item Analysis Module
+----------------------------
 
 .. automodule:: ramstk.analyses.similaritem
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.analyses.stress module
+Component Stress Ratio Module
 -----------------------------
 
 .. automodule:: ramstk.analyses.stress
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.analyses
    :members:
    :undoc-members:
    :show-inheritance:

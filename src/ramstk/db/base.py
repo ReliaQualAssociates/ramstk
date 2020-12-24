@@ -103,8 +103,8 @@ class BaseDatabase:
     }
 
     # Define public class scalar attributes.
-    engine: Engine = None
-    session: scoped_session = None
+    engine: Engine = None  # type: ignore
+    session: scoped_session = None  # type: ignore
     database: str = ''
     sqlstatements: Dict[str, str] = {
         'select': 'SELECT {0:s} ',
@@ -217,7 +217,7 @@ class BaseDatabase:
         self.session.close()
         self.engine.dispose()
         # noinspection PyTypeChecker
-        self.session = None
+        self.session = None  # type: ignore
         self.database = ''
 
     def do_insert(self, record: object) -> None:
@@ -302,8 +302,9 @@ class BaseDatabase:
             _error_message = (
                 "There was an database error when attempting to update a "
                 "record.  Faulty SQL statement was:\n\t{0:s}.\nParameters "
-                "were:\n\t{1:s}.".format(str(_error.statement),
-                                         str(_error.params)))
+                "were:\n\t{1:s}.".format(
+                    str(_error.statement),  # type: ignore
+                    str(_error.params)))  # type: ignore
             pub.sendMessage('fail_update_record', error_message=_error_message)
             raise DataAccessError(_error_message) from _error
 
@@ -362,4 +363,9 @@ class BaseDatabase:
             id_column) + self.sqlstatements['from'].format(
                 table) + self.sqlstatements['order'].format(id_column)
 
-        return self.session.execute(_sql_statement).first()[0]
+        try:
+            _last_id = self.session.execute(_sql_statement).first()[0]
+        except TypeError:
+            _last_id = 0
+
+        return _last_id

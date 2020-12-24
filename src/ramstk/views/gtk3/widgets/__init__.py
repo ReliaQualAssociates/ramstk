@@ -24,7 +24,6 @@ from .dialog import (
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
-from .matrixview import RAMSTKMatrixView
 from .panel import RAMSTKPanel
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow

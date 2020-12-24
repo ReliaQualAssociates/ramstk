@@ -25,7 +25,7 @@ from ramstk.controllers import (
     amFMEA, amHardware, amHazards, amStakeholder, amValidation,
     dmFailureDefinition, dmFMEA, dmFunction, dmHardware, dmHazards, dmOptions,
     dmPoF, dmRequirement, dmRevision, dmStakeholder, dmUsageProfile,
-    dmValidation, mmFunction, mmHardware, mmRequirement, mmValidation
+    dmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
@@ -102,6 +102,7 @@ def do_copy_configuration_values(
         site_configuration.RAMSTK_RPN_OCCURRENCE
     user_configuration.RAMSTK_RPN_SEVERITY = \
         site_configuration.RAMSTK_RPN_SEVERITY
+    user_configuration.RAMSTK_SEVERITY = site_configuration.RAMSTK_SEVERITY
     user_configuration.RAMSTK_STAKEHOLDERS = \
         site_configuration.RAMSTK_STAKEHOLDERS
     user_configuration.RAMSTK_SUBCATEGORIES = \
@@ -250,19 +251,16 @@ def the_one_ring() -> None:
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
     _program_mgr.dic_managers['function']['data'] = dmFunction()
-    _program_mgr.dic_managers['function']['matrix'] = mmFunction()
     _program_mgr.dic_managers['hazards']['analysis'] = amHazards(
         user_configuration)
     _program_mgr.dic_managers['hazards']['data'] = dmHazards()
     _program_mgr.dic_managers['requirement']['data'] = dmRequirement()
-    _program_mgr.dic_managers['requirement']['matrix'] = mmRequirement()
     _program_mgr.dic_managers['stakeholder']['analysis'] = amStakeholder(
         user_configuration)
     _program_mgr.dic_managers['stakeholder']['data'] = dmStakeholder()
     _program_mgr.dic_managers['hardware']['analysis'] = amHardware(
         user_configuration)
     _program_mgr.dic_managers['hardware']['data'] = dmHardware()
-    _program_mgr.dic_managers['hardware']['matrix'] = mmHardware()
     _program_mgr.dic_managers['failure_definition']['data'] = \
         dmFailureDefinition()
     _program_mgr.dic_managers['fmea']['analysis'] = amFMEA(user_configuration)
@@ -272,7 +270,6 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['validation']['analysis'] = amValidation(
         user_configuration)
     _program_mgr.dic_managers['validation']['data'] = dmValidation()
-    _program_mgr.dic_managers['validation']['matrix'] = mmValidation()
     # noinspection PyTypeChecker
     _program_mgr.dic_managers['options']['data'] = dmOptions(
         common_dao=site_db,

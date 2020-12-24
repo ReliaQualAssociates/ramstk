@@ -1,4 +1,4 @@
-# pylint: disable=unused-import
+# pylint: disable=unused-import, wrong-import-position
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.function.__init__.py is part of The RAMSTK Project
@@ -18,6 +18,5 @@ ATTRIBUTE_KEYS = {
 }
 
 # RAMSTK Local Imports
-from .listview import FunctionHardware as mtxFunctionHardware
 from .moduleview import ModuleView as mvwFunction
 from .workview import GeneralData as wvwFunctionGD

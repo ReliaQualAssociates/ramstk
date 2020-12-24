@@ -13,14 +13,8 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.failure_definition import lvwFailureDefinition
-from ramstk.views.gtk3.function import mtxFunctionHardware
-from ramstk.views.gtk3.hardware import (
-    mtxHardwareRequirement, mtxHardwareValidation
-)
-from ramstk.views.gtk3.requirement import mtxRequirementHardware
 from ramstk.views.gtk3.stakeholder import lvwStakeholders
 from ramstk.views.gtk3.usage_profile import lvwUsageProfile
-from ramstk.views.gtk3.validation import mtxValidationRequirement
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -51,16 +45,12 @@ class RAMSTKListBook(RAMSTKBaseBook):
                 lvwUsageProfile(configuration, logger),
                 lvwFailureDefinition(configuration, logger)
             ],
-            'function': [mtxFunctionHardware(configuration, logger)],
+            'function': [],
             'requirement': [
                 lvwStakeholders(configuration, logger),
-                mtxRequirementHardware(configuration, logger)
             ],
-            'hardware': [
-                mtxHardwareRequirement(configuration, logger),
-                mtxHardwareValidation(configuration, logger)
-            ],
-            'validation': [mtxValidationRequirement(configuration, logger)]
+            'hardware': [],
+            'validation': []
         }
 
         # Initialize private list attributes.

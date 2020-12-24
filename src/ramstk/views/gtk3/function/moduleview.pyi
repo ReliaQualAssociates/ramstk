@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -11,9 +11,6 @@ from ramstk.configuration import (
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog as RAMSTKMessageDialog
-)
 from ramstk.views.gtk3.widgets import RAMSTKModuleView as RAMSTKModuleView
 from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 
@@ -21,11 +18,17 @@ from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 from . import ATTRIBUTE_KEYS as ATTRIBUTE_KEYS
 
 class FunctionPanel(RAMSTKPanel):
+    _module: str = ...
     _dic_attribute_keys: Any = ...
     _dic_attribute_updater: Any = ...
+    _dic_error_messages: Any = ...
+    _dic_row_loader: Any = ...
     _title: Any = ...
 
     def __init__(self) -> None:
+        ...
+
+    def _on_insert(self, tree: treelib.Tree) -> None:
         ...
 
     def _on_module_switch(self, module: str = ...) -> None:
@@ -53,7 +56,10 @@ class ModuleView(RAMSTKModuleView):
                  logger: RAMSTKLogManager) -> None:
         ...
 
-    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+    _record_id: Any = ...
+    _parent_id: Any = ...
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         ...
 
     def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:

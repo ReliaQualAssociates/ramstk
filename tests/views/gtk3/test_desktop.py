@@ -11,8 +11,9 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import (RAMSTKUserConfiguration,
-    RAMSTK_CRITICALITY, RAMSTK_FAILURE_PROBABILITY)
+from ramstk.configuration import (
+    RAMSTK_FAILURE_PROBABILITY, RAMSTKUserConfiguration
+)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
 from ramstk.views.gtk3.books import (
@@ -35,7 +36,6 @@ class TestRAMSTKBook():
             test_toml_site_configuration.RAMSTK_AFFINITY_GROUPS
         test_toml_user_configuration.RAMSTK_CATEGORIES = \
             test_toml_site_configuration.RAMSTK_CATEGORIES
-        test_toml_user_configuration.RAMSTK_CRITICALITY = RAMSTK_CRITICALITY
         test_toml_user_configuration.RAMSTK_DAMAGE_MODELS = \
             test_toml_site_configuration.RAMSTK_DAMAGE_MODELS
         test_toml_user_configuration.RAMSTK_FAILURE_PROBABILITY = \
@@ -58,6 +58,8 @@ class TestRAMSTKBook():
             test_toml_site_configuration.RAMSTK_RPN_OCCURRENCE
         test_toml_user_configuration.RAMSTK_RPN_SEVERITY = \
             test_toml_site_configuration.RAMSTK_RPN_SEVERITY
+        test_toml_user_configuration.RAMSTK_SEVERITY = \
+            test_toml_site_configuration.RAMSTK_SEVERITY
         test_toml_user_configuration.RAMSTK_STAKEHOLDERS = \
             test_toml_site_configuration.RAMSTK_STAKEHOLDERS
         test_toml_user_configuration.RAMSTK_SUBCATEGORIES = \

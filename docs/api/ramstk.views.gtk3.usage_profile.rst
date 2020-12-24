@@ -1,21 +1,10 @@
-ramstk.views.gtk3.usage\_profile package
-========================================
+Usage Profile View Package
+==========================
 
-Submodules
-----------
-
-ramstk.views.gtk3.usage\_profile.listview module
-------------------------------------------------
+Usage Profile Listview Module
+-----------------------------
 
 .. automodule:: ramstk.views.gtk3.usage_profile.listview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.usage_profile
    :members:
    :undoc-members:
    :show-inheritance:

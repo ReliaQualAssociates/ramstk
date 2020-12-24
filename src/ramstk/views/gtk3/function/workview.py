@@ -37,7 +37,7 @@ class GeneralDataPanel(RAMSTKPanel):
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
             _("Function Code:"),
-            _("Function Name:"),
+            _("Function Description:"),
             _("Remarks:"),
             '',
         ]
@@ -201,28 +201,20 @@ class GeneralData(RAMSTKWorkView):
         """Initialize the Function Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-            :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
         """
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            super().do_request_update,
-            super().do_request_update_all,
-        ]
-        self._lst_icons = ['save', 'save-all']
-        self._lst_mnu_labels: List[str] = [
-            _("Save"),
-            _("Save All"),
+        self._lst_mnu_labels = [
+            _("Save Selected Function"),
+            _("Save All Functions"),
         ]
         self._lst_tooltips = [
-            _("Save changes to the currently selected Function."),
-            _("Save changes to all Functions."),
+            _("Save changes to the currently selected function."),
+            _("Save changes to all functions."),
         ]
 
         # Initialize private scalar attributes.
@@ -237,9 +229,18 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_function')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_function')
+        pub.subscribe(self._do_set_record_id, 'selected_function')
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the stakeholder input's record ID.
+
+        :param attributes: the attributes dict for the selected stakeholder
+            input.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['function_id']
+        self._parent_id = attributes['parent_id']
 
     def __make_ui(self) -> None:
         """Build the user interface for the Function General Data tab.

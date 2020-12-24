@@ -1,21 +1,10 @@
-ramstk.views.gtk3.hazard\_analysis package
-==========================================
+Hazard Analysis View Package
+============================
 
-Submodules
-----------
-
-ramstk.views.gtk3.hazard\_analysis.workview module
---------------------------------------------------
+Hazard Analysis Workview Module
+-------------------------------
 
 .. automodule:: ramstk.views.gtk3.hazard_analysis.workview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.hazard_analysis
    :members:
    :undoc-members:
    :show-inheritance:

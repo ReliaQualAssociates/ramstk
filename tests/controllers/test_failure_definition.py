@@ -16,6 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmFailureDefinition
 from ramstk.db.base import BaseDatabase
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFailureDefinition
 
 
@@ -28,7 +29,10 @@ class MockDao:
                 self._all_failure_definitions.pop(_idx)
 
     def do_insert(self, record):
-        self._all_failure_definitions.append(record)
+        if record.revision_id == 1:
+            self._all_failure_definitions.append(record)
+        else:
+            raise DataAccessError('An error occured with RAMSTK.')
 
     def _do_select_all_failure_definitions(self, table, value):
         _idx = 1
@@ -88,7 +92,7 @@ class TestCreateControllers():
                                 'request_get_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update,
-                                'request_update_failure_definition')
+                                'request_update_failure_definitions')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_failure_definitionss')
         assert pub.isSubscribed(DUT.do_get_tree,
@@ -97,10 +101,10 @@ class TestCreateControllers():
                                 'request_set_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'lvw_editing_failure_definition')
-        assert pub.isSubscribed(DUT._do_delete_failure_definition,
-                                'request_delete_failure_definition')
+        assert pub.isSubscribed(DUT._do_delete,
+                                'request_delete_failure_definitions')
         assert pub.isSubscribed(DUT._do_insert_failure_definition,
-                                'request_insert_failure_definition')
+                                'request_insert_failure_definitions')
 
 
 class TestSelectMethods():
@@ -167,14 +171,13 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_failure_definition(self, node_id, tree):
-        assert node_id == 1
+    def on_succeed_delete_failure_definition(self, tree):
         assert isinstance(tree, Tree)
         print(
             "\033[36m\nsucceed_delete_failure_definition topic was broadcast.")
 
     def on_fail_delete_failure_definition(self, error_message):
-        assert error_message == ('Attempted to delete non-existent failure '
+        assert error_message == ('_do_delete: Attempted to delete non-existent failure '
                                  'definition ID 10.')
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
@@ -188,7 +191,7 @@ class TestDeleteMethods():
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_failure_definition(1)
+        DUT._do_delete(1)
 
         with pytest.raises(AttributeError):
             __ = DUT.tree.get_node(1).data['failure_definition']
@@ -207,7 +210,7 @@ class TestDeleteMethods():
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_failure_definition(10)
+        DUT._do_delete(10)
 
         pub.unsubscribe(self.on_fail_delete_failure_definition,
                         'fail_delete_failure_definition')
@@ -329,6 +332,10 @@ class TestInsertMethods():
         print(
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
+    def on_fail_insert_failure_definition(self, error_message):
+        assert error_message == ('_do_insert_failure_definition: Attempting to add failure definition to non-existent revision 4.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
     @pytest.mark.unit
     def test_do_insert(self, mock_program_dao):
         """do_insert() should send the success message after successfully inserting a new failure definition."""
@@ -347,19 +354,33 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_failure_definition,
                         'succeed_insert_failure_definition')
 
+    @pytest.mark.unit
+    def test_do_insert_no_revision(self, mock_program_dao):
+        """do_insert() should send the success message after successfully inserting a new failure definition."""
+        pub.subscribe(self.on_fail_insert_failure_definition,
+                      'fail_insert_failure_definition')
+
+        DUT = dmFailureDefinition()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._revision_id = 4
+        DUT._do_insert_failure_definition()
+
+        pub.unsubscribe(self.on_fail_insert_failure_definition,
+                        'fail_insert_failure_definition')
+
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_failure_definition(self, node_id, tree):
-        assert node_id == 1
+    def on_succeed_update_failure_definition(self, tree):
         assert isinstance(tree, Tree)
         print(
             "\033[36m\nsucceed_update_failure_definition topic was broadcast")
 
     def on_fail_update_failure_definition(self, error_message):
         assert error_message == (
-            'No data package found for failure definition ID 100.')
+            'do_update: No data package found for failure definition ID 100.')
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     @pytest.mark.integration

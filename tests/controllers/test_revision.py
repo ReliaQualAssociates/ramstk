@@ -1,3 +1,4 @@
+# type: ignore
 # pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
@@ -13,69 +14,32 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from __mocks__ import (
-    MOCK_ENVIRONMENTS,
-    MOCK_MISSION_PHASES, MOCK_MISSIONS, MOCK_REVISIONS
-)
+from __mocks__ import MOCK_REVISIONS
 from ramstk.controllers import dmRevision
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import (
-    RAMSTKEnvironment,
-    RAMSTKMission, RAMSTKMissionPhase, RAMSTKRevision
-)
+from ramstk.models.programdb import RAMSTKRevision
 
 
 class MockDao:
     _all_revisions = []
-    _all_missions = []
-    _all_mission_phases = []
-    _all_environments = []
-
-    def _do_delete_revision(self, record):
-        for _idx, _revision in enumerate(self._all_revisions):
-            if _revision.revision_id == record.revision_id:
-                self._all_revisions.pop(_idx)
-
-    def _do_delete_mission(self, record):
-        for _idx, _record in enumerate(self._all_missions):
-            if _record.mission_id == record.mission_id:
-                self._all_missions.pop(_idx)
-
-    def _do_delete_mission_phases(self, record):
-        for _idx, _record in enumerate(self._all_mission_phases):
-            if _record.phase_id == record.phase_id:
-                self._all_mission_phases.pop(_idx)
-
-    def _do_delete_environments(self, record):
-        for _idx, _record in enumerate(self._all_environments):
-            if _record.environment_id == record.environment_id:
-                self._all_environments.pop(_idx)
 
     def do_delete(self, record):
-        if record == RAMSTKRevision:
-            try:
-                self._do_delete_revision(record)
-            except AttributeError:
-                raise DataAccessError('')
-        elif record == RAMSTKMission:
-            self._do_delete_mission(record)
-        elif record == RAMSTKMissionPhase:
-            self._do_delete_mission_phases(record)
-        elif record == RAMSTKEnvironment:
-            self._do_delete_environments(record)
+        try:
+            for _idx, _revision in enumerate(self._all_revisions):
+                if _revision.revision_id == record.revision_id:
+                    self._all_revisions.pop(_idx)
+        except AttributeError:
+            raise DataAccessError('')
 
     def do_insert(self, record):
-        if record == RAMSTKRevision:
+        if record.revision_id != 0:
             self._all_revisions.append(record)
-        elif record == RAMSTKMission:
-            self._all_missions.append(record)
-        elif record == RAMSTKMissionPhase:
-            self._all_mission_phases.append(record)
-        elif record == RAMSTKEnvironment:
-            self._all_environments.append(record)
+        elif record.revision_id == 0:
+            raise DataAccessError('An error occured with RAMSTK.')
 
-    def _do_select_all_revisions(self, table):
+    def do_select_all(self, table, key, value, order=None,
+                      _all=False):
         self._all_revisions = []
         for _key in MOCK_REVISIONS:
             _record = table()
@@ -85,73 +49,18 @@ class MockDao:
 
         return self._all_revisions
 
-    def _do_select_all_missions(self, table, value):
-        _idx = 1
-        self._all_missions = []
-        for _key in MOCK_MISSIONS:
-            _record = table()
-            _record.revision_id = value
-            _record.mission_id = _idx
-            _record.set_attributes(MOCK_MISSIONS[_key])
-            self._all_missions.append(_record)
-            _idx += 1
-
-        return self._all_missions
-
-    def _do_select_all_mission_phases(self, table, value):
-        _idx = 1
-        self._all_mission_phases = []
-        for _key in MOCK_MISSION_PHASES:
-            _record = table()
-            _record.mission_id = value
-            _record.phase_id = _idx
-            _record.set_attributes(MOCK_MISSION_PHASES[_key])
-            self._all_mission_phases.append(_record)
-            _idx += 1
-
-        return self._all_mission_phases
-
-    def _do_select_all_environments(self, table, value):
-        _idx = 1
-        self._all_environments = []
-        for _key in MOCK_ENVIRONMENTS:
-            _record = table()
-            _record.phase_id = value
-            _record.environment_id = _idx
-            _record.set_attributes(MOCK_ENVIRONMENTS[_key])
-            self._all_environments.append(_record)
-            _idx += 1
-
-        return self._all_environments
-
-    def do_select_all(self, table, key, value, order=None,
-                      _all=False):
-        if table == RAMSTKRevision:
-            return self._do_select_all_revisions(table)
-        elif table == RAMSTKMission:
-            return self._do_select_all_missions(table, value)
-        elif table == RAMSTKMissionPhase:
-            for _mission in self._all_missions:
-                return self._do_select_all_mission_phases(
-                    table, _mission.mission_id)
-        elif table == RAMSTKEnvironment:
-            for _phase in self._all_mission_phases:
-                return self._do_select_all_environments(table, _phase.phase_id)
-
     def do_update(self, record):
         for _key in MOCK_REVISIONS:
             if _key == record.revision_id:
-                MOCK_REVISIONS[_key]['name'] = record.name
+                MOCK_REVISIONS[_key]['name'] = str(record.name)
+                MOCK_REVISIONS[_key]['cost'] = float(record.cost)
 
     def get_last_id(self, table, id_column):
         if table == 'ramstk_revision':
-            return max(MOCK_REVISIONS.keys())
-        elif table == 'ramstk_environment':
-            return max(MOCK_ENVIRONMENTS.keys())
-        elif table == 'ramstk_mission':
-            return max(MOCK_MISSIONS.keys())
-        elif table == 'ramstk_mission_phase':
-            return max(MOCK_MISSION_PHASES.keys())
+            _last_id = max(MOCK_REVISIONS.keys())
+            if _last_id > 3:
+                _last_id = -1
+            return _last_id
 
 
 @pytest.fixture
@@ -182,7 +91,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_revision_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_revision_attributes')
-        assert pub.isSubscribed(DUT._do_delete_revision,
+        assert pub.isSubscribed(DUT._do_delete,
                                 'request_delete_revision')
         assert pub.isSubscribed(DUT._do_insert_revision,
                                 'request_insert_revision')
@@ -214,6 +123,17 @@ class TestSelectMethods():
         assert _revision.name == 'Original Revision'
 
     @pytest.mark.unit
+    def test_on_select_revision(self, mock_program_dao):
+        """_on_select_revision() should set the _revision_id attribute."""
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+
+        pub.sendMessage('selected_revision', attributes={'revision_id': 5})
+
+        assert DUT._revision_id == 5
+
+    @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
         """do_select() should raise a KeyError when an unknown table name is requested."""
         DUT = dmRevision()
@@ -235,14 +155,13 @@ class TestSelectMethods():
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_revision(self, node_id, tree):
-        assert node_id == 2
+    def on_succeed_delete_revision(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_revision topic was broadcast.")
 
     def on_fail_delete_revision(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent revision ID 300.')
+            '_do_delete: Attempted to delete non-existent revision ID 300.')
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
     @pytest.mark.unit
@@ -254,7 +173,7 @@ class TestDeleteMethods():
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-        DUT._do_delete_revision(DUT.last_id)
+        DUT._do_delete(DUT.last_id)
 
         assert DUT.last_id == 1
 
@@ -337,6 +256,10 @@ class TestInsertMethods():
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_revision topic was broadcast")
 
+    def on_fail_insert_revision(self, error_message):
+        assert error_message == ('An error occured with RAMSTK.')
+        print("\033[35m\nfail_insert_revision topic was broadcast.")
+
     @pytest.mark.unit
     def test_do_insert(self, mock_program_dao):
         """_do_insert_revision() should send the success message after
@@ -357,22 +280,37 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_revision,
                         'succeed_insert_revision')
 
+    @pytest.mark.unit
+    def test_do_insert_database_error(self, mock_program_dao):
+        """_do_insert_revision() should send the success message after
+        successfully inserting a new revision."""
+        pub.subscribe(self.on_fail_insert_revision,
+                      'fail_insert_revision')
+
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+        DUT._do_insert_revision()
+
+        pub.unsubscribe(self.on_fail_insert_revision,
+                        'fail_insert_revision')
+
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_revision(self, node_id):
-        assert node_id == 1
+    def on_succeed_update_revision(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_revision topic was broadcast")
 
     def on_fail_update_revision(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent revision with revision ID 100.')
+            'do_update: Attempted to save non-existent revision with revision ID 100.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     def on_fail_update_revision_no_data_package(self, error_message):
         assert error_message == (
-            'No data package found for revision ID 1.')
+            'do_update: No data package found for revision ID 1.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     @pytest.mark.integration
@@ -410,7 +348,7 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_revision, 'fail_update_revision')
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_wrong_data_type(self, mock_program_dao):
         """ do_update() should raise the 'fail_update_validation' message when passed a Validation ID that doesn't exist in the tree. """
         pub.subscribe(self.on_fail_update_revision_no_data_package,
                       'fail_update_revision')
@@ -418,10 +356,25 @@ class TestUpdateMethods():
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-
-        DUT.tree.get_node(1).data.pop('revision')
+        DUT.tree.get_node(1).data['revision'].cost = None
 
         DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_revision_no_data_package,
+                        'fail_update_revision')
+
+    @pytest.mark.unit
+    def test_do_update_root_node(self, mock_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Function ID that has no data package."""
+        pub.subscribe(self.on_fail_update_revision_no_data_package,
+                      'fail_update_revision')
+
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+
+        DUT.do_update(0)
 
         pub.unsubscribe(self.on_fail_update_revision_no_data_package,
                         'fail_update_revision')
