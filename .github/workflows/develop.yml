@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build_documentation:
-    name: Update API documentation
+    name: Update RAMSTK documentation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
