@@ -7,6 +7,7 @@
 """Requirement Package Data Model."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict
 
 # Third Party Imports
@@ -60,8 +61,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_create_all_codes,
                       'request_create_all_requirement_codes')
 
-        pub.subscribe(self._do_delete_requirement,
-                      'request_delete_requirement')
+        pub.subscribe(self._do_delete, 'request_delete_requirement')
         pub.subscribe(self._do_insert_requirement,
                       'request_insert_requirement')
 
@@ -78,15 +78,21 @@ class DataManager(RAMSTKDataManager):
             _requirement.create_code(prefix=prefix)
 
             pub.sendMessage('succeed_create_code')
-            pub.sendMessage('succeed_create_requirement_code',
-                            requirement_code=_requirement.get_attributes()
-                            ['requirement_code'])
+            pub.sendMessage(
+                'succeed_create_requirement_code',
+                requirement_code=_requirement.get_attributes()
+                ['requirement_code'],
+            )
         except (TypeError, AttributeError):
             if node_id != 0:
-                pub.sendMessage('fail_create_requirement_code',
-                                error_message=('No data package found for '
-                                               'requirement ID {0:s}.').format(
-                                                   str(node_id)))
+                _method_name: str = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
+                pub.sendMessage(
+                    'fail_create_requirement_code',
+                    error_message=('No data package found for '
+                                   'requirement ID {0:s}.').format(
+                                       str(node_id)),
+                )
 
     def do_get_tree(self) -> None:
         """Retrieve the requirement treelib Tree.
@@ -94,7 +100,10 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_requirement_tree', tree=self.tree)
+        pub.sendMessage(
+            'succeed_get_requirement_tree',
+            tree=self.tree,
+        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Requirement data from the RAMSTK Program database.
@@ -122,7 +131,10 @@ class DataManager(RAMSTKDataManager):
 
         self.last_id = max(self.tree.nodes.keys())
 
-        pub.sendMessage('succeed_retrieve_requirements', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_requirements',
+            tree=self.tree,
+        )
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
@@ -134,20 +146,58 @@ class DataManager(RAMSTKDataManager):
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['requirement'])
 
-            pub.sendMessage('succeed_update_requirement', tree=self.tree)
+            pub.sendMessage(
+                'succeed_update_requirement',
+                tree=self.tree,
+            )
         except AttributeError:
-            pub.sendMessage('fail_update_requirement',
-                            error_message=('Attempted to save non-existent '
-                                           'requirement with requirement ID '
-                                           '{0:s}.').format(str(node_id)))
-        except (KeyError, TypeError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Attempted to save non-existent requirement with '
+                'requirement ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_requirement',
+                error_message=_error_msg,
+            )
+        except KeyError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = (
+                '{1}: No data package found for requirement ID {0}.').format(
+                    str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_requirement',
+                error_message=_error_msg,
+            )
+        except TypeError:
             if node_id != 0:
-                pub.sendMessage('fail_update_requirement',
-                                error_message=('No data package found for '
-                                               'requirement ID {0:s}.').format(
-                                                   str(node_id)))
+                _method_name: str = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
+                _error_msg = ('{1}: The value for one or more attributes for '
+                              'requirement ID {0} was the wrong type.').format(
+                                  str(node_id), _method_name)
+                pub.sendMessage(
+                    'do_log_debug',
+                    logger_name='DEBUG',
+                    message=_error_msg,
+                )
+                pub.sendMessage(
+                    'fail_update_requirement',
+                    error_message=_error_msg,
+                )
 
-    def _do_delete_requirement(self, node_id: int) -> None:
+    def _do_delete(self, node_id: int) -> None:
         """Remove a requirement.
 
         :param node_id: the node (requirement) ID to be removed from the
@@ -161,13 +211,25 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage('succeed_delete_requirement',
-                            tree=self.tree)
-        except DataAccessError:
-            _error_msg = ("Attempted to delete non-existent requirement ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_requirement',
-                            error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_delete_requirement',
+                tree=self.tree,
+            )
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Attempted to delete non-existent requirement ID {'
+                '0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_delete_requirement',
+                error_message=_error_msg,
+            )
 
     def _do_insert_requirement(self, parent_id: int = 0) -> None:
         """Add a new requirement.
@@ -192,12 +254,34 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'requirement': _requirement})
 
-            pub.sendMessage('succeed_insert_requirement',
-                            node_id=self.last_id,
-                            tree=self.tree,)
+            pub.sendMessage(
+                'succeed_insert_requirement',
+                node_id=self.last_id,
+                tree=self.tree,
+            )
         except NodeIDAbsentError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Attempted to insert child requirement under '
+                'non-existent requirement ID {0}.').format(
+                    str(parent_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
             pub.sendMessage(
                 "fail_insert_requirement",
-                error_message=("Attempting to add child requirement "
-                               "to non-existent requirement "
-                               "{0:d}.").format(parent_id))
+                error_message=_error_msg,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_requirement",
+                error_message=_error.msg,
+            )

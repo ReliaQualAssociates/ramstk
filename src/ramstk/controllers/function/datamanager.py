@@ -214,9 +214,20 @@ class DataManager(RAMSTKDataManager):
                 node_id=self.last_id,
                 tree=self.tree,
             )
+        except NodeIDAbsentError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = ('{1}: Attempted to insert child function under '
+                               'non-existent function ID {0}.').format(
+                                   str(parent_id), _method_name)
             pub.sendMessage(
-                'insert_function_matrix_row',
-                node_id=self.last_id,
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_insert_function",
+                error_message=_error_msg,
             )
         except DataAccessError as _error:
             pub.sendMessage(

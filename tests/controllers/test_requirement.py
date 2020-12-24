@@ -35,7 +35,10 @@ class MockDao:
                 raise DataAccessError('')
 
     def do_insert(self, record):
-        self._all_requirements.append(record)
+        if record.parent_id == 30:
+            raise DataAccessError('An error occurred with RAMSTK.')
+        else:
+            self._all_requirements.append(record)
 
     def do_select_all(self,
                       table,
@@ -65,22 +68,19 @@ class MockDao:
                     MOCK_REQUIREMENTS[_key]['owner'] = record.owner
                     MOCK_REQUIREMENTS[_key]['page_number'] = record.page_number
                     MOCK_REQUIREMENTS[_key]['parent_id'] = record.parent_id
-                    MOCK_REQUIREMENTS[_key]['priority'] = record.priority
+                    MOCK_REQUIREMENTS[_key]['priority'] = int(record.priority)
                     MOCK_REQUIREMENTS[_key]['requirement_code'] = \
                         record.requirement_code
                     MOCK_REQUIREMENTS[_key]['specification'] = \
                         record.specification
                     MOCK_REQUIREMENTS[_key]['requirement_type'] = \
                         record.requirement_type
-                    MOCK_REQUIREMENTS[_key]['validated'] = record.validate
+                    MOCK_REQUIREMENTS[_key]['validated'] = record.validated
                     MOCK_REQUIREMENTS[_key][
                         'validated_date'] = record.validated_date
 
     def get_last_id(self, table, id_column):
-        if table == 'ramstk_requirement':
-            return max(MOCK_REQUIREMENTS.keys())
-        elif table == 'ramstk_matrix':
-            return 52
+        return max(MOCK_REQUIREMENTS.keys())
 
 
 @pytest.fixture
@@ -115,36 +115,10 @@ class TestCreateControllers():
                                 'wvw_editing_requirement')
         assert pub.isSubscribed(DUT.do_create_code,
                                 'request_create_requirement_code')
-        assert pub.isSubscribed(DUT._do_delete_requirement,
+        assert pub.isSubscribed(DUT._do_delete,
                                 'request_delete_requirement')
         assert pub.isSubscribed(DUT._do_insert_requirement,
                                 'request_insert_requirement')
-
-    @pytest.mark.skip
-    def test_matrix_manager_create(self):
-        """__init__() should create an instance of the requirement matrix manager."""
-        DUT = mmRequirement()
-
-        assert isinstance(DUT, mmRequirement)
-        assert isinstance(DUT._column_tables, dict)
-        assert isinstance(DUT._col_tree, dict)
-        assert isinstance(DUT._row_tree, Tree)
-        assert DUT.dic_matrices == {}
-        assert DUT.n_row == 1
-        assert DUT.n_col == 1
-        assert pub.isSubscribed(DUT.do_create_rows,
-                                'succeed_retrieve_requirements')
-        assert pub.isSubscribed(DUT._do_create_requirement_matrix_columns,
-                                'succeed_retrieve_hardware')
-        assert pub.isSubscribed(DUT._on_delete_requirement,
-                                'succeed_delete_requirement')
-        # assert pub.isSubscribed(DUT._on_delete_hardware, 'succeed_delete_hardware')
-        assert pub.isSubscribed(DUT._on_insert_requirement,
-                                'succeed_insert_requirement')
-        # assert pub.isSubscribed(DUT._on_insert_hardware,
-        #              'succeed_insert_hardware')
-        #assert pub.isSubscribed(DUT.do_update,
-        #                        'request_update_requirement_matrix')
 
 
 class TestSelectMethods():
@@ -152,11 +126,6 @@ class TestSelectMethods():
     def on_succeed_retrieve_requirements(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_retrieve_requirements topic was broadcast.")
-
-    def on_request_select_matrix(self, matrix_type):
-        assert matrix_type == 'rqrmnt_hrdwr'
-        print("\033[36m\nrequest_select_matrix topic was broadcast for the "
-              "rqrmnt_hrdwr matrix.")
 
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
@@ -207,30 +176,6 @@ class TestSelectMethods():
 
         assert DUT.do_select(100, table='requirement') is None
 
-    @pytest.mark.skip
-    def test_do_create_matrix(self, mock_program_dao):
-        """_do_create() should create an instance of the requirement matrix manager."""
-        pub.subscribe(self.on_request_select_matrix, 'request_select_matrix')
-
-        DUT = mmRequirement()
-
-        DATAMGR = dmRequirement()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        pub.unsubAll('request_select_matrix')
-
-        assert DUT._col_tree['rqrmnt_hrdwr'] == MOCK_HRDWR_TREE
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1') == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1') == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS2') == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS3') == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4') == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1:A1') == 0
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS1:A2') == 0
-
 
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
@@ -240,8 +185,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_requirement(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent requirement ID '
-            '300.')
+            '_do_delete: Attempted to delete non-existent requirement ID 300.')
         print("\033[35m\nfail_delete_requirement topic was broadcast.")
 
     @pytest.mark.unit
@@ -253,7 +197,7 @@ class TestDeleteMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_requirement(DUT.last_id)
+        DUT._do_delete(DUT.last_id)
 
         assert DUT.last_id == 1
 
@@ -269,49 +213,10 @@ class TestDeleteMethods():
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_requirement(300)
+        DUT._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_requirement,
                         'fail_delete_requirement')
-
-    @pytest.mark.skip
-    def test_do_delete_matrix_hardware_column(self, mock_program_dao):
-        """do_delete_column() should remove the appropriate column from the requested requirement matrix."""
-        DUT = mmRequirement()
-
-        DATAMGR = dmRequirement()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1') == 0
-
-        pub.sendMessage('succeed_delete_hardware', node_id=1, tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 1, 'S1')
-
-    @pytest.mark.skip
-    def test_do_delete_matrix_row(self, mock_program_dao):
-        """do_delete_row() should remove the appropriate row from the requirement matrices."""
-        DUT = mmRequirement()
-
-        DATAMGR = dmRequirement()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4') == 0
-
-        DATAMGR.tree.remove_node(1)
-        pub.sendMessage('succeed_delete_requirement',
-                        node_id=1,
-                        tree=DATAMGR.tree)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS4')
 
 
 class TestGetterSetter():
@@ -445,10 +350,13 @@ class TestInsertMethods():
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_requirement topic was broadcast")
 
-    def on_fail_insert_requirement(self, error_message):
-        assert error_message == ('Attempting to add child requirement to '
-                                 'non-existent requirement 32.')
+    def on_fail_insert_requirement_no_parent(self, error_message):
+        assert error_message == ('_do_insert_requirement: Attempted to insert child requirement under non-existent requirement ID 32.')
         print("\033[35m\nfail_insert_requirement topic was broadcast")
+
+    def on_fail_insert_requirement_db_error(self, error_message):
+        assert error_message == ('An error occurred with RAMSTK.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
     def test_do_insert_sibling_requirement(self, mock_program_dao):
@@ -489,7 +397,7 @@ class TestInsertMethods():
     def test_do_insert_child_requirement_non_existent_id(
             self, mock_program_dao):
         """do_insert() should send the fail message attempting to add a child to a non-existent requirement."""
-        pub.subscribe(self.on_fail_insert_requirement,
+        pub.subscribe(self.on_fail_insert_requirement_no_parent,
                       'fail_insert_requirement')
 
         DUT = dmRequirement()
@@ -497,54 +405,23 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_requirement(parent_id=32)
 
-    @pytest.mark.skip
-    def test_do_insert_matrix_hardware_column(self, mock_program_dao):
-        """do_insert_column() should add a column to the right of the requested validation matrix."""
-        DUT = mmRequirement()
+        pub.unsubscribe(self.on_fail_insert_requirement_no_parent,
+                        'fail_insert_requirement')
 
-        DATAMGR = dmRequirement()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+    @pytest.mark.unit
+    def test_do_insert_requriement_database_error(self, mock_program_dao):
+        """_do_insert_function() should send the fail message if attempting to
+        add a function to a non-existent parent ID."""
+        pub.subscribe(self.on_fail_insert_requirement_db_error,
+                      'fail_insert_requirement')
 
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
+        DUT = dmRequirement()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_insert_requirement(parent_id=30)
 
-        with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS9')
-
-        MOCK_HRDWR_TREE.create_node(tag='S1:SS9',
-                                    identifier=9,
-                                    parent=0,
-                                    data=None)
-
-        pub.sendMessage('succeed_insert_hardware', node_id=9,
-                        tree=MOCK_HRDWR_TREE)
-
-        assert DUT.do_select('rqrmnt_hrdwr', 1, 'S1:SS9') == 0
-
-
-    @pytest.mark.skip
-    def test_do_insert_matrix_row(self, mock_program_dao):
-        """do_insert_row() should add a row to the end of each hardware matrix."""
-        DUT = mmRequirement()
-
-        DATAMGR = dmRequirement()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('succeed_retrieve_hardware', tree=MOCK_HRDWR_TREE)
-
-        with pytest.raises(KeyError):
-            DUT.do_select('rqrmnt_hrdwr', 4, 'S1:SS4')
-
-        DATAMGR.tree.create_node(tag='Test Insert Requirement',
-                                 identifier=4,
-                                 parent=1,
-                                 data=None)
-        pub.sendMessage('succeed_insert_requirement',
-                        node_id=4,
-                        tree=DATAMGR.tree)
-
-        assert DUT.do_select('rqrmnt_hrdwr', 4, 'S1:SS4') == 0
+        pub.unsubscribe(self.on_fail_insert_requirement_db_error,
+                        'fail_insert_requirement')
 
 
 class TestUpdateMethods():
@@ -555,19 +432,21 @@ class TestUpdateMethods():
 
     def on_fail_update_requirement_no_id(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent requirement with requirement ID 100.'
+            'do_update: Attempted to save non-existent requirement with requirement ID 100.'
         )
         print("\033[35m\nfail_update_requirement topic was broadcast")
 
     def on_fail_update_requirement_no_package(self, error_message):
         assert error_message == (
-            'No data package found for requirement ID 1.'
+            'do_update: No data package found for requirement ID 1.'
         )
         print("\033[35m\nfail_update_requirement topic was broadcast")
 
-    def on_succeed_update_matrix(self):
-        assert True
-        print("\033[36m\nsucceed_update_matrix topic was broadcast")
+    def on_fail_update_requirement_wrong_data_type(self, error_message):
+        assert error_message == (
+            'do_update: The value for one or more attributes for requirement ID 1 was the wrong type.'
+        )
+        print("\033[35m\nfail_update_requirement topic was broadcast")
 
     @pytest.mark.unit
     def test_do_update_data_manager(self, mock_program_dao):
@@ -620,27 +499,31 @@ class TestUpdateMethods():
         pub.unsubscribe(self.on_fail_update_requirement_no_package,
                         'fail_update_requirement')
 
-    @pytest.mark.skip
-    def test_do_update_matrix_manager(self, test_program_dao):
-        """do_update() should send the success message when the matrix is updated successfully."""
-        pub.subscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
+    @pytest.mark.unit
+    def test_do_update_wrong_data_type(self, mock_program_dao):
+        """ do_update() should return a non-zero error code when passed a Requirement ID that doesn't exist. """
+        pub.subscribe(self.on_fail_update_requirement_wrong_data_type,
+                      'fail_update_requirement')
 
-        DUT = mmRequirement()
+        DUT = dmRequirement()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        _requirement = DUT.do_select(1, table='requirement')
+        _requirement.priority = {1: 2}
 
-        DATAMGR = dmRequirement()
-        DATAMGR.do_connect(test_program_dao)
+        DUT.do_update(1)
 
-        def on_succeed_retrieve_hardware(tree):
-            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS1'] = 1
-            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS2'] = 2
-            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS3'] = 2
-            DUT.dic_matrices['rqrmnt_hrdwr'].loc[1, 'SS1:SS4'] = 1
+        pub.unsubscribe(self.on_fail_update_requirement_wrong_data_type,
+                        'fail_update_requirement')
 
-        pub.subscribe(on_succeed_retrieve_hardware,
-                      'succeed_retrieve_hardware')
+    @pytest.mark.unit
+    def test_do_update_wrong_data_type_root_node(self, mock_program_dao):
+        """ do_update() should return a non-zero error code when passed
+        a Requirement ID that doesn't exist. """
+        DUT = dmRequirement()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        _requirement = DUT.do_select(1, table='requirement')
+        _requirement.priority = {1: 2}
 
-        pub.sendMessage('selected_revision', attributes={'revision_id': 1})
-        pub.sendMessage('do_request_update_matrix',
-                        matrix_type='rqrmnt_hrdwr')
-
-        pub.unsubscribe(self.on_succeed_update_matrix, 'succeed_update_matrix')
+        DUT.do_update(0)
