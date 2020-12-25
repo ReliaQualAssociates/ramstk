@@ -26,8 +26,18 @@ class DataManager(RAMSTKDataManager):
     This class manages the requirement data from the RAMSTKRequirement
     and RAMSTKStakeholder data models.
     """
+    # Define private dictionary class attributes.
 
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
     _tag = 'requirement'
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Requirement data manager instance."""
@@ -124,7 +134,7 @@ class DataManager(RAMSTKDataManager):
                 order=RAMSTKRequirement.requirement_id):
             _data_package = {'requirement': _requirement}
 
-            self.tree.create_node(tag=_requirement.requirement_code,
+            self.tree.create_node(tag='requirement',
                                   identifier=_requirement.requirement_id,
                                   parent=_requirement.parent_id,
                                   data=_data_package)
@@ -249,7 +259,7 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_insert(_requirement)
 
             self.last_id = _requirement.requirement_id
-            self.tree.create_node(tag=_requirement.requirement_code,
+            self.tree.create_node(tag='requirement',
                                   identifier=self.last_id,
                                   parent=parent_id,
                                   data={'requirement': _requirement})
