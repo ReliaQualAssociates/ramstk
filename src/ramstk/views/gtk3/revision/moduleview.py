@@ -33,6 +33,7 @@ class RevisionPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module = 'revisions'
 
     # Define public dictionary class attributes.
 
@@ -220,7 +221,8 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
+        super().make_ui()
+        self._pnlPanel.do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, 'selected_revision')
@@ -269,11 +271,3 @@ class ModuleView(RAMSTKModuleView):
         """
         _data = tree.get_node(node_id).data['revision'].get_attributes()
         self._pnlPanel.on_insert(_data)
-
-    def __make_ui(self) -> None:
-        """Build the user interface for the module view.
-
-        :return: None
-        """
-        super().make_ui()
-        self._pnlPanel.do_set_callbacks()

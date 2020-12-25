@@ -10,7 +10,6 @@
 from typing import Any, Dict
 
 # Third Party Imports
-import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -69,14 +68,6 @@ class FunctionPanel(RAMSTKPanel):
             'total_part_count': [None, 'edited', 20],
             'type': [None, 'edited', 21],
         }
-        self._dic_error_messages = {
-            'load_row':
-            ("{3}: An error occurred when loading function {0}.  "
-             "This might indicate it was missing it's data package, some "
-             "of the data in the package was missing, or some of the data "
-             "was the wrong type.  Row data was: {1}.  Error was: {2}."
-             ""),
-        }
         self._dic_row_loader = {
             'function': super()._do_load_treerow,
         }
@@ -103,18 +94,6 @@ class FunctionPanel(RAMSTKPanel):
         pub.subscribe(super().on_delete, 'succeed_delete_function')
 
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
-
-    def _on_insert(self, tree: treelib.Tree) -> None:
-        """Wrap the do_load_panel() method when an element is inserted.
-
-        The do_set_cursor_active() method responds to the same message,
-        but one less argument in it's call.  This results in a PyPubSub
-        error and is the reason this wrapper method is needed.
-
-        :param tree: the module's treelib Tree().
-        :return: None
-        """
-        super().do_load_panel(tree)
 
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).
@@ -262,14 +241,3 @@ class ModuleView(RAMSTKModuleView):
         """
         self._record_id = attributes['function_id']
         self._parent_id = attributes['parent_id']
-
-    def _on_insert_function(self, node_id: int, tree: treelib.Tree) -> None:
-        """Add row to module view for newly added function.
-
-        :param node_id: the ID of the newly added function.
-        :param tree: the treelib Tree() containing the work stream module's
-            data.
-        :return: None
-        """
-        _data = tree.get_node(node_id).data['function'].get_attributes()
-        self._pnlPanel.on_insert(_data)
