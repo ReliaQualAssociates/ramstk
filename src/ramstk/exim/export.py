@@ -39,7 +39,7 @@ class Export:
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_data, 'succeed_get_functions_tree')
-        pub.subscribe(self._do_load_data, 'succeed_get_requirement_tree')
+        pub.subscribe(self._do_load_data, 'succeed_get_requirements_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_hardware_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_validation_tree')
         pub.subscribe(self._do_load_output, 'request_load_output')

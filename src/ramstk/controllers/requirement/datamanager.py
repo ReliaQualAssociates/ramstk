@@ -31,7 +31,7 @@ class DataManager(RAMSTKDataManager):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag = 'requirement'
+    _tag = 'requirements'
 
     # Define public dictionary class attributes.
 
@@ -66,7 +66,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_requirement')
-        pub.subscribe(self.do_get_tree, 'request_get_requirement_tree')
+        pub.subscribe(self.do_get_tree, 'request_get_requirements_tree')
         pub.subscribe(self.do_create_code, 'request_create_requirement_code')
         pub.subscribe(self.do_create_all_codes,
                       'request_create_all_requirement_codes')
@@ -111,14 +111,14 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage(
-            'succeed_get_requirement_tree',
+            'succeed_get_requirements_tree',
             tree=self.tree,
         )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Requirement data from the RAMSTK Program database.
 
-        :param attributes: the attributes for the selected Requirement.
+        :param attributes: the attributes for the selected Revision.
         :return: None
         :rtype: None
         """
@@ -216,6 +216,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            # Delete the children (if any), then the parent node that was
+            # passed.
+            for _child in self.tree.children(node_id):
+                super().do_delete(node_id, 'requirement')
             super().do_delete(node_id, 'requirement')
 
             self.tree.remove_node(node_id)

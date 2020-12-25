@@ -98,7 +98,7 @@ class TestCreateControllers():
         assert isinstance(DUT, dmRequirement)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'requirement'
+        assert DUT._tag == 'requirements'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
@@ -108,7 +108,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_requirement_attributes')
         assert pub.isSubscribed(DUT.do_get_tree,
-                                'request_get_requirement_tree')
+                                'request_get_requirements_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_requirement_attributes')
         assert pub.isSubscribed(DUT.do_set_attributes,
@@ -286,7 +286,7 @@ class TestGetterSetter():
     def test_on_get_tree(self, mock_program_dao):
         """on_get_tree() should return the requirement treelib Tree."""
         pub.subscribe(self.on_succeed_get_requirement_tree,
-                      'succeed_get_requirement_tree')
+                      'succeed_get_requirements_tree')
 
         DUT = dmRequirement()
         DUT.do_connect(mock_program_dao)
@@ -294,7 +294,7 @@ class TestGetterSetter():
         DUT.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_requirement_tree,
-                        'succeed_get_requirement_tree')
+                        'succeed_get_requirements_tree')
 
     @pytest.mark.unit
     def test_do_create_requirement_code(self, mock_program_dao):
