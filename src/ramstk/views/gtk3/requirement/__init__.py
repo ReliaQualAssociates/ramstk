@@ -21,7 +21,6 @@ ATTRIBUTE_KEYS = {
 }
 
 # RAMSTK Local Imports
-from .listview import RequirementHardware as mtxRequirementHardware
 from .moduleview import ModuleView as mvwRequirement
 from .workview import GeneralData as wvwRequirementGD
 from .workview import RequirementAnalysis as wvwRequirementAnalysis
