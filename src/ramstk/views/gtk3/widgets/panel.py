@@ -666,9 +666,12 @@ class RAMSTKPanel(RAMSTKFrame):
         """
         [[_key, _value]] = package.items()
 
-        (_function,
-         _signal) = self._dic_attribute_updater.get(_key)  # type: ignore
-        _function(_value, _signal)  # type: ignore
+        try:
+            (_function, _signal,
+             __) = self._dic_attribute_updater.get(_key)  # type: ignore
+            _function(_value, _signal)  # type: ignore
+        except TypeError:
+            _error_msg = ("")
 
     def on_insert(self, data: Any) -> None:
         """Add row to module view for newly added work stream element.

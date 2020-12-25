@@ -8,16 +8,14 @@
 """The RAMSTK GTK3 revision package."""
 
 ATTRIBUTE_KEYS = {
-    0: ['requirement_code', 'string'],
-    1: ['description', 'string'],
-    2: ['requirement_type', 'integer'],
-    4: ['specification', 'string'],
-    5: ['page_number', 'string'],
-    6: ['figure_number', 'string'],
-    7: ['priority', 'integer'],
-    8: ['owner', 'integer'],
-    9: ['requirement_code', 'string'],
-    10: ['validated_date', 'date'],
+    2: ['derived', 'integer'],
+    3: ['description', 'string'],
+    4: ['figure_number', 'string'],
+    5: ['owner', 'integer'],
+    6: ['page_number', 'string'],
+    8: ['priority', 'integer'],
+    10: ['specification', 'string'],
+    13: ['validated_date', 'date'],
 }
 
 # RAMSTK Local Imports

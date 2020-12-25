@@ -61,6 +61,7 @@ class DataManager(RAMSTKDataManager):
                       'request_get_requirement_attributes')
         pub.subscribe(super().do_set_attributes,
                       'request_set_requirement_attributes')
+        pub.subscribe(super().do_set_attributes, 'mvw_editing_requirement')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_requirement')
         pub.subscribe(super().do_update_all, 'request_update_all_requirements')
 

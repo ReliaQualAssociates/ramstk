@@ -8,7 +8,7 @@
 """RAMSTK Requirement GTK3 module view."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -34,6 +34,7 @@ class RequirementPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module = 'requirements'
 
     # Define public dictionary class attributes.
 
@@ -96,11 +97,14 @@ class RequirementPanel(RAMSTKPanel):
             'q_verifiable_4': [None, 'edited', 46],
             'q_verifiable_5': [None, 'edited', 47],
         }
+        self._dic_row_loader = {
+            'requirement': self.__do_load_requirement,
+        }
 
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._title = _("Requirement BoM")
+        self._title = _("Requirements")
 
         # Initialize public dictionary class attributes.
 
@@ -110,22 +114,15 @@ class RequirementPanel(RAMSTKPanel):
 
         super().do_make_panel_treeview()
         self.__do_set_properties()
+        super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_tree, 'succeed_retrieve_requirements')
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_requirements')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_requirement')
         pub.subscribe(super().do_refresh_tree, 'wvw_editing_requirement')
         pub.subscribe(super().on_delete, 'succeed_delete_requirement')
 
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
-
-    def do_set_callbacks(self) -> None:
-        """Set callbacks for the requirement module view.
-
-        :return: None
-        """
-        super().do_set_callbacks()
-        super().do_set_cell_callbacks('mvw_editing_requirement',
-                                      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).
@@ -164,6 +161,62 @@ class RequirementPanel(RAMSTKPanel):
 
             pub.sendMessage('selected_requirement', attributes=_attributes)
             pub.sendMessage('request_set_title', title=_title)
+
+    def __do_load_requirement(self, node: treelib.Node,
+                              row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a requirement into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the mode to load into the requirement
+            tree.
+        :return: _new_row; the row that was just populated with requirement
+            data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.tvwTreeView.get_model()
+
+        _attributes = [
+            _entity.revision_id, _entity.requirement_id, _entity.derived,
+            _entity.description, _entity.figure_number, _entity.owner,
+            _entity.page_number, _entity.parent_id, _entity.priority,
+            _entity.requirement_code, _entity.specification,
+            _entity.requirement_type, _entity.validated,
+            str(_entity.validated_date), _entity.q_clarity_0,
+            _entity.q_clarity_1, _entity.q_clarity_2, _entity.q_clarity_3,
+            _entity.q_clarity_4, _entity.q_clarity_5, _entity.q_clarity_6,
+            _entity.q_clarity_7, _entity.q_clarity_8, _entity.q_complete_0,
+            _entity.q_complete_1, _entity.q_complete_2, _entity.q_complete_3,
+            _entity.q_complete_4, _entity.q_complete_5, _entity.q_complete_6,
+            _entity.q_complete_7, _entity.q_complete_8, _entity.q_complete_9,
+            _entity.q_consistent_0, _entity.q_consistent_1,
+            _entity.q_consistent_2, _entity.q_consistent_3,
+            _entity.q_consistent_4, _entity.q_consistent_5,
+            _entity.q_consistent_6, _entity.q_consistent_7,
+            _entity.q_consistent_8, _entity.q_verifiable_0,
+            _entity.q_verifiable_1, _entity.q_verifiable_2,
+            _entity.q_verifiable_3, _entity.q_verifiable_4,
+            _entity.q_verifiable_5
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _new_row = None
+            _message = _(
+                "An error occurred when loading mission {0:s} in the usage "
+                "profile.  This might indicate it was missing it's data "
+                "package, some of the data in the package was missing, or "
+                "some of the data was the wrong type.  Row data was: "
+                "{1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
+
+        return _new_row
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.
@@ -250,12 +303,11 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui()
-        self._pnlPanel.do_set_callbacks()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_insert_requirement,
-                      'succeed_insert_requirement')
+        pub.subscribe(self._do_set_record_id,
+                      'selected_{0}'.format(self._module))
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRequirement table.
@@ -279,13 +331,28 @@ class ModuleView(RAMSTKModuleView):
 
         _dialog.do_destroy()
 
-    def _on_insert_requirement(self, node_id: int, tree: treelib.Tree) -> None:
-        """Add row to module view for newly added requirement.
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Requirement's record and parent ID.
 
-        :param node_id: the ID of the newly added requirement.
-        :param tree: the treelib Tree() containing the work stream module's
-            data.
+        :param attributes: the attributes dict for the selected Requirement.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+        self._parent_id = attributes['parent_id']
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the requirement module view.
+
         :return: None
         """
-        _data = tree.get_node(node_id).data['requirement'].get_attributes()
-        self._pnlPanel.on_insert(_data)
+        super().make_ui()
+
+        self._pnlPanel.do_set_properties()
+        self._pnlPanel.do_set_callbacks()
+        self._pnlPanel.do_set_cell_callbacks('mvw_editing_requirement',
+                                             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
+                "button_press_event",
+                super().on_button_press)
