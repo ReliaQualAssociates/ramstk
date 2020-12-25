@@ -144,7 +144,6 @@ class RAMSTKPanel(RAMSTKFrame):
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
         self._dic_attribute_updater: Dict[str, Any] = {}
-        self._dic_error_messages: Dict[str, str] = {}
         self._dic_row_loader: Dict[str, Any] = {}
 
         # Initialize private list instance attributes.
@@ -782,21 +781,26 @@ class RAMSTKPanel(RAMSTKFrame):
         _new_row = None
         _data: List[Any] = []
 
-        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-        _attributes = _entity.get_attributes()
-
-        _model = self.tvwTreeView.get_model()
-        for _col, _attr in self.tvwTreeView.korder.items():
-            _pos = self.tvwTreeView.position[_col]
-            _data.insert(_pos, _attributes[_attr])
-
         try:
+            [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+            _attributes = _entity.get_attributes()
+
+            _model = self.tvwTreeView.get_model()
+            for _col, _attr in self.tvwTreeView.korder.items():
+                _pos = self.tvwTreeView.position[_col]
+                _data.insert(_pos, _attributes[_attr])
+
             _new_row = _model.append(row, _data)
         except (AttributeError, TypeError, ValueError) as _error:
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
-            _error_msg = self._dic_error_messages['load_row'].format(
-                str(node.identifier), _data, _error, _method_name)
+            _error_msg = (
+                "{3}: An error occurred when loading {4} {0}.  "
+                "This might indicate it was missing it's data package, some "
+                "of the data in the package was missing, or some of the data "
+                "was the wrong type.  Row data was: {1}.  Error was: {2}."
+                "").format(str(node.identifier), _data, _error, _method_name,
+                           self._module)
             pub.sendMessage(
                 'do_log_warning_msg',
                 logger_name='WARNING',
