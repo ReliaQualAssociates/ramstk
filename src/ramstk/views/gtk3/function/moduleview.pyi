@@ -54,3 +54,6 @@ class ModuleView(RAMSTKModuleView):
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         ...
+
+    def __make_ui(self) -> None:
+        ...

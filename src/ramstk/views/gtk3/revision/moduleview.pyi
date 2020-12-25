@@ -68,3 +68,6 @@ class ModuleView(RAMSTKModuleView):
                             node_id: int = ...,
                             tree: treelib.Tree = ...) -> None:
         ...
+
+    def __make_ui(self) -> None:
+        ...

@@ -223,9 +223,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui()
-        self._pnlPanel.do_set_cell_callbacks('mvw_editing_function',
-                                             [5, 15, 17])
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id,
@@ -241,3 +239,19 @@ class ModuleView(RAMSTKModuleView):
         """
         self._record_id = attributes['function_id']
         self._parent_id = attributes['parent_id']
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the function module view.
+
+        :return: None
+        """
+        super().make_ui()
+
+        self._pnlPanel.do_set_properties()
+        self._pnlPanel.do_set_callbacks()
+        self._pnlPanel.do_set_cell_callbacks('mvw_editing_function',
+                                             [5, 15, 17])
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
+                "button_press_event",
+                super().on_button_press)
