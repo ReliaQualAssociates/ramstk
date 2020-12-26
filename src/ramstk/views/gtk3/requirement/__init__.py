@@ -15,7 +15,9 @@ ATTRIBUTE_KEYS = {
     6: ['page_number', 'string'],
     8: ['priority', 'integer'],
     10: ['specification', 'string'],
-    13: ['validated_date', 'date'],
+    11: ['requirement_type', 'integer'],
+    12: ['validated', 'integer'],
+    13: ['validated_date', 'string'],
 }
 
 # RAMSTK Local Imports

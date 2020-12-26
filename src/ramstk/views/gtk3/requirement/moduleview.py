@@ -207,10 +207,10 @@ class RequirementPanel(RAMSTKPanel):
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading mission {0:s} in the usage "
-                "profile.  This might indicate it was missing it's data "
-                "package, some of the data in the package was missing, or "
-                "some of the data was the wrong type.  Row data was: "
+                "An error occurred when loading requirement {0} in the "
+                "requirement tree.  This might indicate it was missing it's "
+                "data package, some of the data in the package was missing, "
+                "or some of the data was the wrong type.  Row data was: "
                 "{1}").format(str(node.identifier), _attributes)
             pub.sendMessage('do_log_warning_msg',
                             logger_name='WARNING',

@@ -143,6 +143,17 @@ class RAMSTKPanel(RAMSTKFrame):
         # TODO: _dic_attribute_keys renamed to _dic_index_attribute?
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
+        # This dict holds the method, signal, and nominal index position for
+        # the attribute in the key.  For example:
+        #
+        #    'derived': [self.chkDerived.do_update, 'toggled', 2]
+        #
+        # indicates the 'derived' attribute of the Requirement should use
+        # the do_update() method of the RAMSTKCheckButton() when the
+        # 'toggled' signal is emitted and the nominal index for this
+        # attribute is 2.  The nominal index is the default position of the
+        # column in a RAMSTKTreeView().  Refer to the layout file for the
+        # nominal position of each attribute for a given work stream module.
         self._dic_attribute_updater: Dict[str, Any] = {}
         self._dic_row_loader: Dict[str, Any] = {}
 
@@ -591,7 +602,7 @@ class RAMSTKPanel(RAMSTKFrame):
         entry.handler_unblock(entry.dic_handler_id['changed'])
 
         pub.sendMessage(message,
-                        node_id=[self._record_id, -1, -1],
+                        node_id=[self._record_id, -1],
                         package=_package)
 
         return _package
@@ -625,7 +636,7 @@ class RAMSTKPanel(RAMSTKFrame):
         textview.handler_unblock(textview.dic_handler_id['changed'])
 
         pub.sendMessage(message,
-                        node_id=[self._record_id, -1, -1],
+                        node_id=[self._record_id, -1],
                         package=_package)
 
         return _package
