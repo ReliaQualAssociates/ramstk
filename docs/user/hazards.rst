@@ -80,40 +80,23 @@ analyzed.
 Using the default layout for a Hazard analysis with all columns visible,
 enter the following information:
 
-#. Select a hazard from the drop down menu.  The list presented is a
-site-wide configuration and may be edited in the `RAMSTK` Site database by
-anyone with administrator privileges.
-#. Enter any potential causes of the selected hazard.  This is a free-form
-field that is not used in any hazard assessment.  It is for information only.
-#. Describe the effect the hazard would have on the hardware assembly
-implementing the function without a mitigation strategy.
-#. Select the assembly level severity without a mitigation strategy from the
-drop down menu.
-#. Select the probability of the hazard occurring without a mitigation
-strategy from the drop down menu.
-#. The Hazard Risk Index (HRI) without a mitigation strategy is a calculated
-value.
-#. Describe any mitigation strategies the design will incorporate to address
-the hazard.
-#. Select the assembly level severity with a mitigation strategy from the
-drop down menu.
-#. Select the probability of the hazard occurring with a mitigation
-strategy from the drop down menu.
+#. Select a hazard from the drop down menu.  The list presented is a site-wide configuration and may be edited in the `RAMSTK` Site database by anyone with administrator privileges.
+#. Enter any potential causes of the selected hazard.  This is a free-form field that is not used in any hazard assessment.  It is for information only.
+#. Describe the effect the hazard would have on the hardware assembly implementing the function without a mitigation strategy.
+#. Select the assembly level severity without a mitigation strategy from the drop down menu.
+#. Select the probability of the hazard occurring without a mitigation strategy from the drop down menu.
+#. The Hazard Risk Index (HRI) without a mitigation strategy is a calculated value.
+#. Describe any mitigation strategies the design will incorporate to address the hazard.
+#. Select the assembly level severity with a mitigation strategy from the drop down menu.
+#. Select the probability of the hazard occurring with a mitigation strategy from the drop down menu.
 #. The HRI with a mitigation strategy is a calculated value.
-#. Describe the effect the hazard would have on the hardware system without a
-mitigation strategy.
-#. Select the system level severity without a mitigation strategy from the
-drop down menu.
-#. Select the probability of the hazard occurring without a mitigation
-strategy from the drop down menu.
+#. Describe the effect the hazard would have on the hardware system without a mitigation strategy.
+#. Select the system level severity without a mitigation strategy from the drop down menu.
+#. Select the probability of the hazard occurring without a mitigation strategy from the drop down menu.
 #. The HRI without a mitigation strategy is a calculated value.
-#. Describe any mitigation strategies the design will incorporate to address
-the hazard.
-#. Select the system level severity with a mitigation strategy from the
-drop down menu.
-#. Select the probability of the hazard occurring with a mitigation
-strategy from the drop down menu.
+#. Describe any mitigation strategies the design will incorporate to address the hazard.
+#. Select the system level severity with a mitigation strategy from the drop down menu.
+#. Select the probability of the hazard occurring with a mitigation strategy from the drop down menu.
 #. The HRI with a mitigation strategy is a calculated value.
 #. Enter any remarks associated with the hazard.
-#. Calculate the HRI by pressing the 'Calculate' button to the left of the
-hazard list.
+#. Calculate the HRI by pressing the 'Calculate' button to the left of the hazard list.

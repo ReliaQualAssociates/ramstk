@@ -13,5 +13,6 @@ This chapter describes each of the `RAMSTK` modules in detail.
    function
    hazards
    requirement
+   stakeholder
    hardware
    validation
