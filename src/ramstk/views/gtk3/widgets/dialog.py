@@ -182,9 +182,15 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
 class RAMSTKDateSelect(Gtk.Dialog):
     """The RAMSTK Date Selection Dialog."""
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         """Initialize an instance of the RAMSTKDateSelect class."""
-        GObject.GObject.__init__(self)
+        _dlgparent = kwargs.get('dlgparent', None)
+
+        super().__init__(self)
+
+        self.set_transient_for(_dlgparent)
+        self.set_destroy_with_parent(True)
+        self.set_modal(True)
 
         self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
         self.set_title(_("Select Date"))
