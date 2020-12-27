@@ -1,0 +1,36 @@
+name: Update Documentation
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_documentation:
+    name: Build RAMSTK documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+
+      - name: Commit RAMSTK Documentation
+        run: |
+          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
+          cp -fr docs/_build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update documentation"
+
+      - name: Push RAMSTK Documentation Changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}

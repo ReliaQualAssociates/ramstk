@@ -12,7 +12,7 @@ REQFILE		= requirements.txt
 DEVREQFILE	= requirements-dev.txt
 TSTREQFILE	= requirements-test.txt
 SRCFILE		= src/ramstk/
-TESTOPTS	= -x -c ./setup.cfg
+TESTOPTS	= -x -c ./setup.cfg --cache-clear
 TESTFILE	= tests/
 VIRTENV		= ramstk-venv
 COVDIR		= .reports/coverage/html
@@ -209,7 +209,7 @@ test.gui:
 	py.test $(TESTOPTS) -m gui $(TESTFILE)
 
 test:
-	py.test $(TESTOPTS) $(TESTFILE)
+	py.test $(TESTOPTS) -v -s $(TESTFILE)
 
 test-all:
 	$(info "TODO: Need to add tox support for this target to work.")

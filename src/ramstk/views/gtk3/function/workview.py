@@ -248,11 +248,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        super().make_tab_label(tablabel=self._tablabel,
-                               tooltip=self._tabtooltip)
-        super().make_toolbuttons(icons=self._lst_icons,
-                                 tooltips=self._lst_tooltips,
-                                 callbacks=self._lst_callbacks)
+        super().do_make_layout()
 
         self.pack_end(self._pnlGeneralData, True, True, 0)
         self.show_all()

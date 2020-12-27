@@ -45,10 +45,10 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='requirement')
+        pub.sendMessage('request_load_output', module='requirements')
 
         assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data['requirement'], dict)
+        assert isinstance(DUT._dic_output_data['requirements'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_hardware(self, test_program_dao):
@@ -101,7 +101,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='ReQuiremenT')
+        pub.sendMessage('request_load_output', module='ReQuiremenTs')
 
         _test_excel = test_export_dir + 'test_export_requirement.xls'
         assert DUT._do_export('excel', _test_excel) is None
@@ -115,7 +115,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='Requirement')
+        pub.sendMessage('request_load_output', module='Requirements')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlsx'
         assert DUT._do_export('excel', _test_excel) is None
@@ -129,7 +129,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='RequiremenT')
+        pub.sendMessage('request_load_output', module='RequiremenTs')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlsm'
         assert DUT._do_export('excel', _test_excel) is None
@@ -144,7 +144,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='requirement')
+        pub.sendMessage('request_load_output', module='requirements')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlbb'
         assert DUT._do_export('excel', _test_excel) is None

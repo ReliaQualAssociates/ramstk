@@ -33,6 +33,7 @@ class RevisionPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _module = 'revisions'
 
     # Define public dictionary class attributes.
 
@@ -89,6 +90,7 @@ class RevisionPanel(RAMSTKPanel):
 
         super().do_make_panel_treeview()
         self.__do_set_properties()
+        super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_tree, 'succeed_retrieve_revisions')
@@ -271,9 +273,15 @@ class ModuleView(RAMSTKModuleView):
         self._pnlPanel.on_insert(_data)
 
     def __make_ui(self) -> None:
-        """Build the user interface for the module view.
+        """Build the user interface for the revision module view.
 
         :return: None
         """
         super().make_ui()
+
+        self._pnlPanel.do_set_properties()
         self._pnlPanel.do_set_callbacks()
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
+                "button_press_event",
+                super().on_button_press)

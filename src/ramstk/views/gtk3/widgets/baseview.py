@@ -4,7 +4,7 @@
 #       ramstk.views.gtk3.widgets.view.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseView Module."""
 
 # Standard Library Imports
@@ -142,7 +142,6 @@ class RAMSTKBaseView(Gtk.HBox):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.treeview: RAMSTKTreeView = self._make_treeview()
         self.fmt: str = (
             '{0:0.' + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
             + 'G}')
@@ -154,8 +153,6 @@ class RAMSTKBaseView(Gtk.HBox):
         except locale.Error as _error:
             locale.setlocale(locale.LC_ALL, '')
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, 'request_set_cursor_active')
@@ -170,223 +167,6 @@ class RAMSTKBaseView(Gtk.HBox):
 
         pub.subscribe(self.on_select_revision, 'selected_revision')
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
-
-    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
-        """Request to delete selected record from the RAMSTKFunction table.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        _parent = self.get_parent().get_parent().get_parent().get_parent()
-        _prompt = _("You are about to delete {1} {0} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._record_id,
-                                              self._module.title())
-        _dialog = RAMSTKMessageDialog(parent=_parent)
-        _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type('question')
-
-        if _dialog.do_run() == Gtk.ResponseType.YES:
-            self.do_set_cursor_busy()
-            pub.sendMessage(
-                'request_delete_{0}'.format(self._module),
-                node_id=self._record_id,
-            )
-
-        _dialog.do_destroy()
-
-    def __set_callbacks(self) -> None:
-        """Set common callback methods.
-
-        Sets callback for the RAMSTKView, Gtk.TreeView, and Gtk.TreeSelection.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.treeview.dic_handler_id[
-                'button-press'] = self.treeview.connect(
-                    'button_press_event', self.on_button_press)
-        except AttributeError as _error:
-            if self._module in self._lst_layouts:
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-    def __set_icons(self) -> Dict[str, str]:
-        """Set the dict of icons.
-
-        :return: the dict of icons to use in RAMSTK.
-        :rtype: dict
-        """
-        return {
-            'action':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/action.png',
-            'add':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
-            'calculate':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/calculate.png',
-            'calculate_all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/calculate-all.png',
-            'cancel':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/cancel.png',
-            'cause':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/cause.png',
-            'complete':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/complete.png',
-            'control':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/control.png',
-            'chart':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/charts.png',
-            'edit':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/edit.png',
-            'environment':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/environment.png',
-            'error':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/error.png',
-            'export':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/export.png',
-            'important':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/important.png',
-            'insert_child':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/insert_child.png',
-            'insert_sibling':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/insert_sibling.png',
-            'mechanism':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/mechanism.png',
-            'mission':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/mission.png',
-            'mode':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mode.png',
-            'none':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
-            'opload':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/load.png',
-            'opstress':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/stress.png',
-            'partial':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/partial.png',
-            'phase':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/phase.png',
-            'plot':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/charts.png',
-            'question':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/question.png',
-            'refresh-view':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/view-refresh.png',
-            'remove':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/remove.png',
-            'rollup':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/rollup.png',
-            'reports':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/reports.png',
-            'save':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
-            'save-all':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/save-all.png',
-            'save-layout':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/save-layout.png',
-            'testmethod':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/method.png',
-            'warning':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/warning.png'
-        }
-
-    def _make_treeview(self) -> RAMSTKTreeView:
-        """Make the RAMSTKTreeView instance for this view.
-
-        :return: _treeview; the RAMSTKTreeView() created.
-        :rtype: :class:`ramstk.views.gtk3.widgets.RAMSTKTreeView`
-        """
-        try:
-            _treeview = RAMSTKTreeView()
-
-            _fmt_file = (self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
-                         + '/layouts/'
-                         + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[
-                             self._module])
-
-            _treeview.do_parse_format(_fmt_file)
-            self._lst_col_order = list(_treeview.position.values())
-            try:
-                _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                    self._module + 'bg']
-                _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                    self._module + 'fg']
-            except KeyError as _error:
-                _bg_color = '#FFFFFF'
-                _fg_color = '#000000'
-                if self._module in self._lst_layouts:
-                    self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-            _treeview.do_make_model()
-            _treeview.do_make_columns(colors={
-                'bg_color': _bg_color,
-                'fg_color': _fg_color
-            })
-            _treeview.do_set_editable_columns(_treeview.do_edit_cell)
-        except KeyError as _error:
-            _treeview = Gtk.TreeView()
-            _treeview.selection = _treeview.get_selection()
-            _treeview.dic_handler_id = {'': 0}
-            if self._module in self._lst_layouts:
-                self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-
-        _treeview.set_grid_lines(3)
-        _treeview.set_enable_tree_lines(True)
-        _treeview.set_level_indentation(2)
-
-        return _treeview
-
-    def do_embed_matrixview_panel(self) -> None:
-        """Embed a matrixview RAMSTKPanel() into the layout.
-
-        :return: None
-        """
-        self.matrixview.dic_icons = {
-            'complete':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/complete.png',
-            'none':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
-            'partial':
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/partial.png'
-        }
-        self.matrixview.set_tooltip_text(self._tabtooltip)
-
-        self._pnlPanel.do_make_panel_matrixview(self.matrixview)
-
-        self.pack_end(self._pnlPanel, True, True, 0)
-
-        self.show_all()
 
     def do_embed_treeview_panel(self) -> None:
         """Embed a treeview RAMSTKPanel() into the layout.
@@ -413,60 +193,6 @@ class RAMSTKBaseView(Gtk.HBox):
         self.pack_end(self._pnlPanel, True, True, 0)
 
         self.show_all()
-
-    def do_expand_tree(self) -> None:
-        """Expand the RAMSTKTreeView.
-
-        :return: None
-        """
-        _model = self.treeview.get_model()
-        _row = _model.get_iter_first()
-
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
-
-    def do_get_headings(self, level: str) -> List:
-        """Get the list of headings for the Usage Profile treeview.
-
-        :param level: the level (mission, phase, environment) to retrieve
-            headers for.
-        :return: list of headings
-        :rtype: list
-        """
-        try:
-            _headings = self._dic_headings[level]
-        except KeyError:
-            _headings = []
-
-        return _headings
-
-    def do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """Load the data into a row.
-
-        This is used to load data into a RAMSTKTreeView() that is being used in
-        a "worksheet" manner.  See the Allocation and Similar Item work views
-        for examples.
-
-        :param attributes: the Hardware attributes dict for the row to
-            be loaded in the WorkView worksheet.
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-
-        _data = []
-        for _key in self.treeview.korder:
-            _data.append(attributes[self.treeview.korder[_key]])
-
-        # Only load items that are immediate children of the selected item and
-        # prevent loading the selected item itself in the worksheet.
-        if not _data[1] == self._record_id and not self._tree_loaded:
-            # noinspection PyDeepBugsSwappedArgs
-            _model.append(None, _data)
 
     def do_make_layout(self) -> None:
         """Create a view with the following layout.
@@ -635,49 +361,29 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return _dialog
 
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
-        """Update the module view RAMSTKTreeView() with attribute changes.
+    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+        """Request to delete selected record from the RAMSTKFunction table.
 
-        This method receives two dicts.  This first is from the
-        workflow's workview module and is sent when a workview widget is
-        edited/changed.
-
-            `package` key: `package` value
-
-        corresponds to:
-
-            database field name: database field new value
-
-        The second dict is from the workflow's moduleview.
-
-            `keys` key: `keys` value
-
-        corresponds to:
-
-            database field name: TreeModel default column position
-
-        Since both dicts contain the same key values, this method can refresh
-        the proper column of the RAMSTKTreeView with the new data.
-
-        :param list node_id: unused in this method.
-        :param package: the key:value for the data being updated.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: None
-        :rtype: None
         """
-        [[_key, _value]] = package.items()
+        _parent = self.get_parent().get_parent().get_parent().get_parent()
+        _prompt = _("You are about to delete {1} {0} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._record_id,
+                                              self._module.title())
+        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog.do_set_message(_prompt)
+        _dialog.do_set_message_type('question')
 
-        try:
-            _position = self._lst_col_order[self._dic_key_index[_key]]
+        if _dialog.do_run() == Gtk.ResponseType.YES:
+            self.do_set_cursor_busy()
+            pub.sendMessage(
+                'request_delete_{0}'.format(self._module),
+                node_id=self._record_id,
+            )
 
-            _model, _row = self.treeview.get_selection().get_selected()
-            _model.set(_row, _position, _value)
-        except KeyError as _error:
-            # Not all attributes available on the workview are stored in the
-            # moduleview tree.  We log the error in case the offending
-            # attribute is supposed to be there and then continue.
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+        _dialog.do_destroy()
 
     def do_request_insert(self, **kwargs: Any) -> None:
         """Request insert a new work stream element into the program database.
@@ -848,7 +554,7 @@ class RAMSTKBaseView(Gtk.HBox):
         _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-    def on_button_press(self, __treeview: RAMSTKTreeView,
+    def on_button_press(self, treeview: RAMSTKTreeView,
                         event: Gdk.EventButton) -> None:
         """Handle mouse clicks on the View's RTKTreeView().
 
@@ -865,8 +571,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         :return: None
         """
-        self.treeview.handler_block(
-            self.treeview.dic_handler_id['button-press'])
+        treeview.handler_block(treeview.dic_handler_id['button-press'])
 
         if event.button == 3:
             _menu = Gtk.Menu()
@@ -885,27 +590,7 @@ class RAMSTKBaseView(Gtk.HBox):
                 _menu_item.show()
                 _menu.append(_menu_item)
 
-        self.treeview.handler_unblock(
-            self.treeview.dic_handler_id['button-press'])
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def on_delete(self, node_id: int, tree: treelib.Tree) -> None:
-        """Update the RAMSTKTreeView after deleting a line item.
-
-        :param node_id: the treelib Tree() node ID that was deleted.
-        :param tree: the treelib Tree() containing the workflow module data.
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        _model, _row = self.treeview.selection.get_selected()
-        _model.remove(_row)
-
-        _row = _model.get_iter_first()
-        if _row is not None:
-            self.treeview.selection.select_iter(_row)
-            self.show_all()
+        treeview.handler_unblock(treeview.dic_handler_id['button-press'])
 
     def on_insert(self, node_id: int = 0, tree: treelib.Tree = '') -> None:
         """Add row to the RAMSTKTreeView for newly added element.
@@ -919,38 +604,6 @@ class RAMSTKBaseView(Gtk.HBox):
         _data = tree.get_node(node_id).data[self._module].get_attributes()
         self._pnlPanel.on_insert(_data)
 
-    def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
-        """Respond to RAMSTKTreeView() row changes.
-
-        :param selection: the current Gtk.TreeSelection().
-        :return: _attributes; the dict containing the record's attributes.
-        """
-        selection.handler_block(self.treeview.dic_handler_id['changed'])
-
-        _attributes: Dict[str, Any] = {}
-
-        _model, _row = selection.get_selected()
-        if _row is not None:
-            # // TODO: Update base view on_row_change() to use _dic_column_keys.    # noqa
-            # //
-            # // The _dic_key_index and _dic_column_keys are both
-            # // dictionaries with the object's attribute name (str) as the key
-            # // and the associated work flow column number (int) as the
-            # // value.  Only one is needed; the _dic_column_keys is more
-            # // widely used and is more descriptive of what the dict holds.
-            for _key in self._dic_key_index:
-                _attributes[_key] = _model.get_value(
-                    _row, self._lst_col_order[self._dic_key_index[_key]])
-
-        try:
-            self._record_id = _attributes['revision_id']
-        except KeyError:
-            self._record_id = -1
-
-        selection.handler_unblock(self.treeview.dic_handler_id['changed'])
-
-        return _attributes
-
     def on_select_revision(self, attributes: Dict[str, Any]) -> None:
         """Set the Revision ID when a new Revision is selected.
 
@@ -958,6 +611,114 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         self._revision_id = attributes['revision_id']
+
+    def __set_icons(self) -> Dict[str, str]:
+        """Set the dict of icons.
+
+        :return: the dict of icons to use in RAMSTK.
+        :rtype: dict
+        """
+        return {
+            'action':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/action.png',
+            'add':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
+            'calculate':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate.png',
+            'calculate_all':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/calculate-all.png',
+            'cancel':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/cancel.png',
+            'cause':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/cause.png',
+            'complete':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/complete.png',
+            'control':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/control.png',
+            'chart':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/charts.png',
+            'edit':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/edit.png',
+            'environment':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/environment.png',
+            'error':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/error.png',
+            'export':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/export.png',
+            'important':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/important.png',
+            'insert_child':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_child.png',
+            'insert_sibling':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/insert_sibling.png',
+            'mechanism':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/mechanism.png',
+            'mission':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/mission.png',
+            'mode':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mode.png',
+            'none':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
+            'opload':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/load.png',
+            'opstress':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/stress.png',
+            'partial':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/partial.png',
+            'phase':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/phase.png',
+            'plot':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/charts.png',
+            'question':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/question.png',
+            'refresh-view':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/view-refresh.png',
+            'remove':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/remove.png',
+            'rollup':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/rollup.png',
+            'reports':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/reports.png',
+            'save':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
+            'save-all':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/save-all.png',
+            'save-layout':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/save-layout.png',
+            'testmethod':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/method.png',
+            'warning':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/warning.png'
+        }
 
 
 class RAMSTKListView(RAMSTKBaseView):
@@ -1092,19 +853,6 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-
-    def do_clear_tree(self) -> None:
-        """Clear the contents of a RAMSTKTreeView().
-
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _columns = self.treeview.get_columns()
-        for _column in _columns:
-            self.treeview.remove_column(_column)
-
-        _model.clear()
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

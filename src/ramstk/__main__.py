@@ -22,10 +22,10 @@ from ramstk.configuration import (
     RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 )
 from ramstk.controllers import (
-    amFMEA, amHardware, amHazards, amStakeholder, amValidation,
-    dmFailureDefinition, dmFMEA, dmFunction, dmHardware, dmHazards, dmOptions,
-    dmPoF, dmRequirement, dmRevision, dmStakeholder, dmUsageProfile,
-    dmValidation
+    amFMEA, amHardware, amHazards, amStakeholder,
+    amValidation, dmFailureDefinition, dmFMEA, dmFunction,
+    dmHardware, dmHazards, dmOptions, dmPoF, dmRequirement,
+    dmRevision, dmStakeholder, dmUsageProfile, dmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables

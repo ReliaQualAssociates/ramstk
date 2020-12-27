@@ -1,0 +1,16 @@
+name: Sundry Chores
+
+on:
+  pull_request:
+    branches:
+      - release/v*
+      - master
+
+jobs:
+  good_pr_title:
+    name: Ensure Semantic PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aslafy-z/conventional-pr-title-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

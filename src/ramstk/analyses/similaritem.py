@@ -153,9 +153,12 @@ def calculate_topic_633(
     temperature['from'] = round(temperature['from'] / 10.0) * 10.0
     temperature['to'] = round(temperature['to'] / 10.0) * 10.0
 
-    _change_factor_1 = QUALITY_FROM_TO[(quality['from'], quality['to'])]    # type: ignore
-    _change_factor_2 = ENVIRONMENT_FROM_TO[(environment['from'],    # type: ignore
-                                            environment['to'])]
+    _change_factor_1 = QUALITY_FROM_TO[(
+        quality['from'],  # type: ignore
+        quality['to'])]  # type: ignore
+    _change_factor_2 = ENVIRONMENT_FROM_TO[(
+        environment['from'],  # type: ignore
+        environment['to'])]  # type: ignore
     _change_factor_3 = TEMPERATURE_FROM_TO[(temperature['from'],
                                             temperature['to'])]
 

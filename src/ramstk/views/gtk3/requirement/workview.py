@@ -77,13 +77,16 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtValidatedDate: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_attribute_updater = {
-            'derived': [self.chkDerived.do_update, 'toggled', 0],
-            'description': [self.txtName.do_update, 'changed', 1],
-            'figure_number': [self.txtFigNum.do_update, 'changed', 2],
-            'page_number': [self.txtPageNum.do_update, 'changed', 3],
-            'specification': [self.txtSpecification.do_update, 'changed', 4],
-            'validated': [self.chkValidated.do_update, 'toggled', 5],
-            'validated_date': [self.txtValidatedDate.do_update, 'changed', 6],
+            'derived': [self.chkDerived.do_update, 'toggled', 2],
+            'description': [self.txtName.do_update, 'changed', 3],
+            'figure_number': [self.txtFigNum.do_update, 'changed', 4],
+            'owner': [self.cmbOwner, 'changed', 5],
+            'page_number': [self.txtPageNum.do_update, 'changed', 6],
+            'priority': [self.cmbPriority, 'changed', 8],
+            'specification': [self.txtSpecification.do_update, 'changed', 10],
+            'requirement_type': [self.cmbRequirementType, 'changed', 11],
+            'validated': [self.chkValidated.do_update, 'toggled', 12],
+            'validated_date': [self.txtValidatedDate.do_update, 'changed', 13],
         }
         self._lst_widgets = [
             self.txtCode,
@@ -144,7 +147,9 @@ class GeneralDataPanel(RAMSTKPanel):
         :rtype: None
         """
         _owners = []
-        for _index, _key in enumerate(workgroups):
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(workgroups):
             _owners.append(workgroups[_key])
         self.cmbOwner.do_load_combo(_owners)
 
@@ -221,20 +226,21 @@ class GeneralDataPanel(RAMSTKPanel):
         This method is used to select the validation date for the Requirement.
 
         :param __button: the ramstk.RAMSTKButton() that called this method.
-        :type __button: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
         :param __event: the Gdk.Event() that called this method.
-        :type __event: :class:`Gdk.Event`
         :param entry: the Gtk.Entry() that the new date should be displayed in.
-        :type entry: :class:`Gtk.Entry`
         :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
-        _dialog: RAMSTKDateSelect = RAMSTKDateSelect()
+        _parent = entry.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent().get_parent().get_parent().get_parent().get_parent()
+
+        _dialog: RAMSTKDateSelect = RAMSTKDateSelect(dlgparent=_parent)
 
         _date = _dialog.do_run()
         _dialog.do_destroy()
 
-        entry.set_text(str(_date))
+        entry.do_update(_date)
+        super().on_changed_entry(entry, 13, 'wvw_editing_requirement')
 
         return _date
 
@@ -251,43 +257,45 @@ class GeneralDataPanel(RAMSTKPanel):
 
         self.chkDerived.dic_handler_id['toggled'] = self.chkDerived.connect(
             'toggled',
-            super().on_toggled, 3, 'wvw_editing_requirement')
+            super().on_toggled, 2, 'wvw_editing_requirement')
         self.chkValidated.dic_handler_id[
             'toggled'] = self.chkValidated.connect('toggled',
-                                                   super().on_toggled, 9,
+                                                   super().on_toggled, 12,
                                                    'wvw_editing_requirement')
 
+        self.cmbOwner.dic_handler_id['changed'] = self.cmbOwner.connect(
+            'changed',
+            super().on_changed_combo, 5, 'wvw_editing_requirement')
+        self.cmbPriority.dic_handler_id['changed'] = self.cmbPriority.connect(
+            'changed',
+            super().on_changed_combo, 8, 'wvw_editing_requirement')
         self.cmbRequirementType.dic_handler_id[
             'changed'] = self.cmbRequirementType.connect(
                 'changed',
-                super().on_changed_combo, 2, 'wvw_editing_requirement')
-        self.cmbPriority.dic_handler_id['changed'] = self.cmbPriority.connect(
-            'changed',
-            super().on_changed_combo, 7, 'wvw_editing_requirement')
-        self.cmbOwner.dic_handler_id['changed'] = self.cmbOwner.connect(
-            'changed',
-            super().on_changed_combo, 8, 'wvw_editing_requirement')
+                super().on_changed_combo, 11, 'wvw_editing_requirement')
 
+        _buffer: Gtk.TextBuffer = self.txtName.do_get_buffer()
+        self.txtName.dic_handler_id['changed'] = (_buffer.connect(
+            'changed',
+            super().on_changed_textview, 3, 'wvw_editing_requirement',
+            self.txtName))
+        self.txtFigNum.dic_handler_id['changed'] = self.txtFigNum.connect(
+            'changed',
+            super().on_changed_entry, 4, 'wvw_editing_requirement')
+        self.txtPageNum.dic_handler_id['changed'] = self.txtPageNum.connect(
+            'changed',
+            super().on_changed_entry, 6, 'wvw_editing_requirement')
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
-            super().on_changed_entry, 0, 'wvw_editing_requirement')
-        self.txtName.dic_handler_id['changed'] = self.txtName.connect(
-            'focus-out-event',
-            super().on_changed_entry, 1, 'wvw_editing_requirement')
+            super().on_changed_entry, 9, 'wvw_editing_requirement')
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
-                super().on_changed_entry, 4, 'wvw_editing_requirement')
-        self.txtPageNum.dic_handler_id['changed'] = self.txtPageNum.connect(
-            'changed',
-            super().on_changed_entry, 5, 'wvw_editing_requirement')
-        self.txtFigNum.dic_handler_id['changed'] = self.txtFigNum.connect(
-            'changed',
-            super().on_changed_entry, 6, 'wvw_editing_requirement')
+                super().on_changed_entry, 10, 'wvw_editing_requirement')
         self.txtValidatedDate.dic_handler_id[
             'changed'] = self.txtValidatedDate.connect(
                 'changed',
-                super().on_changed_entry, 10, 'wvw_editing_requirement')
+                super().on_changed_entry, 13, 'wvw_editing_requirement')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -364,21 +372,6 @@ class AnalysisPanel(RAMSTKPanel):
         """
         for _checkbutton in self._lst_widgets:
             _checkbutton.do_update(False, signal='toggled')
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Requirements clarity panel.
-
-        :param attributes: the Requirement attributes to load into the Work
-            View widgets.
-        :return: None
-        :rtype: None
-        """
-        self._record_id = attributes['requirement_id']
-
-        for _index, _checkbutton in enumerate(self._lst_widgets):
-            _checkbutton.do_update(int(
-                attributes['q_clarity_{0:d}'.format(_index)]),
-                                   signal='toggled')  # noqa
 
 
 class ClarityPanel(AnalysisPanel):
@@ -468,6 +461,21 @@ class ClarityPanel(AnalysisPanel):
         super().do_set_properties()
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         super().do_set_callbacks()
+
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Requirements clarity panel.
+
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+
+        for _index, _checkbutton in enumerate(self._lst_widgets):
+            _checkbutton.do_update(int(
+                attributes['q_clarity_{0:d}'.format(_index)]),
+                                   signal='toggled')  # noqa
 
 
 class CompletenessPanel(AnalysisPanel):
@@ -561,6 +569,21 @@ class CompletenessPanel(AnalysisPanel):
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         super().do_set_callbacks()
 
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Requirements clarity panel.
+
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+
+        for _index, _checkbutton in enumerate(self._lst_widgets):
+            _checkbutton.do_update(int(
+                attributes['q_complete_{0:d}'.format(_index)]),
+                                   signal='toggled')  # noqa
+
 
 class ConsistencyPanel(AnalysisPanel):
     """Panel to display consistency questions about selected Requirement."""
@@ -650,6 +673,21 @@ class ConsistencyPanel(AnalysisPanel):
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         super().do_set_callbacks()
 
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Requirements clarity panel.
+
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+
+        for _index, _checkbutton in enumerate(self._lst_widgets):
+            _checkbutton.do_update(int(
+                attributes['q_consistent_{0:d}'.format(_index)]),
+                                   signal='toggled')  # noqa
+
 
 class VerifiabilityPanel(AnalysisPanel):
     """Panel to display verifiability questions about selected Requirement."""
@@ -722,6 +760,21 @@ class VerifiabilityPanel(AnalysisPanel):
         super().do_make_panel_fixed(justify=Gtk.Justification.LEFT)
         super().do_set_callbacks()
 
+    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the Requirements clarity panel.
+
+        :param attributes: the Requirement attributes to load into the Work
+            View widgets.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+
+        for _index, _checkbutton in enumerate(self._lst_widgets):
+            _checkbutton.do_update(int(
+                attributes['q_verifiable_{0:d}'.format(_index)]),
+                                   signal='toggled')  # noqa
+
 
 class GeneralData(RAMSTKWorkView):
     """Display general Requirement attribute data in the RAMSTK Work Book.
@@ -779,15 +832,17 @@ class GeneralData(RAMSTKWorkView):
             + '/32x32/create_code.png')
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self._do_request_create_code,
-        ]
-        self._lst_icons = ['create_code']
+        self._lst_callbacks.insert(0, self._do_request_create_code)
+        self._lst_icons.insert(0, 'create_code')
         self._lst_mnu_labels = [
             _("Create Code"),
+            _("Save Selected Requirement"),
+            _("Save All Requirements"),
         ]
         self._lst_tooltips = [
             _("Automatically create code for the selected requirement."),
+            _("Save changes to the currently selected requirement."),
+            _("Save changes to all requirements."),
         ]
 
         # Initialize private scalar attributes.
@@ -802,12 +857,34 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_create_code')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_create_requirement_code')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_requirement')
+        pub.subscribe(super().do_set_cursor_active, 'succeed_create_code')
+
+        pub.subscribe(self._do_set_record_id, 'selected_requirement')
+
+    def _do_request_create_code(self, __button: Gtk.ToolButton) -> None:
+        """Request that requirement codes be built.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :py:class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        _prefix = self._pnlGeneralData.cmbRequirementType.get_value()
+
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_create_requirement_code',
+                        node_id=self._record_id,
+                        prefix=_prefix)
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the record and parent ID.
+
+        :param attributes: the attributes dict for the selected requirement.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+        self._parent_id = attributes['parent_id']
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement General Data tab.
@@ -834,21 +911,6 @@ class GeneralData(RAMSTKWorkView):
 
         self.pack_end(self._pnlGeneralData, True, True, 0)
         self.show_all()
-
-    def _do_request_create_code(self, __button: Gtk.ToolButton) -> None:
-        """Request that requirement codes be built.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        _prefix = self._pnlGeneralData.cmbRequirementType.get_value()
-
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_create_requirement_code',
-                        node_id=self._record_id,
-                        prefix=_prefix)
 
 
 class RequirementAnalysis(RAMSTKWorkView):
@@ -920,9 +982,17 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_requirement')
+        pub.subscribe(self._do_set_record_id, 'selected_requirement')
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the record and parent ID.
+
+        :param attributes: the attributes dict for the selected requirement.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+        self._parent_id = attributes['parent_id']
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement Analysis tab.

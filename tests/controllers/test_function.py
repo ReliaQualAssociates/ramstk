@@ -33,13 +33,13 @@ class MockDao:
         try:
             self._do_delete_function(record)
         except AttributeError:
-            raise DataAccessError('An error occured with RAMSTK.')
+            raise DataAccessError('An error occurred with RAMSTK.')
 
     def do_insert(self, record):
-        if record.parent_id < 10:
-            self._all_functions.append(record)
+        if record.parent_id == 30:
+            raise DataAccessError('An error occurred with RAMSTK.')
         else:
-            raise DataAccessError('An error occured with RAMSTK.')
+            self._all_functions.append(record)
 
     def do_select_all(self,
                       table,
@@ -228,8 +228,13 @@ class TestInsertMethods():
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
-    def on_fail_insert_function(self, error_message):
-        assert error_message == ('An error occured with RAMSTK.')
+    def on_fail_insert_function_no_parent(self, error_message):
+        assert error_message == ('_do_insert_function: Attempted to insert '
+                                 'child function under non-existent function ID 40.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
+    def on_fail_insert_function_db_error(self, error_message):
+        assert error_message == ('An error occurred with RAMSTK.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
@@ -270,15 +275,30 @@ class TestInsertMethods():
     def test_do_insert_function_no_parent(self, mock_program_dao):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
-        pub.subscribe(self.on_fail_insert_function, 'fail_insert_function')
+        pub.subscribe(self.on_fail_insert_function_no_parent,
+                      'fail_insert_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_function(parent_id=40)
 
-        pub.unsubscribe(self.on_fail_insert_function, 'fail_insert_function')
+        pub.unsubscribe(self.on_fail_insert_function_no_parent,
+                        'fail_insert_function')
 
+    @pytest.mark.unit
+    def test_do_insert_function_database_error(self, mock_program_dao):
+        """_do_insert_function() should send the fail message if attempting to
+        add a function to a non-existent parent ID."""
+        pub.subscribe(self.on_fail_insert_function_db_error,
+                      'fail_insert_function')
+
+        DUT = dmFunction()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_insert_function(parent_id=30)
+
+        pub.unsubscribe(self.on_fail_insert_function_db_error, 'fail_insert_function')
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestGetterSetter():

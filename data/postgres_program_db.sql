@@ -106,19 +106,6 @@ CREATE TABLE ramstk_program_status (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id),
     UNIQUE (fld_date_status)
 );
-CREATE TABLE ramstk_matrix (
-    fld_revision_id INTEGER,
-    fld_matrix_id INTEGER NOT NULL,
-    fld_column_id INTEGER,
-    fld_column_item_id INTEGER NOT NULL,
-    fld_matrix_type VARCHAR(128),
-    fld_parent_id INTEGER,
-    fld_row_id INTEGER,
-    fld_row_item_id INTEGER NOT NULL,
-    fld_value INTEGER,
-    PRIMARY KEY (fld_revision_id, fld_matrix_id, fld_column_item_id, fld_row_item_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
-);
 
 CREATE TABLE ramstk_function (
     fld_revision_id INTEGER,
@@ -153,13 +140,13 @@ CREATE TABLE ramstk_requirement (
     fld_derived INTEGER,
     fld_description VARCHAR,
     fld_figure_number VARCHAR(256),
-    fld_owner VARCHAR(256),
+    fld_owner INTEGER,
     fld_page_number VARCHAR(256),
     fld_parent_id INTEGER,
     fld_priority INTEGER,
     fld_requirement_code VARCHAR(256),
     fld_specification VARCHAR(256),
-    fld_requirement_type VARCHAR(256),
+    fld_requirement_type INTEGER,
     fld_validated INTEGER,
     fld_validated_date DATE,
     fld_clarity_0 INTEGER,

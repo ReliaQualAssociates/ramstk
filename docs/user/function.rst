@@ -7,6 +7,7 @@ The Function Module is the used to document and analyze the functions of a
 system.
 
 .. _sec-function-module-book:
+
 Module Book
 -----------
 .. figure:: ./figures/function_module_book.png
@@ -113,7 +114,8 @@ To save changes to all Functions:
 Pending changes to all Functions associated with the selected Revision are
 committed to the open `RAMSTK` Program database.
 
-.. _sec-function-module-book:
+.. _sec-function-work-book:
+
 Work Book
 ---------
 .. figure:: ./figures/function_work_book.png

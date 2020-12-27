@@ -25,7 +25,7 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: int) -> None:
         ...
 
-    def _do_delete_stakeholder(self, node_id: int) -> None:
+    def _do_delete(self, node_id: int) -> None:
         ...
 
     def _do_insert_stakeholder(self) -> None:

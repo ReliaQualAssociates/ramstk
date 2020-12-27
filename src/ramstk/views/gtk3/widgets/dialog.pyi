@@ -49,7 +49,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 class RAMSTKDateSelect(Gtk.Dialog):
     _calendar: Any = ...
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         ...
 
     def do_destroy(self) -> None:
