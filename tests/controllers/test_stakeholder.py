@@ -106,7 +106,7 @@ class TestCreateControllers():
                                 'request_get_stakeholder_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_stakeholder_attributes')
-        assert pub.isSubscribed(DUT._do_delete_stakeholder,
+        assert pub.isSubscribed(DUT._do_delete,
                                 'request_delete_stakeholder')
         assert pub.isSubscribed(DUT._do_insert_stakeholder,
                                 'request_insert_stakeholder')
@@ -195,8 +195,7 @@ class TestDeleteMethods():
 
     def on_fail_delete_stakeholder(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent stakeholder ID '
-            '300.')
+            '_do_delete: Attempted to delete non-existent stakeholder input ID 300.')
         print("\033[35m\nfail_delete_stakeholder topic was broadcast.")
 
     @pytest.mark.unit
@@ -208,7 +207,7 @@ class TestDeleteMethods():
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_stakeholder(DUT.last_id)
+        DUT._do_delete(DUT.last_id)
 
         assert DUT.last_id == 1
 
@@ -224,7 +223,7 @@ class TestDeleteMethods():
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_delete_stakeholder(300)
+        DUT._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_stakeholder,
                         'fail_delete_stakeholder')
