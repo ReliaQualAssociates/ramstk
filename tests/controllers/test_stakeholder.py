@@ -69,7 +69,8 @@ class MockDao:
                 MOCK_STAKEHOLDERS[_key]['requirement_id'] = \
                     record.requirement_id
                 MOCK_STAKEHOLDERS[_key]['stakeholder'] = record.stakeholder
-                MOCK_STAKEHOLDERS[_key]['user_float_1'] = record.user_float_1
+                MOCK_STAKEHOLDERS[_key]['user_float_1'] = \
+                    float(record.user_float_1)
                 MOCK_STAKEHOLDERS[_key]['user_float_2'] = record.user_float_2
                 MOCK_STAKEHOLDERS[_key]['user_float_3'] = record.user_float_3
                 MOCK_STAKEHOLDERS[_key]['user_float_4'] = record.user_float_4
@@ -138,11 +139,31 @@ class TestSelectMethods():
 
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
+        """do_select_all() should return a Tree() object populated with RAMSTKStakeholder instances on success."""
+        pub.subscribe(self.on_succeed_retrieve_stakeholders,
+                      'succeed_retrieve_stakeholders')
+        DUT = dmStakeholder()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        assert isinstance(DUT.tree, Tree)
+        assert isinstance(DUT.tree.get_node(1).data, dict)
+        assert isinstance(
+            DUT.tree.get_node(1).data['stakeholder'], RAMSTKStakeholder)
+
+        pub.unsubscribe(self.on_succeed_retrieve_stakeholders,
+                        'succeed_retrieve_stakeholders')
+
+    @pytest.mark.unit
+    def test_do_select_all_tree_loaded(self, mock_program_dao):
         """do_select_all(1) should return a Tree() object populated with RAMSTKStakeholder instances on success."""
         pub.subscribe(self.on_succeed_retrieve_stakeholders,
                       'succeed_retrieve_stakeholders')
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        # Select it again to ensure the tree is cleared before re-populating.
         DUT.do_select_all(attributes={'revision_id': 1})
 
         assert isinstance(DUT.tree, Tree)
@@ -341,25 +362,34 @@ class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
     def on_succeed_update_stakeholder(self, tree):
         assert isinstance(tree, Tree)
+        assert tree.get_node(1).data['stakeholder'].description == 'Test Stakeholder'
         print("\033[36m\nsucceed_update_stakeholder topic was broadcast")
 
-    def on_fail_update_stakeholder(self, error_message):
+    def on_fail_update_stakeholder_no_id(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent stakeholder with stakeholder ID 100.'
+            'do_update: Attempted to save non-existent stakeholder input with '
+            'stakeholder input ID 100.'
         )
         print("\033[35m\nfail_update_stakeholder topic was broadcast")
 
     def on_fail_update_stakeholder_no_package(self, error_message):
         assert error_message == (
-            'No data package found for stakeholder ID 1.'
+            'do_update: No data package found for stakeholder input ID 1.'
+        )
+        print("\033[35m\nfail_update_stakeholder topic was broadcast")
+
+    def on_fail_update_stakeholder_wrong_data_type(self, error_message):
+        assert error_message == (
+            'do_update: The value for one or more attributes for stakeholder '
+            'input ID 1 was the wrong type.'
         )
         print("\033[35m\nfail_update_stakeholder topic was broadcast")
 
     @pytest.mark.unit
     def test_do_update_data_manager(self, mock_program_dao):
-        """ do_update() should return a zero error code on success. """
+        """ do_update() should broadcast the succeed update message on success. """
         pub.subscribe(self.on_succeed_update_stakeholder,
-                      'succeed_update_stakeholder')
+                      'succeed_update_stakeholders')
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
@@ -369,42 +399,28 @@ class TestUpdateMethods():
         _stakeholder.description = 'Test Stakeholder'
         DUT.do_update(1)
 
-        DUT.do_select_all(attributes={'revision_id': 1})
-        _stakeholder = DUT.do_select(1, table='stakeholder')
-
-        assert _stakeholder.description == 'Test Stakeholder'
-
         pub.unsubscribe(self.on_succeed_update_stakeholder,
-                        'succeed_update_stakeholder')
+                        'succeed_update_stakeholders')
 
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
-        """ do_update() should return a non-zero error code when passed a Stakeholder ID that doesn't exist. """
-        pub.subscribe(self.on_fail_update_stakeholder,
-                      'fail_update_stakeholder')
+        """ do_update() should broadcast the fail update message when passed an ID that doesn't exist. """
+        pub.subscribe(self.on_fail_update_stakeholder_no_id,
+                      'fail_update_stakeholders')
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_update(100)
 
-        pub.unsubscribe(self.on_fail_update_stakeholder,
-                        'fail_update_stakeholder')
-
-    @pytest.mark.unit
-    def test_do_update_node_zero(self, mock_program_dao):
-        """ do_update() should return None when passed Validation ID=0. """
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        assert DUT.do_update(0) is None
+        pub.unsubscribe(self.on_fail_update_stakeholder_no_id,
+                        'fail_update_stakeholders')
 
     @pytest.mark.unit
     def test_do_update_data_manager_no_data_package(self, mock_program_dao):
-        """ do_update() should send the fail_update_requirement message when there is no data package attached to the node. """
+        """ do_update() should broadcast the fail update message when there is no data package attached to the node. """
         pub.subscribe(self.on_fail_update_stakeholder_no_package,
-                      'fail_update_requirement')
+                      'fail_update_stakeholders')
 
         DUT = dmStakeholder()
         DUT.do_connect(mock_program_dao)
@@ -413,7 +429,35 @@ class TestUpdateMethods():
         DUT.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_stakeholder_no_package,
-                        'fail_update_requirement')
+                        'fail_update_stakeholders')
+
+    @pytest.mark.unit
+    def test_do_update_wrong_data_type(self, mock_program_dao):
+        """ do_update() should broadcast the fail update message when one or more attribute values is the wrong data type. """
+        pub.subscribe(self.on_fail_update_stakeholder_wrong_data_type,
+                      'fail_update_stakeholders')
+
+        DUT = dmStakeholder()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        _stakeholder = DUT.do_select(1, table='stakeholder')
+        _stakeholder.user_float_1 = {1: 2}
+
+        DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_stakeholder_wrong_data_type,
+                        'fail_update_stakeholders')
+
+    @pytest.mark.unit
+    def test_do_update_wrong_data_type_root_node(self, mock_program_dao):
+        """ do_update() should broadcast the fail update message when one or more attribute values is the wrong data type and it is attempting to update the root node. """
+        DUT = dmStakeholder()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        _stakeholder = DUT.do_select(1, table='stakeholder')
+        _stakeholder.user_float_1 = {1: 2}
+
+        DUT.do_update(0)
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')

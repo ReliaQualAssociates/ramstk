@@ -16,7 +16,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from __mocks__ import MOCK_HRDWR_TREE, MOCK_REQUIREMENTS
+from __mocks__ import MOCK_REQUIREMENTS
 from ramstk.controllers import dmRequirement
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
@@ -200,6 +200,20 @@ class TestDeleteMethods():
         DUT._do_delete(DUT.last_id)
 
         assert DUT.last_id == 1
+
+        pub.unsubscribe(self.on_succeed_delete_requirement,
+                        'succeed_delete_requirement')
+
+    @pytest.mark.unit
+    def test_do_delete_requirement_with_children(self, mock_program_dao):
+        """_do_delete() should send the success message with the treelib Tree."""
+        pub.subscribe(self.on_succeed_delete_requirement,
+                      'succeed_delete_requirement')
+
+        DUT = dmRequirement()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._do_delete(1)
 
         pub.unsubscribe(self.on_succeed_delete_requirement,
                         'succeed_delete_requirement')
