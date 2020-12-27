@@ -789,6 +789,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         return _new_row
 
+    # pylint: disable=unused-variable
     def _do_load_treerow(self, node: treelib.Node,
                          row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a row into the RAMSTKTreeView().
@@ -802,7 +803,7 @@ class RAMSTKPanel(RAMSTKFrame):
         _data: List[Any] = []
 
         try:
-            [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+            [[__, _entity]] = node.data.items()
             _attributes = _entity.get_attributes()
 
             _model = self.tvwTreeView.get_model()

@@ -30,9 +30,7 @@ class ExportProject(RAMSTKFileChooser):
 
         :param __button: the Gtk.ToolButton() that launched an instance of this
             class.
-        :type __button: :class:`Gtk.ToolButton`
         :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration: :class:`ramstk.configuration.RAMSTKUserConfiguration`
         :param parent: the parent window to associate this dialog with.
         """
         super().__init__(_("RAMSTK Export"), parent)

@@ -934,7 +934,7 @@ class FMEAPanel(RAMSTKPanel):
         except (IndexError, KeyError):
             _key = ''
 
-        #// TODO: Update ramstk_action fld_action_recommended to fld_description.
+        #// TODO: Rename ramstk_action fld_action_recommended.
         #//
         #// Updating fld_action_recommended to fld_description makes
         #// ramstk_action consistent with other FMEA tables in position 1.

@@ -824,27 +824,40 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "progdir": self.RAMSTK_PROG_DIR
             },
             "layouts": {
-                "allocation": self.RAMSTK_FORMAT_FILE['allocation'],
+                "allocation":
+                self.RAMSTK_FORMAT_FILE['allocation'],
                 "failure_definitions":
                 self.RAMSTK_FORMAT_FILE['failure_definitions'],
-                "fmea": self.RAMSTK_FORMAT_FILE['fmea'],
-                "function": self.RAMSTK_FORMAT_FILE['function'],
-                "hardware": self.RAMSTK_FORMAT_FILE['hardware'],
-                "hazard": self.RAMSTK_FORMAT_FILE['hazard'],
-                "pof": self.RAMSTK_FORMAT_FILE['pof'],
-                "requirement": self.RAMSTK_FORMAT_FILE['requirement'],
-                "revision": self.RAMSTK_FORMAT_FILE['revision'],
-                "similar_item": self.RAMSTK_FORMAT_FILE['similar_item'],
-                "stakeholders": self.RAMSTK_FORMAT_FILE['stakeholders'],
-                "usage_profile": self.RAMSTK_FORMAT_FILE['usage_profile'],
-                "validation": self.RAMSTK_FORMAT_FILE['validation']
+                "fmea":
+                self.RAMSTK_FORMAT_FILE['fmea'],
+                "function":
+                self.RAMSTK_FORMAT_FILE['function'],
+                "hardware":
+                self.RAMSTK_FORMAT_FILE['hardware'],
+                "hazard":
+                self.RAMSTK_FORMAT_FILE['hazard'],
+                "pof":
+                self.RAMSTK_FORMAT_FILE['pof'],
+                "requirement":
+                self.RAMSTK_FORMAT_FILE['requirement'],
+                "revision":
+                self.RAMSTK_FORMAT_FILE['revision'],
+                "similar_item":
+                self.RAMSTK_FORMAT_FILE['similar_item'],
+                "stakeholders":
+                self.RAMSTK_FORMAT_FILE['stakeholders'],
+                "usage_profile":
+                self.RAMSTK_FORMAT_FILE['usage_profile'],
+                "validation":
+                self.RAMSTK_FORMAT_FILE['validation']
             },
             "colors": {
                 'allocationbg': self.RAMSTK_COLORS['allocationbg'],
                 'allocationfg': self.RAMSTK_COLORS['allocationbg'],
-                'failure_definitionbg': self.RAMSTK_COLORS['failure_definitionbg'],
-                'failure_definitionfg': self.RAMSTK_COLORS[
-                    'failure_definitionbg'],
+                'failure_definitionbg':
+                self.RAMSTK_COLORS['failure_definitionbg'],
+                'failure_definitionfg':
+                self.RAMSTK_COLORS['failure_definitionbg'],
                 'fmeabg': self.RAMSTK_COLORS['fmeabg'],
                 'fmeafg': self.RAMSTK_COLORS['fmeafg'],
                 "functionbg": self.RAMSTK_COLORS['functionbg'],

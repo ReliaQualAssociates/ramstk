@@ -1,3 +1,4 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.db.common.py is part of The RAMSTK Project
@@ -1003,15 +1004,13 @@ def _do_load_action_variables(
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :return: None
     :rtype: None
     """
-    for _record in site_db.session.query(RAMSTKCategory).\
-            filter(RAMSTKCategory.category_type == 'action').all():
+    for _record in site_db.session.query(RAMSTKCategory).filter(
+            RAMSTKCategory.category_type == 'action').all():
         _attributes = _record.get_attributes()
         site_configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
             _attributes['name'],
@@ -1036,10 +1035,8 @@ def _do_load_hardware_variables(
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :return: None
     :rtype: None
     """
@@ -1062,10 +1059,10 @@ def _do_load_hardware_variables(
             _modes = {}
             site_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                 _subcat.subcategory_id] = {}
-            for _mode in site_db.session.query(RAMSTKFailureMode).\
-                    filter(RAMSTKFailureMode.category_id == _record.category_id).\
-                    filter(RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id).\
-                    all():
+            for _mode in site_db.session.query(RAMSTKFailureMode).filter(
+                    RAMSTKFailureMode.category_id == _record.category_id
+            ).filter(RAMSTKFailureMode.subcategory_id ==
+                     _subcat.subcategory_id).all():
                 _modes[_mode.mode_id] = [
                     _mode.description,
                     _mode.mode_ratio,
@@ -1087,10 +1084,8 @@ def _do_load_incident_variables(
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :return: None
     :rtype: None
     """
@@ -1128,10 +1123,8 @@ def _do_load_miscellaneous_variables(
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :return: None
     :rtype: None
     """
@@ -1173,10 +1166,8 @@ def _do_load_pof_variables(
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :return: None
     :rtype: None
     """
@@ -1205,10 +1196,8 @@ def _do_load_requirement_variables(
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :return: None
     :rtype: None
     """
@@ -1238,10 +1227,8 @@ def _do_load_rpn_variables(
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :return: None
     :rtype: None
     """
@@ -1267,10 +1254,8 @@ def _do_load_severity(site_db: BaseDatabase,
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :return: None
     :rtype: None
     """
@@ -1289,10 +1274,8 @@ def _do_load_user_workgroups(
 
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :return: None
     :rtype: None
     """
@@ -1320,10 +1303,8 @@ def do_load_variables(site_db: BaseDatabase,
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :type site_db: :class:`ramstk.db.base.BaseDatabase`
     :param site_configuration: the RAMSTKSiteConfiguration instance whose
         variable is to be loaded.
-    :type site_configuration: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     :return: None
     :rtype: None
     """
