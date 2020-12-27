@@ -72,12 +72,12 @@ jobs:
           extra-mypy-options: ""
           extra-pylint-options: ""
 
-  lint-it:
-    name: Lint Code
+  type-check:
+    name: Check Code Typing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Lint code with mypy and pylint
+      - name: Check code typing with mypy
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
@@ -87,7 +87,7 @@ jobs:
           use-pycodestyle: false
           use-pydocstyle: false
           use-mypy: true
-          use-pylint: true
+          use-pylint: false
           use-flake8: false
           extra-black-options: ""
           extra-isort-options: ""
@@ -95,5 +95,31 @@ jobs:
           extra-pycodestyle-options: ""
           extra-pydocstyle-options: ""
           extra-mypy-options: "--config-file ./setup.cfg"
+          extra-pylint-options: ""
+          extra-flake8-options: ""
+
+  lint-check:
+    name: Check Code Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint code with pylint
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: false
+          use-pylint: true
+          use-flake8: false
+          extra-black-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: ""
           extra-pylint-options: "-j0 --rcfile=./setup.cfg --dummy-variables-rgx='__'"
           extra-flake8-options: ""
