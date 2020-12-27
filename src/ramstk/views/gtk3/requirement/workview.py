@@ -875,10 +875,9 @@ class GeneralData(RAMSTKWorkView):
                         prefix=_prefix)
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the stakeholder input's record ID.
+        """Set the record and parent ID.
 
-        :param attributes: the attributes dict for the selected stakeholder
-            input.
+        :param attributes: the attributes dict for the selected requirement.
         :return: None
         :rtype: None
         """
@@ -981,9 +980,17 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_requirement')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_requirement')
+        pub.subscribe(self._do_set_record_id, 'selected_requirement')
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the record and parent ID.
+
+        :param attributes: the attributes dict for the selected requirement.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['requirement_id']
+        self._parent_id = attributes['parent_id']
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement Analysis tab.
