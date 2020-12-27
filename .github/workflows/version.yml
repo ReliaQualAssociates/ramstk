@@ -36,6 +36,18 @@ jobs:
         with:
           current-version: "${{ steps.nextversion.outputs.version }}"
           version-fragment: "rc"
-      - name: Output new version
+      - name: Output next version
         run: |
           echo "Next Version: ${{ steps.bumpversion.outputs.next-version }}"
+      - name: Version release
+        id: nextversion2
+        uses: zwaldowski/semver-release-action@v1
+        with:
+          dry_run: true
+          bump: prerelease
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Output next version 2
+        run: |
+          echo "Next Version 2: ${{ steps.nextversion2.version }}"
+          echo "Optimistic Version 2: ${{ steps.nextversion2.version_optimistic }}"
+          echo "Version Tag 2: ${{ steps.nextversion2.version_tag }}"
