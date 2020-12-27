@@ -1,4 +1,4 @@
-# pylint: disable=unused-import
+# pylint: disable=unused-import, wrong-import-position
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.failure_definition.__init__.py is part of The RAMSTK

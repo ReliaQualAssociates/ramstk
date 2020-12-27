@@ -137,7 +137,9 @@ class StakeholderPanel(RAMSTKPanel):
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
         _cellmodel.append([""])
-        for _index, _key in enumerate(stakeholders):
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(stakeholders):
             _group = stakeholders[_key]
             _cellmodel.append([_group])
 

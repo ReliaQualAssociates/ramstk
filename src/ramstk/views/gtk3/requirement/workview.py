@@ -147,7 +147,9 @@ class GeneralDataPanel(RAMSTKPanel):
         :rtype: None
         """
         _owners = []
-        for _index, _key in enumerate(workgroups):
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(workgroups):
             _owners.append(workgroups[_key])
         self.cmbOwner.do_load_combo(_owners)
 

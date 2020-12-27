@@ -130,6 +130,6 @@ class RAMSTKPanel(RAMSTKFrame):
                          row: Gtk.TreeIter) -> Gtk.TreeIter:
         ...
 
-    @staticmethod
-    def __do_read_text(entry: RAMSTKEntry, keys: List[str]) -> Dict[str, Any]:
+    def __do_read_text(self, entry: RAMSTKEntry,
+                       keys: List[str]) -> Dict[str, Any]:
         ...
