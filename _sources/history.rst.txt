@@ -1,4 +1,5 @@
-===============
+***************
 Project History
-===============
-.. mdinclude:: ../CHANGELOG.md
+***************
+
+.. include:: ../CHANGELOG.md
