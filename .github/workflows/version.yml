@@ -41,7 +41,7 @@ jobs:
           echo "Next Version: ${{ steps.bumpversion.outputs.next-version }}"
       - name: Version release
         id: nextversion2
-        uses: zwaldowski/semver-release-action@v1
+        uses: zwaldowski/semver-release-action@v2
         with:
           dry_run: true
           bump: prerelease
