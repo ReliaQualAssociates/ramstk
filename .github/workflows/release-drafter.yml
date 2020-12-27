@@ -1,0 +1,31 @@
+name: Draft Release
+
+on:
+  push:
+    branches:
+      - release/v*
+
+jobs:
+  update_release_draft:
+    name: Update the Draft Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release_notes_preview:
+    name: Release Notes Preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - run: |
+          git fetch --prune --unshallow --tags
+      - name: Create Release Notes Preview
+        uses: snyk/release-notes-preview@v1.6.2
+        with:
+          releaseBranch: master
+        env:
+          GITHUB_PR_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

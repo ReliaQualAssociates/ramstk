@@ -7,13 +7,13 @@ template: |
 categories:
   - title: 'Bug Fixes'
     labels:
-      - 'type:bug'
+      - 'bug'
   - title: 'Features'
     labels:
-      - 'type:enhancement'
+      - 'enhancement'
   - title: 'Maintenance'
     labels:
-      - 'type:quality'
+      - 'quality'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
