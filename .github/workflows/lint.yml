@@ -1,25 +1,16 @@
-name: Pull Request QA Workflow
+name: Lint and Style Check Code
 
 on:
+  push:
+    branches:
+      - release/v*
+      - master
   pull_request:
     branches:
       - release/v*
       - master
-    types:
-      - opened
-      - reopened
-      - edited
-      - synchronize
 
 jobs:
-  good_pr_title:
-    name: Ensure Semantic PR Title
-    runs-on: ubuntu-latest
-    steps:
-      - uses: aslafy-z/conventional-pr-title-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   bandit:
     name: Check for Security Vulnerabilities
     runs-on: ubuntu-latest
@@ -35,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Lint files using pylint, pycodestyle, mypy, and isort
+      - name: Lint files and check styles
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
