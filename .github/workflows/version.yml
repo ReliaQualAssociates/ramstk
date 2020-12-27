@@ -1,4 +1,4 @@
-name: Determine Next SemVer
+name: Bump Version
 
 on:
   pull_request:
@@ -10,23 +10,32 @@ jobs:
     name: Bump Semantic Version
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Determine Implied Version
-        id: gitversion
+      - name: Determine next implied version
+        id: nextversion
         uses: paulhatch/semantic-version@v3.2
         with:
           branch: "develop"
           format: "${major}.${minor}.${patch}-rc${increment}"
           short_tags: false
-      - name: Display Implied Version Outputs
+      - name: Output new version
         run: |
-          echo "Major: ${{ steps.gitversion.outputs.major }}"
-          echo "Minor: ${{ steps.gitversion.outputs.minor }}"
-          echo "Patch: ${{ steps.gitversion.outputs.patch }}"
-          echo "Increment: ${{ steps.gitversion.outputs.increment }}"
-          echo "Version: ${{ steps.gitversion.outputs.version }}"
-          echo "Version Tag: ${{ steps.gitversion.outputs.version_tag }}"
-          echo "Changed: ${{ steps.gitversion.outputs.changed }}"
+          echo "Major: ${{ steps.nextversion.outputs.major }}"
+          echo "Minor: ${{ steps.nextversion.outputs.minor }}"
+          echo "Patch: ${{ steps.nextversion.outputs.patch }}"
+          echo "Increment: ${{ steps.nextversion.outputs.increment }}"
+          echo "Version: ${{ steps.nextversion.outputs.version }}"
+          echo "Version Tag: ${{ steps.nextversion.outputs.version_tag }}"
+          echo "Changed: ${{ steps.nextversion.outputs.changed }}"
+      - name: Bump release version
+        id: bumpversion
+        uses: christian-draeger/increment-semantic-version@1.0.2
+        with:
+          current-version: "${{ steps.nextversion.outputs.version }}"
+          version-fragment: "rc"
+      - name: Output new version
+        run: |
+          echo "Next Version: ${{ steps.bumpversion.outputs.next-version }}"
