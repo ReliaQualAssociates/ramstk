@@ -491,11 +491,17 @@ class RAMSTKPanel(RAMSTKFrame):
         :return: None
         """
         try:
-            _key = self._dic_attribute_keys[self._lst_col_order[position]][0]
-            self.tvwTreeView.do_edit_cell(cell, path, new_text, position)
+            _keys = list(self.tvwTreeView.position.keys())
+            _vals = list(self.tvwTreeView.position.values())
+            _col = _keys[_vals.index(position)]
+            _key = self.tvwTreeView.korder[_col]
+            _position = self.tvwTreeView.position[_col]
+
+            _new_text = self.tvwTreeView.do_edit_cell(cell, path, new_text,
+                                                      _position)
             pub.sendMessage(message,
                             node_id=[self._record_id, ''],
-                            package={_key: new_text})
+                            package={_key: _new_text})
         except KeyError:
             pass
 
@@ -774,12 +780,12 @@ class RAMSTKPanel(RAMSTKFrame):
 
         # The root node will have no data package, so this indicates the need
         # to clear the tree in preparation for the load.
-        if node.tag == self._module:
-            self.do_clear_tree()
-        else:
+        try:
             _method = self._dic_row_loader[node.tag]
             # noinspection PyArgumentList
             _new_row = _method(node, row)
+        except KeyError:
+            self.do_clear_tree()
 
         return _new_row
 

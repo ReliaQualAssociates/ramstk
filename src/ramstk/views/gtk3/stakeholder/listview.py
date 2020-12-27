@@ -28,7 +28,7 @@ class StakeholderPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'stakeholders'
+    _module = 'stakeholder'
 
     # Define public dictionary class attributes.
 
@@ -44,7 +44,7 @@ class StakeholderPanel(RAMSTKPanel):
         self._dic_attribute_keys = {
             0: ['revision_id', 'integer'],
             1: ['stakeholder_id', 'integer'],
-            2: ['customer_rank', 'string'],
+            2: ['customer_rank', 'integer'],
             3: ['description', 'string'],
             4: ['group', 'string'],
             5: ['improvement', 'float'],
@@ -150,7 +150,6 @@ class StakeholderPanel(RAMSTKPanel):
             'changed'] = self.tvwTreeView.selection.connect(
                 'changed', self._on_row_change)
 
-        _idx = 2
         for _key in [
                 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9',
                 'col10', 'col11', 'col12', 'col13', 'col14', 'col15'
@@ -158,9 +157,9 @@ class StakeholderPanel(RAMSTKPanel):
             _cell = self.tvwTreeView.get_column(
                 self.tvwTreeView.position[_key]).get_cells()[0]
             _cell.connect('edited',
-                          super().on_cell_edit, _idx,
+                          super().on_cell_edit,
+                          self.tvwTreeView.position[_key],
                           'lvw_editing_stakeholder')
-            _idx += 1
 
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
         """Set properties of the RAMSTKPanel() widgets.
@@ -312,7 +311,7 @@ class Stakeholders(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'stakeholders'
+    _module = 'stakeholders'
     _tablabel = "<span weight='bold'>" + _("Stakeholder\nInputs") + "</span>"
     _tabtooltip = _("Displays stakeholder inputs for the selected revision.")
     _view_type = 'list'
