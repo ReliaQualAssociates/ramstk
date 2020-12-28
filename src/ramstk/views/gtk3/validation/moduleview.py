@@ -8,7 +8,7 @@
 """RAMSTK Validation GTK3 module view."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -83,6 +83,8 @@ class ValidationPanel(RAMSTKPanel):
         }
 
         # Initialize private list class attributes.
+        self._lst_measurement_units: List[str] = []
+        self._lst_verification_types: List[str] = []
 
         # Initialize private scalar class attributes.
         self._title = _("Verification Task List")
@@ -104,6 +106,49 @@ class ValidationPanel(RAMSTKPanel):
         pub.subscribe(super().on_delete, 'succeed_delete_validation')
 
         pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+
+    def do_load_measurement_units(
+            self, measurement_unit: Dict[int, Tuple[str, str]]) -> None:
+        """Load the verification task measurement unit list.
+
+        :param measurement_unit: the dict containing the units of measure.
+        :return: None
+        """
+        self._lst_measurement_units = [""]
+
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position['col5']).get_cells()[0]
+        _cell.set_property('has-entry', False)
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        _cellmodel.append([""])
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(measurement_unit):
+            self._lst_measurement_units.append(measurement_unit[_key][1])
+            _cellmodel.append([measurement_unit[_key][1]])
+
+    def do_load_verification_types(
+            self, verification_type: Dict[int, Tuple[str, str]]) -> None:
+        """Load the verification task type list.
+
+        :param verification_type: the dict containing the verification task
+            types.
+        :return: None
+        """
+        self._lst_verification_types = [""]
+
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position['col3']).get_cells()[0]
+        _cell.set_property('has-entry', False)
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        _cellmodel.append([""])
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(verification_type):
+            self._lst_verification_types.append(verification_type[_key][1])
+            _cellmodel.append([verification_type[_key][1]])
 
     def _on_module_switch(self, module: str = '') -> None:
         """Respond to changes in selected Module View module (tab).
@@ -161,12 +206,15 @@ class ValidationPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
+        _measurement_unit = self._lst_measurement_units[
+            _entity.measurement_unit]
+        _task_type = self._lst_verification_types[_entity.task_type]
+
         _attributes = [
             _entity.revision_id, _entity.validation_id, _entity.description,
-            _entity.task_type, _entity.task_specification,
-            _entity.measurement_unit, _entity.acceptable_minimum,
-            _entity.acceptable_mean, _entity.acceptable_maximum,
-            _entity.acceptable_variance,
+            _task_type, _entity.task_specification, _measurement_unit,
+            _entity.acceptable_minimum, _entity.acceptable_mean,
+            _entity.acceptable_maximum, _entity.acceptable_variance,
             str(_entity.date_start),
             str(_entity.date_end), _entity.status, _entity.time_minimum,
             _entity.time_average, _entity.time_maximum, _entity.time_mean,
@@ -320,6 +368,10 @@ class ModuleView(RAMSTKModuleView):
         super().make_ui()
 
         self._pnlPanel.do_set_properties()
+        self._pnlPanel.do_load_measurement_units(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS)
+        self._pnlPanel.do_load_verification_types(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE)
         self._pnlPanel.do_set_callbacks()
         self._pnlPanel.do_set_cell_callbacks(
             'mvw_editing_validation',

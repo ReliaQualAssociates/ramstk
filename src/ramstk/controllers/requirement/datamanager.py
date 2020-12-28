@@ -100,9 +100,9 @@ class DataManager(RAMSTKDataManager):
                 ).f_code.co_name
                 pub.sendMessage(
                     'fail_create_requirement_code',
-                    error_message=('No data package found for '
+                    error_message=('{1}: No data package found for '
                                    'requirement ID {0:s}.').format(
-                                       str(node_id)),
+                                       str(node_id), _method_name),
                 )
 
     def do_get_tree(self) -> None:
@@ -219,7 +219,7 @@ class DataManager(RAMSTKDataManager):
             # Delete the children (if any), then the parent node that was
             # passed.
             for _child in self.tree.children(node_id):
-                super().do_delete(node_id, 'requirement')
+                super().do_delete(_child.identifier, 'requirement')
             super().do_delete(node_id, 'requirement')
 
             self.tree.remove_node(node_id)

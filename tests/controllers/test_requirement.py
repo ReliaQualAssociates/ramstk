@@ -256,7 +256,7 @@ class TestGetterSetter():
               "broadcast")
 
     def on_fail_create_requirement_code(self, error_message):
-        assert error_message == 'No data package found for requirement ID 10.'
+        assert error_message == 'do_create_code: No data package found for requirement ID 10.'
         print("\033[36m\nfail_create_requirement_code topic was broadcast")
 
     @pytest.mark.unit
