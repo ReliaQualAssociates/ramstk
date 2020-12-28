@@ -186,24 +186,24 @@ class EditOptions(RAMSTKDialog):
         :return: None
         :rtype: None
         """
-        #// TODO: Add code to record user creating program database.
-        #//
-        #// There should be code to record in the RAMSTKProgramInfo table
-        #// the logged in user who creates the database.  This will require
-        #// a function/method to identify the logged in user as well as a
-        #// function/method to write this to the new database.
+        # ISSUE: Add code to record user creating program database.
+        # //
+        # // There should be code to record in the RAMSTKProgramInfo table
+        # // the logged in user who creates the database.  This will require
+        # // a function/method to identify the logged in user as well as a
+        # // function/method to write this to the new database.
         # //
         # // labels: status:globalbacklog, severity:normal, type:enhancement
 
-        #// TODO: Add code to record user updating program database.
-        #//
-        #// There should be code to record in the RAMSTKProgramInfo table
-        #// the logged in user who is updating the database.  This will
-        #// require a function/method to identify the logged in user as well
-        #// as a function/method to write this to the database everytime a
-        #// datamanager successfully updates a database table.
-        #//
-        #// labels: status:globalbacklog, severity:normal, type:enhancement
+        # ISSUE: Add code to record user updating program database.
+        # //
+        # // There should be code to record in the RAMSTKProgramInfo table
+        # // the logged in user who is updating the database.  This will
+        # // require a function/method to identify the logged in user as well
+        # // as a function/method to write this to the database everytime a
+        # // datamanager successfully updates a database table.
+        # //
+        # // labels: status:globalbacklog, severity:normal, type:enhancement
         try:
             _key = self._dic_keys[index]
         except KeyError as _error:

@@ -211,11 +211,11 @@ def do_read_user_configuration(
 
 def the_one_ring() -> None:
     """Execute the main function for RAMSTK."""
-    #// TODO: Implement splash screen.
-    #//
-    #// Add a splash screen to the launch of RAMSTK.
-    #//
-    #// labels: globalbacklog, normal
+    # ISSUE: Implement splash screen.
+    # //
+    # // Add a splash screen to the launch of RAMSTK.
+    # //
+    # // labels: globalbacklog, normal
     # splScreen = SplashScreen()
 
     # Read the user configuration file and create a logger.  The user
