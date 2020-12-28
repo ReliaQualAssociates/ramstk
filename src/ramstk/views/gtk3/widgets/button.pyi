@@ -51,6 +51,9 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
     def __init__(self) -> None:
         ...
 
+    def do_get_text(self) -> float:
+        ...
+
     def do_set_properties(self, **kwargs: Any) -> None:
         ...
 
