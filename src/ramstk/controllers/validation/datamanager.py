@@ -202,9 +202,13 @@ class DataManager(RAMSTKDataManager):
                 error_message=_error_msg,
             )
 
-    def _do_insert_validation(self) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _do_insert_validation(self, parent_id: int) -> None:
         """Add a new validation task.
 
+        :param parent_id: unused in this method, but required for consistent
+            argument list to _do_insert_{0} methods.
         :return: None
         :rtype: None
         """

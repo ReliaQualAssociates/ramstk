@@ -291,7 +291,7 @@ class TestInsertMethods():
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._do_insert_validation()
+        DUT._do_insert_validation(parent_id=0)
 
         assert isinstance(
             DUT.tree.get_node(4).data['validation'], RAMSTKValidation)
@@ -313,7 +313,7 @@ class TestInsertMethods():
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._revision_id = 30
-        DUT._do_insert_validation()
+        DUT._do_insert_validation(parent_id=0)
 
         pub.unsubscribe(self.on_fail_insert_validation_db_error,
                         'fail_insert_validation')
