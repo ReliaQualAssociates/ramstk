@@ -54,7 +54,7 @@ class DataManager(RAMSTKDataManager):
                       'request_set_validation_attributes')
         pub.subscribe(super().do_set_attributes, 'mvw_editing_validation')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_validation')
-        pub.subscribe(super().do_update_all, 'request_update_all_validation')
+        pub.subscribe(super().do_update_all, 'request_update_all_validations')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_validation')

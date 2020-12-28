@@ -116,7 +116,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update, 'request_update_validation')
         assert pub.isSubscribed(DUT.do_update_all,
-                                'request_update_all_validation')
+                                'request_update_all_validations')
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_validation_attributes')
         assert pub.isSubscribed(DUT.do_get_tree,
