@@ -3,15 +3,49 @@
 # The RAMS ToolKit (RAMSTK)
 > A toolkit for **R**eliability, **A**vailability, **M**aintainability, and **S**afety (RAMS) analyses.
 
-[![Github](https://img.shields.io/github/release/ReliaQualAssociates/ramstk/all.svg)](https://github.com/ReliaQualAssociates/ramstk/releases)
-[![PyPI](https://img.shields.io/pypi/v/RAMSTK.svg)](https://pypi.python.org/pypi/RAMSTK/)
-[![Build Status](https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=master)](https://travis-ci.org/ReliaQualAssociates/ramstk)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/20d0c5f5a2a844fea078b1e9105efdec)](https://www.codacy.com/gh/ReliaQualAssociates/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ReliaQualAssociates/ramstk&amp;utm_campaign=Badge_Grade)
-[![Coverage Status](https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master)](https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master)
-[![codecov](https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg)](https://codecov.io/gh/ReliaQualAssociates/ramstk)
-[![CodeFactor](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge)](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk)
-[![BCH compliance](https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master)](https://bettercodehub.com/)
-[![Documentation Status](https://readthedocs.org/projects/ramstk/badge/?version=latest)](https://ramstk.readthedocs.io/en/latest/?badge=latest)
+<table>
+    <tr>
+        <th>Documentation</th>
+        <td>
+            <a href="https://ramstk.readthedocs.io/en/latest/?badge=latest
+            "><img alt="Documentation Status"
+               src="https://readthedocs.org/projects/ramstk/badge/?version
+               =latest"></a>
+        </td>
+    </tr>
+    <tr>
+        <th>Tests</th>
+        <td>
+            <a href="https://travis-ci.org/ReliaQualAssociates/ramstk"><img alt="Travis CI Status"
+            src="https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=master"></a>
+            <img alt="CircleCI" src="https://img.shields.io/circleci/build/github/ReliaQualAssociates/ramstk/master">
+            <a href="https://coveralls.io/github/ReliaQualAssociates/ramstk
+            ?branch=master"><img alt="Coveralls Coverage"
+            src="https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master"></a>
+            <a href="https://codecov.io/gh/ReliaQualAssociates/ramstk"><img alt="Codecov Coverage"
+            src="https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg"></a>
+        </td>
+    </tr>
+    <tr>
+        <th>Quality</th>
+        <td>
+            <a href="https://www.codefactor.io/repository/github/reliaqualassociates/ramstk"><img alt="Code Factor"
+            src="https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge"></a>
+            <a href="https://bettercodehub.com/"><img alt="Better Code Hub"
+            src="https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master"></a>
+            <a href="https://www.deepcode.ai/app/gh/ReliaQualAssociates/ramstk/_/dashboard?utm_content=gh%2FReliaQualAssociates%2Framstk"><img alt="Deep Code" src="https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IlJlbGlhUXVhbEFzc29jaWF0ZXMiLCJyZXBvMSI6InJhbXN0ayIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjI1MTA4LCJpYXQiOjE2MDkxMzcwNTl9.R5P6VLkyK1LK6Jc5PjJ8QrLRq6zNuVxnzdjZCJbH7_k">
+        </td>
+    </tr>
+    <tr>
+        <th>Packages</th>
+        <td>
+            <a href="https://github.com/ReliaQualAssociates/ramstk/releases"><img alt="GitHub Release"
+            src="https://img.shields.io/github/release/ReliaQualAssociates/ramstk/all.svg"></a>
+            <a href="https://pypi.python.org/pypi/RAMSTK/"><img alt="PyPi Release"
+            src="https://img.shields.io/pypi/v/RAMSTK.svg"></a>
+        </td>
+    </tr>
+</table>
 
 ## 🚩 Table of Contents
 - [Features](#-features)
