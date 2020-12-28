@@ -1,11 +1,11 @@
-# pylint: disable=unused-import
+# pylint: disable=unused-import, wrong-import-position
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.revision.__init__.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.validation.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 revision package."""
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK GTK3 validation package."""
 
 ATTRIBUTE_KEYS = {
     0: ['description', 'string'],
@@ -29,7 +29,6 @@ ATTRIBUTE_KEYS = {
 }
 
 # RAMSTK Local Imports
-from .listview import ValidationRequirement as mtxValidationRequirement
 from .moduleview import ModuleView as mvwValidation
 from .workview import BurndownCurve as wvwBurndownCurve
 from .workview import GeneralData as wvwValidationGD
