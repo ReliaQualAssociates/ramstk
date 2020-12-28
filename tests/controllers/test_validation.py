@@ -427,14 +427,14 @@ class TestUpdateMethods():
         print("\033[35m\nfail_update_validation topic was broadcast")
 
 
-    @pytest.mark.integration
-    def test_do_update_data_manager(self, test_program_dao):
+    @pytest.mark.unit
+    def test_do_update_data_manager(self, mock_program_dao):
         """ do_update() should return a zero error code on success. """
         pub.subscribe(self.on_succeed_update_validation,
                       'succeed_update_validation')
 
         DUT = dmValidation()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
         _validation = DUT.do_select(1, 'validation')

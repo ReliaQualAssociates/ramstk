@@ -1,3 +1,4 @@
+# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.controllers.validation.analysismanager.py is part of The RAMSTK
@@ -237,7 +238,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         self._tree = tree
 
-        pub.sendMessage('request_get_status_tree', )
+        pub.sendMessage('request_get_program_status_tree', )
 
     def _do_select_actual_status(self) -> pd.DataFrame:
         """Select the actual program status remaining time and cost.
