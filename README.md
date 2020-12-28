@@ -11,6 +11,7 @@
 [![codecov](https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg)](https://codecov.io/gh/ReliaQualAssociates/ramstk)
 [![CodeFactor](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge)](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk)
 [![BCH compliance](https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master)](https://bettercodehub.com/)
+[![Documentation Status](https://readthedocs.org/projects/ramstk/badge/?version=latest)](https://ramstk.readthedocs.io/en/latest/?badge=latest)
 
 ## 🚩 Table of Contents
 - [Features](#-features)
@@ -128,7 +129,10 @@ RAMSTK installs a *.desktop file and can be found where ever applications in the
 
 ## Documentation
 
-Documentation for RAMSTK can be found [here](https://reliaqualassociates.github.io/ramstk/).  You should check it out!
+Documentation for RAMSTK can be found [here](https://reliaqualassociates.github.io/ramstk/).
+It's also available at [Read the Docs](https://ramstk.readthedocs.io/en/latest)
+
+You should check it out!
 
 ## 💬 Contributing
 

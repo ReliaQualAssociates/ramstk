@@ -1,10 +1,11 @@
+# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.validation.aalysismanager.py is part of The RAMSTK
+#       ramstk.controllers.validation.analysismanager.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Controller Package analysis manager."""
 
 # Standard Library Imports
@@ -57,7 +58,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().on_get_all_attributes,
                       'succeed_get_all_validation_attributes')
-        pub.subscribe(super().on_get_tree, 'succeed_get_validation_tree')
+        pub.subscribe(super().on_get_tree, 'succeed_get_validations_tree')
 
         pub.subscribe(self.do_calculate_plan, 'request_calculate_plan')
 
@@ -65,7 +66,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_validation_tasks')
         pub.subscribe(self._do_calculate_task,
                       'request_calculate_validation_task')
-        pub.subscribe(self._do_request_trees, 'succeed_retrieve_validations')
+        pub.subscribe(self._do_request_status_tree,
+                      'succeed_retrieve_validations')
         pub.subscribe(self._on_get_status_tree, 'succeed_get_status_tree')
 
     def do_calculate_plan(self) -> None:
@@ -80,7 +82,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             burndown hours for the entire validation effort.
         """
         _dic_plan = {}
-        _dic_planned = {}   # type: ignore
+        _dic_planned = {}  # type: ignore
         _time_ll = 0.0
         _time_mean = 0.0
         _time_ul = 0.0
@@ -124,6 +126,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # ultimate DataFrame() will contain *remaining* total task hours for
         # the validation effort, not the total task hours planned to
         # complete on each day.
+        # noinspection PyTypeChecker
         _planned = pd.DataFrame(_dic_planned.values(),
                                 index=_dic_planned.keys(),
                                 columns=['lower', 'mean',
@@ -136,11 +139,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _planned = _planned.sort_index()
 
         _dic_plan['plan'] = _planned
-        _dic_plan['assessed'] = self._do_select_assessed()
-        _dic_plan['actual'] = self._do_select_actuals()
+        _dic_plan['assessed'] = self._do_select_assessment_targets()
+        _dic_plan['actual'] = self._do_select_actual_status()
 
-        pub.sendMessage('succeed_calculate_plan', plan=_dic_plan)
-        pub.sendMessage('succeed_calculate_validation_plan')
+        pub.sendMessage(
+            'succeed_calculate_plan',
+            plan=_dic_plan,
+        )
 
     def _do_calculate_all_tasks(self) -> None:
         """Calculate mean, standard error, and bounds on all task's time/cost.
@@ -168,9 +173,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
                     _node.data['validation'].time_average *
                     (1.0 - _node.data['validation'].status / 100.0))
 
-        pub.sendMessage('succeed_calculate_all_tasks',
-                        cost_remaining=_program_cost_remaining,
-                        time_remaining=_program_time_remaining)
+        pub.sendMessage(
+            'succeed_calculate_all_tasks',
+            cost_remaining=_program_cost_remaining,
+            time_remaining=_program_time_remaining,
+        )
 
     def _do_calculate_task(self, node_id: int) -> None:
         """Calculate mean, standard error, and bounds on task time and cost.
@@ -187,31 +194,43 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _node.data['validation'].calculate_task_time()
         _node.data['validation'].calculate_task_cost()
 
-        pub.sendMessage('request_set_validation_attributes',
-                        node_id=[node_id, -1],
-                        package={'time_ll': _node.data['validation'].time_ll})
         pub.sendMessage(
             'request_set_validation_attributes',
             node_id=[node_id, -1],
-            package={'time_mean': _node.data['validation'].time_mean})
-        pub.sendMessage('request_set_validation_attributes',
-                        node_id=[node_id, -1],
-                        package={'time_ul': _node.data['validation'].time_ul})
-        pub.sendMessage('request_set_validation_attributes',
-                        node_id=[node_id, -1],
-                        package={'cost_ll': _node.data['validation'].cost_ll})
+            package={'time_ll': _node.data['validation'].time_ll},
+        )
         pub.sendMessage(
             'request_set_validation_attributes',
             node_id=[node_id, -1],
-            package={'cost_mean': _node.data['validation'].cost_mean})
-        pub.sendMessage('request_set_validation_attributes',
-                        node_id=[node_id, -1],
-                        package={'cost_ul': _node.data['validation'].cost_ul})
-        pub.sendMessage('succeed_calculate_validation_task',
-                        node_id=[node_id, -1])
+            package={'time_mean': _node.data['validation'].time_mean},
+        )
+        pub.sendMessage(
+            'request_set_validation_attributes',
+            node_id=[node_id, -1],
+            package={'time_ul': _node.data['validation'].time_ul},
+        )
+        pub.sendMessage(
+            'request_set_validation_attributes',
+            node_id=[node_id, -1],
+            package={'cost_ll': _node.data['validation'].cost_ll},
+        )
+        pub.sendMessage(
+            'request_set_validation_attributes',
+            node_id=[node_id, -1],
+            package={'cost_mean': _node.data['validation'].cost_mean},
+        )
+        pub.sendMessage(
+            'request_set_validation_attributes',
+            node_id=[node_id, -1],
+            package={'cost_ul': _node.data['validation'].cost_ul},
+        )
+        pub.sendMessage(
+            'succeed_calculate_validation_task',
+            node_id=[node_id, -1],
+        )
 
-    def _do_request_trees(self, tree: treelib.Tree) -> None:
-        """Send the request to retrieve the Validation and Status trees.
+    def _do_request_status_tree(self, tree: treelib.Tree) -> None:
+        """Send the request to retrieve the Program Status tree.
 
         :param tree: the Validation treelib Tree().
         :return: None
@@ -219,10 +238,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         self._tree = tree
 
-        pub.sendMessage('request_get_validation_tree')
-        pub.sendMessage('request_get_status_tree')
+        pub.sendMessage('request_get_program_status_tree', )
 
-    def _do_select_actuals(self) -> pd.DataFrame:
+    def _do_select_actual_status(self) -> pd.DataFrame:
         """Select the actual program status remaining time and cost.
 
         :return: a pandas DataFrame() containing the actual status update
@@ -236,11 +254,12 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _node.data['status'].time_remaining
             ]
 
+        # noinspection PyTypeChecker
         return pd.DataFrame(_dic_actual.values(),
                             index=_dic_actual.keys(),
                             columns=['cost', 'time']).sort_index()
 
-    def _do_select_assessed(self) -> pd.DataFrame:
+    def _do_select_assessment_targets(self) -> pd.DataFrame:
         """Select the targets for all tasks of Reliability Assessment type.
 
         :return: _assessed; a pandas DataFrame() containing the assessment
@@ -256,6 +275,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                         _node.data['validation'].acceptable_maximum
                     ]
 
+        # noinspection PyTypeChecker
         return pd.DataFrame(_dic_assessed.values(),
                             index=_dic_assessed.keys(),
                             columns=['lower', 'mean', 'upper']).sort_index()
@@ -263,8 +283,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _on_get_status_tree(self, stree: treelib.Tree) -> None:
         """Set the analysis manager's status treelib Tree().
 
-        :param stree: the data manager's status treelib Tree().
-        :type stree: :class:`treelib.Tree`
+        :param stree: the program status data manager's treelib Tree().
         :return: None
         :rtype: None
         """

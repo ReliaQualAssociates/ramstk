@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.validation.datamanager.py is part of The RAMSTK
+#       ramstk.controllers.program_status.datamanager.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Validation Package Data Model."""
+"""Program Status Package Data Model."""
 
 # Standard Library Imports
 import inspect
+from datetime import date
 from typing import Any, Dict
 
 # Third Party Imports
@@ -17,25 +18,25 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import RAMSTKValidation
+from ramstk.models.programdb import RAMSTKProgramStatus
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Validation data manager.
+    """Contain the attributes and methods of the Program Status data manager.
 
-    This class manages the validation data from the RAMSTKValidation and
-    RAMSKTProgramStatus data models.
+    This class manages the validation data from the RAMSTKProgram Status
+    and RAMSKTProgramStatus data models.
     """
 
-    _tag: str = 'validations'
+    _tag: str = 'program_status'
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Validation data manager instance."""
+        """Initialize a Program Status data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
         self._dic_status: Dict[Any, float] = {}
-        self._pkey = {'validation': ['revision_id', 'validation_id']}
+        self._pkey = {'status': ['revision_id', 'status_id']}
 
         # Initialize private list attributes.
 
@@ -49,94 +50,87 @@ class DataManager(RAMSTKDataManager):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes,
-                      'request_get_validation_attributes')
+                      'request_get_program_status_attributes')
         pub.subscribe(super().do_set_attributes,
-                      'request_set_validation_attributes')
-        pub.subscribe(super().do_set_attributes, 'mvw_editing_validation')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_validation')
-        pub.subscribe(super().do_update_all, 'request_update_all_validation')
+                      'request_set_program_status_attributes')
+        pub.subscribe(super().do_update_all,
+                      'request_update_all_program_status')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_update, 'request_update_validation')
-        pub.subscribe(self.do_get_tree, 'request_get_validations_tree')
+        pub.subscribe(self.do_update, 'request_update_program_status')
+        pub.subscribe(self.do_get_tree, 'request_get_program_status_tree')
 
-        pub.subscribe(self._do_delete, 'request_delete_validation')
-        pub.subscribe(self._do_insert_validation, 'request_insert_validation')
+        pub.subscribe(self._do_delete, 'request_delete_program_status')
+        pub.subscribe(self._do_insert_program_status,
+                      'request_insert_program_status')
 
     def do_get_tree(self) -> None:
-        """Retrieve the validation treelib Tree.
+        """Retrieve the program status treelib Tree.
 
         :return: None
         :rtype: None
         """
-        pub.sendMessage(
-            'succeed_get_validations_tree',
-            tree=self.tree,
-        )
+        pub.sendMessage('succeed_get_program_status_tree', tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all Validation BoM data from the RAMSTK Program database.
+        """Retrieve all Program Status data from the RAMSTK Program database.
 
-        :param attributes: the attributes for the selected Requirement.
+        :param attributes: the attributes for the selected Revision.
         :return: None
         :rtype: None
         """
         self._revision_id = attributes['revision_id']
 
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _validation in self.dao.do_select_all(
-                RAMSTKValidation,
+        for _status in self.dao.do_select_all(
+                RAMSTKProgramStatus,
                 key=['revision_id'],
                 value=[self._revision_id],
-                order=RAMSTKValidation.validation_id):
+                order=RAMSTKProgramStatus.date_status):
 
-            self.tree.create_node(tag='validation',
-                                  identifier=_validation.validation_id,
+            self._dic_status[_status.date_status] = _status.time_remaining
+
+            self.tree.create_node(tag='status',
+                                  identifier=_status.status_id,
                                   parent=self._root,
-                                  data={'validation': _validation})
+                                  data={'status': _status})
 
         self.last_id = max(self.tree.nodes.keys())
 
-        pub.sendMessage(
-            'succeed_retrieve_validations',
-            tree=self.tree,
-        )
+        pub.sendMessage('succeed_retrieve_program_status', tree=self.tree)
 
     def do_update(self, node_id):
         """Update record associated with node ID in RAMSTK Program database.
 
-        :param node_id: the validation ID of the validation item to save.
+        :param node_id: the status ID of the program status item to save.
         :return: None
         :rtype: None
         """
         try:
-            self.dao.do_update(self.tree.get_node(node_id).data['validation'])
+            self.dao.do_update(self.tree.get_node(node_id).data['status'])
 
             pub.sendMessage(
-                'succeed_update_validation',
+                'succeed_update_program_status',
                 tree=self.tree,
             )
         except AttributeError:
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg: str = (
-                '{1}: Attempted to save non-existent validation task with '
-                'validation ID {0}.').format(str(node_id), _method_name)
+                '{1}: Attempted to save non-existent program status with '
+                'status ID {0}.').format(str(node_id), _method_name)
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_validation',
+                'fail_update_program_status',
                 error_message=_error_msg,
             )
         except KeyError:
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
-            _error_msg = ('{1}: No data package found for validation task ID '
+            _error_msg = ('{1}: No data package found for program status ID '
                           '{0}.').format(str(node_id), _method_name)
             pub.sendMessage(
                 'do_log_debug',
@@ -144,7 +138,7 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_validation',
+                'fail_update_program_status',
                 error_message=_error_msg,
             )
         except TypeError:
@@ -152,7 +146,7 @@ class DataManager(RAMSTKDataManager):
                 _method_name: str = inspect.currentframe(  # type: ignore
                 ).f_code.co_name
                 _error_msg = ('{1}: The value for one or more attributes for '
-                              'validation task ID {0} was the wrong '
+                              'program status ID {0} was the wrong '
                               'type.').format(str(node_id), _method_name)
                 pub.sendMessage(
                     'do_log_debug',
@@ -160,12 +154,12 @@ class DataManager(RAMSTKDataManager):
                     message=_error_msg,
                 )
                 pub.sendMessage(
-                    'fail_update_validation',
+                    'fail_update_program_status',
                     error_message=_error_msg,
                 )
 
     def _do_delete(self, node_id: int) -> None:
-        """Remove a Validation task.
+        """Remove a Program Status task.
 
         :param node_id: the node (validation) ID to be removed from the
             RAMSTK Program database.
@@ -177,20 +171,17 @@ class DataManager(RAMSTKDataManager):
             logger and a user dialog.
         """
         try:
-            super().do_delete(node_id, 'validation')
+            super().do_delete(node_id, 'status')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
-            pub.sendMessage(
-                'succeed_delete_validation',
-                tree=self.tree,
-            )
+            pub.sendMessage('succeed_delete_program_status', tree=self.tree)
         except (AttributeError, DataAccessError):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg: str = (
-                '{1}: Attempted to delete non-existent validation task ID '
+                '{1}: Attempted to delete non-existent program status ID '
                 '{0}.').format(str(node_id), _method_name)
             pub.sendMessage(
                 'do_log_debug',
@@ -198,34 +189,35 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_delete_validation',
+                'fail_delete_program_status',
                 error_message=_error_msg,
             )
 
-    def _do_insert_validation(self) -> None:
-        """Add a new validation task.
+    def _do_insert_program_status(self) -> None:
+        """Add a new program status record.
 
         :return: None
         :rtype: None
         """
-        _last_id = self.dao.get_last_id('ramstk_validation', 'validation_id')
+        _last_id = self.dao.get_last_id('ramstk_program_status', 'status_id')
         try:
-            _validation = RAMSTKValidation()
-            _validation.revision_id = self._revision_id
-            _validation.validation_id = _last_id + 1
-            _validation.name = "New Validation Task"
+            _status = RAMSTKProgramStatus()
+            _status.revision_id = self._revision_id
+            _status.status_id = _last_id + 1
+            _status.date_status = date.today()
 
-            self.dao.do_insert(_validation)
+            self.dao.do_insert(_status)
 
-            self.last_id = _validation.validation_id
+            self.last_id = _status.status_id
 
-            self.tree.create_node(tag='validation',
-                                  identifier=_validation.validation_id,
+            self._dic_status[_status.date_status] = _status.time_remaining
+            self.tree.create_node(tag='status',
+                                  identifier=_status.status_id,
                                   parent=self._root,
-                                  data={'validation': _validation})
+                                  data={'status': _status})
 
             pub.sendMessage(
-                'succeed_insert_validation',
+                'succeed_insert_program_status',
                 node_id=self.last_id,
                 tree=self.tree,
             )
@@ -237,6 +229,6 @@ class DataManager(RAMSTKDataManager):
                 message=_error.msg,
             )
             pub.sendMessage(
-                "fail_insert_validation",
+                "fail_insert_program_status",
                 error_message=_error.msg,
             )

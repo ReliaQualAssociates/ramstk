@@ -23,6 +23,7 @@ from .hazards.analysismanager import AnalysisManager as amHazards
 from .hazards.datamanager import DataManager as dmHazards
 from .options.datamanager import DataManager as dmOptions
 from .pof.datamanager import DataManager as dmPoF
+from .program_status.datamanager import DataManager as dmProgramStatus
 from .requirement.datamanager import DataManager as dmRequirement
 from .revision.datamanager import DataManager as dmRevision
 from .stakeholder.analysismanager import AnalysisManager as amStakeholder

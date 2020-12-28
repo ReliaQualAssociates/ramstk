@@ -60,7 +60,7 @@ class TestRAMSTKValidation():
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_validation'
         assert DUT.revision_id == 1
-        assert DUT.validation_id == 2
+        assert DUT.validation_id == 1
         assert DUT.acceptable_maximum == 0.0
         assert DUT.acceptable_mean == 0.0
         assert DUT.acceptable_minimum == 0.0
@@ -96,7 +96,7 @@ class TestRAMSTKValidation():
 
         _attributes = DUT.get_attributes()
         assert _attributes['revision_id'] == 1
-        assert _attributes['validation_id'] == 2
+        assert _attributes['validation_id'] == 1
         assert _attributes['acceptable_maximum'] == 0.0
         assert _attributes['acceptable_mean'] == 0.0
         assert _attributes['acceptable_minimum'] == 0.0

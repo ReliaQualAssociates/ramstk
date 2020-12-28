@@ -64,13 +64,13 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, 'mvw_editing_requirement')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_requirement')
         pub.subscribe(super().do_update_all, 'request_update_all_requirements')
+        pub.subscribe(super().do_create_all_codes,
+                      'request_create_all_requirement_codes')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_requirement')
         pub.subscribe(self.do_get_tree, 'request_get_requirements_tree')
         pub.subscribe(self.do_create_code, 'request_create_requirement_code')
-        pub.subscribe(self.do_create_all_codes,
-                      'request_create_all_requirement_codes')
 
         pub.subscribe(self._do_delete, 'request_delete_requirement')
         pub.subscribe(self._do_insert_requirement,
@@ -133,12 +133,11 @@ class DataManager(RAMSTKDataManager):
                 key=['revision_id'],
                 value=[self._revision_id],
                 order=RAMSTKRequirement.requirement_id):
-            _data_package = {'requirement': _requirement}
 
             self.tree.create_node(tag='requirement',
                                   identifier=_requirement.requirement_id,
                                   parent=_requirement.parent_id,
-                                  data=_data_package)
+                                  data={'requirement': _requirement})
 
         self.last_id = max(self.tree.nodes.keys())
 

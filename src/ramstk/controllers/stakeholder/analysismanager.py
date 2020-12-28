@@ -64,19 +64,23 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested stakeholder.  We need to build a comprehensive dict of
         # attributes to pass to the various analysis methods/functions.
-        pub.sendMessage('request_get_all_stakeholder_attributes',
-                        node_id=node_id)
+        pub.sendMessage(
+            'request_get_all_stakeholder_attributes',
+            node_id=node_id,
+        )
 
         self._do_calculate_improvement()
 
         pub.sendMessage(
             'succeed_calculate_stakeholder',
             node_id=node_id,
-            package={'improvement': self._attributes['improvement']})
+            package={'improvement': self._attributes['improvement']},
+        )
         pub.sendMessage(
             'succeed_calculate_stakeholder',
             node_id=node_id,
-            package={'overall_weight': self._attributes['overall_weight']})
+            package={'overall_weight': self._attributes['overall_weight']},
+        )
 
     def _do_calculate_improvement(self) -> None:
         """Calculate improvement factor and weight for currently selected item.

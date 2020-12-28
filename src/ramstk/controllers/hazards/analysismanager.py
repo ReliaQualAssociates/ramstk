@@ -64,17 +64,24 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hazard.  We need to build a comprehensive dict of
         # attributes to pass to the various analysis methods/hazards.
-        pub.sendMessage('request_get_hazard_attributes',
-                        node_id=node_id,
-                        table='hazard')
+        pub.sendMessage(
+            'request_get_hazard_attributes',
+            node_id=node_id,
+            table='hazard',
+        )
 
         self._do_calculate_hri()
         self._do_calculate_user_defined()
 
-        pub.sendMessage('request_set_all_hazard_attributes',
-                        attributes=self._attributes)
-        pub.sendMessage('request_get_hazard_tree')
-        pub.sendMessage('succeed_calculate_hazard', node_id=node_id)
+        pub.sendMessage(
+            'request_set_all_hazard_attributes',
+            attributes=self._attributes,
+        )
+        pub.sendMessage('request_get_hazard_tree', )
+        pub.sendMessage(
+            'succeed_calculate_hazard',
+            node_id=node_id,
+        )
 
     def _do_calculate_hri(self) -> None:
         """Calculate the hazard risk index (HRI).

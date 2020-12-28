@@ -370,7 +370,7 @@ class TestInsertMethods():
 
     def on_fail_insert_requirement_db_error(self, error_message):
         assert error_message == ('An error occurred with RAMSTK.')
-        print("\033[35m\nfail_insert_function topic was broadcast.")
+        print("\033[35m\nfail_insert_requirement topic was broadcast.")
 
     @pytest.mark.unit
     def test_do_insert_sibling_requirement(self, mock_program_dao):
@@ -423,7 +423,7 @@ class TestInsertMethods():
                         'fail_insert_requirement')
 
     @pytest.mark.unit
-    def test_do_insert_requriement_database_error(self, mock_program_dao):
+    def test_do_insert_requirement_database_error(self, mock_program_dao):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_requirement_db_error,

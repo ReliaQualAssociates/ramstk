@@ -4,7 +4,7 @@ from typing import Any, Dict
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
 from ramstk.exceptions import DataAccessError as DataAccessError
-from ramstk.models.programdb import RAMSTKValidation as RAMSTKValidation
+from ramstk.models.programdb import RAMSTKProgramStatus as RAMSTKProgramStatus
 
 class DataManager(RAMSTKDataManager):
     _tag: str = ...
@@ -29,5 +29,5 @@ class DataManager(RAMSTKDataManager):
     def _do_delete(self, node_id: int) -> None:
         ...
 
-    def _do_insert_validation(self) -> None:
+    def _do_insert_program_status(self) -> None:
         ...
