@@ -143,8 +143,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _dic_plan['actual'] = self._do_select_actual_status()
 
         pub.sendMessage(
-            'succeed_calculate_plan',
-            plan=_dic_plan,
+            'succeed_calculate_verification_plan',
+            attributes=_dic_plan,
         )
 
     def _do_calculate_all_tasks(self) -> None:
@@ -226,7 +226,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         )
         pub.sendMessage(
             'succeed_calculate_validation_task',
-            node_id=[node_id, -1],
+            tree=self._tree,
         )
 
     def _do_request_status_tree(self, tree: treelib.Tree) -> None:
