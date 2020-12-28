@@ -8,9 +8,13 @@ on:
 
 jobs:
   good_pr_title:
-    name: Ensure Semantic PR Title
+    name: Ensure Conventional PR Title
     runs-on: ubuntu-latest
     steps:
-      - uses: aslafy-z/conventional-pr-title-action@master
+      - name: Ensure PR title follows conventional commits specification
+        uses: aslafy-z/conventional-pr-title-action@master
+        with:
+          success-state: Conventional commits compliant title detected.
+          failure-state: Pull request title is not conventional commits compliant!
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

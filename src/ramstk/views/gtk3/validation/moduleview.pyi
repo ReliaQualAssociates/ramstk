@@ -1,8 +1,5 @@
 # Standard Library Imports
-from typing import Any
-
-# Third Party Imports
-import treelib
+from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
@@ -55,5 +52,10 @@ class ModuleView(RAMSTKModuleView):
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         ...
 
-    def _on_insert_validation(self, node_id: int, tree: treelib.Tree) -> None:
+    _record_id: Any = ...
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        ...
+
+    def __make_ui(self) -> None:
         ...

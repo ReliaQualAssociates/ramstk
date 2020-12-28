@@ -8,10 +8,9 @@
 """RAMSTK Validation GTK3 module view."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
-import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -95,7 +94,8 @@ class ValidationPanel(RAMSTKPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_tree, 'succeed_retrieve_validations')
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_validations')
+        pub.subscribe(super().do_load_panel, 'succeed_insert_validation')
         pub.subscribe(super().do_refresh_tree, 'wvw_editing_validation')
         pub.subscribe(super().on_delete, 'succeed_delete_validation')
 
@@ -131,7 +131,7 @@ class ValidationPanel(RAMSTKPanel):
         if _attributes:
             self._record_id = _attributes['validation_id']
 
-            _title = _("Analyzing Validation {0:s}").format(
+            _title = _("Analyzing Verification Task {0:s}").format(
                 str(_attributes['name']))
 
             pub.sendMessage('selected_validation', attributes=_attributes)
@@ -199,16 +199,16 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize private list attributes.
         self._lst_mnu_labels = [
-            _("Add Task"),
+            _("Add Verification Task"),
             _("Delete Selected Task"),
             _("Save Selected Task"),
             _("Save All Tasks"),
         ]
         self._lst_tooltips = [
-            _("Add a new validation task."),
-            _("Remove the currently selected validation task."),
-            _("Save changes to the currently selected validation task."),
-            _("Save changes to all validation tasks."),
+            _("Add a new verification task."),
+            _("Remove the currently selected verification task."),
+            _("Save changes to the currently selected verification task."),
+            _("Save changes to all verification tasks."),
         ]
 
         # Initialize private scalar attributes.
@@ -220,13 +220,11 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        super().make_ui()
-        self._pnlPanel.do_set_cell_callbacks(
-            'mvw_editing_validation',
-            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_insert_validation, 'succeed_insert_validation')
+        pub.subscribe(self._do_set_record_id,
+                      'selected_{0}'.format(self._module))
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKValidation table.
@@ -250,13 +248,29 @@ class ModuleView(RAMSTKModuleView):
 
         _dialog.do_destroy()
 
-    def _on_insert_validation(self, node_id: int, tree: treelib.Tree) -> None:
-        """Add row to module view for newly added validation.
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Verification task's record ID.
 
-        :param node_id: the ID of the newly added validation.
-        :param tree: the treelib Tree() containing the work stream module's
-            data.
+        :param attributes: the attributes dict for the selected Verification
+            task.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['validation_id']
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the requirement module view.
+
         :return: None
         """
-        _data = tree.get_node(node_id).data['validation'].get_attributes()
-        self._pnlPanel.on_insert(_data)
+        super().make_ui()
+
+        self._pnlPanel.do_set_properties()
+        self._pnlPanel.do_set_callbacks()
+        self._pnlPanel.do_set_cell_callbacks(
+            'mvw_editing_validation',
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
+        self._pnlPanel.tvwTreeView.dic_handler_id[
+            'button-press'] = self._pnlPanel.tvwTreeView.connect(
+                "button_press_event",
+                super().on_button_press)
