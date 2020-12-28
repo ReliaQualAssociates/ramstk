@@ -1,12 +1,12 @@
 # ----------- This is 50 characters ----------> |
 # Remember to format your commit message thusly...
 #
-# <type>(<primary scope::secondary scope>): <subject>
+# <type>([optional scope]): <subject>
 # Try to keep the subject line <=50 characters
 # <BLANK LINE>
-# <body>
+# [optional body]
 # <BLANK LINE>
-# <footer>
+# [optional footer]
 #
 # <type> is one of:
 #
@@ -17,42 +17,17 @@
 #    * docs: documentation only change.
 #    * chore: changes to the build process or auxiliary tools.
 #
-# <primary scope> & <secondary scope> is one of:
-#
-#    * Revision or Rev
-#    * Requirement or Req
-#    * Function or Func
-#    * Hardware or HW
-#    * Validation or Val
-#    * Options or Opt
-#    * Preferences or Pref
-#    * Export/Import or Exim
-#    * Utilities or Util
-#    * Configuration or Conf
-#    * Logger or Log
-#    * Database or DB
-#    * GUI
-#    * Usage
-#    * FailureDefinition or FailDef
-#    * Stakeholder or Stake
-#    * Allocation or Alloc
-#    * HazOps
-#    * SimilarItem or SIA
-#    * MIL217
-#    * FMEA
-#    * PoF
-#
-# You may use an asterick (*) if the changes affect multiple primary
-# scopes or the change is docs or chore type.
+# Add an exclamation point (!) before the colon (:) if this is a breaking
+# change.  This should ONLY happen on fix types.
 #
 # <subject> should complete the following sentence:
 #
 #     If applied, this commit will...
 #
-# <body> is a multi-line description of the changes.  Use bulleted lists
-# (-, *, etc.)to make this easier to read.
+# [optional body] is a multi-line description of the changes.  Use bulleted
+# lists (-, *, etc.)to make this easier to read.
 #
-# <footer> is the place to list all the GitHub issues (if any) the
+# [optional footer] is the place to list all the GitHub issues (if any) the
 # commit closes.  These should be listed in one of the following formats:
 #
 #     Close: #<Issue ID>
