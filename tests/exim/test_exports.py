@@ -73,10 +73,10 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='VAlidAtion')
+        pub.sendMessage('request_load_output', module='VAlidAtions')
 
         assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data['validation'], dict)
+        assert isinstance(DUT._dic_output_data['validations'], dict)
 
     @pytest.mark.unit
     def test_do_export_to_csv(self, test_program_dao, test_export_dir):

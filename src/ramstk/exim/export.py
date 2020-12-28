@@ -41,7 +41,7 @@ class Export:
         pub.subscribe(self._do_load_data, 'succeed_get_functions_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_requirements_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_hardware_tree')
-        pub.subscribe(self._do_load_data, 'succeed_get_validation_tree')
+        pub.subscribe(self._do_load_data, 'succeed_get_validations_tree')
         pub.subscribe(self._do_load_output, 'request_load_output')
         pub.subscribe(self._do_export, 'request_export_data')
 
