@@ -11,6 +11,7 @@
 from typing import Any, Dict, List
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -77,6 +78,9 @@ class ValidationPanel(RAMSTKPanel):
             'cost_variance': [None, 'edited', 31],
             'name': [None, 'edited', 32],
         }
+        self._dic_row_loader = {
+            'validation': self.__do_load_verification,
+        }
 
         # Initialize private list class attributes.
 
@@ -139,6 +143,56 @@ class ValidationPanel(RAMSTKPanel):
                             node_id=self._record_id,
                             table='validation')
             pub.sendMessage('request_set_title', title=_title)
+
+    def __do_load_verification(self, node: treelib.Node,
+                               row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a verification task into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the mode to load into the requirement
+            tree.
+        :return: _new_row; the row that was just populated with requirement
+            data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.tvwTreeView.get_model()
+
+        _attributes = [
+            _entity.revision_id, _entity.validation_id, _entity.description,
+            _entity.task_type, _entity.task_specification,
+            _entity.measurement_unit, _entity.acceptable_minimum,
+            _entity.acceptable_mean, _entity.acceptable_maximum,
+            _entity.acceptable_variance,
+            str(_entity.date_start),
+            str(_entity.date_end), _entity.status, _entity.time_minimum,
+            _entity.time_average, _entity.time_maximum, _entity.time_mean,
+            _entity.time_variance, _entity.cost_minimum, _entity.cost_average,
+            _entity.cost_maximum, _entity.cost_mean, _entity.cost_variance,
+            _entity.confidence, _entity.time_ll, _entity.time_mean,
+            _entity.time_ul, _entity.time_variance, _entity.cost_ll,
+            _entity.cost_mean, _entity.cost_ul, _entity.cost_variance,
+            _entity.name
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _new_row = None
+            _message = _(
+                "An error occurred when loading verification task {0} in the "
+                "verification task list.  This might indicate it was missing "
+                "it's data package, some of the data in the package was "
+                "missing, or some of the data was the wrong type.  Row data "
+                "was: {1}").format(str(node.identifier), _attributes)
+            pub.sendMessage('do_log_warning_msg',
+                            logger_name='WARNING',
+                            message=_message)
+
+        return _new_row
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.

@@ -1,6 +1,9 @@
 # Standard Library Imports
 from typing import Any, Dict
 
+# Third Party Imports
+import treelib
+
 # RAMSTK Package Imports
 from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -20,6 +23,7 @@ from . import ATTRIBUTE_KEYS as ATTRIBUTE_KEYS
 class ValidationPanel(RAMSTKPanel):
     _dic_attribute_keys: Any = ...
     _dic_attribute_updater: Any = ...
+    _dic_row_loader: Any = ...
     _title: Any = ...
 
     def __init__(self) -> None:
@@ -31,6 +35,10 @@ class ValidationPanel(RAMSTKPanel):
     _record_id: Any = ...
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        ...
+
+    def __do_load_verification(self, node: treelib.Node,
+                               row: Gtk.TreeIter) -> Gtk.TreeIter:
         ...
 
     def __do_set_properties(self) -> None:
