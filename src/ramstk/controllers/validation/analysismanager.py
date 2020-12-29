@@ -248,7 +248,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
             dates and the remaining time/cost.
         :rtype: :class:`pandas.DataFrame`
         """
-        print(self._status_tree.all_nodes())
         _dic_actual = {}
         for _node in self._status_tree.all_nodes()[1:]:
             _dic_actual[pd.to_datetime(_node.data['status'].date_status)] = [

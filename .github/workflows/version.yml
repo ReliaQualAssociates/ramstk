@@ -18,7 +18,7 @@ jobs:
         id: nextversion
         uses: paulhatch/semantic-version@v3.2
         with:
-          branch: "develop"
+          branch: "master"
           format: "${major}.${minor}.${patch}-rc${increment}"
           short_tags: false
       - name: Output new version
@@ -51,3 +51,16 @@ jobs:
           echo "Next Version 2: ${{ steps.nextversion2.version }}"
           echo "Optimistic Version 2: ${{ steps.nextversion2.version_optimistic }}"
           echo "Version Tag 2: ${{ steps.nextversion2.version_tag }}"
+      - name: Bump version
+        id: anothrnick
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          INITIAL_VERSION: "${{ steps.nextversion.outputs.version }}"
+          DRY_RUN: true
+      - name: Output anothrNick version
+        run: |
+          echo "New Tag: ${{ steps.anothrnick.new_tag }}"
+          echo "Tag: ${{ steps.anothrnick.tag }}"
+          echo "Part: ${{ steps.anothrnick.part }}"
