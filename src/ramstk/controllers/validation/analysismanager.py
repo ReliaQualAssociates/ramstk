@@ -70,6 +70,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'succeed_retrieve_validations')
         pub.subscribe(self._on_get_status_tree,
                       'succeed_retrieve_program_status')
+        pub.subscribe(self._on_get_status_tree,
+                      'succeed_get_program_status_tree')
 
     def do_calculate_plan(self) -> None:
         """Calculate the planned burndown of the overall validation effort.

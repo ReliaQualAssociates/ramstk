@@ -13,16 +13,13 @@ from datetime import date, timedelta
 # Third Party Imports
 import pandas as pd
 import pytest
-from __mocks__ import (
-    MOCK_FNCTN_TREE, MOCK_HRDWR_TREE,
-    MOCK_RQRMNT_TREE, MOCK_STATUS, MOCK_VALIDATIONS
-)
+from __mocks__ import MOCK_STATUS, MOCK_VALIDATIONS
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amValidation, dmRequirement, dmValidation
+from ramstk.controllers import dmProgramStatus, amValidation, dmValidation
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
@@ -30,6 +27,7 @@ from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
 class MockDao:
     _all_validations = []
+    _all_status = []
 
     def _do_delete_validation(self, record):
         _popped = False
@@ -68,6 +66,15 @@ class MockDao:
                 _record.set_attributes(MOCK_VALIDATIONS[_key])
                 self._all_validations.append(_record)
             return self._all_validations
+        elif table == RAMSTKProgramStatus:
+            self._all_status = []
+            for _key in MOCK_STATUS:
+                _record = table()
+                _record.revision_id = value
+                _record.status_id = _key
+                _record.set_attributes(MOCK_STATUS[_key])
+                self._all_status.append(_record)
+            return self._all_status
 
     def do_update(self, record):
         if isinstance(record, RAMSTKValidation):
@@ -555,25 +562,6 @@ class TestAnalysisMethods():
             "\033[36m\nsucceed_calculate_verification_plan topic was broadcast"
         )
 
-    @pytest.mark.skip
-    def test_do_select_actuals(self, mock_program_dao,
-                               test_toml_user_configuration):
-        """_do_select_actuals() should return a pandas DataFrame() containing
-        actual plan status."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
-
-        DUT = amValidation(test_toml_user_configuration)
-
-        pub.sendMessage('request_get_status_tree')
-
-        _actuals = DUT._do_select_actuals()
-
-        assert isinstance(_actuals, pd.DataFrame)
-        assert _actuals.loc[pd.to_datetime(date.today()), 'cost'] == 212.32
-        assert _actuals.loc[pd.to_datetime(date.today()), 'time'] == 112.5
-
     @pytest.mark.unit
     def test_do_calculate_task(self, mock_program_dao,
                                test_toml_user_configuration):
@@ -694,3 +682,28 @@ class TestAnalysisMethods():
 
         pub.unsubscribe(self.on_succeed_calculate_verification_plan,
                         'succeed_calculate_verification_plan')
+
+    @pytest.mark.unit
+    def test_do_select_actuals(self, mock_program_dao,
+                               test_toml_user_configuration):
+        """_do_select_actuals() should return a pandas DataFrame() containing
+        actual plan status."""
+        DATAMGR = dmValidation()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        PSMGR = dmProgramStatus()
+        PSMGR.do_connect(mock_program_dao)
+        PSMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT = amValidation(test_toml_user_configuration)
+
+        pub.sendMessage('request_get_validations_tree')
+        pub.sendMessage('succeed_calculate_all_validation_tasks',
+                        cost_remaining=212.32, time_remaining=112.5)
+        pub.sendMessage('request_get_program_status_tree')
+
+        _actuals = DUT._do_select_actual_status()
+
+        assert isinstance(_actuals, pd.DataFrame)
+        assert _actuals.loc[pd.to_datetime(date.today()), 'cost'] == 212.32
+        assert _actuals.loc[pd.to_datetime(date.today()), 'time'] == 112.5
