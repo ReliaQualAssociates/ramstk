@@ -1,3 +1,4 @@
+# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.validation.workviews.py is part of the RAMSTK Project
@@ -13,7 +14,7 @@ from typing import Any, Dict, List, Tuple, Union
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
 import pandas as pd
-# noinspection PyPackageValidations
+# noinspection PyPackageValidations,PyPackageRequirements
 from matplotlib.patches import Ellipse
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
@@ -49,7 +50,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
             _("Task ID:"),
-            _("Task Name:"),
+            _("Task Code:"),
             _("Task Description:"),
             _("Task Type:"),
             _("Specification:"),
@@ -81,8 +82,8 @@ class TaskDescriptionPanel(RAMSTKPanel):
 
         self.spnStatus: RAMSTKSpinButton = RAMSTKSpinButton()
 
+        self.txtTaskID: RAMSTKEntry = RAMSTKEntry()
         self.txtCode: RAMSTKEntry = RAMSTKEntry()
-        self.txtName: RAMSTKEntry = RAMSTKEntry()
         self.txtMaxAcceptable: RAMSTKEntry = RAMSTKEntry()
         self.txtMeanAcceptable: RAMSTKEntry = RAMSTKEntry()
         self.txtMinAcceptable: RAMSTKEntry = RAMSTKEntry()
@@ -110,8 +111,8 @@ class TaskDescriptionPanel(RAMSTKPanel):
         }
 
         self._lst_widgets = [
+            self.txtTaskID,
             self.txtCode,
-            self.txtName,
             self.txtTask,
             self.cmbTaskType,
             self.txtSpecification,
@@ -225,6 +226,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
             if _unit == attributes['measurement_unit']:
                 self.cmbMeasurementUnit.do_update(_key, signal='changed')
 
+        self.txtTaskID.do_update(attributes['validation_id'], signal='changed')
         self.txtCode.do_update(attributes['name'], signal='changed')
         self.txtTask.do_update(attributes['description'], signal='changed')
         self.txtSpecification.do_update(str(attributes['task_specification']),
@@ -315,22 +317,22 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.cmbMeasurementUnit.dic_handler_id[
             'changed'] = self.cmbMeasurementUnit.connect(
                 'changed',
-                super().on_changed_combo, 3, 'wvw_editing_validation')
+                super().on_changed_combo, 17, 'wvw_editing_validation')
         self.cmbTaskType.dic_handler_id['changed'] = self.cmbTaskType.connect(
             'changed',
-            super().on_changed_combo, 1, 'wvw_editing_validation')
+            super().on_changed_combo, 21, 'wvw_editing_validation')
         self.cmbTaskType.connect('changed', self._do_make_task_code)
 
         # ----- ENTRIES
         _buffer: Gtk.TextBuffer = self.txtTask.do_get_buffer()
         self.txtTask.dic_handler_id['changed'] = _buffer.connect(
             'changed',
-            super().on_changed_textview, 0, 'wvw_editing_validation',
+            super().on_changed_textview, 16, 'wvw_editing_validation',
             self.txtTask)
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
-                super().on_changed_entry, 2, 'wvw_editing_validation')
+                super().on_changed_entry, 20, 'wvw_editing_validation')
         self.txtMinAcceptable.dic_handler_id[
             'changed'] = self.txtMinAcceptable.connect(
                 'changed',
@@ -338,30 +340,31 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.txtMaxAcceptable.dic_handler_id[
             'changed'] = self.txtMaxAcceptable.connect(
                 'changed',
-                super().on_changed_entry, 5, 'wvw_editing_validation')
+                super().on_changed_entry, 2, 'wvw_editing_validation')
         self.txtMeanAcceptable.dic_handler_id[
             'changed'] = self.txtMeanAcceptable.connect(
                 'changed',
-                super().on_changed_entry, 6, 'wvw_editing_validation')
+                super().on_changed_entry, 3, 'wvw_editing_validation')
         self.txtVarAcceptable.dic_handler_id[
             'changed'] = self.txtVarAcceptable.connect(
                 'changed',
-                super().on_changed_entry, 7, 'wvw_editing_validation')
+                super().on_changed_entry, 5, 'wvw_editing_validation')
         self.txtStartDate.dic_handler_id[
             'changed'] = self.txtStartDate.connect('changed',
-                                                   super().on_changed_entry, 8,
+                                                   super().on_changed_entry,
+                                                   15,
                                                    'wvw_editing_validation')
         self.txtEndDate.dic_handler_id['changed'] = self.txtEndDate.connect(
             'changed',
-            super().on_changed_entry, 9, 'wvw_editing_validation')
+            super().on_changed_entry, 14, 'wvw_editing_validation')
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
-            super().on_changed_entry, 11, 'wvw_editing_validation')
+            super().on_changed_entry, 18, 'wvw_editing_validation')
 
         # ----- SPINBUTTONS
         self.spnStatus.dic_handler_id['changed'] = self.spnStatus.connect(
             'value-changed',
-            super().on_changed_entry, 10, 'wvw_editing_validation')
+            super().on_changed_entry, 19, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -445,14 +448,7 @@ class TaskEffortPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            12: ['time_minimum', 'float'],
-            13: ['time_average', 'float'],
-            14: ['time_maximum', 'float'],
-            15: ['cost_minimum', 'float'],
-            16: ['cost_average', 'float'],
-            17: ['cost_maximum', 'float'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -553,36 +549,36 @@ class TaskEffortPanel(RAMSTKPanel):
         """
         self._record_id = attributes['validation_id']
 
-        self.txtMinTime.do_update(str(
-            self.fmt.format(attributes['time_minimum'])),
+        self.txtMinTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_minimum'])),
                                   signal='changed')  # noqa
-        self.txtExpTime.do_update(str(
-            self.fmt.format(attributes['time_average'])),
+        self.txtExpTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_average'])),
                                   signal='changed')  # noqa
-        self.txtMaxTime.do_update(str(
-            self.fmt.format(attributes['time_maximum'])),
+        self.txtMaxTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_maximum'])),
                                   signal='changed')  # noqa
-        self.txtMinCost.do_update(str(
-            self.fmt.format(attributes['cost_minimum'])),
+        self.txtMinCost.do_update(str('${0:0.2F}'.format(
+            attributes['cost_minimum'])),
                                   signal='changed')  # noqa
-        self.txtExpCost.do_update(str(
-            self.fmt.format(attributes['cost_average'])),
+        self.txtExpCost.do_update(str('${0:0.2F}'.format(
+            attributes['cost_average'])),
                                   signal='changed')  # noqa
-        self.txtMaxCost.do_update(str(
-            self.fmt.format(attributes['cost_maximum'])),
+        self.txtMaxCost.do_update(str('${0:0.2F}'.format(
+            attributes['cost_maximum'])),
                                   signal='changed')  # noqa
         self.txtMeanTimeLL.do_update(
-            str(self.fmt.format(attributes['time_ll'])))
+            str('{0:0.2F}'.format(attributes['time_ll'])))
         self.txtMeanTime.do_update(
-            str(self.fmt.format(attributes['time_mean'])))
+            str('{0:0.2F}'.format(attributes['time_mean'])))
         self.txtMeanTimeUL.do_update(
-            str(self.fmt.format(attributes['time_ul'])))
+            str('{0:0.2F}'.format(attributes['time_ul'])))
         self.txtMeanCostLL.do_update(
-            str(self.fmt.format(attributes['cost_ll'])))
+            str('${0:0.2F}'.format(attributes['cost_ll'])))
         self.txtMeanCost.do_update(
-            str(self.fmt.format(attributes['cost_mean'])))
+            str('${0:0.2F}'.format(attributes['cost_mean'])))
         self.txtMeanCostUL.do_update(
-            str(self.fmt.format(attributes['cost_ul'])))
+            str('${0:0.2F}'.format(attributes['cost_ul'])))
 
     def _do_make_task_code(self, task_type: str) -> str:
         """Create the validation task code.
@@ -650,6 +646,7 @@ class TaskEffortPanel(RAMSTKPanel):
         _cost_entry: RAMSTKEntry = _fixed.get_children()[-1]
         _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
         _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
+        _fixed.put(self.txtMeanTimeLL, _x_pos, _y_pos)
         _fixed.put(self.txtMeanTime, _x_pos + 175, _y_pos)
         _fixed.put(self.txtMeanTimeUL, _x_pos + 350, _y_pos)
 
@@ -657,6 +654,7 @@ class TaskEffortPanel(RAMSTKPanel):
         # the mean cost LL widget.
         _x_pos = _fixed.child_get_property(_cost_entry, 'x')
         _y_pos = _fixed.child_get_property(_cost_entry, 'y')
+        _fixed.put(self.txtMeanCostLL, _x_pos, _y_pos)
         _fixed.put(self.txtMeanCost, _x_pos + 195, _y_pos)
         _fixed.put(self.txtMeanCostUL, _x_pos + 390, _y_pos)
 
@@ -667,17 +665,17 @@ class TaskEffortPanel(RAMSTKPanel):
         :rtype: None
         """
         self.txtMinTime.dic_handler_id['changed'] = self.txtMinTime.connect(
-            'changed', self.on_changed_entry, 11, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 26, 'wvw_editing_validation')
         self.txtExpTime.dic_handler_id['changed'] = self.txtExpTime.connect(
-            'changed', self.on_changed_entry, 12, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 22, 'wvw_editing_validation')
         self.txtMaxTime.dic_handler_id['changed'] = self.txtMaxTime.connect(
-            'changed', self.on_changed_entry, 13, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 24, 'wvw_editing_validation')
         self.txtMinCost.dic_handler_id['changed'] = self.txtMinCost.connect(
-            'changed', self.on_changed_entry, 14, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 11, 'wvw_editing_validation')
         self.txtExpCost.dic_handler_id['changed'] = self.txtExpCost.connect(
-            'changed', self.on_changed_entry, 15, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 7, 'wvw_editing_validation')
         self.txtMaxCost.dic_handler_id['changed'] = self.txtMaxCost.connect(
-            'changed', self.on_changed_entry, 16, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 9, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1078,8 +1076,10 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_validation_task',
-                        task_id=self._record_id)
+        pub.sendMessage(
+            'request_calculate_validation_task',
+            node_id=self._record_id,
+        )
 
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate program cost and time.
@@ -1089,7 +1089,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_validation_tasks')
+        pub.sendMessage('request_calculate_validation_tasks', )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Verification task record ID.
@@ -1100,29 +1100,6 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self._record_id = attributes['validation_id']
-
-    def _on_value_changed(self, spinbutton: Gtk.SpinButton,
-                          __event: Gdk.EventFocus) -> None:
-        """Handle changes made in Gtk.SpinButton() widgets.
-
-        This method is called by:
-
-            * Gtk.SpinButton() 'changed' signal
-
-        This method sends the 'wvwEditedValidation' message.
-
-        :param spinbutton: the Gtk.SpinButton() that called this method.
-        :param __event: the Gdk.EventFocus that triggered the signal.
-        :return: None
-        :rtype: None
-        """
-        spinbutton.handler_block(spinbutton.dic_handler_id['changed'])
-
-        pub.sendMessage('wvw_editing_validation',
-                        node_id=[self._record_id, -1],
-                        package={'status': float(spinbutton.get_value())})
-
-        spinbutton.handler_unblock(spinbutton.dic_handler_id['changed'])
 
     def __make_ui(self) -> None:
         """Build the user interface for the Validation General Data tab.
@@ -1238,7 +1215,7 @@ class BurndownCurve(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_plan')
+        pub.sendMessage('request_calculate_plan', )
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

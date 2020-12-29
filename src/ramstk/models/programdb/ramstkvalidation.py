@@ -117,12 +117,12 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
                               default=__defaults__['measurement_unit'])
     name = Column('fld_name', String(256), default=__defaults__['name'])
     status = Column('fld_status', Float, default=__defaults__['status'])
-    task_type = Column('fld_type',
-                       String(256),
-                       default=__defaults__['task_type'])
     task_specification = Column('fld_task_specification',
                                 String(512),
                                 default=__defaults__['task_specification'])
+    task_type = Column('fld_type',
+                       String(256),
+                       default=__defaults__['task_type'])
     time_average = Column('fld_time_average',
                           Float,
                           default=__defaults__['time_average'])
@@ -180,8 +180,8 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
             'measurement_unit': self.measurement_unit,
             'name': self.name,
             'status': self.status,
-            'task_type': self.task_type,
             'task_specification': self.task_specification,
+            'task_type': self.task_type,
             'time_average': self.time_average,
             'time_ll': self.time_ll,
             'time_maximum': self.time_maximum,

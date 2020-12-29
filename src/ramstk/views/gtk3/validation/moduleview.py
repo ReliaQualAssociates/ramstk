@@ -50,33 +50,33 @@ class ValidationPanel(RAMSTKPanel):
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'validation_id': [None, 'edited', 1],
-            'description': [None, 'edited', 2],
-            'task_type': [None, 'edited', 3],
-            'task_specification': [None, 'edited', 4],
-            'measurement_unit': [None, 'edited', 5],
-            'acceptable_minimum': [None, 'edited', 6],
-            'acceptable_mean': [None, 'edited', 7],
-            'acceptable_maximum': [None, 'edited', 8],
-            'acceptable_variance': [None, 'edited', 9],
-            'date_start': [None, 'edited', 10],
-            'date_end': [None, 'edited', 11],
-            'status': [None, 'edited', 12],
-            'time_minimum': [None, 'edited', 13],
-            'time_average': [None, 'edited', 14],
-            'time_maximum': [None, 'edited', 15],
-            'cost_minimum': [None, 'edited', 18],
-            'cost_average': [None, 'edited', 19],
-            'cost_maximum': [None, 'edited', 20],
-            'confidence': [None, 'edited', 23],
-            'time_ll': [None, 'edited', 24],
+            'acceptable_maximum': [None, 'edited', 2],
+            'acceptable_mean': [None, 'edited', 3],
+            'acceptable_minimum': [None, 'edited', 4],
+            'acceptable_variance': [None, 'edited', 5],
+            'confidence': [None, 'edited', 6],
+            'cost_average': [None, 'edited', 7],
+            'cost_ll': [None, 'edited', 8],
+            'cost_maximum': [None, 'edited', 9],
+            'cost_mean': [None, 'edited', 10],
+            'cost_minimum': [None, 'edited', 11],
+            'cost_ul': [None, 'edited', 12],
+            'cost_variance': [None, 'edited', 13],
+            'date_end': [None, 'edited', 14],
+            'date_start': [None, 'edited', 15],
+            'description': [None, 'edited', 16],
+            'measurement_unit': [None, 'edited', 17],
+            'name': [None, 'edited', 18],
+            'status': [None, 'edited', 19],
+            'task_specification': [None, 'edited', 20],
+            'task_type': [None, 'edited', 21],
+            'time_average': [None, 'edited', 22],
+            'time_ll': [None, 'edited', 23],
+            'time_maximum': [None, 'edited', 24],
             'time_mean': [None, 'edited', 25],
-            'time_ul': [None, 'edited', 26],
-            'time_variance': [None, 'edited', 27],
-            'cost_ll': [None, 'edited', 28],
-            'cost_mean': [None, 'edited', 29],
-            'cost_ul': [None, 'edited', 30],
-            'cost_variance': [None, 'edited', 31],
-            'name': [None, 'edited', 32],
+            'time_minimum': [None, 'edited', 26],
+            'time_ul': [None, 'edited', 27],
+            'time_variance': [None, 'edited', 28],
         }
         self._dic_row_loader = {
             'validation': self.__do_load_verification,
@@ -117,7 +117,7 @@ class ValidationPanel(RAMSTKPanel):
         self._lst_measurement_units = [""]
 
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position['col5']).get_cells()[0]
+            self.tvwTreeView.position['col17']).get_cells()[0]
         _cell.set_property('has-entry', False)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -139,7 +139,7 @@ class ValidationPanel(RAMSTKPanel):
         self._lst_verification_types = [""]
 
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position['col3']).get_cells()[0]
+            self.tvwTreeView.position['col21']).get_cells()[0]
         _cell.set_property('has-entry', False)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -161,7 +161,7 @@ class ValidationPanel(RAMSTKPanel):
         if module == 'validation' and _row is not None:
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Validation {0:s}: {1:s}").format(
+            _title = _("Analyzing Validation {0}: {1}").format(
                 str(_code), str(_name))
 
             pub.sendMessage('request_set_title', title=_title)
@@ -180,14 +180,22 @@ class ValidationPanel(RAMSTKPanel):
         if _attributes:
             self._record_id = _attributes['validation_id']
 
-            _title = _("Analyzing Verification Task {0:s}").format(
+            _title = _("Analyzing Verification Task {0}").format(
                 str(_attributes['name']))
 
-            pub.sendMessage('selected_validation', attributes=_attributes)
-            pub.sendMessage('request_get_validation_attributes',
-                            node_id=self._record_id,
-                            table='validation')
-            pub.sendMessage('request_set_title', title=_title)
+            pub.sendMessage(
+                'selected_validation',
+                attributes=_attributes,
+            )
+            pub.sendMessage(
+                'request_get_validation_attributes',
+                node_id=self._record_id,
+                table='validation',
+            )
+            pub.sendMessage(
+                'request_set_title',
+                title=_title,
+            )
 
     def __do_load_verification(self, node: treelib.Node,
                                row: Gtk.TreeIter) -> Gtk.TreeIter:
@@ -211,34 +219,52 @@ class ValidationPanel(RAMSTKPanel):
         _task_type = self._lst_verification_types[_entity.task_type]
 
         _attributes = [
-            _entity.revision_id, _entity.validation_id, _entity.description,
-            _task_type, _entity.task_specification, _measurement_unit,
-            _entity.acceptable_minimum, _entity.acceptable_mean,
-            _entity.acceptable_maximum, _entity.acceptable_variance,
+            _entity.revision_id,
+            _entity.validation_id,
+            _entity.acceptable_maximum,
+            _entity.acceptable_mean,
+            _entity.acceptable_minimum,
+            _entity.acceptable_variance,
+            _entity.confidence,
+            _entity.cost_average,
+            _entity.cost_ll,
+            _entity.cost_maximum,
+            _entity.cost_mean,
+            _entity.cost_minimum,
+            _entity.cost_ul,
+            _entity.cost_variance,
+            str(_entity.date_end),
             str(_entity.date_start),
-            str(_entity.date_end), _entity.status, _entity.time_minimum,
-            _entity.time_average, _entity.time_maximum, _entity.time_mean,
-            _entity.time_variance, _entity.cost_minimum, _entity.cost_average,
-            _entity.cost_maximum, _entity.cost_mean, _entity.cost_variance,
-            _entity.confidence, _entity.time_ll, _entity.time_mean,
-            _entity.time_ul, _entity.time_variance, _entity.cost_ll,
-            _entity.cost_mean, _entity.cost_ul, _entity.cost_variance,
-            _entity.name
+            _entity.description,
+            _measurement_unit,
+            _entity.name,
+            _entity.status,
+            _entity.task_specification,
+            _task_type,
+            _entity.time_average,
+            _entity.time_ll,
+            _entity.time_maximum,
+            _entity.time_mean,
+            _entity.time_minimum,
+            _entity.time_ul,
+            _entity.time_variance,
         ]
 
         try:
             _new_row = _model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
-            _message = _(
+            _error_msg = _(
                 "An error occurred when loading verification task {0} in the "
                 "verification task list.  This might indicate it was missing "
                 "it's data package, some of the data in the package was "
                 "missing, or some of the data was the wrong type.  Row data "
                 "was: {1}").format(str(node.identifier), _attributes)
-            pub.sendMessage('do_log_warning_msg',
-                            logger_name='WARNING',
-                            message=_message)
+            pub.sendMessage(
+                'do_log_warning_msg',
+                logger_name='WARNING',
+                message=_error_msg,
+            )
 
         return _new_row
 
