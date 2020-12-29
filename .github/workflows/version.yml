@@ -18,7 +18,7 @@ jobs:
         id: nextversion
         uses: paulhatch/semantic-version@v3.2
         with:
-          branch: "release/v*"
+          branch: "release"
           format: "${major}.${minor}.${patch}-rc${increment}"
           short_tags: false
       - name: Output new version
