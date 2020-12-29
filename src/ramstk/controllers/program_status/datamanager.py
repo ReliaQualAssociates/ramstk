@@ -10,10 +10,11 @@
 # Standard Library Imports
 import inspect
 from datetime import date
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
+from treelib.exceptions import DuplicatedNodeIdError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -35,7 +36,7 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._dic_status: Dict[Any, float] = {}
+        self._dic_status: Dict[Any, List[float]] = {}
         self._pkey = {'status': ['revision_id', 'status_id']}
 
         # Initialize private list attributes.
@@ -63,6 +64,8 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_delete, 'request_delete_program_status')
         pub.subscribe(self._do_insert_program_status,
                       'request_insert_program_status')
+        pub.subscribe(self._do_set_attributes,
+                      'succeed_calculate_all_validation_tasks')
 
     def do_get_tree(self) -> None:
         """Retrieve the program status treelib Tree.
@@ -70,7 +73,10 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_program_status_tree', tree=self.tree)
+        pub.sendMessage(
+            'succeed_get_program_status_tree',
+            tree=self.tree,
+        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Program Status data from the RAMSTK Program database.
@@ -87,16 +93,22 @@ class DataManager(RAMSTKDataManager):
                 value=[self._revision_id],
                 order=RAMSTKProgramStatus.date_status):
 
-            self._dic_status[_status.date_status] = _status.time_remaining
+            self._dic_status[_status.date_status] = _status.status_id
 
-            self.tree.create_node(tag='status',
-                                  identifier=_status.status_id,
-                                  parent=self._root,
-                                  data={'status': _status})
+            try:
+                self.tree.create_node(tag='status',
+                                      identifier=_status.status_id,
+                                      parent=self._root,
+                                      data={'status': _status})
+            except DuplicatedNodeIdError:
+                pass
 
         self.last_id = max(self.tree.nodes.keys())
 
-        pub.sendMessage('succeed_retrieve_program_status', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_program_status',
+            tree=self.tree,
+        )
 
     def do_update(self, node_id):
         """Update record associated with node ID in RAMSTK Program database.
@@ -210,7 +222,8 @@ class DataManager(RAMSTKDataManager):
 
             self.last_id = _status.status_id
 
-            self._dic_status[_status.date_status] = _status.time_remaining
+            self._dic_status[_status.date_status] = _status.status_id
+
             self.tree.create_node(tag='status',
                                   identifier=_status.status_id,
                                   parent=self._root,
@@ -232,3 +245,24 @@ class DataManager(RAMSTKDataManager):
                 "fail_insert_program_status",
                 error_message=_error.msg,
             )
+
+    def _do_set_attributes(self, cost_remaining, time_remaining) -> None:
+        """Set the program remaining cost and time.
+
+        :param cost_remaining: total remaining cost of verification program.
+        :param time_remaining: total remaining time of verification program.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _node_id = self._dic_status[date.today()]
+        except KeyError:
+            self._do_insert_program_status()
+            _node_id = self.last_id
+
+        self.tree.get_node(
+            _node_id).data['status'].cost_remaining = cost_remaining
+        self.tree.get_node(
+            _node_id).data['status'].time_remaining = time_remaining
+
+        self.do_update(_node_id)
