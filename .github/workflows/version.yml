@@ -14,19 +14,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Get branch name based on PR
-        uses: andrevalentin/get-branch-name-by-pr@v1
-        id: pr_data
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Output branch name
-        run: |
-          echo "Branch: ${{ steps.pr_data.outputs.branch }}"
       - name: Determine next implied version
         id: nextversion
         uses: paulhatch/semantic-version@v3.2
         with:
-          branch: "${{ steps.pr_data.outputs.branch }}"
+          branch: "${GITHUB_REF##*/}"
           format: "${major}.${minor}.${patch}-rc${increment}"
           short_tags: false
       - name: Output new version
