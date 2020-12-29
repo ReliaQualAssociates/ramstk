@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Tuple, Union
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
 import pandas as pd
+import treelib
 # noinspection PyPackageValidations,PyPackageRequirements
 from matplotlib.patches import Ellipse
 # pylint: disable=ungrouped-imports
@@ -516,6 +517,8 @@ class TaskEffortPanel(RAMSTKPanel):
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
         pub.subscribe(self._do_load_panel, 'selected_validation')
+        pub.subscribe(self._on_calculate_task,
+                      'succeed_calculate_validation_task')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -632,18 +635,31 @@ class TaskEffortPanel(RAMSTKPanel):
 
         return _date
 
+    def _on_calculate_task(self, tree: treelib.Tree) -> None:
+        """Wrap _do_load_panel() on successful task calculation.
+
+        :param tree: the validation treelib.Tree().
+        :return: None
+        :rtype: None
+        """
+        _attributes = tree.get_node(
+            self._record_id).data['validation'].get_attributes()
+        self._do_load_panel(_attributes)
+
     def __do_adjust_widgets(self) -> None:
         """Adjust position of some widgets.
 
         :return: None
         :rtype: None
         """
-        # We add the mean time and mean time UL to the same y position as
-        # the mean time LL widget.
         _fixed: Gtk.Fixed = self.get_children()[0].get_children(
         )[0].get_children()[0]
+
         _time_entry: RAMSTKEntry = _fixed.get_children()[7]
         _cost_entry: RAMSTKEntry = _fixed.get_children()[-1]
+
+        # We add the mean time and mean time UL to the same y position as
+        # the mean time LL widget.
         _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
         _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
         _fixed.put(self.txtMeanTimeLL, _x_pos, _y_pos)
@@ -731,7 +747,7 @@ class ProgramEffortPanel(RAMSTKPanel):
         ]
 
         # Initialize private scalar instance attributes.
-        self._title: str = _("Program Effort")
+        self._title: str = _("Verification Program Effort")
 
         # Initialize public dict instance attributes.
 
@@ -763,7 +779,8 @@ class ProgramEffortPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_validation')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_get_program_status_attributes')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -788,29 +805,52 @@ class ProgramEffortPanel(RAMSTKPanel):
         """
         self._record_id = attributes['validation_id']
 
+        self.txtProjectTimeLL.do_update(str('{0:0.2F}'.format(
+            attributes['time_ll'])),
+                                        signal='changed')  # noqa
+        self.txtProjectTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_mean'])),
+                                      signal='changed')  # noqa
+        self.txtProjectTimeUL.do_update(str('{0:0.2F}'.format(
+            attributes['time_ul'])),
+                                        signal='changed')  # noqa
+        self.txtProjectCostLL.do_update(str('{0:0.2F}'.format(
+            attributes['cost_ll'])),
+                                        signal='changed')  # noqa
+        self.txtProjectCost.do_update(str('{0:0.2F}'.format(
+            attributes['cost_mean'])),
+                                      signal='changed')  # noqa
+        self.txtProjectCostUL.do_update(str('{0:0.2F}'.format(
+            attributes['cost_ul'])),
+                                        signal='changed')  # noqa
+
     def __do_adjust_widgets(self) -> None:
         """Adjust the position of some widgets.
 
         :return: None
         :rtype: None
         """
-        # We add the project time and project time UL to the same y position
-        # as the project time LL widget.
         _fixed: Gtk.Fixed = self.get_children()[0].get_children(
         )[0].get_children()[0]
+
         _time_entry: RAMSTKEntry = _fixed.get_children()[1]
-        _cost_entry: RAMSTKEntry = _fixed.get_children()[-1]
+        _cost_entry: RAMSTKEntry = _fixed.get_children()[3]
+
+        # We add the project time and project time UL to the same y position
+        # as the project time LL widget.
         _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
         _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
-        _fixed.put(self.txtProjectTime, _x_pos + 175, _y_pos)
-        _fixed.put(self.txtProjectTimeUL, _x_pos + 350, _y_pos)
+        _fixed.move(self.txtProjectTimeLL, _x_pos, _y_pos)
+        _fixed.move(self.txtProjectTime, _x_pos + 175, _y_pos)
+        _fixed.move(self.txtProjectTimeUL, _x_pos + 350, _y_pos)
 
         # We add the project cost and project cost UL to the same y position
         # as the project cost LL widget.
         _x_pos = _fixed.child_get_property(_cost_entry, 'x')
         _y_pos = _fixed.child_get_property(_cost_entry, 'y')
-        _fixed.put(self.txtProjectCost, _x_pos + 175, _y_pos)
-        _fixed.put(self.txtProjectCostUL, _x_pos + 350, _y_pos)
+        _fixed.move(self.txtProjectCostLL, _x_pos, _y_pos)
+        _fixed.move(self.txtProjectCost, _x_pos + 175, _y_pos)
+        _fixed.move(self.txtProjectCostUL, _x_pos + 350, _y_pos)
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -853,7 +893,8 @@ class BurndownCurvePanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_panel, 'closed_program')
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_validation')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_calculate_verification_plan')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -882,7 +923,7 @@ class BurndownCurvePanel(RAMSTKPanel):
                                      attributes['actual'].loc[:, 'time']),
                                  marker='o')
 
-        self.pltPlot.do_make_title(_("Total Validation Effort"))
+        self.pltPlot.do_make_title(_("Total Verification Effort"))
         self.pltPlot.do_make_labels(_("Total Time [hours]"),
                                     x_pos=-0.5,
                                     y_pos=0,

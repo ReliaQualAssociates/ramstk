@@ -3,6 +3,7 @@ from typing import Any, Dict, Tuple
 
 # Third Party Imports
 import pandas as pd
+import treelib
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
@@ -125,6 +126,9 @@ class TaskEffortPanel(RAMSTKPanel):
     @staticmethod
     def _do_select_date(__button: RAMSTKButton, __event: Gdk.Event,
                         entry: RAMSTKEntry) -> str:
+        ...
+
+    def _on_calculate_task(self, tree: treelib.Tree) -> None:
         ...
 
     def __do_adjust_widgets(self) -> None:
