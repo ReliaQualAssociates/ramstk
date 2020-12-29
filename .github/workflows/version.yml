@@ -14,23 +14,23 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Get branch name
-        id: getbranch
+      - name: Get PR branch information
+        id: branchinfo
         shell: bash
         run: |
-          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "##[set-output name=pr;]$(echo ${GITHUB_REF#refs/pull/})"
           echo "##[set-output name=head;]$(echo ${GITHUB_HEAD_REF})"
           echo "##[set-output name=base;]$(echo ${GITHUB_BASE_REF})"
-      - name: Print branch name
+      - name: Print PR branch information
         run: |
-          echo "Branch: ${{ steps.getbranch.outputs.branch }}"
-          echo "Head: ${{ steps.getbranch.outputs.head }}"
-          echo "Base: ${{ steps.getbranch.outputs.base }}"
+          echo "Branch: ${{ steps.branchinfo.outputs.pr }}"
+          echo "Head: ${{ steps.branchinfo.outputs.head }}"
+          echo "Base: ${{ steps.branchinfo.outputs.base }}"
       - name: Determine next implied version
         id: nextversion
         uses: paulhatch/semantic-version@v3.2
         with:
-          branch: "${GITHUB_REF##*/}"
+          branch: "${{ steps.branchinfo.outputs.head }}"
           format: "${major}.${minor}.${patch}-rc${increment}"
           short_tags: false
       - name: Output new version
