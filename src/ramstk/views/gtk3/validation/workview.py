@@ -930,8 +930,8 @@ class BurndownCurvePanel(RAMSTKPanel):
                                     set_x=False)
         # noinspection PyTypeChecker
         self.pltPlot.do_make_legend(
-            (_("Maximum Expected Time"), _("Mean Expected Time"),
-             _("Minimum Expected Time"), _("Actual Remaining Time")))
+            (_("Minimum Expected Time"), _("Mean Expected Time"),
+             _("Maximum Expected Time"), _("Actual Remaining Time")))
         self.pltPlot.figure.canvas.draw()
 
     def __do_load_assessment_milestones(self, assessed: pd.DataFrame,

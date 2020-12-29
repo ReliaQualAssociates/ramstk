@@ -18,7 +18,7 @@ jobs:
         id: nextversion
         uses: paulhatch/semantic-version@v3.2
         with:
-          branch: "master"
+          branch: "release/v*"
           format: "${major}.${minor}.${patch}-rc${increment}"
           short_tags: false
       - name: Output new version
@@ -34,8 +34,7 @@ jobs:
         id: bumpversion
         uses: christian-draeger/increment-semantic-version@1.0.2
         with:
-          current-version: "${{ steps.nextversion.outputs.version }}"
-          version-fragment: "rc"
+          current-version: "${{ steps.nextversion.outputs.version_tag }}"
       - name: Output next version
         run: |
           echo "Next Version: ${{ steps.bumpversion.outputs.next-version }}"
@@ -57,7 +56,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
-          INITIAL_VERSION: "${{ steps.nextversion.outputs.version }}"
+          INITIAL_VERSION: "${{ steps.nextversion.outputs.version_tag }}"
           DRY_RUN: true
       - name: Output anothrNick version
         run: |
