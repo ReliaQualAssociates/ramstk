@@ -124,6 +124,14 @@ class TestSelectMethods():
                         'succeed_retrieve_program_status')
 
     @pytest.mark.unit
+    def test_do_select_all_tree_loaded(self, mock_program_dao):
+        """do_select_all() should return a Tree() object populated with RAMSTKValidation instances on success."""
+        DUT = dmProgramStatus()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+    @pytest.mark.unit
     def test_do_select_program_status(self, mock_program_dao):
         """do_select() should return an instance of the RAMSTKValidation on success."""
         DUT = dmProgramStatus()
@@ -333,6 +341,41 @@ class TestGetterSetter():
 
         pub.unsubscribe(self.on_succeed_get_program_status_tree,
                         'succeed_get_program_status_tree')
+
+    @pytest.mark.unit
+    def test_on_calculate_plan(self, mock_program_dao):
+        """_do_set_attributes() should update program status on successful calculation of the plan."""
+        DUT = dmProgramStatus()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('succeed_calculate_all_validation_tasks',
+                        cost_remaining=14608.45, time_remaining=469.00)
+
+        _node_id = DUT._dic_status[date.today()]
+
+        assert DUT.tree.get_node(
+            _node_id).data['status'].cost_remaining == 14608.45
+        assert DUT.tree.get_node(
+            _node_id).data['status'].time_remaining == 469.00
+
+    @pytest.mark.unit
+    def test_on_calculate_plan_no_status_record(self, mock_program_dao):
+        """_do_set_attributes() should update program status on successful calculation of the plan."""
+        DUT = dmProgramStatus()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._dic_status.pop(date.today())
+
+        pub.sendMessage('succeed_calculate_all_validation_tasks',
+                        cost_remaining=1408.45, time_remaining=49.00)
+
+        _node_id = DUT._dic_status[date.today()]
+
+        assert DUT.tree.get_node(
+            _node_id).data['status'].cost_remaining == 1408.45
+        assert DUT.tree.get_node(
+            _node_id).data['status'].time_remaining == 49.00
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')

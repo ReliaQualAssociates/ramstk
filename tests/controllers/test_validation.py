@@ -145,7 +145,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.on_get_tree,
                                 'succeed_get_validations_tree')
         assert pub.isSubscribed(DUT._on_get_status_tree,
-                                'succeed_get_status_tree')
+                                'succeed_retrieve_program_status')
         assert pub.isSubscribed(DUT._do_calculate_task,
                                 'request_calculate_validation_task')
         assert pub.isSubscribed(DUT._do_calculate_all_tasks,

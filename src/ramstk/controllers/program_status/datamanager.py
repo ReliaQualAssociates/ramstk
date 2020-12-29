@@ -14,7 +14,6 @@ from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import DuplicatedNodeIdError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -87,6 +86,9 @@ class DataManager(RAMSTKDataManager):
         """
         self._revision_id = attributes['revision_id']
 
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
         for _status in self.dao.do_select_all(
                 RAMSTKProgramStatus,
                 key=['revision_id'],
@@ -95,13 +97,10 @@ class DataManager(RAMSTKDataManager):
 
             self._dic_status[_status.date_status] = _status.status_id
 
-            try:
-                self.tree.create_node(tag='status',
-                                      identifier=_status.status_id,
-                                      parent=self._root,
-                                      data={'status': _status})
-            except DuplicatedNodeIdError:
-                pass
+            self.tree.create_node(tag='status',
+                                  identifier=_status.status_id,
+                                  parent=self._root,
+                                  data={'status': _status})
 
         self.last_id = max(self.tree.nodes.keys())
 
