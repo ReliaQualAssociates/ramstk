@@ -514,17 +514,18 @@ INSERT INTO "ramstk_method" VALUES(6,'Branch Testing','','detection');
 CREATE TABLE ramstk_model (
     fld_model_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
-    fld_model_type INTEGER,
+    fld_model_type VARCHAR,
     PRIMARY KEY (fld_model_id)
 );
-INSERT INTO "ramstk_model" VALUES(1,'Adhesion Wear Model for Bearings',1);
-INSERT INTO "ramstk_model" VALUES(2,'Arrhenius',1);
-INSERT INTO "ramstk_model" VALUES(3,'Coffin-Manson',1);
-INSERT INTO "ramstk_model" VALUES(4,'Empirical/DOE',1);
-INSERT INTO "ramstk_model" VALUES(5,'Eyring',1);
-INSERT INTO "ramstk_model" VALUES(6,'Inverse Power Law (IPL)',1);
-INSERT INTO "ramstk_model" VALUES(7,'IPL - Arrhenius',1);
-INSERT INTO "ramstk_model" VALUES(8,'Time Fraction of Damaging Operating Conditions',1);
+INSERT INTO "ramstk_model" VALUES(1,'Adhesion Wear Model for Bearings','damage')
+;
+INSERT INTO "ramstk_model" VALUES(2,'Arrhenius','damage');
+INSERT INTO "ramstk_model" VALUES(3,'Coffin-Manson','damage');
+INSERT INTO "ramstk_model" VALUES(4,'Empirical/DOE','damage');
+INSERT INTO "ramstk_model" VALUES(5,'Eyring','damage');
+INSERT INTO "ramstk_model" VALUES(6,'Inverse Power Law (IPL)','damage');
+INSERT INTO "ramstk_model" VALUES(7,'IPL - Arrhenius','damage');
+INSERT INTO "ramstk_model" VALUES(8,'Time Fraction of Damaging Operating Conditions','damage');
 CREATE TABLE ramstk_rpn (
     fld_rpn_id INTEGER NOT NULL,
     fld_name VARCHAR(512),

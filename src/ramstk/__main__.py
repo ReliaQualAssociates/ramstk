@@ -18,13 +18,12 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import (
-    RAMSTK_CRITICALITY, RAMSTK_FAILURE_PROBABILITY,
     RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 )
 from ramstk.controllers import (
-    amFMEA, amHardware, amHazards, amStakeholder,
-    amValidation, dmFailureDefinition, dmFMEA, dmFunction,
-    dmHardware, dmHazards, dmOptions, dmPoF, dmProgramStatus, dmRequirement,
+    amFMEA, amHardware, amHazards, amStakeholder, amValidation,
+    dmFailureDefinition, dmFMEA, dmFunction, dmHardware,
+    dmHazards, dmOptions, dmPoF, dmProgramStatus, dmRequirement,
     dmRevision, dmStakeholder, dmUsageProfile, dmValidation
 )
 from ramstk.db.base import BaseDatabase
@@ -56,63 +55,6 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
             conn_info['database']))
 
     return _site_db
-
-
-def do_copy_configuration_values(
-        user_configuration: RAMSTKUserConfiguration,
-        site_configuration: RAMSTKSiteConfiguration
-) -> RAMSTKUserConfiguration:
-    """Copy some values from the site configuration to the user configuration.
-
-    :param user_configuration: the instance of the RAMSTKUserConfiguration()
-        to add volatile data to.
-    :type user_configuration: :class:`RAMSTKUserConfiguration`
-    :param site_configuration: the instance of the RAMSTKSiteConfiguration() to
-        add volatile data from.
-    :type site_configuration: :class:`RAMSTKSiteConfiguration`
-    :return: None
-    :rtype: None
-    """
-    user_configuration.RAMSTK_ACTION_CATEGORY = \
-        site_configuration.RAMSTK_ACTION_CATEGORY
-    user_configuration.RAMSTK_ACTION_STATUS = \
-        site_configuration.RAMSTK_ACTION_STATUS
-    user_configuration.RAMSTK_AFFINITY_GROUPS = \
-        site_configuration.RAMSTK_AFFINITY_GROUPS
-    user_configuration.RAMSTK_CATEGORIES = \
-        site_configuration.RAMSTK_CATEGORIES
-    user_configuration.RAMSTK_CRITICALITY = RAMSTK_CRITICALITY
-    user_configuration.RAMSTK_DAMAGE_MODELS = \
-        site_configuration.RAMSTK_DAMAGE_MODELS
-    user_configuration.RAMSTK_FAILURE_PROBABILITY = RAMSTK_FAILURE_PROBABILITY
-    user_configuration.RAMSTK_HAZARDS = site_configuration.RAMSTK_HAZARDS
-    user_configuration.RAMSTK_LOAD_HISTORY = \
-        site_configuration.RAMSTK_LOAD_HISTORY
-    user_configuration.RAMSTK_MANUFACTURERS = \
-        site_configuration.RAMSTK_MANUFACTURERS
-    user_configuration.RAMSTK_MEASURABLE_PARAMETERS = \
-        site_configuration.RAMSTK_MEASURABLE_PARAMETERS
-    user_configuration.RAMSTK_MEASUREMENT_UNITS = \
-        site_configuration.RAMSTK_MEASUREMENT_UNITS
-    user_configuration.RAMSTK_REQUIREMENT_TYPE = \
-        site_configuration.RAMSTK_REQUIREMENT_TYPE
-    user_configuration.RAMSTK_RPN_DETECTION = \
-        site_configuration.RAMSTK_RPN_DETECTION
-    user_configuration.RAMSTK_RPN_OCCURRENCE = \
-        site_configuration.RAMSTK_RPN_OCCURRENCE
-    user_configuration.RAMSTK_RPN_SEVERITY = \
-        site_configuration.RAMSTK_RPN_SEVERITY
-    user_configuration.RAMSTK_SEVERITY = site_configuration.RAMSTK_SEVERITY
-    user_configuration.RAMSTK_STAKEHOLDERS = \
-        site_configuration.RAMSTK_STAKEHOLDERS
-    user_configuration.RAMSTK_SUBCATEGORIES = \
-        site_configuration.RAMSTK_SUBCATEGORIES
-    user_configuration.RAMSTK_USERS = site_configuration.RAMSTK_USERS
-    user_configuration.RAMSTK_VALIDATION_TYPE = \
-        site_configuration.RAMSTK_VALIDATION_TYPE
-    user_configuration.RAMSTK_WORKGROUPS = site_configuration.RAMSTK_WORKGROUPS
-
-    return user_configuration
 
 
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
@@ -233,16 +175,7 @@ def the_one_ring() -> None:
                     logger_name='DEBUG',
                     message="Validated the RAMSTK license.")
 
-    do_load_variables(site_db, site_configuration)
-
-    # Copy some site-level configuration variables to the user-level
-    # configuration.  These are used to load RAMSTKComboBox widgets with
-    # information during initialization.  This is the easiest way to make
-    # this information available without refactoring all the views to pass
-    # the site configuration object in addition to the user configuration
-    # object.
-    user_configuration = do_copy_configuration_values(user_configuration,
-                                                      site_configuration)
+    do_load_variables(site_db, user_configuration)
 
     pub.sendMessage('do_log_info_msg',
                     logger_name='INFO',

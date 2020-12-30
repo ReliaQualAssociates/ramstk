@@ -1,9 +1,9 @@
 title = "RAMSTK Site Configuration"
 
 [backend]
-dialect = "sqlite"
-host = "localhost"
-port = "3306"
-database = "<PREFIX>/share/RAMSTK/ramstk_common.ramstk"
+dialect = "postgres"
+host = ""
+port = "5432"
+database = "ramstk_common_ramstk"
 user = "ramstk"
 password = "ramstk"

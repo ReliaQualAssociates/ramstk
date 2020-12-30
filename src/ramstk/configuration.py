@@ -151,42 +151,6 @@ class RAMSTKSiteConfiguration:
 
         # Initialize public dictionary attributes.
         self.RAMSTK_COM_INFO: Dict[str, str] = {}
-        self.RAMSTK_ACTION_CATEGORY: Dict[str, Tuple[str, str, str, str]] = {}
-        self.RAMSTK_ACTION_STATUS: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_AFFINITY_GROUPS: Dict[str, Tuple[str, str]] = {}  # User.
-        self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User.
-        self.RAMSTK_DETECTION_METHODS: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
-        self.RAMSTK_HAZARDS: Dict[str, Tuple[str, str]] = {}  # User.
-        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, Tuple[str, str, str,
-                                                       str]] = {}
-        self.RAMSTK_INCIDENT_STATUS: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_INCIDENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}  # User.
-        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str,
-                                                   str]] = {}  # User.
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str,
-                                                           str]] = {}  # User.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str,
-                                                       str]] = {}  # Admin.
-        self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
-        self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
-        self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
-        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str,
-                                              str]] = {}  # Admin
-        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_STRESS_LIMITS: Dict[str, Tuple[float, float, float, float,
-                                                   float, float, float, float,
-                                                   float, float]] = {}  # User.
-        self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}  # Static.
-        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str,
-                                           str]] = {}  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str,
-                                                     str]] = {}  # Admin.
-        self.RAMSTK_WORKGROUPS: Dict[str, Tuple[str, str]] = {}  # Admin.
 
         # Initialize public list attributes.
 
@@ -406,6 +370,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
     RAMSTK_PROG_DIR: str
     RAMSTK_PROG_INFO: Dict[str, str]
 
+    # pylint: disable=too-many-statements
     def __init__(self) -> None:
         """Class for user-specific RAMSTK configuration settings."""
         # Initialize private dictionary attributes.
@@ -434,13 +399,42 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self._INSTALL_PREFIX = get_install_prefix()
 
         # Initialize public dictionary attributes.
-        self.RAMSTK_CATEGORIES: Dict[str, str] = {}
+        self.RAMSTK_ACTION_CATEGORY: Dict[str, Tuple[str, str, str, str]] = {}
+        self.RAMSTK_ACTION_STATUS: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_AFFINITY_GROUPS: Dict[str, Tuple[str, str]] = {}  # User.
+        self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User.
+        self.RAMSTK_DETECTION_METHODS: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
+        self.RAMSTK_HAZARDS: Dict[str, Tuple[str, str]] = {}  # User.
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, Tuple[str, str, str,
+                                                       str]] = {}
+        self.RAMSTK_INCIDENT_STATUS: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_INCIDENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}  # User.
+        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str,
+                                                   str]] = {}  # User.
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str,
+                                                           str]] = {}  # User.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str,
+                                                       str]] = {}  # Admin.
+        self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
+        self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
+        self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
+        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str,
+                                              str]] = {}  # Admin
+        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
+        self.RAMSTK_STRESS_LIMITS: Dict[int, List[float]] = {}  # User.
+        self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}  # Static.
+        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str,
+                                           str]] = {}  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str,
+                                                     str]] = {}  # Admin.
+
         self.RAMSTK_COLORS: Dict[str, str] = {}
-        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
-        self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}
-        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str, str]] = {}
         self.RAMSTK_PAGE_NUMBER: Dict[int, str] = {
             0: 'revision',
             1: 'function',
@@ -449,17 +443,20 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             4: 'validation',
         }
         self.RAMSTK_PROG_INFO: Dict[str, str] = {}
-        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_STRESS_LIMITS: Dict[int, Tuple[str]] = {}
-        self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}
         self.RAMSTK_TABPOS = {
             "listbook": "top",
             "modulebook": "bottom",
             "workbook": "bottom",
         }
-        self.RAMSTK_WORKGROUPS: Dict[str, Tuple[str, str]] = {}
+        self.RAMSTK_WORKGROUPS: Dict[str, Tuple[str, str]] = {}  # Admin.
 
         # Initialize public list attributes.
+        self.RAMSTK_FAILURE_PROBABILITY = [
+            [_("Level E - Extremely Unlikely"), 1], [_("Level D - Remote"), 2],
+            [_("Level C - Occasional"), 3],
+            [_("Level B - Reasonably Probable"), 4],
+            [_("Level A - Frequent"), 5]
+        ]
         self.RAMSTK_RISK_POINTS = [4, 10]
 
         # Initialize public scalar attributes.
@@ -467,7 +464,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
         self.RAMSTK_BACKEND = ""
         self.RAMSTK_REPORT_SIZE = "letter"
-        self.RAMSTK_HR_MULTIPLIER = 1000000.0
+        self.RAMSTK_HR_MULTIPLIER = 1.0
         self.RAMSTK_DEC_PLACES = 6
         self.RAMSTK_MTIME = 100.0
         self.RAMSTK_GUI_LAYOUT = "advanced"

@@ -15,7 +15,7 @@ from ramstk.models.commondb import RAMSTKModel
 
 ATTRIBUTES = {
     'description': 'Adhesion Wear Model for Bearings',
-    'model_type': 1
+    'model_type': 'damage'
 }
 
 
@@ -33,7 +33,7 @@ class TestRAMSTKModel():
         assert DUT.__tablename__ == 'ramstk_model'
         assert DUT.model_id == 1
         assert DUT.description == 'Adhesion Wear Model for Bearings'
-        assert DUT.model_type == 1
+        assert DUT.model_type == 'damage'
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -43,7 +43,7 @@ class TestRAMSTKModel():
         _attributes = DUT.get_attributes()
 
         assert _attributes['description'] == 'Adhesion Wear Model for Bearings'
-        assert _attributes['model_type'] == 1
+        assert _attributes['model_type'] == 'damage'
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):

@@ -3,10 +3,6 @@ from typing import Any, Tuple
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager as RAMSTKProgramManager
-from ramstk.configuration import RAMSTK_CRITICALITY as RAMSTK_CRITICALITY
-from ramstk.configuration import (
-    RAMSTK_FAILURE_PROBABILITY as RAMSTK_FAILURE_PROBABILITY
-)
 from ramstk.configuration import (
     RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
 )
@@ -25,6 +21,7 @@ from ramstk.controllers import dmHardware as dmHardware
 from ramstk.controllers import dmHazards as dmHazards
 from ramstk.controllers import dmOptions as dmOptions
 from ramstk.controllers import dmPoF as dmPoF
+from ramstk.controllers import dmProgramStatus as dmProgramStatus
 from ramstk.controllers import dmRequirement as dmRequirement
 from ramstk.controllers import dmRevision as dmRevision
 from ramstk.controllers import dmStakeholder as dmStakeholder
@@ -40,13 +37,6 @@ from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import RAMSTKDesktop as RAMSTKDesktop
 
 def do_connect_to_site_db(conn_info: Any) -> BaseDatabase:
-    ...
-
-
-def do_copy_configuration_values(
-        user_configuration: RAMSTKUserConfiguration,
-        site_configuration: RAMSTKSiteConfiguration
-) -> RAMSTKUserConfiguration:
     ...
 
 
