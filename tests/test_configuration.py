@@ -19,13 +19,14 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
-    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_ALLOCATION_MODELS, RAMSTK_CONTROL_TYPES,
-    RAMSTK_COST_TYPES, RAMSTK_CRITICALITY, RAMSTK_DORMANT_ENVIRONMENTS,
-    RAMSTK_FAILURE_PROBABILITY, RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,
-    RAMSTK_HR_TYPES, RAMSTK_LIFECYCLE, RAMSTK_MTTR_TYPES, RAMSTK_S_DIST,
-    RAMSTK_SW_APPLICATION, RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES,
-    RAMSTK_SW_LEVELS, RAMSTK_SW_TEST_METHODS, RAMSTKSiteConfiguration,
-    RAMSTKUserConfiguration)
+    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_ALLOCATION_MODELS,
+    RAMSTK_CONTROL_TYPES, RAMSTK_COST_TYPES, RAMSTK_CRITICALITY,
+    RAMSTK_DORMANT_ENVIRONMENTS, RAMSTK_FAILURE_PROBABILITY,
+    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS, RAMSTK_HR_TYPES,
+    RAMSTK_LIFECYCLE, RAMSTK_MTTR_TYPES, RAMSTK_S_DIST, RAMSTK_SW_APPLICATION,
+    RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES, RAMSTK_SW_LEVELS,
+    RAMSTK_SW_TEST_METHODS, RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 
 try:
     VIRTUAL_ENV = glob.glob(environ['VIRTUAL_ENV'])[0]
@@ -44,9 +45,7 @@ _ = gettext.gettext
 
 @pytest.mark.unit
 def test_static_variables():
-    """
-    Static variables should have the proper data.
-    """
+    """Static variables should have the proper data."""
     assert RAMSTK_ACTIVE_ENVIRONMENTS == [
         [_("Ground, Benign")],
         [_("Ground, Fixed")],
@@ -265,39 +264,13 @@ class TestCreateConfiguration():
 
     @pytest.mark.unit
     def test_initialize_site_configuration(self):
-        """ __init__() should create an instance of the site configuration class. """
+        """__init__() should create an instance of the site configuration
+        class."""
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
 
         assert isinstance(DUT, RAMSTKSiteConfiguration)
         assert DUT.RAMSTK_COM_INFO == {}
-        assert DUT.RAMSTK_ACTION_CATEGORY == {}
-        assert DUT.RAMSTK_ACTION_STATUS == {}
-        assert DUT.RAMSTK_AFFINITY_GROUPS == {}
-        assert DUT.RAMSTK_CATEGORIES == {}
-        assert DUT.RAMSTK_DAMAGE_MODELS == {}
-        assert DUT.RAMSTK_DETECTION_METHODS == {}
-        assert DUT.RAMSTK_FAILURE_MODES == {}
-        assert DUT.RAMSTK_HAZARDS == {}
-        assert DUT.RAMSTK_INCIDENT_CATEGORY == {}
-        assert DUT.RAMSTK_INCIDENT_STATUS == {}
-        assert DUT.RAMSTK_INCIDENT_TYPE == {}
-        assert DUT.RAMSTK_LOAD_HISTORY == {}
-        assert DUT.RAMSTK_MANUFACTURERS == {}
-        assert DUT.RAMSTK_MEASURABLE_PARAMETERS == {}
-        assert DUT.RAMSTK_MEASUREMENT_UNITS == {}
-        assert DUT.RAMSTK_MODULES == {}
-        assert DUT.RAMSTK_REQUIREMENT_TYPE == {}
-        assert DUT.RAMSTK_RPN_DETECTION == {}
-        assert DUT.RAMSTK_RPN_OCCURRENCE == {}
-        assert DUT.RAMSTK_RPN_SEVERITY == {}
-        assert DUT.RAMSTK_SEVERITY == {}
-        assert DUT.RAMSTK_STAKEHOLDERS == {}
-        assert DUT.RAMSTK_STRESS_LIMITS == {}
-        assert DUT.RAMSTK_SUBCATEGORIES == {}
-        assert DUT.RAMSTK_USERS == {}
-        assert DUT.RAMSTK_VALIDATION_TYPE == {}
-        assert DUT.RAMSTK_WORKGROUPS == {}
         assert DUT.RAMSTK_COM_BACKEND == ''
 
         # If testing RAMSTK that was installed by `pip install -e .`, then you
@@ -314,7 +287,8 @@ class TestCreateConfiguration():
 
     @pytest.mark.unit
     def test_initialize_user_configuration(self):
-        """ __init__() should create an instance of the user configuration class. """
+        """__init__() should create an instance of the user configuration
+        class."""
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
 
@@ -328,7 +302,6 @@ class TestCreateConfiguration():
             4: 'validation'
         }
         assert DUT.RAMSTK_PROG_INFO == {}
-        assert DUT.RAMSTK_STRESS_LIMITS == {}
         assert DUT.RAMSTK_TABPOS == {
             "listbook": "top",
             "modulebook": "bottom",
@@ -339,7 +312,7 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_MODE_SOURCE == 1  # 1=FMD-97
         assert DUT.RAMSTK_BACKEND == ""
         assert DUT.RAMSTK_REPORT_SIZE == "letter"
-        assert DUT.RAMSTK_HR_MULTIPLIER == 1000000.0
+        assert DUT.RAMSTK_HR_MULTIPLIER == 1.0
         assert DUT.RAMSTK_DEC_PLACES == 6
         assert DUT.RAMSTK_MTIME == 100.0
         assert DUT.RAMSTK_GUI_LAYOUT == "advanced"
@@ -371,10 +344,38 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_USER_LOG == DUT.RAMSTK_LOG_DIR + "/ramstk_run.log"
         assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
                                          + "/ramstk_import.log")
+        assert DUT.RAMSTK_ACTION_CATEGORY == {}
+        assert DUT.RAMSTK_ACTION_STATUS == {}
+        assert DUT.RAMSTK_AFFINITY_GROUPS == {}
+        assert DUT.RAMSTK_CATEGORIES == {}
+        assert DUT.RAMSTK_DAMAGE_MODELS == {}
+        assert DUT.RAMSTK_DETECTION_METHODS == {}
+        assert DUT.RAMSTK_FAILURE_MODES == {}
+        assert DUT.RAMSTK_HAZARDS == {}
+        assert DUT.RAMSTK_INCIDENT_CATEGORY == {}
+        assert DUT.RAMSTK_INCIDENT_STATUS == {}
+        assert DUT.RAMSTK_INCIDENT_TYPE == {}
+        assert DUT.RAMSTK_LOAD_HISTORY == {}
+        assert DUT.RAMSTK_MANUFACTURERS == {}
+        assert DUT.RAMSTK_MEASURABLE_PARAMETERS == {}
+        assert DUT.RAMSTK_MEASUREMENT_UNITS == {}
+        assert DUT.RAMSTK_MODULES == {}
+        assert DUT.RAMSTK_REQUIREMENT_TYPE == {}
+        assert DUT.RAMSTK_RPN_DETECTION == {}
+        assert DUT.RAMSTK_RPN_OCCURRENCE == {}
+        assert DUT.RAMSTK_RPN_SEVERITY == {}
+        assert DUT.RAMSTK_SEVERITY == {}
+        assert DUT.RAMSTK_STAKEHOLDERS == {}
+        assert DUT.RAMSTK_STRESS_LIMITS == {}
+        assert DUT.RAMSTK_SUBCATEGORIES == {}
+        assert DUT.RAMSTK_USERS == {}
+        assert DUT.RAMSTK_VALIDATION_TYPE == {}
+        assert DUT.RAMSTK_WORKGROUPS == {}
 
     @pytest.mark.unit
     def test_create_site_configuration(self):
-        """do_create_site_configuration() should broadcast the succcess message on success."""
+        """do_create_site_configuration() should broadcast the succcess message
+        on success."""
         pub.subscribe(self.on_create_site_configuration,
                       'succeed_create_site_configuration')
 
@@ -524,7 +525,8 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_get_site_configuration(self):
-        """get_site_configuration() should broadcast the succcess message on success."""
+        """get_site_configuration() should broadcast the succcess message on
+        success."""
         DUT = RAMSTKSiteConfiguration()
         DUT.RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
 
@@ -540,7 +542,8 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_get_site_configuration_no_conf_file(self):
-        """get_site_configuration() should broadcase the fail message when there is no configuration file."""
+        """get_site_configuration() should broadcase the fail message when
+        there is no configuration file."""
         pub.subscribe(self.on_fail_get_site_configuration,
                       'fail_get_site_configuration')
 
@@ -564,7 +567,8 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_set_site_directories_no_site_conf_file(self):
-        """set_site_directories() should return None on success and create a new site configuration file if one doesn't exist."""
+        """set_site_directories() should return None on success and create a
+        new site configuration file if one doesn't exist."""
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = '/tmp'
         mkdir(DUT._INSTALL_PREFIX + '/share')
@@ -661,7 +665,8 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):
-        """get_user_configuration() should broadcase the fail message when there is no configuration file."""
+        """get_user_configuration() should broadcase the fail message when
+        there is no configuration file."""
         pub.subscribe(self.on_fail_get_user_configuration,
                       'fail_get_user_configuration')
 
@@ -717,7 +722,8 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_set_user_directories(self):
-        """set_user_variables() should return None on success when configuration directory structure exists in user's $HOME."""
+        """set_user_variables() should return None on success when
+        configuration directory structure exists in user's $HOME."""
         DUT = RAMSTKUserConfiguration()
         DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/tmp'
 
@@ -732,7 +738,8 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_set_user_directories_no_home(self):
-        """set_user_variables() should return None on success when configuration directory structure does NOT exist in user's $HOME."""
+        """set_user_variables() should return None on success when
+        configuration directory structure does NOT exist in user's $HOME."""
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
         DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/home'

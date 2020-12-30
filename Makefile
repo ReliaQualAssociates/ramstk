@@ -192,7 +192,6 @@ install: clean-build clean-pyc
 	${COPY} "./data/postgres_common_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/sqlite_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/postgres_program_db.sql" "$(PREFIX)/share/RAMSTK/"
-	${COPY} "./data/ramstk_common.ramstk" "$(PREFIX)/share/RAMSTK/"
 
 uninstall:
 	pip uninstall -y ramstk

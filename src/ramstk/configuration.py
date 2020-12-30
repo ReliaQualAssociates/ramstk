@@ -426,9 +426,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str,
                                               str]] = {}  # Admin
         self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_STRESS_LIMITS: List[List[float]] = [
-            [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-        ]  # User.
+        self.RAMSTK_STRESS_LIMITS: Dict[int, List[float]] = {}  # User.
         self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}  # Static.
         self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str,
                                            str]] = {}  # Admin.
@@ -466,7 +464,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
         self.RAMSTK_BACKEND = ""
         self.RAMSTK_REPORT_SIZE = "letter"
-        self.RAMSTK_HR_MULTIPLIER = 1000000.0
+        self.RAMSTK_HR_MULTIPLIER = 1.0
         self.RAMSTK_DEC_PLACES = 6
         self.RAMSTK_MTIME = 100.0
         self.RAMSTK_GUI_LAYOUT = "advanced"

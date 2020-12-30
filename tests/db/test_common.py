@@ -151,15 +151,15 @@ def test_do_create_common_db(monkeypatch):
     assert _record.user_phone == '+1.269.867.5309'
 
 
-@pytest.mark.usefixtures('test_common_dao', 'test_toml_site_configuration')
+@pytest.mark.usefixtures('test_common_dao', 'test_toml_user_configuration')
 class TestLoadCommonTables():
     """Class for testing functions to load common database tables."""
     def test_do_load_action_variables(self, test_common_dao,
-                                      test_toml_site_configuration):
+                                      test_toml_user_configuration):
         """_do_load_action_variables() should load global variables related to actions and return None."""
         assert _do_load_action_variables(test_common_dao,
-                                         test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_ACTION_CATEGORY == {
+                                         test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_ACTION_CATEGORY == {
             38: ('ENGD', 'Engineering, Design', 'action', 1),
             39: ('ENGR', 'Engineering, Reliability', 'action', 1),
             40: ('ENGS', 'Engineering, Systems', 'action', 1),
@@ -167,7 +167,7 @@ class TestLoadCommonTables():
             42: ('TEST', 'Test', 'action', 1),
             43: ('VANDV', 'Verification & Validation', 'action', 1)
         }
-        assert test_toml_site_configuration.RAMSTK_ACTION_STATUS == {
+        assert test_toml_user_configuration.RAMSTK_ACTION_STATUS == {
             11: ('Initiated', 'Action has been initiated.', 'action'),
             12: ('Reviewed', 'Action has been reviewed.', 'action'),
             13: ('Approved', 'Action has been approved.', 'action'),
@@ -177,11 +177,11 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_hardware_variables(self, test_common_dao,
-                                        test_toml_site_configuration):
+                                        test_toml_user_configuration):
         """_do_load_hardware_variables() should load global variables related to hardware and return None."""
         assert _do_load_hardware_variables(
-            test_common_dao, test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_FAILURE_MODES == {
+            test_common_dao, test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_FAILURE_MODES == {
             1: {
                 1: {},
                 2: {},
@@ -283,7 +283,7 @@ class TestLoadCommonTables():
             }
         }
 
-        assert test_toml_site_configuration.RAMSTK_STRESS_LIMITS == {
+        assert test_toml_user_configuration.RAMSTK_STRESS_LIMITS == {
             1: (0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
             2: (1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
             3: (1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
@@ -295,7 +295,7 @@ class TestLoadCommonTables():
             9: (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0),
             10: (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0)
         }
-        assert test_toml_site_configuration.RAMSTK_CATEGORIES == {
+        assert test_toml_user_configuration.RAMSTK_CATEGORIES == {
             1: 'Integrated Circuit',
             2: 'Semiconductor',
             3: 'Resistor',
@@ -307,7 +307,7 @@ class TestLoadCommonTables():
             9: 'Meter',
             10: 'Miscellaneous'
         }
-        assert test_toml_site_configuration.RAMSTK_SUBCATEGORIES == {
+        assert test_toml_user_configuration.RAMSTK_SUBCATEGORIES == {
             1: {
                 1: 'Linear',
                 2: 'Logic',
@@ -410,16 +410,16 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_incident_variables(self, test_common_dao,
-                                        test_toml_site_configuration):
+                                        test_toml_user_configuration):
         """_do_load_incident_variables() should load global variables related to incidents and return None."""
         assert _do_load_incident_variables(
-            test_common_dao, test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_INCIDENT_CATEGORY == {
+            test_common_dao, test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_INCIDENT_CATEGORY == {
             35: ('HW', 'Hardware', 'incident', 1),
             36: ('SW', 'Software', 'incident', 1),
             37: ('PROC', 'Process', 'incident', 1)
         }
-        assert test_toml_site_configuration.RAMSTK_INCIDENT_STATUS == {
+        assert test_toml_user_configuration.RAMSTK_INCIDENT_STATUS == {
             1: ('Initiated', 'Incident has been initiated.', 'incident'),
             2: ('Reviewed', 'Incident has been reviewed.', 'incident'),
             3:
@@ -442,7 +442,7 @@ class TestLoadCommonTables():
                 'incident'),
             10: ('Closed', 'Incident has been closed.', 'incident')
         }
-        assert test_toml_site_configuration.RAMSTK_INCIDENT_TYPE == {
+        assert test_toml_user_configuration.RAMSTK_INCIDENT_TYPE == {
             1: ('PLN', 'Planning', 'incident'),
             2: ('CON', 'Concept', 'incident'),
             3: ('RQMT', 'Requirement', 'incident'),
@@ -455,11 +455,11 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_miscellaneous_variables(self, test_common_dao,
-                                             test_toml_site_configuration):
+                                             test_toml_user_configuration):
         """_do_load_miscellaneous_variables() should load global variables related to uncategorized and return None."""
         assert _do_load_miscellaneous_variables(
-            test_common_dao, test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_DETECTION_METHODS == {
+            test_common_dao, test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_DETECTION_METHODS == {
             1: ('Code Reviews', '', 'detection'),
             2: ('Error/Anomaly Detection', '', 'detection'),
             3: ('Structure Analysis', '', 'detection'),
@@ -467,7 +467,7 @@ class TestLoadCommonTables():
             5: ('Functional Testing', '', 'detection'),
             6: ('Branch Testing', '', 'detection')
         }
-        assert test_toml_site_configuration.RAMSTK_HAZARDS == {
+        assert test_toml_user_configuration.RAMSTK_HAZARDS == {
             1: ('Acceleration/Gravity', 'Falls'),
             2: ('Acceleration/Gravity', 'Falling Objects'),
             3: ('Acceleration/Gravity', 'Fragments/Missiles'),
@@ -658,12 +658,12 @@ class TestLoadCommonTables():
             186: ('Unannunciated Utility Outages', 'Ventilation')
         }
 
-        assert test_toml_site_configuration.RAMSTK_MANUFACTURERS == {
+        assert test_toml_user_configuration.RAMSTK_MANUFACTURERS == {
             1: ('Sprague', 'New Hampshire', '13606'),
             2: ('Xilinx', '', ''),
             3: ('National Semiconductor', 'California', '27014')
         }
-        assert test_toml_site_configuration.RAMSTK_MEASUREMENT_UNITS == {
+        assert test_toml_user_configuration.RAMSTK_MEASUREMENT_UNITS == {
             1: ('lbf', 'Pounds Force', 'unit'),
             2: ('lbm', 'Pounds Mass', 'unit'),
             3: ('hrs', 'hours', 'unit'),
@@ -675,7 +675,7 @@ class TestLoadCommonTables():
             9: ('A', 'Amperes', 'unit'),
             10: ('V', 'Volts', 'unit')
         }
-        assert test_toml_site_configuration.RAMSTK_VALIDATION_TYPE == {
+        assert test_toml_user_configuration.RAMSTK_VALIDATION_TYPE == {
             17: ('DOE', 'Manufacturing Test, DOE', 'validation'),
             18: ('ESS', 'Manufacturing Test, ESS', 'validation'),
             19: ('HSS', 'Manufacturing Test, HASS', 'validation'),
@@ -708,11 +708,11 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_pof_variables(self, test_common_dao,
-                                   test_toml_site_configuration):
+                                   test_toml_user_configuration):
         """_do_load_pof_variables() should load global variables related to physics of failure analysis and return None."""
         assert _do_load_pof_variables(test_common_dao,
-                                      test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_DAMAGE_MODELS == {
+                                      test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_DAMAGE_MODELS == {
             1: 'Adhesion Wear Model for Bearings',
             2: 'Arrhenius',
             3: 'Coffin-Manson',
@@ -722,7 +722,7 @@ class TestLoadCommonTables():
             7: 'IPL - Arrhenius',
             8: 'Time Fraction of Damaging Operating Conditions'
         }
-        assert test_toml_site_configuration.RAMSTK_LOAD_HISTORY == {
+        assert test_toml_user_configuration.RAMSTK_LOAD_HISTORY == {
             1: 'Cycle Counts',
             2: 'Histogram',
             3: 'Histogram, Bivariate',
@@ -733,7 +733,7 @@ class TestLoadCommonTables():
             8: 'Time at Maximum',
             9: 'Time at Minimum'
         }
-        assert test_toml_site_configuration.RAMSTK_MEASURABLE_PARAMETERS == {
+        assert test_toml_user_configuration.RAMSTK_MEASURABLE_PARAMETERS == {
             11: ('CN', 'Contamination, Concentration', 'damage'),
             12: ('CS', 'Contamination, Particle Size', 'damage'),
             13: ('LD', 'Dynamic Load', 'damage'),
@@ -757,11 +757,11 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_rpn_variables(self, test_common_dao,
-                                   test_toml_site_configuration):
+                                   test_toml_user_configuration):
         """_do_load_rpn_variables() should load global variables related to incidents and return None."""
         assert _do_load_rpn_variables(test_common_dao,
-                                      test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_RPN_DETECTION == {
+                                      test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_RPN_DETECTION == {
             1: {
                 'rpn_id': 21,
                 'name': 'Almost Certain',
@@ -843,7 +843,7 @@ class TestLoadCommonTables():
                 'value': 10
             }
         }
-        assert test_toml_site_configuration.RAMSTK_RPN_OCCURRENCE == {
+        assert test_toml_user_configuration.RAMSTK_RPN_OCCURRENCE == {
             1: {
                 'rpn_id': 11,
                 'name': 'Remote',
@@ -915,7 +915,7 @@ class TestLoadCommonTables():
                 'value': 10
             }
         }
-        assert test_toml_site_configuration.RAMSTK_RPN_SEVERITY == {
+        assert test_toml_user_configuration.RAMSTK_RPN_SEVERITY == {
             1: {
                 'rpn_id': 1,
                 'name': 'None',
@@ -994,11 +994,11 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_severity(self, test_common_dao,
-                              test_toml_site_configuration):
+                              test_toml_user_configuration):
         """_do_load_severity() should load global variables related to severity and return None."""
         assert _do_load_severity(test_common_dao,
-                                 test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_SEVERITY == {
+                                 test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_SEVERITY == {
             11: ('INS', 'Insignificant', 'risk', 1),
             12: ('SLT', 'Slight', 'risk', 2),
             13: ('LOW', 'Low', 'risk', 3),
@@ -1008,15 +1008,15 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_user_workgroups(self, test_common_dao,
-                                     test_toml_site_configuration):
+                                     test_toml_user_configuration):
         """_do_load_user_workgroups() should load global variables related to users and workgroups and return None."""
         assert _do_load_user_workgroups(test_common_dao,
-                                        test_toml_site_configuration) is None
-        assert test_toml_site_configuration.RAMSTK_USERS == {
+                                        test_toml_user_configuration) is None
+        assert test_toml_user_configuration.RAMSTK_USERS == {
             1: ('Tester', 'Johnny', 'tester.johnny@reliaqual.com',
                 '+1.269.867.5309', '1')
         }
-        assert test_toml_site_configuration.RAMSTK_WORKGROUPS == {
+        assert test_toml_user_configuration.RAMSTK_WORKGROUPS == {
             1: ('Engineering, Design', 'workgroup'),
             2: ('Engineering, Logistics Support', 'workgroup'),
             3: ('Engineering, Maintainability', 'workgroup'),
@@ -1026,7 +1026,7 @@ class TestLoadCommonTables():
         }
 
     def test_do_load_variables(self, test_common_dao,
-                               test_toml_site_configuration):
+                               test_toml_user_configuration):
         """_do_load_variables() should return None."""
         assert do_load_variables(test_common_dao,
-                                 test_toml_site_configuration) is None
+                                 test_toml_user_configuration) is None
