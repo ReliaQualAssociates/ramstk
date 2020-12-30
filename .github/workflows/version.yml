@@ -39,16 +39,3 @@ jobs:
       - name: Output next release version
         run: |
           echo "Next Version: ${{ steps.bumpversion.outputs.next-version }}"
-      - name: Bump release version
-        id: anothrnick
-        uses: anothrNick/github-tag-action@1.26.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          INITIAL_VERSION: "${{ steps.branchinfo.outputs.version }}"
-          DRY_RUN: true
-      - name: Output anothrNick version
-        run: |
-          echo "New Tag: ${{ steps.anothrnick.outputs.new_tag }}"
-          echo "Tag: ${{ steps.anothrnick.outputs.tag }}"
-          echo "Part: ${{ steps.anothrnick.outputs.part }}"
