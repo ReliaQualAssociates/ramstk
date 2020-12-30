@@ -21,8 +21,8 @@ jobs:
           echo "##[set-output name=pr;]$(echo ${GITHUB_REF#refs/pull/})"
           echo "##[set-output name=head;]$(echo ${GITHUB_HEAD_REF})"
           echo "##[set-output name=base;]$(echo ${GITHUB_BASE_REF})"
-          echo "##[set-output name=tag;]$(git describe --tags --abbrev=0 ${GITHUB_HEAD_REF})"
-          echo "##[set-output name=version;]$(git describe --tags --abbrev=0 ${GITHUB_HEAD_REF} | sed 's/v//')"
+          echo "##[set-output name=tag;]$(git describe --tags --abbrev=0 origin/${GITHUB_HEAD_REF})"
+          echo "##[set-output name=version;]$(git describe --tags --abbrev=0 origin/${GITHUB_HEAD_REF} | sed 's/v//')"
       - name: Print PR branch information
         run: |
           echo "PR: ${{ steps.branchinfo.outputs.pr }}"
