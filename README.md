@@ -1,5 +1,3 @@
-***NOTE:*** You should pull from the release/v1.0.0 branch rather than the master branch.
-
 # The RAMS ToolKit (RAMSTK)
 > A toolkit for **R**eliability, **A**vailability, **M**aintainability, and **S**afety (RAMS) analyses.
 
@@ -7,10 +5,9 @@
     <tr>
         <th>Documentation</th>
         <td>
-            <a href="https://ramstk.readthedocs.io/en/latest/?badge=latest
-            "><img alt="Documentation Status"
-               src="https://readthedocs.org/projects/ramstk/badge/?version
-               =latest"></a>
+            <a href='https://ramstk.readthedocs.io/en/latest/?badge=latest'>
+    <img src='https://readthedocs.org/projects/ramstk/badge/?version=latest' alt='Documentation Status' />
+</a>
         </td>
     </tr>
     <tr>
@@ -33,7 +30,7 @@
             src="https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge"></a>
             <a href="https://bettercodehub.com/"><img alt="Better Code Hub"
             src="https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master"></a>
-            <a href="https://www.deepcode.ai/app/gh/ReliaQualAssociates/ramstk/_/dashboard?utm_content=gh%2FReliaQualAssociates%2Framstk"><img alt="Deep Code" src="https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IlJlbGlhUXVhbEFzc29jaWF0ZXMiLCJyZXBvMSI6InJhbXN0ayIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjI1MTA4LCJpYXQiOjE2MDkxMzcwNTl9.R5P6VLkyK1LK6Jc5PjJ8QrLRq6zNuVxnzdjZCJbH7_k">
+            <a href="https://www.deepcode.ai/app/gh/ReliaQualAssociates/ramstk/_/dashboard?utm_content=gh%2FReliaQualAssociates%2Framstk"><img alt="Deep Code" src="https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IlJlbGlhUXVhbEFzc29jaWF0ZXMiLCJyZXBvMSI6InJhbXN0ayIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjI1MTA4LCJpYXQiOjE2MDkxMzcwNTl9.R5P6VLkyK1LK6Jc5PjJ8QrLRq6zNuVxnzdjZCJbH7_k"></a>
         </td>
     </tr>
     <tr>
@@ -98,7 +95,13 @@ RAMSTK is built on the concept of modules where a module is a collection of rela
 
 ## 💾 Installing
 
-These instructions will get RAMSTK up and running on your local machine.  Note that the Makefile contains all the commands needed to install or work with RAMSTK.  You should consult the help output for more information.
+These instructions will get RAMSTK up and running on your local machine
+. Note that the Makefile contains all the commands needed to install or work
+ with RAMSTK.  You should consult the help output for more information.
+
+GitHub and PyPi releases will be made available once RAMST reaches v1.0.0
+.  Until then, the only way to install RAMSTK is to clone the repository or
+ download the source package and follow the instructions below.
 
 ### Prerequisites
 
@@ -122,29 +125,50 @@ $ make depends
 
 This will install [pyenv](https://github.com/pyenv/pyenv), create a virtual environment with the default name of ramstk-venv, activate that virtual environment, install pip-tools, and then install all the RAMSTK dependencies needed for testing, development, and runtime.
 
+RAMSTK uses [postgresql](https://www.postgresql.org/) for it's database
+ engine.  You'll need to have a user with read/write access to a postgresql
+  server to use RAMSTK.
+
 ### Download
 
 Install any missing RAMSTK dependencies using pip, your package manager, and/or build from source.  Then download the <version> of RAMSTK source from GitHub Releases you wish to install.
 
 ```sh
-$ tar -xf ramstk-<version>.tar.gz
-$ cd ramstk-<version>
+$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<tag>.tar.gz
+$ tar -xf v<tag>.tar.gz
+$ cd ramstk-<tag>
 $ make install
 ```
 
-The install target recognizes PREFIX=<non-default install path> so you can install RAMSTK in your $HOME or a virtual environment.
+The install target recognizes PREFIX=<non-default install path> so you can
+ install RAMSTK in your $HOME or a virtual environment.  Since RAMSTK is
+  still a version 0 product, it's highly recommended that you install in a
+   virtual environment.
+
+```sh
+$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<tag>.tar.gz
+$ tar -xf v<tag>.tar.gz
+$ cd ramstk-<tag>
+$ make PREFIX=$VIRTUAL_ENV install
+```
 
 ### Running the Tests
 
 To run the entire test suite for RAMSTK after installing, simply execute:
 
-```
+```sh
 $ make test
+```
+
+To run the test suite with coverage, execute:
+
+```sh
+$ make coverage
 ```
 
 To run specific tests or groups of tests, use pytest:
 
-```
+```sh
 $ pytest -m integration tests/modules/test_allocation.py
 $ pytest -m calculation tests/analyses/prediction
 ```
@@ -157,16 +181,15 @@ After installing RAMSTK, it can be launched from a terminal emulator:
 $ ramstk
 ```
 
-This is a good option if you need to file an issue as the output should be included in your report.
+This is a good option if you need to file an issue as the output should be
+ included in your report.
 
-RAMSTK installs a *.desktop file and can be found where ever applications in the category Math or Science are listed.
+RAMSTK installs a *.desktop file and can be found where ever applications in
+ the category Math or Science are listed.
 
 ## Documentation
 
-Documentation for RAMSTK can be found [here](https://reliaqualassociates.github.io/ramstk/).
-It's also available at [Read the Docs](https://ramstk.readthedocs.io/en/latest)
-
-You should check it out!
+Documentation for RAMSTK can be found at [Read the Docs](https://ramstk.readthedocs.io/en/latest) You should check it out!
 
 ## 💬 Contributing
 
