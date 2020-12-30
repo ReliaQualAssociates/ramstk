@@ -31,3 +31,7 @@ class DataManager(RAMSTKDataManager):
 
     def _do_insert_program_status(self) -> None:
         ...
+
+    def _do_set_attributes(self, cost_remaining: Any,
+                           time_remaining: Any) -> None:
+        ...

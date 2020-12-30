@@ -57,16 +57,14 @@ class RAMSTKProgramManager:
             },
             'function': {
                 'analysis': None,
-                'data': None,
-                'matrix': None
+                'data': None
             },
             'ffmea': {
                 'analysis': None,
                 'data': None
             },
             'requirement': {
-                'data': None,
-                'matrix': None
+                'data': None
             },
             'stakeholder': {
                 'analysis': None,
@@ -74,8 +72,7 @@ class RAMSTKProgramManager:
             },
             'hardware': {
                 'analysis': None,
-                'data': None,
-                'matrix': None
+                'data': None
             },
             'hazards': {
                 'analysis': None,
@@ -88,13 +85,15 @@ class RAMSTKProgramManager:
             'pof': {
                 'data': None
             },
+            'program_status': {
+                'data': None
+            },
             'usage_profile': {
                 'data': None
             },
             'validation': {
                 'analysis': None,
-                'data': None,
-                'matrix': None
+                'data': None
             },
             'options': {
                 'data': None

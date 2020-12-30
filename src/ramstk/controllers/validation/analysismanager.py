@@ -68,7 +68,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_validation_task')
         pub.subscribe(self._do_request_status_tree,
                       'succeed_retrieve_validations')
-        pub.subscribe(self._on_get_status_tree, 'succeed_get_status_tree')
+        pub.subscribe(self._on_get_status_tree,
+                      'succeed_retrieve_program_status')
+        pub.subscribe(self._on_get_status_tree,
+                      'succeed_get_program_status_tree')
 
     def do_calculate_plan(self) -> None:
         """Calculate the planned burndown of the overall validation effort.
@@ -143,8 +146,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _dic_plan['actual'] = self._do_select_actual_status()
 
         pub.sendMessage(
-            'succeed_calculate_plan',
-            plan=_dic_plan,
+            'succeed_calculate_verification_plan',
+            attributes=_dic_plan,
         )
 
     def _do_calculate_all_tasks(self) -> None:
@@ -174,7 +177,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                     (1.0 - _node.data['validation'].status / 100.0))
 
         pub.sendMessage(
-            'succeed_calculate_all_tasks',
+            'succeed_calculate_all_validation_tasks',
             cost_remaining=_program_cost_remaining,
             time_remaining=_program_time_remaining,
         )
@@ -226,7 +229,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         )
         pub.sendMessage(
             'succeed_calculate_validation_task',
-            node_id=[node_id, -1],
+            tree=self._tree,
         )
 
     def _do_request_status_tree(self, tree: treelib.Tree) -> None:
@@ -267,7 +270,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         _dic_assessed = {}
         for _node in self._tree.all_nodes()[1:]:
-            if _node.data['validation'].task_type == 'Reliability, Assessment':
+            if _node.data['validation'].task_type == 5:
                 _dic_assessed[pd.to_datetime(
                     _node.data['validation'].date_end)] = [
                         _node.data['validation'].acceptable_minimum,
@@ -280,11 +283,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
                             index=_dic_assessed.keys(),
                             columns=['lower', 'mean', 'upper']).sort_index()
 
-    def _on_get_status_tree(self, stree: treelib.Tree) -> None:
+    def _on_get_status_tree(self, tree: treelib.Tree) -> None:
         """Set the analysis manager's status treelib Tree().
 
-        :param stree: the program status data manager's treelib Tree().
+        :param tree: the program status data manager's treelib Tree().
         :return: None
         :rtype: None
         """
-        self._status_tree = stree
+        self._status_tree = tree

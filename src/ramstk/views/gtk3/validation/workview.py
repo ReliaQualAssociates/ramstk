@@ -1,3 +1,4 @@
+# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.validation.workviews.py is part of the RAMSTK Project
@@ -13,7 +14,8 @@ from typing import Any, Dict, List, Tuple, Union
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
 import pandas as pd
-# noinspection PyPackageValidations
+import treelib
+# noinspection PyPackageValidations,PyPackageRequirements
 from matplotlib.patches import Ellipse
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
@@ -49,7 +51,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
             _("Task ID:"),
-            _("Task Name:"),
+            _("Task Code:"),
             _("Task Description:"),
             _("Task Type:"),
             _("Specification:"),
@@ -81,8 +83,8 @@ class TaskDescriptionPanel(RAMSTKPanel):
 
         self.spnStatus: RAMSTKSpinButton = RAMSTKSpinButton()
 
+        self.txtTaskID: RAMSTKEntry = RAMSTKEntry()
         self.txtCode: RAMSTKEntry = RAMSTKEntry()
-        self.txtName: RAMSTKEntry = RAMSTKEntry()
         self.txtMaxAcceptable: RAMSTKEntry = RAMSTKEntry()
         self.txtMeanAcceptable: RAMSTKEntry = RAMSTKEntry()
         self.txtMinAcceptable: RAMSTKEntry = RAMSTKEntry()
@@ -110,8 +112,8 @@ class TaskDescriptionPanel(RAMSTKPanel):
         }
 
         self._lst_widgets = [
+            self.txtTaskID,
             self.txtCode,
-            self.txtName,
             self.txtTask,
             self.cmbTaskType,
             self.txtSpecification,
@@ -225,6 +227,7 @@ class TaskDescriptionPanel(RAMSTKPanel):
             if _unit == attributes['measurement_unit']:
                 self.cmbMeasurementUnit.do_update(_key, signal='changed')
 
+        self.txtTaskID.do_update(attributes['validation_id'], signal='changed')
         self.txtCode.do_update(attributes['name'], signal='changed')
         self.txtTask.do_update(attributes['description'], signal='changed')
         self.txtSpecification.do_update(str(attributes['task_specification']),
@@ -315,22 +318,22 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.cmbMeasurementUnit.dic_handler_id[
             'changed'] = self.cmbMeasurementUnit.connect(
                 'changed',
-                super().on_changed_combo, 3, 'wvw_editing_validation')
+                super().on_changed_combo, 17, 'wvw_editing_validation')
         self.cmbTaskType.dic_handler_id['changed'] = self.cmbTaskType.connect(
             'changed',
-            super().on_changed_combo, 1, 'wvw_editing_validation')
+            super().on_changed_combo, 21, 'wvw_editing_validation')
         self.cmbTaskType.connect('changed', self._do_make_task_code)
 
         # ----- ENTRIES
         _buffer: Gtk.TextBuffer = self.txtTask.do_get_buffer()
         self.txtTask.dic_handler_id['changed'] = _buffer.connect(
             'changed',
-            super().on_changed_textview, 0, 'wvw_editing_validation',
+            super().on_changed_textview, 16, 'wvw_editing_validation',
             self.txtTask)
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
-                super().on_changed_entry, 2, 'wvw_editing_validation')
+                super().on_changed_entry, 20, 'wvw_editing_validation')
         self.txtMinAcceptable.dic_handler_id[
             'changed'] = self.txtMinAcceptable.connect(
                 'changed',
@@ -338,30 +341,31 @@ class TaskDescriptionPanel(RAMSTKPanel):
         self.txtMaxAcceptable.dic_handler_id[
             'changed'] = self.txtMaxAcceptable.connect(
                 'changed',
-                super().on_changed_entry, 5, 'wvw_editing_validation')
+                super().on_changed_entry, 2, 'wvw_editing_validation')
         self.txtMeanAcceptable.dic_handler_id[
             'changed'] = self.txtMeanAcceptable.connect(
                 'changed',
-                super().on_changed_entry, 6, 'wvw_editing_validation')
+                super().on_changed_entry, 3, 'wvw_editing_validation')
         self.txtVarAcceptable.dic_handler_id[
             'changed'] = self.txtVarAcceptable.connect(
                 'changed',
-                super().on_changed_entry, 7, 'wvw_editing_validation')
+                super().on_changed_entry, 5, 'wvw_editing_validation')
         self.txtStartDate.dic_handler_id[
             'changed'] = self.txtStartDate.connect('changed',
-                                                   super().on_changed_entry, 8,
+                                                   super().on_changed_entry,
+                                                   15,
                                                    'wvw_editing_validation')
         self.txtEndDate.dic_handler_id['changed'] = self.txtEndDate.connect(
             'changed',
-            super().on_changed_entry, 9, 'wvw_editing_validation')
+            super().on_changed_entry, 14, 'wvw_editing_validation')
         self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
             'changed',
-            super().on_changed_entry, 11, 'wvw_editing_validation')
+            super().on_changed_entry, 18, 'wvw_editing_validation')
 
         # ----- SPINBUTTONS
         self.spnStatus.dic_handler_id['changed'] = self.spnStatus.connect(
             'value-changed',
-            super().on_changed_entry, 10, 'wvw_editing_validation')
+            super().on_changed_entry, 19, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -445,14 +449,7 @@ class TaskEffortPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            12: ['time_minimum', 'float'],
-            13: ['time_average', 'float'],
-            14: ['time_maximum', 'float'],
-            15: ['cost_minimum', 'float'],
-            16: ['cost_average', 'float'],
-            17: ['cost_maximum', 'float'],
-        }
+        self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
@@ -520,6 +517,8 @@ class TaskEffortPanel(RAMSTKPanel):
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
         pub.subscribe(self._do_load_panel, 'selected_validation')
+        pub.subscribe(self._on_calculate_task,
+                      'succeed_calculate_validation_task')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -553,36 +552,36 @@ class TaskEffortPanel(RAMSTKPanel):
         """
         self._record_id = attributes['validation_id']
 
-        self.txtMinTime.do_update(str(
-            self.fmt.format(attributes['time_minimum'])),
+        self.txtMinTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_minimum'])),
                                   signal='changed')  # noqa
-        self.txtExpTime.do_update(str(
-            self.fmt.format(attributes['time_average'])),
+        self.txtExpTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_average'])),
                                   signal='changed')  # noqa
-        self.txtMaxTime.do_update(str(
-            self.fmt.format(attributes['time_maximum'])),
+        self.txtMaxTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_maximum'])),
                                   signal='changed')  # noqa
-        self.txtMinCost.do_update(str(
-            self.fmt.format(attributes['cost_minimum'])),
+        self.txtMinCost.do_update(str('${0:0.2F}'.format(
+            attributes['cost_minimum'])),
                                   signal='changed')  # noqa
-        self.txtExpCost.do_update(str(
-            self.fmt.format(attributes['cost_average'])),
+        self.txtExpCost.do_update(str('${0:0.2F}'.format(
+            attributes['cost_average'])),
                                   signal='changed')  # noqa
-        self.txtMaxCost.do_update(str(
-            self.fmt.format(attributes['cost_maximum'])),
+        self.txtMaxCost.do_update(str('${0:0.2F}'.format(
+            attributes['cost_maximum'])),
                                   signal='changed')  # noqa
         self.txtMeanTimeLL.do_update(
-            str(self.fmt.format(attributes['time_ll'])))
+            str('{0:0.2F}'.format(attributes['time_ll'])))
         self.txtMeanTime.do_update(
-            str(self.fmt.format(attributes['time_mean'])))
+            str('{0:0.2F}'.format(attributes['time_mean'])))
         self.txtMeanTimeUL.do_update(
-            str(self.fmt.format(attributes['time_ul'])))
+            str('{0:0.2F}'.format(attributes['time_ul'])))
         self.txtMeanCostLL.do_update(
-            str(self.fmt.format(attributes['cost_ll'])))
+            str('${0:0.2F}'.format(attributes['cost_ll'])))
         self.txtMeanCost.do_update(
-            str(self.fmt.format(attributes['cost_mean'])))
+            str('${0:0.2F}'.format(attributes['cost_mean'])))
         self.txtMeanCostUL.do_update(
-            str(self.fmt.format(attributes['cost_ul'])))
+            str('${0:0.2F}'.format(attributes['cost_ul'])))
 
     def _do_make_task_code(self, task_type: str) -> str:
         """Create the validation task code.
@@ -636,20 +635,34 @@ class TaskEffortPanel(RAMSTKPanel):
 
         return _date
 
+    def _on_calculate_task(self, tree: treelib.Tree) -> None:
+        """Wrap _do_load_panel() on successful task calculation.
+
+        :param tree: the validation treelib.Tree().
+        :return: None
+        :rtype: None
+        """
+        _attributes = tree.get_node(
+            self._record_id).data['validation'].get_attributes()
+        self._do_load_panel(_attributes)
+
     def __do_adjust_widgets(self) -> None:
         """Adjust position of some widgets.
 
         :return: None
         :rtype: None
         """
-        # We add the mean time and mean time UL to the same y position as
-        # the mean time LL widget.
         _fixed: Gtk.Fixed = self.get_children()[0].get_children(
         )[0].get_children()[0]
+
         _time_entry: RAMSTKEntry = _fixed.get_children()[7]
         _cost_entry: RAMSTKEntry = _fixed.get_children()[-1]
+
+        # We add the mean time and mean time UL to the same y position as
+        # the mean time LL widget.
         _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
         _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
+        _fixed.put(self.txtMeanTimeLL, _x_pos, _y_pos)
         _fixed.put(self.txtMeanTime, _x_pos + 175, _y_pos)
         _fixed.put(self.txtMeanTimeUL, _x_pos + 350, _y_pos)
 
@@ -657,6 +670,7 @@ class TaskEffortPanel(RAMSTKPanel):
         # the mean cost LL widget.
         _x_pos = _fixed.child_get_property(_cost_entry, 'x')
         _y_pos = _fixed.child_get_property(_cost_entry, 'y')
+        _fixed.put(self.txtMeanCostLL, _x_pos, _y_pos)
         _fixed.put(self.txtMeanCost, _x_pos + 195, _y_pos)
         _fixed.put(self.txtMeanCostUL, _x_pos + 390, _y_pos)
 
@@ -667,17 +681,17 @@ class TaskEffortPanel(RAMSTKPanel):
         :rtype: None
         """
         self.txtMinTime.dic_handler_id['changed'] = self.txtMinTime.connect(
-            'changed', self.on_changed_entry, 11, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 26, 'wvw_editing_validation')
         self.txtExpTime.dic_handler_id['changed'] = self.txtExpTime.connect(
-            'changed', self.on_changed_entry, 12, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 22, 'wvw_editing_validation')
         self.txtMaxTime.dic_handler_id['changed'] = self.txtMaxTime.connect(
-            'changed', self.on_changed_entry, 13, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 24, 'wvw_editing_validation')
         self.txtMinCost.dic_handler_id['changed'] = self.txtMinCost.connect(
-            'changed', self.on_changed_entry, 14, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 11, 'wvw_editing_validation')
         self.txtExpCost.dic_handler_id['changed'] = self.txtExpCost.connect(
-            'changed', self.on_changed_entry, 15, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 7, 'wvw_editing_validation')
         self.txtMaxCost.dic_handler_id['changed'] = self.txtMaxCost.connect(
-            'changed', self.on_changed_entry, 16, 'wvw_editing_validation')
+            'changed', self.on_changed_entry, 9, 'wvw_editing_validation')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -733,7 +747,7 @@ class ProgramEffortPanel(RAMSTKPanel):
         ]
 
         # Initialize private scalar instance attributes.
-        self._title: str = _("Program Effort")
+        self._title: str = _("Verification Program Effort")
 
         # Initialize public dict instance attributes.
 
@@ -765,7 +779,8 @@ class ProgramEffortPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_validation')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_get_program_status_attributes')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -790,29 +805,52 @@ class ProgramEffortPanel(RAMSTKPanel):
         """
         self._record_id = attributes['validation_id']
 
+        self.txtProjectTimeLL.do_update(str('{0:0.2F}'.format(
+            attributes['time_ll'])),
+                                        signal='changed')  # noqa
+        self.txtProjectTime.do_update(str('{0:0.2F}'.format(
+            attributes['time_mean'])),
+                                      signal='changed')  # noqa
+        self.txtProjectTimeUL.do_update(str('{0:0.2F}'.format(
+            attributes['time_ul'])),
+                                        signal='changed')  # noqa
+        self.txtProjectCostLL.do_update(str('{0:0.2F}'.format(
+            attributes['cost_ll'])),
+                                        signal='changed')  # noqa
+        self.txtProjectCost.do_update(str('{0:0.2F}'.format(
+            attributes['cost_mean'])),
+                                      signal='changed')  # noqa
+        self.txtProjectCostUL.do_update(str('{0:0.2F}'.format(
+            attributes['cost_ul'])),
+                                        signal='changed')  # noqa
+
     def __do_adjust_widgets(self) -> None:
         """Adjust the position of some widgets.
 
         :return: None
         :rtype: None
         """
-        # We add the project time and project time UL to the same y position
-        # as the project time LL widget.
         _fixed: Gtk.Fixed = self.get_children()[0].get_children(
         )[0].get_children()[0]
+
         _time_entry: RAMSTKEntry = _fixed.get_children()[1]
-        _cost_entry: RAMSTKEntry = _fixed.get_children()[-1]
+        _cost_entry: RAMSTKEntry = _fixed.get_children()[3]
+
+        # We add the project time and project time UL to the same y position
+        # as the project time LL widget.
         _x_pos: int = _fixed.child_get_property(_time_entry, 'x')
         _y_pos: int = _fixed.child_get_property(_time_entry, 'y')
-        _fixed.put(self.txtProjectTime, _x_pos + 175, _y_pos)
-        _fixed.put(self.txtProjectTimeUL, _x_pos + 350, _y_pos)
+        _fixed.move(self.txtProjectTimeLL, _x_pos, _y_pos)
+        _fixed.move(self.txtProjectTime, _x_pos + 175, _y_pos)
+        _fixed.move(self.txtProjectTimeUL, _x_pos + 350, _y_pos)
 
         # We add the project cost and project cost UL to the same y position
         # as the project cost LL widget.
         _x_pos = _fixed.child_get_property(_cost_entry, 'x')
         _y_pos = _fixed.child_get_property(_cost_entry, 'y')
-        _fixed.put(self.txtProjectCost, _x_pos + 175, _y_pos)
-        _fixed.put(self.txtProjectCostUL, _x_pos + 350, _y_pos)
+        _fixed.move(self.txtProjectCostLL, _x_pos, _y_pos)
+        _fixed.move(self.txtProjectCost, _x_pos + 175, _y_pos)
+        _fixed.move(self.txtProjectCostUL, _x_pos + 350, _y_pos)
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -830,262 +868,36 @@ class ProgramEffortPanel(RAMSTKPanel):
         self.txtProjectCostUL.do_set_properties(width=100, editable=False)
 
 
-class GeneralData(RAMSTKWorkView):
-    """Display general Validation attribute data in the RAMSTK Work Book.
+class BurndownCurvePanel(RAMSTKPanel):
+    """Panel to display the Verification plan efforts."""
+    def __init__(self) -> None:
+        """Initialize an instance of the Burndown Curve panel."""
+        super().__init__()
 
-    The Validation Work View displays all the general data attributes for the
-    selected Validation. The attributes of a Validation General Data Work View
-    are:
+        # Initialize private dict instance attributes.
 
-    :cvar dict _dic_keys:
-    :cvar list _lst_labels: the list of label text.
-    :cvar str _module: the name of the module.
+        # Initialize private list instance attributes.
 
-    :ivar list _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
-    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
-        menu.  The labels are listed in the order they appear in the menu.
-    :ivar list _lst_tooltips: the list of tooltips for the view's
-        toolbar buttons and pop-up menu.  The tooltips are listed in the
-        order they appear on the toolbar or pop-up menu.
-    """
-    # Define private dictionary class attributes.
+        # Initialize private scalar instance attributes.
+        self._title: str = _("Verification Plan Effort")
 
-    # Define private list class attributes.
+        # Initialize public dict instance attributes.
 
-    # Define private scalar class attributes.
-    _module: str = 'validation'
-    _tablabel: str = _("General\nData")
-    _tabtooltip: str = _(
-        "Displays general information for the selected Verification task.")
+        # Initialize public list instance attributes.
 
-    # Define public dictionary class attributes.
+        # Initialize public scalar instance attributes.
 
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
-
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
-        """Initialize the Validation Work View general data page.
-
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :type configuration:
-            :class:`ramstk.configuration.RAMSTKUserConfiguration`
-        :param logger: the RAMSTKLogManager class instance.
-        :type logger: :class:`ramstk.logger.RAMSTKLogManager`
-        """
-        super().__init__(configuration, logger)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_callbacks = [
-            self._do_request_calculate,
-            self._do_request_calculate_all,
-            super().do_request_update,
-            super().do_request_update_all,
-        ]
-        self._lst_icons = ['calculate', 'calculate_all', 'save', 'save-all']
-        self._lst_mnu_labels = [
-            _("Calculate Task"),
-            _("Calculate Program"),
-            _("Save"),
-            _("Save All"),
-        ]
-        self._lst_tooltips = [
-            _("Calculate the expected cost and time of the selected "
-              "Validation task."),
-            _("Calculate the cost and time of the program (i.e., all "
-              "Validation tasks)."),
-            _("Save changes to the selected Validation task."),
-            _("Save changes to all Validation tasks."),
-        ]
-
-        # Initialize private scalar attributes.
-        self._pnlTaskDescription: RAMSTKPanel = TaskDescriptionPanel()
-        self._pnlTaskEffort: RAMSTKPanel = TaskEffortPanel()
-        self._pnlProgramEffort: RAMSTKPanel = ProgramEffortPanel()
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        self.__make_ui()
+        # Make a plot type panel.
+        super().do_make_panel_plot()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_calculate_validation_task')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_validation')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_calculate_validation_task')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_validation')
+        pub.subscribe(self._do_clear_panel, 'closed_program')
+        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_load_panel,
+                      'succeed_calculate_verification_plan')
 
-    def __make_ui(self) -> None:
-        """Build the user interface for the Validation General Data tab.
-
-        :return: None
-        :rtype: None
-        """
-        _hpaned, _vpaned_right = super().do_make_layout_lrr()
-
-        self._pnlTaskDescription.fmt = self.fmt
-        self._pnlTaskDescription.do_load_measurement_units(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS)
-        self._pnlTaskDescription.do_load_validation_types(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE)
-        _hpaned.pack1(self._pnlTaskDescription, True, True)
-
-        self._pnlTaskEffort.fmt = self.fmt
-        self._pnlProgramEffort.fmt = self.fmt
-        _vpaned_right.pack1(self._pnlTaskEffort, True, True)
-        _vpaned_right.pack2(self._pnlProgramEffort, True, True)
-
-        self.show_all()
-
-    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
-        """Request to calculate the selected validation task.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_validation_task',
-                        task_id=self._record_id)
-
-    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to calculate program cost and time.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_validation_tasks')
-
-    def _on_value_changed(self, spinbutton: Gtk.SpinButton,
-                          __event: Gdk.EventFocus) -> None:
-        """Handle changes made in Gtk.SpinButton() widgets.
-
-        This method is called by:
-
-            * Gtk.SpinButton() 'changed' signal
-
-        This method sends the 'wvwEditedValidation' message.
-
-        :param spinbutton: the Gtk.SpinButton() that called this method.
-        :type spinbutton: :class:`Gtk.SpinButton`
-        :param __event: the Gdk.EventFocus that triggered the signal.
-        :type __event: :class:`Gdk.EventFocus`
-        :return: None
-        :rtype: None
-        """
-        spinbutton.handler_block(spinbutton.dic_handler_id['changed'])
-
-        pub.sendMessage('wvw_editing_validation',
-                        node_id=[self._record_id, -1],
-                        package={'status': float(spinbutton.get_value())})
-
-        spinbutton.handler_unblock(spinbutton.dic_handler_id['changed'])
-
-
-class BurndownCurve(RAMSTKWorkView):
-    """Display Validation task burndown curve in the RAMSTK Work Book.
-
-    The Validation Burndown Curve displays the planned burndown curve (solid
-    line) for all tasks in the V&V plan as well as the actual progress
-    (points).  The attributes of a Validation Burndown Curve View are:
-
-    :cvar str _module: the name of the module.
-
-    :ivar list _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
-    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
-        menu.  The labels are listed in the order they appear in the menu.
-    :ivar list _lst_tooltips: the list of tooltips for the view's
-        toolbar buttons and pop-up menu.  The tooltips are listed in the
-        order they appear on the toolbar or pop-up menu.
-    """
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
-    _module: str = 'validation'
-    _tablabel = "<span weight='bold'>" + _(
-        "Program\nValidation\nProgress") + "</span>"
-    _tabtooltip = _(
-        "Shows a plot of the total expected time to complete all V&amp;V "
-        "tasks and the current progress.")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
-
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
-        """Initialize the Work View for the Validation package.
-
-        :param configuration: the RAMSTK configuration instance.
-        :type configuration: :class:`ramstk.RAMSTK.Configuration`
-        """
-        super().__init__(configuration, logger)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_callbacks = [
-            self._do_request_calculate_all,
-        ]
-        self._lst_icons = [
-            'chart',
-        ]
-        self._lst_mnu_labels = [_("Plot Effort")]
-        self._lst_tooltips = [
-            _("Plot the overall Validation program plan (i.e., all Validation "
-              "tasks) and current status."),
-        ]
-
-        # Initialize private scalar attributes.
-        self._title: str = _("Program Validation Effort")
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.pltPlot: RAMSTKPlot = RAMSTKPlot()
-
-        self.__make_ui()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'succeed_calculate_plan')
-
-        pub.subscribe(self.do_set_cursor_active,
-                      'succeed_calculate_validation_plan')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_validation')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_validation')
-
-    def _do_clear_page(self) -> None:
-        """Clear the contents of the page.
+    def _do_clear_panel(self) -> None:
+        """Clear the contents of the panel widgets.
 
         :return: None
         :rtype: None
@@ -1094,43 +906,33 @@ class BurndownCurve(RAMSTKWorkView):
         self.pltPlot.figure.clf()
         self.pltPlot.plot.draw()
 
-    def _do_load_page(self, plan: Dict[str, pd.DataFrame]) -> None:
+    def _do_load_panel(self, attributes: Dict[str, pd.DataFrame]) -> None:
         """Load the burndown curve with the planned and actual status.
 
-        :param plan: a dict containing a pandas DataFrames() for each of
+        :param attributes: a dict containing a pandas DataFrames() for each of
             planned burndown, assessment dates/targets, and the actual
             progress.
         :return: None
         """
-        self.__do_load_plan(plan['plan'])
+        self.__do_load_plan(attributes['plan'])
         self.__do_load_assessment_milestones(
-            plan['assessed'], plan['plan'].loc[:, 'upper'].max())
+            attributes['assessed'], attributes['plan'].loc[:, 'upper'].max())
 
-        self.pltPlot.do_add_line(x_values=list(plan['actual'].index),
-                                 y_values=list(plan['actual'].loc[:, 'time']),
+        self.pltPlot.do_add_line(x_values=list(attributes['actual'].index),
+                                 y_values=list(
+                                     attributes['actual'].loc[:, 'time']),
                                  marker='o')
 
-        self.pltPlot.do_make_title(_("Total Validation Effort"))
+        self.pltPlot.do_make_title(_("Total Verification Effort"))
         self.pltPlot.do_make_labels(_("Total Time [hours]"),
                                     x_pos=-0.5,
                                     y_pos=0,
                                     set_x=False)
         # noinspection PyTypeChecker
         self.pltPlot.do_make_legend(
-            (_("Maximum Expected Time"), _("Mean Expected Time"),
-             _("Minimum Expected Time"), _("Actual Remaining Time")))
+            (_("Minimum Expected Time"), _("Mean Expected Time"),
+             _("Maximum Expected Time"), _("Actual Remaining Time")))
         self.pltPlot.figure.canvas.draw()
-
-    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to calculate program cost and time.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_plan')
 
     def __do_load_assessment_milestones(self, assessed: pd.DataFrame,
                                         y_max: float) -> None:
@@ -1180,7 +982,7 @@ class BurndownCurve(RAMSTKWorkView):
                                 relpos=(0.2, 0.5)))
 
     def __do_load_plan(self, plan: pd.DataFrame) -> None:
-        """Load the burndown plan.
+        """Load the verification plan burndown curve.
 
         :param plan: the pandas DataFrame() containing the planned task end
             dates and remaining hours of work (lower, mean, upper).
@@ -1212,22 +1014,289 @@ class BurndownCurve(RAMSTKWorkView):
                 'marker': 'r--'
             })
 
+
+class GeneralData(RAMSTKWorkView):
+    """Display general Validation attribute data in the RAMSTK Work Book.
+
+    The Validation Work View displays all the general data attributes for the
+    selected Validation. The attributes of a Validation General Data Work View
+    are:
+
+    :cvar dict _dic_keys:
+    :cvar list _lst_labels: the list of label text.
+    :cvar str _module: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+    """
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _module: str = 'validation'
+    _tablabel: str = _("General\nData")
+    _tabtooltip: str = _(
+        "Displays general information for the selected Verification task.")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
+        """Initialize the Validation Work View general data page.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :param logger: the RAMSTKLogManager class instance.
+        """
+        super().__init__(configuration, logger)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_calculate,
+            self._do_request_calculate_all,
+            super().do_request_update,
+            super().do_request_update_all,
+        ]
+        self._lst_icons = ['calculate', 'calculate_all', 'save', 'save-all']
+        self._lst_mnu_labels = [
+            _("Calculate Task"),
+            _("Calculate Program"),
+            _("Save"),
+            _("Save All"),
+        ]
+        self._lst_tooltips = [
+            _("Calculate the expected cost and time of the selected "
+              "Validation task."),
+            _("Calculate the cost and time of the program (i.e., all "
+              "Validation tasks)."),
+            _("Save changes to the selected Validation task."),
+            _("Save changes to all Validation tasks."),
+        ]
+
+        # Initialize private scalar attributes.
+        self._pnlTaskDescription: RAMSTKPanel = TaskDescriptionPanel()
+        self._pnlTaskEffort: RAMSTKPanel = TaskEffortPanel()
+        self._pnlProgramEffort: RAMSTKPanel = ProgramEffortPanel()
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_set_cursor_active,
+                      'succeed_calculate_validation_task')
+        pub.subscribe(super().do_set_cursor_active_on_fail,
+                      'fail_calculate_validation_task')
+
+        pub.subscribe(self._do_set_record_id, 'selected_validation')
+
+    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
+        """Request to calculate the selected validation task.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage(
+            'request_calculate_validation_task',
+            node_id=self._record_id,
+        )
+
+    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
+        """Request to calculate program cost and time.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_calculate_validation_tasks', )
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Verification task record ID.
+
+        :param attributes: the attributes dict for the selected Validation
+            task.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['validation_id']
+
     def __make_ui(self) -> None:
-        """Build the user interface for the Validation Status tab.
+        """Build the user interface for the Validation General Data tab.
+
+        :return: None
+        :rtype: None
+        """
+        _hpaned, _vpaned_right = super().do_make_layout_lrr()
+
+        self._pnlTaskDescription.fmt = self.fmt
+        self._pnlTaskDescription.do_load_measurement_units(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS)
+        self._pnlTaskDescription.do_load_validation_types(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE)
+        _hpaned.pack1(self._pnlTaskDescription, True, True)
+
+        self._pnlTaskEffort.fmt = self.fmt
+        self._pnlProgramEffort.fmt = self.fmt
+        _vpaned_right.pack1(self._pnlTaskEffort, True, True)
+        _vpaned_right.pack2(self._pnlProgramEffort, True, True)
+
+        self.show_all()
+
+
+class BurndownCurve(RAMSTKWorkView):
+    """Display Verification task burn down curve in the RAMSTK Work Book.
+
+    The Verification burn down Curve displays the planned burn down curve (
+    solid line) for all tasks in the V&V plan as well as the actual progress
+    (points).  The attributes of a Verification burn down curve view are:
+
+    :cvar _module: the name of the module.
+
+    :ivar _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+    """
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _module = 'validation'
+    _tablabel = "<span weight='bold'>" + _(
+        "Program\nVerification\nProgress") + "</span>"
+    _tabtooltip = _(
+        "Shows a plot of the total expected time to complete all verification "
+        "tasks and the current progress on those tasks.")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self, configuration: RAMSTKUserConfiguration,
+                 logger: RAMSTKLogManager) -> None:
+        """Initialize the Work View for the Verification package.
+
+        :param configuration: the RAMSTK configuration instance.
+        :param logger: the RAMSTKLogManager class instance.
+        """
+        super().__init__(configuration, logger)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_calculate_all,
+        ]
+        self._lst_icons = [
+            'chart',
+        ]
+        self._lst_mnu_labels = [_("Plot Verification Effort")]
+        self._lst_tooltips = [
+            _("Plot the overall Verification program plan (i.e., "
+              "all Verification tasks) and current status."),
+        ]
+
+        # Initialize private scalar attributes.
+        self._pnlPanel = BurndownCurvePanel()
+
+        self._title: str = _("Program Verification Effort")
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.pltPlot: RAMSTKPlot = RAMSTKPlot()
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_set_record_id, 'selected_validation')
+
+        pub.subscribe(self._do_set_cursor_active,
+                      'succeed_calculate_verification_plan')
+
+    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
+        """Request to calculate program cost and time.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_busy()
+        pub.sendMessage('request_calculate_plan', )
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _do_set_cursor_active(self, attributes: Dict[str, Any]) -> None:
+        """Wrap do_set_cursor_active() of the meta-class.
+
+        This method is called whenever the verification plan is calculated
+        successfully.  That PyPubSub MDS includes an attributes data package
+        (which is a dict containing the data to plot).  This method is
+        needed since the meta-class do_set_cursor_active() method is
+        expecting a treelib.Tree() in the MDS.
+
+        :param attributes: the attributes dict for the selected Validation
+            task.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_cursor_active()
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Verification task record ID.
+
+        :param attributes: the attributes dict for the selected Validation
+            task.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes['validation_id']
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the Verification Status tab.
 
         :return: None
         :rtype: None
         """
         super().do_make_layout()
 
-        _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.pltPlot.canvas)
-
         _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(**{'title': _("Program Validation Effort")})
-        _frame.add(_scrollwindow)
+        _frame.do_set_properties(**{'title': _("Program Verification Effort")})
+        _frame.add(self._pnlPanel)
 
-        self.pack_start(_frame, True, True, 0)
+        self.pack_end(_frame, True, True, 0)
         self.show_all()

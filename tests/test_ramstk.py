@@ -91,13 +91,11 @@ class TestProgramManager():
         assert DUT.dic_managers['revision'] == {'data': None}
         assert DUT.dic_managers['function'] == {
             'analysis': None,
-            'data': None,
-            'matrix': None
+            'data': None
         }
         # assert DUT.dic_managers['ffmea'] == {'analysis': None, 'data': None}
         assert DUT.dic_managers['requirement'] == {
-            'data': None,
-            'matrix': None
+            'data': None
         }
         assert DUT.dic_managers['stakeholder'] == {
             'analysis': None,
@@ -105,15 +103,14 @@ class TestProgramManager():
         }
         assert DUT.dic_managers['hardware'] == {
             'analysis': None,
-            'data': None,
-            'matrix': None
+            'data': None
         }
         assert DUT.dic_managers['fmea'] == {'analysis': None, 'data': None}
         assert DUT.dic_managers['pof'] == {'data': None}
+        assert DUT.dic_managers['program_status'] == {'data': None}
         assert DUT.dic_managers['validation'] == {
             'analysis': None,
-            'data': None,
-            'matrix': None
+            'data': None
         }
         assert DUT.dic_managers['options'] == {'data': None}
         assert isinstance(DUT.program_dao, BaseDatabase)

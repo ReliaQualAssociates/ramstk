@@ -158,6 +158,7 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.subscribe(self.do_set_cursor_active, 'request_set_cursor_active')
         pub.subscribe(self.do_set_cursor_active,
                       'succeed_update_{0}'.format(self._module))
+        pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_delete_{0}'.format(self._module))
         pub.subscribe(self.do_set_cursor_active_on_fail,
@@ -166,7 +167,6 @@ class RAMSTKBaseView(Gtk.HBox):
                       'fail_update_{0}'.format(self._module))
 
         pub.subscribe(self.on_select_revision, 'selected_revision')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
 
     def do_embed_treeview_panel(self) -> None:
         """Embed a treeview RAMSTKPanel() into the layout.

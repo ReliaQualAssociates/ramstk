@@ -195,13 +195,13 @@ class UsageProfilePanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        #// TODO: Move PyPubSub subscribers up to RAMSTKPanel() class.
-        #//
-        #// The subscribers in each List, Module, and Work View for the
-        #// succeed_retrieve_{0}, succeed_insert_{0}, and succeed_delete_{0}
-        #// topics should be moved to the RAMSTKPanel() class once all the
-        #// data managers have been refactored so the applicable methods are
-        #// publishing the correct MDS.
+        # ISSUE: Move PyPubSub subscribers up to RAMSTKPanel() class.
+        # //
+        # // The subscribers in each List, Module, and Work View for the
+        # // succeed_retrieve_{0}, succeed_insert_{0}, and succeed_delete_{0}
+        # // topics should be moved to the RAMSTKPanel() class once all the
+        # // data managers have been refactored so the applicable methods are
+        # // publishing the correct MDS.
         pub.subscribe(super().do_load_panel,
                       'succeed_retrieve_{0}'.format(self._module))
         pub.subscribe(super().do_load_panel,
@@ -331,7 +331,8 @@ class UsageProfilePanel(RAMSTKPanel):
         """
         _new_row = None
 
-        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+        # pylint: disable=unused-variable
+        [[__, _entity]] = node.data.items()
 
         _model = self.tvwTreeView.get_model()
 

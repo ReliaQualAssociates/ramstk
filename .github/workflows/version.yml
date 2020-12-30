@@ -1,4 +1,4 @@
-name: Bump Version
+name: Bump and Tag
 
 on:
   pull_request:
@@ -7,47 +7,35 @@ on:
 
 jobs:
   bump_semantic_version:
-    name: Bump Semantic Version
+    name: Bump Semantic Version & Tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Determine next implied version
-        id: nextversion
-        uses: paulhatch/semantic-version@v3.2
-        with:
-          branch: "develop"
-          format: "${major}.${minor}.${patch}-rc${increment}"
-          short_tags: false
-      - name: Output new version
+      - name: Get PR branch information
+        id: branchinfo
+        shell: bash
         run: |
-          echo "Major: ${{ steps.nextversion.outputs.major }}"
-          echo "Minor: ${{ steps.nextversion.outputs.minor }}"
-          echo "Patch: ${{ steps.nextversion.outputs.patch }}"
-          echo "Increment: ${{ steps.nextversion.outputs.increment }}"
-          echo "Version: ${{ steps.nextversion.outputs.version }}"
-          echo "Version Tag: ${{ steps.nextversion.outputs.version_tag }}"
-          echo "Changed: ${{ steps.nextversion.outputs.changed }}"
-      - name: Bump release version
+          echo "##[set-output name=pr;]$(echo ${GITHUB_REF#refs/pull/})"
+          echo "##[set-output name=head;]$(echo ${GITHUB_HEAD_REF})"
+          echo "##[set-output name=base;]$(echo ${GITHUB_BASE_REF})"
+          echo "##[set-output name=tag;]$(git describe --tags --abbrev=0 origin/${GITHUB_HEAD_REF})"
+          echo "##[set-output name=version;]$(git describe --tags --abbrev=0 origin/${GITHUB_HEAD_REF} | sed 's/v//')"
+      - name: Print PR branch information
+        run: |
+          echo "PR: ${{ steps.branchinfo.outputs.pr }}"
+          echo "Head: ${{ steps.branchinfo.outputs.head }}"
+          echo "Base: ${{ steps.branchinfo.outputs.base }}"
+          echo "Tag: ${{ steps.branchinfo.outputs.tag }}"
+          echo "Version: ${{ steps.branchinfo.outputs.version }}"
+      - name: Determine next release version
         id: bumpversion
         uses: christian-draeger/increment-semantic-version@1.0.2
         with:
-          current-version: "${{ steps.nextversion.outputs.version }}"
+          current-version: "${{ steps.branchinfo.outputs.version }}"
           version-fragment: "rc"
-      - name: Output next version
+      - name: Output next release version
         run: |
           echo "Next Version: ${{ steps.bumpversion.outputs.next-version }}"
-      - name: Version release
-        id: nextversion2
-        uses: zwaldowski/semver-release-action@v2
-        with:
-          dry_run: true
-          bump: prerelease
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Output next version 2
-        run: |
-          echo "Next Version 2: ${{ steps.nextversion2.version }}"
-          echo "Optimistic Version 2: ${{ steps.nextversion2.version_optimistic }}"
-          echo "Version Tag 2: ${{ steps.nextversion2.version_tag }}"

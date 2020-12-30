@@ -54,7 +54,7 @@ class DataManager(RAMSTKDataManager):
                       'request_set_validation_attributes')
         pub.subscribe(super().do_set_attributes, 'mvw_editing_validation')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_validation')
-        pub.subscribe(super().do_update_all, 'request_update_all_validation')
+        pub.subscribe(super().do_update_all, 'request_update_all_validations')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_validation')
@@ -202,9 +202,13 @@ class DataManager(RAMSTKDataManager):
                 error_message=_error_msg,
             )
 
-    def _do_insert_validation(self) -> None:
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _do_insert_validation(self, parent_id: int) -> None:
         """Add a new validation task.
 
+        :param parent_id: unused in this method, but required for consistent
+            argument list to _do_insert_{0} methods.
         :return: None
         :rtype: None
         """

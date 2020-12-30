@@ -38,5 +38,5 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_select_assessment_targets(self) -> pd.DataFrame:
         ...
 
-    def _on_get_status_tree(self, stree: treelib.Tree) -> None:
+    def _on_get_status_tree(self, tree: treelib.Tree) -> None:
         ...

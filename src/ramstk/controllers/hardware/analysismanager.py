@@ -383,26 +383,26 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._attributes['hazard_rate_active']
             + self._attributes['hazard_rate_software'])
 
-        #// TODO: Add s-Distribution Support for R(t) Predictions
-        #//
-        #// As an analyst, I want to be able to use s-distributions for
-        #// hardware reliability analysis so that I can use field data results
-        #// when modeling systems.
-        #//
-        #// I'd like to be able to select a distribution, enter it's
-        #// parameter(s), and have the reliability at time (t) calculated and
-        #// used in a system prediction.  The hazard rate will also have to be
-        #// calculated to be used in a prediction with other methods such as
-        #// MIL-HDBK-217.
-        #//
-        #// The following, minimum, s-distributions should be available:
-        #//
-        #// * 1-parameter Exponential
-        #// * 2-parameter Exponential
-        #// * 2-parameter Weibull
-        #// * 3-parameter Weibull
-        #// * Lognormal
-        #// * Normal
+        # ISSUE: Add s-Distribution Support for R(t) Predictions
+        # //
+        # // As an analyst, I want to be able to use s-distributions for
+        # // hardware reliability analysis so that I can use field data results
+        # // when modeling systems.
+        # //
+        # // I'd like to be able to select a distribution, enter it's
+        # // parameter(s), and have the reliability at time (t) calculated and
+        # // used in a system prediction.  The hazard rate will also have to be
+        # // calculated to be used in a prediction with other methods such as
+        # // MIL-HDBK-217.
+        # //
+        # // The following, minimum, s-distributions should be available:
+        # //
+        # // * 1-parameter Exponential
+        # // * 2-parameter Exponential
+        # // * 2-parameter Weibull
+        # // * 3-parameter Weibull
+        # // * Lognormal
+        # // * Normal
 
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
@@ -679,19 +679,19 @@ class AnalysisManager(RAMSTKAnalysisManager):
             'harsh': [0.0, _limits[4]],
             'mild': [0.0, _limits[5]]
         }
-        #// TODO: Implement temperture stress limits in _do_check().
-        #//
-        #// In the method _do_check() and _do_derating_analysis() in the
-        #// Hardware module analysis manager, there is no check for excessive
-        #// delta temperature or high temperature limits.  These either need
-        #// to be removed because no hardware item has temperature limits or
-        #// the checks need to be implemented.  This will require new tests.
-        # _deltat_limits = {
-        #    'harsh': [0.0, _limits[6]],
-        #    'mild': [0.0, _limits[7]]
-        # }
-        # _maxt_limits = {'harsh': [0.0, _limits[8]], 'mild': [0.0, _limits[
-        # 9]]}
+        # ISSUE: Implement temperture stress limits in _do_check().
+        # //
+        # // In the method _do_check() and _do_derating_analysis() in the
+        # // Hardware module analysis manager, there is no check for excessive
+        # // delta temperature or high temperature limits.  These either need
+        # // to be removed because no hardware item has temperature limits or
+        # // the checks need to be implemented.  This will require new tests.
+        #  _deltat_limits = {
+        #     'harsh': [0.0, _limits[6]],
+        #     'mild': [0.0, _limits[7]]
+        #  }
+        #  _maxt_limits = {'harsh': [0.0, _limits[8]], 'mild': [0.0, _limits[
+        #  9]]}
 
         _overstress = derating.check_overstress(
             self._attributes['current_ratio'], _current_limits)

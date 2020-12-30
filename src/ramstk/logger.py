@@ -90,12 +90,12 @@ class RAMSTKLogManager:
         # Create a logger for the pypubsub fail_* messages.
         self.do_create_logger(__name__, "WARN")
 
-    #// TODO: Update fail messages to pass error_message
-    #//
-    #// The logger._do_log_fail_message() method takes the argument
-    #// error_message.  Several data managers broadcast error_msg instead.
-    #// These need to be updated so all fail_XX_XX messages broadcast an
-    #// error_message.
+    # ISSUE: Update fail messages to pass error_message
+    # //
+    # // The logger._do_log_fail_message() method takes the argument
+    # // error_message.  Several data managers broadcast error_msg instead.
+    # // These need to be updated so all fail_XX_XX messages broadcast an
+    # // error_message.
     def _do_log_fail_message(self, error_message: str) -> None:
         """Log PyPubSub broadcast fail messages.
 

@@ -14,7 +14,7 @@ commands:
           name: Install apt packages
           command: |
             sudo apt -qq update
-            sudo apt install--no-install-recommends -y \
+            sudo apt install --no-install-recommends -y \
               libgirepository1.0-dev \
               gir1.2-gtk-3.0 \
               python3-gi \

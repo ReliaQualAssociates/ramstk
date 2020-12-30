@@ -20,7 +20,7 @@ jobs:
           BEFORE: ${{ github.event.before }}
           SHA: ${{ github.sha }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LABEL: "#// TODO:"
-          COMMENT_MARKER: "#//"
+          LABEL: "# ISSUE:"
+          COMMENT_MARKER: "# //"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

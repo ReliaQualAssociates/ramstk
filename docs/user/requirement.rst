@@ -291,6 +291,6 @@ Requirements are committed to the open `RAMSTK` Program database.
 
 Lists Book
 ----------
-There is on list view associated with the Requirement work stream.  This is a
+There is one list view associated with the Requirement work stream.  This is a
 list of stakeholder inputs.  See :ref:`sec-stakeholders` for instructions on
 working with the Stakeholders work stream module.

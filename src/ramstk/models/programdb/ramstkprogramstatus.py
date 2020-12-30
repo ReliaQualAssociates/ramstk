@@ -26,7 +26,7 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'cost_remaining': 0,
+        'cost_remaining': 0.0,
         'date_status': date.today(),
         'time_remaining': 0.0
     }

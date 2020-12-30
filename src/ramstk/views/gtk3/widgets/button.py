@@ -227,6 +227,14 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
 
         self.show_all()
 
+    def do_get_text(self) -> float:
+        """Wrap the Gtk.SpinButton().get_value() method for consistent calls.
+
+        :return: the float value of the text in the RAMSTKSpinButton().
+        :rtype: float
+        """
+        return float(self.get_value())
+
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set the properties of the RAMSTKSpinButton.
 

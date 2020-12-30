@@ -432,6 +432,19 @@ class RAMSTKPanel(RAMSTKFrame):
                 logger_name='DEBUG',
                 message=_error_msg,
             )
+        except TypeError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = _(
+                "{2}: An error occurred while refreshing {1} data for Record "
+                "ID {0} in the view.  Data {4} for {3} is the wrong "
+                "type.").format(self._record_id, self._module, _method_name,
+                                _key, _value)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
 
     def do_set_callbacks(self) -> None:
         """Set the callback methods for RAMSTKTreeView().
