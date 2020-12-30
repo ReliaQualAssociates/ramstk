@@ -20,7 +20,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKSiteConfiguration
+from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
 from ramstk.models.commondb import (
     RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode, RAMSTKGroup,
@@ -999,12 +999,12 @@ def do_make_commondb_tables(engine: Engine) -> None:
 
 def _do_load_action_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load the RAMSTK_ACTION_CATEGORY variable.
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :return: None
     :rtype: None
@@ -1012,7 +1012,7 @@ def _do_load_action_variables(
     for _record in site_db.session.query(RAMSTKCategory).filter(
             RAMSTKCategory.category_type == 'action').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
+        user_configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
             _attributes['name'],
             _attributes['description'],
             _attributes['category_type'],
@@ -1021,7 +1021,7 @@ def _do_load_action_variables(
     for _record in site_db.session.query(RAMSTKStatus).\
             filter(RAMSTKStatus.status_type == 'action').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_ACTION_STATUS[_record.status_id] = (
+        user_configuration.RAMSTK_ACTION_STATUS[_record.status_id] = (
             _attributes['name'],
             _attributes['description'],
             _attributes['status_type'],
@@ -1030,10 +1030,10 @@ def _do_load_action_variables(
 
 def _do_load_hardware_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load variables associated with hardware categories and failure modes.
 
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1044,8 +1044,8 @@ def _do_load_hardware_variables(
             filter(RAMSTKCategory.category_type == 'hardware').all():
 
         _subcats = {}
-        site_configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
-        site_configuration.RAMSTK_STRESS_LIMITS[_record.category_id] = (
+        user_configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
+        user_configuration.RAMSTK_STRESS_LIMITS[_record.category_id] = (
             _record.harsh_ir_limit, _record.mild_ir_limit,
             _record.harsh_pr_limit, _record.mild_pr_limit,
             _record.harsh_vr_limit, _record.mild_vr_limit,
@@ -1057,7 +1057,7 @@ def _do_load_hardware_variables(
             _subcats[_subcat.subcategory_id] = _subcat.description
 
             _modes = {}
-            site_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
+            user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                 _subcat.subcategory_id] = {}
             for _mode in site_db.session.query(RAMSTKFailureMode).filter(
                     RAMSTKFailureMode.category_id == _record.category_id
@@ -1069,20 +1069,20 @@ def _do_load_hardware_variables(
                     _mode.source,
                 ]
 
-            site_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
+            user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                 _subcat.subcategory_id] = _modes
 
-        site_configuration.RAMSTK_CATEGORIES[
+        user_configuration.RAMSTK_CATEGORIES[
             _record.category_id] = _record.description
-        site_configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
+        user_configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
 
 
 def _do_load_incident_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load the RAMSTK_INCIDENT_CATEGORY variable.
 
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1092,7 +1092,7 @@ def _do_load_incident_variables(
     for _record in site_db.session.query(RAMSTKCategory).\
             filter(RAMSTKCategory.category_type == 'incident').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
+        user_configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
             _attributes['name'],
             _attributes['description'],
             _attributes['category_type'],
@@ -1101,7 +1101,7 @@ def _do_load_incident_variables(
     for _record in site_db.session.query(RAMSTKStatus).\
             filter(RAMSTKStatus.status_type == 'incident').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_INCIDENT_STATUS[_record.status_id] = (
+        user_configuration.RAMSTK_INCIDENT_STATUS[_record.status_id] = (
             _attributes['name'],
             _attributes['description'],
             _attributes['status_type'],
@@ -1109,7 +1109,7 @@ def _do_load_incident_variables(
     for _record in site_db.session.query(RAMSTKType).\
             filter(RAMSTKType.type_type == 'incident').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_INCIDENT_TYPE[_record.type_id] = (
+        user_configuration.RAMSTK_INCIDENT_TYPE[_record.type_id] = (
             _attributes['code'],
             _attributes['description'],
             _attributes['type_type'],
@@ -1118,10 +1118,10 @@ def _do_load_incident_variables(
 
 def _do_load_miscellaneous_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load miscellaneous variables that don't fit in another grouping.
 
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1131,40 +1131,40 @@ def _do_load_miscellaneous_variables(
     for _record in site_db.session.query(RAMSTKMethod).\
             filter(RAMSTKMethod.method_type == 'detection').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_DETECTION_METHODS[_record.method_id] = (
+        user_configuration.RAMSTK_DETECTION_METHODS[_record.method_id] = (
             _attributes['name'],
             _attributes['description'],
             _attributes['method_type'],
         )
     for _record in site_db.session.query(RAMSTKHazards).all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
+        user_configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
             _attributes['hazard_category'], _attributes['hazard_subcategory'])
     for _record in site_db.session.query(RAMSTKManufacturer).all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_MANUFACTURERS[_record.manufacturer_id] = (
+        user_configuration.RAMSTK_MANUFACTURERS[_record.manufacturer_id] = (
             _attributes['description'], _attributes['location'],
             _attributes['cage_code'])
     for _record in site_db.session.query(RAMSTKMeasurement).\
             filter(RAMSTKMeasurement.measurement_type == 'unit').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_MEASUREMENT_UNITS[_record.measurement_id] = (
+        user_configuration.RAMSTK_MEASUREMENT_UNITS[_record.measurement_id] = (
             _attributes['code'], _attributes['description'],
             _attributes['measurement_type'])
     for _record in site_db.session.query(RAMSTKType).\
             filter(RAMSTKType.type_type == 'validation').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_VALIDATION_TYPE[_record.type_id] = (
+        user_configuration.RAMSTK_VALIDATION_TYPE[_record.type_id] = (
             _attributes['code'], _attributes['description'],
             _attributes['type_type'])
 
 
 def _do_load_pof_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load the RAMSTK_DAMAGE_MODELS variable.
 
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1172,18 +1172,18 @@ def _do_load_pof_variables(
     :rtype: None
     """
     for _record in site_db.session.query(RAMSTKModel). \
-            filter(RAMSTKModel.model_type == 1).all():
+            filter(RAMSTKModel.model_type == 'damage').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_DAMAGE_MODELS[_record.model_id] = (
+        user_configuration.RAMSTK_DAMAGE_MODELS[_record.model_id] = (
             _attributes['description'])
     for _record in site_db.session.query(RAMSTKLoadHistory).all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_LOAD_HISTORY[_record.history_id] = (
+        user_configuration.RAMSTK_LOAD_HISTORY[_record.history_id] = (
             _attributes['description'])
     for _record in site_db.session.query(RAMSTKMeasurement). \
             filter(RAMSTKMeasurement.measurement_type == 'damage').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_MEASURABLE_PARAMETERS[
+        user_configuration.RAMSTK_MEASURABLE_PARAMETERS[
             _record.measurement_id] = (_attributes['code'],
                                        _attributes['description'],
                                        _attributes['measurement_type'])
@@ -1191,12 +1191,12 @@ def _do_load_pof_variables(
 
 def _do_load_requirement_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load variables related to requiremetents and stakeholders.
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :return: None
     :rtype: None
@@ -1204,28 +1204,28 @@ def _do_load_requirement_variables(
     for _record in site_db.session.query(RAMSTKGroup).\
             filter(RAMSTKGroup.group_type == 'affinity').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_AFFINITY_GROUPS[_record.group_id] = (
+        user_configuration.RAMSTK_AFFINITY_GROUPS[_record.group_id] = (
             _attributes['description'],
             _attributes['group_type'],
         )
     for _record in site_db.session.query(RAMSTKType).\
             filter(RAMSTKType.type_type == 'requirement').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_REQUIREMENT_TYPE[_record.type_id] = (
+        user_configuration.RAMSTK_REQUIREMENT_TYPE[_record.type_id] = (
             _attributes['code'], _attributes['description'],
             _attributes['type_type'])
     for _record in site_db.session.query(RAMSTKStakeholders).all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_STAKEHOLDERS[_record.stakeholders_id] = (
+        user_configuration.RAMSTK_STAKEHOLDERS[_record.stakeholders_id] = (
             _attributes['stakeholder'])
 
 
 def _do_load_rpn_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load the RPN detection, occurremce, and severity variables.
 
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1234,25 +1234,25 @@ def _do_load_rpn_variables(
     """
     for _record in site_db.session.query(RAMSTKRPN).\
             filter(RAMSTKRPN.rpn_type == 'detection').all():
-        site_configuration.RAMSTK_RPN_DETECTION[_record.value] = \
+        user_configuration.RAMSTK_RPN_DETECTION[_record.value] = \
             _record.get_attributes()
 
     for _record in site_db.session.query(RAMSTKRPN).\
             filter(RAMSTKRPN.rpn_type == 'occurrence').all():
-        site_configuration.RAMSTK_RPN_OCCURRENCE[_record.value] = \
+        user_configuration.RAMSTK_RPN_OCCURRENCE[_record.value] = \
             _record.get_attributes()
 
     for _record in site_db.session.query(RAMSTKRPN). \
             filter(RAMSTKRPN.rpn_type == 'severity').all():
-        site_configuration.RAMSTK_RPN_SEVERITY[_record.value] = \
+        user_configuration.RAMSTK_RPN_SEVERITY[_record.value] = \
             _record.get_attributes()
 
 
 def _do_load_severity(site_db: BaseDatabase,
-                      site_configuration: RAMSTKSiteConfiguration) -> None:
+                      user_configuration: RAMSTKUserConfiguration) -> None:
     """Load the RAMSTK_SEVERITY variable.
 
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1262,17 +1262,17 @@ def _do_load_severity(site_db: BaseDatabase,
     for _record in site_db.session.query(RAMSTKCategory).\
             filter(RAMSTKCategory.category_type == 'risk').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_SEVERITY[_record.category_id] = (
+        user_configuration.RAMSTK_SEVERITY[_record.category_id] = (
             _attributes['name'], _attributes['description'],
             _attributes['category_type'], _attributes['value'])
 
 
 def _do_load_user_workgroups(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     """Load the RAMSTK_USERS and RAMSTK_WORKGROUPS variables.
 
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
@@ -1281,7 +1281,7 @@ def _do_load_user_workgroups(
     """
     for _record in site_db.session.query(RAMSTKUser).all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_USERS[_record.user_id] = (
+        user_configuration.RAMSTK_USERS[_record.user_id] = (
             _attributes['user_lname'],
             _attributes['user_fname'],
             _attributes['user_email'],
@@ -1291,19 +1291,19 @@ def _do_load_user_workgroups(
     for _record in site_db.session.query(RAMSTKGroup).\
             filter(RAMSTKGroup.group_type == 'workgroup').all():
         _attributes = _record.get_attributes()
-        site_configuration.RAMSTK_WORKGROUPS[_record.group_id] = (
+        user_configuration.RAMSTK_WORKGROUPS[_record.group_id] = (
             _attributes['description'],
             _attributes['group_type'],
         )
 
 
 def do_load_variables(site_db: BaseDatabase,
-                      site_configuration: RAMSTKSiteConfiguration) -> None:
-    """Load the RAMSTKSiteConfiguration global variables from the site db.
+                      user_configuration: RAMSTKUserConfiguration) -> None:
+    """Load the RAMSTKUserConfiguration global variables from the site db.
 
     :param site_db: the RAMSTK Site Database to read the values of the
         global variables.
-    :param site_configuration: the RAMSTKSiteConfiguration instance whose
+    :param user_configuration: the RAMSTKUserConfiguration instance whose
         variable is to be loaded.
     :return: None
     :rtype: None
@@ -1312,15 +1312,15 @@ def do_load_variables(site_db: BaseDatabase,
                     logger_name='INFO',
                     message="Loading global RAMSTK configuration variables.")
 
-    _do_load_action_variables(site_db, site_configuration)
-    _do_load_hardware_variables(site_db, site_configuration)
-    _do_load_incident_variables(site_db, site_configuration)
-    _do_load_miscellaneous_variables(site_db, site_configuration)
-    _do_load_pof_variables(site_db, site_configuration)
-    _do_load_requirement_variables(site_db, site_configuration)
-    _do_load_rpn_variables(site_db, site_configuration)
-    _do_load_severity(site_db, site_configuration)
-    _do_load_user_workgroups(site_db, site_configuration)
+    _do_load_action_variables(site_db, user_configuration)
+    _do_load_hardware_variables(site_db, user_configuration)
+    _do_load_incident_variables(site_db, user_configuration)
+    _do_load_miscellaneous_variables(site_db, user_configuration)
+    _do_load_pof_variables(site_db, user_configuration)
+    _do_load_requirement_variables(site_db, user_configuration)
+    _do_load_rpn_variables(site_db, user_configuration)
+    _do_load_severity(site_db, user_configuration)
+    _do_load_user_workgroups(site_db, user_configuration)
 
     pub.sendMessage('do_log_info_msg',
                     logger_name='INFO',

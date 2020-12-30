@@ -8,7 +8,7 @@ from sqlalchemy.orm import scoped_session
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
-    RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration
 )
 from ramstk.db.base import BaseDatabase as BaseDatabase
 from ramstk.models.commondb import RAMSTKRPN as RAMSTKRPN
@@ -89,57 +89,57 @@ def do_make_commondb_tables(engine: Engine) -> None:
 
 def _do_load_action_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_hardware_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_incident_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_miscellaneous_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_pof_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_requirement_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_rpn_variables(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_severity(site_db: BaseDatabase,
-                      site_configuration: RAMSTKSiteConfiguration) -> None:
+                      user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def _do_load_user_workgroups(
         site_db: BaseDatabase,
-        site_configuration: RAMSTKSiteConfiguration) -> None:
+        user_configuration: RAMSTKUserConfiguration) -> None:
     ...
 
 
 def do_load_variables(site_db: BaseDatabase,
-                      site_configuration: RAMSTKSiteConfiguration) -> None:
+                      user_configuration: RAMSTKUserConfiguration) -> None:
     ...
