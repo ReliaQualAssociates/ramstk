@@ -176,7 +176,6 @@ install: clean-build clean-pyc
 	${MKDIR} "$(PREFIX)/share/doc/ramstk"
 	${MKDIR} "$(PREFIX)/share/applications"
 	${MKDIR} "$(PREFIX)/share/pixmaps"
-	${SED} -e 's@<PREFIX>@$(PREFIX)@' "./data/Site.toml" > "$(PREFIX)/share/RAMSTK/Site.toml"
 	${COPY} "./data/RAMSTK.desktop" "$(PREFIX)/share/applications"
 	${COPY} "./data/icons/RAMSTK.png" "$(PREFIX)/share/pixmaps"
 	${COPY} "./README.md" "$(PREFIX)/share/doc/ramstk"
@@ -189,6 +188,8 @@ install: clean-build clean-pyc
 	for icon in ${ICONS32} ; do \
 		${COPY} "./data/icons/32x32/$$icon" "$(PREFIX)/share/RAMSTK/icons/32x32/" ; \
 	done
+	${COPY} "./data/sqlite_common_db.sql" "$(PREFIX)/share/RAMSTK/"
+	${COPY} "./data/postgres_common_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/sqlite_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/postgres_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/ramstk_common.ramstk" "$(PREFIX)/share/RAMSTK/"
