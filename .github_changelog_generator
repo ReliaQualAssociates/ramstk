@@ -1,0 +1,6 @@
+bug-labels=bug
+enhancement-labels=enhancement,quality
+include-labels=bug,enhancement,quality,closed,blocker,high,normal
+exclude-labels=dependencies,todo
+pr-wo-labels=false
+issues-wo-labels=false

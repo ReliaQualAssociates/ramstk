@@ -1,0 +1,33 @@
+pixbuf='False'
+
+defaulttitle.col0='Revision ID'
+defaulttitle.col1='Definition ID'
+defaulttitle.col2='Failure Definition'
+
+usertitle.col0='Revision ID'
+usertitle.col1='Definition ID'
+usertitle.col2='Failure Definition'
+
+datatype.col0='gint'
+datatype.col1='gint'
+datatype.col2='gchararray'
+
+position.col0=0
+position.col1=1
+position.col2=2
+
+widget.col0='text'
+widget.col1='text'
+widget.col2='text'
+
+editable.col0='False'
+editable.col1='False'
+editable.col2='True'
+
+visible.col0='False'
+visible.col1='True'
+visible.col2='True'
+
+key.col0='revision_id'
+key.col1='definition_id'
+key.col2='definition'

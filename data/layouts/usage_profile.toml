@@ -1,0 +1,97 @@
+pixbuf='True'
+
+defaulttitle.col0='Entity ID'
+defaulttitle.col1='Description'
+defaulttitle.col2='Units'
+defaulttitle.col3='Start Time'
+defaulttitle.col4='End Time'
+defaulttitle.col5='Mean Value'
+defaulttitle.col6='Variance'
+defaulttitle.col7=''
+defaulttitle.col8=''
+defaulttitle.col9=''
+defaulttitle.col10=''
+
+usertitle.col0='Entity ID'
+usertitle.col1='Description'
+usertitle.col2='Units'
+usertitle.col3='Start Time'
+usertitle.col4='End Time'
+usertitle.col5='Mean Value'
+usertitle.col6='Variance'
+usertitle.col7=''
+usertitle.col8=''
+usertitle.col9=''
+usertitle.col10=''
+
+datatype.col0='gint'
+datatype.col1='gchararray'
+datatype.col2='gchararray'
+datatype.col3='gchararray'
+datatype.col4='gfloat'
+datatype.col5='gfloat'
+datatype.col6='gfloat'
+datatype.col7='gfloat'
+datatype.col8='gchararray'
+datatype.col9='gint'
+datatype.col10='gchararray'
+
+position.col0=0
+position.col1=1
+position.col2=2
+position.col3=3
+position.col4=4
+position.col5=5
+position.col6=6
+position.col7=7
+position.col8=8
+position.col9=9
+position.col10=10
+
+widget.col0='text'
+widget.col1='text'
+widget.col2='text'
+widget.col3='combo'
+widget.col4='text'
+widget.col5='text'
+widget.col6='text'
+widget.col7='text'
+widget.col8='text'
+widget.col9='text'
+widget.col10='text'
+
+editable.col0='False'
+editable.col1='True'
+editable.col2='True'
+editable.col3='True'
+editable.col4='True'
+editable.col5='True'
+editable.col6='True'
+editable.col7='True'
+editable.col8='True'
+editable.col9='True'
+editable.col10='True'
+
+visible.col0='True'
+visible.col1='True'
+visible.col2='True'
+visible.col3='True'
+visible.col4='True'
+visible.col5='True'
+visible.col6='True'
+visible.col7='True'
+visible.col8='False'
+visible.col9='False'
+visible.col10='False'
+
+key.col0='entity_id'
+key.col1='name'
+key.col2='description'
+key.col3='units'
+key.col4='minimum'
+key.col5='maximum'
+key.col6='mean'
+key.col7='variance'
+key.col8='ramp_rate'
+key.col9='low_dwell_time'
+key.col10='high_dwell_time'

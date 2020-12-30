@@ -1,40 +1,48 @@
-dist: trusty
-sudo: required
+os: linux
+dist: bionic
 language: python
+services:
+    - postgresql
+    - xvfb
 
 python:
-    - "2.7"
-# Gotta use site packages so pygtk is available.
-virtualenv:
-  system_site_packages: true
+    - "3.6"
+    - "3.7"
+
+env:
+    system_site_packages: true
 
 before_install:
-    python2 -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+    - sudo apt-get install jq
+    - curl -LSs "$(curl -LSs https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({name, browser_download_url} | select(.name | endswith(".jar"))) | .[0].browser_download_url')" -o codacy-coverage-reporter-assembly.jar
 
 install:
     - sudo apt-get update
-    - sudo apt-get install -yqq python-gtk2 python-gtk2-dev
+    - sudo apt-get install -y libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev
     - pip install -U pip
     - pip install -U setuptools>12.0
     - pip install -U urllib3
-    - pip install --only-binary=numpy numpy==1.14.3
-    - pip install --only-binary=scipy scipy==1.0.0
-    - pip install -r requirements_run.txt
-    - pip install -r requirements_dev.txt
-    - pip install matplotlib==1.4.3
-    - python setup.py install
+    - pip install -U pip-tools
+    - pip install -r requirements.txt -r requirements-test.txt
+    - make install PREFIX=$VIRTUAL_ENV
 
-# Command to run tests.
+# Setup database for testing.
+before_script:
+    - psql -c 'create database TestProgramDB;' -U postgres
+
+# Command to run tests.  First the full test suite without coverage, then again
+# with coverage.
 script:
-    - python setup.py test
+#    - make test
+    - make coverage
 
 # After the build was successful what to do?
 after_success:
     - coveralls
-    - python-codacy-coverage -r coverage.xml
+    - java -jar codacy-coverage-reporter-assembly.jar report -l Java -r cobertura.xml
+    - bash <(curl -s https://codecov.io/bash)
 
 # What's the environment look like if the build fails silently.
 after_failure:
     - pip freeze
-    - ls ~/virtualenv/python$TRAVIS_PYTHON_VERSION/lib/python2.7/site-packages
-    - dpkg -L python-gtk2
+    - ls ~/virtualenv/python$TRAVIS_PYTHON_VERSION/lib/python3.7/site-packages

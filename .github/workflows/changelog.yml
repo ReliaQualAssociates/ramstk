@@ -2,8 +2,7 @@ name: Update CHANGELOG.md
 
 on:
   pull_request:
-    branches: [develop]
-    types: [closed]
+    types: [ closed ]
 
 jobs:
   generate_change_log:

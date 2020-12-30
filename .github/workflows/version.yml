@@ -1,0 +1,41 @@
+name: Bump and Tag
+
+on:
+  pull_request:
+    branches:
+      - release/v*
+
+jobs:
+  bump_semantic_version:
+    name: Bump Semantic Version & Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get PR branch information
+        id: branchinfo
+        shell: bash
+        run: |
+          echo "##[set-output name=pr;]$(echo ${GITHUB_REF#refs/pull/})"
+          echo "##[set-output name=head;]$(echo ${GITHUB_HEAD_REF})"
+          echo "##[set-output name=base;]$(echo ${GITHUB_BASE_REF})"
+          echo "##[set-output name=tag;]$(git describe --tags --abbrev=0 origin/${GITHUB_HEAD_REF})"
+          echo "##[set-output name=version;]$(git describe --tags --abbrev=0 origin/${GITHUB_HEAD_REF} | sed 's/v//')"
+      - name: Print PR branch information
+        run: |
+          echo "PR: ${{ steps.branchinfo.outputs.pr }}"
+          echo "Head: ${{ steps.branchinfo.outputs.head }}"
+          echo "Base: ${{ steps.branchinfo.outputs.base }}"
+          echo "Tag: ${{ steps.branchinfo.outputs.tag }}"
+          echo "Version: ${{ steps.branchinfo.outputs.version }}"
+      - name: Determine next release version
+        id: bumpversion
+        uses: christian-draeger/increment-semantic-version@1.0.2
+        with:
+          current-version: "${{ steps.branchinfo.outputs.version }}"
+          version-fragment: "rc"
+      - name: Output next release version
+        run: |
+          echo "Next Version: ${{ steps.bumpversion.outputs.next-version }}"

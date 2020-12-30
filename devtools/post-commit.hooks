@@ -1,0 +1,23 @@
+#!/bin/sh
+
+CHANGELOG_FILE=CHANGELOG.md
+
+command -v git-lfs >/dev/null 2>&1 || { echo >&2 "\nThis repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/post-commit.\n"; exit 2; }
+git lfs post-commit "$@"
+
+# Generate the changelog and add a blank line to the end.  The blank line at
+# the end prevents the precommit hooks from doing so which would result in a
+# loop.
+github_changelog_generator ReliaQualAssociates/ramstk
+echo "" >> $CHANGELOG_FILE
+
+# Prevent recursion
+# Since a 'commit --amend' will trigger the post-commit script again
+# we have to check if the changelog file has actually changed.
+res=$(git status --porcelain | grep $CHANGELOG_FILE | wc -l)
+if [ "$res" -gt 0 ];
+then
+    git add $CHANGELOG_FILE
+    git commit --amend
+    echo "Populated change log in $CHANGELOG_FILE"
+fi

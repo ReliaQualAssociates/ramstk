@@ -1,0 +1,125 @@
+name: Static Code Checks
+
+on:
+  push:
+    branches:
+      - release/v*
+      - master
+  pull_request:
+    branches:
+      - release/v*
+      - master
+
+jobs:
+  bandit:
+    name: Check for Security Vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run bandit against repository
+        uses: jpetrucciani/bandit-check@master
+        with:
+          path: 'src/ramstk'
+
+  format-check:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check code format with docformatter and isort
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-isort: true
+          use-docformatter: true
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: false
+          use-pylint: false
+          use-flake8: false
+          extra-black-options: ""
+          extra-isort-options: "--settings-file ./setup.cfg"
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: ""
+          extra-pylint-options: ""
+          extra-flake8-options: ""
+
+  style-check:
+    name: Check Code Styling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check code style with pycodestyle and pydocstyle
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: true
+          use-pydocstyle: true
+          use-mypy: false
+          use-pylint: false
+          use-flake8: false
+          extra-black-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: "--config=./setup.cfg --count"
+          extra-pydocstyle-options: "--count"
+          extra-mypy-options: ""
+          extra-pylint-options: ""
+
+  type-check:
+    name: Check Code Typing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check code typing with mypy
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: true
+          use-pylint: false
+          use-flake8: false
+          extra-black-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: "--config-file ./setup.cfg"
+          extra-pylint-options: ""
+          extra-flake8-options: ""
+
+  lint-check:
+    name: Check Code Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint code with pylint
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: false
+          use-pylint: true
+          use-flake8: false
+          extra-black-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: ""
+          extra-pylint-options: "-j0 --rcfile=./setup.cfg --dummy-variables-rgx='__'"
+          extra-flake8-options: ""

@@ -1,0 +1,9 @@
+title = "RAMSTK Site Configuration"
+
+[backend]
+dialect = "postgres"
+host = ""
+port = "5432"
+database = "ramstk_common_ramstk"
+user = "ramstk"
+password = "ramstk"

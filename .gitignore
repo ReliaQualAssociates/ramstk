@@ -14,6 +14,7 @@
 *.e5s
 *.geany
 *:p
+*.xcf
 0
 tags
 
@@ -54,6 +55,7 @@ out/
 _temp/
 devtools/update_docs.txt
 pylintout
+cobertura.xml
 
 # Override settings for some specific files.
 /.gtm/
