@@ -201,20 +201,27 @@ Design Conventions for RAMSTK
     #. do_update(self, node_id)
 
 #. Any or all of the data manager methods *should* be abstracted to the data manager meta-class.
-#. For data manager functions or methods unique to a particular RAMSTK work stream module, naming shall adhere to the following conventions:
+#. All methods in the data manager meta-class:
 
    +---------------------------------------------------------------------------+
    |                                                                           |
    +===========================================================================+
-   | All methods should be named the same as the data model method and         |
-   | prefaced with request\_.  For example:                                    |
+   | Used by child classes **shall** be public.                                |
+   +---------------------------------------------------------------------------+
+   | Not used be child classes or called only as a PyPubSub listener **shall** |
+   | be private.                                                               |
+   +---------------------------------------------------------------------------+
+
+#. All methods in the child classes:
+
+   +---------------------------------------------------------------------------+
    |                                                                           |
-   |    request_do_calculate_rpn(self)                                         |
-   |    request_get_planned_burndown(self)                                     |
+   +===========================================================================+
+   | Called by the meta-class **shall** be public.                             |
    +---------------------------------------------------------------------------+
-   | Shall be public in scope.                                                 |
+   | Only called internally or as a PyPubSub listener **shall** be private.    |
    +---------------------------------------------------------------------------+
-   | Conform with all naming conventions.                                      |
+   | **Shall** conform with all naming conventions.                            |
    +---------------------------------------------------------------------------+
 
 2200. *Analysis Managers*
@@ -251,7 +258,7 @@ Design Conventions for RAMSTK
    | Conform with all naming conventions.                                      |
    +---------------------------------------------------------------------------+
 
-2400. GUI Components
+2400. *GUI Components*
 #. If the function or method creates a simple or aggregate widget, it shall begin with make (public) or _make_ (private).
 
    +---------------------------------------------------------------------------+
@@ -259,7 +266,7 @@ Design Conventions for RAMSTK
    +===========================================================================+
    | _make_assessment_inputs_page(self)                                        |
    +---------------------------------------------------------------------------+
-   | _make_buttonbox(self)                                                     |
+   | make_buttonbox(self)                                                      |
    +---------------------------------------------------------------------------+
 
 #. If the function or method is a callback signal that is not a user request, it should begin with on (public) or _on_ (private).
@@ -267,7 +274,7 @@ Design Conventions for RAMSTK
    +---------------------------------------------------------------------------+
    |                                                                           |
    +===========================================================================+
-   | _on_focus_out(self, entry, new_text)                                      |
+   | on_focus_out(self, entry, new_text)                                       |
    +---------------------------------------------------------------------------+
    | _on_edit(self, __cell, path, new_text, position)                          |
    +---------------------------------------------------------------------------+
@@ -277,14 +284,12 @@ Design Conventions for RAMSTK
    +---------------------------------------------------------------------------+
    |                                                                           |
    +===========================================================================+
-   | _do_request_calculate(self, __button)                                     |
+   | do_request_calculate(self, __button)                                      |
    +---------------------------------------------------------------------------+
    | _do_request_update(self, __button)                                        |
    +---------------------------------------------------------------------------+
 
-#. View functions and methods should, generally, be "private" (prefaced by a single underscore '_') as they would only need to be called by other View functions and methods and would not be part of the public API.
-
-2500. List Views
+2500. *List Views*
 #. All List Views shall have the following public methods:
 #. All List Views shall have the following private methods:
 #. For List View functions or methods unique to a particular RAMSTK module, naming shall adhere to the following conventions:
@@ -297,7 +302,7 @@ Design Conventions for RAMSTK
    | Conform with all naming conventions.                                      |
    +---------------------------------------------------------------------------+
 
-2600. Module Views
+2600. *Module Views*
 #. All Module Views shall have the following public methods:
 #. All Module Views shall have the following private methods:
 #. Module Views may have the following public/private methods/functions:
@@ -311,16 +316,119 @@ Design Conventions for RAMSTK
    | Conform with all naming conventions.                                      |
    +---------------------------------------------------------------------------+
 
-2700. Work Views
+2700. *Work Views*
 #. All Work Views shall have the following public methods:
 #. All Work Views shall have the following private methods:
-#. Work Views may contain one or more of the following private methods as needed:
-#. For Work View functions or methods unique to a particular RAMSTK module, naming shall adhere to the following conventions:
+#. Any or all of the work view methods *should* be abstracted to a meta-class.
+#. All methods in the work view meta-class:
 
    +---------------------------------------------------------------------------+
    |                                                                           |
    +===========================================================================+
-   | Be private in scope.                                                      |
+   | Used by child classes **shall** be public.                                |
+   +---------------------------------------------------------------------------+
+   | Not used by child classes or called only as a PyPubSub listener **shall** |
+   | be private as denoted by a leading underscore '_'.                        |
    +---------------------------------------------------------------------------+
    | Conform with all naming conventions.                                      |
    +---------------------------------------------------------------------------+
+
+#. All methods in the child classes:
+
+   +---------------------------------------------------------------------------+
+   |                                                                           |
+   +===========================================================================+
+   | Called by the WorkView meta-class **shall** be public.                    |
+   +---------------------------------------------------------------------------+
+   | Only called internally or as a PyPubSub listener **shall** be private as  |
+   | denoted by a leading underscore '_'.                                      |
+   +---------------------------------------------------------------------------+
+   | Used solely to create the GUI **shall** be mangled as denoted by two      |
+   | leading underscores '__'.                                                 |
+   +---------------------------------------------------------------------------+
+   | Conform with all naming conventions.                                      |
+   +---------------------------------------------------------------------------+
+
+#. All WorkView classes shall have the following attributes:
+
+   +-----------------+----------------+----------------------------------------+
+   | Attribute       | Type           | Description                            |                                                                 |
+   +=================+================+========================================+
+   | _dic_icons      | Dict[str, str] | dict of icons to use with the key being|
+   |                 |                | a human readable name and the value    |
+   |                 |                | being the absolute path to the icon    |
+   |                 |                | file.                                  |
+   +-----------------+----------------+----------------------------------------+
+   | _lst_label_text | List[str]      | list of text for each label that will  |
+   |                 |                | be displayed on the WorkView.          |
+   +-----------------+----------------+----------------------------------------+
+   | _lst_widgets    | List[object]   | list of widgets to place on the        |
+   |                 |                | WorkView.                              |
+   +-----------------+----------------+----------------------------------------+
+   | _module         | str            | name of the RAMSTK workflow module     |
+   |                 |                | (e.g., 'revision', 'hardware', etc.)   |
+   +-----------------+----------------+----------------------------------------+
+   | _notebook       | RASMTKNotebook | Gtk.Notebook that contains each of the |
+   |                 |                | 'pages' for the module's WorkView.     |
+   +-----------------+----------------+----------------------------------------+
+   | _revision_id    | int            | currently selected Revision ID.        |
+   +-----------------+----------------+----------------------------------------+
+   | _parent_id      | int            | parent ID of the currently selected    |
+   |                 |                | workflow item.                         |
+   +-----------------+----------------+----------------------------------------+
+   | _record_id      | int            | ID (e.g., function ID, hardware ID,    |
+   |                 |                | etc.) of the currently selected        |
+   |                 |                | workflow item.                         |
+   +-----------------+----------------+----------------------------------------+
+   | _fmt            | str            | format string for displaying numerical |
+   |                 |                | information.                           |
+   +-----------------+----------------+----------------------------------------+
+   | _hbx_tab_label  | Gtk.HBox       | Gtk.HBox containing the label for the  |
+   |                 |                | Gtk.Notebook tab.                      |
+   +-----------------+----------------+----------------------------------------+
+
+#. _lst_label_text and _lst_widgets **shall**:
+
+   +---------------------------------------------------------------------------+
+   |                                                                           |
+   +===========================================================================+
+   | Contain the label text and widgets in the same order (i.e., the label text|
+   | at position 0 corresponds to the information displayed in the widget at   |
+   | position 0).                                                              |
+   +---------------------------------------------------------------------------+
+   | Be listed in the order (top to bottom) they will be displayed on the      |
+   | WorkView.                                                                 |
+   +---------------------------------------------------------------------------+
+
+#. _lst_label_text and _lst_widget may:
+
+   +---------------------------------------------------------------------------+
+   |                                                                           |
+   +===========================================================================+
+   | Be sliced for display in different sections in the WorkView (e.g., a      |
+   | WorkView page is split up by Gtk.Box or Gtk.Paned and the list of         |
+   | labels/widgets are divided into the different sections).                  |
+   +---------------------------------------------------------------------------+
+
+2800. *RAMSTK Widgets*
+#. GUI toolkit widget classes *should* be super-classed to create RAMSTK widget classes.
+#. RAMSTK widget classes **shall** be named RAMSTK<widget> where <widget> is the name of the underlying toolkit widget class.  For example, the RAMSTK widget implementing the pygobject GtkEntry() would be named RAMSTKEntry().
+#. RAMSTK widget classes **shall** inherit from the parent widget(s).
+#. RAMSTK widget classes **shall** contain helper or wrapper methods to handle the detailed implementation of the action; these methods shall be public.
+#. All RAMSTK widgets shall have the following public methods:
+
+    1. do_set_properties(): used to set all visual properties of the widget with sensible defaults; this provides for a consistent look and feel.
+    #. do_update(), if an updatable widget: used to update the displayed information in the widget; this simply reduces code duplication and eases the development/maintenance of the views using the widgets.
+
+#. All RAMSTK widget classes should have a type definition (*.pyi) file associated with them.
+#. Default property values for RAMSTK widget classes may be user-configurable.
+
+Exception and Error Handling
+----------------------------
+
+3000. Exceptions caught by GUI components that are or may be the result of user error (e.g., missing data, incorrect data type, etc.) shall raise a warning dialog to inform the user of the potential problem.
+#. The warning dialog in 1, above, should provide a "hint" to help the user fix the problem; for example, what data is required for a calculation.
+#. Exception caught by GUI components that are the result of other than user error (e.g., missing data from the database) shall raise an error dialog to inform the user of the problem.
+#. The error dialog in 3, above, should provide the user a concise statement regarding the cause of the error; for example, data X from the common database is missing.
+#. The error dialog in 3, above, may provide the user a hyperlink to the RAMSTK issue system to simplify the process for the user to submit an issue ticket if desired.
+#. All exceptions caught by GUI components shall be logged at the debug level.Exception caught by GUI components that are the result of other than user error (e.g., missing data from the database) shall raise an error dialog to inform the user of the problem.
