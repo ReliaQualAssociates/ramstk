@@ -20,14 +20,6 @@ ramstk.controllers.hardware.datamanager module
    :undoc-members:
    :show-inheritance:
 
-ramstk.controllers.hardware.matrixmanager module
-------------------------------------------------
-
-.. automodule:: ramstk.controllers.hardware.matrixmanager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

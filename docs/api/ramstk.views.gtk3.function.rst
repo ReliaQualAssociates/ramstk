@@ -1,14 +1,6 @@
 Function View Package
 =====================
 
-Function Listview Module
-------------------------
-
-.. automodule:: ramstk.views.gtk3.function.listview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Function Moduleview Module
 --------------------------
 
