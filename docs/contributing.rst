@@ -1,7 +1,9 @@
-************
-Contributing
-************
+.. toctree::
+   :maxdepth: 2
 
+   CONTRIBUTING.md
+
+.. _coding-standards:
 Coding Standards
 ================
 
