@@ -1,9 +1,8 @@
-name: Sundry Chores
+name: Pull Request QA
 
 on:
   pull_request:
     branches:
-      - release/v*
       - master
 
 jobs:
@@ -16,5 +15,19 @@ jobs:
         with:
           success-state: Conventional commits compliant title detected.
           failure-state: Pull request title is not conventional commits compliant!
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  pr-labeler:
+    name: Label pull request
+    runs-on: ubuntu-latest
+    steps:
+      - uses: TimonVS/pr-labeler-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  update_release_draft:
+    name: Update draft release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

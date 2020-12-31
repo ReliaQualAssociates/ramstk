@@ -3,7 +3,6 @@ name: Create Issues from TODOs
 on:
   push:
     branches:
-      - release/v*
       - master
 
 jobs:
