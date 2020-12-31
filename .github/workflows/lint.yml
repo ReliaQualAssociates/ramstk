@@ -3,11 +3,9 @@ name: Static Code Checks
 on:
   push:
     branches:
-      - release/v*
       - master
   pull_request:
     branches:
-      - release/v*
       - master
 
 jobs:
@@ -73,11 +71,11 @@ jobs:
           extra-pylint-options: ""
 
   type-check:
-    name: Check Code Typing
+    name: Check Code Type Hinting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check code typing with mypy
+      - name: Check code type hinting with mypy
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
