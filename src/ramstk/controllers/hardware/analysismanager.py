@@ -8,6 +8,7 @@
 """Hardware Controller Package analysis manager."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict, List
 
 # Third Party Imports
@@ -102,12 +103,23 @@ class AnalysisManager(RAMSTKAnalysisManager):
                     _hardware['design_electric'].current_operating,
                     _hardware['design_electric'].current_rated))
         except ZeroDivisionError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Failed to calculate current ratio for hardware ID {'
+                '0}.  Rated current={2}, operating current={3}.').format(
+                    str(_hardware['hardware'].hardware_id), _method_name,
+                    _hardware['design_electric'].current_rated,
+                    _hardware['design_electric'].current_operating)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
             pub.sendMessage(
                 'fail_stress_analysis',
-                error_message=("Failed to calculate current ratio for "
-                               "hardware ID {0:s}; rated current is "
-                               "zero.").format(
-                                   str(_hardware['hardware'].hardware_id)))
+                error_message=_error_msg,
+            )
 
     def _do_calculate_hardware(self, node_id: int) -> None:
         """Calculate all metrics for the hardware associated with node ID.
@@ -125,8 +137,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         # Let everyone know we succeeded calculating the hardware and
         # auto-save the results.
-        pub.sendMessage('succeed_calculate_hardware', module_tree=self._tree)
-        pub.sendMessage('request_update_all_hardware')
+        pub.sendMessage(
+            'succeed_calculate_hardware',
+            module_tree=self._tree,
+        )
+        pub.sendMessage('request_update_all_hardware', )
 
     def _do_calculate_part_count(self, node: treelib.Node) -> int:
         """Calculate the total part count of a hardware item.
@@ -191,12 +206,23 @@ class AnalysisManager(RAMSTKAnalysisManager):
                     _hardware['design_electric'].power_operating,
                     _hardware['design_electric'].power_rated)
         except ZeroDivisionError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Failed to calculate power ratio for hardware ID {'
+                '0}.  Rated power={2}, operating power={3}.').format(
+                    str(_hardware['hardware'].hardware_id), _method_name,
+                    _hardware['design_electric'].power_rated,
+                    _hardware['design_electric'].power_operating)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
             pub.sendMessage(
                 'fail_stress_analysis',
-                error_message=("Failed to calculate power ratio for "
-                               "hardware ID {0:s}; rated power is "
-                               "zero.").format(
-                                   str(_hardware['hardware'].hardware_id)))
+                error_message=_error_msg,
+            )
 
     @staticmethod
     def _do_calculate_voltage_ratio(node: treelib.Node) -> None:
@@ -217,12 +243,25 @@ class AnalysisManager(RAMSTKAnalysisManager):
                     _voltage_operating,
                     _hardware['design_electric'].voltage_rated))
         except ZeroDivisionError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Failed to calculate voltage ratio for hardware ID {'
+                '0}.  Rated voltage={2}, operating ac voltage={3}, '
+                'operating DC voltage={4}.').format(
+                    str(_hardware['hardware'].hardware_id), _method_name,
+                    _hardware['design_electric'].voltage_rated,
+                    _hardware['design_electric'].voltage_ac_operating,
+                    _hardware['design_electric'].voltage_dc_operating)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
             pub.sendMessage(
                 'fail_stress_analysis',
-                error_message=("Failed to calculate voltage ratio for "
-                               "hardware ID {0:s}; rated voltage is "
-                               "zero.").format(
-                                   str(_hardware['hardware'].hardware_id)))
+                error_message=_error_msg,
+            )
 
     def _do_derating_analysis(self, node_id: int) -> None:
         """Perform a derating analysis.
