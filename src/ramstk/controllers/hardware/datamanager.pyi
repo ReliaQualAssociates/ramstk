@@ -4,6 +4,7 @@ from typing import Any, Dict
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
 from ramstk.exceptions import DataAccessError as DataAccessError
+from ramstk.models.programdb import RAMSTKNSWC as RAMSTKNSWC
 from ramstk.models.programdb import (
     RAMSTKDesignElectric as RAMSTKDesignElectric
 )
@@ -11,6 +12,8 @@ from ramstk.models.programdb import (
     RAMSTKDesignMechanic as RAMSTKDesignMechanic
 )
 from ramstk.models.programdb import RAMSTKHardware as RAMSTKHardware
+from ramstk.models.programdb import RAMSTKMilHdbkF as RAMSTKMilHdbkF
+from ramstk.models.programdb import RAMSTKReliability as RAMSTKReliability
 
 class DataManager(RAMSTKDataManager):
     _tag: str = ...
@@ -32,12 +35,19 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id: int) -> None:
         ...
 
-    def _do_select_all_electrical(self,
-                                  hardware_id: int) -> RAMSTKDesignElectric:
+    def _do_select_electrical(self, hardware_id: int) -> RAMSTKDesignElectric:
         ...
 
-    def _do_select_all_mechanical(self,
-                                  hardware_id: int) -> RAMSTKDesignMechanic:
+    def _do_select_mechanical(self, hardware_id: int) -> RAMSTKDesignMechanic:
+        ...
+
+    def _do_select_milhdbk217f(self, hardware_id: int) -> RAMSTKMilHdbkF:
+        ...
+
+    def _do_select_nswc(self, hardware_id: int) -> RAMSTKNSWC:
+        ...
+
+    def _do_select_reliability(self, hardware_id: int) -> RAMSTKReliability:
         ...
 
     def _do_delete(self, node_id: int) -> None:

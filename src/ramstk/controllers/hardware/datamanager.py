@@ -17,7 +17,8 @@ from pubsub import pub
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKHardware
+    RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
 )
 
 
@@ -25,8 +26,7 @@ class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Hardware data manager.
 
     This class manages the hardware data from the RAMSTKHardware,
-    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKMilHdbkF,
-    RAMSTKNSWC, and RAMSKTReliability data models.
+    RAMSTKDesignElectric, and RAMSTKDesignMechanic data models.
     """
 
     _tag = 'hardware'
@@ -102,9 +102,15 @@ class DataManager(RAMSTKDataManager):
                 value=[self._revision_id],
                 order=RAMSTKHardware.parent_id):
 
-            _design_e = self._do_select_all_electrical(_hardware.hardware_id)
+            _design_e = self._do_select_electrical(_hardware.hardware_id)
 
-            _design_m = self._do_select_all_mechanical(_hardware.hardware_id)
+            _design_m = self._do_select_mechanical(_hardware.hardware_id)
+
+            _milhdbkf = self._do_select_milhdbk217f(_hardware.hardware_id)
+
+            _nswc = self._do_select_nswc(_hardware.hardware_id)
+
+            _reliability = self._do_select_reliability(_hardware.hardware_id)
 
             self.tree.create_node(tag='hardware',
                                   identifier=_hardware.hardware_id,
@@ -112,7 +118,10 @@ class DataManager(RAMSTKDataManager):
                                   data={
                                       'hardware': _hardware,
                                       'design_electric': _design_e,
-                                      'design_mechanic': _design_m
+                                      'design_mechanic': _design_m,
+                                      'mil_hdbk_217f': _milhdbkf,
+                                      'nswc': _nswc,
+                                      'reliability': _reliability
                                   })
 
         self.last_id = max(self.tree.nodes.keys())
@@ -135,6 +144,10 @@ class DataManager(RAMSTKDataManager):
                 self.tree.get_node(node_id).data['design_electric'])
             self.dao.do_update(
                 self.tree.get_node(node_id).data['design_mechanic'])
+            self.dao.do_update(
+                self.tree.get_node(node_id).data['mil_hdbk_217f'])
+            self.dao.do_update(self.tree.get_node(node_id).data['nswc'])
+            self.dao.do_update(self.tree.get_node(node_id).data['reliability'])
 
             pub.sendMessage(
                 'succeed_update_hardware',
@@ -185,8 +198,7 @@ class DataManager(RAMSTKDataManager):
                     error_message=_error_msg,
                 )
 
-    def _do_select_all_electrical(self,
-                                  hardware_id: int) -> RAMSTKDesignElectric:
+    def _do_select_electrical(self, hardware_id: int) -> RAMSTKDesignElectric:
         """Select the electrical attributes for hardware ID.
 
         :param hardware_id: the ID of the hardware item whose electrical
@@ -200,8 +212,7 @@ class DataManager(RAMSTKDataManager):
                                       order=None,
                                       _all=False)
 
-    def _do_select_all_mechanical(self,
-                                  hardware_id: int) -> RAMSTKDesignMechanic:
+    def _do_select_mechanical(self, hardware_id: int) -> RAMSTKDesignMechanic:
         """Select the mechanical attributes for hardware ID.
 
         :param hardware_id: the ID of the hardware item whose mechanical
@@ -210,6 +221,48 @@ class DataManager(RAMSTKDataManager):
         :rtype: RAMSTKDesignMechanic
         """
         return self.dao.do_select_all(RAMSTKDesignMechanic,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_milhdbk217f(self, hardware_id: int) -> RAMSTKMilHdbkF:
+        """Select the MIL-HDBK-217F attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose MIL-HDBK-217F
+            attributes are needed.
+        :return: the RAMSTKMilHdbkF() record for the hardware ID.
+        :rtype: RAMSTKDesignMilHdbkF
+        """
+        return self.dao.do_select_all(RAMSTKMilHdbkF,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_nswc(self, hardware_id: int) -> RAMSTKNSWC:
+        """Select the NSWC attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose NSWC
+            attributes are needed.
+        :return: the RAMSTKNSWC() record for the hardware ID.
+        :rtype: RAMSTKSWC
+        """
+        return self.dao.do_select_all(RAMSTKNSWC,
+                                      key=['hardware_id'],
+                                      value=[hardware_id],
+                                      order=None,
+                                      _all=False)
+
+    def _do_select_reliability(self, hardware_id: int) -> RAMSTKReliability:
+        """Select the reliability attributes for hardware ID.
+
+        :param hardware_id: the ID of the hardware item whose reliability
+            attributes are needed.
+        :return: the RAMSTKReliability() record for the hardware ID.
+        :rtype: RAMSTKReliability
+        """
+        return self.dao.do_select_all(RAMSTKReliability,
                                       key=['hardware_id'],
                                       value=[hardware_id],
                                       order=None,
@@ -262,7 +315,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _attributes: Dict[str, Any] = {}
-        for _table in ['hardware', 'design_electric', 'design_mechanic']:
+        for _table in [
+                'hardware', 'design_electric', 'design_mechanic',
+                'mil_hdbk_217f', 'nswc', 'reliability'
+        ]:
             _attributes.update(
                 self.do_select(node_id, table=_table).get_attributes())
 
@@ -303,8 +359,15 @@ class DataManager(RAMSTKDataManager):
                 _design_e.hardware_id = self.last_id
                 _design_m = RAMSTKDesignMechanic()
                 _design_m.hardware_id = self.last_id
+                _milhdbkf = RAMSTKMilHdbkF()
+                _milhdbkf.hardware_id = self.last_id
+                _nswc = RAMSTKNSWC()
+                _nswc.hardware_id = self.last_id
+                _reliability = RAMSTKReliability()
+                _reliability.hardware_id = self.last_id
 
-                self.dao.do_insert_many([_design_e, _design_m])
+                self.dao.do_insert_many(
+                    [_design_e, _design_m, _milhdbkf, _nswc, _reliability])
 
                 self.tree.create_node(tag='hardware',
                                       identifier=_hardware.hardware_id,
@@ -312,7 +375,10 @@ class DataManager(RAMSTKDataManager):
                                       data={
                                           'hardware': _hardware,
                                           'design_electric': _design_e,
-                                          'design_mechanic': _design_m
+                                          'design_mechanic': _design_m,
+                                          'mil_hdbk_217f': _milhdbkf,
+                                          'nswc': _nswc,
+                                          'reliability': _reliability
                                       })
 
                 pub.sendMessage(
