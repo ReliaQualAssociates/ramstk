@@ -30,7 +30,7 @@ def date_to_ordinal(date: str) -> int:
     try:
         return parse(str(date)).toordinal()
     except (ValueError, TypeError):
-        return parse('01/01/70').toordinal()
+        return parse('01/01/1970').toordinal()
 
 
 def dir_exists(directory: str) -> bool:

@@ -135,6 +135,8 @@ class RAMSTKDataManager:
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_connect, 'succeed_connect_program_database')
         pub.subscribe(self.do_update_all, 'request_save_project')
+        pub.subscribe(self.do_set_tree,
+                      'succeed_calculate_{0}'.format(self._tag))
 
         pub.subscribe(self._on_select_revision, 'selected_revision')
 
