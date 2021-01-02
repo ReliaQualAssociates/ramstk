@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Coding Conventions &#8212; RAMSTK 1.0.0 documentation</title>
+    <title>Naming Conventions for RAMSTK &#8212; RAMSTK 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -17,7 +17,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Establishing a Development Environment" href="DEVELOPMENT_ENV.html" />
+    <link rel="next" title="&lt;no title&gt;" href="api/modules.html" />
     <link rel="prev" title="Contributing to the RAMS ToolKit (RAMSTK)" href="CONTRIBUTING.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="_static/favicon.png" />
@@ -31,7 +31,7 @@
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="index.html">RAMSTK 1.0.0 documentation</a> &#187;</li>
-          <li><a href="contributing.html" accesskey="U">Contributing</a> &#187;</li> 
+          <li><a href="contributing.html" accesskey="U">Coding Standards</a> &#187;</li> 
       </ul>
     </div>
     
@@ -42,533 +42,621 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="coding-conventions">
-<h1>Coding Conventions<a class="headerlink" href="#coding-conventions" title="Permalink to this headline">¶</a></h1>
-<p>This document describes the coding standards to be adhered to by developers on
-the <a class="reference external" href="https://github.com/weibullguy/ramstk">RAMSTK Project</a>.  It is a working document
-and suggested changes shall be submitted as issues in the RAMSTK GitHub issue
-tracker with an Enhancement label attached.</p>
-<p><a class="reference external" href="#naming-conventions">Naming Conventions</a></p>
-<ul class="simple">
-<li><p><a class="reference external" href="#constants-and-variables">Constants and Variables</a></p></li>
-<li><p><a class="reference external" href="#classes-and-modules">Classes and Modules</a></p></li>
-<li><p><a class="reference external" href="#attributes">Attributes</a></p></li>
-<li><p><a class="reference external" href="#functions-and-methods">Functions and Methods</a></p></li>
-<li><p><a class="reference external" href="#tags">Tags</a>
-<a class="reference external" href="#design-conventions">Design Conventions</a></p></li>
-<li><p><a class="reference external" href="#data-models">Data Models</a></p></li>
-<li><p><a class="reference external" href="#data-controllers">Data Controllers</a></p></li>
-<li><p><a class="reference external" href="#gui-components">GUI Components</a></p>
-<ul>
-<li><p><a class="reference external" href="#list-views">List Views</a></p></li>
-<li><p><a class="reference external" href="#matrix-views">Matrix Views</a></p></li>
-<li><p><a class="reference external" href="#module-views">Module Views</a></p></li>
-<li><p><a class="reference external" href="#work-views">Work Views</a></p></li>
-</ul>
-</li>
-</ul>
-<div class="section" id="naming-conventions">
-<h2>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Permalink to this headline">¶</a></h2>
-<p>Naming conventions shall, generally, follow the guidance provided in PEP8.
-Where appropriate, the pylintrc code for checking these conventions is
-included in each section.</p>
-<div class="section" id="constants-and-variables">
-<h3>Constants and Variables<a class="headerlink" href="#constants-and-variables" title="Permalink to this headline">¶</a></h3>
-<ol>
+  <p>The coding standards below are probably out of date so you might review some
+of the existing code base to see how badly I haven’t followed my own standards.</p>
+<div class="section" id="naming-conventions-for-ramstk">
+<h1>Naming Conventions for RAMSTK<a class="headerlink" href="#naming-conventions-for-ramstk" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple" start="1000">
+<li><p>Naming conventions shall, generally, follow the guidance provided in PEP8.</p></li>
+</ol>
+<ol class="arabic" start="1100">
+<li><p><em>Constants and Variables</em></p></li>
 <li><p>All RAMSTK global constants shall be defined in the configuration module.</p></li>
 <li><p>Constants shall be:</p>
-<ul class="simple">
-<li><p>All UPPERCASE with spaces replaced by underscores (_).</p></li>
-<li><p>Prefaced by RAMSTK_ to identify it as an RAMSTK constant.</p></li>
-<li><p>A minimum of twelve characters (RAMSTK_ is 7) and a maximum of 30 characters.</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pylintrc: const-rgx=RAMSTK_[A-Z_]{12,30}$
-</pre></div>
-</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All UPPERCASE with spaces replaced by underscores (_).</p></td>
+</tr>
+<tr class="row-odd"><td><p>Prefaced by RAMSTK_ to identify it as an RAMSTK constant.</p></td>
+</tr>
+<tr class="row-even"><td><p>A minimum of twelve characters (RAMSTK_ is 7) and a maximum of 30
+characters.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li><p>Variables shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>A minimum of three characters and a maximum of 30 characters.</p></li>
-<li><p>A descriptive name when used for program flow control (e.g., for or
-while loops).  For example, _index rather than i or _key rather than k.</p></li>
-<li><p>Preceded by a single underscore when private in scope.</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pylintrc: variable-rgx=[a-z_][a-z_]{3,30}$
-</pre></div>
-</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All lowercase with spaces replaced by underscores (_).</p></td>
+</tr>
+<tr class="row-odd"><td><p>A minimum of three characters and a maximum of 30 characters.</p></td>
+</tr>
+<tr class="row-even"><td><p>A descriptive name when used for program flow control (e.g., for or
+while loops).  For example, _index rather than i or _key rather than k.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Preceded by a single underscore when private in scope.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-</div>
-<div class="section" id="classes-and-modules">
-<h3>Classes and Modules<a class="headerlink" href="#classes-and-modules" title="Permalink to this headline">¶</a></h3>
-<ol>
+<ol class="arabic" start="1200">
+<li><p><em>Classes and Modules</em></p></li>
 <li><p>Module names shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All lowercase with spaces replaced by underscores (_).</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li><p>Class names shall be:</p>
-<ul class="simple">
-<li><p>In the CapWords format.</p></li>
-<li><p>Alpha characters only.</p></li>
-<li><p>Prefaced by RAMSTK.</p></li>
-<li><p>A minimum of eight characters (RAMSTK is 3) and a maximum of 30 characters.</p></li>
-<li><p>Suffixed by ‘Error’ when defining an exception class.</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pylintrc: module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
-pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$
-</pre></div>
-</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>In the CapWords format.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alpha characters only.</p></td>
+</tr>
+<tr class="row-even"><td><p>Prefaced by RAMSTK.</p></td>
+</tr>
+<tr class="row-odd"><td><p>A minimum of 11 characters (RAMSTK is 6) and a maximum of 30 characters.</p></td>
+</tr>
+<tr class="row-even"><td><p>Suffixed by ‘Error’ when defining an exception class.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-</div>
-<div class="section" id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
-<ol>
-<li><p>Class attributes shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>Prefaced by a double underscore (__).</p></li>
-</ul>
-</li>
+<ol class="arabic simple" start="1300">
+<li><p><em>Attributes</em></p></li>
+<li><p>Class attributes shall be:</p></li>
+</ol>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All lowercase with spaces replaced by underscores (_).</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<ol class="arabic">
 <li><p>Private instance attribute shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>Prefaced by a single underscore (_).</p></li>
-<li><p>Identified by the data type the attribute holds as follows:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_dic</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">dictionary</span>
-<span class="n">_lst</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="nb">list</span>
-<span class="n">_tpl</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="nb">tuple</span>
-<span class="n">_int</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">integer</span>
-<span class="n">_flt</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">float</span>
-<span class="n">_str</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">string</span>
-</pre></div>
-</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All lowercase with spaces replaced by underscores (_).</p></td>
+</tr>
+<tr class="row-odd"><td><p>Prefaced with _dic to indicate it is a dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p>Prefaced with _lst to indicate it is a a list.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Prefaced with _tpl to indicate it is a tuple.</p></td>
+</tr>
+<tr class="row-even"><td><p>Prefaced with a single underscore (_) to indicate it is a scalar.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li><p>Public instance attributes shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with spaces replaced by underscores (_).</p></li>
-<li><p>Identified by the data type the attribute holds as follows:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dic</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">dictionary</span>
-<span class="n">lst</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="nb">list</span>
-<span class="n">tpl</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="nb">tuple</span>
-<span class="nb">int</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">integer</span>
-<span class="n">flt</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="nb">float</span>
-<span class="nb">str</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">string</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pylintrc: attr-rgx=[_a-z_?][a-z0-9_?]{3,30}$
-</pre></div>
-</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All lowercase with spaces replaced by underscores (_).</p></td>
+</tr>
+<tr class="row-odd"><td><p>Prefaced with dic to indicate it is a dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p>Prefaced with lst to indicate it is a a list.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Prefaced with tpl to indicate it is a tuple.</p></td>
+</tr>
+<tr class="row-even"><td><p>Un-prefaced to indicate it is a scalar.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-</div>
-<div class="section" id="functions-and-methods">
-<h3>Functions and Methods<a class="headerlink" href="#functions-and-methods" title="Permalink to this headline">¶</a></h3>
-<ol>
+<ol class="arabic" start="1400">
+<li><p><em>Functions and Methods</em></p></li>
 <li><p>Functions and methods shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with underscores (_) replacing spaces.</p></li>
-<li><p>A minimum of five characters and a maximum of 50 characters.</p></li>
-<li><p>Prefaced by a single underscore (_) if not a public function or method.</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pylintrc: function-rgx=[_a-z0-9][_a-z0-9]{5,50}$
-pylintrc: method-rgx=[_a-z0-9][_a-z0-9]{5,50}$
-</pre></div>
-</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All lowercase with underscores (_) replacing spaces.</p></td>
+</tr>
+<tr class="row-odd"><td><p>A minimum of five characters and a maximum of 50 characters.</p></td>
+</tr>
+<tr class="row-even"><td><p>Prefaced by a single underscore (_) if not a public function or method.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li><p>Function and method arguments shall be:</p>
-<ul class="simple">
-<li><p>All lowercase with underscores (_) replacing spaces.</p></li>
-<li><p>A minimum of five characters and a maximum of 30 characters.</p></li>
-<li><p>Prefaced by a double underscore (__) if it is unused in the function
-or methods (e.g., in widget callback methods).</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pylintrc: argument-rgx=[a-z0-9][_a-z0-9]{5,30}$
-</pre></div>
-</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>All lowercase with underscores (_) replacing spaces.</p></td>
+</tr>
+<tr class="row-odd"><td><p>A minimum of five characters and a maximum of 30 characters.</p></td>
+</tr>
+<tr class="row-even"><td><p>Prefaced by a double underscore (__) if it is unused in the function
+or methods (e.g., in widget callback methods).</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-</div>
-<div class="section" id="tags">
-<h3>Tags<a class="headerlink" href="#tags" title="Permalink to this headline">¶</a></h3>
-<ol>
-<li><p>Tags may be used to assist in placeholding during development.</p>
-<ul class="simple">
-<li><p>FIXME to indicate non-working code that needs to be re-worked before
-check-in.</p></li>
-<li><p>TODO to indicate missing code/functionality that needs to be added.</p></li>
-<li><p>ISSUE to point to the RAMSTK GitHub project issue tracking the condition.</p></li>
-</ul>
+<ol class="arabic" start="1500">
+<li><p><em>Tags</em></p></li>
+<li><p>Tags may be used to assist in place holding during development.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FIXME to indicate non-working code that needs to be re-worked before
+check-in.</p></td>
+</tr>
+<tr class="row-odd"><td><p>TODO to indicate missing code/functionality that needs to be added.</p></td>
+</tr>
+<tr class="row-even"><td><p>CR to point to the RAMSTK GitHub project issue tracking the condition.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li><p>FIXME tags shall:</p>
-<ul class="simple">
-<li><p><strong>NOT</strong> be included in any code checked in to the RAMSTK git repository.</p></li>
-<li><p>Be converted to an ISSUE tag when an issue is created to track the
-condition.</p></li>
-</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>NOT</strong> be included in any code checked in to the RAMSTK git repository.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Be converted to a CR tag when an issue is created to track the condition.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 <li><p>TODO tags shall:</p>
-<ul class="simple">
-<li><p><strong>NOT</strong> be included in any code checked in to the RAMSTK git repository.</p></li>
-<li><p>Be converted to an ISSUE tag when an issue is created to track the
-condition.</p></li>
-</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>NOT</strong> be included in any code checked in to the RAMSTK git repository.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Be converted to an ISSUE tag when an issue is created to track the
+condition.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
-<li><p>ISSUE tags shall:</p>
-<ul>
-<li><p>Include the issue number and brief decription.  For example,</p>
-<p>ISSUE 88: Handle Errors in FMEA WorkView _do_load_tree() Method</p>
-</li>
-<li><p>Be printed to the console when encountered in the code.</p></li>
-</ul>
-</li>
-</ol>
-</div>
-</div>
-<div class="section" id="design-conventions">
-<h2>Design Conventions<a class="headerlink" href="#design-conventions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="data-models">
-<h3>Data Models<a class="headerlink" href="#data-models" title="Permalink to this headline">¶</a></h3>
-<ol>
-<li><p>All data models shall have the following public methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">do_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">do_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">do_update_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">set_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>All data models shall have the following private methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dao</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Data models may have the following public/private methods/functions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">do_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_calculate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">do_select_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">_do_calculate_availability_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_cost_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_metric_variances</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-<span class="n">_do_calculate_reliability_metrics</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For data model functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul class="simple">
-<li><p>If the function or method responds to a user request, it shall begin
-with do_ (public) or <em>do</em> (private).  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_add_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cause_id</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">)</span>
-<span class="n">_do_calculate_rpn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>If the function or method retrieves something, it shall begin with get_
-(public) or <em>get</em> (private).  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_actual_burndown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">get_assessment_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">get_planned_burndown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>If the function or method does something, it should begin with set_
-(public) or <em>set</em> (private).  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_set_assessment_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Conform with all naming convetions.</p></li>
-</ul>
+<li><p>CR tags shall:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Include the issue number and brief description.  For example:</p>
+<blockquote>
+<div><p>CR 88: Handle Errors in FMEA WorkView _do_load_tree() Method</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
 </div>
-<div class="section" id="data-controllers">
-<h3>Data Controllers<a class="headerlink" href="#data-controllers" title="Permalink to this headline">¶</a></h3>
-<ol>
-<li><p>All data controllers shall have the following public methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">do_handle_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="n">pub_msg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="n">request_do_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_select_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_update_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_get_last_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_set_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="section" id="design-conventions-for-ramstk">
+<h1>Design Conventions for RAMSTK<a class="headerlink" href="#design-conventions-for-ramstk" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple" start="2000">
+<li><p><em>General Architecture</em></p></li>
+<li><p>Data <strong>shall</strong> be stored in referential databases.</p></li>
+<li><p>RAMSTK <strong>shall</strong> follow a MVC architecture.</p></li>
+<li><p>Controllers are referred to as managers.</p></li>
+<li><p>Data managers are used to control the flow of data between the data base, the views, and the analysis manager.</p></li>
+<li><p>Analysis managers are used to control the flow of analyses.</p></li>
+</ol>
+<ol class="arabic" start="2100">
+<li><p><em>Data Managers</em></p></li>
+<li><p>There <strong>shall</strong> be a data manager meta-class.</p></li>
+<li><p>All data managers <strong>shall</strong> have the following methods:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>_on_select_revision(self, attributes)</p></li>
+<li><p>do_connect(self, dao)</p></li>
+<li><p>do_create_all_codes(self, prefix)</p></li>
+<li><p>do_delete(self, node_id, table)</p></li>
+<li><p>do_get_attributes(self, node_id, table)</p></li>
+<li><p>do_select(self, node_id, table)</p></li>
+<li><p>do_set_attributes(self, node_id, package)</p></li>
+<li><p>do_set_tree(self, module_tree)</p></li>
+<li><p>do_update_all(self)</p></li>
+<li><p>do_get_tree(self)</p></li>
+<li><p>do_select_all(self, attributes)</p></li>
+<li><p>do_update(self, node_id)</p></li>
+</ol>
+</div></blockquote>
 </li>
-<li><p>All data controllers shall have the following private methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dao</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
+<li><p>Any or all of the data manager methods <em>should</em> be abstracted to the data manager meta-class.</p></li>
+<li><p>All methods in the data manager meta-class:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Used by child classes <strong>shall</strong> be public.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Not used be child classes or called only as a PyPubSub listener <strong>shall</strong>
+be private.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
-<li><p>Data controllers may have the following public/private methods/functions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">request_do_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_calculate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">request_do_calculate_availability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_hazard_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_mtbf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_calculate_reliability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-<span class="n">request_do_select_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For data controller functions or methods unique to a particular RAMSTK
-module, naming shall adhere to the following conventions:</p>
-<ul class="simple">
-<li><p>All methods should be named the same as the data model method and
-prefaced with request_.  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">request_do_calculate_rpn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">request_get_planned_burndown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Shall be public in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
+<li><p>All methods in the child classes:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Called by the meta-class <strong>shall</strong> be public.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Only called internally or as a PyPubSub listener <strong>shall</strong> be private.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Shall</strong> conform with all naming conventions.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-</div>
-<div class="section" id="gui-components">
-<h3>GUI Components<a class="headerlink" href="#gui-components" title="Permalink to this headline">¶</a></h3>
-<ol>
-<li><p>If the function or method creates a simple or aggregate widget, it shall
-begin with make (public) or <em>make</em> (private).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_make_assessment_inputs_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
+<ol class="arabic simple" start="2200">
+<li><p><em>Analysis Managers</em></p></li>
+<li><p>There <strong>shall</strong> be an analysis manager meta-class.</p></li>
+<li><p>All analysis managers <strong>shall</strong> have the following methods:</p></li>
+</ol>
+<ol class="arabic" start="2300">
+<li><p><em>Data Models</em></p></li>
+<li><p>Models provide abstraction of the data base tables.</p></li>
+<li><p>There <strong>shall</strong> be one model per data base table.</p></li>
+<li><p>Data models may have the following public/private methods/functions:</p></li>
+<li><p>For data model functions or methods unique to a particular RAMSTK module, naming shall adhere to the following conventions:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>If the function or method responds to a user request, it shall begin
+with do_ (public) or _do_ (private).  For example:</p>
+<blockquote>
+<div><p>_do_add_actions(self, cause_id, parent_id)
+_do_calculate_rpn(self)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="row-odd"><td><p>If the function or method retrieves something, it shall begin with get_
+(public) or _get_ (private).  For example:</p>
+<blockquote>
+<div><p>get_actual_burndown(self)
+get_assessment_points(self)
+get_planned_burndown(self)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="row-even"><td><p>If the function or method does something, it should begin with set_
+(public) or _set_ (private).  For example:</p>
+<blockquote>
+<div><p>_set_assessment_points(self, <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Conform with all naming conventions.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-<p>2, If the function or method is a callback signal that is not a user request,
-it should begin with on (public) or <em>on</em> (private).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  ```
-  _on_focus_out(self, entry, new_text)
-  _on_edit(self, __cell, path, new_text, position)
-  ```
-</pre></div>
-</div>
-<ol>
-<li><p>If the function or method is a callback signal that is a user request
-(button press, etc.), it should be begin with do_request_ (public) or
-<em>do_request</em> (private).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-</pre></div>
-</div>
+<ol class="arabic" start="2400">
+<li><p><em>GUI Components</em></p></li>
+<li><p>If the function or method creates a simple or aggregate widget, it shall begin with make (public) or _make_ (private).</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>_make_assessment_inputs_page(self)</p></td>
+</tr>
+<tr class="row-odd"><td><p>make_buttonbox(self)</p></td>
+</tr>
+</tbody>
+</table>
 </li>
-<li><p>View functions and methods should, generally, be “private” (prefaced by a
-single underscore ‘_’) as they would only need to be called by other View
-functions and methods and would not be part of the public API.  See paragraph 2.3.8.2 for an exception.</p></li>
+<li><p>If the function or method is a callback signal that is not a user request, it should begin with on (public) or _on_ (private).</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>on_focus_out(self, entry, new_text)</p></td>
+</tr>
+<tr class="row-odd"><td><p>_on_edit(self, __cell, path, new_text, position)</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p>If the function or method is a callback signal that is a user request (button press, etc.), it should be begin with do_request_ (public) or _do_request_ (private).</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>do_request_calculate(self, __button)</p></td>
+</tr>
+<tr class="row-odd"><td><p>_do_request_update(self, __button)</p></td>
+</tr>
+</tbody>
+</table>
+</li>
 </ol>
-<div class="section" id="list-views">
-<h4>List Views<a class="headerlink" href="#list-views" title="Permalink to this headline">¶</a></h4>
-<ol>
+<ol class="arabic" start="2500">
+<li><p><em>List Views</em></p></li>
 <li><p>All List Views shall have the following public methods:</p></li>
-<li><p>All List Views shall have the following private methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="n">_do_change_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_load_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">editable</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For List View functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul class="simple">
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
+<li><p>All List Views shall have the following private methods:</p></li>
+<li><p>For List View functions or methods unique to a particular RAMSTK module, naming shall adhere to the following conventions:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Be private in scope.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Conform with all naming conventions.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-</div>
-<div class="section" id="matrix-views">
-<h4>Matrix Views<a class="headerlink" href="#matrix-views" title="Permalink to this headline">¶</a></h4>
-<ol>
-<li><p>All Matrix Views shall have the following public methods:</p></li>
-<li><p>All Matrix Views shall have the following private methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For Matrix View functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul class="simple">
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
-</li>
-</ol>
-</div>
-<div class="section" id="module-views">
-<h4>Module Views<a class="headerlink" href="#module-views" title="Permalink to this headline">¶</a></h4>
-<ol>
+<ol class="arabic" start="2600">
+<li><p><em>Module Views</em></p></li>
 <li><p>All Module Views shall have the following public methods:</p></li>
-<li><p>All Module Views shall have the following private methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="n">_do_change_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_insert_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_select_revision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Module Views may have the following public/private methods/functions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_on_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Module View functions or methods unique to a particular RAMSTK module, naming
-shall adhere to the following conventions:</p>
-<ul class="simple">
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
+<li><p>All Module Views shall have the following private methods:</p></li>
+<li><p>Module Views may have the following public/private methods/functions:</p></li>
+<li><p>Module View functions or methods unique to a particular RAMSTK module, naming shall adhere to the following conventions:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Be private in scope.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Conform with all naming conventions.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
-</div>
-<div class="section" id="work-views">
-<h4>Work Views<a class="headerlink" href="#work-views" title="Permalink to this headline">¶</a></h4>
-<ol>
+<ol class="arabic" start="2700">
+<li><p><em>Work Views</em></p></li>
 <li><p>All Work Views shall have the following public methods:</p></li>
-<li><p>Work Views that are embedded in a higher-level Work View (e.g.,
-component-specific work views are embedded into the Hardware BoM Work View)
-require their methods to be public so they can be called by the higher level
-(private) method of the same name.  The following methods may be used by a Work
-View that meets this criterion:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">do_load_comboboxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcategory_id</span><span class="p">)</span>
-<span class="n">do_load_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">do_set_sensitive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">make_assessment_input_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">make_assessment_results_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">on_combo_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-<span class="n">on_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">)</span>
-</pre></div>
-</div>
+<li><p>All Work Views shall have the following private methods:</p></li>
+<li><p>Any or all of the work view methods <em>should</em> be abstracted to a meta-class.</p></li>
+<li><p>All methods in the work view meta-class:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Used by child classes <strong>shall</strong> be public.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Not used by child classes or called only as a PyPubSub listener <strong>shall</strong>
+be private as denoted by a leading underscore ‘_’.</p></td>
+</tr>
+<tr class="row-even"><td><p>Conform with all naming conventions.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
-<li><p>All Work Views shall have the following private methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_load_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_refresh_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_do_request_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_update_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_on_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
+<li><p>All methods in the child classes:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Called by the WorkView meta-class <strong>shall</strong> be public.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Only called internally or as a PyPubSub listener <strong>shall</strong> be private as
+denoted by a leading underscore ‘_’.</p></td>
+</tr>
+<tr class="row-even"><td><p>Used solely to create the GUI <strong>shall</strong> be mangled as denoted by two
+leading underscores ‘__’.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Conform with all naming conventions.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
-<li><p>Work Views containing or consisting of a RAMSTKTreeView shall have the
-following private methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_change_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">)</span>
-<span class="n">_do_edit_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">_do_request_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_insert_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_get_cell_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
-<span class="n">_make_treeview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_on_button_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-</pre></div>
-</div>
+<li><p>All WorkView classes shall have the following attributes:</p></li>
+<li><p>_lst_label_text and _lst_widgets <strong>shall</strong>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Contain the label text and widgets in the same order (i.e., the label text
+at position 0 corresponds to the information displayed in the widget at
+position 0).</p></td>
+</tr>
+<tr class="row-odd"><td><p>Be listed in the order (top to bottom) they will be displayed on the
+WorkView.</p></td>
+</tr>
+</tbody>
+</table>
 </li>
-<li><p>Work Views may contain one or more of the following private methods as
-needed:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_load_comboboxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_do_request_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_calculate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="n">_do_select_date</span><span class="p">(</span><span class="n">__button</span><span class="p">,</span> <span class="n">__event</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
-<span class="n">_do_set_sensitive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">_make_assessment_input_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_assessment_results_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_buttonbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_general_data_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_on_combo_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-<span class="n">_on_edit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">new_text</span><span class="p">)</span>
-<span class="n">_on_focus_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-<span class="n">_on_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">togglebutton</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-<span class="n">_on_value_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinbutton</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>For Work View functions or methods unique to a particular RAMSTK module,
-naming shall adhere to the following conventions:</p>
-<ul class="simple">
-<li><p>Conform with requirements 2.3.1 through 2.3.4.  For example:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_do_load_planned_burndown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="n">_do_load_subcategory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category_id</span><span class="p">)</span>
-<span class="n">_do_request_edit_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_do_request_make_comp_ref_des</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__button</span><span class="p">)</span>
-<span class="n">_make_burndown_curve_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_requirement_analysis_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_stress_input_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="n">_make_stress_results_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Be private in scope.</p></li>
-<li><p>Conform with all naming conventions.</p></li>
-</ul>
+<li><p>_lst_label_text and _lst_widget may:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Be sliced for display in different sections in the WorkView (e.g., a
+WorkView page is split up by Gtk.Box or Gtk.Paned and the list of
+labels/widgets are divided into the different sections).</p></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ol>
+<ol class="arabic" start="2800">
+<li><p><em>RAMSTK Widgets</em></p></li>
+<li><p>GUI toolkit widget classes <em>should</em> be super-classed to create RAMSTK widget classes.</p></li>
+<li><p>RAMSTK widget classes <strong>shall</strong> be named RAMSTK&lt;widget&gt; where &lt;widget&gt; is the name of the underlying toolkit widget class.  For example, the RAMSTK widget implementing the pygobject GtkEntry() would be named RAMSTKEntry().</p></li>
+<li><p>RAMSTK widget classes <strong>shall</strong> inherit from the parent widget(s).</p></li>
+<li><p>RAMSTK widget classes <strong>shall</strong> contain helper or wrapper methods to handle the detailed implementation of the action; these methods shall be public.</p></li>
+<li><p>All RAMSTK widgets shall have the following public methods:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>do_set_properties(): used to set all visual properties of the widget with sensible defaults; this provides for a consistent look and feel.</p></li>
+<li><p>do_update(), if an updatable widget: used to update the displayed information in the widget; this simply reduces code duplication and eases the development/maintenance of the views using the widgets.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>All RAMSTK widget classes should have a type definition (<a href="#id3"><span class="problematic" id="id4">*</span></a>.pyi) file associated with them.</p></li>
+<li><p>Default property values for RAMSTK widget classes may be user-configurable.</p></li>
+</ol>
 </div>
-</div>
-</div>
+<div class="section" id="exception-and-error-handling">
+<h1>Exception and Error Handling<a class="headerlink" href="#exception-and-error-handling" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple" start="3000">
+<li><p>Exceptions caught by GUI components that are or may be the result of user error (e.g., missing data, incorrect data type, etc.) shall raise a warning dialog to inform the user of the potential problem.</p></li>
+<li><p>The warning dialog in 1, above, should provide a “hint” to help the user fix the problem; for example, what data is required for a calculation.</p></li>
+<li><p>Exception caught by GUI components that are the result of other than user error (e.g., missing data from the database) shall raise an error dialog to inform the user of the problem.</p></li>
+<li><p>The error dialog in 3, above, should provide the user a concise statement regarding the cause of the error; for example, data X from the common database is missing.</p></li>
+<li><p>The error dialog in 3, above, may provide the user a hyperlink to the RAMSTK issue system to simplify the process for the user to submit an issue ticket if desired.</p></li>
+<li><p>All exceptions caught by GUI components shall be logged at the debug level.Exception caught by GUI components that are the result of other than user error (e.g., missing data from the database) shall raise an error dialog to inform the user of the problem.</p></li>
+</ol>
 </div>
 
 
@@ -582,41 +670,21 @@ naming shall adhere to the following conventions:</p>
 
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Coding Conventions</a><ul>
-<li><a class="reference internal" href="#naming-conventions">Naming Conventions</a><ul>
-<li><a class="reference internal" href="#constants-and-variables">Constants and Variables</a></li>
-<li><a class="reference internal" href="#classes-and-modules">Classes and Modules</a></li>
-<li><a class="reference internal" href="#attributes">Attributes</a></li>
-<li><a class="reference internal" href="#functions-and-methods">Functions and Methods</a></li>
-<li><a class="reference internal" href="#tags">Tags</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#design-conventions">Design Conventions</a><ul>
-<li><a class="reference internal" href="#data-models">Data Models</a></li>
-<li><a class="reference internal" href="#data-controllers">Data Controllers</a></li>
-<li><a class="reference internal" href="#gui-components">GUI Components</a><ul>
-<li><a class="reference internal" href="#list-views">List Views</a></li>
-<li><a class="reference internal" href="#matrix-views">Matrix Views</a></li>
-<li><a class="reference internal" href="#module-views">Module Views</a></li>
-<li><a class="reference internal" href="#work-views">Work Views</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">Naming Conventions for RAMSTK</a></li>
+<li><a class="reference internal" href="#design-conventions-for-ramstk">Design Conventions for RAMSTK</a></li>
+<li><a class="reference internal" href="#exception-and-error-handling">Exception and Error Handling</a></li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="CONTRIBUTING.html"
                         title="previous chapter">Contributing to the RAMS ToolKit (RAMSTK)</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="DEVELOPMENT_ENV.html"
-                        title="next chapter">Establishing a Development Environment</a></p>
+  <p class="topless"><a href="api/modules.html"
+                        title="next chapter">&lt;no title&gt;</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/CODING_STDS.md.txt"
+      <li><a href="_sources/CODING_STDS.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -641,7 +709,7 @@ naming shall adhere to the following conventions:</p>
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="DEVELOPMENT_ENV.html" title="Establishing a Development Environment"
+          <a href="api/modules.html" title="&lt;no title&gt;"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="CONTRIBUTING.html" title="Contributing to the RAMS ToolKit (RAMSTK)"

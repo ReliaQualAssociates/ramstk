@@ -17,8 +17,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Coding Conventions" href="CODING_STDS.html" />
-    <link rel="prev" title="Contributing" href="contributing.html" />
+    <link rel="next" title="Naming Conventions for RAMSTK" href="CODING_STDS.html" />
+    <link rel="prev" title="Coding Standards" href="contributing.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
@@ -31,7 +31,7 @@
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="index.html">RAMSTK 1.0.0 documentation</a> &#187;</li>
-          <li><a href="contributing.html" accesskey="U">Contributing</a> &#187;</li> 
+          <li><a href="contributing.html" accesskey="U">Coding Standards</a> &#187;</li> 
       </ul>
     </div>
     
@@ -142,7 +142,7 @@ by their nature are not reproducible.  When completing this section:</p>
 <li><p><strong>Include screenshots and animated GIFs</strong> which show you following the described steps and clearly demonstrate the problem.  You can use <a class="reference external" href="https://www.cockos.com/licecap/">this tool</a> to record GIFs on Windows, and <a class="reference external" href="https://github.com/colinkeenan/silentcast">this tool</a> or <a class="reference external" href="https://github.com/GNOME/byzanz">this tool</a> on Linux.</p></li>
 </ul>
 <p>To gather the information required for the <strong>Operating Environment</strong> section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/requirements_run.txt">requirements_run.txt</a> file in the repository.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for file in $(cat requirements_run.txt | cut -d &#39;=&#39; -f1 | cut -d &#39;&gt;&#39; -f1);
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for file in $(cat requirements.txt | cut -d &#39;=&#39; -f1 | cut -d &#39;&gt;&#39; -f1);
 do
     version=$(pip show $file | grep Version: | cut -d &#39;:&#39; -f2 | tr -d &#39;[:space:]&#39;);
     echo &quot;  * &quot;$file==$version;
@@ -156,7 +156,7 @@ done
 <p>As a RAMSTK developer, if you are working on something outside the RAMSTK issue system, you are likely working on the wrong thing.  If an issue doesn’t exist, create it <em>before</em> you start writing.  The issue system is there to facilitate managing the development program and creating schedules.</p>
 <div class="section" id="style-guidelines">
 <h3>Style Guidelines<a class="headerlink" href="#style-guidelines" title="Permalink to this headline">¶</a></h3>
-<p>Please refer to the RAMSTK <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/blob/develop/docs/CODING_STDS.md">coding conventions</a>.</p>
+<p>Please refer to the RAMSTK Coding Standards.</p>
 <div class="section" id="pull-requests">
 <h4>Pull Requests<a class="headerlink" href="#pull-requests" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
@@ -182,25 +182,24 @@ done
 <p>Add the bug number to the log message. In order to keep the issue tracking system in sync with the git repositories, you should reference the issue report in your commits, and close the fixed issues in the issue tracking system.</p>
 <p>This doesn’t mean that you don’t need an understandable log message.  It should be clear from the log message what has been changed without looking at the issue report.</p>
 </div>
-<div class="section" id="todo-comments">
-<h4>TODO Comments<a class="headerlink" href="#todo-comments" title="Permalink to this headline">¶</a></h4>
-<p>When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add a TODO comment using the following format:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># // TODO: &lt;One-line description of required work.</span>
+<div class="section" id="issue-comments">
+<h4>ISSUE Comments<a class="headerlink" href="#issue-comments" title="Permalink to this headline">¶</a></h4>
+<p>When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add an ISSUE comment using the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ISSUE: &lt;One-line description of required work.</span>
 <span class="c1"># //</span>
 <span class="c1"># // Long and detailed description of work to be performed.</span>
 </pre></div>
 </div>
-<p>The github action, dtinth/todo-actions will find these TODO comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.</p>
+<p>The github action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.</p>
 </div>
 </div>
 <div class="section" id="process-guidelines">
 <h3>Process Guidelines<a class="headerlink" href="#process-guidelines" title="Permalink to this headline">¶</a></h3>
 <p>RAMSTK uses:</p>
 <ul class="simple">
-<li><p>SCRUM workflow</p></li>
 <li><p>Test driven development</p></li>
+<li><p>Trunk based development</p></li>
 <li><p>Continuous integration</p></li>
-<li><p>The git-flow branching model</p></li>
 </ul>
 <div class="section" id="never-write-a-test-that-doesn-t-have-an-engineering-specification">
 <h4>Never Write a Test That Doesn’t Have an Engineering Specification<a class="headerlink" href="#never-write-a-test-that-doesn-t-have-an-engineering-specification" title="Permalink to this headline">¶</a></h4>
@@ -276,7 +275,7 @@ done
 <li><a class="reference internal" href="#git-commit-messages">Git Commit Messages</a></li>
 <li><a class="reference internal" href="#always-add-descriptive-log-messages">Always Add Descriptive Log Messages</a></li>
 <li><a class="reference internal" href="#use-issue-system-numbers">Use Issue System Numbers</a></li>
-<li><a class="reference internal" href="#todo-comments">TODO Comments</a></li>
+<li><a class="reference internal" href="#issue-comments">ISSUE Comments</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#process-guidelines">Process Guidelines</a><ul>
@@ -298,10 +297,10 @@ done
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="contributing.html"
-                        title="previous chapter">Contributing</a></p>
+                        title="previous chapter">Coding Standards</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="CODING_STDS.html"
-                        title="next chapter">Coding Conventions</a></p>
+                        title="next chapter">Naming Conventions for RAMSTK</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -330,10 +329,10 @@ done
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="CODING_STDS.html" title="Coding Conventions"
+          <a href="CODING_STDS.html" title="Naming Conventions for RAMSTK"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="contributing.html" title="Contributing"
+          <a href="contributing.html" title="Coding Standards"
              accesskey="P">previous</a> |</li>
       </ul>
     </div>
