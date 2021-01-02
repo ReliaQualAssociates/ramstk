@@ -689,7 +689,7 @@ class TestGetterSetter():
         DUT.get_user_configuration()
 
         DUT.RAMSTK_REPORT_SIZE = 'A4'
-        DUT.RAMSTK_HR_MULTIPLIER = 1000.0
+        DUT.RAMSTK_HR_MULTIPLIER = 1000000.0
         DUT.RAMSTK_MTIME = 24.0
         DUT.RAMSTK_DEC_PLACES = 4
         DUT.RAMSTK_BACKEND = 'mysql'
@@ -707,7 +707,7 @@ class TestGetterSetter():
         DUT.get_user_configuration()
 
         assert DUT.RAMSTK_REPORT_SIZE == 'A4'
-        assert DUT.RAMSTK_HR_MULTIPLIER == 1000.0
+        assert DUT.RAMSTK_HR_MULTIPLIER == 1000000.0
         assert DUT.RAMSTK_MTIME == 24.0
         assert DUT.RAMSTK_DEC_PLACES == 4
         assert DUT.RAMSTK_BACKEND == 'mysql'

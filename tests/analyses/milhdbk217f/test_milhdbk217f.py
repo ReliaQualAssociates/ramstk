@@ -702,7 +702,7 @@ def test_do_calculate_active_hazard_rate(hazard_rate_method_id):
 
     pub.subscribe(on_message, 'succeed_predict_reliability')
 
-    assert milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+    milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -725,7 +725,7 @@ def test_do_calculate_active_hazard_rate_negative_input():
 
     pub.subscribe(on_message, 'fail_predict_reliability')
 
-    assert milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+    milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -754,4 +754,4 @@ def test_do_calculate_active_hazard_rate_zero_input():
 
     pub.subscribe(on_message, 'fail_predict_reliability')
 
-    assert milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+    milhdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES)

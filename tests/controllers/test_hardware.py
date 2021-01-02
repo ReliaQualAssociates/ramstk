@@ -10,7 +10,10 @@
 
 # Third Party Imports
 import pytest
-from __mocks__ import MOCK_DESIGN_ELECTRIC, MOCK_DESIGN_MECHANIC, MOCK_HARDWARE
+from __mocks__ import (
+    MOCK_217F, MOCK_DESIGN_ELECTRIC, MOCK_DESIGN_MECHANIC,
+    MOCK_HARDWARE, MOCK_NSWC, MOCK_RELIABILITY
+)
 from pubsub import pub
 from treelib import Tree
 
@@ -20,7 +23,8 @@ from ramstk.controllers import amHardware, dmHardware
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKHardware
+    RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
 )
 
 
@@ -28,6 +32,9 @@ class MockDao:
     _all_hardware = []
     _all_design_electric = []
     _all_design_mechanic = []
+    _all_217f = []
+    _all_nswc = []
+    _all_reliability = []
 
     def _do_delete_hardware(self, record):
         for _idx, _record in enumerate(self._all_hardware):
@@ -54,6 +61,11 @@ class MockDao:
             if _record.hardware_id_id == record.hardware_id:
                 self._all_nswc.pop(_idx)
 
+    def _do_delete_reliability(self, record):
+        for _idx, _record in enumerate(self._all_reliability):
+            if _record.hardware_id_id == record.hardware_id:
+                self._all_reliability.pop(_idx)
+
     def do_delete(self, record):
         if record is None:
             raise DataAccessError('')
@@ -63,6 +75,12 @@ class MockDao:
             self._do_delete_design_electric(record)
         elif record == RAMSTKDesignMechanic:
             self._do_delete_design_mechanic(record)
+        elif record == RAMSTKMilHdbkF:
+            self._do_delete_milhdbkf(record)
+        elif record == RAMSTKNSWC:
+            self._do_delete_nswc(record)
+        elif record == RAMSTKReliability:
+            self._do_delete_reliability(record)
 
     def do_insert(self, record):
         if record.hardware_id == 30:
@@ -73,6 +91,12 @@ class MockDao:
             self._all_design_electric.append(record)
         elif record == RAMSTKDesignMechanic:
             self._all_design_mechanic.append(record)
+        elif record == RAMSTKMilHdbkF:
+            self._all_217f.append(record)
+        elif record == RAMSTKNSWC:
+            self._all_nswc.append(record)
+        elif record == RAMSTKReliability:
+            self._all_reliability.append(record)
 
     def do_insert_many(self, records):
         for _record in records:
@@ -107,6 +131,33 @@ class MockDao:
 
         return self._all_design_mechanic[0]
 
+    def _do_select_all_217f(self, table, value):
+        self._all_217f = []
+        _record = table()
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_217F[value[0]])
+        self._all_217f.append(_record)
+
+        return self._all_217f[0]
+
+    def _do_select_all_nswc(self, table, value):
+        self._all_nswc = []
+        _record = table()
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_NSWC[value[0]])
+        self._all_nswc.append(_record)
+
+        return self._all_nswc[0]
+
+    def _do_select_all_reliability(self, table, value):
+        self._all_reliability = []
+        _record = table()
+        _record.hardware_id = value[0]
+        _record.set_attributes(MOCK_RELIABILITY[value[0]])
+        self._all_reliability.append(_record)
+
+        return self._all_reliability[0]
+
     def do_select_all(self,
                       table,
                       key=None,
@@ -119,6 +170,12 @@ class MockDao:
             _records = self._do_select_all_design_electric(table, value)
         elif table == RAMSTKDesignMechanic:
             _records = self._do_select_all_design_mechanic(table, value)
+        elif table == RAMSTKMilHdbkF:
+            _records = self._do_select_all_217f(table, value)
+        elif table == RAMSTKNSWC:
+            _records = self._do_select_all_nswc(table, value)
+        elif table == RAMSTKReliability:
+            _records = self._do_select_all_reliability(table, value)
 
         return _records
 
@@ -137,6 +194,19 @@ class MockDao:
                 if _key == record.hardware_id:
                     MOCK_DESIGN_MECHANIC[_key][
                         'altitude_operating'] = record.altitude_operating
+        elif isinstance(record, RAMSTKMilHdbkF):
+            for _key in MOCK_217F:
+                if _key == record.hardware_id:
+                    MOCK_217F[_key]['piQ'] = record.pi_q
+        elif isinstance(record, RAMSTKNSWC):
+            for _key in MOCK_NSWC:
+                if _key == record.hardware_id:
+                    MOCK_NSWC[_key]['Cd'] = record.c_d
+        elif isinstance(record, RAMSTKReliability):
+            for _key in MOCK_RELIABILITY:
+                if _key == record.hardware_id:
+                    MOCK_RELIABILITY[_key][
+                        'hazard_rate_active'] = record.hazard_rate_active
 
 
 @pytest.fixture
@@ -1157,8 +1227,8 @@ class TestAnalysisMethods():
             2).data['hardware'].total_power_dissipation == 0.1250
 
     @pytest.mark.unit
-    def test_do_calculate_power_dissipation_system(self, mock_program_dao,
-                                                 test_toml_user_configuration):
+    def test_do_calculate_power_dissipation_system(
+            self, mock_program_dao, test_toml_user_configuration):
         """_do_calculate_power_dissipation() should assign the product of
         quantity and operating power to total power dissipation for a part."""
         DUT = amHardware(test_toml_user_configuration)
@@ -1225,3 +1295,216 @@ class TestAnalysisMethods():
         assert DUT._tree.get_node(1).data['hardware'].total_part_count == 10
         assert DUT._tree.get_node(
             1).data['hardware'].total_power_dissipation == 0.1250
+
+    @pytest.mark.unit
+    def test_do_calculate_hazard_rate_specified_hazard_rate(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when specifying the h(t)."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(3))
+
+        assert DUT._tree.get_node(3).data[
+            'reliability'].hazard_rate_active == pytest.approx(0.0002324999)
+        assert DUT._tree.get_node(3).data[
+            'reliability'].hazard_rate_logistics == pytest.approx(0.0002324999)
+        assert DUT._tree.get_node(3).data[
+            'reliability'].hazard_rate_mission == pytest.approx(0.0002324999)
+
+    @pytest.mark.unit
+    def test_do_calculate_hazard_rate_specified_mtbf(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when specifying the MTBF."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(2).data[
+            'reliability'].hazard_rate_active == pytest.approx(1333.3333333)
+        assert DUT._tree.get_node(2).data[
+            'reliability'].hazard_rate_logistics == pytest.approx(1333.3333333)
+        assert DUT._tree.get_node(2).data[
+            'reliability'].hazard_rate_mission == pytest.approx(1333.3333333)
+
+    @pytest.mark.unit
+    def test_do_calculate_hazard_rate_specified_zero_mtbf(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should send the fail message when all hazard
+        rates=0.0."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 3
+
+        with pytest.raises(ZeroDivisionError):
+            DUT._do_calculate_hazard_rates(DUT._tree.get_node(3))
+
+    @pytest.mark.unit
+    def test_do_calculate_mtbf_specified_hazard_rate(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when specifying the h(t)."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 2
+
+        DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
+
+        assert DUT._tree.get_node(
+            3).data['reliability'].mtbf_active == pytest.approx(21505.3763441)
+
+    @pytest.mark.unit
+    def test_do_calculate_mtbf_specified_zero_hazard_rate(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when specifying the h(t)."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 2
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_specified = 0.0
+
+        with pytest.raises(ZeroDivisionError):
+            DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
+
+    @pytest.mark.unit
+    def test_do_calculate_mtbf_specified_mtbf(self, mock_program_dao,
+                                              test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when specifying the h(t)."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 3
+
+        DUT._do_calculate_mtbfs(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(
+            2).data['reliability'].mtbf_active == pytest.approx(1500.0)
+
+    @pytest.mark.unit
+    def test_do_calculate_reliabilities(self, mock_program_dao,
+                                        test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when specifying the h(t)."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 3
+
+        DUT._do_calculate_reliabilities(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(2).data[
+            'reliability'].reliability_logistics == pytest.approx(0.9986676)
+        assert DUT._tree.get_node(2).data[
+            'reliability'].reliability_mission == pytest.approx(0.8751733)
+        assert DUT._tree.get_node(3).data[
+            'reliability'].reliability_logistics == pytest.approx(0.9999999)
+        assert DUT._tree.get_node(3).data[
+            'reliability'].reliability_mission == pytest.approx(0.9999999)
+
+
+@pytest.mark.usefixtures('test_toml_user_configuration')
+class TestMilHdbk217FPredictions():
+    """Class for prediction methods using MIL-HDBK-217F test suite."""
+    @pytest.mark.unit
+    def test_do_calculate_part_mil_hdbk_217f_parts_count(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when performing a MIL-HDBK-217F parts
+        count prediction."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 1
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_method_id = 1
+        DUT._tree.get_node(3).data['hardware'].category_id = 1
+        DUT._tree.get_node(3).data['hardware'].subcategory_id = 1
+        DUT._tree.get_node(3).data['design_electric'].family_id = 2
+        DUT._tree.get_node(3).data['design_electric'].technologoy_id = 1
+        DUT._tree.get_node(3).data['design_electric'].n_elements = 50
+        DUT._tree.get_node(3).data['reliability'].quality_id = 1
+        DUT._tree.get_node(3).data['design_electric'].environment_active_id = 3
+
+        DUT._do_calculate_hardware(3)
+
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_active == 0.04875
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_logistics == 0.04875
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_mission == 0.04875
+        assert DUT._tree.get_node(3).data[
+            'reliability'].reliability_mission == pytest.approx(0.9999951)
+
+    @pytest.mark.unit
+    def test_do_calculate_part_mil_hdbk_217f_parts_stress(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when performing a MIL-HDBK-217F part
+        stress prediction."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 1
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_method_id = 2
+        DUT._tree.get_node(3).data['hardware'].category_id = 4
+        DUT._tree.get_node(3).data['hardware'].subcategory_id = 1
+        DUT._tree.get_node(3).data['reliability'].quality_id = 1
+        DUT._tree.get_node(3).data['design_electric'].environment_active_id = 3
+        DUT._tree.get_node(3).data['design_electric'].capacitance = 0.0000033
+        DUT._tree.get_node(3).data['design_electric'].construction_id = 1
+        DUT._tree.get_node(3).data['design_electric'].configuration_id = 1
+        DUT._tree.get_node(3).data['design_electric'].resistance = 0.05
+        DUT._tree.get_node(
+            3).data['design_electric'].voltage_dc_operating = 3.3
+        DUT._tree.get_node(
+            3).data['design_electric'].voltage_ac_operating = 0.04
+        DUT._tree.get_node(3).data['design_electric'].voltage_rated = 6.25
+        DUT._tree.get_node(
+            3).data['design_electric'].temperature_rated_max = 105.0
+        DUT._tree.get_node(3).data['design_electric'].temperature_active = 45.0
+        DUT._tree.get_node(3).data['design_electric'].power_operating = 0.05
+
+        DUT._do_calculate_hardware(3)
+
+        assert DUT._tree.get_node(3).data[
+            'reliability'].hazard_rate_active == pytest.approx(1.3784574)
+        assert DUT._tree.get_node(3).data[
+            'reliability'].hazard_rate_logistics == pytest.approx(1.3784574)
+        assert DUT._tree.get_node(3).data[
+            'reliability'].hazard_rate_mission == pytest.approx(1.3784574)
+        assert DUT._tree.get_node(3).data[
+            'reliability'].reliability_mission == pytest.approx(0.9998622)
