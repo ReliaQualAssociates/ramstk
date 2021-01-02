@@ -12,6 +12,7 @@ from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
+from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -29,7 +30,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKDesignElectric, and RAMSTKDesignMechanic data models.
     """
 
-    _tag = 'hardware'
+    _tag: str = 'hardwares'
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -62,10 +63,11 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes,
                       'request_set_hardware_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_component')
+        pub.subscribe(super().do_set_attributes, 'mvw_editing_hardware')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_hardware')
-        pub.subscribe(super().do_update_all, 'request_update_all_hardware')
+        pub.subscribe(super().do_update_all, 'request_update_all_hardwares')
 
-        pub.subscribe(self.do_get_tree, 'request_get_hardware_tree')
+        pub.subscribe(self.do_get_tree, 'request_get_hardwares_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
         pub.subscribe(self.do_update, 'request_update_hardware')
 
@@ -280,6 +282,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
+            # Delete the children (if any), then the parent node that was
+            # passed.
+            for _child in self.tree.children(node_id):
+                super().do_delete(_child.identifier, 'hardware')
             super().do_delete(node_id, 'hardware')
 
             self.tree.remove_node(node_id)
@@ -289,7 +295,7 @@ class DataManager(RAMSTKDataManager):
                 'succeed_delete_hardware',
                 tree=self.tree,
             )
-        except (AttributeError, DataAccessError):
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg: str = (

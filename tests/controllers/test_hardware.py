@@ -225,19 +225,19 @@ class TestCreateControllers():
         assert isinstance(DUT, dmHardware)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'hardware'
+        assert DUT._tag == 'hardwares'
         assert DUT._root == 0
         assert pub.isSubscribed(DUT.do_get_attributes,
                                 'request_get_hardware_attributes')
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_hardware_attributes')
-        assert pub.isSubscribed(DUT.do_set_attributes, 'wvw_editing_component')
+        assert pub.isSubscribed(DUT.do_set_attributes, 'mvw_editing_hardware')
         assert pub.isSubscribed(DUT.do_set_attributes, 'wvw_editing_hardware')
-        assert pub.isSubscribed(DUT.do_set_tree, 'succeed_calculate_hardware')
+        assert pub.isSubscribed(DUT.do_set_attributes, 'wvw_editing_component')
         assert pub.isSubscribed(DUT.do_update_all,
-                                'request_update_all_hardware')
+                                'request_update_all_hardwares')
 
-        assert pub.isSubscribed(DUT.do_get_tree, 'request_get_hardware_tree')
+        assert pub.isSubscribed(DUT.do_get_tree, 'request_get_hardwares_tree')
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update, 'request_update_hardware')
 

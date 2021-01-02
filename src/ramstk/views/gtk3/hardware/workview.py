@@ -2257,8 +2257,8 @@ class AssessmentResults(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
 
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
-        pub.subscribe(self._do_request_hardware_tree,
-                      'succeed_calculate_hardware')
+        #pub.subscribe(self._do_request_hardware_tree,
+         #             'succeed_calculate_hardware')
         pub.subscribe(self._do_load_page,
                       'succeed_get_all_hardware_attributes')
 
