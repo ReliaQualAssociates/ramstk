@@ -26,7 +26,7 @@ jobs:
           git add CHANGELOG.md && git commit -m "Updated CHANGELOG.md" && echo "do_push=1" >> $GITHUB_ENV || echo "No changes to CHANGELOG.md"
 
       - name: Push CHANGELOG.md
-        if: $do_push == 1
+        if: env.do_push == 1
         env:
           CI_USER: ${{ secrets.CI_USER }}
           CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}

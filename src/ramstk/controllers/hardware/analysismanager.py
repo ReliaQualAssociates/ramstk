@@ -265,8 +265,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
-        elif _hardware[
-                'reliability'].hazard_rate_type_id == 4:  # pragma: nocover
+        elif _hardware[  # pragma: nocover
+                'reliability'].hazard_rate_type_id == 4:
             _hardware['reliability'].mtbf_logistics_variance = (
                 1.0 / _hardware['reliability'].hr_logistics_variance)
             _hardware['reliability'].mtbf_mission_variance = (
