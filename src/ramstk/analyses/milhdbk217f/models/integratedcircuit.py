@@ -786,8 +786,9 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
         _index = _dic_breakpoints[id_keys['subcategory_id']][
             id_keys['technology_id']].index(n_elements) + 1
     else:
-        _index = _dic_breakpoints[id_keys['subcategory_id']].index(
-            n_elements) + 1
+        _lst_index = _dic_breakpoints[id_keys['subcategory_id']]
+        _index = min(range(len(_lst_index)), key=lambda i: abs(_lst_index[i] -
+                                                             n_elements)) + 1
 
     if id_keys['subcategory_id'] == 1:
         _base_hr = PART_COUNT_LAMBDA_B[id_keys['subcategory_id']][_index][

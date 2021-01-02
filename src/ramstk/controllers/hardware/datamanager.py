@@ -41,6 +41,9 @@ class DataManager(RAMSTKDataManager):
             'hardware': ['revision_id', 'hardware_id'],
             'design_electric': ['revision_id', 'hardware_id'],
             'design_mechanic': ['revision_id', 'hardware_id'],
+            'mil_hdbk_217f': ['revision_id', 'hardware_id'],
+            'nswc': ['revision_id', 'hardware_id'],
+            'reliability': ['revision_id', 'hardware_id'],
         }
 
         # Initialize private list attributes.

@@ -268,7 +268,7 @@ def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
 
 
 # noinspection PyTypeChecker
-def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> None:
+def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
     """Calculate the active hazard rate for a hardware item.
 
     .. attention:: The programmer is responsible for ensuring appropriate
@@ -288,13 +288,9 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> None:
         elif attributes['hazard_rate_method_id'] == 2:
             attributes = _do_calculate_part_stress(**attributes)
 
-        attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active']
-            + attributes['add_adj_factor']) * (
-                (attributes['duty_cycle'] / 100.0)
-                * attributes['mult_adj_factor'] * attributes['quantity'])
-
         pub.sendMessage('succeed_predict_reliability', attributes=attributes)
+
+        return attributes['hazard_rate_active']
     except ValueError:
         pub.sendMessage('fail_predict_reliability',
                         error_message=("Failed to predict MIL-HDBK-217F "
