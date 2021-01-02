@@ -4,14 +4,6 @@ ramstk.views.gtk3.validation package
 Submodules
 ----------
 
-ramstk.views.gtk3.validation.listview module
---------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.validation.listview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ramstk.views.gtk3.validation.moduleview module
 ----------------------------------------------
 

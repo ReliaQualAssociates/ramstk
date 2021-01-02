@@ -12,14 +12,6 @@ ramstk.controllers.requirement.datamanager module
    :undoc-members:
    :show-inheritance:
 
-ramstk.controllers.requirement.matrixmanager module
----------------------------------------------------
-
-.. automodule:: ramstk.controllers.requirement.matrixmanager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
