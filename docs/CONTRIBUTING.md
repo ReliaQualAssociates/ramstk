@@ -100,7 +100,7 @@ by their nature are not reproducible.  When completing this section:
 To gather the information required for the **Operating Environment** section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the [requirements_run.txt](https://github.com/ReliaQualAssociates/ramstk/requirements_run.txt) file in the repository.
 
 ```
-for file in $(cat requirements_run.txt | cut -d '=' -f1 | cut -d '>' -f1);
+for file in $(cat requirements.txt | cut -d '=' -f1 | cut -d '>' -f1);
 do
     version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]');
     echo "  * "$file==$version;
@@ -113,7 +113,7 @@ As a RAMSTK developer, if you are working on something outside the RAMSTK issue 
 
 ### Style Guidelines
 
-Please refer to the RAMSTK [coding conventions](https://github.com/ReliaQualAssociates/ramstk/blob/develop/docs/CODING_STDS.md).
+Please refer to the RAMSTK Coding Standards.
 
 #### Pull Requests
 
@@ -140,24 +140,23 @@ Add the bug number to the log message. In order to keep the issue tracking syste
 
 This doesn't mean that you don't need an understandable log message.  It should be clear from the log message what has been changed without looking at the issue report.
 
-#### TODO Comments
+#### ISSUE Comments
 
-When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add a TODO comment using the following format:
+When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add an ISSUE comment using the following format:
 
-    # // TODO: <One-line description of required work.
+    # ISSUE: <One-line description of required work.
     # //
     # // Long and detailed description of work to be performed.
 
-The github action, dtinth/todo-actions will find these TODO comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
+The github action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
 
 ### Process Guidelines
 
 RAMSTK uses:
 
-* SCRUM workflow
 * Test driven development
+* Trunk based development
 * Continuous integration
-* The git-flow branching model
 
 #### Never Write a Test That Doesn't Have an Engineering Specification
 

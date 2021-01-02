@@ -7,13 +7,14 @@ template: |
 categories:
   - title: 'Bug Fixes'
     labels:
-      - 'bug'
+      - 'fix'
   - title: 'Features'
     labels:
-      - 'enhancement'
+      - 'feature'
   - title: 'Maintenance'
     labels:
-      - 'quality'
+      - 'chore'
+      - 'refactor'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
@@ -26,4 +27,4 @@ version-resolver:
   patch:
     labels:
       - 'patch'
-  default: patch
+  default: minor

@@ -11,6 +11,7 @@ RAMSTK Controllers Package
    ramstk.controllers.hazards
    ramstk.controllers.options
    ramstk.controllers.pof
+   ramstk.controllers.program_status
    ramstk.controllers.requirement
    ramstk.controllers.revision
    ramstk.controllers.stakeholder

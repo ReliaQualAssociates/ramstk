@@ -1,5 +1,6 @@
 # The RAMS ToolKit (RAMSTK)
-> A toolkit for **R**eliability, **A**vailability, **M**aintainability, and **S**afety (RAMS) analyses.
+> A ToolKit for **R**eliability, **A**vailability, **M**aintainability, and
+> **S**afety (RAMS) analyses.
 
 <table>
     <tr>
@@ -16,9 +17,7 @@
             <a href="https://travis-ci.org/ReliaQualAssociates/ramstk"><img alt="Travis CI Status"
             src="https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=master"></a>
             <img alt="CircleCI" src="https://img.shields.io/circleci/build/github/ReliaQualAssociates/ramstk/master">
-            <a href="https://coveralls.io/github/ReliaQualAssociates/ramstk
-            ?branch=master"><img alt="Coveralls Coverage"
-            src="https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master"></a>
+            <a href='https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master'><img src='https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master' alt='Coverage Status' /></a>
             <a href="https://codecov.io/gh/ReliaQualAssociates/ramstk"><img alt="Codecov Coverage"
             src="https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg"></a>
         </td>
@@ -48,25 +47,24 @@
 - [Features](#-features)
 - [Installing](#-installing)
     - [Prerequisites](#prerequisites)
-    - [Using pip](#using-pip)
     - [Download](#download)
     - [Running the Tests](#running-the-tests)
 - [Usage](#-usage)
-- [Documentation](#-docs)
-- [Examples](#-examples)
+- [Documentation](#documentation)
 - [Contributing](#-contributing)
 - [Authors](#-authors)
 - [License](#-license)
-- [Similar Products](#-similar-products)
+- [Similar Products](#similar-products)
 
 ## 🎨 Features
 
-RAMSTK is built on the concept of modules where a module is a collection of related information and/or analyses pertinent to system development.  The modules currently included in RAMSTK are:
+RAMSTK is built on the concept of modules where a module is a collection of
+ related information and/or analyses pertinent to system development.  The
+  modules currently included in RAMSTK are:
 
 * Function Module
   - Functional decomposition
   - Functional FMEA
-  - Hardware/Function matrix
 * Requirements Module
   - Stakeholder input prioritization
   - Requirement development
@@ -99,21 +97,26 @@ These instructions will get RAMSTK up and running on your local machine
 . Note that the Makefile contains all the commands needed to install or work
  with RAMSTK.  You should consult the help output for more information.
 
-GitHub and PyPi releases will be made available once RAMST reaches v1.0.0
+GitHub and PyPi releases will be made available once RAMSTK reaches v1.0.0
 .  Until then, the only way to install RAMSTK is to clone the repository or
  download the source package and follow the instructions below.
 
 ### Prerequisites
 
-I use [pip-tools](https://github.com/jazzband/pip-tools) to manage the dependencies for RAMSTK while I'm developing so the requirements.txt file is formated for use with the pip-sync command.  However, it will also work with pip.
+I use [pip-tools](https://github.com/jazzband/pip-tools) to manage the
+ dependencies for RAMSTK while I'm developing so the requirements.txt file
+  is formated for use with the pip-sync command.  However, it will also work
+   with pip.
 
 ```sh
 $ pip install -r requirements.txt
 ```
 
-should get all the needed runtime requirements installed if they're not already.
+should get all the needed runtime requirements installed if they're not
+ already.
 
-If you're planning to do some development work on RAMSTK, the following would be the better approach:
+If you're planning to do some development work on RAMSTK, the following
+ would be the better approach:
 
 ```sh
 $ pip install pyenv
@@ -123,7 +126,10 @@ $ pip install pip-tools
 $ make depends
 ```
 
-This will install [pyenv](https://github.com/pyenv/pyenv), create a virtual environment with the default name of ramstk-venv, activate that virtual environment, install pip-tools, and then install all the RAMSTK dependencies needed for testing, development, and runtime.
+This will install [pyenv](https://github.com/pyenv/pyenv), create a virtual
+ environment with the default name of ramstk-venv, activate that virtual
+  environment, install pip-tools, and then install all the RAMSTK
+   dependencies needed for testing, development, and runtime.
 
 RAMSTK uses [postgresql](https://www.postgresql.org/) for it's database
  engine.  You'll need to have a user with read/write access to a postgresql
@@ -131,7 +137,9 @@ RAMSTK uses [postgresql](https://www.postgresql.org/) for it's database
 
 ### Download
 
-Install any missing RAMSTK dependencies using pip, your package manager, and/or build from source.  Then download the <version> of RAMSTK source from GitHub Releases you wish to install.
+Install any missing RAMSTK dependencies using pip, your package manager, and
+/or build from source.  Then download the <version> of RAMSTK source from
+ GitHub Releases you wish to install.
 
 ```sh
 $ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<tag>.tar.gz
@@ -193,9 +201,9 @@ Documentation for RAMSTK can be found at [Read the Docs](https://ramstk.readthed
 
 ## 💬 Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/weibullguy/ramstk/tree/develop/docs/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/ReliaQualAssociates/ramstk/tree/develop/docs/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-Also read [DEVELOPMENT_ENV.md](https://github.com/weibullguy/ramstk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on setting up a development environment to work on and test RAMSTK.
+Also read [DEVELOPMENT_ENV.md](https://github.com/ReliaQualAssociates/ramstk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on setting up a development environment to work on and test RAMSTK.
 
 ## 🍞 Authors
 
@@ -203,13 +211,17 @@ Also read [DEVELOPMENT_ENV.md](https://github.com/weibullguy/ramstk/tree/develop
 
 ## 📜 License
 
-This project is licensed under the BSD-3-Clause License - see the [LICENSE](https://github.com/weibullguy/ramstk/blob/develop/LICENSE) file for details.
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](https://github.com/ReliaQualAssociates/ramstk/blob/develop/LICENSE) file for details.
 
-RAMSTK is also registered with the United States Copyright Office under registration number TXu 1-896-035.
+RAMSTK is also registered with the United States Copyright Office under
+ registration number TXu 1-896-035.
 
 ## Similar Products
 
-The following are commercially available products that perform RAMS analyses.  We are not endorsing any of them; they are all fine products and may be a better fit for you or your organization depending on your needs and budget.  Obviously, we would prefer you use RAMSTK.
+The following are commercially available products that perform RAMS analyses
+.  We are not endorsing any of them; they are all fine products and may be a
+ better fit for you or your organization depending on your needs and budget
+ .  Obviously, we would prefer you use RAMSTK.
 
 * [PTC Windchill Quality](https://www.ptc.com/en/products/plm/capabilities/quality)
 * [ReliaSoft Synthesis](https://www.reliasoft.com/products)

@@ -20,14 +20,6 @@ ramstk.controllers.validation.datamanager module
    :undoc-members:
    :show-inheritance:
 
-ramstk.controllers.validation.matrixmanager module
---------------------------------------------------
-
-.. automodule:: ramstk.controllers.validation.matrixmanager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

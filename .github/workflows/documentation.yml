@@ -26,9 +26,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -a -m "Update documentation"
+          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
 
       - name: Push RAMSTK Documentation Changes
+        if: $do_push == 1
         uses: ad-m/github-push-action@master
         with:
           branch: gh-pages

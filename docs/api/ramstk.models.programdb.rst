@@ -92,14 +92,6 @@ ramstk.models.programdb.ramstkhazardanalysis module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.programdb.ramstkmatrix module
--------------------------------------------
-
-.. automodule:: ramstk.models.programdb.ramstkmatrix
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ramstk.models.programdb.ramstkmechanism module
 ----------------------------------------------
 
