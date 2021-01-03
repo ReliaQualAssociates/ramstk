@@ -433,3 +433,6 @@ class DataManager(RAMSTKDataManager):
         # Now make the composite reference designator for all the child nodes.
         for _child_node in self.tree.children(node_id):
             self._do_make_composite_ref_des(node_id=_child_node.identifier)
+
+        _attributes = _node.data['hardware'].get_attributes()
+        pub.sendMessage('succeed_create_comp_ref_des', attributes=_attributes)

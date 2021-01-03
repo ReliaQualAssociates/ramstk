@@ -132,6 +132,7 @@ class GeneralDataPanel(RAMSTKPanel):
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
         pub.subscribe(self._do_load_panel, 'selected_hardware')
+        pub.subscribe(self._do_load_panel, 'succeed_create_comp_ref_des')
         pub.subscribe(self._do_load_subcategories, 'changed_category')
 
     def do_load_categories(self, category: Dict[int, str]) -> None:
@@ -1838,7 +1839,6 @@ class GeneralData(RAMSTKWorkView):
         """Send request to create the composite reference designator.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
