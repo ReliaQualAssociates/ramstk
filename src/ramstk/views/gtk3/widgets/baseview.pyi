@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Tuple
 
 # Third Party Imports
 import treelib
@@ -10,7 +10,6 @@ from ramstk.configuration import (
 )
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk as Gdk
-from ramstk.views.gtk3 import GObject as GObject
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 
@@ -150,7 +149,4 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  logger: RAMSTKLogManager) -> None:
-        ...
-
-    def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
         ...

@@ -142,10 +142,18 @@ class HardwarePanel(RAMSTKPanel):
             _title = _("Analyzing Hardware item {0:s}: {1:s}").format(
                 str(_attributes['comp_ref_des']), str(_attributes['name']))
 
-            pub.sendMessage('selected_hardware', attributes=_attributes)
-            pub.sendMessage('request_get_all_hardware_attributes',
-                            node_id=self._record_id)
-            pub.sendMessage('request_set_title', title=_title)
+            pub.sendMessage(
+                'selected_hardware',
+                attributes=_attributes,
+            )
+            pub.sendMessage(
+                'request_get_all_hardware_attributes',
+                node_id=self._record_id,
+            )
+            pub.sendMessage(
+                'request_set_title',
+                title=_title,
+            )
 
     def __do_load_hardware(self, node: treelib.Node,
                            row: Gtk.TreeIter) -> Gtk.TreeIter:
