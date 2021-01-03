@@ -1992,6 +1992,9 @@ class AssessmentInputs(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_set_cursor_active,
+                      'succeed_calculate_hardware')
+
         pub.subscribe(self._do_pack_component_panel, 'selected_hardware')
         pub.subscribe(self._do_set_record_id, 'selected_hardware')
 

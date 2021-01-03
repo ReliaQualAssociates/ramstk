@@ -69,6 +69,8 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_get_tree, 'request_get_hardwares_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_set_all_attributes,
+                      'succeed_predict_reliability')
         pub.subscribe(self.do_update, 'request_update_hardware')
 
         pub.subscribe(self._do_delete, 'request_delete_hardware')
@@ -131,6 +133,20 @@ class DataManager(RAMSTKDataManager):
             'succeed_retrieve_hardware',
             tree=self.tree,
         )
+
+    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set all the attributes of the selected hazard.
+
+        This is a helper method to set a group of attributes in a single
+        call.  Used mainly by the AnalysisManager.
+
+        :param attributes: the aggregate attributes dict for the hardware item.
+        :return: None
+        :rtype: None
+        """
+        for _key in attributes:
+            super().do_set_attributes(node_id=[attributes['hardware_id'], ''],
+                                      package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
