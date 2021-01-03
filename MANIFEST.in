@@ -15,6 +15,7 @@ exclude .python-version
 exclude .travis.yml
 exclude appveyor.yml*
 exclude coverage.xml
+exclude cobertura.xml
 exclude pytest.ini
 exclude tags
 
@@ -27,7 +28,12 @@ prune docs/_build*
 prune docs/theme*
 prune docs/user*
 
+recursive-exclude .circleci *
+recursive-exclude devtools *
+recursive-exclude tests *
+
 global-exclude Makefile
+global-exclude *.log
 global-exclude *.nojekyll
 global-exclude *.rst
 global-exclude *.py[co]

@@ -19,7 +19,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
+from ramstk.views.gtk3 import Gdk, Gtk, _
 
 # RAMSTK Local Imports
 from .button import do_make_buttonbox
@@ -91,7 +91,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :param configuration: the RAMSTKUserConfiguration class instance.
         :param logger: the RAMSTKLogManager class instance.
         """
-        GObject.GObject.__init__(self)
+        super().__init__()
 
         self.RAMSTK_USER_CONFIGURATION = configuration
         self.RAMSTK_LOGGER = logger
@@ -367,7 +367,8 @@ class RAMSTKBaseView(Gtk.HBox):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = self.get_parent().get_parent().get_parent().get_parent()
+        _parent = self.get_parent().get_parent().get_parent().get_parent(
+        ).get_parent()
         _prompt = _("You are about to delete {1} {0} and all "
                     "data associated with it.  Is this really what "
                     "you want to do?").format(self._record_id,
@@ -479,6 +480,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         try:
+            # noinspection PyCallByClass,PyArgumentList
             self.get_parent_window().set_cursor(Gdk.Cursor.new(cursor))
             Gdk.flush()
         except AttributeError:
@@ -490,8 +492,6 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_set_cursor_active(self, tree: treelib.Tree = '') -> None:
         """Set active cursor for the Module, List, and Work Book Gdk.Window().
 
-        :param node_id: the node ID passed in the PyPubSub message.  Only
-            needed when this method is a PyPubSub subscriber.
         :param tree: the treelib Tree() passed in the PyPubSub message.  Only
             needed when this method is a PyPubSub subscriber.
         :return: None
@@ -503,7 +503,7 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_set_cursor_active_on_fail(self, error_message: str = '') -> None:
         """Set active cursor for the Module, List, and Work Book Gdk.Window().
 
-        :keyword str error_message: the error message broadcast with the
+        :param error_message: the error message broadcast with the
         'fail' message.  Only needed when this method is a PyPubSub subscriber.
         :return: None
         :rtype: None
@@ -558,7 +558,7 @@ class RAMSTKBaseView(Gtk.HBox):
                         event: Gdk.EventButton) -> None:
         """Handle mouse clicks on the View's RTKTreeView().
 
-        :param __treeview: the RAMSTKTreeView() that called this method.  If is
+        :param treeview: the RAMSTKTreeView() that called this method.  If is
             unused in this method.
         :param event: the Gdk.Event() that called this method (the important
         attribute is which mouse button was clicked).
@@ -624,6 +624,9 @@ class RAMSTKBaseView(Gtk.HBox):
             + '/32x32/action.png',
             'add':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
+            'assembly':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + '/32x32/assembly.png',
             'calculate':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/calculate.png',
@@ -680,6 +683,8 @@ class RAMSTKBaseView(Gtk.HBox):
             'opstress':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/stress.png',
+            'part':
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/part.png',
             'partial':
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + '/32x32/partial.png',
@@ -799,7 +804,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
 
         # Initialize private list attributes.
         self._lst_callbacks.insert(0, super().do_request_insert_sibling)
-        self._lst_callbacks.insert(1, self.do_request_delete)
+        self._lst_callbacks.insert(1, super().do_request_delete)
         self._lst_icons.insert(0, 'add')
         self._lst_icons.insert(1, 'remove')
 
@@ -853,26 +858,3 @@ class RAMSTKWorkView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
-        """Update the Work View Gtk.Widgets() when attributes change.
-
-        This method is called whenever an attribute is edited in the module
-        view.
-
-        :param list node_id: the list of IDs of the item being edited.  This
-            parameter is required to allow the PyPubSub signals to call this
-            method and the request_set_attributes() method in the
-            RAMSTKDataController.
-        :param package: the index in the module attributes list of the
-            attribute that was edited and the new text to update the
-            Gtk.Widget() with.
-        :return: None
-        :rtype: None
-        """
-        [[_key, _value]] = package.items()
-
-        (_function, _signal) = self._dic_switch.get(_key)
-        _function(_value, _signal)

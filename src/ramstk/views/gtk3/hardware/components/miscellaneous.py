@@ -161,7 +161,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         _dic_method = {
             1: self.__do_load_crystal,
@@ -398,7 +398,6 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the miscellaneous devices assessment results page.
@@ -408,7 +407,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiU.do_update(str(self.fmt.format(attributes['piU'])))
         self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))

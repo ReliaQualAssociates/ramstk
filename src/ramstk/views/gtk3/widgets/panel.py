@@ -66,22 +66,34 @@ class RAMSTKPanel(RAMSTKFrame):
     The attributes of a RAMSTKPanel are:
 
     :ivar _dic_attribute_keys: contains key:value pairs where the key is
-        the index of the widget displaying the associated attribute and the
-        value is a list with the name of the attribute in position 0 and the
-        attribute's data type in position 1.  An example entry in this dict
-        might be:
+        the nominal column number in the RAMSTKTreeView() where the attribute
+        data is displayed.  The value is a list with the name of the attribute
+        in position 0 and the attribute's data type in position 1.  An example
+        entry in this dict might be:
 
-        0: ['name', 'string']
+            15: ['name', 'string']
 
+        which indicates the nominal index of the Hardware RAMSTKTreeView()
+        column at position 15 contains the data for attribute 'name' and
+        this is 'string' data.  The nominal index is the default position of
+        the column in a RAMSTKTreeView().  Refer to the layout file for the
+        nominal position of each attribute for a given work stream module.
     :ivar _dic_attribute_updater: contains key:value pairs where the
         key is the name of the attribute and the value is a list with the
         method used to update a widget's display in position 0, the
         name of the signal to block while updating the widget in position 1,
-        and the column number in the RAMSTKTreeView() where the attribute data
-        is displayed in position 2.  An example entry in this dict might be:
+        and the nominal column number in the RAMSTKTreeView() where the
+        attribute data is displayed in position 2.  An example entry in this
+        dict might be:
 
-        'name': [self.txtName.do_update, 'changed', 0]
+            'derived': [self.chkDerived.do_update, 'toggled', 2]
 
+        which indicates the 'derived' attribute of the Requirement should use
+        the do_update() method of the RAMSTKCheckButton() when the
+        'toggled' signal is emitted and the nominal index for this
+        attribute is 2.  The nominal index is the default position of the
+        column in a RAMSTKTreeView().  Refer to the layout file for the
+        nominal position of each attribute for a given work stream module.
     :ivar _dic_row_loader: contains the methods used to load the row data
         into a RAMSTKTreeView() where the key is the name of the module and
         the value is the method.  This is necessary for those views that
@@ -133,20 +145,9 @@ class RAMSTKPanel(RAMSTKFrame):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        # TODO: _dic_attribute_keys renamed to _dic_index_attribute?
+        # TODO: _dic_attribute_keys renamed to _dic_attribute_index?
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
-        # This dict holds the method, signal, and nominal index position for
-        # the attribute in the key.  For example:
-        #
-        #    'derived': [self.chkDerived.do_update, 'toggled', 2]
-        #
-        # indicates the 'derived' attribute of the Requirement should use
-        # the do_update() method of the RAMSTKCheckButton() when the
-        # 'toggled' signal is emitted and the nominal index for this
-        # attribute is 2.  The nominal index is the default position of the
-        # column in a RAMSTKTreeView().  Refer to the layout file for the
-        # nominal position of each attribute for a given work stream module.
         self._dic_attribute_updater: Dict[str, Any] = {}
         self._dic_row_loader: Dict[str, Any] = {}
 
@@ -226,10 +227,11 @@ class RAMSTKPanel(RAMSTKFrame):
         pub.sendMessage('request_set_cursor_active')
 
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """Load the data into a RAMSTKTreeView row.
+        """Use the _do_load_row() method and populate the panel's
+        _dic_row_loader attributes with the correct method(s) to load a row's
+        data.
 
-        :param attributes: the attributes dict for the row to be loaded.
-        :return: None
+        This varies depending on the work stream module.
         """
         _model = self.tvwTreeView.get_model()
 
@@ -386,9 +388,11 @@ class RAMSTKPanel(RAMSTKFrame):
     def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
         """Update the module view RAMSTKTreeView() with attribute changes.
 
-        This method receives two dicts.  This first is from the
-        workflow's workview module and is sent when a workview widget is
-        edited/changed.
+        This method is used to update a RAMSTKPanel() containing a
+        RAMSTKTreeView() [generally the module view] whenever a work view
+        widget is edited.  It is used to keep the data displayed in-sync.
+
+        A dict 'package' is sent when a workview widget is edited/changed.
 
             `package` key: `package` value
 
@@ -396,16 +400,11 @@ class RAMSTKPanel(RAMSTKFrame):
 
             database field name: database field new value
 
-        The second dict is from the workflow's moduleview.
-
-            `keys` key: `keys` value
-
-        corresponds to:
-
-            database field name: TreeModel default column position
-
-        Since both dicts contain the same key values, this method can refresh
-        the proper column of the RAMSTKTreeView with the new data.
+        The key in the 'package' is used to find the value in
+        _dic_attribute_updater corresponding to the data being changed.
+        Position 2 of the _dic_attribute_updater value list is the nominal
+        position in the RAMSTKTreeView() containing the same attribute data
+        as the one being changed.
 
         :param node_id: unused in this method.
         :param package: the key:value for the data being updated.
@@ -623,7 +622,6 @@ class RAMSTKPanel(RAMSTKFrame):
                 pub.sendMessage(message,
                                 node_id=[self._record_id, -1],
                                 package={_key: _new_text})
-
         except (KeyError, ValueError):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
@@ -735,8 +733,25 @@ class RAMSTKPanel(RAMSTKFrame):
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None:
         """Update the panel's Gtk.Widgets() when attributes are changed.
 
-        This method is called whenever an attribute is edited in the module
-        view.
+        This method is used to update a RAMSTKPanel() containing a
+        Gtk.Fixed() populated with widgets [generally the work view]
+        whenever a module view RAMSTKTreeView() is edited.  It is used to keep
+        the data displayed in-sync.
+
+        A dict 'package' is sent when a module view RAMSTKTreeView() is
+        edited/changed.
+
+            `package` key: `package` value
+
+        corresponds to:
+
+            database field name: database field new value
+
+        The key in the 'package' is used to find the value in
+        _dic_attribute_updater corresponding to the data being changed.
+        Position 0 of the _dic_attribute_updater value list is the method
+        used to update the widget and position 1 is the name of the signal
+        to block during the update.
 
         :param node_id: the list of IDs of the work stream module item
             being edited.  This unused parameter is part of the PyPubSub

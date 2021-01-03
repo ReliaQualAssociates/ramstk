@@ -246,7 +246,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.cmbType.do_update(attributes['type_id'], signal='changed')
 
@@ -522,7 +522,6 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Relay assessment results widgets.
@@ -530,7 +529,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :param attributes: the attributes dictionary for the selected relay.
         :return: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
         self.txtPiCYC.do_update(str(self.fmt.format(attributes['piCYC'])))

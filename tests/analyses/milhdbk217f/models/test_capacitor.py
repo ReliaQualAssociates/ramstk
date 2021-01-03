@@ -134,15 +134,16 @@ def test_calculate_part_stress_lambda_b_unknown_subcategory_id():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_unknown_ref_temp():
-    """calculate_part_stress_lambda_b() should raise a KeyError when an unknown reference temperature is passed."""
-    with pytest.raises(KeyError):
-        _base_hr = capacitor.calculate_part_stress_lambda_b(
-            2,
-            '105.0',
-            45.0,
-            0.65,
-        )
+    """calculate_part_stress_lambda_b() should use the nearest reference temperature when an unknown reference temperature is passed."""
+    _base_hr = capacitor.calculate_part_stress_lambda_b(
+        1,
+        100.0,
+        45.0,
+        0.65,
+    )
 
+    assert isinstance(_base_hr, float)
+    assert _base_hr == pytest.approx(0.06621194)
 
 @pytest.mark.unit
 @pytest.mark.calculation

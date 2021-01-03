@@ -197,7 +197,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         if self._hazard_rate_method_id == 2:
             self.cmbApplication.do_update(attributes['application_id'],
@@ -440,7 +440,6 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the switch assessment results page.
@@ -448,7 +447,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiCYC.do_update(str(self.fmt.format(attributes['piCYC'])))
         self.txtPiL.do_update(str(self.fmt.format(attributes['piL'])))

@@ -190,7 +190,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.cmbFamily.do_update(attributes['family_id'], signal='changed')
 
@@ -426,7 +426,6 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the inductive device assessment results widgets.
@@ -436,7 +435,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
 

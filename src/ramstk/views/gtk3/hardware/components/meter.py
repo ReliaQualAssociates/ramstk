@@ -158,7 +158,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :param attributes: the attributes dictionary for the selected meter.
         :return: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.cmbApplication.do_update(attributes['application_id'],
                                       signal='changed')
@@ -282,7 +282,6 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the meter assessment results page.
@@ -292,7 +291,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
         self.txtPiF.do_update(str(self.fmt.format(attributes['piF'])))
