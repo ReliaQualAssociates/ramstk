@@ -79,7 +79,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _total_cost = _hardware['hardware'].cost * _hardware[
                     'hardware'].quantity
             else:
-                for _node_id in node.fpointer:
+                for _node_id in node.successors(self._tree.identifier):
                     _node = self._tree.get_node(_node_id)
                     _total_cost += self._do_calculate_cost_metrics(_node)
                 _total_cost = _total_cost * _hardware['hardware'].quantity
@@ -161,13 +161,20 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: float
         :raises: ZeroDivisionError when the specified MTBF is zero.
         """
+        # ISSUE: Refactor _do_calculate_hazard_rates() to reduce complexity.
+        # //
+        # // The _do_calculate_hazard_rates() method in the hardware
+        # // analysis manager has grade of B (CC = 7).  Refactor this method to
+        # // reduce it's complexity.
+        # // assignees: weibullguy
+        # // labels: low, quality, globalbacklog
         _hardware: Dict[str, Any] = node.data
         _hazard_rate_active: float = 0.0
 
         _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
 
         if _hardware['hardware'].part != 1:
-            for _node_id in node.fpointer:
+            for _node_id in node.successors(self._tree.identifier):
                 _node = self._tree.get_node(_node_id)
                 _hazard_rate_active += self._do_calculate_hazard_rates(_node)
 
@@ -243,6 +250,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :raise: ZeroDivisionError if the logistics or mission hazard rate or
             their variances are zero.
         """
+        # ISSUE: Refactor _do_calculate_mtbfs() to reduce complexity.
+        # //
+        # // The _do_calculate_mtbfs() method in the hardware
+        # // analysis manager has grade of B (CC = 7).  Refactor this method to
+        # // reduce it's complexity.
+        # // assignees: weibullguy
+        # // labels: low, quality, globalbacklog
         _hardware: Dict[str, Any] = node.data
         _hazard_rate_active: float = 0
         _mtbf_active: float = 0
@@ -250,7 +264,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
 
         if _hardware['hardware'].part != 1:
-            for _node_id in node.fpointer:
+            for _node_id in node.successors(self._tree.identifier):
                 _node = self._tree.get_node(_node_id)
                 _hazard_rate_active += 1.0 / self._do_calculate_mtbfs(_node)
             _mtbf_active = _time / _hazard_rate_active
@@ -262,11 +276,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 'reliability'].hazard_rate_specified
         elif _hardware['reliability'].hazard_rate_type_id == 3:
             _mtbf_active = _hardware['reliability'].mtbf_specified
-
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
-        elif _hardware[  # pragma: nocover
-                'reliability'].hazard_rate_type_id == 4:
+        elif _hardware['reliability'].hazard_rate_type_id == 4:
             _hardware['reliability'].mtbf_logistics_variance = (
                 1.0 / _hardware['reliability'].hr_logistics_variance)
             _hardware['reliability'].mtbf_mission_variance = (
@@ -289,7 +301,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         if _hardware['hardware'].part == 1:
             _part_count = _hardware['hardware'].quantity
         else:
-            for _node_id in node.fpointer:
+            for _node_id in node.successors(self._tree.identifier):
                 _node = self._tree.get_node(_node_id)
                 _part_count += self._do_calculate_part_count(_node)
             _part_count = _part_count * _hardware['hardware'].quantity
@@ -313,7 +325,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 'design_electric'].power_operating * _hardware[
                     'hardware'].quantity
         else:
-            for _node_id in node.fpointer:
+            for _node_id in node.successors(self._tree.identifier):
                 _node = self._tree.get_node(_node_id)
                 _power_dissipation += self._do_calculate_power_dissipation(
                     _node)
@@ -362,6 +374,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         :return: None
         :rtype: None
+        :raises: ZeroDivisionError if the hazard rate multiplier is zero.
         """
         _hardware: Dict[str, Any] = node.data
 
@@ -377,7 +390,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             * _hardware['hardware'].mission_time)
 
         # Calculate reliabilities for any child hardware.
-        for _node_id in node.fpointer:
+        for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
             self._do_calculate_reliabilities(_node)
 

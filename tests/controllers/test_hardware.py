@@ -201,7 +201,7 @@ class MockDao:
         elif isinstance(record, RAMSTKNSWC):
             for _key in MOCK_NSWC:
                 if _key == record.hardware_id:
-                    MOCK_NSWC[_key]['Cd'] = record.c_d
+                    MOCK_NSWC[_key]['Cd'] = record.Cd
         elif isinstance(record, RAMSTKReliability):
             for _key in MOCK_RELIABILITY:
                 if _key == record.hardware_id:
@@ -396,6 +396,24 @@ class TestDeleteMethods():
         pub.sendMessage('request_delete_hardware', node_id=DUT.last_id)
 
         assert DUT.last_id == 2
+
+        pub.unsubscribe(self.on_succeed_delete_hardware,
+                        'succeed_delete_hardware')
+
+    @pytest.mark.unit
+    def test_do_delete_with_children(self, mock_program_dao):
+        """_do_delete() should send the success message with the treelib
+        Tree."""
+        pub.subscribe(self.on_succeed_delete_hardware,
+                      'succeed_delete_hardware')
+
+        DUT = dmHardware()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        pub.sendMessage('request_delete_hardware', node_id=2)
+
+        assert DUT.last_id == 1
 
         pub.unsubscribe(self.on_succeed_delete_hardware,
                         'succeed_delete_hardware')
@@ -686,6 +704,25 @@ class TestInsertMethods():
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
+    def on_succeed_update_hardware(self, tree):
+        assert isinstance(tree, Tree)
+
+        assert tree.get_node(2).data['hardware'].parent_id == 1
+        assert tree.get_node(2).data['hardware'].cost == 0.9832
+        assert tree.get_node(2).data['design_electric'].area == 12000
+        assert tree.get_node(2).data['design_mechanic'].altitude_operating == \
+               12000
+        assert tree.get_node(2).data['mil_hdbk_217f'].pi_q == 8
+        assert tree.get_node(2).data['nswc'].Cd == 1.2
+        assert tree.get_node(2).data['reliability'].hazard_rate_active == \
+               0.00689
+        print("\033[35m\nsucceed_update_hardware topic was broadcast")
+
+    def on_fail_update_hardware_non_existent_id(self, error_message):
+        assert error_message == (
+            'do_update: Attempted to save non-existent hardware ID 100.')
+        print("\033[35m\nfail_update_hardware topic was broadcast")
+
     def on_fail_update_hardware_no_data(self, error_message):
         assert error_message == ('do_update: No data package found for '
                                  'hardware ID 1.')
@@ -700,24 +737,12 @@ class TestUpdateMethods():
     @pytest.mark.unit
     def test_do_update_data_manager(self, mock_program_dao):
         """do_update() should return a zero error code on success."""
+        pub.subscribe(self.on_succeed_update_hardware,
+                      'succeed_update_hardware')
+
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-
-        def on_message(tree):
-            DUT.do_select_all(attributes={'revision_id': 1})
-            _hardware = DUT.do_select(2, table='hardware')
-            assert isinstance(tree, Tree)
-            assert _hardware.parent_id == 1
-            assert _hardware.cost == 0.9832
-            _hardware = DUT.do_select(2, table='design_electric')
-            assert _hardware.parent_id == 1
-            assert _hardware.area == 12000
-            _hardware = DUT.do_select(2, table='design_mechanic')
-            assert _hardware.parent_id == 1
-            assert _hardware.altitude_operating == 12000
-
-        pub.subscribe(on_message, 'succeed_update_hardware')
 
         _hardware = DUT.do_select(2, table='hardware')
         _hardware.cost = 0.9832
@@ -725,24 +750,33 @@ class TestUpdateMethods():
         _hardware.area = 12000
         _hardware = DUT.do_select(2, table='design_mechanic')
         _hardware.altitude_operating = 12000
+        _hardware = DUT.do_select(2, table='mil_hdbk_217f')
+        _hardware.pi_q = 8
+        _hardware = DUT.do_select(2, table='nswc')
+        _hardware.Cd = 1.2
+        _hardware = DUT.do_select(2, table='reliability')
+        _hardware.hazard_rate_active = 0.00689
 
         pub.sendMessage('request_update_hardware', node_id=2)
+
+        pub.unsubscribe(self.on_succeed_update_hardware,
+                        'succeed_update_hardware')
 
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Hardware ID that doesn't exist."""
+        pub.subscribe(self.on_fail_update_hardware_non_existent_id,
+                      'fail_update_hardware')
+
         DUT = dmHardware()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        def on_message(error_message):
-            assert error_message == (
-                'do_update: Attempted to save non-existent hardware ID 100.')
-
-        pub.subscribe(on_message, 'fail_update_hardware')
-
         DUT.do_update(100)
+
+        pub.unsubscribe(self.on_fail_update_hardware_non_existent_id,
+                        'fail_update_hardware')
 
     @pytest.mark.unit
     def test_do_update_no_data_package(self, mock_program_dao):
@@ -1433,12 +1467,37 @@ class TestAnalysisMethods():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestMilHdbk217FPredictions():
     """Class for prediction methods using MIL-HDBK-217F test suite."""
+    def on_succeed_calculate_parts_count(self, module_tree):
+        assert module_tree.get_node(
+            3).data['reliability'].hazard_rate_active == 0.04875
+        assert module_tree.get_node(
+            3).data['reliability'].hazard_rate_logistics == 0.04875
+        assert module_tree.get_node(
+            3).data['reliability'].hazard_rate_mission == 0.04875
+        assert module_tree.get_node(3).data[
+            'reliability'].reliability_mission == pytest.approx(0.9999951)
+        print("\033[35m\nsucceed_calculate_hardware topic was broadcast")
+
+    def on_succeed_calculate_part_stress(self, module_tree):
+        assert module_tree.get_node(3).data[
+            'reliability'].hazard_rate_active == pytest.approx(1.3784574)
+        assert module_tree.get_node(3).data[
+            'reliability'].hazard_rate_logistics == pytest.approx(1.3784574)
+        assert module_tree.get_node(3).data[
+            'reliability'].hazard_rate_mission == pytest.approx(1.3784574)
+        assert module_tree.get_node(3).data[
+            'reliability'].reliability_mission == pytest.approx(0.9998622)
+        print("\033[35m\nsucceed_calculate_hardware topic was broadcast")
+
     @pytest.mark.unit
     def test_do_calculate_part_mil_hdbk_217f_parts_count(
             self, mock_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the
         _attributes dict with results when performing a MIL-HDBK-217F parts
         count prediction."""
+        pub.subscribe(self.on_succeed_calculate_parts_count,
+                      'succeed_calculate_hardware')
+
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR = dmHardware()
@@ -1457,21 +1516,18 @@ class TestMilHdbk217FPredictions():
 
         DUT._do_calculate_hardware(3)
 
-        assert DUT._tree.get_node(
-            3).data['reliability'].hazard_rate_active == 0.04875
-        assert DUT._tree.get_node(
-            3).data['reliability'].hazard_rate_logistics == 0.04875
-        assert DUT._tree.get_node(
-            3).data['reliability'].hazard_rate_mission == 0.04875
-        assert DUT._tree.get_node(3).data[
-            'reliability'].reliability_mission == pytest.approx(0.9999951)
+        pub.unsubscribe(self.on_succeed_calculate_parts_count,
+                        'succeed_calculate_hardware')
 
     @pytest.mark.unit
-    def test_do_calculate_part_mil_hdbk_217f_parts_stress(
+    def test_do_calculate_part_mil_hdbk_217f_part_stress(
             self, mock_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the
         _attributes dict with results when performing a MIL-HDBK-217F part
         stress prediction."""
+        pub.subscribe(self.on_succeed_calculate_part_stress,
+                      'succeed_calculate_hardware')
+
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR = dmHardware()
@@ -1498,13 +1554,68 @@ class TestMilHdbk217FPredictions():
         DUT._tree.get_node(3).data['design_electric'].temperature_active = 45.0
         DUT._tree.get_node(3).data['design_electric'].power_operating = 0.05
 
+        pub.sendMessage('request_calculate_hardware', node_id=3)
+
+        pub.unsubscribe(self.on_succeed_calculate_part_stress,
+                        'succeed_calculate_hardware')
+
+    @pytest.mark.unit
+    def test_do_calculate_part_mil_hdbk_217f_no_method(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when performing a MIL-HDBK-217F part
+        stress prediction."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 1
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_method_id = 3
+        DUT._tree.get_node(3).data['hardware'].category_id = 4
+        DUT._tree.get_node(3).data['hardware'].subcategory_id = 1
+        DUT._tree.get_node(3).data['reliability'].quality_id = 1
+        DUT._tree.get_node(3).data['design_electric'].environment_active_id = 3
+        DUT._tree.get_node(3).data['design_electric'].capacitance = 0.0000033
+        DUT._tree.get_node(3).data['design_electric'].construction_id = 1
+        DUT._tree.get_node(3).data['design_electric'].configuration_id = 1
+        DUT._tree.get_node(3).data['design_electric'].resistance = 0.05
+        DUT._tree.get_node(
+            3).data['design_electric'].voltage_dc_operating = 3.3
+        DUT._tree.get_node(
+            3).data['design_electric'].voltage_ac_operating = 0.04
+        DUT._tree.get_node(3).data['design_electric'].voltage_rated = 6.25
+        DUT._tree.get_node(
+            3).data['design_electric'].temperature_rated_max = 105.0
+        DUT._tree.get_node(3).data['design_electric'].temperature_active = 45.0
+        DUT._tree.get_node(3).data['design_electric'].power_operating = 0.05
+
+        with pytest.raises(ZeroDivisionError):
+            DUT._do_calculate_hardware(3)
+            DUT._tree.get_node(3).data['reliability'].hazard_rate_active = 0.0
+
+    @pytest.mark.unit
+    def test_do_calculate_part_mil_hdbk_217f_s_distribution(
+            self, mock_program_dao, test_toml_user_configuration):
+        """do_calculate() should calculate reliability metrics and update the
+        _attributes dict with results when performing a MIL-HDBK-217F part
+        stress prediction."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 4
+        DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_logistics = 0.000025
+        DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_mission = 0.00000387
+
         DUT._do_calculate_hardware(3)
 
-        assert DUT._tree.get_node(3).data[
-            'reliability'].hazard_rate_active == pytest.approx(1.3784574)
-        assert DUT._tree.get_node(3).data[
-            'reliability'].hazard_rate_logistics == pytest.approx(1.3784574)
-        assert DUT._tree.get_node(3).data[
-            'reliability'].hazard_rate_mission == pytest.approx(1.3784574)
-        assert DUT._tree.get_node(3).data[
-            'reliability'].reliability_mission == pytest.approx(0.9998622)
+        assert DUT._tree.get_node(
+            3).data['reliability'].mtbf_logistics_variance == 1600000000.0
+        assert DUT._tree.get_node(
+            3).data['reliability'].mtbf_mission_variance == 66769491683.85981

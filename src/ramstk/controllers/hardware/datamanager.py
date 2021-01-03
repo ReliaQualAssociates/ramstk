@@ -108,13 +108,9 @@ class DataManager(RAMSTKDataManager):
                 order=RAMSTKHardware.parent_id):
 
             _design_e = self._do_select_electrical(_hardware.hardware_id)
-
             _design_m = self._do_select_mechanical(_hardware.hardware_id)
-
             _milhdbkf = self._do_select_milhdbk217f(_hardware.hardware_id)
-
             _nswc = self._do_select_nswc(_hardware.hardware_id)
-
             _reliability = self._do_select_reliability(_hardware.hardware_id)
 
             self.tree.create_node(tag='hardware',
@@ -416,8 +412,10 @@ class DataManager(RAMSTKDataManager):
         """
         # Retrieve the parent hardware item's composite reference designator.
         _node = self.tree.get_node(node_id)
-        if _node.bpointer != 0:
-            _p_comp_ref_des = self.do_select(_node.bpointer,
+
+        if _node.predecessor(self.tree.identifier) != 0:
+            _p_comp_ref_des = self.do_select(_node.predecessor(
+                self.tree.identifier),
                                              table='hardware').comp_ref_des
         else:
             _p_comp_ref_des = ''
