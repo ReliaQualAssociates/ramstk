@@ -15,7 +15,6 @@ from typing import Any, Dict, List, Union
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
 import treelib
-from deprecated import deprecated  # type: ignore
 from pandas.plotting import register_matplotlib_converters
 from pubsub import pub
 
@@ -227,10 +226,6 @@ class RAMSTKPanel(RAMSTKFrame):
 
         pub.sendMessage('request_set_cursor_active')
 
-    @deprecated(
-        version='1.0.0',
-        reason="Use _do_load_row() and populate the panel's _dic_row_loader "
-        "attributes")
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
         """Use the _do_load_row() method and populate the panel's
         _dic_row_loader attributes with the correct method(s) to load a row's

@@ -186,7 +186,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
     """
     return get_part_count_lambda_b(
-        attributes['subcategory_id'],   # type: ignore
+        attributes['subcategory_id'],  # type: ignore
         attributes['environment_active_id'],  # type: ignore
         attributes['specification_id'])  # type: ignore
 
@@ -276,7 +276,12 @@ def calculate_part_stress_lambda_b(subcategory_id: int,
         19: [0.0112, 0.17, 3.0, 1.59, 10.1]
     }
 
-    _ref_temp = REF_TEMPS[temperature_rated_max]
+    # This will retrieve the reference temperature for the maximum rated
+    # temperature closest (round up) to one of the keys in the REF_TEMPS dict.
+    _ref_temp = REF_TEMPS.get(
+        temperature_rated_max,
+        REF_TEMPS[min(REF_TEMPS.keys(),
+                      key=lambda k: abs(k - temperature_rated_max))])
     _f0 = _dic_factors[subcategory_id][0]
     _f1 = _dic_factors[subcategory_id][1]
     _f2 = _dic_factors[subcategory_id][2]

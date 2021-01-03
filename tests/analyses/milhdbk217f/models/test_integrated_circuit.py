@@ -317,10 +317,11 @@ def test_get_die_complexity_factor_no_application():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_die_complexity_factor_unknown_n_elements():
-    """get_die_complexity_factor() should raise a ValueError when passed an unknown number of elements."""
-    with pytest.raises(ValueError):
-        _c1 = integratedcircuit.get_die_complexity_factor(1, 1, 1, 10930)
+    """get_die_complexity_factor() should use the breakpoint value for the closest number of elements when passed a non-key number of elements."""
+    _c1 = integratedcircuit.get_die_complexity_factor(3, 1, 1, 50)
 
+    assert isinstance(_c1, float)
+    assert _c1 == 0.01
 
 @pytest.mark.unit
 @pytest.mark.calculation
