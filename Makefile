@@ -6,7 +6,6 @@ PREFIX		= /usr/local
 
 GITHUB_USER = ReliaQualAssociates
 TOKEN		= $(shell echo $(GITHUB_TOKEN))
-CHANGELOG	= CHANGELOG.md
 REPO		= ramstk
 REQFILE		= requirements.txt
 DEVREQFILE	= requirements-dev.txt
@@ -83,9 +82,6 @@ help:
 	@echo "	docs					build API and user documentation."
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
-	@echo "	changelog				create/update the $(CHANGELOG) file.  Uses github-changelog-generator."
-	@echo "	bumpver					bump the minor or patch version of RAMSTK."
-	@echo "	tag					tag the current branch."
 	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install."
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi. <FUTURE>"
@@ -95,7 +91,6 @@ help:
 	@echo ""
 	@echo "	GITHUB_USER				set the name of the Github user.  Defaults to $(GITHUB_USER)"
 	@echo "	TOKEN					set the Github API token to use.  Defaults to environment variable GITHUB_TOKEN"
-	@echo "	CHANGELOG				set the name of the file for the change log.  Defaults to $(CHANGELOG)"
 	@echo "	REPO					set the name of the GitHub repository to generate the change log from.  Defaults to $(REPO)"
 	@echo "	REQFILE					set the name of the requirements file to write required runtime packages.  Defaults to $(REQFILE)"
 	@echo "	DEVREQFILE				set the name of the requirements file to write required development packages.  Defaults to $(DEVREQFILE)"
@@ -261,15 +256,6 @@ security:
 lint:
 	$(info Linting $(SRCFILE) ...)
 	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
-
-changelog:
-	github_changelog_generator --project $(REPO) --user $(GITHUB_USER) -t $(TOKEN)
-
-bumpver:
-	$(shell sh ./devtools/bump_version.sh -b)
-
-tag:
-	$(shell sh ./devtools/bump_version.sh -t)
 
 apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk

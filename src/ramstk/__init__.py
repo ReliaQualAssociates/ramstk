@@ -7,8 +7,6 @@
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Reliability, Availability, Maintainability, and Safety ToolKit package."""
 
-__version__ = '1.0.0.alpha'
-
 # RAMSTK Local Imports
 from .configuration import (
     RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_ALLOCATION_MODELS,
