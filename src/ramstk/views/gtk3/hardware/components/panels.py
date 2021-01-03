@@ -74,6 +74,8 @@ class RAMSTKAssessmentInputPanel(RAMSTKPanel):
         # Initialize public scalar attributes.
         self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
 
+    # pylint: disable=arguments-differ
+    # noinspection PyMethodOverriding
     def do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the component common widgets.
 
@@ -315,8 +317,8 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
                 super().on_changed_entry, 4, 'wvw_editing_hardware')
         self.txtPowerRated.dic_handler_id[
             'changed'] = self.txtPowerRated.connect('changed',
-                                                    super().on_changed_entry, 5,
-                                                    'wvw_editing_hardware')
+                                                    super().on_changed_entry,
+                                                    5, 'wvw_editing_hardware')
         self.txtPowerOperating.dic_handler_id[
             'changed'] = self.txtPowerOperating.connect(
                 'changed',
@@ -413,6 +415,8 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
 
+    # pylint: disable=arguments-differ
+    # noinspection PyMethodOverriding
     def do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Hardware assessment results page.
 
@@ -571,7 +575,6 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_load_derating_curve(self, attributes: Dict[str, Any]) -> None:
         """Load the benign and harsh environment derating curves.
