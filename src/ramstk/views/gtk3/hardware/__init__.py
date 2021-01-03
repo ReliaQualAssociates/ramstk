@@ -1,4 +1,4 @@
-# pylint: disable=unused-import
+# pylint: disable=unused-import, wrong-import-position
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.hardware.__init__.py is part of The RAMSTK Project
@@ -45,8 +45,6 @@ ATTRIBUTE_KEYS = {
 }
 
 # RAMSTK Local Imports
-from .listview import HardwareRequirement as mtxHardwareRequirement
-from .listview import HardwareValidation as mtxHardwareValidation
 from .moduleview import ModuleView as mvwHardware
 from .workview import AssessmentInputs as wvwHardwareAI
 from .workview import AssessmentResults as wvwHardwareAR
