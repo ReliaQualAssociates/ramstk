@@ -65,9 +65,9 @@ class MethodPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
+        #pub.subscribe(self._do_load_panel,
+        #              'succeed_get_all_hardware_attributes')
+        #pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
 
     def _do_clear_panel(self) -> None:
         """Clear the widgets on the panel.
@@ -178,7 +178,7 @@ class SimilarItemPanel(RAMSTKPanel):
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
 
         pub.subscribe(self._do_load_panel, 'do_load_similar_item')
-        pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
+        #pub.subscribe(self._do_load_panel, 'succeed_calculate_hardware')
         pub.subscribe(self._do_load_row, 'succeed_get_similar_item_attributes')
         pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
 
@@ -575,8 +575,8 @@ class SimilarItem(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_hardware')
 
-        pub.subscribe(self._do_load_page,
-                      'succeed_get_all_hardware_attributes')
+        #pub.subscribe(self._do_load_page,
+        #              'succeed_get_all_hardware_attributes')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """Load the Allocation page.

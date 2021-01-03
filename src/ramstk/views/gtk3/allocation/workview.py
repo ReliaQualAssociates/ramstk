@@ -89,8 +89,8 @@ class GoalMethodPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        #pub.subscribe(self._do_load_panel,
+        #              'succeed_get_all_hardware_attributes')
         pub.subscribe(self._do_load_panel,
                       'succeed_calculate_allocation_goals')
 
@@ -676,8 +676,8 @@ class Allocation(RAMSTKWorkView):
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_update_hardware')
 
-        pub.subscribe(self._do_load_page,
-                      'succeed_get_all_hardware_attributes')
+        #pub.subscribe(self._do_load_page,
+        #              'succeed_get_all_hardware_attributes')
 
     def _do_load_page(self, attributes: Dict[str, Any]) -> None:
         """Load the Allocation page.
