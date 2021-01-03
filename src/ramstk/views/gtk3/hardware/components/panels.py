@@ -74,9 +74,7 @@ class RAMSTKAssessmentInputPanel(RAMSTKPanel):
         # Initialize public scalar attributes.
         self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
 
-    # pylint: disable=arguments-differ
-    # noinspection PyMethodOverriding
-    def do_load_panel(self, attributes: Dict[str, Any]) -> None:
+    def do_load_common(self, attributes: Dict[str, Any]) -> None:
         """Load the component common widgets.
 
         :param attributes: the attributes dictionary for the selected
@@ -415,9 +413,7 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
 
-    # pylint: disable=arguments-differ
-    # noinspection PyMethodOverriding
-    def do_load_panel(self, attributes: Dict[str, Any]) -> None:
+    def do_load_common(self, attributes: Dict[str, Any]) -> None:
         """Load the Hardware assessment results page.
 
         :param attributes: the attributes dict for the selected Hardware.

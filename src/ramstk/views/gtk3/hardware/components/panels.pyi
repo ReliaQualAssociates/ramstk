@@ -28,7 +28,7 @@ class RAMSTKAssessmentInputPanel(RAMSTKPanel):
 
     _record_id: Any = ...
 
-    def do_load_panel(self, attributes: Dict[str, Any]) -> None:
+    def do_load_common(self, attributes: Dict[str, Any]) -> None:
         ...
 
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
@@ -83,7 +83,7 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
 
     _record_id: Any = ...
 
-    def do_load_panel(self, attributes: Dict[str, Any]) -> None:
+    def do_load_common(self, attributes: Dict[str, Any]) -> None:
         ...
 
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:

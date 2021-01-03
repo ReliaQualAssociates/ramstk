@@ -338,7 +338,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         # We don't block the callback signal otherwise the style
         # RAMSTKComboBox() will not be loaded and set.
@@ -653,7 +653,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiCV.do_update(str(self.fmt.format(attributes['piCV'])))
         self.txtPiCF.do_update(str(self.fmt.format(attributes['piCF'])))

@@ -190,7 +190,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.cmbFamily.do_update(attributes['family_id'], signal='changed')
 
@@ -435,7 +435,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
 

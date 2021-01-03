@@ -146,7 +146,8 @@ class GeneralDataPanel(RAMSTKPanel):
         _model.clear()
 
         _categories = []
-        for _index, _key in enumerate(category):
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(category):
             _categories.append([category[_key]])
         self.cmbCategory.do_load_combo(entries=_categories)
 

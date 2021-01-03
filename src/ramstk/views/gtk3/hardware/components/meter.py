@@ -158,7 +158,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :param attributes: the attributes dictionary for the selected meter.
         :return: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.cmbApplication.do_update(attributes['application_id'],
                                       signal='changed')
@@ -291,7 +291,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
         self.txtPiF.do_update(str(self.fmt.format(attributes['piF'])))

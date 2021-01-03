@@ -227,7 +227,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.cmbType.do_update(attributes['type_id'], signal='changed')
 
@@ -607,7 +607,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiR.do_update(str(self.fmt.format(attributes['piR'])))
         self.txtPiT.do_update(str(self.fmt.format(attributes['piT'])))

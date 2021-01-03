@@ -302,7 +302,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         _dic_method = {
             1: self.__do_load_linear,
@@ -996,7 +996,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtC1.do_update(str(self.fmt.format(attributes['C1'])))
         self.txtPiT.do_update(str(self.fmt.format(attributes['piT'])))

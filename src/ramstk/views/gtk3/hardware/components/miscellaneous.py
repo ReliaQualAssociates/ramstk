@@ -161,7 +161,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         _dic_method = {
             1: self.__do_load_crystal,
@@ -407,7 +407,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiU.do_update(str(self.fmt.format(attributes['piU'])))
         self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))

@@ -246,7 +246,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.cmbType.do_update(attributes['type_id'], signal='changed')
 
@@ -529,7 +529,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :param attributes: the attributes dictionary for the selected relay.
         :return: None
         """
-        super().do_load_panel(attributes)
+        super().do_load_common(attributes)
 
         self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
         self.txtPiCYC.do_update(str(self.fmt.format(attributes['piCYC'])))
