@@ -1,3 +1,4 @@
+# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.hardware.workview.py is part of the RAMSTK Project
@@ -127,11 +128,10 @@ class GeneralDataPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+        pub.subscribe(super().on_edit, 'mvw_editing_hardware')
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, 'selected_hardware')
         pub.subscribe(self._do_load_subcategories, 'changed_category')
 
     def do_load_categories(self, category: Dict[int, str]) -> None:
@@ -243,6 +243,16 @@ class GeneralDataPanel(RAMSTKPanel):
             self.cmbSubcategory.do_load_combo(entries=_subcategory,
                                               signal='changed')
 
+    @staticmethod
+    def _request_load_component(combo: RAMSTKComboBox) -> None:
+        """Request to load the component widgets.
+
+        :param combo: the RAMSTKComboBox() that called this method.
+        :return: None
+        """
+        pub.sendMessage('changed_subcategory',
+                        subcategory_id=combo.get_active())
+
     def _request_load_subcategories(self, combo: RAMSTKComboBox) -> None:
         """Request to have the subcategory RAMSTKComboBox() loaded.
 
@@ -260,59 +270,61 @@ class GeneralDataPanel(RAMSTKPanel):
         # ----- CHECKBUTTONS
         self.chkRepairable.dic_handler_id['toggled'] = (
             self.chkRepairable.connect('toggled',
-                                       super().on_toggled, 0,
+                                       super().on_toggled, 24,
                                        'wvw_editing_hardware'))
 
         # ----- COMBOBOXES
         self.cmbCategory.dic_handler_id['changed'] = self.cmbCategory.connect(
             'changed',
-            super().on_changed_combo, 2, 'wvw_editing_hardware')
+            super().on_changed_combo, 32, 'wvw_editing_hardware')
         self.cmbCategory.connect('changed', self._request_load_subcategories)
         self.cmbSubcategory.dic_handler_id[
             'changed'] = self.cmbSubcategory.connect('changed',
                                                      super().on_changed_combo,
-                                                     5, 'wvw_editing_hardware')
+                                                     33,
+                                                     'wvw_editing_hardware')
+        self.cmbSubcategory.connect('changed', self._request_load_component)
 
         # ----- ENTRIES
         self.txtAltPartNum.dic_handler_id[
             'changed'] = self.txtAltPartNum.connect('changed',
                                                     super().on_changed_entry,
-                                                    6, 'wvw_editing_hardware')
+                                                    2, 'wvw_editing_hardware')
         self.txtCompRefDes.dic_handler_id[
             'changed'] = self.txtCompRefDes.connect('changed',
                                                     super().on_changed_entry,
-                                                    9, 'wvw_editing_hardware')
+                                                    4, 'wvw_editing_hardware')
         _buffer: Gtk.TextBuffer = self.txtDescription.do_get_buffer()
         self.txtDescription.dic_handler_id['changed'] = _buffer.connect(
             'changed',
-            super().on_changed_textview, 11, 'wvw_editing_hardware',
+            super().on_changed_textview, 8, 'wvw_editing_hardware',
             self.txtDescription)
         self.txtFigureNumber.dic_handler_id[
             'changed'] = self.txtFigureNumber.connect('changed',
                                                       super().on_changed_entry,
-                                                      12,
+                                                      10,
                                                       'wvw_editing_hardware')
         self.txtLCN.dic_handler_id['changed'] = self.txtLCN.connect(
             'changed',
-            super().on_changed_entry, 13, 'wvw_editing_hardware')
+            super().on_changed_entry, 11, 'wvw_editing_hardware')
         self.txtName.dic_handler_id['changed'] = self.txtName.connect(
             'changed',
-            super().on_changed_entry, 14, 'wvw_editing_hardware')
+            super().on_changed_entry, 15, 'wvw_editing_hardware')
         self.txtPageNumber.dic_handler_id[
             'changed'] = self.txtPageNumber.connect('changed',
                                                     super().on_changed_entry,
-                                                    16, 'wvw_editing_hardware')
+                                                    17, 'wvw_editing_hardware')
         self.txtPartNumber.dic_handler_id[
             'changed'] = self.txtPartNumber.connect('changed',
                                                     super().on_changed_entry,
-                                                    17, 'wvw_editing_hardware')
+                                                    20, 'wvw_editing_hardware')
         self.txtRefDes.dic_handler_id['changed'] = self.txtRefDes.connect(
             'changed',
-            super().on_changed_entry, 19, 'wvw_editing_hardware')
+            super().on_changed_entry, 22, 'wvw_editing_hardware')
         self.txtSpecification.dic_handler_id[
             'changed'] = self.txtSpecification.connect(
                 'changed',
-                super().on_changed_entry, 21, 'wvw_editing_hardware')
+                super().on_changed_entry, 25, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -493,6 +505,21 @@ class LogisticsPanel(RAMSTKPanel):
         self.txtYearMade.do_update(str(attributes['year_of_manufacture']),
                                    signal='changed')
 
+    def _do_load_cage_code(self, combo: RAMSTKComboBox) -> None:
+        """Load the CAGE code whenever the manufacturer is changed.
+
+        :param combo: the RAMSTKComboBox() that called this method.
+        :return: None
+        :rtype: None
+        """
+        _model = combo.get_model()
+        _row = combo.get_active_iter()
+        self.txtCAGECode.do_update(str(_model.get(_row, 2)[0]),
+                                   signal='changed')
+        pub.sendMessage('wvw_editing_hardware',
+                        node_id=[self._record_id, -1],
+                        package={'cage_code': str(_model.get(_row, 2)[0])})
+
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
 
@@ -502,29 +529,30 @@ class LogisticsPanel(RAMSTKPanel):
         # ----- COMBOBOXES
         self.cmbCostType.dic_handler_id['changed'] = self.cmbCostType.connect(
             'changed',
-            super().on_changed_combo, 3, 'wvw_editing_hardware')
+            super().on_changed_combo, 30, 'wvw_editing_hardware')
         self.cmbManufacturer.dic_handler_id[
             'changed'] = self.cmbManufacturer.connect('changed',
                                                       super().on_changed_combo,
-                                                      4,
+                                                      13,
                                                       'wvw_editing_hardware')
+        self.cmbManufacturer.connect('changed', self._do_load_cage_code)
 
         # ----- ENTRIES
         self.txtCAGECode.dic_handler_id['changed'] = self.txtCAGECode.connect(
             'changed',
-            super().on_changed_entry, 8, 'wvw_editing_hardware')
+            super().on_changed_entry, 3, 'wvw_editing_hardware')
         self.txtCost.dic_handler_id['changed'] = self.txtCost.connect(
             'changed',
-            super().on_changed_entry, 10, 'wvw_editing_hardware')
+            super().on_changed_entry, 5, 'wvw_editing_hardware')
         self.txtNSN.dic_handler_id['changed'] = self.txtNSN.connect(
             'changed',
-            super().on_changed_entry, 15, 'wvw_editing_hardware')
+            super().on_changed_entry, 16, 'wvw_editing_hardware')
         self.txtQuantity.dic_handler_id['changed'] = self.txtQuantity.connect(
             'changed',
-            super().on_changed_entry, 18, 'wvw_editing_hardware')
+            super().on_changed_entry, 21, 'wvw_editing_hardware')
         self.txtYearMade.dic_handler_id['changed'] = self.txtYearMade.connect(
             'changed',
-            super().on_changed_entry, 22, 'wvw_editing_hardware')
+            super().on_changed_entry, 29, 'wvw_editing_hardware')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -646,18 +674,18 @@ class MiscellaneousPanel(RAMSTKPanel):
         # ----- CHECKBUTTONS
         self.chkTagged.dic_handler_id['toggled'] = (self.chkTagged.connect(
             'toggled',
-            super().on_toggled, 1, 'wvw_editing_hardware'))
+            super().on_toggled, 26, 'wvw_editing_hardware'))
 
         # ----- ENTRIES
         _buffer: Gtk.TextBuffer = self.txtAttachments.do_get_buffer()
         self.txtAttachments.dic_handler_id['changed'] = _buffer.connect(
             'changed',
-            super().on_changed_textview, 7, 'wvw_editing_hardware',
+            super().on_changed_textview, 31, 'wvw_editing_hardware',
             self.txtAttachments)
         _buffer = self.txtRemarks.do_get_buffer()
         self.txtRemarks.dic_handler_id['changed'] = _buffer.connect(
             'changed',
-            super().on_changed_textview, 20, 'wvw_editing_hardware',
+            super().on_changed_textview, 23, 'wvw_editing_hardware',
             self.txtRemarks)
 
     def __do_set_properties(self) -> None:
@@ -1784,25 +1812,32 @@ class GeneralData(RAMSTKWorkView):
 
         self._lst_callbacks = [
             self._do_request_make_comp_ref_des,
+            super().do_request_update,
+            super().do_request_update_all,
         ]
         self._lst_icons = [
             'comp_ref_des',
+            'save',
+            'save-all',
         ]
         self._lst_mnu_labels = [
             _("Comp. Ref. Des."),
+            _("Save"),
+            _("Save All"),
         ]
         self._lst_tooltips = [
             _("Creates the composite reference designator for the "
               "selected hardware item."),
+            _("Save changes to the currently selected hardware item."),
+            _("Save changes to all hardware items."),
         ]
 
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.on_edit, 'mvw_editing_hardware')
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_hardware')
+
+        pub.subscribe(self._do_set_record_id, 'selected_hardware')
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """Send request to create the composite reference designator.
@@ -1816,49 +1851,16 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_make_comp_ref_des', node_id=self._record_id)
         super().do_set_cursor_active()
 
-    def _on_combo_changed(self, combo: RAMSTKComboBox, index: int) -> None:
-        """Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's record ID and, if any, parent ID.
 
-        This method is called by:
-
-            * Gtk.Combo() 'changed' signal
-
-        This method sends the 'changedCategory', 'changedSubcategory',
-        and 'wvw_editing_hardware' messages.
-
-        :param combo: the RAMSTKComboBox() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKComboBox`
-        :param index: the position in the Requirement class Gtk.TreeModel()
-            associated with the data from the calling Gtk.Entry().  Indices
-            are:
-
-            +---------+------------------+---------+------------------+
-            |  Index  | Widget           |  Index  | Widget           |
-            +=========+==================+=========+==================+
-            |    2    | cmbCategory      |    4    | cmbManufacturer  |
-            +---------+------------------+---------+------------------+
-            |    3    | cmbCostType      |    5    | cmbSubcategory   |
-            +---------+------------------+---------+------------------+
-
+        :param attributes: the attributes dict for the selected work stream
+            module item.
         :return: None
         :rtype: None
         """
-        _package = self._pnlGeneralData.on_changed_combo(
-            combo, index, 'wvw_editing_hardware')
-        _new_text = list(_package.values())[0]
-
-        if index == 2:
-            pub.sendMessage('changed_category', category_id=_new_text)
-        elif index == 4:
-            _model = combo.get_model()
-            _row = combo.get_active_iter()
-            self.txtCAGECode.do_update(str(_model.get(_row, 2)[0]),
-                                       signal='changed')
-            pub.sendMessage('wvw_editing_hardware',
-                            node_id=[self._record_id, -1],
-                            package={'cage_code': str(_model.get(_row, 2)[0])})
-        elif index == 5:
-            pub.sendMessage('changed_subcategory', subcategory_id=_new_text)
+        self._record_id = attributes['hardware_id']
+        self._parent_id = attributes['parent_id']
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware General Data tab.
@@ -1970,9 +1972,10 @@ class AssessmentInputs(RAMSTKWorkView):
             'save-all',
         ]
         self._lst_tooltips = [
-            _("Calculate the currently selected Hardware item."),
-            _("Save changes to the currently selected Hardware item."),
-            _("Save changes to all Hardware items."),
+            _("Calculate the currently selected hardware item and all of "
+              "it's children."),
+            _("Save changes to the currently selected hardware item."),
+            _("Save changes to all hardware items."),
         ]
 
         # Initialize private scalar attributes.
@@ -2258,7 +2261,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         pub.subscribe(self._do_request_hardware_tree, 'selected_hardware')
         #pub.subscribe(self._do_request_hardware_tree,
-         #             'succeed_calculate_hardware')
+        #             'succeed_calculate_hardware')
         pub.subscribe(self._do_load_page,
                       'succeed_get_all_hardware_attributes')
 

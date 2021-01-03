@@ -1,4 +1,4 @@
-pixbuf='False'
+pixbuf='True'
 
 defaulttitle.col0='Revision ID'
 defaulttitle.col1='Hardware ID'

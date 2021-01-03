@@ -1,3 +1,4 @@
+# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.hardware.moduleview.py is part of The RAMSTK Project
@@ -45,39 +46,39 @@ class HardwarePanel(RAMSTKPanel):
         # Initialize private dictionary class attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
-            'revision_id': [None, 'edited', 0, 33],
-            'hardware_id': [None, 'edited', 1, 33],
-            'alt_part_number': [None, 'edited', 2, 33],
-            'cage_code': [None, 'edited', 3, 33],
-            'comp_ref_des': [None, 'edited', 4, 33],
-            'cost': [None, 'edited', 5, 33],
-            'cost_failure': [None, 'edited', 6, 33],
-            'cost_hour': [None, 'edited', 7, 33],
-            'description': [None, 'edited', 8, 33],
-            'duty_cycle': [None, 'edited', 9, 33],
-            'figure_number': [None, 'edited', 10, 33],
-            'lcn': [None, 'edited', 11, 33],
-            'level': [None, 'edited', 12, 33],
-            'manufacturer_id': [None, 'edited', 13, 33],
-            'mission_time': [None, 'edited', 14, 33],
-            'name': [None, 'edited', 15, 33],
-            'nsn': [None, 'edited', 16, 33],
-            'page_number': [None, 'edited', 17, 33],
-            'parent_id': [None, 'edited', 18, 33],
-            'part': [None, 'toggled', 19, 33],
-            'part_number': [None, 'edited', 20, 33],
-            'quantity': [None, 'edited', 21, 33],
-            'ref_des': [None, 'edited', 22, 33],
-            'remarks': [None, 'edited', 23, 33],
-            'repairable': [None, 'toggled', 24, 33],
-            'specification_number': [None, 'edited', 25, 33],
-            'tagged_part': [None, 'toggled', 26, 33],
-            'total_part_count': [None, 'edited', 27, 33],
-            'total_power_dissipation': [None, 'edited', 28, 33],
-            'year_of_manufacture': [None, 'edited', 29, 33],
-            'cost_type_id': [None, 'edited', 30, 33],
-            'attachments': [None, 'edited', 31, 33],
-            'category_id': [None, 'edited', 32, 33],
+            'revision_id': [None, 'edited', 0],
+            'hardware_id': [None, 'edited', 1],
+            'alt_part_number': [None, 'edited', 2],
+            'cage_code': [None, 'edited', 3],
+            'comp_ref_des': [None, 'edited', 4],
+            'cost': [None, 'edited', 5],
+            'cost_failure': [None, 'edited', 6],
+            'cost_hour': [None, 'edited', 7],
+            'description': [None, 'edited', 8],
+            'duty_cycle': [None, 'edited', 9],
+            'figure_number': [None, 'edited', 10],
+            'lcn': [None, 'edited', 11],
+            'level': [None, 'edited', 12],
+            'manufacturer_id': [None, 'edited', 13],
+            'mission_time': [None, 'edited', 14],
+            'name': [None, 'edited', 15],
+            'nsn': [None, 'edited', 16],
+            'page_number': [None, 'edited', 17],
+            'parent_id': [None, 'edited', 18],
+            'part': [None, 'toggled', 19],
+            'part_number': [None, 'edited', 20],
+            'quantity': [None, 'edited', 21],
+            'ref_des': [None, 'edited', 22],
+            'remarks': [None, 'edited', 23],
+            'repairable': [None, 'toggled', 24],
+            'specification_number': [None, 'edited', 25],
+            'tagged_part': [None, 'toggled', 26],
+            'total_part_count': [None, 'edited', 27],
+            'total_power_dissipation': [None, 'edited', 28],
+            'year_of_manufacture': [None, 'edited', 29],
+            'cost_type_id': [None, 'edited', 30],
+            'attachments': [None, 'edited', 31],
+            'category_id': [None, 'edited', 32],
             'subcategory_id': [None, 'edited', 33],
         }
         self._dic_row_loader = {
@@ -162,10 +163,12 @@ class HardwarePanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
+        # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons['assembly'], 22, 22)
 
         if _entity.part == 1:
+            # noinspection PyArgumentList
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self.dic_icons['part'], 22, 22)
 
@@ -190,14 +193,16 @@ class HardwarePanel(RAMSTKPanel):
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading mission {0:s} in the usage "
-                "profile.  This might indicate it was missing it's data "
+                "An error occurred when loading hardware item {0} into the "
+                "hardware tree.  This might indicate it was missing it's data "
                 "package, some of the data in the package was missing, or "
                 "some of the data was the wrong type.  Row data was: "
                 "{1}").format(str(node.identifier), _attributes)
-            pub.sendMessage('do_log_warning_msg',
-                            logger_name='WARNING',
-                            message=_message)
+            pub.sendMessage(
+                'do_log_warning_msg',
+                logger_name='WARNING',
+                message=_message,
+            )
 
         return _new_row
 
