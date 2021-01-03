@@ -1467,25 +1467,25 @@ class TestAnalysisMethods():
 @pytest.mark.usefixtures('test_toml_user_configuration')
 class TestMilHdbk217FPredictions():
     """Class for prediction methods using MIL-HDBK-217F test suite."""
-    def on_succeed_calculate_parts_count(self, module_tree):
-        assert module_tree.get_node(
+    def on_succeed_calculate_parts_count(self, tree):
+        assert tree.get_node(
             3).data['reliability'].hazard_rate_active == 0.04875
-        assert module_tree.get_node(
+        assert tree.get_node(
             3).data['reliability'].hazard_rate_logistics == 0.04875
-        assert module_tree.get_node(
+        assert tree.get_node(
             3).data['reliability'].hazard_rate_mission == 0.04875
-        assert module_tree.get_node(3).data[
+        assert tree.get_node(3).data[
             'reliability'].reliability_mission == pytest.approx(0.9999951)
         print("\033[35m\nsucceed_calculate_hardware topic was broadcast")
 
-    def on_succeed_calculate_part_stress(self, module_tree):
-        assert module_tree.get_node(3).data[
+    def on_succeed_calculate_part_stress(self, tree):
+        assert tree.get_node(3).data[
             'reliability'].hazard_rate_active == pytest.approx(1.3784574)
-        assert module_tree.get_node(3).data[
+        assert tree.get_node(3).data[
             'reliability'].hazard_rate_logistics == pytest.approx(1.3784574)
-        assert module_tree.get_node(3).data[
+        assert tree.get_node(3).data[
             'reliability'].hazard_rate_mission == pytest.approx(1.3784574)
-        assert module_tree.get_node(3).data[
+        assert tree.get_node(3).data[
             'reliability'].reliability_mission == pytest.approx(0.9998622)
         print("\033[35m\nsucceed_calculate_hardware topic was broadcast")
 

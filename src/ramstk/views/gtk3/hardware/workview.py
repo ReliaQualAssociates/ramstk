@@ -434,6 +434,7 @@ class LogisticsPanel(RAMSTKPanel):
         pub.subscribe(self.on_edit, 'mvw_editing_hardware')
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_load_panel, 'selected_hardware')
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
 
@@ -631,6 +632,7 @@ class MiscellaneousPanel(RAMSTKPanel):
         pub.subscribe(self.on_edit, 'mvw_editing_hardware')
 
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_load_panel, 'selected_hardware')
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
 
@@ -1189,8 +1191,6 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
-
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')

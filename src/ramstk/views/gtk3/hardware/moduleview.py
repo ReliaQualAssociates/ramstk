@@ -139,7 +139,7 @@ class HardwarePanel(RAMSTKPanel):
             self._record_id = _attributes['hardware_id']
             self._parent_id = _attributes['parent_id']
 
-            _title = _("Analyzing Hardware item {0:s}: {1:s}").format(
+            _title = _("Analyzing hardware item {0}: {1}").format(
                 str(_attributes['comp_ref_des']), str(_attributes['name']))
 
             pub.sendMessage(
