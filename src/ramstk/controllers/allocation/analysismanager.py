@@ -124,8 +124,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        _parent_goal = 1.0
-        _cum_weight = 1.0
         _node: treelib.Node = self._tree.get_node(node_id)
 
         self._do_calculate_allocation_goals(_node)
