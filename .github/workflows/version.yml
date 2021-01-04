@@ -16,7 +16,7 @@ jobs:
         id: bumpver
         uses: TriPSs/conventional-changelog-action@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           version-file: pyproject.toml
       - name: Create new milestone
         id: createmilestone

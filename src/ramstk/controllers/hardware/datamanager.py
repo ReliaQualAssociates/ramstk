@@ -1,6 +1,7 @@
+# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.hardware.py is part of The RAMSTK Project
+#       ramstk.controllers.hardware.hardware.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -31,7 +32,7 @@ class DataManager(RAMSTKDataManager):
     """
 
     _tag: str = 'hardwares'
-    _root = 0
+    _root: int = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Hardware data manager instance."""
@@ -135,7 +136,7 @@ class DataManager(RAMSTKDataManager):
         )
 
     def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the selected hazard.
+        """Set all the attributes of the selected hardware item.
 
         This is a helper method to set a group of attributes in a single
         call.  Used mainly by the AnalysisManager.
@@ -406,6 +407,11 @@ class DataManager(RAMSTKDataManager):
                     'succeed_insert_hardware',
                     node_id=self.last_id,
                     tree=self.tree,
+                )
+                pub.sendMessage(
+                    'request_insert_allocation',
+                    hardware_id=self.last_id,
+                    parent_id=parent_id,
                 )
             except DataAccessError as _error:
                 pub.sendMessage(

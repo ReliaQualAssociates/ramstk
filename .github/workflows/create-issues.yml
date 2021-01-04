@@ -20,6 +20,7 @@ jobs:
           SHA: ${{ github.sha }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LABEL: "# ISSUE:"
-          COMMENT_MARKER: "# //"
+          COMMENT_MARKER: "#"
+          AUTO_P: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
