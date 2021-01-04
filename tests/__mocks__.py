@@ -137,6 +137,7 @@ MOCK_ALLOCATION = {
         'included': 1,
         'int_factor': 1,
         'allocation_method_id': 1,
+        'mission_time': 100.0,
         'mtbf_alloc': 0.0,
         'mtbf_goal': 0.0,
         'n_sub_systems': 1,
@@ -144,6 +145,7 @@ MOCK_ALLOCATION = {
         'parent_id': 0,
         'percent_weight_factor': 0.0,
         'reliability_alloc': 1.0,
+        'reliability_goal': 0.999,
         'op_time_factor': 1,
         'soa_factor': 1,
         'weight_factor': 1
@@ -157,6 +159,7 @@ MOCK_ALLOCATION = {
         'included': 1,
         'int_factor': 1,
         'allocation_method_id': 1,
+        'mission_time': 100.0,
         'mtbf_alloc': 0.0,
         'mtbf_goal': 0.0,
         'n_sub_systems': 1,
@@ -164,6 +167,7 @@ MOCK_ALLOCATION = {
         'parent_id': 1,
         'percent_weight_factor': 0.0,
         'reliability_alloc': 1.0,
+        'reliability_goal': 0.9999,
         'op_time_factor': 1,
         'soa_factor': 1,
         'weight_factor': 1
@@ -177,6 +181,7 @@ MOCK_ALLOCATION = {
         'included': 1,
         'int_factor': 1,
         'allocation_method_id': 1,
+        'mission_time': 100.0,
         'mtbf_alloc': 0.0,
         'mtbf_goal': 0.0,
         'n_sub_systems': 1,
@@ -184,6 +189,7 @@ MOCK_ALLOCATION = {
         'parent_id': 2,
         'percent_weight_factor': 0.0,
         'reliability_alloc': 1.0,
+        'reliability_goal': 0.99999,
         'op_time_factor': 1,
         'soa_factor': 1,
         'weight_factor': 1
