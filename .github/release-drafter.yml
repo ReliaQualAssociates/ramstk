@@ -8,13 +8,15 @@ categories:
   - title: 'Bug Fixes'
     labels:
       - 'fix'
+      - 'bug'
   - title: 'Features'
     labels:
       - 'feature'
+      - 'enhancement'
   - title: 'Maintenance'
     labels:
       - 'chore'
-      - 'refactor'
+      - 'quality'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
