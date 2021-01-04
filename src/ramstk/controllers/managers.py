@@ -274,17 +274,17 @@ class RAMSTKDataManager:
         # noinspection PyUnresolvedReferences
         self.do_get_tree()  # type: ignore
 
-    def do_set_tree(self, module_tree: treelib.Tree) -> None:
+    def do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the MODULE treelib Tree().
 
         This method is generally used to respond to events such as successful
         calculations of the entire system.
 
-        :param module_tree: the treelib Tree() to assign to the tree attribute.
+        :param tree: the treelib Tree() to assign to the tree attribute.
         :return: None
         :rtype: None
         """
-        self.tree = module_tree
+        self.tree = tree
 
     # noinspection PyUnresolvedReferences
     def do_update_all(self) -> None:

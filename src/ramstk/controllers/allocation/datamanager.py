@@ -59,12 +59,11 @@ class DataManager(RAMSTKDataManager):
                       'request_set_allocation_attributes')
         pub.subscribe(super().do_set_attributes, 'mvw_editing_allocation')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_allocation')
+        pub.subscribe(super().do_set_tree, 'succeed_calculate_allocation')
         pub.subscribe(super().do_update_all, 'request_update_all_allocations')
 
         pub.subscribe(self.do_get_tree, 'request_get_allocation_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_set_all_attributes,
-                      'succeed_calculate_allocation')
         pub.subscribe(self.do_set_all_attributes,
                       'succeed_calculate_allocation_goals')
         pub.subscribe(self.do_update, 'request_update_allocation')
@@ -154,7 +153,7 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_hardware',
+                'fail_update_allocation',
                 error_message=_error_msg,
             )
         except KeyError:
@@ -168,7 +167,7 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_hardware',
+                'fail_update_allocation',
                 error_message=_error_msg,
             )
         except TypeError:
@@ -184,7 +183,7 @@ class DataManager(RAMSTKDataManager):
                     message=_error_msg,
                 )
                 pub.sendMessage(
-                    'fail_update_hardware',
+                    'fail_update_allocation',
                     error_message=_error_msg,
                 )
 

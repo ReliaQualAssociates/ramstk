@@ -144,8 +144,14 @@ class AnalysisManager(RAMSTKAnalysisManager):
             'succeed_calculate_hardware',
             tree=self._tree,
         )
-        pub.sendMessage('request_update_hardware', node_id=node_id)
-        pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
+        pub.sendMessage(
+            'request_update_hardware',
+            node_id=node_id,
+        )
+        pub.sendMessage(
+            'request_get_all_hardware_attributes',
+            node_id=node_id,
+        )
 
     def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
         """Calculate the active, logistics, and mission hazard rates.
