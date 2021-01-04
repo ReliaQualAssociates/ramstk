@@ -58,7 +58,7 @@ class RAMSTKDataManager:
                                                              Any]) -> None:
         ...
 
-    def do_set_tree(self, module_tree: treelib.Tree) -> None:
+    def do_set_tree(self, tree: treelib.Tree) -> None:
         ...
 
     def do_update_all(self) -> None:

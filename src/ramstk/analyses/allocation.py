@@ -284,7 +284,7 @@ def _from_reliability_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def do_allocate_reliability(parent_goal: float, cumulative_weight: int,
-                            **attributes: Dict[str, Any]) -> None:
+                            **attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the reliability allocation.
 
     :param parent_goal: the parent assembly's reliability goal.
@@ -313,6 +313,8 @@ def do_allocate_reliability(parent_goal: float, cumulative_weight: int,
         attributes['reliability_alloc'] = _reliability_alloc
 
     pub.sendMessage('succeed_allocate_reliability', attributes=attributes)
+
+    return attributes
 
 
 def do_calculate_goals(**attributes: Dict[str, Any]) -> Dict[str, Any]:
