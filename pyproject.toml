@@ -102,3 +102,60 @@ markers = [
 	'calculation: mark the test as test of a calculation method/function.',
 	'gui: mark the tests as test of a GUI component.'
 ]
+
+[tool.pylint.master]
+ignore = [
+	'tests'
+]
+persistent = true
+extension-pkg-whitelist = [
+	'pango'
+]
+
+[tool.pylint.messages_control]
+disable = [
+	'invalid-name',
+	'line-too-long',
+	'too-many-instance-attributes',
+	'too-few-public-methods',
+	'relative-import',
+	'fixme',
+	'anomalous-unicode-escape-in-string',
+	'import-error',
+	'no-member'
+]
+
+[tool.pylint.reports]
+reports = true
+
+[tool.pylint.miscellaneous]
+notes = [
+	'FIXME',
+	'ISSUE',
+	'TODO'
+]
+
+[tool.pylint.similarities]
+min-similarity-lines = 15
+ignore-comments = true
+ignore-docstrings = true
+ignore-imports = true
+
+[tool.pylint.format]
+max-line-length = 80
+indent-string = '    '
+max-module-lines = 5000
+
+[tool.pylint.basic]
+good-names = [
+	'_'
+]
+
+[tool.pylint.typecheck]
+ignore-mixin-members = true
+ignored-classes = [
+	'SQLObject'
+]
+
+[tool.pylint.design]
+max-args = 6
