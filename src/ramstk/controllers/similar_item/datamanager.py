@@ -1,12 +1,12 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.allocation.datamanager.py is part of The RAMSTK
+#       ramstk.controllers.similar_item.datamanager.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Allocation Package Data Model."""
+"""Similar Item Package Data Model."""
 
 # Standard Library Imports
 import inspect
@@ -19,22 +19,22 @@ from treelib.exceptions import NodeIDAbsentError
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import RAMSTKAllocation
+from ramstk.models.programdb import RAMSTKSimilarItem
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Allocation data manager."""
+    """Contain the attributes and methods of the Similar Item data manager."""
 
-    _tag: str = 'allocations'
-    _root: int = 0
+    _tag = 'similar_items'
+    _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a Allocation data manager instance."""
+        """Initialize a Hardware data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
         self._pkey = {
-            'allocation': ['revision_id', 'hardware_id'],
+            'similar_item': ['revision_id', 'hardware_id'],
         }
 
         # Initialize private list attributes.
@@ -49,36 +49,35 @@ class DataManager(RAMSTKDataManager):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes,
-                      'request_get_allocation_attributes')
+                      'request_get_similar_item_attributes')
         pub.subscribe(super().do_set_attributes,
-                      'request_set_allocation_attributes')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_allocation')
-        pub.subscribe(super().do_set_tree, 'succeed_calculate_allocation')
-        pub.subscribe(super().do_update_all, 'request_update_all_allocations')
+                      'request_set_similar_item_attributes')
+        pub.subscribe(super().do_set_attributes, 'wvw_editing_similar_item')
+        pub.subscribe(super().do_set_tree, 'succeed_calculate_similar_item')
+        pub.subscribe(super().do_update_all,
+                      'request_update_all_similar_items')
 
-        pub.subscribe(self.do_get_tree, 'request_get_allocation_tree')
+        pub.subscribe(self.do_get_tree, 'request_get_similar_item_tree')
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_set_all_attributes,
-                      'succeed_calculate_allocation_goals')
-        pub.subscribe(self.do_update, 'request_update_allocation')
+        pub.subscribe(self.do_update, 'request_update_similar_item')
 
         pub.subscribe(self._do_delete, 'request_delete_hardware')
-        pub.subscribe(self._do_insert_allocation, 'request_insert_allocation')
+        pub.subscribe(self._do_insert_similar_item,
+                      'request_insert_similar_item')
 
     def do_get_tree(self) -> None:
-        """Retrieve the allocation treelib Tree.
+        """Retrieve the hardware treelib Tree.
 
         :return: None
         :rtype: None
         """
         pub.sendMessage(
-            'succeed_get_allocation_tree',
+            'succeed_get_similar_item_tree',
             tree=self.tree,
         )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Allocation BoM data from the RAMSTK Program
-        database.
+        """Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
         :param attributes: the attributes dict for the selected Revision.
         :return: None
@@ -89,57 +88,43 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _allocation in self.dao.do_select_all(
-                RAMSTKAllocation,
+        for _similar_item in self.dao.do_select_all(
+                RAMSTKSimilarItem,
                 key=['revision_id'],
                 value=[self._revision_id],
-                order=RAMSTKAllocation.parent_id):
+                order=RAMSTKSimilarItem.parent_id):
 
-            self.tree.create_node(tag='allocation',
-                                  identifier=_allocation.hardware_id,
-                                  parent=_allocation.parent_id,
-                                  data={'allocation': _allocation})
+            self.tree.create_node(tag='similar_item',
+                                  identifier=_similar_item.hardware_id,
+                                  parent=_similar_item.parent_id,
+                                  data={'similar_item': _similar_item})
 
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage(
-            'succeed_retrieve_allocation',
+            'succeed_retrieve_similar_item',
             tree=self.tree,
         )
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param attributes: the aggregate attributes dict for the allocation
-            item.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            super().do_set_attributes(node_id=[attributes['hardware_id'], -1],
-                                      package={_key: attributes[_key]})
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
 
-        :param node_id: the allocation ID of the allocation item to save.
+        :param node_id: the hardware ID of the hardware item to save.
         :return: None
         :rtype: None
         """
         try:
-            self.dao.do_update(self.tree.get_node(node_id).data['allocation'])
+            self.dao.do_update(
+                self.tree.get_node(node_id).data['similar_item'])
 
             pub.sendMessage(
-                'succeed_update_allocation',
+                'succeed_update_similar_item',
                 tree=self.tree,
             )
         except AttributeError:
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
-            _error_msg = ('{1}: Attempted to save non-existent allocation '
+            _error_msg = ('{1}: Attempted to save non-existent similar item '
                           'record ID {0}.').format(str(node_id), _method_name)
             pub.sendMessage(
                 'do_log_debug',
@@ -147,13 +132,13 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_allocation',
+                'fail_update_similar_item',
                 error_message=_error_msg,
             )
         except KeyError:
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
-            _error_msg = ('{1}: No data package found for allocation record '
+            _error_msg = ('{1}: No data package found for similar item record '
                           'ID {0}.').format(str(node_id), _method_name)
             pub.sendMessage(
                 'do_log_debug',
@@ -161,7 +146,7 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_allocation',
+                'fail_update_similar_item',
                 error_message=_error_msg,
             )
         except TypeError:
@@ -169,7 +154,7 @@ class DataManager(RAMSTKDataManager):
                 _method_name: str = inspect.currentframe(  # type: ignore
                 ).f_code.co_name
                 _error_msg = ('{1}: The value for one or more attributes for '
-                              'allocation record ID {0} was the wrong '
+                              'similar item record ID {0} was the wrong '
                               'type.').format(str(node_id), _method_name)
                 pub.sendMessage(
                     'do_log_debug',
@@ -177,14 +162,14 @@ class DataManager(RAMSTKDataManager):
                     message=_error_msg,
                 )
                 pub.sendMessage(
-                    'fail_update_allocation',
+                    'fail_update_similar_item',
                     error_message=_error_msg,
                 )
 
     def _do_delete(self, node_id: int) -> None:
-        """Remove an Allocation record.
+        """Remove a similar item record.
 
-        :param node_id: the node (hardware) ID to be removed from the
+        :param node_id: the similar item (hardware) ID to be removed from the
             RAMSTK Program database.
         :return: None
         :rtype: None
@@ -193,21 +178,21 @@ class DataManager(RAMSTKDataManager):
             # Delete the children (if any), then the parent node that was
             # passed.
             for _child in self.tree.children(node_id):
-                super().do_delete(_child.identifier, 'allocation')
-            super().do_delete(node_id, 'allocation')
+                super().do_delete(_child.identifier, 'similar_item')
+            super().do_delete(node_id, 'similar_item')
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage(
-                'succeed_delete_allocation',
+                'succeed_delete_similar_item',
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg: str = (
-                '{1}: Attempted to delete non-existent allocation record '
+                '{1}: Attempted to delete non-existent similar item record '
                 'with hardware ID {0}.').format(str(node_id), _method_name)
             pub.sendMessage(
                 'do_log_debug',
@@ -215,14 +200,14 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_delete_allocation',
+                'fail_delete_similar_item',
                 error_message=_error_msg,
             )
 
-    def _do_insert_allocation(self,
-                              hardware_id: int,
-                              parent_id: int = 0) -> None:
-        """Add a new allocation record.
+    def _do_insert_similar_item(self,
+                                hardware_id: int,
+                                parent_id: int = 0) -> None:
+        """Add a new similar item record.
 
         :param hardware_id: the ID of the hardware item to associate the
             allocation record.
@@ -231,22 +216,22 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _allocation = RAMSTKAllocation()
-            _allocation.revision_id = self._revision_id
-            _allocation.hardware_id = hardware_id
-            _allocation.parent_id = parent_id
+            _similar_item = RAMSTKSimilarItem()
+            _similar_item.revision_id = self._revision_id
+            _similar_item.hardware_id = hardware_id
+            _similar_item.parent_id = parent_id
 
-            self.dao.do_insert(_allocation)
+            self.dao.do_insert(_similar_item)
 
-            self.last_id = _allocation.hardware_id
+            self.last_id = _similar_item.hardware_id
 
-            self.tree.create_node(tag='allocation',
-                                  identifier=_allocation.hardware_id,
+            self.tree.create_node(tag='similar_item',
+                                  identifier=_similar_item.hardware_id,
                                   parent=parent_id,
-                                  data={'allocation': _allocation})
+                                  data={'similar_item': _similar_item})
 
             pub.sendMessage(
-                'succeed_insert_allocation',
+                'succeed_insert_similar_item',
                 node_id=self.last_id,
                 tree=self.tree,
             )
@@ -257,6 +242,6 @@ class DataManager(RAMSTKDataManager):
                 message=_error.msg,
             )
             pub.sendMessage(
-                "fail_insert_hardware",
+                "fail_insert_similar_item",
                 error_message=_error.msg,
             )

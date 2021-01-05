@@ -33,6 +33,10 @@ PYLINT		= $(shell which pylint)
 RADON		= $(shell which radon)
 YAPF        = $(shell which yapf)
 WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
+RSTCHECK	= $(shell which rstcheck)
+RSTLINT		= $(shell which rst-link)
+CHKMANI		= $(shell which check-manifest)
+PYROMA		= $(shell which pyroma)
 
 # Data files.
 LAYOUTS		= $(shell ls ./data/layouts)
@@ -45,7 +49,7 @@ ISORT_ARGS	= --settings-file ./pyproject.toml --atomic
 MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count --config=./setup.cfg
-PYLINT_ARGS	= -j0 --rcfile=./setup.cfg
+PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 YAPF_ARGS	= --in-place
 
 help:
@@ -256,6 +260,10 @@ lint:
 	$(info Linting $(SRCFILE) ...)
 	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
 
+lintdocs:
+	$(RSTCHECK) -r docs/api docs/user
+	$(RSTLINT) -r docs/api docs/user
+
 apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk
 
@@ -270,6 +278,6 @@ dist: clean
 	python setup.py bdist_wheel
 	ls -l dist
 
-release: dist
-	#twine upload dist/*
-	$(info Future target...)
+release:
+	$(CHKMANI) .
+	$(PYROMA) .

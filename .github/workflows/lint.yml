@@ -116,5 +116,5 @@ jobs:
           extra-pycodestyle-options: ""
           extra-pydocstyle-options: ""
           extra-mypy-options: ""
-          extra-pylint-options: "-j0 --rcfile=./setup.cfg --dummy-variables-rgx='__'"
+          extra-pylint-options: "-j0 --rcfile=./pyproject.toml --dummy-variables-rgx='__'"
           extra-flake8-options: ""

@@ -89,8 +89,6 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_set_attributes,
                                 'request_set_allocation_attributes')
         assert pub.isSubscribed(DUT.do_set_attributes,
-                                'mvw_editing_allocation')
-        assert pub.isSubscribed(DUT.do_set_attributes,
                                 'wvw_editing_allocation')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_allocations')
