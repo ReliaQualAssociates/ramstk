@@ -203,8 +203,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
-            _attributes = _node.data['similar_item'].get_attributes()
-
             _change_description_1 += _node.data[
                 'similar_item'].change_description_1 + '\n\n'
             _change_description_2 += _node.data[
