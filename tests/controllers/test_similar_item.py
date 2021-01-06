@@ -132,6 +132,8 @@ class TestCreateControllers():
                                 'request_calculate_similar_item')
         assert pub.isSubscribed(DUT._do_roll_up_change_descriptions,
                                 'request_roll_up_change_descriptions')
+        assert pub.isSubscribed(DUT._on_get_hardware_attributes,
+                                'succeed_get_all_hardware_attributes')
 
 
 @pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
@@ -691,7 +693,7 @@ class TestAnalysisMethods():
 
         DATAMGR = dmSimilarItem()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
 
         DUT._tree.get_node(2).data['similar_item'].change_description_1 = (
             'This is change description 1 for assembly 2.')
@@ -715,10 +717,11 @@ class TestAnalysisMethods():
 
         DATAMGR = dmSimilarItem()
         DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={'revision_id': 1})
+        DATAMGR.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
 
-        pub.sendMessage('selected_hardware',
+        pub.sendMessage('succeed_get_all_hardware_attributes',
                         attributes={
+                            'hardware_id': 1,
                             'hazard_rate_active': 0.00032,
                             'hardware_id': 2
                         })

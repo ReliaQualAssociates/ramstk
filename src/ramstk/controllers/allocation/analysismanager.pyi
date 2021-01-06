@@ -12,8 +12,8 @@ from ramstk.configuration import (
 from ramstk.controllers import RAMSTKAnalysisManager as RAMSTKAnalysisManager
 
 class AnalysisManager(RAMSTKAnalysisManager):
-    _node_hazard_rate: float = ...
     _system_hazard_rate: float = ...
+    _node_hazard_rate: float = ...
 
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[Any, Any]) -> None:
@@ -51,5 +51,5 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_get_allocation_goal(self) -> Dict[str, Any]:
         ...
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         ...

@@ -61,7 +61,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_similar_item')
         pub.subscribe(self._do_roll_up_change_descriptions,
                       'request_roll_up_change_descriptions')
-        pub.subscribe(self._on_select_hardware, 'selected_hardware')
+        pub.subscribe(self._on_get_hardware_attributes,
+                      'succeed_get_all_hardware_attributes')
 
     def _do_calculate_similar_item(self, node_id: int) -> None:
         """Perform a similar item calculates for currently selected item.
@@ -241,7 +242,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             tree=self._tree,
         )
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set hazard rate attributes when a hardware item is selected.
 
         :param attributes: the attributes dict for the selected hardware item.

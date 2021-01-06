@@ -30,6 +30,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the allocation item being analyzed.
     """
+
+    # Define private scalar class attributes.
+    _system_hazard_rate: float = 0.0
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[Any, Any]) -> None:
         """Initialize an instance of the allocation analysis manager.
@@ -45,7 +49,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         # Initialize private scalar attributes.
         self._node_hazard_rate: float = 0.0
-        self._system_hazard_rate: float = 0.0
 
         # Initialize public dictionary attributes.
 
@@ -66,7 +69,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_allocation_goals')
         pub.subscribe(self._do_calculate_allocation,
                       'request_calculate_allocation')
-        pub.subscribe(self._on_select_hardware, 'selected_hardware')
+        pub.subscribe(self._on_get_hardware_attributes,
+                      'succeed_get_all_hardware_attributes')
 
     def _do_calculate_agree_allocation(self, node: treelib.Node) -> None:
         """Allocate reliability using the AGREE method.
@@ -304,7 +308,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         return allocation.get_allocation_goal(**self._attributes)
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set hazard rate attributes when a hardware item is selected.
 
         :param attributes: the attributes dict for the selected hardware item.
