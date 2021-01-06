@@ -88,11 +88,9 @@ class GoalMethodPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_allocation')
+
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        #pub.subscribe(self._do_load_panel,
-        #              'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_calculate_allocation_goals')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -243,6 +241,10 @@ class AllocationPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
+        self._dic_hardware_attrs: Dict[str, Any] = {}
+        self._dic_row_loader = {
+            'allocation': self.__do_load_allocation,
+        }
 
         # Initialize private list attributes.
 
@@ -263,11 +265,10 @@ class AllocationPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
+        pub.subscribe(super().do_load_panel, 'succeed_retrieve_allocation')
 
-        pub.subscribe(self._do_load_panel, 'do_load_allocation')
-        pub.subscribe(self._do_load_panel, 'succeed_allocate_reliability')
-        pub.subscribe(self._do_load_row, 'succeed_get_allocation_attributes')
-        pub.subscribe(self._do_set_tree, 'succeed_get_hardware_tree')
+        pub.subscribe(self._do_load_hardware_attrs,
+                      'succeed_retrieve_hardware')
 
     def do_set_callbacks(self) -> None:
         """Set the callback methods and functions.
@@ -285,62 +286,6 @@ class AllocationPanel(RAMSTKPanel):
             self._lst_col_order[10],
             self._lst_col_order[11],
         ])
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Allocation worksheet panel.
-
-        :param attributes: the attributes dict for the selected Hardware item.
-        :return: None
-        :rtype: None
-        """
-        self._method_id = attributes['allocation_method_id']
-        self._record_id = attributes['hardware_id']
-
-        if self._record_id > 0:
-            self._do_load_tree()
-            self._do_set_columns_editable()
-
-    def _do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """Load the Allocation RAMSTKTreeView().
-
-        :param attributes: the attributes dict for the row to be loaded.
-        :return: None
-        :rtype: None
-        """
-        _node_id = attributes['hardware_id']
-
-        attributes['name'] = self._allocation_tree.get_node(
-            _node_id).data['hardware'].get_attributes()['name']
-        attributes['hazard_rate_logistics'] = self._allocation_tree.get_node(
-            _node_id).data['reliability'].get_attributes()[
-                'hazard_rate_logistics']  # noqa
-        attributes['mtbf_logistics'] = self._allocation_tree.get_node(
-            _node_id).data['reliability'].get_attributes()['mtbf_logistics']
-        attributes['reliability_logistics'] = self._allocation_tree.get_node(
-            _node_id).data['reliability'].get_attributes()[
-                'reliability_logistics']  # noqa
-        attributes['availability_logistics'] = self._allocation_tree.get_node(
-            _node_id).data['reliability'].get_attributes()[
-                'availability_logistics']  # noqa
-
-        super().do_load_row(attributes)
-
-    def _do_load_tree(self) -> None:
-        """Load the Allocation RAMSTKTreeView() with allocation data.
-
-        :return: None
-        :rtype: None
-        """
-        _model = self.tvwTreeView.get_model()
-        _model.clear()
-
-        self._tree_loaded = False
-        for _node in self._allocation_tree.children(self._record_id):
-            _node_id = _node.data['hardware'].get_attributes()['hardware_id']
-            pub.sendMessage('request_get_hardware_attributes',
-                            node_id=_node_id,
-                            table='allocation')
-        self._tree_loaded = True
 
     def _do_set_columns_editable(self) -> None:
         """Set editable columns based on the Allocation method selected.
@@ -564,11 +509,83 @@ class AllocationPanel(RAMSTKPanel):
     def _do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the _allocation_tree equal to the datamanger Hardware tree.
 
-        :param dmtree: the Hardware datamanger treelib.Tree() of data.
+        :param tree: the Hardware datamanger treelib.Tree() of data.
         :return: None
         :rtype: None
         """
         self._allocation_tree = tree
+
+    def __do_load_allocation(self,
+                             node: Any = '',
+                             row: Gtk.TreeIter = None) -> Gtk.TreeIter:
+        """Load the allocation RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the mode to load into the hardware tree.
+        :return: _new_row; the row that was just populated with hardware data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        # pylint: disable=unused-variable
+        _entity = node.data['allocation']
+
+        if not self._dic_hardware_attrs[_entity.hardware_id][5]:
+            _model = self.tvwTreeView.get_model()
+
+            _name = self._dic_hardware_attrs[_entity.hardware_id][0]
+            _hr_logistics = self._dic_hardware_attrs[_entity.hardware_id][1]
+            _mtbf_logistics = self._dic_hardware_attrs[_entity.hardware_id][2]
+            _rel_logistics = self._dic_hardware_attrs[_entity.hardware_id][3]
+            _avail_logistics = self._dic_hardware_attrs[_entity.hardware_id][4]
+
+            _attributes = [
+                _entity.revision_id, _entity.hardware_id, _name,
+                _entity.included, _entity.n_sub_systems,
+                _entity.n_sub_elements, _entity.mission_time,
+                _entity.duty_cycle, _entity.int_factor, _entity.soa_factor,
+                _entity.op_time_factor, _entity.env_factor,
+                _entity.weight_factor, _entity.percent_weight_factor,
+                _hr_logistics, _entity.hazard_rate_alloc, _mtbf_logistics,
+                _entity.mtbf_alloc, _rel_logistics, _entity.reliability_alloc,
+                _avail_logistics, _entity.availability_alloc
+            ]
+
+            try:
+                _new_row = _model.append(row, _attributes)
+            except (AttributeError, TypeError, ValueError):
+                _new_row = None
+                _message = _(
+                    "An error occurred when loading allocation record {0} "
+                    "into the allocation list.  This might indicate it was "
+                    "missing it's data package, some of the data in the "
+                    "package was missing, or some of the data was the wrong "
+                    "type.  Row data was: {1}").format(str(node.identifier),
+                                                       _attributes)
+                pub.sendMessage(
+                    'do_log_warning_msg',
+                    logger_name='WARNING',
+                    message=_message,
+                )
+
+        return _new_row
+
+    def _do_load_hardware_attrs(self, tree: treelib.Tree) -> None:
+        """Load the hardware data dict.
+
+        :param tree: the hardware treelib.Tree().
+        :return: None
+        :rtype: None
+        """
+        for _node in tree.all_nodes()[1:]:
+            _hardware = _node.data['hardware']
+            _reliability = _node.data['reliability']
+            self._dic_hardware_attrs[_hardware.hardware_id] = [
+                _hardware.name, _reliability.hazard_rate_logistics,
+                _reliability.mtbf_logistics,
+                _reliability.reliability_logistics,
+                _reliability.availability_logistics, _hardware.part
+            ]
 
     def __do_set_properties(self) -> None:
         """Set the properties of the General Data Work View and widgets.
@@ -593,17 +610,17 @@ class Allocation(RAMSTKWorkView):
     the selected hardware item. The attributes of an Allocation General Data
     Work View are:
 
-    :cvar str _module: the name of the module.
+    :cvar _module: the name of the module.
 
-    :ivar list _lst_callbacks: the list of callback methods for the view's
+    :ivar _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
         they appear on the toolbar and pop-up menu.
-    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+    :ivar _lst_icons: the list of icons for the view's toolbar buttons
         and pop-up menu.  The icons are listed in the order they appear on the
         toolbar and pop-up menu.
-    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+    :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
-    :ivar list _lst_tooltips: the list of tooltips for the view's
+    :ivar _lst_tooltips: the list of tooltips for the view's
         toolbar buttons and pop-up menu.  The tooltips are listed in the
         order they appear on the toolbar or pop-up menu.
     """
@@ -613,7 +630,7 @@ class Allocation(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'allocation'
+    _module: str = 'allocations'
     _tablabel: str = _("Allocation")
     _tabtooltip: str = _("Displays the Allocation analysis for the selected "
                          "hardware item.")
@@ -636,21 +653,9 @@ class Allocation(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [
-            self._do_request_calculate,
-            self._do_request_update,
-            self._do_request_update_all,
-        ]
-        self._lst_icons = [
-            'calculate',
-            'save',
-            'save-all',
-        ]
-        self._lst_mnu_labels = [
-            _("Calculate"),
-            _("Save"),
-            _("Save All"),
-        ]
+        self._lst_callbacks.insert(0, self._do_request_calculate)
+        self._lst_icons.insert(0, 'calculate')
+        self._lst_mnu_labels.insert(0, _("Calculate"))
         self._lst_tooltips = [
             _("Calculate the currently selected Allocation line item."),
             _("Save changes to the currently selected Allocation line item."),
@@ -658,8 +663,6 @@ class Allocation(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._method_id: int = 0
-
         self._pnlGoalMethods: RAMSTKPanel = GoalMethodPanel()
         self._pnlPanel: RAMSTKPanel = AllocationPanel()
 
@@ -672,22 +675,18 @@ class Allocation(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, 'succeed_update_hardware')
-        pub.subscribe(self.do_set_cursor_active_on_fail,
-                      'fail_update_hardware')
+        pub.subscribe(self._do_set_record_id, 'selected_hardware')
 
-        #pub.subscribe(self._do_load_page,
-        #              'succeed_get_all_hardware_attributes')
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the allocation's record ID.
 
-    def _do_load_page(self, attributes: Dict[str, Any]) -> None:
-        """Load the Allocation page.
-
-        :param attributes: the attributes dict for the selected Hardware item.
+        :param attributes: the attributes dict for the selected allocation
+            record.
         :return: None
         :rtype: None
         """
         self._record_id = attributes['hardware_id']
-        self._method_id = attributes['allocation_method_id']
+        self._parent_id = attributes['parent_id']
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Calculate the Allocation reliability metrics.
@@ -697,32 +696,11 @@ class Allocation(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_allocate_reliability',
+        pub.sendMessage('request_calculate_allocation',
                         node_id=self._record_id)
-        super().do_set_cursor_active()
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected Function.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_hardware', node_id=self._record_id)
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the Functions.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_hardware')
 
     def __make_ui(self) -> None:
-        """Build the user interface for the Allocation tab.
+        """Build the user interface for the allocation tab.
 
         :return: None
         :rtype: None

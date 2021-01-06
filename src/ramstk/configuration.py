@@ -385,7 +385,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             'similar_itemfg', 'stakeholderbg', 'stakeholderfg'
         ]
         self._lst_format_files = [
-            "allocation", "failure_definitions", "fmea", "function",
+            "allocations", "failure_definitions", "fmea", "function",
             "hardware", "hazard", "pof", "requirement", "revision",
             "similar_item", "stakeholders", "usage_profile", "validation"
         ]
@@ -648,7 +648,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "progdir": self.RAMSTK_PROG_DIR
             },
             "layouts": {
-                "allocation": "allocation.toml",
+                "allocations": "allocation.toml",
                 "failure_definitions": "failure_definition.toml",
                 "fmea": "fmea.toml",
                 "function": "function.toml",
@@ -821,8 +821,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "progdir": self.RAMSTK_PROG_DIR
             },
             "layouts": {
-                "allocation":
-                self.RAMSTK_FORMAT_FILE['allocation'],
+                "allocations":
+                self.RAMSTK_FORMAT_FILE['allocations'],
                 "failure_definitions":
                 self.RAMSTK_FORMAT_FILE['failure_definitions'],
                 "fmea":

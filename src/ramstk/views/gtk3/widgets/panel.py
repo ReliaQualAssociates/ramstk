@@ -181,7 +181,10 @@ class RAMSTKPanel(RAMSTKFrame):
         :rtype: None
         """
         _model = self.tvwTreeView.get_model()
-        _model.clear()
+        try:
+            _model.clear()
+        except AttributeError:
+            pass
 
     def do_expand_tree(self) -> None:
         """Expand the RAMSTKTreeView.
@@ -190,7 +193,10 @@ class RAMSTKPanel(RAMSTKFrame):
         :rtype: None
         """
         _model = self.tvwTreeView.get_model()
-        _row = _model.get_iter_first()
+        try:
+            _row = _model.get_iter_first()
+        except AttributeError:
+            _row = None
 
         self.tvwTreeView.expand_all()
         if _row is not None:
@@ -909,7 +915,6 @@ class RAMSTKPanel(RAMSTKFrame):
             # pylint: disable=unused-variable
             [[__, _entity]] = node.data.items()
             _attributes = _entity.get_attributes()
-
             _model = self.tvwTreeView.get_model()
             for _col, _attr in self.tvwTreeView.korder.items():
                 _pos = self.tvwTreeView.position[_col]

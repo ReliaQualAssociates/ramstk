@@ -21,10 +21,10 @@ from ramstk.configuration import (
     RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 )
 from ramstk.controllers import (
-    amFMEA, amHardware, amHazards, amStakeholder, amValidation,
-    dmFailureDefinition, dmFMEA, dmFunction, dmHardware,
-    dmHazards, dmOptions, dmPoF, dmProgramStatus, dmRequirement,
-    dmRevision, dmStakeholder, dmUsageProfile, dmValidation
+    amAllocation, amFMEA, amHardware, amHazards, amSimilarItem, amStakeholder,
+    amValidation, dmAllocation, dmFailureDefinition, dmFMEA, dmFunction,
+    dmHardware, dmHazards, dmOptions, dmPoF, dmProgramStatus, dmRequirement,
+    dmRevision, dmSimilarItem, dmStakeholder, dmUsageProfile, dmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
@@ -182,6 +182,9 @@ def the_one_ring() -> None:
                     message="Initializing the RAMSTK application.")
 
     _program_mgr = RAMSTKProgramManager()
+    _program_mgr.dic_managers['allocation']['analysis'] = amAllocation(
+        user_configuration)
+    _program_mgr.dic_managers['allocation']['data'] = dmAllocation()
     _program_mgr.dic_managers['revision']['data'] = dmRevision()
     _program_mgr.dic_managers['function']['data'] = dmFunction()
     _program_mgr.dic_managers['hazards']['analysis'] = amHazards(
@@ -232,7 +235,9 @@ def the_one_ring() -> None:
     # configuration and creating the logger.
     RAMSTKDesktop([user_configuration, site_configuration], _logger)
 
-    pub.sendMessage('do_log_info_msg',
-                    logger_name='INFO',
-                    message="Launched RAMSTK GUI.")
+    pub.sendMessage(
+        'do_log_info_msg',
+        logger_name='INFO',
+        message="Launched RAMSTK GUI.",
+    )
     Gtk.main()

@@ -57,7 +57,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update_all, 'request_update_all_allocations')
 
         pub.subscribe(self.do_get_tree, 'request_get_allocation_tree')
-        pub.subscribe(self.do_select_all, 'selected_revision')
+        pub.subscribe(self.do_select_all, 'selected_hardware')
         pub.subscribe(self.do_set_all_attributes,
                       'succeed_calculate_allocation_goals')
         pub.subscribe(self.do_update, 'request_update_allocation')
@@ -77,27 +77,27 @@ class DataManager(RAMSTKDataManager):
         )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Allocation BoM data from the RAMSTK Program
-        database.
+        """Retrieve the Allocation BoM data from the RAMSTK Program database.
 
         :param attributes: the attributes dict for the selected Revision.
         :return: None
         :rtype: None
         """
         self._revision_id = attributes['revision_id']
+        _hardware_id = attributes['hardware_id']
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
         for _allocation in self.dao.do_select_all(
                 RAMSTKAllocation,
-                key=['revision_id'],
-                value=[self._revision_id],
-                order=RAMSTKAllocation.parent_id):
+                key=['revision_id', 'parent_id'],
+                value=[self._revision_id, _hardware_id],
+                order=RAMSTKAllocation.hardware_id):
 
             self.tree.create_node(tag='allocation',
                                   identifier=_allocation.hardware_id,
-                                  parent=_allocation.parent_id,
+                                  parent=self._root,
                                   data={'allocation': _allocation})
 
         self.last_id = max(self.tree.nodes.keys())

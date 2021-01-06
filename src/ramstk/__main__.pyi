@@ -9,11 +9,14 @@ from ramstk.configuration import (
 from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
 )
+from ramstk.controllers import amAllocation as amAllocation
 from ramstk.controllers import amFMEA as amFMEA
 from ramstk.controllers import amHardware as amHardware
 from ramstk.controllers import amHazards as amHazards
+from ramstk.controllers import amSimilarItem as amSimilarItem
 from ramstk.controllers import amStakeholder as amStakeholder
 from ramstk.controllers import amValidation as amValidation
+from ramstk.controllers import dmAllocation as dmAllocation
 from ramstk.controllers import dmFailureDefinition as dmFailureDefinition
 from ramstk.controllers import dmFMEA as dmFMEA
 from ramstk.controllers import dmFunction as dmFunction
@@ -24,6 +27,7 @@ from ramstk.controllers import dmPoF as dmPoF
 from ramstk.controllers import dmProgramStatus as dmProgramStatus
 from ramstk.controllers import dmRequirement as dmRequirement
 from ramstk.controllers import dmRevision as dmRevision
+from ramstk.controllers import dmSimilarItem as dmSimilarItem
 from ramstk.controllers import dmStakeholder as dmStakeholder
 from ramstk.controllers import dmUsageProfile as dmUsageProfile
 from ramstk.controllers import dmValidation as dmValidation
