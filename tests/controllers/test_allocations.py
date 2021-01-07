@@ -93,7 +93,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_allocations')
         assert pub.isSubscribed(DUT.do_get_tree, 'request_get_allocation_tree')
-        assert pub.isSubscribed(DUT.do_select_all, 'selected_hardware')
+        assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_set_all_attributes,
                                 'succeed_calculate_allocation_goals')
         assert pub.isSubscribed(DUT.do_update, 'request_update_allocation')
@@ -220,7 +220,7 @@ class TestDeleteMethods():
         pub.unsubscribe(self.on_succeed_delete_allocation,
                         'succeed_delete_allocation')
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_delete_with_children(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib
         Tree."""

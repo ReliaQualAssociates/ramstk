@@ -26,7 +26,7 @@ logdir = ""
 progdir = ""
 
 [layouts]
-allocations = "allocation.toml"
+allocation = "allocation.toml"
 failure_definitions = "failure_definition.toml"
 fmea = "fmea.toml"
 function = "function.toml"

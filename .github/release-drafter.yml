@@ -12,11 +12,11 @@ categories:
   - title: 'Features'
     labels:
       - 'feature'
-      - 'enhancement'
   - title: 'Maintenance'
     labels:
       - 'chore'
       - 'quality'
+      - 'enhancement'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:

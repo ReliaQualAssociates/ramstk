@@ -39,17 +39,18 @@ class GoalMethodPanel(RAMSTKPanel):
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = [
-            _("Select Allocation Method"),
-            _("Select Goal Metric"),
-            _("R(t) Goal"),
-            _("h(t) Goal"),
-            _("MTBF Goal"),
+            _("Select Allocation Method "),
+            _("Select Goal Metric "),
+            _("R(t) Goal "),
+            _("h(t) Goal "),
+            _("MTBF Goal "),
         ]
 
         # Initialize private scalar instance attributes.
         self._measure_id: int = 0
         self._method_id: int = 0
         self._title: str = _("Allocation Goals and Method")
+        self._tree: treelib.Tree = treelib.Tree()
 
         # Initialize public dictionary instance attributes.
 
@@ -88,9 +89,9 @@ class GoalMethodPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, 'succeed_retrieve_allocation')
-
         pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_load_panel, 'selected_hardware')
+        pub.subscribe(self._do_set_tree, 'succeed_retrieve_allocation')
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -113,21 +114,22 @@ class GoalMethodPanel(RAMSTKPanel):
         :rtype: None
         """
         self._record_id = attributes['hardware_id']
-        self._measure_id = attributes['goal_measure_id']
-        self._method_id = attributes['allocation_method_id']
 
-        self.cmbAllocationMethod.do_update(attributes['allocation_method_id'],
+        _allocation = self._tree.get_node(self._record_id).data['allocation']
+        self._measure_id = _allocation.goal_measure_id
+        self._method_id = _allocation.allocation_method_id
+
+        self.cmbAllocationMethod.do_update(_allocation.allocation_method_id,
                                            signal='changed')
-        self.cmbAllocationGoal.do_update(attributes['goal_measure_id'],
+        self.cmbAllocationGoal.do_update(_allocation.goal_measure_id,
                                          signal='changed')
         self.txtReliabilityGoal.do_update(str(
-            self.fmt.format(attributes['reliability_goal'])),
+            self.fmt.format(_allocation.reliability_goal)),
                                           signal='changed')  # noqa
         self.txtHazardRateGoal.do_update(str(
-            self.fmt.format(attributes['hazard_rate_goal'])),
+            self.fmt.format(_allocation.hazard_rate_goal)),
                                          signal='changed')  # noqa
-        self.txtMTBFGoal.do_update(str(self.fmt.format(
-            attributes['mtbf_goal'])),
+        self.txtMTBFGoal.do_update(str(self.fmt.format(_allocation.mtbf_goal)),
                                    signal='changed')  # noqa
 
         self._do_set_sensitive()
@@ -155,6 +157,15 @@ class GoalMethodPanel(RAMSTKPanel):
             self.txtMTBFGoal.props.editable = True
             self.txtMTBFGoal.set_sensitive(True)
 
+    def _do_set_tree(self, tree: treelib.Tree) -> None:
+        """Set the _allocation_tree equal to the datamanger Hardware tree.
+
+        :param tree: the allocation datamanger treelib.Tree() of data.
+        :return: None
+        :rtype: None
+        """
+        self._tree = tree
+
     def __do_load_combobox(self) -> None:
         """Load the RAMSTKComboBox() widgets.
 
@@ -178,20 +189,27 @@ class GoalMethodPanel(RAMSTKPanel):
         # ----- COMBOBOXES
         self.cmbAllocationMethod.dic_handler_id[
             'changed'] = self.cmbAllocationMethod.connect(
-                'changed', self.on_changed_combo, 0, 'wvw_editing_hardware')
+                'changed',
+                super().on_changed_combo, 0, 'wvw_editing_allocation')
         self.cmbAllocationGoal.dic_handler_id[
             'changed'] = self.cmbAllocationGoal.connect(
-                'changed', self.on_changed_combo, 1, 'wvw_editing_hardware')
+                'changed',
+                super().on_changed_combo, 1, 'wvw_editing_allocation')
+
+        self.cmbAllocationGoal.connect('changed', self.__do_set_sensitive)
 
         # ----- ENTRIES
         self.txtReliabilityGoal.dic_handler_id[
             'changed'] = self.txtReliabilityGoal.connect(
-                'changed', self.on_changed_entry, 2, 'wvw_editing_hardware')
+                'changed',
+                super().on_changed_entry, 2, 'wvw_editing_allocation')
         self.txtHazardRateGoal.dic_handler_id[
             'changed'] = self.txtHazardRateGoal.connect(
-                'changed', self.on_changed_entry, 3, 'wvw_editing_hardware')
+                'changed',
+                super().on_changed_entry, 3, 'wvw_editing_allocation')
         self.txtMTBFGoal.dic_handler_id['changed'] = self.txtMTBFGoal.connect(
-            'changed', self.on_changed_entry, 4, 'wvw_editing_hardware')
+            'changed',
+            super().on_changed_entry, 4, 'wvw_editing_allocation')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the General Data Work View and widgets.
@@ -219,6 +237,16 @@ class GoalMethodPanel(RAMSTKPanel):
         self.txtReliabilityGoal.do_set_properties(tooltip=_(
             "Displays the reliability goal for the selected hardware item."),
                                                   width=125)  # noqa
+
+    def __do_set_sensitive(self, combo: RAMSTKComboBox) -> None:
+        """Wrap the _do_set_sensitive() method when goal combo changes.
+
+        :param combo: the allocation goal measure RAMSTKComboBox().
+        :return: None
+        :rtype: None
+        """
+        self._measure_id = combo.get_active()
+        self._do_set_sensitive()
 
 
 class AllocationPanel(RAMSTKPanel):
@@ -249,9 +277,11 @@ class AllocationPanel(RAMSTKPanel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._allocation_tree: treelib.Tree = treelib.Tree()
+        self._selected_hardware_id: int = 0
+        self._hardware_tree: treelib.Tree = treelib.Tree()
         self._method_id: int = 0
         self._title: str = _("Allocation Analysis")
+        self._tree: treelib.Tree = treelib.Tree()
 
         # Initialize public dictionary attributes.
 
@@ -265,10 +295,12 @@ class AllocationPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
-        pub.subscribe(super().do_load_panel, 'succeed_retrieve_allocation')
 
         pub.subscribe(self._do_load_hardware_attrs,
                       'succeed_retrieve_hardware')
+        pub.subscribe(self._do_set_tree, 'succeed_retrieve_allocation')
+        pub.subscribe(self._do_set_tree, 'succeed_retrieve_hardware')
+        pub.subscribe(self._on_select_hardware, 'selected_hardware')
 
     def do_set_callbacks(self) -> None:
         """Set the callback methods and functions.
@@ -513,7 +545,37 @@ class AllocationPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._allocation_tree = tree
+        if tree.get_node(0).tag == 'allocations':
+            self._tree = tree
+        elif tree.get_node(0).tag == 'hardwares':
+            self._hardware_tree = tree
+
+    def _do_load_hardware_attrs(self, tree: treelib.Tree) -> None:
+        """Load the hardware data dict.
+
+        :param tree: the hardware treelib.Tree().
+        :return: None
+        :rtype: None
+        """
+        for _node in tree.all_nodes()[1:]:
+            _hardware = _node.data['hardware']
+            _reliability = _node.data['reliability']
+            self._dic_hardware_attrs[_hardware.hardware_id] = [
+                _hardware.name, _reliability.hazard_rate_logistics,
+                _reliability.mtbf_logistics,
+                _reliability.reliability_logistics,
+                _reliability.availability_logistics, _hardware.part
+            ]
+
+    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+        """Load the allocation list for the selected hardware item.
+
+        :param attributes: the attributes dict for the selected hardware item.
+        :return: None
+        :rtype: None
+        """
+        self._selected_hardware_id = attributes['hardware_id']
+        super().do_load_panel(self._tree)
 
     def __do_load_allocation(self,
                              node: Any = '',
@@ -530,14 +592,16 @@ class AllocationPanel(RAMSTKPanel):
         # pylint: disable=unused-variable
         _entity = node.data['allocation']
 
-        if not self._dic_hardware_attrs[_entity.hardware_id][5]:
+        if (not self._dic_hardware_attrs[_entity.hardware_id][5]
+                and _entity.parent_id == self._selected_hardware_id):
+            _hardware = self._hardware_tree.get_node(_entity.hardware_id).data
             _model = self.tvwTreeView.get_model()
 
-            _name = self._dic_hardware_attrs[_entity.hardware_id][0]
-            _hr_logistics = self._dic_hardware_attrs[_entity.hardware_id][1]
-            _mtbf_logistics = self._dic_hardware_attrs[_entity.hardware_id][2]
-            _rel_logistics = self._dic_hardware_attrs[_entity.hardware_id][3]
-            _avail_logistics = self._dic_hardware_attrs[_entity.hardware_id][4]
+            _name = _hardware['hardware'].name
+            _hr_logistics = _hardware['reliability'].hazard_rate_logistics
+            _mtbf_logistics = _hardware['reliability'].mtbf_logistics
+            _rel_logistics = _hardware['reliability'].reliability_logistics
+            _avail_logistics = _hardware['reliability'].availability_logistics
 
             _attributes = [
                 _entity.revision_id, _entity.hardware_id, _name,
@@ -569,23 +633,6 @@ class AllocationPanel(RAMSTKPanel):
                 )
 
         return _new_row
-
-    def _do_load_hardware_attrs(self, tree: treelib.Tree) -> None:
-        """Load the hardware data dict.
-
-        :param tree: the hardware treelib.Tree().
-        :return: None
-        :rtype: None
-        """
-        for _node in tree.all_nodes()[1:]:
-            _hardware = _node.data['hardware']
-            _reliability = _node.data['reliability']
-            self._dic_hardware_attrs[_hardware.hardware_id] = [
-                _hardware.name, _reliability.hazard_rate_logistics,
-                _reliability.mtbf_logistics,
-                _reliability.reliability_logistics,
-                _reliability.availability_logistics, _hardware.part
-            ]
 
     def __do_set_properties(self) -> None:
         """Set the properties of the General Data Work View and widgets.
@@ -630,7 +677,7 @@ class Allocation(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'allocations'
+    _module: str = 'allocation'
     _tablabel: str = _("Allocation")
     _tabtooltip: str = _("Displays the Allocation analysis for the selected "
                          "hardware item.")
