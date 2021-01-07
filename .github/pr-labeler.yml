@@ -1,3 +1,6 @@
 feature: ['feature/*', 'feat/*']
 fix: ['fix/*', 'bugfix/*', 'hotfix/*']
 chore: ['chore/*', 'test/*', 'refactor/*']
+minor: ['feature/*', 'feat/*']
+patch: ['fix/*', 'bugfix/*', 'hotfix/*']
+enhancement: ['refactor/*']

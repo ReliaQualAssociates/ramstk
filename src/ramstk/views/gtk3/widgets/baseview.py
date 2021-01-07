@@ -158,6 +158,8 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.subscribe(self.do_set_cursor_active, 'request_set_cursor_active')
         pub.subscribe(self.do_set_cursor_active,
                       'succeed_update_{0}'.format(self._module))
+        pub.subscribe(self.do_set_cursor_active,
+                      'succeed_calculate_{0}'.format(self._module))
         pub.subscribe(self.do_set_cursor_active, 'succeed_update_all')
         pub.subscribe(self.do_set_cursor_active_on_fail,
                       'fail_delete_{0}'.format(self._module))

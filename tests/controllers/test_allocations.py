@@ -567,21 +567,21 @@ class TestAnalysisMethods():
     def on_succeed_calculate_agree(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data[
-            'allocation'].hazard_rate_alloc == pytest.approx(0.03160455)
+            'allocation'].hazard_rate_alloc == pytest.approx(0.007781975)
         assert tree.get_node(2).data['allocation'].mtbf_alloc == pytest.approx(
-            31.6410171)
+            128.502081)
         assert tree.get_node(
-            2).data['allocation'].reliability_alloc == pytest.approx(0.7290263)
+            2).data['allocation'].reliability_alloc == pytest.approx(0.4963977)
         print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
 
     def on_succeed_calculate_arinc(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data[
-            'allocation'].hazard_rate_alloc == pytest.approx(0.01731191)
+            'allocation'].hazard_rate_alloc == pytest.approx(0.0001445267)
         assert tree.get_node(2).data['allocation'].mtbf_alloc == pytest.approx(
-            57.7637037)
+            6919.1382176)
         assert tree.get_node(
-            2).data['allocation'].reliability_alloc == pytest.approx(0.1770734)
+            2).data['allocation'].reliability_alloc == pytest.approx(0.9856513)
         print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
 
     def on_fail_calculate_arinc(self, error_message):
@@ -602,12 +602,12 @@ class TestAnalysisMethods():
 
     def on_succeed_calculate_foo(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(
-            2).data['allocation'].hazard_rate_alloc == pytest.approx(0.1151243)
-        assert tree.get_node(2).data['allocation'].mtbf_alloc == pytest.approx(
-            8.6862670)
         assert tree.get_node(2).data[
-            'allocation'].reliability_alloc == pytest.approx(1.000500334e-05)
+            'allocation'].hazard_rate_alloc == pytest.approx(1.0005003336e-05)
+        assert tree.get_node(2).data['allocation'].mtbf_alloc == pytest.approx(
+            99949.9916625)
+        assert tree.get_node(
+            2).data['allocation'].reliability_alloc == pytest.approx(0.999)
         print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
 
     @pytest.mark.unit
@@ -699,8 +699,9 @@ class TestAnalysisMethods():
         DUT._tree.get_node(1).data['allocation'].allocation_method_id = 2
         DUT._tree.get_node(1).data['allocation'].reliability_goal = 0.717
         DUT._tree.get_node(2).data['allocation'].duty_cycle = 90.0
-        DUT._tree.get_node(2).data['allocation'].mission_time = 10.0
-        DUT._tree.get_node(2).data['allocation'].n_sub_elements = 4
+        DUT._tree.get_node(2).data['allocation'].mission_time = 100.0
+        DUT._tree.get_node(2).data['allocation'].n_sub_subsystems = 6
+        DUT._tree.get_node(2).data['allocation'].n_sub_elements = 2
         DUT._tree.get_node(2).data['allocation'].weight_factor = 0.95
 
         pub.sendMessage('request_allocate_reliability', node_id=1)

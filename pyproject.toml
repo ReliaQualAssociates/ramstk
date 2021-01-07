@@ -114,6 +114,7 @@ extension-pkg-whitelist = [
 
 [tool.pylint.messages_control]
 disable = [
+	'invalid-name',
 	'line-too-long',
 	'too-many-instance-attributes',
 	'too-few-public-methods',

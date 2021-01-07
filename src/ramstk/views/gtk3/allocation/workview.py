@@ -196,6 +196,7 @@ class GoalMethodPanel(RAMSTKPanel):
                 'changed',
                 super().on_changed_combo, 1, 'wvw_editing_allocation')
 
+        self.cmbAllocationMethod.connect('changed', self.__on_method_changed)
         self.cmbAllocationGoal.connect('changed', self.__do_set_sensitive)
 
         # ----- ENTRIES
@@ -248,6 +249,17 @@ class GoalMethodPanel(RAMSTKPanel):
         self._measure_id = combo.get_active()
         self._do_set_sensitive()
 
+    def __on_method_changed(self, combo: RAMSTKComboBox) -> None:
+        """Wrap the _do_set_sensitive() method when goal combo changes.
+
+        :param combo: the allocation calculation method RAMSTKComboBox().
+        :return: None
+        :rtype: None
+        """
+        self._method_id = combo.get_active()
+        pub.sendMessage('succeed_change_allocation_method',
+                        method_id=self._method_id)
+
 
 class AllocationPanel(RAMSTKPanel):
     """Panel to display reliability Allocation worksheet."""
@@ -269,6 +281,19 @@ class AllocationPanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
+        self._dic_attribute_updater = {
+            'revision_id': [None, 'edited', 0],
+            'hardware_id': [None, 'edited', 1],
+            'included': [None, 'toggled', 3],
+            'n_sub_systems': [None, 'edited', 4],
+            'n_sub_elements': [None, 'edited', 5],
+            'mission_time': [None, 'edited', 6],
+            'duty_cycle': [None, 'edited', 7],
+            'int_factor': [None, 'edited', 8],
+            'soa_factor': [None, 'edited', 9],
+            'op_time_factor': [None, 'edited', 10],
+            'env_factor': [None, 'edited', 11],
+        }
         self._dic_hardware_attrs: Dict[str, Any] = {}
         self._dic_row_loader = {
             'allocation': self.__do_load_allocation,
@@ -295,12 +320,14 @@ class AllocationPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
+        pub.subscribe(super().do_load_panel, 'succeed_calculate_allocation')
 
-        pub.subscribe(self._do_load_hardware_attrs,
-                      'succeed_retrieve_hardware')
         pub.subscribe(self._do_set_tree, 'succeed_retrieve_allocation')
         pub.subscribe(self._do_set_tree, 'succeed_retrieve_hardware')
         pub.subscribe(self._on_select_hardware, 'selected_hardware')
+
+        pub.subscribe(self._on_method_changed,
+                      'succeed_change_allocation_method')
 
     def do_set_callbacks(self) -> None:
         """Set the callback methods and functions.
@@ -308,7 +335,8 @@ class AllocationPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_cell_callbacks('wvw_editing_hardware', [
+        super().do_set_callbacks()
+        super().do_set_cell_callbacks('wvw_editing_allocation', [
             self._lst_col_order[3],
             self._lst_col_order[5],
             self._lst_col_order[6],
@@ -431,9 +459,6 @@ class AllocationPanel(RAMSTKPanel):
             },
         }
 
-        self.tvwTreeView.editable = _dic_editable[self._method_id]
-        self.tvwTreeView.do_set_columns_editable(editable=None)
-
         _dic_visible: Dict[int, Dict[str, str]] = {
             1: {
                 'col0': 'False',
@@ -533,10 +558,13 @@ class AllocationPanel(RAMSTKPanel):
             },
         }
 
-        # TODO: Remove editable argument after all RAMSTKTreeView()'s are
-        #  updated.
-        self.tvwTreeView.visible = _dic_visible[self._method_id]
-        self.tvwTreeView.do_set_visible_columns()
+        if self._method_id != 0:
+            # TODO: Remove editable argument after all RAMSTKTreeView()'s are
+            #  updated.
+            self.tvwTreeView.editable = _dic_editable[self._method_id]
+            self.tvwTreeView.do_set_columns_editable(editable=None)
+            self.tvwTreeView.visible = _dic_visible[self._method_id]
+            self.tvwTreeView.do_set_visible_columns()
 
     def _do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the _allocation_tree equal to the datamanger Hardware tree.
@@ -549,15 +577,15 @@ class AllocationPanel(RAMSTKPanel):
             self._tree = tree
         elif tree.get_node(0).tag == 'hardwares':
             self._hardware_tree = tree
+            self._do_load_hardware_attrs()
 
-    def _do_load_hardware_attrs(self, tree: treelib.Tree) -> None:
+    def _do_load_hardware_attrs(self) -> None:
         """Load the hardware data dict.
 
-        :param tree: the hardware treelib.Tree().
         :return: None
         :rtype: None
         """
-        for _node in tree.all_nodes()[1:]:
+        for _node in self._hardware_tree.all_nodes()[1:]:
             _hardware = _node.data['hardware']
             _reliability = _node.data['reliability']
             self._dic_hardware_attrs[_hardware.hardware_id] = [
@@ -567,6 +595,29 @@ class AllocationPanel(RAMSTKPanel):
                 _reliability.availability_logistics, _hardware.part
             ]
 
+    def _on_method_changed(self, method_id: int) -> None:
+        """Set method ID attributes when user changes the selection.
+
+        :param method_id: the newly selected allocation method.
+        :return: None
+        :rtype: None
+        """
+        self._method_id = method_id
+        self._do_set_columns_editable()
+
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        """Handle events for the Hardware package Module View RAMSTKTreeView().
+
+        This method is called whenever a Hardware Module View RAMSTKTreeView()
+        row is activated/changed.
+
+        :param selection: the Hardware class Gtk.TreeSelection().
+        :return: None
+        """
+        _attributes = super().on_row_change(selection)
+        if _attributes:
+            self._record_id = _attributes['hardware_id']
+
     def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
         """Load the allocation list for the selected hardware item.
 
@@ -575,7 +626,10 @@ class AllocationPanel(RAMSTKPanel):
         :rtype: None
         """
         self._selected_hardware_id = attributes['hardware_id']
+        self._method_id = self._tree.get_node(
+            attributes['hardware_id']).data['allocation'].allocation_method_id
         super().do_load_panel(self._tree)
+        self._do_set_columns_editable()
 
     def __do_load_allocation(self,
                              node: Any = '',

@@ -475,8 +475,8 @@ class RAMSTKPanel(RAMSTKFrame):
             try:
                 _cell[0].connect('edited', self.on_cell_edit, _idx, message)
             except TypeError:
-                _cell[0].connect('toggled', self.on_cell_edit, 'new text',
-                                 _idx, message)
+                _cell[0].connect('toggled', self.on_cell_toggled, _idx,
+                                 message)
 
     def do_set_headings(self) -> None:
         """Set the treeview headings depending on the selected row.
@@ -569,13 +569,17 @@ class RAMSTKPanel(RAMSTKFrame):
         """
         _new_text = boolean_to_integer(cell.get_active())
         _lst_col_order: List[int] = list(self.tvwTreeView.position.values())
-
         try:
-            _key = self._dic_attribute_keys[_lst_col_order[position]]
+            _keys = list(self.tvwTreeView.position.keys())
+            _vals = list(self.tvwTreeView.position.values())
+            _col = _keys[_vals.index(position)]
+            _key = self.tvwTreeView.korder[_col]
+            _position = self.tvwTreeView.position[_col]
+
             if not self.tvwTreeView.do_edit_cell(cell, path, _new_text,
                                                  position):
                 pub.sendMessage(message,
-                                node_id=[self.parent_id, self._record_id, ''],
+                                node_id=[self._record_id, ''],
                                 package={_key: _new_text})
         except KeyError:
             _method_name: str = inspect.currentframe(  # type: ignore

@@ -80,12 +80,14 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].reliability_goal
+        _method_id = node.data['allocation'].allocation_method_id
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes: Dict[str,
                               Any] = _node.data['allocation'].get_attributes()
+            _attributes['allocation_method_id'] = _method_id
 
             (_attributes['n_sub_elements'], _attributes['n_sub_systems']
              ) = self._do_calculate_agree_total_elements(node)
@@ -175,11 +177,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].hazard_rate_goal
+        _method_id = node.data['allocation'].allocation_method_id
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes = _node.data['allocation'].get_attributes()
+            _attributes['allocation_method_id'] = _method_id
 
             _attributes[
                 'weight_factor'] = self._do_calculate_arinc_weight_factor(
@@ -235,11 +239,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].reliability_goal
+        _method_id = node.data['allocation'].allocation_method_id
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes = _node.data['allocation'].get_attributes()
+            _attributes['allocation_method_id'] = _method_id
 
             _attributes['weight_factor'] = (
                 1.0 / _node.data['allocation'].n_sub_systems)
@@ -262,24 +268,27 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].hazard_rate_goal
+        _method_id = node.data['allocation'].allocation_method_id
+        _cum_weight = self._do_calculate_foo_cumulative_weight(node.identifier)
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes = _node.data['allocation'].get_attributes()
-
-            _cum_weight = self._do_calculate_foo_cumulative_weight(_node_id)
+            _attributes['allocation_method_id'] = _method_id
 
             _attributes = allocation.do_allocate_reliability(
                 _parent_goal, _cum_weight, **_attributes)
 
+            _node.data['allocation'].weight_factor = _attributes[
+                'weight_factor']
+            _node.data['allocation'].percent_weight_factor = _attributes[
+                'percent_weight_factor']
             _node.data['allocation'].mtbf_alloc = _attributes['mtbf_alloc']
             _node.data['allocation'].hazard_rate_alloc = _attributes[
                 'hazard_rate_alloc']
             _node.data['allocation'].reliability_alloc = _attributes[
                 'reliability_alloc']
-
-            _parent_goal = _node.data['allocation'].hazard_rate_goal
 
     def _do_calculate_foo_cumulative_weight(self, node_id: int) -> int:
         """Calculate the cumulative weight for the FOO method.
