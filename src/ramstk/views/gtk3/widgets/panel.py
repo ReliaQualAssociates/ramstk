@@ -568,13 +568,12 @@ class RAMSTKPanel(RAMSTKFrame):
         :rtype: None
         """
         _new_text = boolean_to_integer(cell.get_active())
-        _lst_col_order: List[int] = list(self.tvwTreeView.position.values())
+
         try:
             _keys = list(self.tvwTreeView.position.keys())
             _vals = list(self.tvwTreeView.position.values())
             _col = _keys[_vals.index(position)]
             _key = self.tvwTreeView.korder[_col]
-            _position = self.tvwTreeView.position[_col]
 
             if not self.tvwTreeView.do_edit_cell(cell, path, _new_text,
                                                  position):
