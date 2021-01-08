@@ -78,6 +78,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
         elif _node.data['similar_item'].similar_item_method_id == 2:
             self._do_calculate_user_defined(_node)
 
+        pub.sendMessage(
+            'succeed_calculate_similar_item',
+            tree=self._tree,
+        )
+
     def _do_calculate_topic_633(self, node: treelib.Node) -> None:
         """Calculate the similar item hazard rate per topic 6.3.3.
 

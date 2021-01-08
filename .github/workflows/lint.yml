@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check code format with docformatter and isort
+      - name: Check code format with docformatter, isort, and yapf
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
@@ -35,7 +35,7 @@ jobs:
           use-pylint: false
           use-flake8: false
           extra-black-options: ""
-          extra-yapf-options: "--style ./setup.cfg"
+          extra-yapf-options: "-r --style ./setup.cfg"
           extra-isort-options: "--settings-file ./pyproject.toml"
           extra-docformatter-options: ""
           extra-pycodestyle-options: ""
