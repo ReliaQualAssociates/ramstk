@@ -7,7 +7,7 @@ on:
 
 jobs:
   test_suite:
-    name:
+    name: RAMSTK Test Suite
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Update apt and install GUI packages
+      - name: Update and install system packages
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
@@ -34,13 +34,18 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: Create and use a virtual environment
+        run: |
+          pip install -U pip setuptools>12.0 urllib3 pip-tools virtualenv
+          python -mvenv ramstk-venv${{ matrix.python }}
+          source ramstk-venv${{ matrix.python }}/bin/activate
+
       - name: Install RAMSTK dependencies
         run: |
-          pip install -U pip setuptools>12.0 urllib3 pip-tools
           pip install -U -r requirements.txt -r requirements-test.txt
 
       - name: Install RAMSTK
-        run: make PREFIX=$VIRTUAL_ENV install
+        run: make install
 
       - name: Run tests with coverage
         run: make coverage
