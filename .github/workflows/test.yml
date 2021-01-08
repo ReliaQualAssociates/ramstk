@@ -45,7 +45,7 @@ jobs:
           pip install -U -r requirements.txt -r requirements-test.txt
 
       - name: Install RAMSTK
-        run: make install
+        run: make PREFIX=$VIRTUAL_ENV install
 
       - name: Run tests with coverage
         run: make coverage
