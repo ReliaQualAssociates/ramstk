@@ -6,11 +6,12 @@ on:
       - master
 
 jobs:
-  runner-job:
+  test_suite:
+    name:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7]
+        python: [3.6, 3.7]
 
     services:
       postgres:
@@ -23,15 +24,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - name: Update apt and install GUI packages
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: gabrielfalcao/pyenv-action@v7
+        with:
+          default: ${{ matrix.python }}
+          command: pip install -U pip setuptools>12.0 urllib3 pip-tools
+
+      - name: Create and enter virtual environment
+        run: pyenv local ${{ matrix.python }} && python -mvenv .venv${{ matrix.python }}
 
       - name: Install dependencies
         run: |
@@ -39,7 +44,7 @@ jobs:
           python -m pip install -U -r requirements.txt -r requirements-test.txt
 
       - name: Install RAMSTK
-        run: make install
+        run: make PREFIX=$VIRTUAL_ENV install
 
       - name: Run tests with coverage
         run: make coverage
