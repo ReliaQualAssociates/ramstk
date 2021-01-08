@@ -1,7 +1,6 @@
 -r requirements-test.txt
 
 # Packaging
-bump2version
 check-manifest
 
 # Code formatting

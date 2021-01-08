@@ -1,4 +1,4 @@
-codacy-coverage
+coverage
 coveralls
 pytest
 pytest-cov
