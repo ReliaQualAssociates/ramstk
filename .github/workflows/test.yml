@@ -1,7 +1,10 @@
-name: Run RAMSTK Test Suite
+name: RAMSTK Test Suite
 
 on:
   pull_request:
+    branches:
+      - master
+  push:
     branches:
       - master
 
