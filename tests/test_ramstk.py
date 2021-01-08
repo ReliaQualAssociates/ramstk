@@ -93,8 +93,15 @@ class TestProgramManager():
             'analysis': None,
             'data': None
         }
-        # assert DUT.dic_managers['ffmea'] == {'analysis': None, 'data': None}
+        assert DUT.dic_managers['allocation'] == {
+            'analysis': None,
+            'data': None
+        }
         assert DUT.dic_managers['requirement'] == {
+            'data': None
+        }
+        assert DUT.dic_managers['similar_item'] == {
+            'analysis': None,
             'data': None
         }
         assert DUT.dic_managers['stakeholder'] == {
