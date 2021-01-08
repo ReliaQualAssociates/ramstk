@@ -30,18 +30,14 @@ jobs:
           sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
 
       - name: Set up Python ${{ matrix.python }}
-        uses: gabrielfalcao/pyenv-action@v7
+        uses: actions/setup-python@v2
         with:
-          default: ${{ matrix.python }}
-          command: pip install -U pip setuptools>12.0 urllib3 pip-tools
+          python-version: ${{ matrix.python }}
 
-      - name: Create and enter virtual environment
-        run: pyenv local ${{ matrix.python }} && python -mvenv .venv${{ matrix.python }}
-
-      - name: Install dependencies
+      - name: Install RAMSTK dependencies
         run: |
-          python -m pip install -U pip setuptools>12.0 urllib3 pip-tools
-          python -m pip install -U -r requirements.txt -r requirements-test.txt
+          pip install -U pip setuptools>12.0 urllib3 pip-tools
+          pip install -U -r requirements.txt -r requirements-test.txt
 
       - name: Install RAMSTK
         run: make PREFIX=$VIRTUAL_ENV install
