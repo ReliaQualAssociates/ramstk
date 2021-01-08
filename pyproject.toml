@@ -55,6 +55,7 @@ omit = [
 	'conf.py',
 	'setup.py'
 ]
+relative_files = true
 
 [tool.coverage.report]
 omit = [

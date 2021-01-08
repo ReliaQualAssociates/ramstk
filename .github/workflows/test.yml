@@ -46,3 +46,20 @@ jobs:
           pip install -U -r requirements.txt -r requirements-test.txt
           make PREFIX=$VIRTUAL_ENV install
           xvfb-run --auto-servernum make coverage
+
+      - name: Coveralls report
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel: true
+          flag-name: ${{ matrix.python }}
+
+  finish:
+    needs: test_suite
+      runs-on: ubuntu-latest
+      steps:
+        - name: Coveralls
+          uses: AndreMiras/coveralls-python-action@develop
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            parallel-finished: true
