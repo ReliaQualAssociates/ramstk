@@ -1,7 +1,7 @@
 lifelines<0.15
 matplotlib
 openpyxl
-pandas
+pandas==1.1.5
 psycopg2
 pycairo<1.20.0
 pygobject>=3.27
