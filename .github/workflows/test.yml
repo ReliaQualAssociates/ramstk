@@ -56,10 +56,10 @@ jobs:
 
   finish:
     needs: test_suite
-      runs-on: ubuntu-latest
-      steps:
-        - name: Coveralls
-          uses: AndreMiras/coveralls-python-action@develop
-          with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            parallel-finished: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
