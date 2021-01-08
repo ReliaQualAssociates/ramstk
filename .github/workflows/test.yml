@@ -45,4 +45,4 @@ jobs:
           pip install -U pip setuptools>12.0 urllib3 pip-tools
           pip install -U -r requirements.txt -r requirements-test.txt
           make PREFIX=$VIRTUAL_ENV install
-          xfvb-run --auto-servernum make coverage
+          xvfb-run --auto-servernum make coverage
