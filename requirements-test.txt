@@ -67,7 +67,6 @@ coverage==5.3.1 \
     --hash=sha256:fda29412a66099af6d6de0baa6bd7c52674de177ec2ad2630ca264142d69c6c7 \
     --hash=sha256:ff1330e8bc996570221b450e2d539134baa9465f5cb98aff0e0f73f34172e0ae
     # via
-    #   -r requirements-test.in
     #   coveralls
     #   pytest-cov
 coveralls==2.2.0 \

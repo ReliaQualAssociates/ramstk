@@ -29,6 +29,7 @@ jobs:
           echo "VIRTUAL_ENV=ramstk-venv${{ matrix.python }}" >> $GITHUB_ENV
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
+          sudo pip install -U pip coverage[toml]
 
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v2
