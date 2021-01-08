@@ -35,18 +35,14 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Create and use a virtual environment
+      - name: Create a virtual environment
         run: |
           pip install -U pip setuptools>12.0 urllib3 pip-tools virtualenv
           python -mvenv $VIRTUAL_ENV
-          source $VIRTUAL_ENV/bin/activate
 
-      - name: Install RAMSTK dependencies
+      - name: Install and test RAMSTK
         run: |
+          source $VIRTUAL_ENV/bin/activate
           pip install -U -r requirements.txt -r requirements-test.txt
-
-      - name: Install RAMSTK
-        run: make PREFIX=$VIRTUAL_ENV install
-
-      - name: Run tests with coverage
-        run: make coverage
+          make PREFIX=$VIRTUAL_ENV install
+          make coverage
