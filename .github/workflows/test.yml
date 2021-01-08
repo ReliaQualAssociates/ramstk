@@ -36,9 +36,10 @@ jobs:
 
       - name: Create and use a virtual environment
         run: |
+          echo "VIRTUAL_ENV=ramstk-venv${{ matrix.python }}" >> $GITHUB_ENV
           pip install -U pip setuptools>12.0 urllib3 pip-tools virtualenv
-          python -mvenv ramstk-venv${{ matrix.python }}
-          source ramstk-venv${{ matrix.python }}/bin/activate
+          python -mvenv $VIRTUAL_ENV
+          source $VIRTUAL_ENV/bin/activate
 
       - name: Install RAMSTK dependencies
         run: |
