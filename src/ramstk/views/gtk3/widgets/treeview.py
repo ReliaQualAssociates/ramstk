@@ -463,8 +463,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             self.visible['pixbuf'] = 'False'
             self.widgets['pixbuf'] = 'pixbuf'
 
-    # pylint: disable=unused-argument
-    def do_set_columns_editable(self, editable: List[int]) -> None:
+    def do_set_columns_editable(self) -> None:
         """Set list of columns editable.
 
         :return: None

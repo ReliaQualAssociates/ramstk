@@ -421,9 +421,7 @@ class SimilarItemPanel(RAMSTKPanel):
                 'col55': 'False',
             }
 
-        # TODO: Remove editable argument after all RAMSTKTreeView()'s are
-        #  updated.
-        self.tvwTreeView.do_set_columns_editable(editable=None)
+        self.tvwTreeView.do_set_columns_editable()
         self.tvwTreeView.do_set_visible_columns()
 
     def _do_set_tree(self, tree: treelib.Tree) -> None:
@@ -751,7 +749,7 @@ class SimilarItem(RAMSTKWorkView):
         """
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
-        self.do_embed_treeview_panel()
+        super().do_embed_treeview_panel()
         self._pnlPanel.do_load_combobox()
         self._pnlPanel.do_set_callbacks()
 

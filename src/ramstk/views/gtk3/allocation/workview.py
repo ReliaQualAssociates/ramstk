@@ -559,10 +559,8 @@ class AllocationPanel(RAMSTKPanel):
         }
 
         if self._method_id != 0:
-            # TODO: Remove editable argument after all RAMSTKTreeView()'s are
-            #  updated.
             self.tvwTreeView.editable = _dic_editable[self._method_id]
-            self.tvwTreeView.do_set_columns_editable(editable=None)
+            self.tvwTreeView.do_set_columns_editable()
             self.tvwTreeView.visible = _dic_visible[self._method_id]
             self.tvwTreeView.do_set_visible_columns()
 
@@ -810,7 +808,7 @@ class Allocation(RAMSTKWorkView):
 
         self._pnlGoalMethods.fmt = self.fmt
 
-        self.do_embed_treeview_panel()
+        super().do_embed_treeview_panel()
         self._pnlPanel.do_set_callbacks()
 
         self.remove(self.get_children()[-1])
