@@ -722,8 +722,7 @@ class TestAnalysisMethods():
         pub.sendMessage('succeed_get_all_hardware_attributes',
                         attributes={
                             'hardware_id': 1,
-                            'hazard_rate_active': 0.00032,
-                            'hardware_id': 2
+                            'hazard_rate_active': 0.00032
                         })
 
         assert DUT._node_hazard_rate == 0.00032
