@@ -30,6 +30,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the allocation item being analyzed.
     """
+
+    # Define private scalar class attributes.
+    _system_hazard_rate: float = 0.0
+
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[Any, Any]) -> None:
         """Initialize an instance of the allocation analysis manager.
@@ -45,7 +49,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         # Initialize private scalar attributes.
         self._node_hazard_rate: float = 0.0
-        self._system_hazard_rate: float = 0.0
 
         # Initialize public dictionary attributes.
 
@@ -66,7 +69,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
                       'request_calculate_allocation_goals')
         pub.subscribe(self._do_calculate_allocation,
                       'request_calculate_allocation')
-        pub.subscribe(self._on_select_hardware, 'selected_hardware')
+        pub.subscribe(self._on_get_hardware_attributes,
+                      'succeed_get_all_hardware_attributes')
 
     def _do_calculate_agree_allocation(self, node: treelib.Node) -> None:
         """Allocate reliability using the AGREE method.
@@ -76,12 +80,14 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].reliability_goal
+        _method_id = node.data['allocation'].allocation_method_id
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes: Dict[str,
                               Any] = _node.data['allocation'].get_attributes()
+            _attributes['allocation_method_id'] = _method_id
 
             (_attributes['n_sub_elements'], _attributes['n_sub_systems']
              ) = self._do_calculate_agree_total_elements(node)
@@ -171,11 +177,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].hazard_rate_goal
+        _method_id = node.data['allocation'].allocation_method_id
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes = _node.data['allocation'].get_attributes()
+            _attributes['allocation_method_id'] = _method_id
 
             _attributes[
                 'weight_factor'] = self._do_calculate_arinc_weight_factor(
@@ -231,11 +239,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].reliability_goal
+        _method_id = node.data['allocation'].allocation_method_id
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes = _node.data['allocation'].get_attributes()
+            _attributes['allocation_method_id'] = _method_id
 
             _attributes['weight_factor'] = (
                 1.0 / _node.data['allocation'].n_sub_systems)
@@ -258,24 +268,27 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         _parent_goal = node.data['allocation'].hazard_rate_goal
+        _method_id = node.data['allocation'].allocation_method_id
+        _cum_weight = self._do_calculate_foo_cumulative_weight(node.identifier)
 
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
 
             _attributes = _node.data['allocation'].get_attributes()
-
-            _cum_weight = self._do_calculate_foo_cumulative_weight(_node_id)
+            _attributes['allocation_method_id'] = _method_id
 
             _attributes = allocation.do_allocate_reliability(
                 _parent_goal, _cum_weight, **_attributes)
 
+            _node.data['allocation'].weight_factor = _attributes[
+                'weight_factor']
+            _node.data['allocation'].percent_weight_factor = _attributes[
+                'percent_weight_factor']
             _node.data['allocation'].mtbf_alloc = _attributes['mtbf_alloc']
             _node.data['allocation'].hazard_rate_alloc = _attributes[
                 'hazard_rate_alloc']
             _node.data['allocation'].reliability_alloc = _attributes[
                 'reliability_alloc']
-
-            _parent_goal = _node.data['allocation'].hazard_rate_goal
 
     def _do_calculate_foo_cumulative_weight(self, node_id: int) -> int:
         """Calculate the cumulative weight for the FOO method.
@@ -304,7 +317,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         return allocation.get_allocation_goal(**self._attributes)
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set hazard rate attributes when a hardware item is selected.
 
         :param attributes: the attributes dict for the selected hardware item.

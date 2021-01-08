@@ -55,6 +55,7 @@ omit = [
 	'conf.py',
 	'setup.py'
 ]
+relative_files = true
 
 [tool.coverage.report]
 omit = [
@@ -150,6 +151,7 @@ max-module-lines = 5000
 good-names = [
 	'_'
 ]
+attr-rgx = '^_{0,1}[a-zA-Z]{2,10}_{0,1}[a-zA-Z]{0,10}_{0,1}[a-zA-Z]{0,10}$'
 
 [tool.pylint.typecheck]
 ignore-mixin-members = true

@@ -16,7 +16,6 @@
         <td>
             <a href="https://travis-ci.org/ReliaQualAssociates/ramstk"><img alt="Travis CI Status"
             src="https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=master"></a>
-            <img alt="CircleCI" src="https://img.shields.io/circleci/build/github/ReliaQualAssociates/ramstk/master">
             <a href='https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master'><img src='https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master' alt='Coverage Status' /></a>
             <a href="https://codecov.io/gh/ReliaQualAssociates/ramstk"><img alt="Codecov Coverage"
             src="https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg"></a>

@@ -84,6 +84,7 @@ class HardwarePanel(RAMSTKPanel):
         self._dic_row_loader = {
             'hardware': self.__do_load_hardware,
         }
+
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.

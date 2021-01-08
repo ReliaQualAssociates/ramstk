@@ -413,6 +413,11 @@ class DataManager(RAMSTKDataManager):
                     hardware_id=self.last_id,
                     parent_id=parent_id,
                 )
+                pub.sendMessage(
+                    'request_insert_similar_item',
+                    hardware_id=self.last_id,
+                    parent_id=parent_id,
+                )
             except DataAccessError as _error:
                 pub.sendMessage(
                     'do_log_debug',

@@ -30,5 +30,5 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_roll_up_change_descriptions(self, node: treelib.Node) -> None:
         ...
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         ...

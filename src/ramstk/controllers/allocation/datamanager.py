@@ -77,8 +77,7 @@ class DataManager(RAMSTKDataManager):
         )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Allocation BoM data from the RAMSTK Program
-        database.
+        """Retrieve the Allocation BoM data from the RAMSTK Program database.
 
         :param attributes: the attributes dict for the selected Revision.
         :return: None
