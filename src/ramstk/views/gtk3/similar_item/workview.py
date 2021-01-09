@@ -308,8 +308,7 @@ class SimilarItemPanel(RAMSTKPanel):
             _hardware = _node.data['hardware']
             _reliability = _node.data['reliability']
             self._dic_hardware_attrs[_hardware.hardware_id] = [
-                _hardware.name, _reliability.hazard_rate_logistics,
-                _hardware.part
+                _hardware.name, _reliability.hazard_rate_active, _hardware.part
             ]
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
@@ -569,8 +568,8 @@ class SimilarItemPanel(RAMSTKPanel):
                 _entity.revision_id, _entity.hardware_id, _name, _hr_active,
                 self._dic_quality[_entity.quality_from_id],
                 self._dic_quality[_entity.quality_to_id],
-                self._dic_quality[_entity.environment_from_id],
-                self._dic_quality[_entity.environment_to_id],
+                self._dic_environment[_entity.environment_from_id],
+                self._dic_environment[_entity.environment_to_id],
                 _entity.temperature_from, _entity.temperature_to,
                 _entity.change_description_1, _entity.change_factor_1,
                 _entity.change_description_2, _entity.change_factor_2,

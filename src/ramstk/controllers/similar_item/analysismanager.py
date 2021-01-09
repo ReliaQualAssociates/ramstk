@@ -38,6 +38,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         super().__init__(configuration, **kwargs)
 
         # Initialize private dictionary attributes.
+        self._dic_hardware_hrs: Dict[int, float] = {}
 
         # Initialize private list attributes.
 
@@ -62,7 +63,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(self._do_roll_up_change_descriptions,
                       'request_roll_up_change_descriptions')
         pub.subscribe(self._on_get_hardware_attributes,
-                      'succeed_get_all_hardware_attributes')
+                      'succeed_get_hardware_tree')
 
     def _do_calculate_similar_item(self, node_id: int) -> None:
         """Perform a similar item calculates for currently selected item.
@@ -110,10 +111,12 @@ class AnalysisManager(RAMSTKAnalysisManager):
             'to': _attributes['temperature_to']
         }
 
+        _node_hazard_rate = self._dic_hardware_hrs[_attributes['hardware_id']]
+
         (_attributes['change_factor_1'], _attributes['change_factor_2'],
          _attributes['change_factor_3'],
          _attributes['result_1']) = similaritem.calculate_topic_633(
-             _environment, _quality, _temperature, self._node_hazard_rate)
+             _environment, _quality, _temperature, _node_hazard_rate)
 
         node.data['similar_item'].change_factor_1 = _attributes[
             'change_factor_1']
@@ -145,7 +148,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             ]
         })
 
-        _sia['hr'] = self._node_hazard_rate
+        _sia['hr'] = self._dic_hardware_hrs[_attributes['hardware_id']]
 
         _sia = similaritem.set_user_defined_change_factors(
             _sia, [
@@ -247,11 +250,15 @@ class AnalysisManager(RAMSTKAnalysisManager):
             tree=self._tree,
         )
 
-    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _on_get_hardware_attributes(self, tree) -> None:
         """Set hazard rate attributes when a hardware item is selected.
 
         :param attributes: the attributes dict for the selected hardware item.
         :return: None
         :rtype: None
         """
-        self._node_hazard_rate = attributes['hazard_rate_active']
+        for _node in tree.all_nodes()[1:]:
+            _hardware = _node.data['hardware']
+            _reliability = _node.data['reliability']
+            self._dic_hardware_hrs[
+                _hardware.hardware_id] = _reliability.hazard_rate_active
