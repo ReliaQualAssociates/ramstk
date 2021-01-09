@@ -173,6 +173,52 @@ class SimilarItemPanel(RAMSTKPanel):
         self._dic_attribute_updater = {
             'revision_id': [None, 'edited', 0],
             'hardware_id': [None, 'edited', 1],
+            'quality_from_id': [None, 'edited', 4],
+            'quality_to_id': [None, 'edited', 5],
+            'environment_from_id': [None, 'edited', 6],
+            'environment_to_id': [None, 'edited', 7],
+            'temperature_from': [None, 'edited', 8],
+            'temperature_to': [None, 'edited', 9],
+            'change_description_1': [None, 'edited', 10],
+            'change_factor_1': [None, 'edited', 11],
+            'change_description_2': [None, 'edited', 12],
+            'change_factor_2': [None, 'edited', 13],
+            'change_description_3': [None, 'edited', 14],
+            'change_factor_3': [None, 'edited', 15],
+            'change_description_4': [None, 'edited', 16],
+            'change_factor_4': [None, 'edited', 17],
+            'change_description_5': [None, 'edited', 18],
+            'change_factor_5': [None, 'edited', 19],
+            'change_description_6': [None, 'edited', 20],
+            'change_factor_6': [None, 'edited', 21],
+            'change_description_7': [None, 'edited', 22],
+            'change_factor_7': [None, 'edited', 23],
+            'change_description_8': [None, 'edited', 24],
+            'change_factor_8': [None, 'edited', 25],
+            'change_description_9': [None, 'edited', 26],
+            'change_factor_9': [None, 'edited', 27],
+            'change_description_10': [None, 'edited', 28],
+            'change_factor_10': [None, 'edited', 29],
+            'function_1': [None, 'edited', 30],
+            'function_2': [None, 'edited', 31],
+            'function_3': [None, 'edited', 32],
+            'function_4': [None, 'edited', 33],
+            'function_5': [None, 'edited', 34],
+            'user_blob_1': [None, 'edited', 40],
+            'user_blob_2': [None, 'edited', 41],
+            'user_blob_3': [None, 'edited', 42],
+            'user_blob_4': [None, 'edited', 43],
+            'user_blob_5': [None, 'edited', 44],
+            'user_float_1': [None, 'edited', 45],
+            'user_float_2': [None, 'edited', 46],
+            'user_float_3': [None, 'edited', 47],
+            'user_float_4': [None, 'edited', 48],
+            'user_float_5': [None, 'edited', 49],
+            'user_int_1': [None, 'edited', 50],
+            'user_int_2': [None, 'edited', 51],
+            'user_int_3': [None, 'edited', 52],
+            'user_int_4': [None, 'edited', 53],
+            'user_int_5': [None, 'edited', 54],
         }
         self._dic_hardware_attrs: Dict[str, Any] = {}
         self._dic_row_loader = {
@@ -250,7 +296,7 @@ class SimilarItemPanel(RAMSTKPanel):
         """
         super().do_set_callbacks()
         super().do_set_cell_callbacks('wvw_editing_similar_item',
-                                      self._lst_col_order[3:])
+                                      self._lst_col_order[4:])
 
     def _do_load_hardware_attrs(self) -> None:
         """Load the hardware data dict.
@@ -521,8 +567,10 @@ class SimilarItemPanel(RAMSTKPanel):
 
             _attributes = [
                 _entity.revision_id, _entity.hardware_id, _name, _hr_active,
-                _entity.quality_from_id, _entity.quality_to_id,
-                _entity.environment_from_id, _entity.environment_to_id,
+                self._dic_quality[_entity.quality_from_id],
+                self._dic_quality[_entity.quality_to_id],
+                self._dic_quality[_entity.environment_from_id],
+                self._dic_quality[_entity.environment_to_id],
                 _entity.temperature_from, _entity.temperature_to,
                 _entity.change_description_1, _entity.change_factor_1,
                 _entity.change_description_2, _entity.change_factor_2,
