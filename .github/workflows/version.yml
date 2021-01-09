@@ -34,7 +34,7 @@ jobs:
         if: env.do_push == 1
         uses: ad-m/github-push-action@master
         with:
-          branch: ${{ GITHUB_REF }}
+          branch: ${{ github.ref }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new milestone
