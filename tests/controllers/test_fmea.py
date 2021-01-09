@@ -455,11 +455,8 @@ class TestInsertMethods():
     def on_fail_insert_mechanism(self, error_message):
         assert error_message == (
             'do_insert: Database error when attempting to add a record.  '
-            'Database returned:\n\tinsert or update on table '
-            '"ramstk_mechanism" violates foreign key constraint '
-            '"ramstk_mechanism_fld_revision_id_fkey"\n\tKey (fld_revision_id, '
-            'fld_hardware_id, fld_mode_id)=(1, 1, 40) is not present in table '
-            '"ramstk_mode".')
+            'Database returned:\n\tKey (fld_revision_id, fld_hardware_id, '
+            'fld_mode_id)=(1, 1, 40) is not present in table "ramstk_mode".')
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     def on_succeed_insert_cause(self, node_id, tree):
@@ -470,12 +467,9 @@ class TestInsertMethods():
     def on_fail_insert_cause(self, error_message):
         assert error_message == (
             'do_insert: Database error when attempting to add a record.  '
-            'Database returned:\n\tinsert or update on table '
-            '"ramstk_cause" violates foreign key constraint '
-            '"ramstk_cause_fld_revision_id_fkey"\n\tKey (fld_revision_id, '
-            'fld_hardware_id, fld_mode_id, fld_mechanism_id)=(1, 1, 7, 40) is '
-            'not present in table '
-            '"ramstk_mechanism".')
+            'Database returned:\n\tKey (fld_revision_id, fld_hardware_id, '
+            'fld_mode_id, fld_mechanism_id)=(1, 1, 7, 40) is not present in '
+            'table "ramstk_mechanism".')
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     def on_succeed_insert_control(self, node_id, tree):
@@ -486,10 +480,8 @@ class TestInsertMethods():
     def on_fail_insert_control(self, error_message):
         assert error_message == (
             'do_insert: Database error when attempting to add a record.  '
-            'Database returned:\n\tinsert or update on table '
-            '"ramstk_control" violates foreign key constraint '
-            '"ramstk_control_fld_revision_id_fkey"\n\tKey (fld_revision_id, '
-            'fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_cause_id)=('
+            'Database returned:\n\tKey (fld_revision_id, fld_hardware_id, '
+            'fld_mode_id, fld_mechanism_id, fld_cause_id)=('
             '1, 1, 7, 6, 40) is not present in table "ramstk_cause".')
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
@@ -501,10 +493,8 @@ class TestInsertMethods():
     def on_fail_insert_action(self, error_message):
         assert error_message == (
             'do_insert: Database error when attempting to add a record.  '
-            'Database returned:\n\tinsert or update on table '
-            '"ramstk_action" violates foreign key constraint '
-            '"ramstk_action_fld_revision_id_fkey"\n\tKey (fld_revision_id, '
-            'fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_cause_id)=('
+            'Database returned:\n\tKey (fld_revision_id, fld_hardware_id, '
+            'fld_mode_id, fld_mechanism_id, fld_cause_id)=('
             '1, 1, 7, 6, 40) is not present in table "ramstk_cause".')
         print("\033[35m\nfail_insert_action topic was broadcast.")
 

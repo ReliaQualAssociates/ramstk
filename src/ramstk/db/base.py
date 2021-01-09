@@ -250,10 +250,7 @@ class BaseDatabase:
             self.session.rollback()
             _error_message = (
                 "do_insert: Database error when attempting to add a record.  "
-                "Database returned:\n\t{0:s}\n\t{1:s}".format(
-                    str(
-                        _error.orig.pgerror.split(':')[1].split('\n')
-                        [0].strip()),
+                "Database returned:\n\t{0:s}".format(
                     str(_error.orig.pgerror.split(':')[2].strip())))
             pub.sendMessage('fail_insert_record', error_message=_error_message)
             raise DataAccessError(_error_message) from _error
