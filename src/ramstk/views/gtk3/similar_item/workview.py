@@ -41,6 +41,7 @@ class MethodPanel(RAMSTKPanel):
         ]
 
         # Initialize private scalar instance attributes.
+        self._method_id: int = 0
         self._title: str = _("Similar Item Method")
         self._tree: treelib.Tree = treelib.Tree()
 
@@ -124,6 +125,8 @@ class MethodPanel(RAMSTKPanel):
                 'changed', self.on_changed_combo, 0,
                 'wvw_editing_similar_item')
 
+        self.cmbSimilarItemMethod.connect('changed', self.__on_method_changed)
+
     def __do_set_properties(self) -> None:
         """Set the properties of the Similar Item widgets.
 
@@ -132,6 +135,17 @@ class MethodPanel(RAMSTKPanel):
         """
         self.cmbSimilarItemMethod.do_set_properties(
             tooltip=_("Select the similar item analysis method."))
+
+    def __on_method_changed(self, combo: RAMSTKComboBox) -> None:
+        """Wrap the _do_set_sensitive() method when goal combo changes.
+
+        :param combo: the allocation calculation method RAMSTKComboBox().
+        :return: None
+        :rtype: None
+        """
+        self._method_id = combo.get_active()
+        pub.sendMessage('succeed_change_similar_item_method',
+                        method_id=self._method_id)
 
 
 class SimilarItemPanel(RAMSTKPanel):
@@ -232,13 +246,13 @@ class SimilarItemPanel(RAMSTKPanel):
         self._hardware_tree: treelib.Tree = treelib.Tree()
         self._selected_hardware_id: int = 0
         self._title: str = _("Similar Item Analysis")
-        self._tree: treelib.Tree = treelib.Tree()
 
         # Initialize public dictionary instance attributes.
 
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.tree: treelib.Tree = treelib.Tree()
 
         # Make a fixed type panel.
         super().do_make_panel_treeview()
@@ -251,6 +265,8 @@ class SimilarItemPanel(RAMSTKPanel):
         pub.subscribe(self._do_set_tree, 'succeed_retrieve_similar_item')
         pub.subscribe(self._do_set_tree, 'succeed_retrieve_hardware')
         pub.subscribe(self._on_select_hardware, 'selected_hardware')
+        pub.subscribe(self._on_method_changed,
+                      'succeed_change_similar_item_method')
 
     def do_load_combobox(self) -> None:
         """Load Similar Item analysis RAMSTKComboBox()s.
@@ -349,124 +365,62 @@ class SimilarItemPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        if self._method_id == 1:
-            self.tvwTreeView.editable = {
-                'col0': 'False',
-                'col1': 'False',
-                'col2': 'False',
-                'col3': 'False',
-                'col4': 'True',
-                'col5': 'True',
-                'col6': 'True',
-                'col7': 'True',
-                'col8': 'True',
-                'col9': 'True',
-                'col10': 'False',
-                'col11': 'False',
-                'col12': 'False',
-                'col13': 'False',
-                'col14': 'False',
-                'col15': 'False',
-                'col16': 'False',
-                'col17': 'False',
-                'col18': 'False',
-                'col19': 'False',
-                'col20': 'False',
-                'col21': 'False',
-                'col22': 'False',
-                'col23': 'False',
-                'col24': 'False',
-                'col25': 'False',
-                'col26': 'False',
-                'col27': 'False',
-                'col28': 'False',
-                'col29': 'False',
-                'col30': 'False',
-                'col31': 'False',
-                'col32': 'False',
-                'col33': 'False',
-                'col34': 'False',
-                'col35': 'False',
-                'col36': 'False',
-                'col37': 'False',
-                'col38': 'False',
-                'col39': 'False',
-                'col40': 'False',
-                'col41': 'False',
-                'col42': 'False',
-                'col43': 'False',
-                'col44': 'False',
-                'col45': 'False',
-                'col46': 'False',
-                'col47': 'False',
-                'col48': 'False',
-                'col49': 'False',
-                'col50': 'False',
-                'col51': 'False',
-                'col52': 'False',
-                'col53': 'False',
-                'col54': 'False',
-                'col55': 'False',
-            }
+        _columns: List[str] = [
+            'col0', 'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7',
+            'col8', 'col9', 'col10', 'col11', 'col12', 'col13', 'col14',
+            'col15', 'col16', 'col17', 'col18', 'col19', 'col20', 'col21',
+            'col22', 'col23', 'col24', 'col25', 'col26', 'col27', 'col28',
+            'col29', 'col30', 'col31', 'col32', 'col33', 'col34', 'col35',
+            'col36', 'col37', 'col38', 'col39', 'col40', 'col41', 'col42',
+            'col43', 'col44', 'col45', 'col46', 'col47', 'col48', 'col49',
+            'col50', 'col51', 'col52', 'col53', 'col54', 'col55'
+        ]
 
-            self.tvwTreeView.visible = {
-                'col0': 'False',
-                'col1': 'False',
-                'col2': 'True',
-                'col3': 'True',
-                'col4': 'True',
-                'col5': 'True',
-                'col6': 'True',
-                'col7': 'True',
-                'col8': 'True',
-                'col9': 'True',
-                'col10': 'False',
-                'col11': 'False',
-                'col12': 'False',
-                'col13': 'False',
-                'col14': 'False',
-                'col15': 'False',
-                'col16': 'False',
-                'col17': 'False',
-                'col18': 'False',
-                'col19': 'False',
-                'col20': 'False',
-                'col21': 'False',
-                'col22': 'False',
-                'col23': 'False',
-                'col24': 'False',
-                'col25': 'False',
-                'col26': 'False',
-                'col27': 'False',
-                'col28': 'False',
-                'col29': 'False',
-                'col30': 'False',
-                'col31': 'False',
-                'col32': 'False',
-                'col33': 'False',
-                'col34': 'False',
-                'col35': 'True',
-                'col36': 'False',
-                'col37': 'False',
-                'col38': 'False',
-                'col39': 'False',
-                'col40': 'False',
-                'col41': 'False',
-                'col42': 'False',
-                'col43': 'False',
-                'col44': 'False',
-                'col45': 'False',
-                'col46': 'False',
-                'col47': 'False',
-                'col48': 'False',
-                'col49': 'False',
-                'col50': 'False',
-                'col51': 'False',
-                'col52': 'False',
-                'col53': 'False',
-                'col54': 'False',
-                'col55': 'False',
-            }
+        if self._method_id == 1:
+            _editable = [
+                'False', 'False', 'False', 'False', 'True', 'True', 'True',
+                'True', 'True', 'True', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False'
+            ]
+            _visible = [
+                'False', 'False', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'True', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False'
+            ]
+        else:
+            _editable = [
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True'
+            ]
+            _visible = [
+                'False', 'False', 'True', 'True', 'False', 'False', 'False',
+                'False', 'False', 'False', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'False', 'False', 'False', 'False', 'False', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True'
+            ]
+
+        self.tvwTreeView.editable = dict(zip(_columns, _editable))
+        self.tvwTreeView.visible = dict(zip(_columns, _visible))
 
         self.tvwTreeView.do_set_columns_editable()
         self.tvwTreeView.do_set_visible_columns()
@@ -479,10 +433,20 @@ class SimilarItemPanel(RAMSTKPanel):
         :rtype: None
         """
         if tree.get_node(0).tag == 'similar_items':
-            self._tree = tree
+            self.tree = tree
         elif tree.get_node(0).tag == 'hardwares':
             self._hardware_tree = tree
             self._do_load_hardware_attrs()
+
+    def _on_method_changed(self, method_id: int) -> None:
+        """Set method ID attributes when user changes the selection.
+
+        :param method_id: the newly selected similar item method.
+        :return: None
+        :rtype: None
+        """
+        self._method_id = method_id
+        self._do_set_columns_editable()
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Hardware package Module View RAMSTKTreeView().
@@ -505,10 +469,10 @@ class SimilarItemPanel(RAMSTKPanel):
         :rtype: None
         """
         self._selected_hardware_id = attributes['hardware_id']
-        self._method_id = self._tree.get_node(
+        self._method_id = self.tree.get_node(
             attributes['hardware_id']
         ).data['similar_item'].similar_item_method_id
-        super().do_load_panel(self._tree)
+        super().do_load_panel(self.tree)
         self._do_set_columns_editable()
 
     def __do_get_environment(self, environment_id: int) -> str:
@@ -719,7 +683,15 @@ class SimilarItem(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_hardware')
+        pub.subscribe(
+            super().do_set_cursor_active,
+            'succeed_roll_up_change_descriptions',
+        )
+
+        pub.subscribe(
+            self._do_set_record_id,
+            'selected_hardware',
+        )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the allocation's record ID.
@@ -787,8 +759,8 @@ class SimilarItem(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_roll_up_similar_item',
-                        node_id=self._parent_id)
+        pub.sendMessage('request_roll_up_change_descriptions',
+                        node=self._pnlPanel.tree.get_node(self._record_id))
 
     def __make_ui(self) -> None:
         """Build the user interface for the Similar Item tab.
