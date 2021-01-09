@@ -270,7 +270,7 @@ class Import:
                 _entities.append(_entity)
 
         try:
-            self._dao.do_insert_many(_entities)
+            self._dao.do_insert_many(_entities)  # type: ignore
             pub.sendMessage('succeed_import_module', module=module)
         except AttributeError:
             pub.sendMessage('fail_import_module', module=module)

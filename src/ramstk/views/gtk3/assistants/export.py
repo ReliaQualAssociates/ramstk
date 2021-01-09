@@ -21,7 +21,7 @@ from ramstk.views.gtk3.widgets import RAMSTKFileChooser, RAMSTKMessageDialog
 class ExportProject(RAMSTKFileChooser):
     """Assistant to walk user through the process of exporting records."""
 
-    RAMSTK_USER_CONFIGURATION = None
+    RAMSTK_USER_CONFIGURATION = RAMSTKUserConfiguration()
 
     def __init__(self, __button: Gtk.ToolButton,
                  configuration: RAMSTKUserConfiguration,
@@ -80,7 +80,7 @@ class ExportProject(RAMSTKFileChooser):
                 '.xls': 'excel',
                 '.xlsm': 'excel',
                 '.xlsx': 'excel'
-            }[_extension]
+            }[_extension]  # type: ignore
 
             if os.path.exists(_filename):
                 _dialog = RAMSTKMessageDialog(self._parent)
