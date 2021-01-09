@@ -22,8 +22,8 @@ from ramstk.views.gtk3.widgets import (
 
 class EditFunction(RAMSTKDialog):
     """Assistant for editing similar item functions."""
-    def __init__(self, treeview: RAMSTKTreeView,
-                 **kwargs: Dict[str, Any]) -> None:
+    def __init__(self, treeview: RAMSTKTreeView, **kwargs: Dict[str,
+                                                                Any]) -> None:
         """Initialize instance of the Similar Item Function Editor Assistant.
 
         :param treeview: the Similar Item Work View RAMSTKTreeView().
@@ -133,6 +133,31 @@ class EditFunction(RAMSTKDialog):
 
         self.vbox.pack_start(_fixed, True, True, 0)
 
+    def do_set_functions(self, treeview: RAMSTKTreeView) -> List[str]:
+        """Set the user-defined functions.
+
+        :return: functions; a tuple of the five user-defined functions.
+        :rtype: list
+        """
+        (_model, _row) = treeview.get_selection().get_selected()
+        if self.chkApplyAll.get_active():
+            _row = _model.get_iter_first()
+            while _row is not None:
+                _hardware_id = _model.get_value(_row, 1)
+                self._on_set_function(_hardware_id)
+                _row = _model.iter_next(_row)
+        else:
+            _hardware_id = _model.get_value(_row, 1)
+            self._on_set_function(_hardware_id)
+
+        return [
+            str(self.txtFunction1.get_text()),
+            str(self.txtFunction2.get_text()),
+            str(self.txtFunction3.get_text()),
+            str(self.txtFunction4.get_text()),
+            str(self.txtFunction5.get_text())
+        ]
+
     def _cancel(self, __button: Gtk.Button) -> None:
         """Destroy the assistant when the 'Cancel' button is pressed.
 
@@ -180,47 +205,22 @@ class EditFunction(RAMSTKDialog):
         :rtype: None
         """
         pub.sendMessage(
-            'wvw_editing_hardware',
+            'wvw_editing_similar_item',
             node_id=[hardware_id, -1],
             package={'function_1': str(self.txtFunction1.get_text())})
         pub.sendMessage(
-            'wvw_editing_hardware',
+            'wvw_editing_similar_item',
             node_id=[hardware_id, -1],
             package={'function_2': str(self.txtFunction2.get_text())})
         pub.sendMessage(
-            'wvw_editing_hardware',
+            'wvw_editing_similar_item',
             node_id=[hardware_id, -1],
             package={'function_3': str(self.txtFunction3.get_text())})
         pub.sendMessage(
-            'wvw_editing_hardware',
+            'wvw_editing_similar_item',
             node_id=[hardware_id, -1],
             package={'function_4': str(self.txtFunction4.get_text())})
         pub.sendMessage(
-            'wvw_editing_hardware',
+            'wvw_editing_similar_item',
             node_id=[hardware_id, -1],
             package={'function_5': str(self.txtFunction5.get_text())})
-
-    def do_set_functions(self, treeview: RAMSTKTreeView) -> List[str]:
-        """Set the user-defined functions.
-
-        :return: functions; a tuple of the five user-defined functions.
-        :rtype: list
-        """
-        (_model, _row) = treeview.get_selection().get_selected()
-        if self.chkApplyAll.get_active():
-            _row = _model.get_iter_first()
-            while _row is not None:
-                _hardware_id = _model.get_value(_row, 1)
-                self._on_set_function(_hardware_id)
-                _row = _model.iter_next(_row)
-        else:
-            _hardware_id = _model.get_value(_row, 1)
-            self._on_set_function(_hardware_id)
-
-        return [
-            str(self.txtFunction1.get_text()),
-            str(self.txtFunction2.get_text()),
-            str(self.txtFunction3.get_text()),
-            str(self.txtFunction4.get_text()),
-            str(self.txtFunction5.get_text())
-        ]

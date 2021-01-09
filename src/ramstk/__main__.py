@@ -191,6 +191,9 @@ def the_one_ring() -> None:
         user_configuration)
     _program_mgr.dic_managers['hazards']['data'] = dmHazards()
     _program_mgr.dic_managers['requirement']['data'] = dmRequirement()
+    _program_mgr.dic_managers['similar_item']['analysis'] = amSimilarItem(
+        user_configuration)
+    _program_mgr.dic_managers['similar_item']['data'] = dmSimilarItem()
     _program_mgr.dic_managers['stakeholder']['analysis'] = amStakeholder(
         user_configuration)
     _program_mgr.dic_managers['stakeholder']['data'] = dmStakeholder()

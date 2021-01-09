@@ -120,7 +120,7 @@ class TestCreateControllers():
         assert isinstance(DUT._attributes, dict)
         assert isinstance(DUT._tree, Tree)
         assert DUT._attributes == {}
-        assert DUT._node_hazard_rate == 0.0
+        assert DUT._dic_hardware_hrs == {}
         assert pub.isSubscribed(DUT.on_get_all_attributes,
                                 'succeed_get_similar_item_attributes')
         assert pub.isSubscribed(DUT.on_get_tree,
@@ -133,7 +133,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_roll_up_change_descriptions,
                                 'request_roll_up_change_descriptions')
         assert pub.isSubscribed(DUT._on_get_hardware_attributes,
-                                'succeed_get_all_hardware_attributes')
+                                'succeed_get_hardware_tree')
 
 
 @pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
@@ -620,8 +620,7 @@ class TestAnalysisMethods():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
-        DUT._node_hazard_rate = 0.000628
-        DUT._system_hazard_rate = 0.002681
+        DUT._dic_hardware_hrs = {1: 0.000628}
 
         DUT._tree.get_node(1).data['similar_item'].similar_item_method_id = 1
         DUT._tree.get_node(1).data['similar_item'].change_description_1 = (
@@ -654,8 +653,7 @@ class TestAnalysisMethods():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
-        DUT._node_hazard_rate = 0.00617
-        DUT._system_hazard_rate = 0.00617
+        DUT._dic_hardware_hrs = {1: 0.00617}
 
         DUT._tree.get_node(1).data['similar_item'].similar_item_method_id = 2
         DUT._tree.get_node(1).data['similar_item'].change_description_1 = (
@@ -680,6 +678,20 @@ class TestAnalysisMethods():
             1).data['similar_item'].change_factor_2 == 1.2
         assert DUT._tree.get_node(
             1).data['similar_item'].result_1 == pytest.approx(0.0062934)
+
+    @pytest.mark.unit
+    def test_do_calculate_no_method(self, mock_program_dao,
+                                       test_toml_user_configuration):
+        """do_calculate_goal() should calculate the Topic 644 similar item."""
+        DUT = amSimilarItem(test_toml_user_configuration)
+
+        DATAMGR = dmSimilarItem()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(1).data['similar_item'].similar_item_method_id = 0
+
+        assert DUT._do_calculate_similar_item(1) is None
 
     @pytest.mark.unit
     def test_do_roll_up_change_descriptions(self, mock_program_dao,
@@ -713,16 +725,30 @@ class TestAnalysisMethods():
                                 test_toml_user_configuration):
         """_on_select_hardware() should assign the node hazard rate to the
         _node_hazard_rate attribute."""
+        # RAMSTK Package Imports
+        from ramstk.models.programdb import RAMSTKHardware, RAMSTKReliability
+
         DUT = amSimilarItem(test_toml_user_configuration)
 
         DATAMGR = dmSimilarItem()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
 
-        pub.sendMessage('succeed_get_all_hardware_attributes',
-                        attributes={
-                            'hardware_id': 1,
-                            'hazard_rate_active': 0.00032
-                        })
+        _hardware = RAMSTKHardware()
+        _hardware.hardware_id = 1
+        _reliability = RAMSTKReliability()
+        _reliability.hazard_rate_active = 0.00032
 
-        assert DUT._node_hazard_rate == 0.00032
+        _tree = Tree()
+        _tree.create_node(tag='hardwares', identifier=0, parent=None)
+        _tree.create_node(tag='hardware',
+                          identifier=1,
+                          parent=0,
+                          data={
+                              'hardware': _hardware,
+                              'reliability': _reliability,
+                          })
+
+        pub.sendMessage('succeed_get_hardware_tree', tree=_tree)
+
+        assert DUT._dic_hardware_hrs[1] == 0.00032

@@ -70,6 +70,10 @@ class RAMSTKProgramManager:
             'requirement': {
                 'data': None
             },
+            'similar_item': {
+                'analysis': None,
+                'data': None
+            },
             'stakeholder': {
                 'analysis': None,
                 'data': None

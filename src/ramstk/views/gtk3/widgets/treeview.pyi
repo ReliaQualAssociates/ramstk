@@ -96,7 +96,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def do_parse_format(self, fmt_file: str) -> None:
         ...
 
-    def do_set_columns_editable(self, editable: List[int]) -> None:
+    def do_set_columns_editable(self) -> None:
         ...
 
     def do_set_editable_columns(self, method: object) -> None:

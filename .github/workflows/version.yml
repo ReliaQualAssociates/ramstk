@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Bump version, push tag, and generate CHANGELOG.md
         id: bumpver
         uses: TriPSs/conventional-changelog-action@v3
@@ -19,10 +20,26 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           version-file: pyproject.toml
           version-path: 'project.version'
-          output-file: 'false'
-          skip-commit: 'true'
+
+      - name: Update VERSION file
+        if: ${{ steps.bumpver.outputs.skipped == 'false' }}
+        run: |
+          echo "${{ steps.bumpver.outputs.version }} > VERSION
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update VERSION" && echo "do_push=1" >> $GITHUB_ENV
+
+      - name: Push new VERSION file
+        if: env.do_push == 1
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ GITHUB_REF }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create new milestone
         id: createmilestone
+        if: ${{ steps.bumpver.outputs.skipped == 'false' }}
         uses: WyriHaximus/github-action-create-milestone@master
         with:
           title: ${{ steps.bumpver.outputs.tag }}
