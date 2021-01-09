@@ -32,7 +32,7 @@ class MethodPanel(RAMSTKPanel):
 
         # Initialize private dictionary instance attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            2: ['method_id', 'integer'],
+            0: ['similar_item_method_id', 'integer'],
         }
 
         # Initialize private list instance attributes.
@@ -52,7 +52,8 @@ class MethodPanel(RAMSTKPanel):
         self.cmbSimilarItemMethod: RAMSTKComboBox = RAMSTKComboBox()
 
         self._dic_attribute_updater = {
-            'method_id': [self.cmbSimilarItemMethod.do_update, 'changed', 0],
+            'similar_item_method_id':
+            [self.cmbSimilarItemMethod.do_update, 'changed', 0],
         }
         self._lst_widgets = [
             self.cmbSimilarItemMethod,
@@ -120,7 +121,8 @@ class MethodPanel(RAMSTKPanel):
         """
         self.cmbSimilarItemMethod.dic_handler_id[
             'changed'] = self.cmbSimilarItemMethod.connect(
-                'changed', self.on_changed_combo, 2, 'wvw_editing_hardware')
+                'changed', self.on_changed_combo, 0,
+                'wvw_editing_similar_item')
 
     def __do_set_properties(self) -> None:
         """Set the properties of the Similar Item widgets.
@@ -247,7 +249,7 @@ class SimilarItemPanel(RAMSTKPanel):
         :rtype: None
         """
         super().do_set_callbacks()
-        super().do_set_cell_callbacks('wvw_editing_hardware',
+        super().do_set_cell_callbacks('wvw_editing_similar_item',
                                       self._lst_col_order[3:])
 
     def _do_load_hardware_attrs(self) -> None:
