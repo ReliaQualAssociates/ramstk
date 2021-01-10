@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_fmea.py is part of The RAMSTK Project
@@ -62,6 +63,13 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert not DUT._is_functional
+        assert DUT.last_id == {
+            'mode': 0,
+            'mechanism': 0,
+            'cause': 0,
+            'control': 0,
+            'action': 0,
+        }
         assert pub.isSubscribed(DUT.do_select_all, 'selected_hardware')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_fmea')
         assert pub.isSubscribed(DUT._do_insert_action,
@@ -115,14 +123,16 @@ class TestSelectMethods():
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node('1').data['mode'], RAMSTKMode)
         print(
-            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when selecting a functional FMEA."
+            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when "
+            "selecting a functional FMEA."
         )
 
     def on_succeed_retrieve_hardware_fmea(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node('4').data['mode'], RAMSTKMode)
         print(
-            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when selecting a hardware FMEA."
+            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when "
+            "selecting a hardware FMEA."
         )
 
     @pytest.mark.skip
@@ -278,31 +288,36 @@ class TestDeleteMethods():
 
     def on_fail_delete_action(self, error_message):
         assert error_message == (
-            '_do_delete: Attempted to delete non-existent FMEA record with hardware ID 300.'
+            '_do_delete: Attempted to delete non-existent FMEA record with '
+            'hardware ID 300.'
         )
         print("\033[35m\nfail_delete_action topic was broadcast.")
 
     def on_fail_delete_control(self, error_message):
         assert error_message == (
-            '_do_delete: Attempted to delete non-existent FMEA record with hardware ID 300.'
+            '_do_delete: Attempted to delete non-existent FMEA record with '
+            'hardware ID 300.'
         )
         print("\033[35m\nfail_delete_control topic was broadcast.")
 
     def on_fail_delete_cause(self, error_message):
         assert error_message == (
-            '_do_delete: Attempted to delete non-existent FMEA record with hardware ID 300.'
+            '_do_delete: Attempted to delete non-existent FMEA record with '
+            'hardware ID 300.'
         )
         print("\033[35m\nfail_delete_cause topic was broadcast.")
 
     def on_fail_delete_mechanism(self, error_message):
         assert error_message == (
-            '_do_delete: Attempted to delete non-existent FMEA record with hardware ID 300.'
+            '_do_delete: Attempted to delete non-existent FMEA record with '
+            'hardware ID 300.'
         )
         print("\033[35m\nfail_delete_mechanism topic was broadcast.")
 
     def on_fail_delete_mode(self, error_message):
         assert error_message == (
-            '_do_delete: Attempted to delete non-existent FMEA record with hardware ID 300.'
+            '_do_delete: Attempted to delete non-existent FMEA record with '
+            'hardware ID 300.'
         )
         print("\033[35m\nfail_delete_mode topic was broadcast.")
 

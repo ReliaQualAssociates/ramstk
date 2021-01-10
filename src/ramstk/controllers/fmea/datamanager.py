@@ -57,7 +57,6 @@ class DataManager(RAMSTKDataManager):
         }
 
         # Initialize private list attributes.
-        self._last_id = [0, 0, 0, 0, 0]
 
         # Initialize private scalar attributes.
         try:
@@ -67,6 +66,13 @@ class DataManager(RAMSTKDataManager):
         self._parent_id: int = 0
 
         # Initialize public dictionary attributes.
+        self.last_id: Dict[str, int] = {
+            'mode': 0,
+            'mechanism': 0,
+            'cause': 0,
+            'control': 0,
+            'action': 0,
+        }
 
         # Initialize public list attributes.
 
@@ -121,7 +127,6 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        self._last_id = [0, 0, 0, 0, 0]
         self._revision_id = attributes['revision_id']
 
         try:
@@ -206,18 +211,16 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _data_package = {'cause': cause}
-
         _identifier = '{0:s}.{1:d}'.format(parent_id,
                                            cause.cause_id)  # type: ignore
 
         self.tree.create_node(tag='cause',
                               identifier=_identifier,
                               parent=parent_id,
-                              data=_data_package)
+                              data={'cause': cause})
 
-        self._last_id[2] = max(self._last_id[2],
-                               cause.cause_id)  # type: ignore
+        self.last_id['cause'] = max(self.last_id['cause'],
+                                    cause.cause_id)  # type: ignore
 
         self._do_select_all_control(_identifier)
         self._do_select_all_action(_identifier)
@@ -233,15 +236,13 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _data_package = {'mode': mode}
-
         self.tree.create_node(
             tag='mode',
             identifier=str(mode.mode_id),  # type: ignore
             parent=self._root,
-            data=_data_package)
+            data={'mode': mode})
 
-        self._last_id[0] = max(self._last_id[0], mode.mode_id)  # type: ignore
+        self.last_id['mode'] = max(self.last_id['mode'], mode.mode_id)
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a FMEA element.
@@ -295,24 +296,22 @@ class DataManager(RAMSTKDataManager):
             _action.mode_id = int(_mode_id)
             _action.mechanism_id = int(_mechanism_id)
             _action.cause_id = int(_cause_id)
-            _action.action_id = self._last_id[4] + 1
+            _action.action_id = self.last_id['action'] + 1
             _action.action_recommended = 'Recommended Action'
 
             self.dao.do_insert(_action)
 
-            self._last_id[4] = _action.action_id
-
-            _data_package = {'action': _action}
+            self.last_id['action'] = _action.action_id
 
             _identifier = '{0:s}.{1:d}.a'.format(parent_id, _action.action_id)
             self.tree.create_node(tag='action',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'action': _action})
 
             pub.sendMessage(
                 'succeed_insert_fmea',
-                node_id=self.last_id,
+                node_id=self.last_id['action'],
                 tree=self.tree,
             )
             pub.sendMessage(
@@ -361,24 +360,23 @@ class DataManager(RAMSTKDataManager):
             _cause.hardware_id = self._parent_id
             _cause.mode_id = int(_mode_id)
             _cause.mechanism_id = int(_mechanism_id)
-            _cause.cause_id = self._last_id[2] + 1
+            _cause.cause_id = self.last_id['cause'] + 1
             _cause.description = 'New Failure Cause'
 
             self.dao.do_insert(_cause)
 
-            self._last_id[2] = _cause.cause_id
+            self.last_id['cause'] = _cause.cause_id
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _cause.cause_id)
 
-            _data_package = {'cause': _cause}
             self.tree.create_node(tag='cause',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'cause': _cause})
 
             pub.sendMessage(
                 'succeed_insert_fmea',
-                node_id=self.last_id,
+                node_id=self.last_id['cause'],
                 tree=self.tree,
             )
             pub.sendMessage(
@@ -429,25 +427,23 @@ class DataManager(RAMSTKDataManager):
             _control.mode_id = int(_mode_id)
             _control.mechanism_id = int(_mechanism_id)
             _control.cause_id = int(_cause_id)
-            _control.control_id = self._last_id[3] + 1
+            _control.control_id = self.last_id['control'] + 1
             _control.description = 'New Control'
 
             self.dao.do_insert(_control)
 
-            self._last_id[3] = _control.control_id
-
-            _data_package = {'control': _control}
+            self.last_id['control'] = _control.control_id
 
             _identifier = '{0:s}.{1:d}.c'.format(parent_id,
                                                  _control.control_id)
             self.tree.create_node(tag='control',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'control': _control})
 
             pub.sendMessage(
                 'succeed_insert_fmea',
-                node_id=self.last_id,
+                node_id=self.last_id['control'],
                 tree=self.tree,
             )
             pub.sendMessage(
@@ -495,25 +491,24 @@ class DataManager(RAMSTKDataManager):
             _mechanism.revision_id = self._revision_id
             _mechanism.hardware_id = self._parent_id
             _mechanism.mode_id = int(mode_id)
-            _mechanism.mechanism_id = self._last_id[1] + 1
+            _mechanism.mechanism_id = self.last_id['mechanism'] + 1
             _mechanism.description = 'New Failure Mechanism'
 
             self.dao.do_insert(_mechanism)
 
-            self._last_id[1] = _mechanism.mechanism_id
+            self.last_id['mechanism'] = _mechanism.mechanism_id
 
             _identifier = '{0:s}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
 
-            _data_package = {'mechanism': _mechanism}
             self.tree.create_node(tag='mechanism',
                                   identifier=_identifier,
                                   parent=mode_id,
-                                  data=_data_package)
+                                  data={'mechanism': _mechanism})
 
             pub.sendMessage(
                 'succeed_insert_fmea',
-                node_id=self.last_id,
+                node_id=self.last_id['mechanism'],
                 tree=self.tree,
             )
             pub.sendMessage(
@@ -558,22 +553,21 @@ class DataManager(RAMSTKDataManager):
             _mode = RAMSTKMode()
             _mode.revision_id = self._revision_id
             _mode.hardware_id = self._parent_id
-            _mode.mode_id = self._last_id[0] + 1
+            _mode.mode_id = self.last_id['mode'] + 1
             _mode.description = 'New Failure Mode'
 
             self.dao.do_insert(_mode)
 
-            self._last_id[0] = _mode.mode_id
+            self.last_id['mode'] = _mode.mode_id
 
-            _data_package = {'mode': _mode}
             self.tree.create_node(tag='mode',
                                   identifier=str(_mode.mode_id),
                                   parent=self._root,
-                                  data=_data_package)
+                                  data={'mode': _mode})
 
             pub.sendMessage(
                 'succeed_insert_fmea',
-                node_id=self.last_id,
+                node_id=self.last_id['mode'],
                 tree=self.tree,
             )
             pub.sendMessage(
@@ -622,16 +616,15 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKAction.mechanism_id == int(_mechanism_id),
                 RAMSTKAction.cause_id == int(_cause_id)).all():
 
-            _data_package = {'action': _action}
-
             _identifier = '{0:s}.{1:d}.a'.format(parent_id, _action.action_id)
 
             self.tree.create_node(tag='action',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'action': _action})
 
-            self._last_id[4] = max(self._last_id[4], _action.action_id)
+            self.last_id['action'] = max(self.last_id['action'],
+                                         _action.action_id)
 
     def _do_select_all_cause(self, parent_id: str) -> None:
         """Retrieve all the failure causes for the mechanism ID.
@@ -672,7 +665,8 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
-            self._last_id[3] = max(self._last_id[3], _control.control_id)
+            self.last_id['control'] = max(self.last_id['control'],
+                                          _control.control_id)
 
     def _do_select_all_functional_fmea(self) -> None:
         """Retrieve all functional FMEA data from the RAMSTK Program database.
@@ -713,16 +707,15 @@ class DataManager(RAMSTKDataManager):
         for _mechanism in self.dao.session.query(RAMSTKMechanism).filter(
                 RAMSTKMechanism.mode_id == mode_id).all():
 
-            _data_package = {'mechanism': _mechanism}
-
             _identifier = '{0:d}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
 
             self.tree.create_node(tag='mechanism',
                                   identifier=_identifier,
                                   parent=str(mode_id),
-                                  data=_data_package)
+                                  data={'mechanism': _mechanism})
 
-            self._last_id[1] = max(self._last_id[1], _mechanism.mechanism_id)
+            self.last_id['mechanism'] = max(self.last_id['mechanism'],
+                                            _mechanism.mechanism_id)
 
             self._do_select_all_cause(_identifier)
