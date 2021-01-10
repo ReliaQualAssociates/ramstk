@@ -11,6 +11,7 @@
 from typing import Any, Dict, List, Union
 
 # RAMSTK Package Imports
+from ramstk.utilities import none_to_default
 from ramstk.views.gtk3 import GObject, Gtk
 
 # RAMSTK Local Imports
@@ -135,15 +136,17 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
         :param value: the information to update the RAMSTKCombo() to
             display.
-        :keyword str signal: the name of the signal whose handler ID the
+        :param str signal: the name of the signal whose handler ID the
             RAMSTKComboBox() needs to block.
         :return: None
         :rtype: None
         """
         _handler_id = self.dic_handler_id[signal]
 
+        _value = none_to_default(value, 0)
+
         self.handler_block(_handler_id)
-        self.set_active(value)
+        self.set_active(_value)
         self.handler_unblock(_handler_id)
 
     def get_value(self, index: int = 0) -> str:
