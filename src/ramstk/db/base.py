@@ -248,6 +248,7 @@ class BaseDatabase:
             # to send to the client.  Error codes are defined in the
             # errorcodes.py file in the psycopg2 code base.
             self.session.rollback()
+            print(_error.orig.pgerror)
             _error_message = (
                 "do_insert: Database error when attempting to add a record.  "
                 "Database returned:\n\t{0:s}".format(
