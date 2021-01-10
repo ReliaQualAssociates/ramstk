@@ -388,23 +388,21 @@ class FMEAPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        # CellRendererToggle columns.
-        for _column in [30, 32, 38, 39, 40]:
-            _cell = self.tvwTreeView.get_column(
-                self._lst_col_order[_column]).get_cells()
+        _lst_col_order: List[int] = list(self.tvwTreeView.position.values())
 
-            _cell[0].connect('toggled', super().on_cell_toggled, _column)
+        self.tvwTreeView.dic_handler_id[
+            'changed'] = self.tvwTreeView.selection.connect(
+                'changed', self._on_row_change)
 
-        # CellRendererCombo and CellRendererText columns.
-        for _column in [
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34, 35, 36,
-                37, 41
-        ]:
-            _cell = self.tvwTreeView.get_column(
-                self._lst_col_order[_column]).get_cells()
-
-            _cell[0].connect('edited', self.__on_cell_edit, _column)
+        for i in _lst_col_order[1:]:
+            _cell = self.tvwTreeView.get_column(_lst_col_order[i]).get_cells()
+            try:
+                _cell[0].connect('edited',
+                                 super().on_cell_edit, i, 'wvw_editing_fmea')
+            except TypeError:
+                _cell[0].connect('toggled',
+                                 super().on_cell_toggled, 'new text', i,
+                                 'wvw_editing_hazard')
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the FMEA Work View RAMSTKTreeView().
@@ -417,6 +415,61 @@ class FMEAPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
+        _columns: List[str] = [
+            'col0', 'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7',
+            'col8', 'col9', 'col10', 'col11', 'col12', 'col13', 'col14',
+            'col15', 'col16', 'col17', 'col18', 'col19', 'col20', 'col21',
+            'col22', 'col23', 'col24', 'col25', 'col26', 'col27', 'col28',
+            'col29', 'col30', 'col31', 'col32', 'col33', 'col34', 'col35',
+            'col36', 'col37', 'col38', 'col39', 'col40', 'col41', 'pixbuf'
+        ]
+        _visible = {
+            'mode': [
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'False', 'True', 'False',
+                'False', 'True', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'True', 'False', 'False',
+                'True', 'True', 'True', 'False', 'True', 'False'
+            ],
+            'mechanism': [
+                'True', 'True', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'True', 'True', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'True', 'True', 'False', 'False', 'False', 'True', 'True',
+                'False'
+            ],
+            'cause': [
+                'True', 'True', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'True', 'True', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'True', 'True', 'False', 'False', 'False', 'True', 'False',
+                'False'
+            ],
+            'control': [
+                'True', 'True', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'True',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False'
+            ],
+            'action': [
+                'True', 'True', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'False', 'False', 'False',
+                'False', 'False', 'False', 'False', 'True', 'True', 'True',
+                'True', 'True', 'True', 'True', 'True', 'True', 'False',
+                'False', 'False', 'False', 'False', 'False', 'True', 'False',
+                'False'
+            ],
+        }
+
         _model, _row = selection.get_selected()
 
         try:
@@ -428,11 +481,19 @@ class FMEAPanel(RAMSTKPanel):
 
         _level = get_indenture_level(self._record_id)
         (self.tvwTreeView.headings['col0'],
-         self.tvwTreeView.headings['col1']) = super().do_get_headings(_level)
-
-        self._do_load_mission_phases(_mission)
-
+         self.tvwTreeView.headings['col1']) = {
+             'mode': ('Mode ID', 'Failure Mode'),
+             'mechanism': ('Mechanism ID', 'Failure Mechanism'),
+             'cause': ('Cause ID', 'Failure Cause'),
+             'control': ('Control ID', 'Control'),
+             'action': ('Action ID', 'Action'),
+         }[_level]
         super().do_set_headings()
+
+        self.__do_load_mission_phases(_mission)
+
+        self.tvwTreeView.visible = dict(zip(_columns, _visible[_level]))
+        self.tvwTreeView.do_set_visible_columns()
 
     def __do_get_mission(self, entity: object) -> None:
         """Retrieve the mission information.

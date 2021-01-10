@@ -90,7 +90,7 @@ class DataManager(RAMSTKDataManager):
                       'request_get_action_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_fmea')
         pub.subscribe(super().do_set_attributes, 'request_set_fmea_attributes')
-        pub.subscribe(super().do_update_all, 'request_update_all_fmea')
+        pub.subscribe(super().do_update_all, 'request_update_all_fmeas')
 
         pub.subscribe(self.do_select_all, 'selected_function')
         pub.subscribe(self.do_select_all, 'selected_hardware')

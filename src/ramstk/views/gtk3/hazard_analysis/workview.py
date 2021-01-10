@@ -187,7 +187,7 @@ class HazOpsPanel(RAMSTKPanel):
                                  super().on_cell_edit, i, 'wvw_editing_hazard')
             except TypeError:
                 _cell[0].connect('toggled',
-                                 super().on_cell_edit, 'new text', i,
+                                 super().on_cell_toggled, 'new text', i,
                                  'wvw_editing_hazard')
 
     def _do_clear_panel(self) -> None:
