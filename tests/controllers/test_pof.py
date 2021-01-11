@@ -596,47 +596,6 @@ class TestGetterSetter():
         pub.unsubscribe(self.on_succeed_get_test_method_attrs,
                         'succeed_get_test_method_attributes')
 
-    # PoF shouldn't be able to alter the attributes of failure modes or
-    # failure mechanisms.  Alter these in the FMEA worksheet.
-    @pytest.mark.skip
-    def test_do_set_mode_attributes(self, test_program_dao):
-        """do_set_attributes() should return None when successfully setting
-        failure mode attributes."""
-        DUT = dmPoF()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
-
-        DUT.do_set_attributes(
-            node_id=['5', -1],
-            package={'effect_local': 'Some really bad shit will '
-                     'happen.'})
-        DUT.do_set_attributes(node_id=['5', -1],
-                              package={'description': 'Ivanka Trump'})
-        assert DUT.do_select('5', table='mode').description == 'Ivanka Trump'
-        assert DUT.do_select(
-            '5',
-            table='mode').effect_local == ('Some really bad shit will happen.')
-
-        pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
-
-    @pytest.mark.skip
-    def test_do_set_mechanism_attributes(self, test_program_dao):
-        """do_set_attributes() should return None when successfully setting
-        failure mechanism attributes."""
-        DUT = dmPoF()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
-
-        DUT.do_set_attributes(node_id=['5.1', -1],
-                              package={'rpn_detection': 8})
-        DUT.do_set_attributes(node_id=['5.1', -1],
-                              package={'description': 'Jared Kushner'})
-        assert DUT.do_select('5.1',
-                             table='mechanism').description == 'Jared Kushner'
-        assert DUT.do_select('5.1', table='mechanism').rpn_detection == 8
-
-        pub.unsubscribe(DUT.do_set_attributes, 'request_set_pof_attributes')
-
     @pytest.mark.integration
     def test_do_set_opload_attributes(self, test_program_dao):
         """do_set_attributes() should return None when successfully setting
@@ -812,19 +771,3 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_fail_update_pof_wrong_data_type,
                         'fail_update_pof')
-
-    @pytest.mark.integration
-    def test_do_update_wrong_data_type_root_node(self, test_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
-        DUT = dmPoF()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
-
-        _opload = DUT.do_select('5.1.1', table='opload')
-        _pri = _opload.priority_id
-        _opload.priority_id = {1: 2}
-
-        DUT.do_update(0)
-
-        _opload.priority_id = _pri
