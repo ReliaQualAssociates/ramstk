@@ -9,6 +9,7 @@ from ramstk.configuration import (
     RAMSTKUserConfiguration as RAMSTKUserConfiguration
 )
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
+from ramstk.utilities import none_to_default as none_to_default
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox

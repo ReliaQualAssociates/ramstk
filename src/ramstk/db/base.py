@@ -230,7 +230,7 @@ class BaseDatabase:
         try:
             self.session.add(record)
             self.session.commit()
-        except exc.StatementError as _error:
+        except (exc.IntegrityError, exc.StatementError) as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
             # unlikely to be user errors as the programmer should ensure
@@ -240,12 +240,19 @@ class BaseDatabase:
             #   2. Non-date data supplied to date type fields.
             #   3. Foreign key violations.
             #   4. np.nan data supplied to any field type.
+            #
+            # With psycopg2, _error will have attributes pgcode and pgerror.
+            # The first is a code associated with the error captured by
+            # psycopg2 and the second is the original error message from the
+            # database.  These should be used to generate the error message
+            # to send to the client.  Error codes are defined in the
+            # errorcodes.py file in the psycopg2 code base.
             self.session.rollback()
+            print(_error.orig.pgerror)
             _error_message = (
-                "There was an database error when attempting to add a "
-                "record.  Faulty SQL statement was:\n\t{0:s}.\nParameters "
-                "were:\n\t{1:s}.".format(str(_error.statement),
-                                         str(_error.params)))
+                "do_insert: Database error when attempting to add a record.  "
+                "Database returned:\n\t{0:s}".format(
+                    str(_error.orig.pgerror.split(':')[2].strip())))
             pub.sendMessage('fail_insert_record', error_message=_error_message)
             raise DataAccessError(_error_message) from _error
 

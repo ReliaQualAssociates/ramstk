@@ -260,6 +260,10 @@ lint:
 	$(info Linting $(SRCFILE) ...)
 	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
 
+dupcheck:
+	$(info Checking for duplicate code ...)
+	$(PYLINT) --disable=all --enable=duplicate-code src/ramstk
+
 lintdocs:
 	$(RSTCHECK) -r docs/api docs/user
 	$(RSTLINT) -r docs/api docs/user

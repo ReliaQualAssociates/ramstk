@@ -33,7 +33,7 @@
    addresses.
   - [ ] Update the features section of README.md for newly added work stream modules.
 
-- [ ] All PR checks pass.
+- All PR checks pass.
   - [ ] Execute 'make format', 'make stylecheck', 'make typecheck', and 'make
    lint' before committing changes and fix any issues.
   - [ ] Failing static checks are only applicable to code outside the scope of

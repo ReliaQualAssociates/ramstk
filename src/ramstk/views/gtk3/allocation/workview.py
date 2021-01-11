@@ -16,6 +16,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import none_to_default
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKComboBox, RAMSTKEntry, RAMSTKPanel, RAMSTKWorkView
@@ -118,6 +119,12 @@ class GoalMethodPanel(RAMSTKPanel):
         _allocation = self._tree.get_node(self._record_id).data['allocation']
         self._measure_id = _allocation.goal_measure_id
         self._method_id = _allocation.allocation_method_id
+
+        _allocation.reliability_goal = none_to_default(
+            _allocation.reliability_goal, 0.0)
+        _allocation.hazard_rate_goal = none_to_default(
+            _allocation.hazard_rate_goal, 0.0)
+        _allocation.mtbf_goal = none_to_default(_allocation.mtbf_goal, 0.0)
 
         self.cmbAllocationMethod.do_update(_allocation.allocation_method_id,
                                            signal='changed')
@@ -626,6 +633,7 @@ class AllocationPanel(RAMSTKPanel):
         self._selected_hardware_id = attributes['hardware_id']
         self._method_id = self._tree.get_node(
             attributes['hardware_id']).data['allocation'].allocation_method_id
+        self._method_id = none_to_default(self._method_id, 0)
         super().do_load_panel(self._tree)
         self._do_set_columns_editable()
 

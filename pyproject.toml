@@ -1,6 +1,6 @@
 [project]
 name = "ramstk"
-version = "0.5.0"
+version = "0.6.0"
 description = "A tool to manage RAMS data and analyses."
 authors = [
     "Doyle 'weibullguy' Rowland <info@reliaqual.com>"
@@ -137,7 +137,7 @@ notes = [
 ]
 
 [tool.pylint.similarities]
-min-similarity-lines = 15
+min-similarity-lines = 10
 ignore-comments = true
 ignore-docstrings = true
 ignore-imports = true

@@ -7,6 +7,7 @@
 """FMEA Package Data Model."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict
 
 # Third Party Imports
@@ -28,7 +29,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKHazardAnalysis data models.
     """
 
-    _tag = 'fmea'
+    _tag = 'fmeas'
     _root = 0
 
     # pylint: disable=unused-argument
@@ -56,16 +57,23 @@ class DataManager(RAMSTKDataManager):
         }
 
         # Initialize private list attributes.
-        self._last_id = [0, 0, 0, 0, 0]
 
         # Initialize private scalar attributes.
         try:
+            # noinspection PyTypeChecker
             self._is_functional: bool = kwargs['functional']  # type: ignore
         except KeyError:
             self._is_functional = False
         self._parent_id: int = 0
 
         # Initialize public dictionary attributes.
+        self.last_id: Dict[str, int] = {
+            'mode': 0,
+            'mechanism': 0,
+            'cause': 0,
+            'control': 0,
+            'action': 0,
+        }
 
         # Initialize public list attributes.
 
@@ -83,7 +91,7 @@ class DataManager(RAMSTKDataManager):
                       'request_get_action_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_fmea')
         pub.subscribe(super().do_set_attributes, 'request_set_fmea_attributes')
-        pub.subscribe(super().do_update_all, 'request_update_all_fmea')
+        pub.subscribe(super().do_update_all, 'request_update_all_fmeas')
 
         pub.subscribe(self.do_select_all, 'selected_function')
         pub.subscribe(self.do_select_all, 'selected_hardware')
@@ -104,7 +112,10 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_fmea_tree', tree=self.tree)
+        pub.sendMessage(
+            'succeed_get_fmea_tree',
+            tree=self.tree,
+        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all FMEA data from the RAMSTK Program database.
@@ -117,7 +128,6 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        self._last_id = [0, 0, 0, 0, 0]
         self._revision_id = attributes['revision_id']
 
         try:
@@ -141,18 +151,54 @@ class DataManager(RAMSTKDataManager):
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
             self.dao.do_update()
-            pub.sendMessage('succeed_update_fmea', tree=self.tree)
+            pub.sendMessage(
+                'succeed_update_fmea',
+                tree=self.tree,
+            )
         except AttributeError:
-            pub.sendMessage('fail_update_fmea',
-                            error_message=('Attempted to save non-existent '
-                                           'FMEA element with FMEA ID '
-                                           '{0:s}.').format(str(node_id)))
-        except TypeError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{1}: Attempted to save non-existent FMEA '
+                          'record ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_fmea',
+                error_message=_error_msg,
+            )
+        except IndexError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{1}: No data package found for FMEA record '
+                          'ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_fmea',
+                error_message=_error_msg,
+            )
+        except (TypeError, DataAccessError):
             if node_id != 0:
-                pub.sendMessage('fail_update_fmea',
-                                error_message=('No data package found for '
-                                               'FMEA ID {0:s}.').format(
-                                                   str(node_id)))
+                _method_name: str = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
+                _error_msg = ('{1}: The value for one or more attributes for '
+                              'FMEA record ID {0} was the wrong '
+                              'type.').format(str(node_id), _method_name)
+                pub.sendMessage(
+                    'do_log_debug',
+                    logger_name='DEBUG',
+                    message=_error_msg,
+                )
+                pub.sendMessage(
+                    'fail_update_fmea',
+                    error_message=_error_msg,
+                )
 
     def _add_cause_node(self, cause: RAMSTKCause, parent_id: str) -> None:
         """Add a node to the treelib Tree() to hold a failure cause.
@@ -166,18 +212,16 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _data_package = {'cause': cause}
-
         _identifier = '{0:s}.{1:d}'.format(parent_id,
                                            cause.cause_id)  # type: ignore
 
         self.tree.create_node(tag='cause',
                               identifier=_identifier,
                               parent=parent_id,
-                              data=_data_package)
+                              data={'cause': cause})
 
-        self._last_id[2] = max(self._last_id[2],
-                               cause.cause_id)  # type: ignore
+        self.last_id['cause'] = max(self.last_id['cause'],
+                                    cause.cause_id)  # type: ignore
 
         self._do_select_all_control(_identifier)
         self._do_select_all_action(_identifier)
@@ -193,15 +237,13 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _data_package = {'mode': mode}
-
         self.tree.create_node(
             tag='mode',
             identifier=str(mode.mode_id),  # type: ignore
             parent=self._root,
-            data=_data_package)
+            data={'mode': mode})
 
-        self._last_id[0] = max(self._last_id[0], mode.mode_id)  # type: ignore
+        self.last_id['mode'] = max(self.last_id['mode'], mode.mode_id)
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a FMEA element.
@@ -211,19 +253,33 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+
         try:
             _table = list(self.tree.get_node(node_id).data.keys())[0]
 
             super().do_delete(node_id, _table)
 
             self.tree.remove_node(node_id)
-            pub.sendMessage('succeed_delete_fmea',
-                            tree=self.tree)
 
-        except (AttributeError, DataAccessError):
-            _error_msg = ("Attempted to delete non-existent FMEA element ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_fmea', error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_delete_fmea',
+                tree=self.tree,
+            )
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Attempted to delete non-existent FMEA record '
+                'with hardware ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_delete_fmea',
+                error_message=_error_msg,
+            )
 
     def _do_insert_action(self, parent_id: str) -> None:
         """Add a new action to FMEA cause ID.
@@ -241,30 +297,39 @@ class DataManager(RAMSTKDataManager):
             _action.mode_id = int(_mode_id)
             _action.mechanism_id = int(_mechanism_id)
             _action.cause_id = int(_cause_id)
-            _action.action_id = self._last_id[4] + 1
+            _action.action_id = self.last_id['action'] + 1
             _action.action_recommended = 'Recommended Action'
 
             self.dao.do_insert(_action)
 
-            self._last_id[4] = _action.action_id
-
-            _data_package = {'action': _action}
+            self.last_id['action'] = _action.action_id
 
             _identifier = '{0:s}.{1:d}.a'.format(parent_id, _action.action_id)
             self.tree.create_node(tag='action',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'action': _action})
 
-            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
-                            tree=self.tree)
-            pub.sendMessage('succeed_insert_action',
-                            node_id=_identifier,
-                            tree=self.tree)
-        except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ('Attempting to add an action to unknown failure '
-                          'cause ID {0:d}.'.format(int(_cause_id)))
-            pub.sendMessage("fail_insert_action", error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_insert_fmea',
+                node_id=self.last_id['action'],
+                tree=self.tree,
+            )
+            pub.sendMessage(
+                'succeed_insert_action',
+                node_id=_identifier,
+                tree=self.tree,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_action",
+                error_message=_error.msg,
+            )
 
     def _do_insert_cause(self, parent_id: str) -> None:
         """Add a new failure cause to FMEA mechanism ID.
@@ -280,32 +345,40 @@ class DataManager(RAMSTKDataManager):
             _cause.hardware_id = self._parent_id
             _cause.mode_id = int(_mode_id)
             _cause.mechanism_id = int(_mechanism_id)
-            _cause.cause_id = self._last_id[2] + 1
+            _cause.cause_id = self.last_id['cause'] + 1
             _cause.description = 'New Failure Cause'
 
             self.dao.do_insert(_cause)
 
-            self._last_id[2] = _cause.cause_id
+            self.last_id['cause'] = _cause.cause_id
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _cause.cause_id)
 
-            _data_package = {'cause': _cause}
             self.tree.create_node(tag='cause',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'cause': _cause})
 
-            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
-                            tree=self.tree)
-            pub.sendMessage('succeed_insert_cause',
-                            node_id=_identifier,
-                            tree=self.tree)
-        except (DataAccessError, NodeIDAbsentError):
-            _error_msg = (
-                'Attempting to add a failure cause to unknown '
-                'failure mode ID {0:d} or mechanism ID {1:d}.'.format(
-                    int(_mode_id), int(_mechanism_id)))
-            pub.sendMessage("fail_insert_cause", error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_insert_fmea',
+                node_id=self.last_id['cause'],
+                tree=self.tree,
+            )
+            pub.sendMessage(
+                'succeed_insert_cause',
+                node_id=_identifier,
+                tree=self.tree,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_cause",
+                error_message=_error.msg,
+            )
 
     def _do_insert_control(self, parent_id: str) -> None:
         """Add a new control to FMEA cause ID.
@@ -323,31 +396,40 @@ class DataManager(RAMSTKDataManager):
             _control.mode_id = int(_mode_id)
             _control.mechanism_id = int(_mechanism_id)
             _control.cause_id = int(_cause_id)
-            _control.control_id = self._last_id[3] + 1
+            _control.control_id = self.last_id['control'] + 1
             _control.description = 'New Control'
 
             self.dao.do_insert(_control)
 
-            self._last_id[3] = _control.control_id
-
-            _data_package = {'control': _control}
+            self.last_id['control'] = _control.control_id
 
             _identifier = '{0:s}.{1:d}.c'.format(parent_id,
                                                  _control.control_id)
             self.tree.create_node(tag='control',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'control': _control})
 
-            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
-                            tree=self.tree)
-            pub.sendMessage('succeed_insert_control',
-                            node_id=_identifier,
-                            tree=self.tree)
-        except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ('Attempting to add a control to unknown failure '
-                          'cause ID {0:d}.'.format(int(_cause_id)))
-            pub.sendMessage("fail_insert_control", error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_insert_fmea',
+                node_id=self.last_id['control'],
+                tree=self.tree,
+            )
+            pub.sendMessage(
+                'succeed_insert_control',
+                node_id=_identifier,
+                tree=self.tree,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_control",
+                error_message=_error.msg,
+            )
 
     def _do_insert_mechanism(self, mode_id: str) -> None:
         """Add a new failure mechanism to FMEA mode ID.
@@ -362,31 +444,41 @@ class DataManager(RAMSTKDataManager):
             _mechanism.revision_id = self._revision_id
             _mechanism.hardware_id = self._parent_id
             _mechanism.mode_id = int(mode_id)
-            _mechanism.mechanism_id = self._last_id[1] + 1
+            _mechanism.mechanism_id = self.last_id['mechanism'] + 1
             _mechanism.description = 'New Failure Mechanism'
 
             self.dao.do_insert(_mechanism)
 
-            self._last_id[1] = _mechanism.mechanism_id
+            self.last_id['mechanism'] = _mechanism.mechanism_id
 
             _identifier = '{0:s}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
 
-            _data_package = {'mechanism': _mechanism}
             self.tree.create_node(tag='mechanism',
                                   identifier=_identifier,
                                   parent=mode_id,
-                                  data=_data_package)
+                                  data={'mechanism': _mechanism})
 
-            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
-                            tree=self.tree)
-            pub.sendMessage('succeed_insert_mechanism',
-                            node_id=_identifier,
-                            tree=self.tree)
-        except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ('Attempting to add a failure mechanism to unknown '
-                          'failure mode ID {0:s}.'.format(str(mode_id)))
-            pub.sendMessage("fail_insert_mechanism", error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_insert_fmea',
+                node_id=self.last_id['mechanism'],
+                tree=self.tree,
+            )
+            pub.sendMessage(
+                'succeed_insert_mechanism',
+                node_id=_identifier,
+                tree=self.tree,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_mechanism",
+                error_message=_error.msg,
+            )
 
     def _do_insert_mode(self) -> None:
         """Add a new failure mode.
@@ -398,28 +490,54 @@ class DataManager(RAMSTKDataManager):
             _mode = RAMSTKMode()
             _mode.revision_id = self._revision_id
             _mode.hardware_id = self._parent_id
-            _mode.mode_id = self._last_id[0] + 1
+            _mode.mode_id = self.last_id['mode'] + 1
             _mode.description = 'New Failure Mode'
 
             self.dao.do_insert(_mode)
 
-            self._last_id[0] = _mode.mode_id
+            self.last_id['mode'] = _mode.mode_id
 
-            _data_package = {'mode': _mode}
             self.tree.create_node(tag='mode',
                                   identifier=str(_mode.mode_id),
                                   parent=self._root,
-                                  data=_data_package)
+                                  data={'mode': _mode})
 
-            pub.sendMessage('succeed_insert_fmea', node_id=self.last_id,
-                            tree=self.tree)
-            pub.sendMessage('succeed_insert_mode',
-                            node_id=str(_mode.mode_id),
-                            tree=self.tree)
-        except (DataAccessError, NodeIDAbsentError):
-            _error_msg = ('Attempting to add a failure mode to unknown '
-                          'hardware ID {0:s}.'.format(str(self._root)))
-            pub.sendMessage("fail_insert_mode", error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_insert_fmea',
+                node_id=self.last_id['mode'],
+                tree=self.tree,
+            )
+            pub.sendMessage(
+                'succeed_insert_mode',
+                node_id=str(_mode.mode_id),
+                tree=self.tree,
+            )
+        except NodeIDAbsentError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Attempted to add a mode to non-existent parent FMEA '
+                'record with hardware ID {0}.').format(str(self._root),
+                                                       _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_insert_mode",
+                error_message=_error_msg,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_mode",
+                error_message=_error.msg,
+            )
 
     def _do_select_all_action(self, parent_id: str) -> None:
         """Retrieve all the actions for the cause ID.
@@ -435,16 +553,15 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKAction.mechanism_id == int(_mechanism_id),
                 RAMSTKAction.cause_id == int(_cause_id)).all():
 
-            _data_package = {'action': _action}
-
             _identifier = '{0:s}.{1:d}.a'.format(parent_id, _action.action_id)
 
             self.tree.create_node(tag='action',
                                   identifier=_identifier,
                                   parent=parent_id,
-                                  data=_data_package)
+                                  data={'action': _action})
 
-            self._last_id[4] = max(self._last_id[4], _action.action_id)
+            self.last_id['action'] = max(self.last_id['action'],
+                                         _action.action_id)
 
     def _do_select_all_cause(self, parent_id: str) -> None:
         """Retrieve all the failure causes for the mechanism ID.
@@ -485,7 +602,8 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data=_data_package)
 
-            self._last_id[3] = max(self._last_id[3], _control.control_id)
+            self.last_id['control'] = max(self.last_id['control'],
+                                          _control.control_id)
 
     def _do_select_all_functional_fmea(self) -> None:
         """Retrieve all functional FMEA data from the RAMSTK Program database.
@@ -526,16 +644,15 @@ class DataManager(RAMSTKDataManager):
         for _mechanism in self.dao.session.query(RAMSTKMechanism).filter(
                 RAMSTKMechanism.mode_id == mode_id).all():
 
-            _data_package = {'mechanism': _mechanism}
-
             _identifier = '{0:d}.{1:d}'.format(mode_id,
                                                _mechanism.mechanism_id)
 
             self.tree.create_node(tag='mechanism',
                                   identifier=_identifier,
                                   parent=str(mode_id),
-                                  data=_data_package)
+                                  data={'mechanism': _mechanism})
 
-            self._last_id[1] = max(self._last_id[1], _mechanism.mechanism_id)
+            self.last_id['mechanism'] = max(self.last_id['mechanism'],
+                                            _mechanism.mechanism_id)
 
             self._do_select_all_cause(_identifier)

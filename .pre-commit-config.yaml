@@ -16,7 +16,7 @@ repos:
         - id: yapf
           args: [--style, ./setup.cfg]
     - repo: https://github.com/PyCQA/isort
-      rev: 5.5.2
+      rev: 5.7.0
       hooks:
         - id: isort
           args: [--settings-file, ./pyproject.toml]
@@ -25,13 +25,18 @@ repos:
       hooks:
         - id: docformatter
           args: [-c]
+    - repo: https://github.com/weibullguy/pycodestyle
+      rev: 2.6.1
+      hooks:
+        - id: pycodestyle
+          args: [--config, ./setup.cfg]
     - repo: https://github.com/pycqa/pydocstyle
       rev: 5.1.1
       hooks:
         - id: pydocstyle
           args: [--config, ./setup.cfg]
     - repo: https://github.com/pre-commit/mirrors-mypy
-      rev: v0.782
+      rev: v0.790
       hooks:
         - id: mypy
           args: [--config-file, ./setup.cfg]

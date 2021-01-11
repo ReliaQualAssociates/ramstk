@@ -682,6 +682,8 @@ CREATE TABLE ramstk_mode (
     fld_type_id INTEGER
 );
 CREATE TABLE ramstk_mechanism (
+    fld_revision_id INTEGER,
+    fld_hardware_id INTEGER,
     fld_mode_id INTEGER,
     fld_mechanism_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
@@ -696,6 +698,8 @@ CREATE TABLE ramstk_mechanism (
     FOREIGN KEY(fld_mode_id) REFERENCES ramstk_mode (fld_mode_id) ON DELETE CASCADE
 );
 CREATE TABLE ramstk_cause (
+    fld_revision_id INTEGER,
+    fld_hardware_id INTEGER,
     fld_mode_id INTEGER,
     fld_mechanism_id INTEGER,
     fld_cause_id INTEGER NOT NULL,
@@ -711,6 +715,10 @@ CREATE TABLE ramstk_cause (
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
 CREATE TABLE ramstk_control (
+    fld_revision_id INTEGER,
+    fld_hardware_id INTEGER,
+    fld_mode_id INTEGER,
+    fld_mechanism_id INTEGER,
     fld_cause_id INTEGER,
     fld_control_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
@@ -719,6 +727,10 @@ CREATE TABLE ramstk_control (
     FOREIGN KEY(fld_cause_id) REFERENCES ramstk_cause (fld_cause_id) ON DELETE CASCADE
 );
 CREATE TABLE ramstk_action (
+    fld_revision_id INTEGER,
+    fld_hardware_id INTEGER,
+    fld_mode_id INTEGER,
+    fld_mechanism_id INTEGER,
     fld_cause_id INTEGER,
     fld_action_id INTEGER NOT NULL,
     fld_action_recommended VARCHAR,
@@ -736,6 +748,9 @@ CREATE TABLE ramstk_action (
 );
 
 CREATE TABLE ramstk_op_load (
+    fld_revision_id INTEGER,
+    fld_hardware_id INTEGER,
+    fld_mode_id INTEGER,
     fld_mechanism_id INTEGER,
     fld_load_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
@@ -745,6 +760,10 @@ CREATE TABLE ramstk_op_load (
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
 CREATE TABLE ramstk_op_stress (
+    fld_revision_id INTEGER,
+    fld_hardware_id INTEGER,
+    fld_mode_id INTEGER,
+    fld_mechanism_id INTEGER,
     fld_load_id INTEGER,
     fld_stress_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
@@ -754,12 +773,11 @@ CREATE TABLE ramstk_op_stress (
     PRIMARY KEY (fld_stress_id),
     FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
 );
-CREATE TABLE ramstk_load_history (
-    fld_load_history_id INTEGER NOT NULL,
-    fld_description VARCHAR(512),
-    PRIMARY KEY (fld_load_history_id)
-);
 CREATE TABLE ramstk_test_method (
+    fld_revision_id INTEGER,
+    fld_hardware_id INTEGER,
+    fld_mode_id INTEGER,
+    fld_mechanism_id INTEGER,
     fld_load_id INTEGER,
     fld_test_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
@@ -767,6 +785,11 @@ CREATE TABLE ramstk_test_method (
     fld_remarks VARCHAR,
     PRIMARY KEY (fld_test_id),
     FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
+);
+CREATE TABLE ramstk_load_history (
+    fld_load_history_id INTEGER NOT NULL,
+    fld_description VARCHAR(512),
+    PRIMARY KEY (fld_load_history_id)
 );
 
 CREATE TABLE ramstk_test (

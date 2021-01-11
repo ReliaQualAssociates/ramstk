@@ -73,8 +73,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _item_criticality[_mode.data['mode'].severity_class] += _mode.data[
                 'mode'].mode_criticality
 
-        pub.sendMessage('succeed_calculate_fmea_criticality',
-                        item_criticality=_item_criticality)
+        pub.sendMessage(
+            'succeed_calculate_fmea_criticality',
+            item_criticality=_item_criticality,
+        )
 
     def _do_calculate_rpn(self, method: str = 'mechanism') -> None:
         """Calculate the risk priority number (RPN) of a hardware item's modes.
@@ -105,7 +107,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _sod['rpn_severity'] = _mode.data['mode'].rpn_severity_new
             self.__do_calculate_rpn(_mode, _sod, method)
 
-        pub.sendMessage('succeed_calculate_rpn', tree=self._tree)
+        pub.sendMessage(
+            'succeed_calculate_rpn',
+            tree=self._tree,
+        )
 
     def __do_calculate_rpn(self, mode: treelib.Node, sod: Dict[str, int],
                            method: str) -> None:
@@ -128,9 +133,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
             sod['rpn_detection'] = _child.data[method].rpn_detection_new
             _child.data[method].rpn_new = criticality.calculate_rpn(sod)
 
-            pub.sendMessage('request_set_fmea_attributes',
-                            node_id=[_child.identifier, -1],
-                            package={'rpn': _child.data[method].rpn})
-            pub.sendMessage('request_set_fmea_attributes',
-                            node_id=[_child.identifier, -1],
-                            package={'rpn_new': _child.data[method].rpn_new})
+            pub.sendMessage(
+                'request_set_fmea_attributes',
+                node_id=[_child.identifier, -1],
+                package={'rpn': _child.data[method].rpn},
+            )
+            pub.sendMessage(
+                'request_set_fmea_attributes',
+                node_id=[_child.identifier, -1],
+                package={'rpn_new': _child.data[method].rpn_new},
+            )
