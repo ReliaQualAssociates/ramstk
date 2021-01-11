@@ -17,7 +17,7 @@ jobs:
         id: bumpver
         uses: TriPSs/conventional-changelog-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.REPO_TOKEN }}
           version-file: pyproject.toml
           version-path: 'project.version'
 
@@ -34,8 +34,8 @@ jobs:
         if: env.do_push == 1
         uses: ad-m/github-push-action@master
         with:
+          github_token: ${{ secrets.REPO_TOKEN }}
           branch: ${{ github.ref }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new milestone
         id: createmilestone

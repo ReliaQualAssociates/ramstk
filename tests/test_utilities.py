@@ -127,6 +127,8 @@ def test_file_exists():
     """file_exists() should return True if the file exists."""
     _testlog = './test_info.log'
     assert file_exists(_testlog)
+    if os.path.exists(_testlog):
+        os.remove(_testlog)
 
 
 def test_file_does_not_exist():
