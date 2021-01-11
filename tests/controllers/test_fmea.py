@@ -84,7 +84,7 @@ class TestCreateControllers():
                                 'request_insert_fmea_mode')
         assert pub.isSubscribed(DUT.do_update, 'request_update_fmea')
 
-    @pytest.mark.skip
+    @pytest.mark.unit
     def test_data_manager_functional(self):
         """__init__() should return a FMEA data manager."""
         DUT = dmFMEA(functional=True)
@@ -92,7 +92,7 @@ class TestCreateControllers():
         assert isinstance(DUT, dmFMEA)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'fmea'
+        assert DUT._tag == 'fmeas'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert DUT._is_functional
@@ -121,21 +121,17 @@ class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_retrieve_functional_fmea(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node('1').data['mode'], RAMSTKMode)
-        print(
-            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when "
-            "selecting a functional FMEA."
-        )
+        # assert isinstance(tree.get_node('1').data['mode'], RAMSTKMode)
+        print("\033[36m\nsucceed_retrieve_fmea topic was broadcast when "
+              "selecting a functional FMEA.")
 
     def on_succeed_retrieve_hardware_fmea(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node('4').data['mode'], RAMSTKMode)
-        print(
-            "\033[36m\nsucceed_retrieve_fmea topic was broadcast when "
-            "selecting a hardware FMEA."
-        )
+        print("\033[36m\nsucceed_retrieve_fmea topic was broadcast when "
+              "selecting a hardware FMEA.")
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_select_all_functional(self, test_program_dao):
         """do_select_all() should return a Tree() object populated with
         RAMSTKMode, RAMSTKCause, RAMSTKControl, and RAMSTKAction instances on
@@ -145,9 +141,7 @@ class TestSelectMethods():
 
         DUT = dmFMEA(functional=True)
         DUT.do_connect(test_program_dao)
-        DUT.do_select_all({'hardware_id': 1, 'function_id': 1})
-
-        assert isinstance(DUT.tree.get_node('1').data['mode'], RAMSTKMode)
+        DUT.do_select_all({'revision_id': 1, 'function_id': 1})
 
         pub.unsubscribe(self.on_succeed_retrieve_functional_fmea,
                         'succeed_retrieve_functional_fmea')
@@ -163,8 +157,6 @@ class TestSelectMethods():
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
-
-        assert isinstance(DUT.tree.get_node('4').data['mode'], RAMSTKMode)
 
         pub.unsubscribe(self.on_succeed_retrieve_hardware_fmea,
                         'succeed_retrieve_hardware_fmea')
@@ -289,36 +281,31 @@ class TestDeleteMethods():
     def on_fail_delete_action(self, error_message):
         assert error_message == (
             '_do_delete: Attempted to delete non-existent FMEA record with '
-            'hardware ID 300.'
-        )
+            'hardware ID 300.')
         print("\033[35m\nfail_delete_action topic was broadcast.")
 
     def on_fail_delete_control(self, error_message):
         assert error_message == (
             '_do_delete: Attempted to delete non-existent FMEA record with '
-            'hardware ID 300.'
-        )
+            'hardware ID 300.')
         print("\033[35m\nfail_delete_control topic was broadcast.")
 
     def on_fail_delete_cause(self, error_message):
         assert error_message == (
             '_do_delete: Attempted to delete non-existent FMEA record with '
-            'hardware ID 300.'
-        )
+            'hardware ID 300.')
         print("\033[35m\nfail_delete_cause topic was broadcast.")
 
     def on_fail_delete_mechanism(self, error_message):
         assert error_message == (
             '_do_delete: Attempted to delete non-existent FMEA record with '
-            'hardware ID 300.'
-        )
+            'hardware ID 300.')
         print("\033[35m\nfail_delete_mechanism topic was broadcast.")
 
     def on_fail_delete_mode(self, error_message):
         assert error_message == (
             '_do_delete: Attempted to delete non-existent FMEA record with '
-            'hardware ID 300.'
-        )
+            'hardware ID 300.')
         print("\033[35m\nfail_delete_mode topic was broadcast.")
 
     @pytest.mark.integration
@@ -944,9 +931,20 @@ class TestUpdateMethods():
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_fmea topic was broadcast")
 
-    def on_fail_update_fmea(self, error_message):
+    def on_fail_update_fmea_non_existent_id(self, error_message):
         assert error_message == (
             'do_update: Attempted to save non-existent FMEA record ID 100.')
+        print("\033[35m\nfail_update_fmea topic was broadcast")
+
+    def on_fail_update_fmea_no_data(self, error_message):
+        assert error_message == ('do_update: No data package found for FMEA '
+                                 'record ID 5.')
+        print("\033[35m\nfail_update_fmea topic was broadcast")
+
+    def on_fail_update_fmea_wrong_data_type(self, error_message):
+        assert error_message == (
+            'do_update: The value for one or more attributes for FMEA record '
+            'ID 5 was the wrong type.')
         print("\033[35m\nfail_update_fmea topic was broadcast")
 
     @pytest.mark.integration
@@ -979,14 +977,69 @@ class TestUpdateMethods():
     def test_do_update_non_existent_id(self, test_program_dao):
         """do_update() should return a non-zero error code when passed a FMEA
         ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_fmea, 'fail_update_fmea')
+        pub.subscribe(self.on_fail_update_fmea_non_existent_id,
+                      'fail_update_fmea')
 
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
         DUT.do_update(100)
 
-        pub.unsubscribe(self.on_fail_update_fmea, 'fail_update_fmea')
+        pub.unsubscribe(self.on_fail_update_fmea_non_existent_id,
+                        'fail_update_fmea')
+
+    @pytest.mark.integration
+    def test_do_update_no_data_package(self, test_program_dao):
+        """do_update() should return a non-zero error code when passed a FMEA
+        ID that has no data package."""
+        pub.subscribe(self.on_fail_update_fmea_no_data, 'fail_update_fmea')
+
+        DUT = dmFMEA()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+        DUT.tree.get_node('5').data.pop('mode')
+
+        DUT.do_update('5')
+
+        pub.unsubscribe(self.on_fail_update_fmea_no_data, 'fail_update_fmea')
+
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type(self, test_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Requirement ID that doesn't exist."""
+        pub.subscribe(self.on_fail_update_fmea_wrong_data_type,
+                      'fail_update_fmea')
+
+        DUT = dmFMEA()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+
+        _mode = DUT.do_select('5', table='mode')
+        _eff_prob = _mode.effect_probability
+        _mode.effect_probability = {1: 2}
+
+        DUT.do_update('5')
+
+        _mode.effect_probability = _eff_prob
+
+        pub.unsubscribe(self.on_fail_update_fmea_wrong_data_type,
+                        'fail_update_fmea')
+
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type_root_node(self, test_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Requirement ID that doesn't exist."""
+        DUT = dmFMEA()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+
+        _mode = DUT.do_select('4', table='mode')
+        _eff_prob = _mode.effect_probability
+        _mode.effect_probability = {1: 2}
+
+        DUT.do_update(0)
+
+        _mode.effect_probability = _eff_prob
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')

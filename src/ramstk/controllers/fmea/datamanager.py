@@ -60,6 +60,7 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private scalar attributes.
         try:
+            # noinspection PyTypeChecker
             self._is_functional: bool = kwargs['functional']  # type: ignore
         except KeyError:
             self._is_functional = False
@@ -168,7 +169,7 @@ class DataManager(RAMSTKDataManager):
                 'fail_update_fmea',
                 error_message=_error_msg,
             )
-        except KeyError:
+        except IndexError:
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg = ('{1}: No data package found for FMEA record '
@@ -179,10 +180,10 @@ class DataManager(RAMSTKDataManager):
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_allocation',
+                'fail_update_fmea',
                 error_message=_error_msg,
             )
-        except TypeError:
+        except (TypeError, DataAccessError):
             if node_id != 0:
                 _method_name: str = inspect.currentframe(  # type: ignore
                 ).f_code.co_name
@@ -319,22 +320,6 @@ class DataManager(RAMSTKDataManager):
                 node_id=_identifier,
                 tree=self.tree,
             )
-        except NodeIDAbsentError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = (
-                '{1}: Attempted to add an action to non-existent parent FMEA '
-                'record with hardware ID {0}.').format(str(parent_id),
-                                                       _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_action",
-                error_message=_error_msg,
-            )
         except DataAccessError as _error:
             pub.sendMessage(
                 'do_log_debug',
@@ -383,22 +368,6 @@ class DataManager(RAMSTKDataManager):
                 'succeed_insert_cause',
                 node_id=_identifier,
                 tree=self.tree,
-            )
-        except NodeIDAbsentError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = (
-                '{1}: Attempted to add a cause to non-existent parent FMEA '
-                'record with hardware ID {0}.').format(str(parent_id),
-                                                       _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_cause",
-                error_message=_error_msg,
             )
         except DataAccessError as _error:
             pub.sendMessage(
@@ -451,22 +420,6 @@ class DataManager(RAMSTKDataManager):
                 node_id=_identifier,
                 tree=self.tree,
             )
-        except NodeIDAbsentError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = (
-                '{1}: Attempted to add a control to non-existent parent FMEA '
-                'record with hardware ID {0}.').format(str(parent_id),
-                                                       _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_control",
-                error_message=_error_msg,
-            )
         except DataAccessError as _error:
             pub.sendMessage(
                 'do_log_debug',
@@ -515,22 +468,6 @@ class DataManager(RAMSTKDataManager):
                 'succeed_insert_mechanism',
                 node_id=_identifier,
                 tree=self.tree,
-            )
-        except NodeIDAbsentError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = (
-                '{1}: Attempted to add a mechanism to non-existent parent '
-                'FMEA record with hardware ID {0}.').format(
-                    str(mode_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_mechanism",
-                error_message=_error_msg,
             )
         except DataAccessError as _error:
             pub.sendMessage(
