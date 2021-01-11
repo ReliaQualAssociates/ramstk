@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import json
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -164,14 +164,13 @@ class PoFPanel(RAMSTKPanel):
                 pass
             else:
                 _cell[0].connect('edited',
-                                 super().on_cell_edit, 'wvw_editing_pof', i)
+                                 super().on_cell_edit, i, 'wvw_editing_pof')
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def _on_delete_insert_pof(self, tree: treelib.Tree) -> None:
         """Update PoF worksheet whenever an element is inserted or deleted.
 
-        :param node_id: the ID of the inserted/deleted PoF element.
         :param tree: the treelib Tree() containing the PoF module's data.
         :return: None
         """
@@ -208,6 +207,14 @@ class PoFPanel(RAMSTKPanel):
 
         super().do_set_headings()
 
+        _attributes = super().on_row_change(selection)
+        _attributes['node_id'] = self._record_id
+        if _attributes:
+            pub.sendMessage(
+                'selected_pof',
+                attributes=_attributes,
+            )
+
     def __do_load_damage_models(self) -> None:
         """Load the RAMSTKTreeView() damage model CellRendererCombo().
 
@@ -215,7 +222,7 @@ class PoFPanel(RAMSTKPanel):
         """
         _model = self.__get_cell_model(self._lst_col_order[5])
         for _item in self.dic_damage_models:
-            _model.append([self.dic_damage_models[_item][0]])
+            _model.append([self.dic_damage_models[_item]])
 
     def __do_load_load_history(self) -> None:
         """Load the operating load history CellRendererCombo().
@@ -250,6 +257,7 @@ class PoFPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
+        # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons['mechanism'], 22, 22)
 
@@ -289,6 +297,7 @@ class PoFPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
+        # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons['mode'],
                                                        22, 22)
 
@@ -328,6 +337,7 @@ class PoFPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
+        # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons['opload'], 22, 22)
 
@@ -366,6 +376,7 @@ class PoFPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
+        # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons['opstress'], 22, 22)
 
@@ -405,6 +416,7 @@ class PoFPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
+        # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons['testmethod'], 22, 22)
 
@@ -537,27 +549,15 @@ class PoF(RAMSTKWorkView):
         # Initialize private dict attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks: List[object] = [
-            self._do_request_insert_sibling,
-            self._do_request_insert_child,
-            self._do_request_delete,
-            self._do_request_update,
-            self._do_request_update_all,
-        ]
-        self._lst_icons: List[str] = [
-            'insert_sibling',
-            'insert_child',
-            'remove',
-            'save',
-            'save-all',
-        ]
-        self._lst_mnu_labels: List[str] = [
-            _("Insert Sibling"),
-            _("Insert Child"),
-            _("Delete Selected"),
-            _("Save"),
-            _("Save All"),
-        ]
+        self._lst_callbacks.insert(0, self._do_request_insert_sibling)
+        self._lst_callbacks.insert(1, self._do_request_insert_child)
+        self._lst_callbacks.insert(2, self._do_request_delete)
+        self._lst_icons.insert(0, 'insert_sibling')
+        self._lst_icons.insert(1, 'insert_child')
+        self._lst_icons.insert(2, 'remove')
+        self._lst_mnu_labels.insert(0, _("Insert Sibling"))
+        self._lst_mnu_labels.insert(1, _("Insert Child"))
+        self._lst_mnu_labels.insert(2, _("Delete Selected"))
         self._lst_tooltips: List[str] = [
             _("Add a new PoF entity at the same level as the "
               "currently selected entity."),
@@ -578,9 +578,9 @@ class PoF(RAMSTKWorkView):
         # Initialize public scalar attributes.
 
         self.__make_ui()
-        self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_set_record_id, 'selected_pof')
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete the selected entity from the PoF.
@@ -656,29 +656,38 @@ class PoF(RAMSTKWorkView):
         pub.sendMessage('request_insert_pof_{0:s}'.format(_level),
                         parent_id=str(_parent_id))
 
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to save the currently selected entity in the PoF.
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the record and revision ID when a hardware item is selected.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param attributes: the hazard dict for the selected hardware ID.
         :return: None
         :rtype: None
         """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_pof', node_id=self._record_id)
+        self._record_id = attributes['node_id']
 
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Request to save all the entities in the PoF.
+    def __make_ui(self) -> None:
+        """Build the user interface for the PoF tab.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        super().do_set_cursor_busy()
-        pub.sendMessage('request_update_all_pof')
+        super().do_make_layout()
 
-    def _on_request_insert_opstress_method(self) -> str:
+        self._pnlPanel.dic_damage_models =  \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS
+        self._pnlPanel.dic_load_history =  \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY
+        self._pnlPanel.dic_measurable_parameters =  \
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS
+        self._pnlPanel.dic_icons = self._dic_icons
+
+        super().do_embed_treeview_panel()
+        self._pnlPanel.do_load_combobox()
+        self._pnlPanel.do_set_callbacks()
+
+        self.show_all()
+
+    def __on_request_insert_opstress_method(self) -> str:
         """Raise dialog to select whether to add a stress or test method.
 
         :return: _level; the level to add, opstress or testmethod.
@@ -698,36 +707,3 @@ class PoF(RAMSTKWorkView):
         _dialog.do_destroy()
 
         return _level
-
-    def __do_set_callbacks(self) -> None:
-        """Set the callback methods and functions for the FMEA widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self._pnlPanel.tvwTreeView.dic_handler_id[
-            'button-press'] = self._pnlPanel.tvwTreeView.connect(
-                "button_press_event",
-                super().on_button_press)
-
-    def __make_ui(self) -> None:
-        """Build the user interface for the PoF tab.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_make_layout()
-
-        self.do_embed_treeview_panel()
-        self._pnlPanel.do_load_combobox()
-        self._pnlPanel.do_set_callbacks()
-
-        self._pnlPanel.dic_damage_models =  \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS
-        self._pnlPanel.dic_load_history =  \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY
-        self._pnlPanel.dic_measurable_parameters =  \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS
-        self._pnlPanel.dic_icons = self._dic_icons
-
-        self.show_all()

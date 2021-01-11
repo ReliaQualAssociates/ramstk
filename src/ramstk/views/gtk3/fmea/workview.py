@@ -1334,7 +1334,7 @@ class FMEA(RAMSTKWorkView):
         self._pnlPanel.dic_users = self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS
         self._pnlPanel.dic_icons = self._dic_icons
 
-        self.do_embed_treeview_panel()
+        super().do_embed_treeview_panel()
         self._pnlPanel.do_load_combobox()
         self._pnlPanel.do_set_callbacks()
 
