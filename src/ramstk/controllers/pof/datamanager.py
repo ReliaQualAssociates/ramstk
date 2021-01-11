@@ -180,21 +180,20 @@ class DataManager(RAMSTKDataManager):
                 error_message=_error_msg,
             )
         except (TypeError, DataAccessError):
-            if node_id != 0:
-                _method_name: str = inspect.currentframe(  # type: ignore
-                ).f_code.co_name
-                _error_msg = ('{1}: The value for one or more attributes for '
-                              'PoF record ID {0} was the wrong '
-                              'type.').format(str(node_id), _method_name)
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error_msg,
-                )
-                pub.sendMessage(
-                    'fail_update_pof',
-                    error_message=_error_msg,
-                )
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{1}: The value for one or more attributes for PoF '
+                          'record ID {0} was the wrong type.').format(
+                              str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_pof',
+                error_message=_error_msg,
+            )
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a PoF element.
