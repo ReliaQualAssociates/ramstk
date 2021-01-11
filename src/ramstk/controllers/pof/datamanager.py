@@ -7,6 +7,7 @@
 """PoF Package Data Model."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict
 
 # Third Party Imports
@@ -25,11 +26,12 @@ from ramstk.models.programdb import (
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the PoF data manager.
 
-    This class manages the PoF data from the RAMSTKMode, RAMSTKMechains,
-    RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod data models.
+    This class manages the PoF data from the RAMSTKMode,
+    RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod
+    data models.
     """
 
-    _tag = 'pof'
+    _tag = 'pofs'
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -53,11 +55,15 @@ class DataManager(RAMSTKDataManager):
         }
 
         # Initialize private list attributes.
-        self._last_id = [0, 0, 0]
 
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
+        self.last_id: Dict[str, int] = {
+            'opload': 0,
+            'opstress': 0,
+            'testmethod': 0,
+        }
 
         # Initialize public list attributes.
 
@@ -93,7 +99,10 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_pof_tree', tree=self.tree)
+        pub.sendMessage(
+            'succeed_get_pof_tree',
+            tree=self.tree,
+        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the PoF data from the RAMSTK Program database.
@@ -103,11 +112,11 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes['revision_id']
-        self._parent_id = attributes['hardware_id']
-
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
+
+        self._revision_id = attributes['revision_id']
+        self._parent_id = attributes['hardware_id']
 
         for _mode in self.dao.session.query(RAMSTKMode).filter(
                 RAMSTKMode.revision_id == self._revision_id,
@@ -120,7 +129,10 @@ class DataManager(RAMSTKDataManager):
 
             self._do_select_all_mechanism(_mode.mode_id)
 
-        pub.sendMessage('succeed_retrieve_pof', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_pof',
+            tree=self.tree,
+        )
 
     def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
@@ -135,12 +147,54 @@ class DataManager(RAMSTKDataManager):
             self.dao.session.add(self.tree.get_node(node_id).data[_table])
 
             self.dao.do_update()
-            pub.sendMessage('succeed_update_pof', tree=self.tree)
+            pub.sendMessage(
+                'succeed_update_pof',
+                tree=self.tree,
+            )
         except AttributeError:
-            pub.sendMessage('fail_update_pof',
-                            error_message=('Attempted to save non-existent '
-                                           'PoF element with PoF ID '
-                                           '{0:s}.').format(str(node_id)))
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{1}: Attempted to save non-existent PoF '
+                          'record ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_pof',
+                error_message=_error_msg,
+            )
+        except IndexError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{1}: No data package found for PoF record '
+                          'ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_pof',
+                error_message=_error_msg,
+            )
+        except (TypeError, DataAccessError):
+            if node_id != 0:
+                _method_name: str = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
+                _error_msg = ('{1}: The value for one or more attributes for '
+                              'PoF record ID {0} was the wrong '
+                              'type.').format(str(node_id), _method_name)
+                pub.sendMessage(
+                    'do_log_debug',
+                    logger_name='DEBUG',
+                    message=_error_msg,
+                )
+                pub.sendMessage(
+                    'fail_update_pof',
+                    error_message=_error_msg,
+                )
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a PoF element.
@@ -156,13 +210,29 @@ class DataManager(RAMSTKDataManager):
             super().do_delete(node_id, _table)
 
             self.tree.remove_node(node_id)
-            pub.sendMessage('succeed_delete_pof_2', node_id=node_id)
-            pub.sendMessage('succeed_delete_pof',
-                            tree=self.tree)
-        except AttributeError:
-            _error_msg = ("Attempted to delete non-existent PoF element ID "
-                          "{0:s}.").format(str(node_id))
-            pub.sendMessage('fail_delete_pof', error_message=_error_msg)
+            pub.sendMessage(
+                'succeed_delete_pof_2',
+                node_id=node_id,
+            )
+            pub.sendMessage(
+                'succeed_delete_pof',
+                tree=self.tree,
+            )
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Attempted to delete non-existent PoF record '
+                'with ID {0}.').format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_delete_pof',
+                error_message=_error_msg,
+            )
 
     def _do_insert_opload(self, parent_id: str) -> None:
         """Add a new operating to PoF mechanism ID.
@@ -179,12 +249,10 @@ class DataManager(RAMSTKDataManager):
             _opload.hardware_id = self._parent_id
             _opload.mode_id = int(_mode_id)
             _opload.mechanism_id = int(_mechanism_id)
-            _opload.load_id = self._last_id[0] + 1
+            _opload.load_id = self.last_id['opload'] + 1
             _opload.description = 'New Operating Load'
 
             self.dao.do_insert(_opload)
-
-            self._last_id[0] = max(self._last_id[0], _opload.load_id)
 
             _identifier = '{0:s}.{1:d}'.format(parent_id, _opload.load_id)
 
@@ -193,7 +261,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opload': _opload})
 
-            pub.sendMessage('succeed_insert_pof', node_id=self.last_id,
+            self.last_id['opload'] = max(self.last_id['opload'],
+                                         _opload.load_id)
+
+            pub.sendMessage('succeed_insert_pof',
+                            node_id=self.last_id['opload'],
                             tree=self.tree)
             pub.sendMessage('succeed_insert_opload',
                             node_id=_identifier,
@@ -220,12 +292,10 @@ class DataManager(RAMSTKDataManager):
             _opstress.mode_id = int(_mode_id)
             _opstress.mechanism_id = int(_mechanism_id)
             _opstress.load_id = int(_load_id)
-            _opstress.stress_id = self._last_id[1] + 1
+            _opstress.stress_id = self.last_id['opstress'] + 1
             _opstress.description = 'New Operating Stress'
 
             self.dao.do_insert(_opstress)
-
-            self._last_id[1] = max(self._last_id[1], _opstress.stress_id)
 
             _identifier = '{0:s}.{1:d}.s'.format(parent_id,
                                                  _opstress.stress_id)
@@ -235,7 +305,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opstress': _opstress})
 
-            pub.sendMessage('succeed_insert_pof', node_id=self.last_id,
+            self.last_id['opstress'] = max(self.last_id['opstress'],
+                                           _opstress.stress_id)
+
+            pub.sendMessage('succeed_insert_pof',
+                            node_id=self.last_id['opstress'],
                             tree=self.tree)
             pub.sendMessage('succeed_insert_opstress',
                             node_id=_identifier,
@@ -262,12 +336,10 @@ class DataManager(RAMSTKDataManager):
             _method.mode_id = int(_mode_id)
             _method.mechanism_id = int(_mechanism_id)
             _method.load_id = int(_load_id)
-            _method.test_id = self._last_id[2] + 1
+            _method.test_id = self.last_id['testmethod'] + 1
             _method.description = 'New Test Method'
 
             self.dao.do_insert(_method)
-
-            self._last_id[2] = max(self._last_id[2], _method.test_id)
 
             _identifier = '{0:s}.{1:d}.t'.format(parent_id, _method.test_id)
             self.tree.create_node(tag='method',
@@ -275,7 +347,11 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'testmethod': _method})
 
-            pub.sendMessage('succeed_insert_pof', node_id=self.last_id,
+            self.last_id['testmethod'] = max(self.last_id['testmethod'],
+                                             _method.test_id)
+
+            pub.sendMessage('succeed_insert_pof',
+                            node_id=self.last_id['testmethod'],
                             tree=self.tree)
             pub.sendMessage('succeed_insert_test_method',
                             node_id=_identifier,
@@ -331,7 +407,8 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opload': _opload})
 
-            self._last_id[0] = max(self._last_id[0], _opload.load_id)
+            self.last_id['opload'] = max(self.last_id['opload'],
+                                         _opload.load_id)
 
             self._do_select_all_opstress(_identifier)
             self._do_select_all_testmethod(_identifier)
@@ -360,7 +437,8 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'opstress': _opstress})
 
-            self._last_id[1] = max(self._last_id[1], _opstress.stress_id)
+            self.last_id['opstress'] = max(self.last_id['opstress'],
+                                           _opstress.stress_id)
 
     def _do_select_all_testmethod(self, parent_id: str) -> None:
         """Retrieve all the test methods for the load ID.
@@ -385,4 +463,5 @@ class DataManager(RAMSTKDataManager):
                                   parent=parent_id,
                                   data={'testmethod': _method})
 
-            self._last_id[2] = max(self._last_id[2], _method.test_id)
+            self.last_id['testmethod'] = max(self.last_id['testmethod'],
+                                             _method.test_id)

@@ -617,7 +617,10 @@ class DataManager(RAMSTKDataManager):
             self._add_mode_node(_mode)
             self._do_select_all_cause(str(self._parent_id))
 
-        pub.sendMessage('succeed_retrieve_functional_fmea', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_functional_fmea',
+            tree=self.tree,
+        )
 
     def _do_select_all_hardware_fmea(self) -> None:
         """Retrieve all hardware FMEA data from the RAMSTK Program database.
@@ -632,7 +635,10 @@ class DataManager(RAMSTKDataManager):
             self._add_mode_node(_mode)
             self._do_select_all_mechanism(_mode.mode_id)
 
-        pub.sendMessage('succeed_retrieve_hardware_fmea', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_hardware_fmea',
+            tree=self.tree,
+        )
 
     def _do_select_all_mechanism(self, mode_id: int) -> None:
         """Retrieve all the failure mechanisms for the mode ID.

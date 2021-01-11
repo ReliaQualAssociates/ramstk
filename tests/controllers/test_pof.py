@@ -1,10 +1,11 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_pof.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing PoF algorithms and models."""
 
 # Third Party Imports
@@ -15,8 +16,10 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmPoF
 from ramstk.db.base import BaseDatabase
-from ramstk.models.programdb import (RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
-                                     RAMSTKOpStress, RAMSTKTestMethod)
+from ramstk.models.programdb import (
+    RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
+    RAMSTKOpStress, RAMSTKTestMethod
+)
 
 
 @pytest.mark.usefixtures('test_program_dao')
@@ -30,10 +33,11 @@ class TestCreateControllers():
         assert isinstance(DUT, dmPoF)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'pof'
+        assert DUT._tag == 'pofs'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert DUT._parent_id == 0
+        assert DUT.last_id == {'opload': 0, 'opstress': 0, 'testmethod': 0}
         assert pub.isSubscribed(DUT.do_select_all, 'selected_hardware')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_pof')
         assert pub.isSubscribed(DUT._do_insert_opload,
@@ -68,7 +72,9 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_all(self, test_program_dao):
-        """do_select_all() should return a Tree() object populated with RAMSTKMode, RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod instances on success."""
+        """do_select_all() should return a Tree() object populated with
+        RAMSTKMode, RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and
+        RAMSTKTestMethod instances on success."""
         pub.subscribe(self.on_succeed_retrieve_pof, 'succeed_retrieve_pof')
 
         DUT = dmPoF()
@@ -81,7 +87,8 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_mode(self, test_program_dao):
-        """do_select() should return an instance of the RAMSTKMode on success."""
+        """do_select() should return an instance of the RAMSTKMode on
+        success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -94,7 +101,8 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_mechanism(self, test_program_dao):
-        """do_select() should return an instance of the RAMSTKMechanism on success."""
+        """do_select() should return an instance of the RAMSTKMechanism on
+        success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -107,7 +115,8 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_opload(self, test_program_dao):
-        """do_select() should return an instance of the RAMSTKOpLoad on success."""
+        """do_select() should return an instance of the RAMSTKOpLoad on
+        success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -120,7 +129,8 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_opstress(self, test_program_dao):
-        """do_select() should return an instance of the RAMSTKOpStress on success."""
+        """do_select() should return an instance of the RAMSTKOpStress on
+        success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -133,7 +143,8 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_test_method(self, test_program_dao):
-        """do_select() should return an instance of the RAMSTKTestMethod on success."""
+        """do_select() should return an instance of the RAMSTKTestMethod on
+        success."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -146,7 +157,8 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_program_dao):
-        """do_select() should raise a KeyError when an unknown table name is requested."""
+        """do_select() should raise a KeyError when an unknown table name is
+        requested."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -156,7 +168,8 @@ class TestSelectMethods():
 
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao):
-        """do_select() should return None when a non-existent PoF ID is requested."""
+        """do_select() should return None when a non-existent PoF ID is
+        requested."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -169,42 +182,40 @@ class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete_mode(self, tree):
         assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a failure mode."
-        )
+        print("\033[36m\nsucceed_delete_pof topic was broadcast when deleting "
+              "a failure mode.")
 
     def on_succeed_delete_mechanism(self, tree):
         assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a failure mechanism."
-        )
+        print("\033[36m\nsucceed_delete_pof topic was broadcast when deleting "
+              "a failure mechanism.")
 
     def on_succeed_delete_opload(self, tree):
         assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_delete_pof topic was broadcast when deleting an operating load."
-        )
+        print("\033[36m\nsucceed_delete_pof topic was broadcast when deleting "
+              "an operating load.")
 
     def on_succeed_delete_opstress(self, tree):
         assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_delete_pof topic was broadcast when deleting an operating stress."
-        )
+        print("\033[36m\nsucceed_delete_pof topic was broadcast when deleting "
+              "an operating stress.")
 
     def on_succeed_delete_test_method(self, tree):
         assert isinstance(tree, Tree)
         print(
-            "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a test method."
-        )
+            "\033[36m\nsucceed_delete_pof topic was broadcast when deleting a "
+            "test method.")
 
     def on_fail_delete_pof(self, error_message):
         assert error_message == (
-            'Attempted to delete non-existent PoF element ID 300.')
+            '_do_delete: Attempted to delete non-existent PoF record with '
+            'ID 300.')
         print("\033[35m\nfail_delete_pof topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_delete_test_method(self, test_program_dao):
-        """_do_delete() should send the success message with the treelib Tree when successfully deleting a test method."""
+        """_do_delete() should send the success message with the treelib Tree
+        when successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete_test_method, 'succeed_delete_pof')
 
         DUT = dmPoF()
@@ -219,7 +230,8 @@ class TestDeleteMethods():
 
     @pytest.mark.integration
     def test_do_delete_opstress(self, test_program_dao):
-        """_do_delete() should send the success message with the treelib Tree when successfully deleting an operating stress."""
+        """_do_delete() should send the success message with the treelib Tree
+        when successfully deleting an operating stress."""
         pub.subscribe(self.on_succeed_delete_opstress, 'succeed_delete_pof')
 
         DUT = dmPoF()
@@ -233,7 +245,8 @@ class TestDeleteMethods():
 
     @pytest.mark.integration
     def test_do_delete_opload(self, test_program_dao):
-        """_do_delete() should send the success message with the treelib Tree when successfully deleting on operating load."""
+        """_do_delete() should send the success message with the treelib Tree
+        when successfully deleting on operating load."""
         pub.subscribe(self.on_succeed_delete_opload, 'succeed_delete_pof')
 
         DUT = dmPoF()
@@ -247,7 +260,8 @@ class TestDeleteMethods():
 
     @pytest.mark.integration
     def test_do_delete_mechanism(self, test_program_dao):
-        """_do_delete() should send the success message with the treelib Tree."""
+        """_do_delete() should send the success message with the treelib
+        Tree."""
         pub.subscribe(self.on_succeed_delete_mechanism, 'succeed_delete_pof')
 
         DUT = dmPoF()
@@ -261,7 +275,8 @@ class TestDeleteMethods():
 
     @pytest.mark.integration
     def test_do_delete_mode(self, test_program_dao):
-        """_do_delete() should send the success message with the treelib Tree."""
+        """_do_delete() should send the success message with the treelib
+        Tree."""
         pub.subscribe(self.on_succeed_delete_mode, 'succeed_delete_pof')
 
         DUT = dmPoF()
@@ -275,7 +290,8 @@ class TestDeleteMethods():
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self, test_program_dao):
-        """_do_delete() should send the fail message when attempting to delete a node ID that doesn't exist in the tree."""
+        """_do_delete() should send the fail message when attempting to delete
+        a node ID that doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_pof, 'fail_delete_pof')
 
         DUT = dmPoF()
@@ -322,7 +338,8 @@ class TestInsertMethods():
 
     @pytest.mark.integration
     def test_do_insert_opload(self, test_program_dao):
-        """_do_insert_opload() should send the success message after successfully inserting an operating load."""
+        """_do_insert_opload() should send the success message after
+        successfully inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_opload, 'succeed_insert_opload')
 
         DUT = dmPoF()
@@ -340,7 +357,8 @@ class TestInsertMethods():
 
     @pytest.mark.integration
     def test_do_insert_opload_no_mechanism(self, test_program_dao):
-        """_do_insert_opload() should send the fail message if attempting to add an operating load to a non-existent mechanism ID."""
+        """_do_insert_opload() should send the fail message if attempting to
+        add an operating load to a non-existent mechanism ID."""
         pub.subscribe(self.on_fail_insert_opload, 'fail_insert_opload')
 
         DUT = dmPoF()
@@ -354,7 +372,8 @@ class TestInsertMethods():
 
     @pytest.mark.integration
     def test_do_insert_opstress(self, test_program_dao):
-        """_do_insert_opstress() should send the success message after successfully inserting an operating stress."""
+        """_do_insert_opstress() should send the success message after
+        successfully inserting an operating stress."""
         pub.subscribe(self.on_succeed_insert_opstress,
                       'succeed_insert_opstress')
 
@@ -374,7 +393,8 @@ class TestInsertMethods():
 
     @pytest.mark.integration
     def test_do_insert_opstress_no_load(self, test_program_dao):
-        """_do_insert_opstress() should send the fail message if attempting to add a control to a non-existent operating load ID."""
+        """_do_insert_opstress() should send the fail message if attempting to
+        add a control to a non-existent operating load ID."""
         pub.subscribe(self.on_fail_insert_opstress, 'fail_insert_opstress')
 
         DUT = dmPoF()
@@ -388,7 +408,8 @@ class TestInsertMethods():
 
     @pytest.mark.integration
     def test_do_insert_test_method(self, test_program_dao):
-        """_do_insert_testmethod() should send the success message after successfully inserting a test method."""
+        """_do_insert_testmethod() should send the success message after
+        successfully inserting a test method."""
         pub.subscribe(self.on_succeed_insert_test_method,
                       'succeed_insert_test_method')
 
@@ -409,7 +430,8 @@ class TestInsertMethods():
 
     @pytest.mark.integration
     def test_do_insert_test_method_no_cause(self, test_program_dao):
-        """_do_insert_testmethod() should send the fail message if attempting to add an action to a non-existent cause ID."""
+        """_do_insert_testmethod() should send the fail message if attempting
+        to add an action to a non-existent cause ID."""
         pub.subscribe(self.on_fail_insert_test_method,
                       'fail_insert_test_method')
 
@@ -486,7 +508,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_mode_attributes(self, test_program_dao):
-        """do_get_attributes() should return a dict of mode attributes on success."""
+        """do_get_attributes() should return a dict of mode attributes on
+        success."""
         pub.subscribe(self.on_succeed_get_mode_attrs,
                       'succeed_get_mode_attributes')
 
@@ -502,7 +525,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_mechanism_attributes(self, test_program_dao):
-        """do_get_attributes() should return a dict of mechanism attributes on success."""
+        """do_get_attributes() should return a dict of mechanism attributes on
+        success."""
         pub.subscribe(self.on_succeed_get_mechanism_attrs,
                       'succeed_get_mechanism_attributes')
 
@@ -519,7 +543,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_opload_attributes(self, test_program_dao):
-        """do_get_attributes() should return a dict of operating load attributes on success."""
+        """do_get_attributes() should return a dict of operating load
+        attributes on success."""
         pub.subscribe(self.on_succeed_get_opload_attrs,
                       'succeed_get_opload_attributes')
 
@@ -536,7 +561,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_opstress_attributes(self, test_program_dao):
-        """do_get_attributes() should return a dict of operating stress attributes on success."""
+        """do_get_attributes() should return a dict of operating stress
+        attributes on success."""
         pub.subscribe(self.on_succeed_get_opstress_attrs,
                       'succeed_get_opstress_attributes')
 
@@ -553,7 +579,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_get_test_method_attributes(self, test_program_dao):
-        """do_get_attributes() should return a dict of test method attributes on success."""
+        """do_get_attributes() should return a dict of test method attributes
+        on success."""
         pub.subscribe(self.on_succeed_get_test_method_attrs,
                       'succeed_get_test_method_attributes')
 
@@ -573,7 +600,8 @@ class TestGetterSetter():
     # failure mechanisms.  Alter these in the FMEA worksheet.
     @pytest.mark.skip
     def test_do_set_mode_attributes(self, test_program_dao):
-        """do_set_attributes() should return None when successfully setting failure mode attributes."""
+        """do_set_attributes() should return None when successfully setting
+        failure mode attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -593,7 +621,8 @@ class TestGetterSetter():
 
     @pytest.mark.skip
     def test_do_set_mechanism_attributes(self, test_program_dao):
-        """do_set_attributes() should return None when successfully setting failure mechanism attributes."""
+        """do_set_attributes() should return None when successfully setting
+        failure mechanism attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -610,7 +639,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_set_opload_attributes(self, test_program_dao):
-        """do_set_attributes() should return None when successfully setting operating load attributes."""
+        """do_set_attributes() should return None when successfully setting
+        operating load attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -628,7 +658,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_set_opstress_attributes(self, test_program_dao):
-        """do_set_attributes() should return None when successfully setting control attributes."""
+        """do_set_attributes() should return None when successfully setting
+        control attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -647,7 +678,8 @@ class TestGetterSetter():
 
     @pytest.mark.integration
     def test_do_set_test_method_attributes(self, test_program_dao):
-        """do_set_attributes() should return None when successfully setting test method attributes."""
+        """do_set_attributes() should return None when successfully setting
+        test method attributes."""
         DUT = dmPoF()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
@@ -685,12 +717,23 @@ class TestUpdateMethods():
 
     def on_fail_update_pof(self, error_message):
         assert error_message == (
-            'Attempted to save non-existent PoF element with PoF ID 100.')
+            'do_update: Attempted to save non-existent PoF record ID 100.')
+        print("\033[35m\nfail_update_pof topic was broadcast")
+
+    def on_fail_update_pof_no_data(self, error_message):
+        assert error_message == ('do_update: No data package found for PoF '
+                                 'record ID 5.1.1.')
+        print("\033[35m\nfail_update_pof topic was broadcast")
+
+    def on_fail_update_pof_wrong_data_type(self, error_message):
+        assert error_message == (
+            'do_update: The value for one or more attributes for PoF record '
+            'ID 5.1.1 was the wrong type.')
         print("\033[35m\nfail_update_pof topic was broadcast")
 
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao):
-        """ do_update() should return a zero error code on success. """
+        """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update_pof, 'succeed_update_pof')
 
         DUT = dmPoF()
@@ -721,7 +764,8 @@ class TestUpdateMethods():
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_program_dao):
-        """ do_update() should return a non-zero error code when passed a PoF ID that doesn't exist. """
+        """do_update() should return a non-zero error code when passed a PoF ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_pof, 'fail_update_pof')
 
         DUT = dmPoF()
@@ -730,3 +774,57 @@ class TestUpdateMethods():
         DUT.do_update(100)
 
         pub.unsubscribe(self.on_fail_update_pof, 'fail_update_pof')
+
+    @pytest.mark.integration
+    def test_do_update_no_data_package(self, test_program_dao):
+        """do_update() should return a non-zero error code when passed a FMEA
+        ID that has no data package."""
+        pub.subscribe(self.on_fail_update_pof_no_data, 'fail_update_pof')
+
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+
+        DUT.tree.get_node('5.1.1').data.pop('opload')
+
+        DUT.do_update('5.1.1')
+
+        pub.unsubscribe(self.on_fail_update_pof_no_data, 'fail_update_pof')
+
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type(self, test_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Requirement ID that doesn't exist."""
+        pub.subscribe(self.on_fail_update_pof_wrong_data_type,
+                      'fail_update_pof')
+
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+
+        _opload = DUT.do_select('5.1.1', table='opload')
+        _pri = _opload.priority_id
+        _opload.priority_id = {1: 2}
+
+        DUT.do_update('5.1.1')
+
+        _opload.priority_id = _pri
+
+        pub.unsubscribe(self.on_fail_update_pof_wrong_data_type,
+                        'fail_update_pof')
+
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type_root_node(self, test_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Requirement ID that doesn't exist."""
+        DUT = dmPoF()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1, 'hardware_id': 1})
+
+        _opload = DUT.do_select('5.1.1', table='opload')
+        _pri = _opload.priority_id
+        _opload.priority_id = {1: 2}
+
+        DUT.do_update(0)
+
+        _opload.priority_id = _pri
