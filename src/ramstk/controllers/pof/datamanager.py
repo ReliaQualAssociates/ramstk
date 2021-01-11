@@ -279,7 +279,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_opstress(self, parent_id: str) -> None:
         """Add a new operating stress to PoF load ID.
 
-        :parem str parent_id: the parent node ID the operating stress is
+        :param str parent_id: the parent node ID the operating stress is
             associated with.
         :return: None
         :rtype: None
@@ -323,7 +323,7 @@ class DataManager(RAMSTKDataManager):
     def _do_insert_testmethod(self, parent_id: str) -> None:
         """Add a new test method to PoF load ID.
 
-        :parem str parent_id: the parent node ID the test method is associated
+        :param str parent_id: the parent node ID the test method is associated
             with.
         :return: None
         :rtype: None
@@ -388,7 +388,7 @@ class DataManager(RAMSTKDataManager):
     def _do_select_all_opload(self, parent_id: str) -> None:
         """Retrieve all the operating loads for the mechanism ID.
 
-        :parem str parent_id: the parent node ID the coperating loads are
+        :param str parent_id: the parent node ID the operating loads are
             associated with.
         :return: None
         :rtype: None
@@ -416,7 +416,7 @@ class DataManager(RAMSTKDataManager):
     def _do_select_all_opstress(self, parent_id: str) -> None:
         """Retrieve all the operating stresses for the load ID.
 
-        :parem str parent_id: the parent node ID the operating stresses are
+        :param str parent_id: the parent node ID the operating stresses are
             associated with.
         :return: None
         :rtype: None
@@ -443,7 +443,7 @@ class DataManager(RAMSTKDataManager):
     def _do_select_all_testmethod(self, parent_id: str) -> None:
         """Retrieve all the test methods for the load ID.
 
-        :parem str parent_id: the parent node ID the test methods are
+        :param str parent_id: the parent node ID the test methods are
             associated with.
         :return: None
         :rtype: None
