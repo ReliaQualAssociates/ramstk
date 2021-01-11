@@ -304,6 +304,49 @@ class FMEAPanel(RAMSTKPanel):
             40: ['pof_include', 'boolean'],
             41: ['remarks', 'text'],
         }
+        self._dic_attribute_updater = {
+            'description': [None, 'edited', 1],
+            'mission': [None, 'edited', 2],
+            'mission_phase': [None, 'edited', 3],
+            'effect_local': [None, 'edited', 4],
+            'effect_next': [None, 'edited', 5],
+            'effect_end': [None, 'edited', 6],
+            'detection_method': [None, 'edited', 7],
+            'other_indications': [None, 'edited', 8],
+            'isolation_method': [None, 'edited', 9],
+            'design_provisions': [None, 'edited', 10],
+            'operator_actions': [None, 'edited', 11],
+            'severity_class': [None, 'edited', 12],
+            'hazard_rate_source': [None, 'edited', 13],
+            'mode_probability': [None, 'edited', 14],
+            'effect_probability': [None, 'edited', 15],
+            'mode_ratio': [None, 'edited', 16],
+            'mode_hazard_rate': [None, 'edited', 17],
+            'mode_op_time': [None, 'edited', 18],
+            'mode_criticality': [None, 'edited', 19],
+            'type_id': [None, 'edited', 20],
+            'rpn_severity': [None, 'edited', 21],
+            'rpn_occurrence': [None, 'edited', 22],
+            'rpn_detection': [None, 'edited', 23],
+            'rpn': [None, 'edited', 24],
+            'action_category': [None, 'edited', 25],
+            'action_owner': [None, 'edited', 26],
+            'action_due_date': [None, 'edited', 27],
+            'action_status': [None, 'edited', 28],
+            'action_taken': [None, 'edited', 29],
+            'action_approved': [None, 'edited', 30],
+            'action_approve_date': [None, 'edited', 31],
+            'action_closed': [None, 'edited', 32],
+            'action_close_date': [None, 'edited', 33],
+            'rpn_severity_new': [None, 'edited', 34],
+            'rpn_occurrence_new': [None, 'edited', 35],
+            'rpn_detection_new': [None, 'edited', 36],
+            'rpn_new': [None, 'edited', 37],
+            'critical_item': [None, 'edited', 38],
+            'single_point': [None, 'edited', 39],
+            'pof_include': [None, 'edited', 40],
+            'remarks': [None, 'edited', 41],
+        }
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
         self._dic_row_loader = {
             'mode': self.__do_load_mode,
@@ -364,7 +407,7 @@ class FMEAPanel(RAMSTKPanel):
         # pub.subscribe(self._do_load_panel,
         #              'succeed_calculate_fmea_criticality')
         pub.subscribe(self.__do_load_missions,
-                      'succeed_get_usage_profile_attributes')
+                      'succeed_retrieve_usage_profile')
 
     def do_load_combobox(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -399,10 +442,28 @@ class FMEAPanel(RAMSTKPanel):
             try:
                 _cell[0].connect('edited',
                                  super().on_cell_edit, i, 'wvw_editing_fmea')
+                if i == 2:
+                    _cell[0].connect('edited', self._on_mission_change)
             except TypeError:
                 _cell[0].connect('toggled',
                                  super().on_cell_toggled, 'new text', i,
                                  'wvw_editing_hazard')
+
+    def _on_mission_change(self, __combo: Gtk.CellRendererCombo, path: str,
+                           new_text: str) -> None:
+        """Load the mission phases whenever the mission combo is changed.
+
+        :param __combo: the mission list Gtk.CellRendererCombo().  Unused in
+            this method.
+        :param path: the path identifying the edited cell.
+        :param new_text: the new text (mission description).
+        :return: None
+        :rtype: None
+        """
+        self.__do_load_mission_phases(new_text)
+
+        _model = self.tvwTreeView.get_model()
+        _model[path][self._lst_col_order[3]] = ""
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the FMEA Work View RAMSTKTreeView().
@@ -494,6 +555,14 @@ class FMEAPanel(RAMSTKPanel):
 
         self.tvwTreeView.visible = dict(zip(_columns, _visible[_level]))
         self.tvwTreeView.do_set_visible_columns()
+
+        _attributes = super().on_row_change(selection)
+        _attributes['node_id'] = self._record_id
+        if _attributes:
+            pub.sendMessage(
+                'selected_fmea',
+                attributes=_attributes,
+            )
 
     def __do_get_mission(self, entity: object) -> None:
         """Retrieve the mission information.
@@ -784,22 +853,41 @@ class FMEAPanel(RAMSTKPanel):
 
         return _new_row
 
-    def __do_load_missions(self, attributes: treelib.Tree) -> None:
+    # noinspection PyUnusedLocal
+    # pylint: disable=unused-argument
+    def __do_load_missions(self,
+                           tree: treelib.Tree = treelib.Tree(),
+                           node_id: Any = '',
+                           row: Gtk.TreeIter = None) -> None:
         """Load the mission and mission phase dicts.
 
-        :param attributes: the treelib Tree() containing the usage profile.
-        :type attributes: :class:`treelib.Tree`
+        :param tree: the treelib usage profile treelib.Tree().
+        :param node_id: unused in this function.  Required so this method
+            compatible with other listeners for the
+            'succeed_retrieve_usage_profile' message.
+        :param row: unused in this function.  Required so this method
+            compatible with other listeners for the
+            'succeed_retrieve_usage_profile' message.
         :return: None
         :rtype: None
         """
-        _nid = attributes.root
         _model = self.tvwTreeView.get_cell_model(self._lst_col_order[2])
 
-        self._lst_missions = [""]
+        self._lst_missions = []
         _model.append([""])
-        for _node in attributes.children(_nid):
-            _model.append([_node.tag])
-            self._lst_missions.append(_node.tag)
+        for _node in tree.children(tree.root):
+            _lst_phases: List[str] = []
+
+            _mission = _node.data['usage_profile'].get_attributes(
+            )['description']
+            _model.append([_mission])
+            self._lst_missions.append(_mission)
+
+            for _node2 in tree.children(_node.identifier):
+                _mission_phase = _node2.data['usage_profile'].get_attributes(
+                )['description']
+                _lst_phases.append(_mission_phase)
+            self._dic_mission_phases[_mission] = _lst_phases
 
     def __do_load_mission_phases(self, mission: str) -> None:
         """Load the mission phase Gtk.CellRendererCombo().
@@ -809,6 +897,7 @@ class FMEAPanel(RAMSTKPanel):
         :rtype: None
         """
         _model = self.tvwTreeView.get_cell_model(self._lst_col_order[3])
+        _model.clear()
         _model.append([""])
 
         try:
@@ -839,17 +928,19 @@ class FMEAPanel(RAMSTKPanel):
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"],
                                                        22, 22)
 
-        self.__do_get_mission(_entity)
+        _mission = self._lst_missions[int(_entity.mission) - 1]
+        _mission_phase = self._dic_mission_phases[_mission][
+            int(_entity.mission_phase) - 1]
 
         _attributes = [
-            node.identifier, _entity.description, _entity.mission,
-            _entity.mission_phase, _entity.effect_local, _entity.effect_next,
-            _entity.effect_end, _entity.detection_method,
-            _entity.other_indications, _entity.isolation_method,
-            _entity.design_provisions, _entity.operator_actions,
-            _entity.severity_class, _entity.hazard_rate_source,
-            _entity.mode_probability, _entity.effect_probability,
-            _entity.mode_ratio, _entity.mode_hazard_rate, _entity.mode_op_time,
+            node.identifier, _entity.description, _mission, _mission_phase,
+            _entity.effect_local, _entity.effect_next, _entity.effect_end,
+            _entity.detection_method, _entity.other_indications,
+            _entity.isolation_method, _entity.design_provisions,
+            _entity.operator_actions, _entity.severity_class,
+            _entity.hazard_rate_source, _entity.mode_probability,
+            _entity.effect_probability, _entity.mode_ratio,
+            _entity.mode_hazard_rate, _entity.mode_op_time,
             _entity.mode_criticality, "", _severity, "", "", 0, "", "", "", "",
             "", 0, "", 0, "", _severity_new, "", "", 0, _entity.critical_item,
             _entity.single_point, 0, _entity.remarks, _icon
@@ -1102,7 +1193,7 @@ class FMEA(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_hardware')
+        pub.subscribe(self._do_set_record_id, 'selected_fmea')
         pub.subscribe(self._on_get_hardware_attributes,
                       'succeed_get_all_hardware_attributes')
 
@@ -1212,8 +1303,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._revision_id = attributes['revision_id']
+        self._record_id = attributes['node_id']
 
     def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the hardware item hazard rate.
