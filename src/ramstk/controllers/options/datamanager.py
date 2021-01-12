@@ -46,8 +46,10 @@ class DataManager(RAMSTKDataManager):
         RAMSTKDataManager.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey: Dict[str, List[str]] = {'siteinfo': ['site_id'], 'programinfo': [
-            'revision_id']}
+        self._pkey: Dict[str, List[str]] = {
+            'siteinfo': ['site_id'],
+            'programinfo': ['revision_id']
+        }
 
         # Initialize private list attributes.
 
