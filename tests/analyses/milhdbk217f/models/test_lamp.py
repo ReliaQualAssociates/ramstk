@@ -1,4 +1,5 @@
-# pylint: disable=invalid-name, protected-access
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.milhdbk217f.models.test_lamp.py is part of The RAMSTK

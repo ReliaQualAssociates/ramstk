@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name, too-many-public-methods
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.test_ramstk.py is part of The RAMSTK Project

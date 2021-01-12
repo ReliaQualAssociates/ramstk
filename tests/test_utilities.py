@@ -1,3 +1,5 @@
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.test_utilities.py is part of The RAMSTK Project
@@ -44,7 +46,6 @@ def test_split_string():
     assert _strings[2] == 'three'
 
 
-def test_none_to_string_None():  # pylint: disable=invalid-name
     """none_to_string() should return an empty string when passed None."""
     assert none_to_string(None) == ''
 
@@ -60,7 +61,6 @@ def test_none_to_string_string():
     assert none_to_string('The original string') == 'The original string'
 
 
-def test_string_to_boolean_True():  # pylint: disable=invalid-name
     """string_to_boolean() should return a 1 when passed True."""
     assert string_to_boolean(True) == 1
 
@@ -80,7 +80,6 @@ def test_string_to_boolean_y():
     assert string_to_boolean('y') == 1
 
 
-def test_string_to_boolean_False():  # pylint: disable=invalid-name
     """string_to_boolean() should return a 0 when passed False."""
     assert string_to_boolean(False) == 0
 

@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_similar_item.py is part of The RAMSTK

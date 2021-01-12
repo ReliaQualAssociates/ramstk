@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.views.gtk3.books.test_listbook.py is part of The RAMSTK Project

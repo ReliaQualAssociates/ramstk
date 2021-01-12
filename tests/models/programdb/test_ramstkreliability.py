@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.data.storage.programdb.test_ramstkreliability.py is part of The

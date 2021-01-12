@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_requirement.py is part of The RAMSTK Project
@@ -12,11 +13,11 @@ from datetime import date
 
 # Third Party Imports
 import pytest
+from __mocks__ import MOCK_REQUIREMENTS
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from __mocks__ import MOCK_REQUIREMENTS
 from ramstk.controllers import dmRequirement
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError

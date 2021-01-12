@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_stakeholder.py is part of The RAMSTK Project
@@ -9,11 +10,11 @@
 
 # Third Party Imports
 import pytest
+from __mocks__ import MOCK_STAKEHOLDERS
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from __mocks__ import MOCK_STAKEHOLDERS
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amStakeholder, dmStakeholder
 from ramstk.db.base import BaseDatabase

@@ -1,10 +1,11 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_options.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Options algorithms and models."""
 
 # Standard Library Imports
@@ -16,8 +17,9 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.configuration import (RAMSTKSiteConfiguration,
-                                  RAMSTKUserConfiguration)
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.controllers import dmOptions
 from ramstk.db.base import BaseDatabase
 from ramstk.models.commondb import RAMSTKSiteInfo
@@ -44,9 +46,15 @@ class TestCreateControllers():
         assert isinstance(DUT.user_configuration, RAMSTKUserConfiguration)
         assert isinstance(DUT.dao, BaseDatabase)
         assert isinstance(DUT.common_dao, BaseDatabase)
+        assert DUT._pkey == {
+            'siteinfo': ['site_id'],
+            'programinfo': ['revision_id'],
+        }
         assert DUT._tag == 'options'
         assert DUT._root == 0
+        assert DUT._parent_id == 0
         assert DUT._revision_id == 0
+
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update, 'request_update_option')
         assert pub.isSubscribed(DUT.do_get_attributes,
@@ -74,7 +82,8 @@ class TestSelectMethods():
     def test_do_select_all(self, test_program_dao, test_common_dao,
                            test_toml_site_configuration,
                            test_toml_user_configuration):
-        """do_select_all() should return a Tree() object populated with RAMSTKProgramInfo and RAMSTKSiteInfo instances on success."""
+        """do_select_all() should return a Tree() object populated with
+        RAMSTKProgramInfo and RAMSTKSiteInfo instances on success."""
         pub.subscribe(self.on_succeed_retrieve_options,
                       'succeed_retrieve_options')
 
@@ -94,10 +103,36 @@ class TestSelectMethods():
                         'succeed_retrieve_options')
 
     @pytest.mark.integration
+    def test_do_select_all_populated_tree(self, test_program_dao,
+                                          test_common_dao,
+                                          test_toml_site_configuration,
+                                          test_toml_user_configuration):
+        """do_select_all() should clear nodes from an existing Options tree."""
+        pub.subscribe(self.on_succeed_retrieve_options,
+                      'succeed_retrieve_options')
+
+        DUT = dmOptions(common_dao=test_common_dao,
+                        site_configuration=test_toml_site_configuration,
+                        user_configuration=test_toml_user_configuration)
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1})
+        DUT.do_select_all({'revision_id': 1})
+
+        assert isinstance(
+            DUT.tree.get_node('programinfo').data['programinfo'],
+            RAMSTKProgramInfo)
+        assert isinstance(
+            DUT.tree.get_node('siteinfo').data['siteinfo'], RAMSTKSiteInfo)
+
+        pub.unsubscribe(self.on_succeed_retrieve_options,
+                        'succeed_retrieve_options')
+
+    @pytest.mark.integration
     def test_do_select_site_info(self, test_program_dao, test_common_dao,
                                  test_toml_site_configuration,
                                  test_toml_user_configuration):
-        """do_select() should return an instance of the RAMSTKSiteInfo on success."""
+        """do_select() should return an instance of the RAMSTKSiteInfo on
+        success."""
         DUT = dmOptions(common_dao=test_common_dao,
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
@@ -117,7 +152,8 @@ class TestSelectMethods():
     def test_do_select_program_info(self, test_program_dao, test_common_dao,
                                     test_toml_site_configuration,
                                     test_toml_user_configuration):
-        """do_select() should return an instance of the RAMSTKProgramInfo on success."""
+        """do_select() should return an instance of the RAMSTKProgramInfo on
+        success."""
         DUT = dmOptions(common_dao=test_common_dao,
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
@@ -149,7 +185,8 @@ class TestSelectMethods():
     def test_do_select_non_existent_id(self, test_program_dao, test_common_dao,
                                        test_toml_site_configuration,
                                        test_toml_user_configuration):
-        """do_select() should return None when a non-existent Options ID is requested."""
+        """do_select() should return None when a non-existent Options ID is
+        requested."""
         DUT = dmOptions(common_dao=test_common_dao,
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
@@ -210,7 +247,8 @@ class TestGetterSetter():
                                          test_common_dao,
                                          test_toml_site_configuration,
                                          test_toml_user_configuration):
-        """do_get_attributes() should return a dict of site information attributes on success."""
+        """do_get_attributes() should return a dict of site information
+        attributes on success."""
         pub.subscribe(self.on_succeed_get_site_info_attrs,
                       'succeed_get_siteinfo_attributes')
 
@@ -232,7 +270,8 @@ class TestGetterSetter():
                                             test_common_dao,
                                             test_toml_site_configuration,
                                             test_toml_user_configuration):
-        """do_get_attributes() should return a dict of program information attributes on success."""
+        """do_get_attributes() should return a dict of program information
+        attributes on success."""
         pub.subscribe(self.on_succeed_get_program_info_attrs,
                       'succeed_get_programinfo_attributes')
 
@@ -255,7 +294,8 @@ class TestGetterSetter():
                                          test_common_dao,
                                          test_toml_site_configuration,
                                          test_toml_user_configuration):
-        """do_set_attributes() should return None when successfully setting site information attributes."""
+        """do_set_attributes() should return None when successfully setting
+        site information attributes."""
         DUT = dmOptions(common_dao=test_common_dao,
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
@@ -280,7 +320,8 @@ class TestGetterSetter():
                                             test_common_dao,
                                             test_toml_site_configuration,
                                             test_toml_user_configuration):
-        """do_set_attributes() should return None when successfully setting program information attributes."""
+        """do_set_attributes() should return None when successfully setting
+        program information attributes."""
         DUT = dmOptions(common_dao=test_common_dao,
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
@@ -304,7 +345,8 @@ class TestGetterSetter():
     def test_do_set_program_info_attributes_no_key(
             self, test_program_dao, test_common_dao,
             test_toml_site_configuration, test_toml_user_configuration):
-        """do_set_attributes() should return None when successfully setting program information attributes."""
+        """do_set_attributes() should return None when successfully setting
+        program information attributes."""
         DUT = dmOptions(common_dao=test_common_dao,
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
@@ -347,15 +389,27 @@ class TestUpdateMethods():
         assert node_id == 'siteinfo'
         print("\033[36m\nsucceed_update_options topic was broadcast")
 
-    def on_fail_update_options(self, error_message):
-        assert error_message == ('Error saving 100 Options to the database.')
+    def on_fail_update_options_non_existent_id(self, error_message):
+        assert error_message == ('do_update: Attempted to save non-existent '
+                                 'Option type skullduggery.')
+        print("\033[35m\nfail_update_options topic was broadcast")
+
+    def on_fail_update_options_no_data_package(self, error_message):
+        assert error_message == ('do_update: No data package found for Option '
+                                 'siteinfo.')
+        print("\033[35m\nfail_update_options topic was broadcast")
+
+    def on_fail_update_options_wrong_data_type(self, error_message):
+        assert error_message == ('do_update: The value for one or more '
+                                 'attributes for Options programinfo was the '
+                                 'wrong type.')
         print("\033[35m\nfail_update_options topic was broadcast")
 
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao, test_common_dao,
                                     test_toml_site_configuration,
                                     test_toml_user_configuration):
-        """ do_update() should return a zero error code on success. """
+        """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update_options, 'succeed_update_options')
 
         DUT = dmOptions(common_dao=test_common_dao,
@@ -390,14 +444,67 @@ class TestUpdateMethods():
     def test_do_update_non_existent_id(self, test_program_dao, test_common_dao,
                                        test_toml_site_configuration,
                                        test_toml_user_configuration):
-        """ do_update() should return a non-zero error code when passed a Options ID that doesn't exist. """
-        pub.subscribe(self.on_fail_update_options, 'fail_update_options')
+        """do_update() should return a non-zero error code when passed a
+        Options ID that doesn't exist."""
+        pub.subscribe(self.on_fail_update_options_non_existent_id,
+                      'fail_update_options')
 
         DUT = dmOptions(common_dao=test_common_dao,
                         site_configuration=test_toml_site_configuration,
                         user_configuration=test_toml_user_configuration)
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({'revision_id': 1})
-        DUT.do_update('100')
+        DUT.do_update('skullduggery')
 
-        pub.unsubscribe(self.on_fail_update_options, 'fail_update_options')
+        pub.unsubscribe(self.on_fail_update_options_non_existent_id,
+                        'fail_update_options')
+
+    @pytest.mark.integration
+    def test_do_update_no_data_package(self, test_program_dao, test_common_dao,
+                                       test_toml_site_configuration,
+                                       test_toml_user_configuration):
+        """do_update() should return a non-zero error code when passed a
+        Options ID that doesn't exist."""
+        pub.subscribe(self.on_fail_update_options_no_data_package,
+                      'fail_update_options')
+
+        DUT = dmOptions(common_dao=test_common_dao,
+                        site_configuration=test_toml_site_configuration,
+                        user_configuration=test_toml_user_configuration)
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1})
+        DUT.tree.get_node('siteinfo').data.pop('siteinfo')
+
+        DUT.do_update('siteinfo')
+
+        pub.unsubscribe(self.on_fail_update_options_no_data_package,
+                        'fail_update_options')
+
+    @pytest.mark.integration
+    def test_do_update_data_manager_wrong_data_type(
+            self, test_program_dao, test_common_dao,
+            test_toml_site_configuration, test_toml_user_configuration):
+        """do_update() should return a zero error code on success."""
+        pub.subscribe(self.on_fail_update_options_wrong_data_type,
+                      'fail_update_options')
+
+        DUT = dmOptions(common_dao=test_common_dao,
+                        site_configuration=test_toml_site_configuration,
+                        user_configuration=test_toml_user_configuration)
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({'revision_id': 1})
+
+        _old = DUT.tree.get_node(
+            'programinfo').data['programinfo'].hardware_active
+
+        DUT.tree.get_node(
+            'programinfo').data['programinfo'].hardware_active = {
+                0: 1
+            }
+        DUT.do_update('programinfo')
+
+        DUT.tree.get_node(
+            'programinfo').data['programinfo'].hardware_active = _old
+
+        pub.subscribe(self.on_fail_update_options_wrong_data_type,
+                      'fail_update_options')

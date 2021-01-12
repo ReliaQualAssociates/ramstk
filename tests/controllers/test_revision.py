@@ -1,5 +1,5 @@
+# pylint: skip-file
 # type: ignore
-# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_revision.py is part of The RAMSTK Project
@@ -10,11 +10,11 @@
 
 # Third Party Imports
 import pytest
+from __mocks__ import MOCK_REVISIONS
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from __mocks__ import MOCK_REVISIONS
 from ramstk.controllers import dmRevision
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError

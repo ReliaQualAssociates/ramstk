@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.models.programdb.test_ramstknswc.py is part of The RAMSTK
