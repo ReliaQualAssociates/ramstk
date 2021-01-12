@@ -32,6 +32,7 @@ jobs:
           git commit -a -m "Update VERSION" && echo "do_push=1" >> $GITHUB_ENV
 
       - name: Cut release PR
+        if: ${{ steps.bumpver.outputs.skipped == 'false' }}
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: prepare for release ${{ steps.bumpver.outputs.tag }}
