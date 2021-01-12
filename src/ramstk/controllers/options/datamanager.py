@@ -7,6 +7,7 @@
 """Options Package Data Model."""
 
 # Standard Library Imports
+import inspect
 from typing import Any, Dict
 
 # Third Party Imports
@@ -14,6 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
+from ramstk.exceptions import DataAccessError
 from ramstk.models.commondb import RAMSTKSiteInfo
 from ramstk.models.programdb import RAMSTKProgramInfo
 
@@ -25,8 +27,19 @@ class DataManager(RAMSTKDataManager):
     data from the Site and Program databases.
     """
 
+    # Define private dict class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
     _tag = 'options'
     _root = 0
+
+    # Define public dict class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs) -> None:
         """Initialize a Options data manager instance."""
@@ -97,7 +110,10 @@ class DataManager(RAMSTKDataManager):
                                   parent=self._root,
                                   data={'programinfo': _option})
 
-        pub.sendMessage('succeed_retrieve_options', tree=self.tree)
+        pub.sendMessage(
+            'succeed_retrieve_options',
+            tree=self.tree,
+        )
 
     def do_update(self, node_id: str) -> None:
         """Update the record associated with node ID in RAMSTK databases.
@@ -106,18 +122,64 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        if node_id == 'siteinfo':
-            # noinspection PyUnresolvedReferences
-            self.common_dao.session.add(
-                self.tree.get_node(node_id).data[node_id])
-            self.dao.do_update()
-            pub.sendMessage('succeed_update_options', node_id=node_id)
-        elif node_id == 'programinfo':
-            # noinspection PyUnresolvedReferences
-            self.dao.session.add(self.tree.get_node(node_id).data[node_id])
-            self.dao.do_update()
-            pub.sendMessage('succeed_update_options', node_id=node_id)
-        else:
-            pub.sendMessage('fail_update_options',
-                            error_message=('Error saving {0:s} Options to the '
-                                           'database.').format(node_id))
+        try:
+            if node_id == 'siteinfo':
+                # noinspection PyUnresolvedReferences
+                self.common_dao.session.add(
+                    self.tree.get_node(node_id).data[node_id])
+                self.common_dao.do_update()
+                pub.sendMessage(
+                    'succeed_update_options',
+                    node_id=node_id,
+                )
+            elif node_id == 'programinfo':
+                # noinspection PyUnresolvedReferences
+                self.dao.session.add(self.tree.get_node(node_id).data[node_id])
+                self.dao.do_update()
+                pub.sendMessage(
+                    'succeed_update_options',
+                    node_id=node_id,
+                )
+            else:
+                _method_name: str = inspect.currentframe(  # type: ignore
+                ).f_code.co_name
+                _error_msg = ('{1}: Attempted to save non-existent Option '
+                              'type {0}.').format(str(node_id), _method_name)
+                pub.sendMessage(
+                    'do_log_debug',
+                    logger_name='DEBUG',
+                    message=_error_msg,
+                )
+                pub.sendMessage(
+                    'fail_update_options',
+                    error_message=_error_msg,
+                )
+        except KeyError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{1}: No data package found for Option {0}.').format(
+                str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_options',
+                error_message=_error_msg,
+            )
+        except (TypeError, DataAccessError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg = ('{1}: The value for one or more attributes for '
+                          'Options {0} was the wrong type.').format(
+                              str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_options',
+                error_message=_error_msg,
+            )
