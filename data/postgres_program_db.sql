@@ -754,7 +754,7 @@ CREATE TABLE ramstk_op_load (
     fld_mechanism_id INTEGER,
     fld_load_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
-    fld_damage_model VARCHAR(512),
+    fld_damage_model INTEGER,
     fld_priority_id INTEGER,
     PRIMARY KEY (fld_load_id),
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
@@ -767,8 +767,8 @@ CREATE TABLE ramstk_op_stress (
     fld_load_id INTEGER,
     fld_stress_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
-    fld_load_history VARCHAR(512),
-    fld_measurable_parameter VARCHAR(512),
+    fld_load_history INTEGER,
+    fld_measurable_parameter INTEGER,
     fld_remarks VARCHAR,
     PRIMARY KEY (fld_stress_id),
     FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE

@@ -1,4 +1,4 @@
-name: Bump Version and Tag
+name: Bump Version, Tag, and Cut Release PR
 
 on:
   push:
@@ -13,13 +13,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Bump version, push tag, and generate CHANGELOG.md
+      - name: Bump version, tag, and generate CHANGELOG.md
         id: bumpver
         uses: TriPSs/conventional-changelog-action@v3
         with:
-          github-token: ${{ secrets.REPO_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           version-file: pyproject.toml
           version-path: 'project.version'
+          skip-commit: true
 
       - name: Update VERSION file
         if: ${{ steps.bumpver.outputs.skipped == 'false' }}
@@ -30,12 +31,13 @@ jobs:
           git add .
           git commit -a -m "Update VERSION" && echo "do_push=1" >> $GITHUB_ENV
 
-      - name: Push new VERSION file
-        if: env.do_push == 1
-        uses: ad-m/github-push-action@master
+      - name: Cut release PR
+        uses: peter-evans/create-pull-request@v3
         with:
-          github_token: ${{ secrets.REPO_TOKEN }}
-          branch: ${{ github.ref }}
+          commit-message: prepare for release ${{ steps.bumpver.outputs.tag }}
+          title: Release ${{ steps.bumpver.outputs.tag }}
+          body: Update VERSION, pyproject.toml, CHANGELOG.md in preparation for release
+          branch: release/${{ steps.bumpver.outputs.tag }}
 
       - name: Create new milestone
         id: createmilestone
