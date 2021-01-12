@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring, invalid-name
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.exim.test_exports.py is part of The RAMSTK Project
@@ -8,9 +9,9 @@
 """Test class for testing the Exports module."""
 
 # Third Party Imports
-from pubsub import pub
 import pandas as pd
 import pytest
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import (

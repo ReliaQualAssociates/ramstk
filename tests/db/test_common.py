@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, missing-docstring, no-self-use
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.db.test_common.py is part of The RAMSTK Project
@@ -12,10 +13,10 @@ from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
+from mock import patch
 from pubsub import pub
 
 # RAMSTK Package Imports
-from mock import patch
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import (
     _do_load_action_variables, _do_load_hardware_variables,

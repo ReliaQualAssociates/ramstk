@@ -1,5 +1,5 @@
+# pylint: skip-file
 # type: ignore
-# pylint: disable=protected-access, no-self-use
 # -*- coding: utf-8 -*-
 #
 #       tests.db.test_base.py is part of The RAMSTK Project

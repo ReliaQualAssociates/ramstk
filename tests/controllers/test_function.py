@@ -1,5 +1,5 @@
+# pylint: skip-file
 # type: ignore
-# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_function.py is part of The RAMSTK Project

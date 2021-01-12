@@ -1,4 +1,5 @@
-# pylint: disable=invalid-name, protected-access
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.milhdbk217f.test_milhdbk217f.py is part of The RAMSTK Project

@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_validation.py is part of The RAMSTK Project
@@ -19,7 +20,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import dmProgramStatus, amValidation, dmValidation
+from ramstk.controllers import amValidation, dmProgramStatus, dmValidation
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation

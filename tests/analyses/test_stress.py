@@ -1,4 +1,5 @@
-# pylint: disable=invalid-name, protected-access
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.test_stress.py is part of The RAMSTK Project

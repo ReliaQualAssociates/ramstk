@@ -1,4 +1,5 @@
-# pylint: disable=protected-access
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.db.test_program.py is part of The RAMSTK Project
@@ -7,6 +8,7 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for program database methods and operations."""
 
+# Third Party Imports
 import pytest
 
 # RAMSTK Package Imports

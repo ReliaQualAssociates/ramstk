@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -46,12 +46,13 @@ class DataManager(RAMSTKDataManager):
         RAMSTKDataManager.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {'siteinfo': ['site_id'], 'programinfo': ['revision_id']}
+        self._pkey: Dict[str, List[str]] = {'siteinfo': ['site_id'], 'programinfo': [
+            'revision_id']}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._parent_id = 0
+        self._parent_id: int = 0
 
         # Initialize public dictionary attributes.
 

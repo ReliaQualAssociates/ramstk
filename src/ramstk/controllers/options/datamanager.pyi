@@ -3,6 +3,7 @@ from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
+from ramstk.exceptions import DataAccessError as DataAccessError
 from ramstk.models.commondb import RAMSTKSiteInfo as RAMSTKSiteInfo
 from ramstk.models.programdb import RAMSTKProgramInfo as RAMSTKProgramInfo
 

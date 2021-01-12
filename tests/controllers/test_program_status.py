@@ -1,4 +1,5 @@
-# pylint: disable=protected-access, no-self-use, missing-docstring
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_program_status.py is part of The RAMSTK Project
@@ -13,11 +14,11 @@ from datetime import date, timedelta
 # Third Party Imports
 import pandas as pd
 import pytest
+from __mocks__ import MOCK_STATUS
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from __mocks__ import MOCK_STATUS
 from ramstk.controllers import dmProgramStatus
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError

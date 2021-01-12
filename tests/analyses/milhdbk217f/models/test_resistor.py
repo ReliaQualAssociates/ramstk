@@ -1,4 +1,5 @@
-# pylint: disable=invalid-name, protected-access
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.milhdbk271f.models.test_resistor.py is part of The
