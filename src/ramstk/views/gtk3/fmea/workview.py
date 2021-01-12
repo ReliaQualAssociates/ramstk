@@ -433,9 +433,7 @@ class FMEAPanel(RAMSTKPanel):
         """
         _lst_col_order: List[int] = list(self.tvwTreeView.position.values())
 
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
+        super().do_set_callbacks()
 
         for i in _lst_col_order[1:]:
             _cell = self.tvwTreeView.get_column(_lst_col_order[i]).get_cells()
@@ -1232,7 +1230,10 @@ class FMEA(RAMSTKWorkView):
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage("request_delete_fmea", node_id=_node_id)
+            pub.sendMessage(
+                "request_delete_fmea",
+                node_id=_node_id,
+            )
 
         _dialog.do_destroy()
 

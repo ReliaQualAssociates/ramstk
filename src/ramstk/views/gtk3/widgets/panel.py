@@ -536,9 +536,11 @@ class RAMSTKPanel(RAMSTKFrame):
 
             _new_text = self.tvwTreeView.do_edit_cell(cell, path, new_text,
                                                       _position)
-            pub.sendMessage(message,
-                            node_id=[self._record_id, ''],
-                            package={_key: _new_text})
+            pub.sendMessage(
+                message,
+                node_id=[self._record_id, ''],
+                package={_key: _new_text},
+            )
         except KeyError:
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name

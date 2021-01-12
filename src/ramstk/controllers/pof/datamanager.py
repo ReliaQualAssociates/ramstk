@@ -81,7 +81,7 @@ class DataManager(RAMSTKDataManager):
                       'request_get_test_method_attributes')
         pub.subscribe(super().do_set_attributes, 'request_set_pof_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_pof')
-        pub.subscribe(super().do_update_all, 'request_update_all_pof')
+        pub.subscribe(super().do_update_all, 'request_update_all_pofs')
 
         pub.subscribe(self.do_select_all, 'selected_hardware')
         pub.subscribe(self.do_update, 'request_update_pof')
