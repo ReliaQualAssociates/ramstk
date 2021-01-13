@@ -34,7 +34,6 @@ RADON		= $(shell which radon)
 YAPF        = $(shell which yapf)
 WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
 RSTCHECK	= $(shell which rstcheck)
-RSTLINT		= $(shell which rst-link)
 CHKMANI		= $(shell which check-manifest)
 PYROMA		= $(shell which pyroma)
 
@@ -266,7 +265,6 @@ dupcheck:
 
 lintdocs:
 	$(RSTCHECK) -r docs/api docs/user
-	$(RSTLINT) -r docs/api docs/user
 
 apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk
