@@ -108,7 +108,10 @@ class RAMSTKProgramManager:
             },
             'exim': {
                 'export': None
-            }
+            },
+            'preferences': {
+                'data': None
+            },
         }
 
         # Initialize public list attributes.

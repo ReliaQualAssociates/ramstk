@@ -21,10 +21,11 @@ from ramstk.configuration import (
     RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 )
 from ramstk.controllers import (
-    amAllocation, amFMEA, amHardware, amHazards, amSimilarItem, amStakeholder,
-    amValidation, dmAllocation, dmFailureDefinition, dmFMEA, dmFunction,
-    dmHardware, dmHazards, dmOptions, dmPoF, dmProgramStatus, dmRequirement,
-    dmRevision, dmSimilarItem, dmStakeholder, dmUsageProfile, dmValidation
+    amAllocation, amFMEA, amHardware, amHazards, amSimilarItem,
+    amStakeholder, amValidation, dmAllocation, dmFailureDefinition,
+    dmFMEA, dmFunction, dmHardware, dmHazards, dmOptions, dmPoF,
+    dmPreferences, dmProgramStatus, dmRequirement, dmRevision,
+    dmSimilarItem, dmStakeholder, dmUsageProfile, dmValidation
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
@@ -206,19 +207,18 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['fmea']['analysis'] = amFMEA(user_configuration)
     _program_mgr.dic_managers['fmea']['data'] = dmFMEA()
     _program_mgr.dic_managers['pof']['data'] = dmPoF()
+    _program_mgr.dic_managers['preferences']['data'] = dmPreferences()
     _program_mgr.dic_managers['program_status']['data'] = dmProgramStatus()
     _program_mgr.dic_managers['usage_profile']['data'] = dmUsageProfile()
     _program_mgr.dic_managers['validation']['analysis'] = amValidation(
         user_configuration)
     _program_mgr.dic_managers['validation']['data'] = dmValidation()
-    # noinspection PyTypeChecker
-    _program_mgr.dic_managers['options']['data'] = dmOptions(
-        common_dao=site_db,
-        site_configuration=site_configuration,
-        user_configuration=user_configuration)
     _program_mgr.dic_managers['exim']['export'] = Export()
     _program_mgr.dic_managers['exim']['import'] = Import()
     _program_mgr.user_configuration = user_configuration
+
+    # noinspection PyTypeChecker
+    _program_mgr.dic_managers['options']['data'] = dmOptions()
 
     pub.sendMessage('do_log_info_msg',
                     logger_name='INFO',

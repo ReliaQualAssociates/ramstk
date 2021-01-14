@@ -374,6 +374,19 @@ def test_common_dao():
 
     dao.do_disconnect()
 
+    conn = psycopg2.connect(host=test_common_db['host'],
+                            dbname='postgres',
+                            user=test_common_db['user'],
+                            password=test_common_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_common_db['database'])))
+    cursor.close()
+    conn.close()
+
 
 @pytest.fixture(scope='session', autouse=True)
 def test_program_dao():
@@ -415,9 +428,6 @@ def test_program_dao():
             sql.Identifier(test_program_db['database'])))
     cursor.execute(
         sql.SQL('DROP DATABASE IF EXISTS {}').format(
-            sql.Identifier('ramstk_program_db')))
-    cursor.execute(
-        sql.SQL('DROP DATABASE IF EXISTS {}').format(
             sql.Identifier('ramstk_program_db2')))
     cursor.execute(
         sql.SQL('CREATE DATABASE {}').format(
@@ -445,6 +455,22 @@ def test_program_dao():
     yield dao
 
     dao.do_disconnect()
+
+    conn = psycopg2.connect(host=test_program_db['host'],
+                            dbname='postgres',
+                            user=test_program_db['user'],
+                            password=test_program_db['password'])
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier(test_program_db['database'])))
+    cursor.execute(
+        sql.SQL('DROP DATABASE IF EXISTS {}').format(
+            sql.Identifier('ramstk_program_db2')))
+    cursor.close()
+    conn.close()
 
 
 @pytest.fixture(scope='session')
