@@ -142,11 +142,23 @@ class TestSelectMethods():
         _options = DUT.do_select('siteinfo', table='siteinfo')
 
         assert isinstance(_options, RAMSTKSiteInfo)
-        assert _options.function_enabled == 0
-        assert _options.requirement_enabled == 0
-        assert _options.hardware_enabled == 0
-        assert _options.vandv_enabled == 0
-        assert _options.fmea_enabled == 0
+        assert _options.function_enabled == 1
+        assert _options.requirement_enabled == 1
+        assert _options.hardware_enabled == 1
+        assert _options.software_enabled == 0
+        assert _options.rcm_enabled == 0
+        assert _options.testing_enabled == 0
+        assert _options.incident_enabled == 0
+        assert _options.survival_enabled == 0
+        assert _options.vandv_enabled == 1
+        assert _options.hazard_enabled == 1
+        assert _options.stakeholder_enabled == 1
+        assert _options.allocation_enabled == 1
+        assert _options.similar_item_enabled == 1
+        assert _options.fmea_enabled == 1
+        assert _options.pof_enabled == 1
+        assert _options.rbd_enabled == 0
+        assert _options.fta_enabled == 0
 
     @pytest.mark.integration
     def test_do_select_program_info(self, test_program_dao, test_common_dao,
@@ -166,20 +178,24 @@ class TestSelectMethods():
         assert _options.function_active == 1
         assert _options.requirement_active == 1
         assert _options.hardware_active == 1
-        assert _options.software_active == 1
-        assert _options.vandv_active == 1
-        assert _options.fmea_active == 1
-        assert _options.testing_active == 1
-        assert _options.fraca_active == 1
-        assert _options.survival_active == 1
+        assert _options.software_active == 0
         assert _options.rcm_active == 0
+        assert _options.testing_active == 0
+        assert _options.incident_active == 0
+        assert _options.survival_active == 0
+        assert _options.vandv_active == 1
+        assert _options.hazard_active == 1
+        assert _options.stakeholder_active == 1
+        assert _options.allocation_active == 1
+        assert _options.similar_item_active == 1
+        assert _options.fmea_active == 1
+        assert _options.pof_active == 1
         assert _options.rbd_active == 0
         assert _options.fta_active == 0
-        assert _options.created_on == date(2019, 7, 21)
+        assert _options.created_on == date.today()
         assert _options.created_by == ''
-        assert _options.last_saved == date(2019, 7, 21)
+        assert _options.last_saved == date.today()
         assert _options.last_saved_by == ''
-        assert _options.method == 'STANDARD'
 
     @pytest.mark.integration
     def test_do_select_non_existent_id(self, test_program_dao, test_common_dao,
@@ -203,11 +219,22 @@ class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_site_info_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes['function_enabled'] == 0
-        assert attributes['requirement_enabled'] == 0
-        assert attributes['hardware_enabled'] == 0
-        assert attributes['vandv_enabled'] == 0
-        assert attributes['fmea_enabled'] == 0
+        assert attributes['function_enabled'] == 1
+        assert attributes['requirement_enabled'] == 1
+        assert attributes['hardware_enabled'] == 1
+        assert attributes['software_enabled'] == 0
+        assert attributes['rcm_enabled'] == 0
+        assert attributes['testing_enabled'] == 0
+        assert attributes['incident_enabled'] == 0
+        assert attributes['survival_enabled'] == 0
+        assert attributes['vandv_enabled'] == 1
+        assert attributes['hazard_enabled'] == 1
+        assert attributes['stakeholder_enabled'] == 1
+        assert attributes['allocation_enabled'] == 1
+        assert attributes['similar_item_enabled'] == 1
+        assert attributes['fmea_enabled'] == 1
+        assert attributes['pof_enabled'] == 1
+        assert attributes['rbd_enabled'] == 0
         print("\033[36m\nsucceed_get_siteinfo_attributes topic was broadcast.")
 
     def on_succeed_get_program_info_attrs(self, attributes):
@@ -215,20 +242,24 @@ class TestGetterSetter():
         assert attributes['function_active'] == 1
         assert attributes['requirement_active'] == 1
         assert attributes['hardware_active'] == 1
-        assert attributes['software_active'] == 1
-        assert attributes['vandv_active'] == 1
-        assert attributes['fmea_active'] == 1
-        assert attributes['testing_active'] == 1
-        assert attributes['fraca_active'] == 1
-        assert attributes['survival_active'] == 1
+        assert attributes['software_active'] == 0
         assert attributes['rcm_active'] == 0
+        assert attributes['testing_active'] == 0
+        assert attributes['incident_active'] == 0
+        assert attributes['survival_active'] == 0
+        assert attributes['vandv_active'] == 1
+        assert attributes['hazard_active'] == 1
+        assert attributes['stakeholder_active'] == 1
+        assert attributes['allocation_active'] == 1
+        assert attributes['similar_item_active'] == 1
+        assert attributes['fmea_active'] == 1
+        assert attributes['pof_active'] == 1
         assert attributes['rbd_active'] == 0
         assert attributes['fta_active'] == 0
-        assert attributes['created_on'] == date(2019, 7, 21)
+        assert attributes['created_on'] == date.today()
         assert attributes['created_by'] == ''
-        assert attributes['last_saved'] == date(2019, 7, 21)
+        assert attributes['last_saved'] == date.today()
         assert attributes['last_saved_by'] == ''
-        assert attributes['method'] == 'STANDARD'
         print(
             "\033[36m\nsucceed_get_programinfo_attributes topic was broadcast."
         )
@@ -339,6 +370,17 @@ class TestGetterSetter():
         assert DUT.do_select('programinfo',
                              table='programinfo').rcm_active == 1
 
+        pub.sendMessage('request_set_option_attributes',
+                        node_id=['programinfo'],
+                        package={'function_active': 1})
+        pub.sendMessage('request_set_option_attributes',
+                        node_id=['programinfo'],
+                        package={'rcm_active': 0})
+        assert DUT.do_select('programinfo',
+                             table='programinfo').function_active == 1
+        assert DUT.do_select('programinfo',
+                             table='programinfo').rcm_active == 0
+
         pub.unsubscribe(DUT.do_set_attributes, 'request_set_option_attributes')
 
     @pytest.mark.integration
@@ -439,6 +481,25 @@ class TestUpdateMethods():
             'programinfo').data['programinfo'].hardware_active == 0
         assert DUT.tree.get_node(
             'programinfo').data['programinfo'].vandv_active == 0
+
+        DUT.tree.get_node('siteinfo').data['siteinfo'].hardware_enabled = 0
+        DUT.tree.get_node('siteinfo').data['siteinfo'].vandv_enabled = 0
+        DUT.do_update('siteinfo')
+
+        DUT.tree.get_node(
+            'programinfo').data['programinfo'].hardware_active = 1
+        DUT.tree.get_node('programinfo').data['programinfo'].vandv_active = 1
+        DUT.do_update('programinfo')
+
+        DUT.do_select_all({'revision_id': 1})
+        assert DUT.tree.get_node(
+            'siteinfo').data['siteinfo'].hardware_enabled == 0
+        assert DUT.tree.get_node(
+            'siteinfo').data['siteinfo'].vandv_enabled == 0
+        assert DUT.tree.get_node(
+            'programinfo').data['programinfo'].hardware_active == 1
+        assert DUT.tree.get_node(
+            'programinfo').data['programinfo'].vandv_active == 1
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_program_dao, test_common_dao,
