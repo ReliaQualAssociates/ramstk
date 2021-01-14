@@ -24,6 +24,7 @@ from ramstk.controllers import dmHardware as dmHardware
 from ramstk.controllers import dmHazards as dmHazards
 from ramstk.controllers import dmOptions as dmOptions
 from ramstk.controllers import dmPoF as dmPoF
+from ramstk.controllers import dmPreferences as dmPreferences
 from ramstk.controllers import dmProgramStatus as dmProgramStatus
 from ramstk.controllers import dmRequirement as dmRequirement
 from ramstk.controllers import dmRevision as dmRevision
