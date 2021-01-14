@@ -84,23 +84,19 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_create_program_manager(self):
-        """__init__() should create an instance of the RAMSTK program manager."""
+        """__init__() should create an instance of the RAMSTK program
+        manager."""
         DUT = RAMSTKProgramManager()
 
         assert isinstance(DUT, RAMSTKProgramManager)
         assert isinstance(DUT.dic_managers, dict)
         assert DUT.dic_managers['revision'] == {'data': None}
-        assert DUT.dic_managers['function'] == {
-            'analysis': None,
-            'data': None
-        }
+        assert DUT.dic_managers['function'] == {'analysis': None, 'data': None}
         assert DUT.dic_managers['allocation'] == {
             'analysis': None,
             'data': None
         }
-        assert DUT.dic_managers['requirement'] == {
-            'data': None
-        }
+        assert DUT.dic_managers['requirement'] == {'data': None}
         assert DUT.dic_managers['similar_item'] == {
             'analysis': None,
             'data': None
@@ -109,12 +105,11 @@ class TestProgramManager():
             'analysis': None,
             'data': None
         }
-        assert DUT.dic_managers['hardware'] == {
-            'analysis': None,
-            'data': None
-        }
+        assert DUT.dic_managers['hardware'] == {'analysis': None, 'data': None}
         assert DUT.dic_managers['fmea'] == {'analysis': None, 'data': None}
+        assert DUT.dic_managers['options'] == {'data': None}
         assert DUT.dic_managers['pof'] == {'data': None}
+        assert DUT.dic_managers['preferences'] == {'data': None}
         assert DUT.dic_managers['program_status'] == {'data': None}
         assert DUT.dic_managers['validation'] == {
             'analysis': None,
@@ -130,7 +125,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_open_program(self, test_program_dao):
-        """do_open_program() should connect to the test program database and broadcast the success message."""
+        """do_open_program() should connect to the test program database and
+        broadcast the success message."""
         pub.subscribe(self.on_succeed_open_program,
                       'succeed_connect_program_database')
 
@@ -155,7 +151,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_open_program_bad_url(self):
-        """do_open_program() should broadcast the fail message when attempting to open a bad URL."""
+        """do_open_program() should broadcast the fail message when attempting
+        to open a bad URL."""
         pub.subscribe(self.on_fail_open_program_bad_url,
                       'fail_connect_program_database')
 
@@ -176,7 +173,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_open_program_unknown_dialect(self):
-        """do_open_program() should broadcast the fail message when attempting to open a database of unsupported dialect."""
+        """do_open_program() should broadcast the fail message when attempting
+        to open a database of unsupported dialect."""
         pub.subscribe(self.on_fail_open_program_unknown_dialect,
                       'fail_connect_program_database')
 
@@ -197,7 +195,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_open_program_non_string_url(self):
-        """do_open_program() should broadcast the fail message when attempting to open a non-string URL."""
+        """do_open_program() should broadcast the fail message when attempting
+        to open a non-string URL."""
         pub.subscribe(self.on_fail_open_program_non_string_url,
                       'fail_connect_program_database')
 
@@ -219,7 +218,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_close_program(self):
-        """do_close_program() should disconnect from the test program database and broadcast the success message."""
+        """do_close_program() should disconnect from the test program database
+        and broadcast the success message."""
         pub.subscribe(self.on_succeed_close_program,
                       'succeed_disconnect_program_database')
 
@@ -244,7 +244,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_close_program_none_open(self):
-        """do_close_program() should broadcast the fail message if it attempts to close a database when not connected."""
+        """do_close_program() should broadcast the fail message if it attempts
+        to close a database when not connected."""
         pub.subscribe(self.on_fail_close_program,
                       'fail_disconnect_program_database')
 
@@ -258,7 +259,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_save_program(self):
-        """do_save_program() should cause all workstream modules to execute their save_all() method."""
+        """do_save_program() should cause all workstream modules to execute
+        their save_all() method."""
         pub.subscribe(self.on_request_update_revision,
                       'request_update_all_revisions')
         pub.subscribe(self.on_request_update_function,
@@ -300,7 +302,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_create_sqlite_program(self, test_toml_user_configuration):
-        """do_create_program() should broadcast the success message when an SQLite database is created."""
+        """do_create_program() should broadcast the success message when an
+        SQLite database is created."""
         pub.subscribe(self.on_succeed_create_sqlite_program,
                       'succeed_create_program_database')
 
@@ -328,7 +331,8 @@ class TestProgramManager():
 
     @pytest.mark.unit
     def test_do_create_postgres_program(self, test_toml_user_configuration):
-        """do_create_program() should broadcast the success message when a postgres database is created."""
+        """do_create_program() should broadcast the success message when a
+        postgres database is created."""
         pub.subscribe(self.on_succeed_create_postgres_program,
                       'succeed_create_program_database')
 
