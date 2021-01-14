@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.programdb.Test_ramstkprograminfo.py is part of the RAMSTK
+#       tests.models.programdb.test_ramstkprograminfo.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the RAMSTKProgramInfo module algorithms and
 models."""
 
@@ -15,9 +15,19 @@ from datetime import date
 
 # Third Party Imports
 import pytest
+from mocks import MockDAO, mock_ramstk_programinfo
 
 # RAMSTK Package Imports
 from ramstk.models.programdb import RAMSTKProgramInfo
+
+
+@pytest.fixture(scope='function')
+def mock_program_dao(monkeypatch):
+    DAO = MockDAO()
+    DAO.table = mock_ramstk_programinfo
+
+    yield DAO
+
 
 ATTRIBUTES = {
     'created_by': '',
@@ -44,13 +54,13 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao')
+@pytest.mark.usefixtures('mock_program_dao')
 class TestRAMSTKProgramInfo():
     """Class for testing the RAMSTKProgramInfo model."""
-    @pytest.mark.integration
-    def test_ramstkprograminfo_create(self, test_program_dao):
+    @pytest.mark.unit
+    def test_ramstkprograminfo_create(self, mock_program_dao):
         """__init__() should create an RAMSTKProgramInfo model."""
-        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
+        DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
         assert isinstance(DUT, RAMSTKProgramInfo)
 
@@ -79,10 +89,10 @@ class TestRAMSTKProgramInfo():
         assert DUT.last_saved == date.today()
         assert DUT.last_saved_by == ''
 
-    @pytest.mark.integration
-    def test_get_attributes(self, test_program_dao):
+    @pytest.mark.unit
+    def test_get_attributes(self, mock_program_dao):
         """get_attributes() should return a dict of attribute values."""
-        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
+        DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
         _attributes = DUT.get_attributes()
         assert _attributes['revision_id'] == 1
@@ -108,29 +118,29 @@ class TestRAMSTKProgramInfo():
         assert _attributes['last_saved'] == date.today()
         assert _attributes['last_saved_by'] == ''
 
-    @pytest.mark.integration
-    def test_set_attributes(self, test_program_dao):
+    @pytest.mark.unit
+    def test_set_attributes(self, mock_program_dao):
         """set_attributes() should return a zero error code on success."""
-        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
+        DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
         assert DUT.set_attributes(ATTRIBUTES) is None
 
-    @pytest.mark.integration
-    def test_set_attributes_none_value(self, test_program_dao):
+    @pytest.mark.unit
+    def test_set_attributes_none_value(self, mock_program_dao):
         """set_attributes() should set an attribute to it's default value when
         the attribute is passed with a None value."""
-        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
+        DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
         ATTRIBUTES['pof_active'] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
         assert DUT.get_attributes()['pof_active'] == 1
 
-    @pytest.mark.integration
-    def test_set_attributes_unknown_attributes(self, test_program_dao):
+    @pytest.mark.unit
+    def test_set_attributes_unknown_attributes(self, mock_program_dao):
         """set_attributes() should raise an AttributeError when passed an
         unknown attribute."""
-        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
+        DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
         with pytest.raises(AttributeError):
             DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

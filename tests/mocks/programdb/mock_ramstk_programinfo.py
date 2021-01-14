@@ -16,6 +16,7 @@ from datetime import date, timedelta
 from ramstk.models.programdb import RAMSTKProgramInfo
 
 _program_1 = RAMSTKProgramInfo()
+_program_1.revision_id = 1
 _program_1.function_active = 1
 _program_1.requirement_active = 1
 _program_1.hardware_active = 1
