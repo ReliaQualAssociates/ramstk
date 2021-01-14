@@ -2,10 +2,10 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.__mocks__.MockDOA.py is part of The RAMSTK Project
+#       tests.__mocks__.MockDAO.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Mock class for mocking DAO objects and accessing mock database tables."""
 
 # Standard Library Imports

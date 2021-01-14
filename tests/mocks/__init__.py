@@ -10,3 +10,4 @@
 # RAMSTK Local Imports
 from .commondb.mock_ramstk_siteinfo import mock_ramstk_siteinfo
 from .MockDAO import MockDAO
+from .programdb.mock_ramstk_programinfo import mock_ramstk_programinfo
