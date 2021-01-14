@@ -43,8 +43,9 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
     pub.sendMessage(
         'do_log_info_msg',
         logger_name='INFO',
-        message="Connecting to the RAMSTK common database {0:s}.".format(
-            conn_info['database']))
+        message="Connecting to the RAMSTK common database {0} on {1} "
+        "using port {2}.".format(conn_info['database'], conn_info['host'],
+                                 conn_info['port']))
 
     _site_db = BaseDatabase()
     _site_db.do_connect(conn_info)

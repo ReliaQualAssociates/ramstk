@@ -81,7 +81,8 @@ class TestConnectionMethods():
     @pytest.mark.unit
     def test_do_connect_bad_database_name_type(self,
                                                test_toml_user_configuration):
-        """do_connect() should raise a DataAccessError when passed a non-string database name."""
+        """do_connect() should raise a DataAccessError when passed a non-string
+        database name."""
         test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = 8675309
         DUT = BaseDatabase()
 
@@ -103,7 +104,8 @@ class TestConnectionMethods():
 
     @pytest.mark.unit
     def test_do_connect_unknown_dialect(self, test_toml_user_configuration):
-        """do_connect() should raise an DataAccessError when passed an unknown/unsupported database dialect."""
+        """do_connect() should raise an DataAccessError when passed an
+        unknown/unsupported database dialect."""
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqldoyle'
         DUT = BaseDatabase()
 
@@ -112,7 +114,8 @@ class TestConnectionMethods():
 
     @pytest.mark.unit
     def test_do_disconnect(self, test_toml_user_configuration):
-        """do_disconnect() should return None when successfully closing a database connection."""
+        """do_disconnect() should return None when successfully closing a
+        database connection."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'sqlite'
         test_toml_user_configuration.RAMSTK_PROG_INFO['database'] = ''
@@ -124,7 +127,7 @@ class TestConnectionMethods():
         assert DUT.database == ''
 
 
-@pytest.mark.usefixtures('test_simple_database',
+@pytest.mark.usefixtures('test_common_dao', 'test_program_dao',
                          'test_toml_user_configuration')
 class TestInsertMethods():
     """Class for BaseDatabase insert methods test suite."""
@@ -134,9 +137,9 @@ class TestInsertMethods():
         print("\033[35m\nfail_insert_record topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert(self, test_simple_database,
-                       test_toml_user_configuration):
-        """do_insert() should return None when inserting a record into a database table."""
+    def test_do_insert(self, test_program_dao, test_toml_user_configuration):
+        """do_insert() should return None when inserting a record into a
+        database table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -144,19 +147,20 @@ class TestInsertMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestProgramDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         _revision = RAMSTKRevision()
-        _revision.revision_id = 2
+        _revision.revision_id = 3
 
         assert DUT.do_insert(_revision) is None
 
     @pytest.mark.unit
-    def test_do_insert_bad_date_field_type(self, test_simple_database,
+    def test_do_insert_bad_date_field_type(self, test_program_dao,
                                            test_toml_user_configuration):
-        """do_insert() should raise a DataAccessError when passed a non-date object for a date type field."""
+        """do_insert() should raise a DataAccessError when passed a non-date
+        object for a date type field."""
         pub.subscribe(self.on_fail_insert_record, 'fail_insert_record')
 
         test_toml_user_configuration.get_user_configuration()
@@ -166,7 +170,7 @@ class TestInsertMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestProgramDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -180,9 +184,10 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_fail_insert_record, 'fail_insert_record')
 
     @pytest.mark.unit
-    def test_do_insert_none(self, test_simple_database,
+    def test_do_insert_none(self, test_program_dao,
                             test_toml_user_configuration):
-        """do_insert() should raise an UnmappedInstanceError when passed None for the table."""
+        """do_insert() should raise an UnmappedInstanceError when passed None
+        for the table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -190,7 +195,7 @@ class TestInsertMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestProgramDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -198,9 +203,10 @@ class TestInsertMethods():
             DUT.do_insert(None)
 
     @pytest.mark.unit
-    def test_do_insert_duplicate_pk(self, test_simple_database,
+    def test_do_insert_duplicate_pk(self, test_common_dao,
                                     test_toml_user_configuration):
-        """do_insert() should raise a DataAccessError when attempting to add a record with a duplicate primary key."""
+        """do_insert() should raise a DataAccessError when attempting to add a
+        record with a duplicate primary key."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -208,24 +214,25 @@ class TestInsertMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         _record = RAMSTKSiteInfo()
-        _record.site_id = 1
+        _record.site_id = 2
         DUT.do_insert(_record)
 
         _record = RAMSTKSiteInfo()
-        _record.site_id = 1
+        _record.site_id = 2
 
         with pytest.raises(DataAccessError):
             DUT.do_insert(_record)
 
     @pytest.mark.unit
-    def test_do_insert_many(self, test_simple_database,
+    def test_do_insert_many(self, test_program_dao,
                             test_toml_user_configuration):
-        """do_insert() should return None when inserting a record into a database table."""
+        """do_insert() should return None when inserting a record into a
+        database table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -233,7 +240,7 @@ class TestInsertMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestProgramDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -246,7 +253,7 @@ class TestInsertMethods():
         assert DUT.do_insert_many([_revision1, _revision2, _revision3]) is None
 
 
-@pytest.mark.usefixtures('test_simple_database',
+@pytest.mark.usefixtures('test_common_dao', 'test_program_dao',
                          'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for BaseDatabase delete methods test suite."""
@@ -264,9 +271,9 @@ class TestDeleteMethods():
         print("\033[35m\nfail_delete_record topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete(self, test_simple_database,
-                       test_toml_user_configuration):
-        """do_delete() should return None when inserting a record into a database table."""
+    def test_do_delete(self, test_common_dao, test_toml_user_configuration):
+        """do_delete() should return None when inserting a record into a
+        database table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -274,7 +281,7 @@ class TestDeleteMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -284,10 +291,11 @@ class TestDeleteMethods():
 
         assert DUT.do_delete(_record) is None
 
-    @pytest.mark.unit
-    def test_do_delete_missing_foreign_table(self, test_simple_database,
+    @pytest.mark.skip
+    def test_do_delete_missing_foreign_table(self, test_program_dao,
                                              test_toml_user_configuration):
-        """do_delete() should raise a DataAccessError when attempting to delete a record with a foreign key and the foreign table does not exist."""
+        """do_delete() should raise a DataAccessError when attempting to delete
+        a record with a foreign key and the foreign table does not exist."""
         pub.subscribe(self.on_fail_delete_foreign_record, 'fail_delete_record')
 
         test_toml_user_configuration.get_user_configuration()
@@ -297,12 +305,12 @@ class TestDeleteMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestProgramDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         _record = RAMSTKRevision()
-        _record.revision_id = 3
+        _record.revision_id = 4
         DUT.do_insert(_record)
 
         with pytest.raises(DataAccessError):
@@ -312,9 +320,10 @@ class TestDeleteMethods():
                         'fail_delete_record')
 
     @pytest.mark.unit
-    def test_do_delete_no_table(self, test_simple_database,
+    def test_do_delete_no_table(self, test_program_dao,
                                 test_toml_user_configuration):
-        """do_delete() should raise a DataAccessError when attempting to delete a record from a table that does not exist."""
+        """do_delete() should raise a DataAccessError when attempting to delete
+        a record from a table that does not exist."""
         pub.subscribe(self.on_fail_delete_missing_table, 'fail_delete_record')
 
         test_toml_user_configuration.get_user_configuration()
@@ -324,7 +333,7 @@ class TestDeleteMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestProgramDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -336,14 +345,13 @@ class TestDeleteMethods():
                         'fail_delete_record')
 
 
-@pytest.mark.usefixtures('test_simple_database',
-                         'test_toml_user_configuration')
+@pytest.mark.usefixtures('test_common_dao', 'test_toml_user_configuration')
 class TestUpdateMethods():
     """Class for BaseDatabase update methods test suite."""
     @pytest.mark.unit
-    def test_do_update(self, test_simple_database,
-                       test_toml_user_configuration):
-        """do_update() should return None when updating a record in a database table."""
+    def test_do_update(self, test_common_dao, test_toml_user_configuration):
+        """do_update() should return None when updating a record in a database
+        table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -351,35 +359,60 @@ class TestUpdateMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         _record = RAMSTKSiteInfo()
-        _record.site_id = 2
+        _record.site_id = 3
         DUT.do_insert(_record)
+
+        _record.function_enabled = 1
+        _record.requirement_enabled = 1
+        _record.hardware_enabled = 1
+        _record.software_enabled = 1
+        _record.rcm_enabled = 1
+        _record.fta_enabled = 1
+
+        assert DUT.do_update() is None
+
+        _record = DUT.session.query(RAMSTKSiteInfo).filter(
+            RAMSTKSiteInfo.site_id == 3).all()[0]
+
+        assert _record.function_enabled == 1
+        assert _record.requirement_enabled == 1
+        assert _record.hardware_enabled == 1
+        assert _record.software_enabled == 1
+        assert _record.rcm_enabled == 1
+        assert _record.fta_enabled == 1
 
         _record.function_enabled = 0
         _record.requirement_enabled = 0
         _record.hardware_enabled = 0
+        _record.software_enabled = 0
+        _record.rcm_enabled = 0
+        _record.fta_enabled = 0
 
         assert DUT.do_update() is None
 
-        _record = DUT.session.query(RAMSTKSiteInfo).all()[0]
+        _record = DUT.session.query(RAMSTKSiteInfo).filter(
+            RAMSTKSiteInfo.site_id == 3).all()[0]
 
         assert _record.function_enabled == 0
         assert _record.requirement_enabled == 0
         assert _record.hardware_enabled == 0
+        assert _record.software_enabled == 0
+        assert _record.rcm_enabled == 0
+        assert _record.fta_enabled == 0
 
 
-@pytest.mark.usefixtures('test_simple_database',
-                         'test_toml_user_configuration')
+@pytest.mark.usefixtures('test_common_dao', 'test_toml_user_configuration')
 class TestSelectMethods():
     """Class for BaseDatabase query methods test suite."""
     @pytest.mark.unit
-    def test_do_select(self, test_simple_database,
-                       test_toml_user_configuration):
-        """do_query() should return None when updating a record in a database table."""
+    def test_do_select(self, test_common_dao, test_toml_user_configuration):
+        """do_query() should return None when updating a record in a database
+        table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -387,7 +420,7 @@ class TestSelectMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -395,16 +428,19 @@ class TestSelectMethods():
         _record.site_id = 20
         DUT.do_insert(_record)
 
-        _record = DUT.session.query(RAMSTKSiteInfo).first()
+        _record = DUT.session.query(RAMSTKSiteInfo).filter(
+            RAMSTKSiteInfo.site_id == 3).all()[0]
 
-        assert _record.site_id == 1
+        assert _record.site_id == 3
         assert _record.function_enabled == 0
         assert _record.requirement_enabled == 0
         assert _record.hardware_enabled == 0
+        assert _record.software_enabled == 0
+        assert _record.rcm_enabled == 0
+        assert _record.fta_enabled == 0
 
     @pytest.mark.unit
-    def test_get_last_id(self, test_simple_database,
-                         test_toml_user_configuration):
+    def test_get_last_id(self, test_common_dao, test_toml_user_configuration):
         """get_last_id() should return an integer for the last used ID."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
@@ -413,7 +449,7 @@ class TestSelectMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -429,9 +465,10 @@ class TestSelectMethods():
         assert _last_id == 22
 
     @pytest.mark.unit
-    def test_get_last_id_passed_attribute(self, test_simple_database,
+    def test_get_last_id_passed_attribute(self, test_common_dao,
                                           test_toml_user_configuration):
-        """get_last_id() should return an integer for the last used ID when passed a column name as an attribute."""
+        """get_last_id() should return an integer for the last used ID when
+        passed a column name as an attribute."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -439,7 +476,7 @@ class TestSelectMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -448,9 +485,10 @@ class TestSelectMethods():
         assert _last_id == 22
 
     @pytest.mark.unit
-    def test_get_last_id_unknown_column(self, test_simple_database,
+    def test_get_last_id_unknown_column(self, test_common_dao,
                                         test_toml_user_configuration):
-        """get_last_id() should raise an SQLAlchemy OperationalError when passed an unknown column name."""
+        """get_last_id() should raise an SQLAlchemy OperationalError when
+        passed an unknown column name."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -458,7 +496,7 @@ class TestSelectMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -466,9 +504,10 @@ class TestSelectMethods():
             DUT.get_last_id(RAMSTKSiteInfo.__tablename__, "fld_column_id")
 
     @pytest.mark.unit
-    def test_get_last_id_unknown_table(self, test_simple_database,
+    def test_get_last_id_unknown_table(self, test_common_dao,
                                        test_toml_user_configuration):
-        """get_last_id() should raise an SQLAlchemy OperationalError when passed an unknown table."""
+        """get_last_id() should raise an SQLAlchemy OperationalError when
+        passed an unknown table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -476,17 +515,18 @@ class TestSelectMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestCommonDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         with pytest.raises(exc.ProgrammingError):
             DUT.get_last_id(RAMSTKFunction.__tablename__, "fld_function_id")
 
-    @pytest.mark.unit
-    def test_get_last_id_empty_table(self, test_simple_database,
-                                       test_toml_user_configuration):
-        """get_last_id() should raise an SQLAlchemy OperationalError when passed an unknown table."""
+    @pytest.mark.skip
+    def test_get_last_id_empty_table(self, test_program_dao,
+                                     test_toml_user_configuration):
+        """get_last_id() should raise an SQLAlchemy OperationalError when
+        passed an unknown table."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO['dialect'] = 'postgres'
         test_toml_user_configuration.RAMSTK_PROG_INFO['user'] = 'postgres'
@@ -494,7 +534,7 @@ class TestSelectMethods():
         test_toml_user_configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
         test_toml_user_configuration.RAMSTK_PROG_INFO['port'] = '5432'
         test_toml_user_configuration.RAMSTK_PROG_INFO[
-            'database'] = 'simple_test_db'
+            'database'] = 'TestProgramDB'
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 

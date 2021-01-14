@@ -1,14 +1,10 @@
-DROP DATABASE IF EXISTS ramstk_common_ramstk;
-CREATE DATABASE ramstk_common_ramstk;
-\c ramstk_common_ramstk;
-
 CREATE TABLE IF NOT EXISTS ramstk_user (
 	fld_user_id	INTEGER NOT NULL,
-	fld_user_lname	VARCHAR ( 256 ),
-	fld_user_fname	VARCHAR ( 256 ),
-	fld_user_email	VARCHAR ( 256 ),
-	fld_user_phone	VARCHAR ( 256 ),
-	fld_user_group_id	VARCHAR ( 256 ),
+	fld_user_lname VARCHAR ( 256 ),
+	fld_user_fname VARCHAR ( 256 ),
+	fld_user_email VARCHAR ( 256 ),
+	fld_user_phone VARCHAR ( 256 ),
+	fld_user_group_id VARCHAR ( 256 ),
 	PRIMARY KEY(fld_user_id)
 );
 INSERT INTO ramstk_user VALUES (1,'Tester','Johnny','tester.johnny@reliaqual.com','+1.269.867.5309','1');
@@ -256,16 +252,29 @@ INSERT INTO ramstk_stakeholders VALUES (4,'Management');
 
 CREATE TABLE IF NOT EXISTS ramstk_site_info (
 	fld_site_id	INTEGER NOT NULL,
-	fld_product_key	VARCHAR ( 512 ),
-	fld_expire_on	DATE,
-	fld_function_enabled	INTEGER,
-	fld_requirement_enabled	INTEGER,
-	fld_hardware_enabled	INTEGER,
-	fld_vandv_enabled	INTEGER,
-	fld_fmea_enabled	INTEGER,
+	fld_site_name VARCHAR(512),
+	fld_product_key	VARCHAR(512),
+	fld_expire_on DATE,
+	fld_function_enabled INTEGER,
+	fld_requirement_enabled INTEGER,
+	fld_hardware_enabled INTEGER,
+    fld_software_enabled INTEGER,
+    fld_rcm_enabled INTEGER,
+    fld_testing_enabled INTEGER,
+    fld_incident_enabled INTEGER,
+    fld_survival_enabled INTEGER,
+	fld_vandv_enabled INTEGER,
+    fld_hazard_enabled INTEGER,
+    fld_stakeholder_enabled INTEGER,
+    fld_allocation_enabled INTEGER,
+    fld_similar_item_enabled INTEGER,
+    fld_fmea_enabled INTEGER,
+    fld_pof_enabled INTEGER,
+    fld_rbd_enabled INTEGER,
+    fld_fta_enabled INTEGER,
 	PRIMARY KEY(fld_site_id)
 );
-INSERT INTO ramstk_site_info VALUES (1,'0000','2019-08-20',0,0,0,0,0);
+INSERT INTO ramstk_site_info VALUES (1,'DEMO SITE','DEMO',CURRENT_DATE + 30,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,0,0);
 
 CREATE TABLE IF NOT EXISTS ramstk_rpn (
 	fld_rpn_id	INTEGER NOT NULL,

@@ -28,8 +28,9 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
-from ramstk.configuration import (RAMSTKSiteConfiguration,
-                                  RAMSTKUserConfiguration)
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -113,13 +114,13 @@ HEADERS = {
 ROW_DATA = [
     [
         1, 5, 1, 'PRESS-001', 'Maintain system pressure.', 0,
-        'This is a function that is about system pressure.  This remarks box also needs to be larger.',
-        1, 0
+        'This is a function that is about system pressure.  This remarks box '
+        'also needs to be larger.', 1, 0
     ],
     [
         1, 6, 1, 'FLOW-001', 'Maintain system flow.', 0,
-        'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
-        0, 0
+        'These are remarks associated with the function FLOW-001.  The '
+        'remarks box needs to be bigger.', 0, 0
     ],
     [
         1, 10, 0, 'Gotta do something', "Fig. 1", 2, "3.2-1", 0, 4, 'GEN-001',
@@ -155,11 +156,12 @@ def make_shibboly():
 
 @pytest.fixture(scope='session')
 def make_config_dir():
-    """
-    Create a configuration directory if one doesn't exist.
-    This creates a configuration directory in the virtual environment base to
-    allow testing certain functions/methods that look for a user configuration
-    directory otherwise defaulting to the site-wide configuration directory.
+    """Create a configuration directory if one doesn't exist.
+
+    This creates a configuration directory in the virtual environment
+    base to allow testing certain functions/methods that look for a user
+    configuration directory otherwise defaulting to the site-wide
+    configuration directory.
     """
     _config_dir = VIRTUAL_ENV + '/share/RAMSTK'
     if not os.path.exists(_config_dir):
@@ -177,9 +179,8 @@ def make_config_dir():
 
 @pytest.fixture(scope='session')
 def make_home_config_dir():
-    """
-    Create a configuration directory to mimic a user's configuration directory.
-    """
+    """Create a configuration directory to mimic a user's configuration
+    directory."""
     _config_dir = VIRTUAL_ENV + '/tmp/.config/RAMSTK'
     if not os.path.exists(VIRTUAL_ENV + '/tmp/'):
         os.mkdir(VIRTUAL_ENV + '/tmp/')
@@ -361,7 +362,7 @@ def test_common_dao():
     conn.set_session(autocommit=True)
 
     cursor = conn.cursor()
-    cursor.execute(open('./devtools/test_common_db.sql', 'r').read())
+    cursor.execute(open('./data/postgres_common_db.sql', 'r').read())
     cursor.close()
     conn.close()
 
@@ -476,7 +477,8 @@ def test_toml_user_configuration(make_home_config_dir):
     _user_config._INSTALL_PREFIX = VIRTUAL_ENV
     _user_config.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/tmp'
     _user_config.RAMSTK_CONF_DIR = VIRTUAL_ENV + '/tmp/.config/RAMSTK'
-    _user_config.RAMSTK_PROG_CONF = _user_config.RAMSTK_CONF_DIR + '/RAMSTK.toml'
+    _user_config.RAMSTK_PROG_CONF = (_user_config.RAMSTK_CONF_DIR
+                                     + '/RAMSTK.toml')
     _user_config.RAMSTK_DATA_DIR = _user_config.RAMSTK_CONF_DIR + '/layouts'
     _user_config.RAMSTK_ICON_DIR = _user_config.RAMSTK_CONF_DIR + '/icons'
     _user_config.RAMSTK_LOG_DIR = _user_config.RAMSTK_CONF_DIR + '/logs'
@@ -612,7 +614,8 @@ def test_text_file_function():
 
 @pytest.fixture
 def test_csv_file_requirement():
-    """Create and populate a *.csv file for testing Requirement import mapping."""
+    """Create and populate a *.csv file for testing Requirement import
+    mapping."""
     _test_file = TMP_DIR + '/test_inputs_requirements.csv'
 
     with open(_test_file, 'w') as _csv_file:
@@ -644,7 +647,8 @@ def test_csv_file_hardware():
 
 @pytest.fixture
 def test_csv_file_validation():
-    """Create and populate a *.csv file for testing Validation import mapping."""
+    """Create and populate a *.csv file for testing Validation import
+    mapping."""
     _test_file = TMP_DIR + '/test_inputs_validation.csv'
 
     with open(_test_file, 'w') as _csv_file:

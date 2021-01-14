@@ -99,7 +99,7 @@ class DataManager(RAMSTKDataManager):
         # noinspection PyUnresolvedReferences
         for _option in self.common_dao.session.query(RAMSTKSiteInfo).all():
 
-            self.tree.create_node(tag='Site Info',
+            self.tree.create_node(tag='siteinfo',
                                   identifier='siteinfo',
                                   parent=self._root,
                                   data={'siteinfo': _option})
@@ -108,7 +108,7 @@ class DataManager(RAMSTKDataManager):
         for _option in self.dao.session.query(RAMSTKProgramInfo).filter(
                 RAMSTKProgramInfo.revision_id == self._revision_id).all():
 
-            self.tree.create_node(tag='Program Info',
+            self.tree.create_node(tag='programinfo',
                                   identifier='programinfo',
                                   parent=self._root,
                                   data={'programinfo': _option})

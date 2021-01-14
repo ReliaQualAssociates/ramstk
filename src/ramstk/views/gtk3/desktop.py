@@ -403,16 +403,27 @@ class RAMSTKDesktop(Gtk.Window):
         """Request the EditOptions assistant be launched.
 
         :param __widget: the Gtk.ImageMenuItem() that called this class.
-        :type __widget: :class:`Gtk.ImageMenuItem`
         :return: None
         :rtype: None
         """
         _dialog = EditOptions(parent=self)
 
-        pub.sendMessage('request_get_options_tree')
+        pub.sendMessage('request_get_option_attributes',
+                        node_id='siteinfo',
+                        table='siteinfo')
 
+        # ISSUE: Make Site DB available without connecting to program DB.
+        #
+        # The site DB should be available without having to connect to a
+        # program DB.  Currently the site DAO is a member of the
+        # ProgramManager's dict of data managers.  The site DAO needs to be
+        # made available out of __main__.py or the ProgramManager needs to
+        # be made accessible to the RAMSTKDesktop so site options can be
+        # accessed.
+        # assignees: weibullguy
+        # label: globalbacklog, normal
         if _dialog.do_run() == Gtk.ResponseType.OK:
-            pub.sendMessage('request_update_option', node_id='programinfo')
+            print("Need site admin or higher privileges.")
 
         _dialog.do_destroy()
 

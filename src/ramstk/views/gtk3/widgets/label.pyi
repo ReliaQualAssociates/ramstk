@@ -8,6 +8,9 @@ from ramstk.views.gtk3 import Gtk as Gtk
 from .widget import RAMSTKWidget as RAMSTKWidget
 
 class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
+    _default_height: int = ...
+    _default_width: int = ...
+
     def __init__(self, text: str) -> None:
         ...
 

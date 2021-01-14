@@ -26,7 +26,7 @@ repos:
         - id: docformatter
           args: [-c]
     - repo: https://github.com/weibullguy/pycodestyle
-      rev: 2.6.1
+      rev: '2.6.1'
       hooks:
         - id: pycodestyle
           args: [--config, ./setup.cfg]
