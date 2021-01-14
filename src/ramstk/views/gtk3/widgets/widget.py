@@ -53,6 +53,7 @@ class RAMSTKWidget():
         :return: None
         :rtype: None
         """
+        _can_focus = kwargs.get('can_focus', True)
         _height = kwargs.get('height', self._default_height)
         _tooltip = kwargs.get(
             'tooltip',
@@ -67,6 +68,7 @@ class RAMSTKWidget():
 
         self.height = _height
         self.width = _width
+        self.set_property('can-focus', _can_focus)  # type: ignore
         self.set_property('height-request', _height)  # type: ignore
         self.set_property('tooltip-markup', _tooltip)  # type: ignore
         self.set_property('width-request', _width)  # type: ignore

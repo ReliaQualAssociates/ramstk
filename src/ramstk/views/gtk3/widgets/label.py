@@ -103,7 +103,7 @@ def do_make_label_group(
     a list of y-coordinates indicating the placement of each label that is used
     to place the corresponding widget.
 
-    :param list text: a list containing the text for each label.
+    :param text: a list containing the text for each label.
     :return: (_max_x, _lst_labels)
         the width of the label with the longest text and a list of the
         RAMSTKLabel() instances.

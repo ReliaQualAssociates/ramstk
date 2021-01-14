@@ -330,11 +330,14 @@ class RAMSTKPanel(RAMSTKFrame):
             if isinstance(self._lst_widgets[_idx], RAMSTKTextView):
                 _fixed.put(
                     self._lst_widgets[_idx].scrollwindow,  # type: ignore
-                    _x_pos + 5,
+                    _x_pos + 10,
                     _y_pos)
                 _y_pos += _minimum.height + 30
+            elif isinstance(self._lst_widgets[_idx], RAMSTKCheckButton):
+                _fixed.put(self._lst_widgets[_idx], _x_pos + 10, _y_pos)
+                _y_pos += _minimum.height + 30
             else:
-                _fixed.put(self._lst_widgets[_idx], _x_pos + 5, _y_pos)
+                _fixed.put(self._lst_widgets[_idx], _x_pos + 10, _y_pos)
                 _y_pos += _minimum.height + 5
 
         _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
