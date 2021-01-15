@@ -8,7 +8,7 @@
 # http://www.sphinx-doc.org/en/master/config
 """Configuration for Sphinx."""
 
-# RAMSTK Package Imports
+# Third Party Imports
 import sphinx_py3doc_enhanced_theme
 
 # -- Project information -----------------------------------------------------
@@ -88,8 +88,8 @@ html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path(), "."]
 # -- Options for intersphinx extension ---------------------------------------
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'NumPy': ('http://docs.scipy.org/doc/numpy/', None),
-    'SciPy': ('http://docs.scipy.org/doc/scipy/reference', None),
-    'matplotlib': ('http://matplotlib.org', None),
+    'NumPy': ('https://docs.scipy.org/doc/numpy/', None),
+    'SciPy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    'matplotlib': ('https://matplotlib.org', None),
     'treelib': ('https://treelib.readthedocs.io/en/latest', None)
 }

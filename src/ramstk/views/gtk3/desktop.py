@@ -147,6 +147,58 @@ class RAMSTKDesktop(Gtk.Window):
         pub.subscribe(self._on_select, 'request_set_title')
         pub.subscribe(self._do_set_status, 'request_set_status')
 
+    def _do_request_options_assistant(self,
+                                      __widget: Gtk.ImageMenuItem) -> None:
+        """Request the EditOptions assistant be launched.
+
+        :param __widget: the Gtk.ImageMenuItem() that called this class.
+        :return: None
+        :rtype: None
+        """
+        _dialog = EditOptions(parent=self)
+
+        # ISSUE: Make Site DB available without connecting to program DB.
+        #
+        # The site DB should be available without having to connect to a
+        # program DB.  Currently the site DAO is a member of the
+        # ProgramManager's dict of data managers.  The site DAO needs to be
+        # made available out of __main__.py or the ProgramManager needs to
+        # be made accessible to the RAMSTKDesktop so site options can be
+        # accessed.
+        # assignees: weibullguy
+        # label: globalbacklog, normal
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            print("Need site admin or higher privileges.")
+
+        _dialog.do_destroy()
+
+    def _do_request_preferences_assistant(self,
+                                          __widget: Gtk.ImageMenuItem) -> None:
+        """Request the EditPreferences assistant be launched.
+
+        :param __widget: the Gtk.ImageMenuItem() that called this class.
+        :return: None
+        :rtype: None
+        """
+        _assistant = Gtk.Window()
+        _preferences = EditPreferences(self.RAMSTK_USER_CONFIGURATION,
+                                       self._logger)
+
+        _n_screens = Gdk.Screen.get_default().get_n_monitors()
+        _width = Gdk.Screen.width() / _n_screens
+        _height = Gdk.Screen.height()
+
+        _assistant.set_border_width(5)
+        _assistant.set_default_size(_width - 450, (4 * _height / 7))
+        _assistant.set_modal(True)
+        _assistant.set_position(Gtk.WindowPosition.CENTER)
+        _assistant.set_resizable(True)
+        _assistant.set_transient_for(self)
+
+        _assistant.add(_preferences)
+
+        _assistant.show_all()
+
     def __make_menu(self) -> None:
         """Make the menu for the Module Book.
 
@@ -172,9 +224,8 @@ class RAMSTKDesktop(Gtk.Window):
         for _menu_item in _menu_items:
             _menu.append(_menu_item)
 
-        _menu_items[0].connect('activate', EditPreferences,
-                               self.RAMSTK_USER_CONFIGURATION, self._logger,
-                               self)
+        _menu_items[0].connect('activate',
+                               self._do_request_preferences_assistant)
 
         _menu_item = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
         _menu_item.set_submenu(_menu)
@@ -397,31 +448,6 @@ class RAMSTKDesktop(Gtk.Window):
         :rtype: None
         """
         pub.sendMessage('request_close_project')
-
-    def _do_request_options_assistant(self,
-                                      __widget: Gtk.ImageMenuItem) -> None:
-        """Request the EditOptions assistant be launched.
-
-        :param __widget: the Gtk.ImageMenuItem() that called this class.
-        :return: None
-        :rtype: None
-        """
-        _dialog = EditOptions(parent=self)
-
-        # ISSUE: Make Site DB available without connecting to program DB.
-        #
-        # The site DB should be available without having to connect to a
-        # program DB.  Currently the site DAO is a member of the
-        # ProgramManager's dict of data managers.  The site DAO needs to be
-        # made available out of __main__.py or the ProgramManager needs to
-        # be made accessible to the RAMSTKDesktop so site options can be
-        # accessed.
-        # assignees: weibullguy
-        # label: globalbacklog, normal
-        if _dialog.do_run() == Gtk.ResponseType.OK:
-            print("Need site admin or higher privileges.")
-
-        _dialog.do_destroy()
 
     # noinspection PyDeepBugsSwappedArgs
     def _do_request_save_project(self,
