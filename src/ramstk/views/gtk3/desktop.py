@@ -408,10 +408,6 @@ class RAMSTKDesktop(Gtk.Window):
         """
         _dialog = EditOptions(parent=self)
 
-        pub.sendMessage('request_get_option_attributes',
-                        node_id='siteinfo',
-                        table='siteinfo')
-
         # ISSUE: Make Site DB available without connecting to program DB.
         #
         # The site DB should be available without having to connect to a

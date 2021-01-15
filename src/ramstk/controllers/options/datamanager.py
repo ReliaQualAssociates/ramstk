@@ -81,7 +81,7 @@ class DataManager(RAMSTKDataManager):
         """Retrieve all the Options data from the RAMSTK Program database.
 
         :param attributes: the RAMSTK option attributes for the
-            selected Revision.
+            selected Site.
         :return: None
         :rtype: None
         """
