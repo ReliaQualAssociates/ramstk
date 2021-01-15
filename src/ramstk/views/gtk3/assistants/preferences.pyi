@@ -169,7 +169,7 @@ class EditPreferences(RAMSTKBaseView):
                  logger: RAMSTKLogManager) -> None:
         ...
 
-    def _do_quit(self, __button: Gtk.Button) -> None:
+    def _cancel(self, __button: Gtk.Button) -> None:
         ...
 
     def _do_request_update(self, __button: Gtk.Button) -> None:

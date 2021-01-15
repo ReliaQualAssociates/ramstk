@@ -15,8 +15,9 @@ from typing import Any, Dict, List, Optional, Tuple
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.views.gtk3 import GObject, Gtk, Pango, _
+from ramstk.views.gtk3.widgets.combo import RAMSTKComboBox
 from ramstk.views.gtk3.widgets.entry import RAMSTKEntry
-from ramstk.views.gtk3.widgets.label import RAMSTKLabel
+from ramstk.views.gtk3.widgets.label import do_make_label_group
 
 
 class RAMSTKDialog(Gtk.Dialog):
@@ -70,10 +71,28 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
         # Initialize private list attributes.
         self._lst_databases: List[str] = []
+        self._lst_labels: List[str] = [
+            _('Database Dialect:'),
+            _('Database Server:'),
+            _('Server Port:'),
+            _('Database Name:'),
+            _('RAMSTK User:'),
+            _('RAMSTK Password:')
+        ]
 
         # Initialize private scalar attributes.
-        self._entry: RAMSTKEntry = RAMSTKEntry()
-        self._treeview: Gtk.TreeView = Gtk.TreeView()
+        self.cmbDialect: RAMSTKComboBox = RAMSTKComboBox()
+        self.txtHost: RAMSTKEntry = RAMSTKEntry()
+        self.txtPort: RAMSTKEntry = RAMSTKEntry()
+        self.txtDatabase: RAMSTKEntry = RAMSTKEntry()
+        self.txtUser: RAMSTKEntry = RAMSTKEntry()
+        self.txtPassword: RAMSTKEntry = RAMSTKEntry()
+        self.tvwTreeView: Gtk.TreeView = Gtk.TreeView()
+
+        self._lst_widgets = [
+            self.cmbDialect, self.txtHost, self.txtPort, self.txtDatabase,
+            self.txtUser, self.txtPassword
+        ]
 
         # Initialize public dict attributes.
 
@@ -81,9 +100,56 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
         # Initialize public scalar attributes.
 
+        self.__do_set_properties()
         self.__make_ui()
+        self.__do_load_combobox()
+        self.__do_set_callbacks()
 
         self.__do_load_databases(database=kwargs['database'])
+
+    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
+        """Destroy the RAMSTKDateSelect dialog."""
+        self.destroy()
+
+    def do_run(self) -> Tuple[Dict[str, str], bool]:
+        """Run the RAMSTKFileChooser dialog.
+
+        :return: _database, _exists; the selected database name or empty
+            string if none selected and a variable indicating whether the
+            database already exists.
+        :rtype: tuple
+        """
+        _database: Dict[str, str] = {}
+        _exists: bool = False
+
+        if self.run() == Gtk.ResponseType.OK:
+            _database = self._get_database()
+            _exists = _database['database'] in self._lst_databases
+        elif self.run() == Gtk.ResponseType.CANCEL:
+            self.do_destroy()
+
+        return _database, _exists
+
+    def _get_database(self) -> Dict[str, str]:
+        """Get the name of the selected database.
+
+        :return: the database connection parameters.
+        :rtype: dict
+        """
+        _database: Dict[str, str] = {}
+
+        _database['dialect'] = self.cmbDialect.get_value()
+        _database['host'] = self.txtHost.do_get_text()
+        _database['port'] = self.txtPort.do_get_text()
+        _database['database'] = self.txtDatabase.do_get_text()
+        _database['user'] = self.txtUser.do_get_text()
+        _database['password'] = self.txtPassword.do_get_text()
+
+        return _database
+
+    def __do_load_combobox(self) -> None:
+        """Load the dialect RAMSTKComboBox."""
+        self.cmbDialect.do_load_combo([['postgres', '', '']])
 
     def __do_load_databases(self, database: Dict[str, str]) -> None:
         """Read the database server and load the database list.
@@ -93,33 +159,62 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         :return: None
         :rtype: None
         """
-        _model = self._treeview.get_model()
+        _dialect = 0
+
+        self.txtHost.do_update(database['host'])
+        self.txtPort.do_update(database['port'])
+        self.txtDatabase.do_update(database['database'])
+        self.txtUser.do_update(database['user'])
+        self.txtPassword.do_update(database['password'])
+
+        _model = self.tvwTreeView.get_model()
         _model.clear()
 
         if database['dialect'] == 'postgres':
+            _dialect = 1
+            _stored_db = database['database']
             database['database'] = 'postgres'
 
-        for _db in self._dao.get_database_list(database):
-            _model.append([_db])
-            self._lst_databases.append(_db)
+            for _db in self._dao.get_database_list(database):
+                _model.append([_db])
+                self._lst_databases.append(_db)
+
+            database['database'] = _stored_db
+
+        self.cmbDialect.do_update(_dialect)
+
+    def __do_set_callbacks(self) -> None:
+        """Set widget callback methods."""
+        self.tvwTreeView.selection.connect('changed', self.__on_row_change)
+
+    def __do_set_properties(self) -> None:
+        """Set the properties of the widgets."""
+        self.cmbDialect.do_set_properties(width=300)
+        self.txtHost.do_set_properties(width=300)
+        self.txtPort.do_set_properties(width=300)
+        self.txtDatabase.do_set_properties(width=300)
+        self.txtUser.do_set_properties(width=300)
+        self.txtPassword.do_set_properties(width=300)
+
+        self.tvwTreeView.selection = self.tvwTreeView.get_selection()
 
     def __make_ui(self) -> None:
         """Build the GUI."""
         self.set_modal(True)
 
         _fixed = Gtk.Fixed()
-        _label = RAMSTKLabel('Enter Database Name:')
-        _label.set_width_chars(len('Enter Database Name:'))
-        _x_pos = _label.get_attribute('width')
 
-        self._entry.do_set_properties(width=300)
+        (_x_pos, _labels) = do_make_label_group(self._lst_labels)
+        _y_pos = 5
+        for _idx, _label in enumerate(_labels):
+            _fixed.put(_label, 5, _y_pos)
+            _fixed.put(self._lst_widgets[_idx], _x_pos + 10, _y_pos)
+            _y_pos += 35
 
-        _fixed.put(_label, 5, 5)
-        _fixed.put(self._entry, _x_pos, 5)
-        self.vbox.pack_start(_fixed, True, True, 0)
+        self.vbox.pack_start(_fixed, True, True, 10)
 
         _model = Gtk.ListStore(GObject.TYPE_STRING)
-        self._treeview.set_model(_model)
+        self.tvwTreeView.set_model(_model)
 
         _cell = Gtk.CellRendererText()
         _cell.set_alignment(0.1, 0.5)
@@ -133,51 +228,20 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         _column.pack_start(_cell, True)
         _column.set_attributes(_cell, text=0)
 
-        self._treeview.append_column(_column)
+        self.tvwTreeView.append_column(_column)
 
         _scrollwindow = Gtk.ScrolledWindow()
         _scrollwindow.set_min_content_height(200)
         _scrollwindow.set_min_content_width(500)
-        _scrollwindow.add(self._treeview)
+        _scrollwindow.add(self.tvwTreeView)
 
         self.vbox.pack_end(_scrollwindow, True, True, 0)
         self.vbox.show_all()
 
-    def _get_database(self) -> str:
-        """Get the name of the selected database.
-
-        :return: the name of the selected database.
-        :rtype: str
-        """
-        _database = self._entry.do_get_text()
-        if _database == '':
-            (_model, _row) = self._treeview.get_selection().get_selected()
-            _database = _model.get_value(_row, 0)
-
-        return _database
-
-    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
-        """Destroy the RAMSTKDateSelect dialog."""
-        self.destroy()
-
-    def do_run(self) -> Tuple[str, bool]:
-        """Run the RAMSTKFileChooser dialog.
-
-        :return: _database, _exists; the selected database name or empty
-            string if none selected and a variable indicating whether the
-            database already exists.
-        :rtype: tuple
-        """
-        _database: str = ''
-        _exists: bool = False
-
-        if self.run() == Gtk.ResponseType.OK:
-            _database = self._get_database()
-            _exists = _database in self._lst_databases
-        elif self.run() == Gtk.ResponseType.CANCEL:
-            self.do_destroy()
-
-        return _database, _exists
+    def __on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        """Respond to changes in database list selection."""
+        _model, _row = selection.get_selected()
+        self.txtDatabase.do_update(_model.get_value(_row, 0))
 
 
 class RAMSTKDateSelect(Gtk.Dialog):

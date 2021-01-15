@@ -41,6 +41,6 @@ jobs:
         if: ${{ steps.version.outputs.next-version != '' }}
         uses: WyriHaximus/github-action-create-milestone@master
         with:
-          title: ${{ steps.version.outputs.next-version }}
+          title: "v${{ steps.version.outputs.next-version }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
