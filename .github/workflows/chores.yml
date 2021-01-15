@@ -18,22 +18,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   pr-labeler:
-    name: Label pull request
+    name: Label Pull Request
     runs-on: ubuntu-latest
     steps:
-      - uses: TimonVS/pr-labeler-action@v3
+      - name: Apply labels to PR
+        uses: TimonVS/pr-labeler-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   update_release_draft:
-    name: Update draft release
+    name: Draft Release Notes
     runs-on: ubuntu-latest
     steps:
-      - name: Determine Next Version
+      - name: Determine next version
         id: version
         uses: patrickjahns/version-drafter-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: release-drafter/release-drafter@master
+      - name: Update draft release
+        if: ${{ steps.version.outputs.next-version != '' }}
+        uses: release-drafter/release-drafter@master
         with:
           version: ${{ format('v{0}', steps.version.outputs.next-version) }}
           tag: ${{ format('v{0}', steps.version.outputs.next-version) }}
