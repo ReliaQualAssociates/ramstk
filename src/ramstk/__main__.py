@@ -219,6 +219,8 @@ def the_one_ring() -> None:
 
     # noinspection PyTypeChecker
     _program_mgr.dic_managers['options']['data'] = dmOptions()
+    _program_mgr.dic_managers['options']['data'].dao = site_db
+    _program_mgr.dic_managers['options']['data'].do_select_all({'site_id': 1})
 
     pub.sendMessage('do_log_info_msg',
                     logger_name='INFO',

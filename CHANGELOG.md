@@ -2,7 +2,7 @@
 
 ## [Unreleased](https://github.com/ReliaQualAssociates/ramstk/tree/HEAD)
 
-[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v1.0.0.alpha1...HEAD)
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.0.0...HEAD)
 
 **Implemented enhancements:**
 
