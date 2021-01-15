@@ -126,3 +126,31 @@ jobs:
           extra-mypy-options: ""
           extra-pylint-options: "-j0 --rcfile=./pyproject.toml --dummy-variables-rgx='__'"
           extra-flake8-options: ""
+
+  duplicate-code-check:
+    name: Check for Duplicate Code (10 lines minimum)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint code with pylint
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-yapf: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: false
+          use-pylint: true
+          use-flake8: false
+          extra-black-options: ""
+          extra-yapf-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: ""
+          extra-pylint-options: "-j0 --disable=all --enable=duplicate-code"
+          extra-flake8-options: ""
