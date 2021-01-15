@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.0.1](https://github.com/ReliaQualAssociates/ramstk/tree/0.0.1) (2021-01-15)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.10.0...0.0.1)
+
+**Implemented enhancements:**
+
+- Update RAMSTKAnalysisManager.on\_get\_tree dmtree ar... [\#335](https://github.com/ReliaQualAssociates/ramstk/issues/335)
+- Handle exceptions in Revision module views. [\#325](https://github.com/ReliaQualAssociates/ramstk/issues/325)
+- refactor: split options and preferences data managers [\#435](https://github.com/ReliaQualAssociates/ramstk/pull/435) ([weibullguy](https://github.com/weibullguy))
+
+**Closed issues:**
+
+- Add \_lst\_icons, \_lst\_callbacks, and \_lst\_tooltips ... [\#345](https://github.com/ReliaQualAssociates/ramstk/issues/345)
+
+**Merged pull requests:**
+
+- chore: clean out and remove devtools [\#440](https://github.com/ReliaQualAssociates/ramstk/pull/440) ([weibullguy](https://github.com/weibullguy))
+- refactor: update Preferences assistant to use RAMSTKPanels [\#438](https://github.com/ReliaQualAssociates/ramstk/pull/438) ([weibullguy](https://github.com/weibullguy))
+- chore: Update workflows [\#437](https://github.com/ReliaQualAssociates/ramstk/pull/437) ([weibullguy](https://github.com/weibullguy))
+- refactor: Update Options assistant to respond to new signals [\#436](https://github.com/ReliaQualAssociates/ramstk/pull/436) ([weibullguy](https://github.com/weibullguy))
+- test: create MockDAO and mock tables for testing [\#434](https://github.com/ReliaQualAssociates/ramstk/pull/434) ([weibullguy](https://github.com/weibullguy))
+
 ## [Unreleased](https://github.com/ReliaQualAssociates/ramstk/tree/HEAD)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.0.0...HEAD)
