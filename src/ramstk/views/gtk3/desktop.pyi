@@ -52,6 +52,14 @@ class RAMSTKDesktop(Gtk.Window):
                  logger: RAMSTKLogManager) -> None:
         ...
 
+    def _do_request_options_assistant(self,
+                                      __widget: Gtk.ImageMenuItem) -> None:
+        ...
+
+    def _do_request_preferences_assistant(self,
+                                          __widget: Gtk.ImageMenuItem) -> None:
+        ...
+
     def __make_menu(self) -> None:
         ...
 
@@ -86,10 +94,6 @@ class RAMSTKDesktop(Gtk.Window):
 
     @staticmethod
     def _do_request_close_project(__widget: Gtk.Widget) -> None:
-        ...
-
-    def _do_request_options_assistant(self,
-                                      __widget: Gtk.ImageMenuItem) -> None:
         ...
 
     def _do_request_save_project(self,
