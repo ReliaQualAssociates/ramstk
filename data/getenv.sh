@@ -3,7 +3,7 @@
 # system/virtualenv in a format that can simply be copied and pasted into
 # a RAMSTK issue report.  Use from the top level RAMSTK directory as follows:
 #
-#    sh docs/GetEnv.sh
+#    sh devtools/getenv.sh
 #
 print_file_version() {
     file=$1

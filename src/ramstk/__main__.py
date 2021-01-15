@@ -39,7 +39,8 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
     """Connect to the site (common) database.
 
     :param conn_info: the site database connection information.
-    :return:
+    :return: _site_db
+    :rtype: BaseDatabase
     """
     pub.sendMessage(
         'do_log_info_msg',
