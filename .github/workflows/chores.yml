@@ -28,6 +28,15 @@ jobs:
     name: Update draft release
     runs-on: ubuntu-latest
     steps:
+      - name: Determine Next Version
+        id: version
+        uses: patrickjahns/version-drafter-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: release-drafter/release-drafter@master
+        with:
+          version: ${{ format('v{0}', steps.version.outputs.next-version) }}
+          tag: ${{ format('v{0}', steps.version.outputs.next-version) }}
+          name: ${{ format('v{0}', steps.version.outputs.next-version) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
