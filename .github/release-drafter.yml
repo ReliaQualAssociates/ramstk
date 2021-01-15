@@ -12,13 +12,19 @@ categories:
   - title: 'Features'
     labels:
       - 'feature'
+      - 'minor'
   - title: 'Maintenance'
     labels:
-      - 'chore'
       - 'quality'
       - 'enhancement'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
+exclude-labels:
+  - 'chore'
+  - 'dependencies'
+  - 'docs'
+  - 'duplicate'
+  - 'invalid'
 version-resolver:
   major:
     labels:

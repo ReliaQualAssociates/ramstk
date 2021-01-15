@@ -21,8 +21,6 @@
         <th>Quality</th>
         <td>
             <img alt="CodeFactor Grade" src="https://img.shields.io/codefactor/grade/github/ReliaQualAssociates/ramstk?label=CodeFactor">
-            <a href="https://bettercodehub.com/"><img alt="Better Code Hub"
-            src="https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master"></a>
             <a href="https://www.deepcode.ai/app/gh/ReliaQualAssociates/ramstk/_/dashboard?utm_content=gh%2FReliaQualAssociates%2Framstk"><img alt="Deep Code" src="https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IlJlbGlhUXVhbEFzc29jaWF0ZXMiLCJyZXBvMSI6InJhbXN0ayIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjI1MTA4LCJpYXQiOjE2MDkxMzcwNTl9.R5P6VLkyK1LK6Jc5PjJ8QrLRq6zNuVxnzdjZCJbH7_k"></a>
         </td>
     </tr>

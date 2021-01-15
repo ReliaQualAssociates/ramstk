@@ -1,0 +1,3 @@
+major-labels: ['major']
+minor-labels: ['minor','feature']
+patch-labels: ['patch','bug','enhancement']
