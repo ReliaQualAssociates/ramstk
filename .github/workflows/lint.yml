@@ -152,5 +152,5 @@ jobs:
           extra-pycodestyle-options: ""
           extra-pydocstyle-options: ""
           extra-mypy-options: ""
-          extra-pylint-options: "-j0 --disable=all --enable=duplicate-code"
+          extra-pylint-options: "--disable=all --enable=duplicate-code"
           extra-flake8-options: ""
