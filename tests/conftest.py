@@ -1,4 +1,5 @@
-# pylint: disable=protected-access
+# pylint: skip-file
+# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       tests.conftest.py is part of The RAMSTK Project
@@ -297,7 +298,7 @@ def test_simple_database():
     conn.set_session(autocommit=True)
 
     cursor = conn.cursor()
-    cursor.execute(open('./devtools/test_simple_db.sql', 'r').read())
+    cursor.execute(open('./tests/__data/test_simple_db.sql', 'r').read())
     cursor.close()
     conn.close()
 
@@ -444,7 +445,7 @@ def test_program_dao():
     conn.set_session(autocommit=True)
 
     cursor = conn.cursor()
-    cursor.execute(open('./devtools/test_program_db.sql', 'r').read())
+    cursor.execute(open('./tests/__data/test_program_db.sql', 'r').read())
     cursor.close()
     conn.close()
 
