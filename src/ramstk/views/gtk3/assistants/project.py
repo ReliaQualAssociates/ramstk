@@ -95,14 +95,13 @@ class CreateProject:
             dao=BaseDatabase(),
             database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
 
-        _database, _exists = _dialog.do_run()  # type: ignore
-        if _exists:
-            self._do_confirm_overwrite(_database)
-        else:
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
-                'database'] = _database
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = \
+                _dialog.database
 
-        if self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'] != '':
+            if _dialog.exists:
+                self._do_confirm_overwrite(_dialog.database['database'])
+
             pub.sendMessage(
                 'request_create_program',
                 program_db=BaseDatabase(),
@@ -158,21 +157,23 @@ class OpenProject:
                 dlgparent=self._parent,
                 dao=BaseDatabase(),
                 database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
-            (self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
-             _exists) = _dialog.do_run()
+
+            if _dialog.do_run() == Gtk.ResponseType.OK:
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = \
+                    _dialog.database
+
+                if _dialog.exists:
+                    pub.sendMessage('request_open_program',
+                                    program_db=BaseDatabase(),
+                                    database=self.RAMSTK_USER_CONFIGURATION.
+                                    RAMSTK_PROG_INFO)
+                else:
+                    pub.sendMessage('request_create_program',
+                                    program_db=BaseDatabase(),
+                                    database=self.RAMSTK_USER_CONFIGURATION.
+                                    RAMSTK_PROG_INFO)
 
             _dialog.destroy()
-
-            if _exists:
-                pub.sendMessage(
-                    'request_open_program',
-                    program_db=BaseDatabase(),
-                    database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
-            else:
-                pub.sendMessage(
-                    'request_create_program',
-                    program_db=BaseDatabase(),
-                    database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
 
     def __project_is_open(self) -> None:
         """Raise dialog explaining a project is already open.

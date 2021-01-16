@@ -99,6 +99,8 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.database: Dict[str, str] = {}
+        self.exists: bool = False
 
         self.__do_set_properties()
         self.__make_ui()
@@ -107,28 +109,21 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
         self.__do_load_databases(database=kwargs['database'])
 
-    def do_destroy(self) -> None:  # pylint: disable=arguments-differ
-        """Destroy the RAMSTKDateSelect dialog."""
-        self.destroy()
-
-    def do_run(self) -> Tuple[Dict[str, str], bool]:
+    def do_run(self) -> Gtk.ResponseType:
         """Run the RAMSTKFileChooser dialog.
 
-        :return: _database, _exists; the selected database name or empty
-            string if none selected and a variable indicating whether the
-            database already exists.
-        :rtype: tuple
+        :return: _return
+        :rtype: Gtk.ResponseType
         """
-        _database: Dict[str, str] = {}
-        _exists: bool = False
-
         if self.run() == Gtk.ResponseType.OK:
-            _database = self._get_database()
-            _exists = _database['database'] in self._lst_databases
+            self.database = self._get_database()
+            self.exists = self.database['database'] in self._lst_databases
+            _return = Gtk.ResponseType.OK
         elif self.run() == Gtk.ResponseType.CANCEL:
-            self.do_destroy()
+            self.destroy()
+            _return = Gtk.ResponseType.CANCEL
 
-        return _database, _exists
+        return _return
 
     def _get_database(self) -> Dict[str, str]:
         """Get the name of the selected database.
