@@ -709,7 +709,7 @@ class EditPreferences(RAMSTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks = [self._do_request_update, self._do_quit]
+        self._lst_callbacks = [self._do_request_update, self._cancel]
         self._lst_icons = ['save', 'cancel']
         self._lst_tooltips = [
             _("Save changes to RAMSTK program configuration file "
@@ -735,7 +735,7 @@ class EditPreferences(RAMSTKBaseView):
             configuration=self.RAMSTK_USER_CONFIGURATION,
         )
 
-    def _do_quit(self, __button: Gtk.Button) -> None:
+    def _cancel(self, __button: Gtk.Button) -> None:
         """Quit the preferences Gtk.Assistant().
 
         :param __button: the Gtk.Button() that called this method.

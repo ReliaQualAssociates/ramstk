@@ -1,0 +1,33 @@
+name: Draft Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  update_release_draft:
+    name: Draft a Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Draft release notes
+        id: draft_release
+        uses: release-drafter/release-drafter@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update VERSION and pyproject.toml file
+        run: |
+          echo "${{ steps.draft_release.outputs.name }}" > VERSION
+          sed -i 's/\(^version =.*$\)/version = "${{ steps.draft_release.outputs.name }}"/' pyproject.toml
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
+
+      - name: Update CHANGELOG.md and cut release PR
+        if: env.do_push == 1
+        uses: patrickjahns/chlgr@v1
+        with:
+          release-version: ${{ steps.draft_release.outputs.tag_name }}
+          release-branch: "release/${{ steps.draft_release.outputs.tag_name }}"

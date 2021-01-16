@@ -18,7 +18,7 @@ class RAMSTKProgramManager:
         ...
 
     def do_create_program(self, program_db: BaseDatabase,
-                          database: Dict) -> None:
+                          database: Dict[str, str]) -> None:
         ...
 
     def do_open_program(self, program_db: BaseDatabase,

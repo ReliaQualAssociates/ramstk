@@ -129,12 +129,11 @@ class RAMSTKProgramManager:
         pub.subscribe(self.do_save_program, 'request_update_program')
 
     def do_create_program(self, program_db: BaseDatabase,
-                          database: Dict) -> None:
+                          database: Dict[str, str]) -> None:
         """Create a new RAMSTK Program database.
 
         :param program_db: the BaseDatabase() that is to be used to create and
             connect to the new RAMSTK program database.
-        :type program_db: :class:`ramstk.db.base.BaseDatabase`
         :param database: a dict containing the database connection
             arguments.
         :return: None
@@ -142,7 +141,7 @@ class RAMSTKProgramManager:
         """
         _sql_file = open(
             self.user_configuration.RAMSTK_CONF_DIR
-            + '/{0:s}_program_db.sql'.format(database['dialect']), 'r')
+            + '/{0}_program_db.sql'.format(database['dialect']), 'r')
         self.program_dao = program_db
         do_create_program_db(database, _sql_file)
         pub.sendMessage('succeed_create_program_database',
