@@ -1,16 +1,15 @@
 name: Cut New Release
 
 on:
-  pull_request:
+  push:
     branches:
-      - release/v*
-    type:
-      - closed
+      - master
 
 jobs:
   tag_and_release:
     name: Tag and Release
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
