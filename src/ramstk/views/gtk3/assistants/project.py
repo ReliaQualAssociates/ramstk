@@ -83,9 +83,6 @@ class CreateProject:
         :return: None
         :rtype: None
         """
-        _database: str = ''
-        _exists: bool = False
-
         _dialog = RAMSTKDatabaseSelect(
             dlgtitle=("Select RAMSTK Program "
                       "Database on the {0:s} Server".format(
