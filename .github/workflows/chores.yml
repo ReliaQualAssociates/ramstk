@@ -17,6 +17,7 @@ jobs:
           failure-state: Pull request title is not conventional commits compliant!
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   pr-labeler:
     name: Label Pull Request
     runs-on: ubuntu-latest
@@ -25,6 +26,7 @@ jobs:
         uses: TimonVS/pr-labeler-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   update_release_draft:
     name: Draft Release Notes
     runs-on: ubuntu-latest
@@ -34,10 +36,3 @@ jobs:
         uses: release-drafter/release-drafter@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Echo new tag info
-        run: |
-          echo ${{ steps.release_notes.outputs.name }}
-          echo ${{ steps.release_notes.outputs.tag_name }}
-          echo ${{ steps.release_notes.outputs.html_url }}
-          echo ${{ steps.release_notes.outputs.upload_url }}
