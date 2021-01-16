@@ -44,6 +44,9 @@ class RAMSTKSiteConfiguration:
     def get_site_configuration(self) -> None:
         ...
 
+    def set_site_configuration(self) -> None:
+        ...
+
     def set_site_directories(self) -> None:
         ...
 

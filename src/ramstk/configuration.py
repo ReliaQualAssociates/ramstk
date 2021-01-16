@@ -172,12 +172,12 @@ class RAMSTKSiteConfiguration:
         _dic_site_configuration = {
             "title": "RAMSTK Site Configuration",
             "backend": {
-                "dialect": "sqlite",
-                "host": "localhost",
-                "port": "3306",
-                "database": self.RAMSTK_SITE_DIR + "/ramstk_common.ramstk",
-                "user": "ramstk",
-                "password": "ramstk"
+                "dialect": "postgres",
+                "host": "",
+                "port": "5432",
+                "database": 'ramstk_common_ramstk',
+                "user": "first_run",
+                "password": ""
             }
         }
 
@@ -214,6 +214,21 @@ class RAMSTKSiteConfiguration:
                           "{0:s}.").format(self.RAMSTK_SITE_CONF)
             pub.sendMessage('fail_get_site_configuration',
                             error_message=_error_msg)
+
+    def set_site_configuration(self) -> None:
+        """Set the site-wide RAMSTK configuration file values."""
+        _dic_site_configuration: Dict[str, Any] = {
+            "title": "RAMSTK Site Configuration",
+            "backend": {
+                "dialect": self.RAMSTK_COM_INFO["dialect"],
+                "host": str(self.RAMSTK_COM_INFO["host"]),
+                "port": str(self.RAMSTK_COM_INFO["port"]),
+                "database": str(self.RAMSTK_COM_INFO["database"]),
+                "user": str(self.RAMSTK_COM_INFO["user"]),
+                "password": str(self.RAMSTK_COM_INFO["password"])
+            }
+        }
+        toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF, "w"))
 
     def set_site_directories(self) -> None:
         """Set the site-wide RAMSTK directories.
@@ -634,9 +649,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "loglevel": "INFO"
             },
             "backend": {
-                "dialect": "sqlite",
+                "dialect": "postgres",
                 "host": "localhost",
-                "port": "3306",
+                "port": "5432",
                 "database": "",
                 "user": "",
                 "password": ""

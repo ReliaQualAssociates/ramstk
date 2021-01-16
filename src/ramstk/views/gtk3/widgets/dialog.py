@@ -165,7 +165,8 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         _model = self.tvwTreeView.get_model()
         _model.clear()
 
-        if database['dialect'] == 'postgres':
+        if (database['dialect'] == 'postgres'
+                and database['user'] != 'first_run'):
             _dialect = 1
             _stored_db = database['database']
             database['database'] = 'postgres'
