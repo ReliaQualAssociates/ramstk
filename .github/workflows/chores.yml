@@ -29,17 +29,15 @@ jobs:
     name: Draft Release Notes
     runs-on: ubuntu-latest
     steps:
-      - name: Determine next version
-        id: version
-        uses: patrickjahns/version-drafter-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update draft release
-        if: ${{ steps.version.outputs.next-version != '' }}
+        id: release_notes
         uses: release-drafter/release-drafter@master
-        with:
-          version: ${{ format('v{0}', steps.version.outputs.next-version) }}
-          tag: ${{ format('v{0}', steps.version.outputs.next-version) }}
-          name: ${{ format('v{0}', steps.version.outputs.next-version) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Echo new tag info
+        run: |
+          echo ${{ steps.release_notes.outputs.name }}
+          echo ${{ steps.release_notes.outputs.tag_name }}
+          echo ${{ steps.release_notes.outputs.html_url }}
+          echo ${{ steps.release_notes.outputs.upload_url }}
