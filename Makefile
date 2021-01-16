@@ -22,6 +22,7 @@ PY			= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 MKDIR 		= mkdir -pv
 SED			= sed
 COPY 		= cp -v
+RM			= rm -fv
 RMDIR		= rm -fvr
 GIT			= $(shell which git)
 ISORT       = $(shell which isort)
@@ -194,6 +195,9 @@ install: clean-build clean-pyc
 
 uninstall:
 	pip uninstall -y ramstk
+	${RMDIR} "$(PREFIX)/share/RAMSTK/"
+	${RM} "$(PREFIX)/share/pixmaps/RAMSTK.png"
+	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
 
 test.unit:
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
