@@ -29,7 +29,7 @@ version-resolver:
   patch:
     labels:
       - 'patch'
-  default: minor
+  default: patch
 exclude-labels:
   - 'chore'
   - 'dependencies'
