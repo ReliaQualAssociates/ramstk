@@ -744,6 +744,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         :return: None
         :rtype: None
         """
+        self.set_user_directories()
+
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
@@ -933,10 +935,10 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         else:
             self.RAMSTK_ICON_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/icons"
 
-        if dir_exists(self.RAMSTK_CONF_DIR + "/log"):
-            self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/log"
+        if dir_exists(self.RAMSTK_CONF_DIR + "/logs"):
+            self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
         else:
-            self.RAMSTK_LOG_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/log"
+            self.RAMSTK_LOG_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
 
         if dir_exists(self.RAMSTK_HOME_DIR + "/analyses/ramstk"):
             self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk"

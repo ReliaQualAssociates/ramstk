@@ -81,6 +81,9 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         ]
 
         # Initialize private scalar attributes.
+        self._old_host: str = ''
+
+        # Initialize public scalar attributes.
         self.cmbDialect: RAMSTKComboBox = RAMSTKComboBox()
         self.txtHost: RAMSTKEntry = RAMSTKEntry()
         self.txtPort: RAMSTKEntry = RAMSTKEntry()
@@ -115,13 +118,14 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         :return: _return
         :rtype: Gtk.ResponseType
         """
+        _return = Gtk.ResponseType.CANCEL
+
         if self.run() == Gtk.ResponseType.OK:
             self.database = self._get_database()
             self.exists = self.database['database'] in self._lst_databases
             _return = Gtk.ResponseType.OK
         elif self.run() == Gtk.ResponseType.CANCEL:
             self.destroy()
-            _return = Gtk.ResponseType.CANCEL
 
         return _return
 
@@ -140,6 +144,11 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         _database['user'] = self.txtUser.do_get_text()
         _database['password'] = self.txtPassword.do_get_text()
 
+        # IF the host was changed, reload the database list, otherwise keep
+        # going.
+        if _database['host'] != self._old_host:
+            self.__do_load_databases(_database)
+
         return _database
 
     def __do_load_combobox(self) -> None:
@@ -155,6 +164,8 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         :rtype: None
         """
         _dialect = 0
+
+        self._old_host = database['host']
 
         self.txtHost.do_update(database['host'])
         self.txtPort.do_update(database['port'])
@@ -379,6 +390,8 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         :return: None
         :rtype: None
         """
+        _message_type = Gtk.MessageType.INFO
+
         if message_type == 'error':
             _prompt = self.get_property('text')
             # Set the prompt to bold text with a hyperlink to the RAMSTK bugs

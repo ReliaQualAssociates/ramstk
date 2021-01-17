@@ -734,7 +734,7 @@ class TestGetterSetter():
         assert DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK/RAMSTK.toml'
         assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + '/layouts'
         assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + '/icons'
-        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + '/log'
+        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + '/logs'
         assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR + '/analyses/ramstk'
 
     @pytest.mark.unit
@@ -751,5 +751,5 @@ class TestGetterSetter():
         assert DUT.RAMSTK_PROG_CONF == VIRTUAL_ENV + '/share/RAMSTK/RAMSTK.toml'
         assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + '/layouts'
         assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + '/icons'
-        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + '/log'
+        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + '/logs'
         assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR
