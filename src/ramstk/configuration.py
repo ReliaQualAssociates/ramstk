@@ -735,10 +735,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF,
                                                     "w"))
             pub.sendMessage('succeed_create_user_configuration')
-        except FileNotFoundError:
-            _error_msg = (
-                "Failed to write user configuration file {0:s}.".format(
-                    self.RAMSTK_PROG_CONF))
+        except TypeError:
+            _error_msg = ("User configuration file {0} is not a file.".format(
+                self.RAMSTK_PROG_CONF))
             pub.sendMessage('fail_create_user_configuration',
                             error_message=_error_msg)
 

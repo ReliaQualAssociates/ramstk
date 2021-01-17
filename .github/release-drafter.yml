@@ -19,12 +19,6 @@ categories:
       - 'enhancement'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
-exclude-labels:
-  - 'chore'
-  - 'dependencies'
-  - 'docs'
-  - 'duplicate'
-  - 'invalid'
 version-resolver:
   major:
     labels:
@@ -36,3 +30,10 @@ version-resolver:
     labels:
       - 'patch'
   default: minor
+exclude-labels:
+  - 'chore'
+  - 'dependencies'
+  - 'docs'
+  - 'duplicate'
+  - 'invalid'
+  - 'test'
