@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Tuple
+from typing import Any, Dict, Tuple
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager as RAMSTKProgramManager
@@ -40,8 +40,16 @@ from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.utilities import file_exists as file_exists
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import RAMSTKDesktop as RAMSTKDesktop
+from ramstk.views.gtk3 import _ as _
+from ramstk.views.gtk3.widgets import (
+    RAMSTKDatabaseSelect as RAMSTKDatabaseSelect
+)
 
 def do_connect_to_site_db(conn_info: Any) -> BaseDatabase:
+    ...
+
+
+def do_first_run(configuration: RAMSTKSiteConfiguration) -> Dict[str, str]:
     ...
 
 

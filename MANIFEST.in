@@ -3,21 +3,12 @@ include *
 exclude .bandit
 exclude .bandit.baseline
 exclude .coverage
-exclude .coveragerc
 exclude .gitattributes
 exclude .gitcommittemplate.txt
-exclude .github_changelog_generator
 exclude .gitignore
-exclude .isort.cfg
 exclude .pre-commit-config.yaml
-exclude .pylintrc
 exclude .python-version
-exclude .travis.yml
-exclude appveyor.yml*
-exclude coverage.xml
 exclude cobertura.xml
-exclude pytest.ini
-exclude tags
 
 graft src
 graft data
@@ -28,14 +19,11 @@ prune docs/_build*
 prune docs/theme*
 prune docs/user*
 
-recursive-exclude .circleci *
-recursive-exclude devtools *
-recursive-exclude tests *
+recursive-exclude tests *.py *.sql
 
 global-exclude Makefile
 global-exclude *.log
 global-exclude *.nojekyll
 global-exclude *.rst
-global-exclude *.py[co]
 global-exclude Guardfile
 global-exclude conf.py

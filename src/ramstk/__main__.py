@@ -9,8 +9,9 @@
 
 # Standard Library Imports
 import os
+import shutil
 from time import sleep
-from typing import Tuple
+from typing import Dict, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -32,7 +33,8 @@ from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import file_exists
-from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
+from ramstk.views.gtk3 import Gtk, RAMSTKDesktop, _
+from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect
 
 
 def do_connect_to_site_db(conn_info) -> BaseDatabase:
@@ -58,6 +60,47 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
             conn_info['database']))
 
     return _site_db
+
+
+def do_first_run(configuration: RAMSTKSiteConfiguration) -> Dict[str, str]:
+    """Raise dialog to setup site database.
+
+    :param configuration: the RAMSTKSiteConfiguration() instance.
+    :return: _site_db
+    :rtype: dict
+    """
+    _database = {
+        "dialect": '',
+        "host": '',
+        "port": '',
+        "database": '',
+        "user": '',
+        "password": ''
+    }
+
+    _dialog = RAMSTKDatabaseSelect(
+        dlgtitle=_("Set up RAMSTK Site Database Server Connection"),
+        dao=BaseDatabase(),
+        database=configuration.RAMSTK_COM_INFO)
+
+    if _dialog.do_run() == Gtk.ResponseType.OK:
+        _dialog.destroy()
+
+        _site_dir = configuration.RAMSTK_SITE_DIR
+        _home = os.path.expanduser('~')
+        _user_dir = _home + '/.config/RAMSTK'
+        if not os.path.isdir(_user_dir):
+            shutil.copytree(_site_dir + '/icons', _user_dir + '/icons/')
+            shutil.copytree(_site_dir + '/layouts', _user_dir + '/layouts/')
+            shutil.copy(_site_dir + '/RAMSTK.toml', _user_dir)
+            shutil.copy(_site_dir + '/postgres_program_db.sql', _user_dir)
+            os.makedirs(_user_dir + '/logs')
+
+        _database = _dialog.database
+
+    _dialog.destroy()
+
+    return _database
 
 
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
@@ -145,8 +188,24 @@ def do_read_user_configuration(
                   'fail_create_user_configuration')
 
     _configuration = RAMSTKUserConfiguration()
+
     _configuration.set_user_directories()
     _configuration.get_user_configuration()
+
+    if _configuration.RAMSTK_DATA_DIR == '':
+        _configuration.RAMSTK_DATA_DIR = _configuration.RAMSTK_CONF_DIR + \
+                                         '/layouts'
+        _configuration.set_user_configuration()
+
+    if _configuration.RAMSTK_ICON_DIR == '':
+        _configuration.RAMSTK_ICON_DIR = _configuration.RAMSTK_CONF_DIR + \
+                                         '/icons'
+        _configuration.set_user_configuration()
+
+    if _configuration.RAMSTK_LOG_DIR == '':
+        _configuration.RAMSTK_LOG_DIR = _configuration.RAMSTK_CONF_DIR + \
+                                         '/logs'
+        _configuration.set_user_configuration()
 
     _logger = do_initialize_loggers(_configuration.RAMSTK_USER_LOG,
                                     _configuration.RAMSTK_LOGLEVEL)
@@ -162,14 +221,16 @@ def the_one_ring() -> None:
     # //
     # // labels: globalbacklog, normal
     # splScreen = SplashScreen()
+    site_configuration = do_read_site_configuration()
+
+    if site_configuration.RAMSTK_COM_INFO['user'] == 'first_run':
+        site_configuration.RAMSTK_COM_INFO = do_first_run(site_configuration)
+        site_configuration.set_site_configuration()
 
     # Read the user configuration file and create a logger.  The user
     # configuration file contains information needed to create the logger so
     # it must come first.
     user_configuration, _logger = do_read_user_configuration()
-    site_configuration = do_read_site_configuration()
-
-    site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO)
 
     pub.sendMessage('do_log_debug_msg',
                     logger_name='DEBUG',
@@ -177,6 +238,8 @@ def the_one_ring() -> None:
     pub.sendMessage('do_log_debug_msg',
                     logger_name='DEBUG',
                     message="Validated the RAMSTK license.")
+
+    site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO)
 
     do_load_variables(site_db, user_configuration)
 
@@ -203,8 +266,8 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers['hardware']['analysis'] = amHardware(
         user_configuration)
     _program_mgr.dic_managers['hardware']['data'] = dmHardware()
-    _program_mgr.dic_managers['failure_definition']['data'] = \
-        dmFailureDefinition()
+    _program_mgr.dic_managers['failure_definition'][
+        'data'] = dmFailureDefinition()
     _program_mgr.dic_managers['fmea']['analysis'] = amFMEA(user_configuration)
     _program_mgr.dic_managers['fmea']['data'] = dmFMEA()
     _program_mgr.dic_managers['pof']['data'] = dmPoF()
@@ -247,4 +310,5 @@ def the_one_ring() -> None:
         logger_name='INFO',
         message="Launched RAMSTK GUI.",
     )
+
     Gtk.main()

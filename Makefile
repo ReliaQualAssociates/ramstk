@@ -22,6 +22,7 @@ PY			= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
 MKDIR 		= mkdir -pv
 SED			= sed
 COPY 		= cp -v
+RM			= rm -fv
 RMDIR		= rm -fvr
 GIT			= $(shell which git)
 ISORT       = $(shell which isort)
@@ -113,7 +114,7 @@ clean-build:	## remove build artifacts
 	rm -fr dist/
 	rm -fr .eggs/
 	$(shell find . -name '*.egg-info' -exec rm -fr '{}' +)
-	$(shell find . -name '*.egg' -exec rm -f '{}' +)
+	$(shell find . -name '*.egg' -exec rm -fr '{}' +)
 
 clean-pyc:		## remove Python file artifacts
 	$(shell find . -name '*.pyc' -exec rm -f {} +)
@@ -191,9 +192,13 @@ install: clean-build clean-pyc
 	${COPY} "./data/sqlite_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/postgres_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/Site.toml" "$(PREFIX)/share/RAMSTK/"
+	${COPY} "./data/RAMSTK.toml" "$(PREFIX)/share/RAMSTK/"
 
 uninstall:
 	pip uninstall -y ramstk
+	${RMDIR} "$(PREFIX)/share/RAMSTK/"
+	${RM} "$(PREFIX)/share/pixmaps/RAMSTK.png"
+	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
 
 test.unit:
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
