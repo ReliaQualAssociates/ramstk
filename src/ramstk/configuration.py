@@ -409,6 +409,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize private scalar attributes.
         self._INSTALL_PREFIX = get_install_prefix()
+        self._data_sub_dir = "/layouts"
+        self._icon_sub_dir = "/icons"
+        self._logs_sub_dir = "/logs"
 
         # Initialize public dictionary attributes.
         self.RAMSTK_ACTION_CATEGORY: Dict[str, Tuple[str, str, str, str]] = {}
@@ -499,9 +502,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_CONF_DIR = environ["PYTHONPATH"] + "/RAMSTK"
             self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
 
-        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + "/layouts"
-        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
-        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
+        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
         self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
 
         self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
@@ -535,7 +538,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         :return: None
         :rtype: None
         """
-        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + "/layouts"
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
         if not dir_exists(self.RAMSTK_DATA_DIR):
             try:
                 makedirs(self.RAMSTK_DATA_DIR)
@@ -553,7 +556,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         :return: None
         :rtype: None
         """
-        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
 
         if not dir_exists(self.RAMSTK_ICON_DIR):
             try:
@@ -572,7 +575,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         :return: None
         :rtype: None
         """
-        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
+        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
 
         if not dir_exists(self.RAMSTK_LOG_DIR):
             try:
@@ -735,10 +738,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF,
                                                     "w"))
             pub.sendMessage('succeed_create_user_configuration')
-        except FileNotFoundError:
-            _error_msg = (
-                "Failed to write user configuration file {0:s}.".format(
-                    self.RAMSTK_PROG_CONF))
+        except TypeError:
+            _error_msg = ("User configuration file {0} is not a file.".format(
+                self.RAMSTK_PROG_CONF))
             pub.sendMessage('fail_create_user_configuration',
                             error_message=_error_msg)
 
@@ -926,19 +928,19 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
 
-        if dir_exists(self.RAMSTK_CONF_DIR + "/layouts"):
-            self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + "/layouts"
+        if dir_exists(self.RAMSTK_CONF_DIR + self._data_sub_dir):
+            self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
         else:
             self.RAMSTK_DATA_DIR = (self._INSTALL_PREFIX
                                     + "/share/RAMSTK/layouts")
 
-        if dir_exists(self.RAMSTK_CONF_DIR + "/icons"):
-            self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
+        if dir_exists(self.RAMSTK_CONF_DIR + self._icon_sub_dir):
+            self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
         else:
             self.RAMSTK_ICON_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/icons"
 
-        if dir_exists(self.RAMSTK_CONF_DIR + "/logs"):
-            self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
+        if dir_exists(self.RAMSTK_CONF_DIR + self._logs_sub_dir):
+            self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
         else:
             self.RAMSTK_LOG_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
 
