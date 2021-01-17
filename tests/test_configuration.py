@@ -302,7 +302,14 @@ class TestCreateConfiguration():
             3: 'hardware',
             4: 'validation'
         }
-        assert DUT.RAMSTK_PROG_INFO == {}
+        assert DUT.RAMSTK_PROG_INFO == {
+            "dialect": '',
+            "host": '',
+            "port": '',
+            "database": '',
+            "user": '',
+            "password": ''
+        }
         assert DUT.RAMSTK_TABPOS == {
             "listbook": "top",
             "modulebook": "bottom",

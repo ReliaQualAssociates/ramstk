@@ -148,9 +148,9 @@ class MyTest(test):
 if __name__ == '__main__':
     setup(name=__appname__,
           version=__version__,
-          description='''The RAMS ToolKit (RAMSTK) is a suite of tools
-        for performing and documenting reliability, availability,
-        maintainability, and safety (RAMS) analyses''',
+          description="The RAMS ToolKit (RAMSTK) is a suite of tools for "
+                      "performing and documenting reliability, availability, "
+                      "maintainability, and safety (RAMS) analyses",
           long_description=__long_description__,
           long_description_content_type='text/markdown',
           author=__author__,
@@ -189,5 +189,5 @@ if __name__ == '__main__':
           cmdclass={
               'install': Install,
               'sdist': Sdist,
-              'test': MyTest
+              'test': MyTest,
           })

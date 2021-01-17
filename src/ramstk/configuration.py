@@ -381,9 +381,6 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         value is *en_US*.
     :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
-    _lst_format_files: List[str]
-    RAMSTK_PROG_DIR: str
-    RAMSTK_PROG_INFO: Dict[str, str]
 
     # pylint: disable=too-many-statements
     def __init__(self) -> None:
@@ -457,7 +454,14 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             3: 'hardware',
             4: 'validation',
         }
-        self.RAMSTK_PROG_INFO: Dict[str, str] = {}
+        self.RAMSTK_PROG_INFO: Dict[str, str] = {
+            "dialect": '',
+            "host": '',
+            "port": '',
+            "database": '',
+            "user": '',
+            "password": ''
+        }
         self.RAMSTK_TABPOS = {
             "listbook": "top",
             "modulebook": "bottom",
@@ -744,8 +748,6 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         :return: None
         :rtype: None
         """
-        self.set_user_directories()
-
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.

@@ -188,9 +188,10 @@ def do_read_user_configuration(
                   'fail_create_user_configuration')
 
     _configuration = RAMSTKUserConfiguration()
-    _configuration.get_user_configuration()
 
     _configuration.set_user_directories()
+    _configuration.get_user_configuration()
+
     if _configuration.RAMSTK_DATA_DIR == '':
         _configuration.RAMSTK_DATA_DIR = _configuration.RAMSTK_CONF_DIR + \
                                          '/layouts'
