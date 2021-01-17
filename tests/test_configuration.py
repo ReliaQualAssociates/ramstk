@@ -647,8 +647,7 @@ class TestGetterSetter():
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
-        os.mkdir(_temp_dir + '/share')
-        os.mkdir(_temp_dir + '/share/RAMSTK')
+        os.makedirs(_temp_dir + '/share/RAMSTK')
 
         assert DUT.set_site_directories() is None
         assert os.path.isfile(_temp_dir + '/share/RAMSTK/Site.toml')
@@ -664,8 +663,7 @@ class TestGetterSetter():
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
-        os.mkdir(_temp_dir + '/share')
-        os.mkdir(_temp_dir + '/share/RAMSTK')
+        os.makedirs(_temp_dir + '/share/RAMSTK')
 
         DUT.RAMSTK_SITE_CONF = _temp_dir + '/share/RAMSTK/Site.toml'
         DUT.RAMSTK_COM_INFO = {
