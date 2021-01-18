@@ -134,6 +134,7 @@ coverage: clean-test
 depends:
 	pip install -U pip-tools
 	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
+	pyenv rehash
 
 mkvenv:
 	pyenv virtualenv $(PY) $(VIRTENV)
