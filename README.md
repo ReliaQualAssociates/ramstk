@@ -28,7 +28,7 @@
     <tr>
         <th>Packages</th>
         <td>
-            <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/ReliaQualAssociates/ramstk?label=GitHub%20Release">
+            <img alt="GitHub release (latest SemVer including pre-releases)" src="https://img.shields.io/github/v/release/ReliaQualAssociates/ramstk?include_prereleases&label=GitHub%20Release">
             <img alt="PyPI" src="https://img.shields.io/pypi/v/ramstk?label=PyPi%20Release">
         </td>
     </tr>
