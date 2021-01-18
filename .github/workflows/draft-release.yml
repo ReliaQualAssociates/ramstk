@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update VERSION and pyproject.toml file
-        if: contains(steps.check_pr_labels.outputs.labels, 'major') || contains(steps.check_pr_labels.outputs.labels, 'minor') || contains(steps.check_pr_labels.outputs.labels, 'patch')
+        if: ${{ steps.check_pr_labels.outputs.result }}
         run: |
           echo "${{ steps.draft_release.outputs.name }}" > VERSION
           sed -i 's/\(^version =.*$\)/version = "${{ steps.draft_release.outputs.name }}"/' pyproject.toml
@@ -44,7 +44,7 @@ jobs:
           labels: '["major", "minor"]'
 
       - name: Update CHANGELOG.md and cut release PR
-        if: contains(steps.check_pr_labels_again.ouputs.labels, 'major') || contains(steps.check_pr_labels_again.ouputs.labels, 'minor')
+        if: ${{ steps.check_pr_labels.outputs.result }}
         uses: patrickjahns/chlgr@v1
         with:
           release-version: ${{ steps.draft_release.outputs.tag_name }}
