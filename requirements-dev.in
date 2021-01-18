@@ -4,6 +4,7 @@
 check-manifest
 
 # Code formatting
+docformatter
 isort
 pep8
 pre-commit
