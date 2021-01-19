@@ -9,10 +9,11 @@ jobs:
   tag_and_release:
     name: Tag and Release
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Get version information
         id: versions
