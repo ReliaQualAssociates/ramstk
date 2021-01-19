@@ -134,7 +134,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_roll_up_change_descriptions,
                                 'request_roll_up_change_descriptions')
         assert pub.isSubscribed(DUT._on_get_hardware_attributes,
-                                'succeed_get_hardware_tree')
+                                'succeed_get_hardwares_tree')
 
 
 @pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
@@ -750,6 +750,6 @@ class TestAnalysisMethods():
                               'reliability': _reliability,
                           })
 
-        pub.sendMessage('succeed_get_hardware_tree', tree=_tree)
+        pub.sendMessage('succeed_get_hardwares_tree', tree=_tree)
 
         assert DUT._dic_hardware_hrs[1] == 0.00032

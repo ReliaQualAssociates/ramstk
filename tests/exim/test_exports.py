@@ -25,56 +25,60 @@ class TestExport():
     """Test class for export methods."""
     @pytest.mark.unit
     def test_do_load_output_function(self, test_program_dao):
-        """do_load_output() should return a Pandas DataFrame when loading Functions for export."""
+        """do_load_output() should return a Pandas DataFrame when loading
+        Functions for export."""
         _function = dmFunction()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='functions')
+        pub.sendMessage('request_get_functions_tree')
 
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['functions'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_requirement(self, test_program_dao):
-        """do_load_output() should return None when loading Requirements for export."""
+        """do_load_output() should return None when loading Requirements for
+        export."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='requirements')
+        pub.sendMessage('request_get_requirements_tree')
 
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['requirements'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_hardware(self, test_program_dao):
-        """do_load_output() should return None when loading Hardware for export."""
+        """do_load_output() should return None when loading Hardware for
+        export."""
         _hardware = dmHardware()
         _hardware.do_connect(test_program_dao)
         _hardware.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='Hardwares')
+        pub.sendMessage('request_get_hardwares_tree')
 
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['hardwares'], dict)
 
     @pytest.mark.unit
     def test_do_load_output_validation(self, test_program_dao):
-        """do_load_output() should return None when loading Validations for export."""
+        """do_load_output() should return None when loading Validations for
+        export."""
         _validation = dmValidation()
         _validation.do_connect(test_program_dao)
         _validation.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='VAlidAtions')
+        pub.sendMessage('request_get_validations_tree')
 
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data['validations'], dict)
@@ -88,7 +92,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='function')
+        pub.sendMessage('request_get_functions_tree')
 
         _test_csv = test_export_dir + 'test_export_function.csv'
         assert DUT._do_export('csv', _test_csv) is None
@@ -102,7 +106,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='ReQuiremenTs')
+        pub.sendMessage('request_get_requirements_tree')
 
         _test_excel = test_export_dir + 'test_export_requirement.xls'
         assert DUT._do_export('excel', _test_excel) is None
@@ -116,7 +120,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='Requirements')
+        pub.sendMessage('request_get_requirements_tree')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlsx'
         assert DUT._do_export('excel', _test_excel) is None
@@ -130,7 +134,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='RequiremenTs')
+        pub.sendMessage('request_get_requirements_tree')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlsm'
         assert DUT._do_export('excel', _test_excel) is None
@@ -138,14 +142,15 @@ class TestExport():
     @pytest.mark.unit
     def test_do_export_to_excel_unknown_extension(self, test_program_dao,
                                                   test_export_dir):
-        """do_export() should return None when exporting to an Excel file and default to using the xlwt engine."""
+        """do_export() should return None when exporting to an Excel file and
+        default to using the xlwt engine."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={'revision_id': 1})
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='requirements')
+        pub.sendMessage('request_get_requirements_tree')
 
         _test_excel = test_export_dir + 'test_export_requirement.xlbb'
         assert DUT._do_export('excel', _test_excel) is None
@@ -159,7 +164,7 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='Functions')
+        pub.sendMessage('request_get_functions_tree')
 
         _test_text = test_export_dir + 'test_export_function.txt'
         assert DUT._do_export('text', _test_text) is None
@@ -173,11 +178,10 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='FunctionS')
+        pub.sendMessage('request_get_functions_tree')
 
         _test_text = test_export_dir + 'test_export_function.txt'
         assert DUT._do_export('pdf', _test_text) is None
-
 
     @pytest.mark.unit
     def test_do_export_multi_sheet(self, test_program_dao, test_export_dir):
@@ -192,12 +196,13 @@ class TestExport():
 
         DUT = Export()
 
-        pub.sendMessage('request_load_output', module='FunctionS')
-        pub.sendMessage('request_load_output', module='Requirement')
+        pub.sendMessage('request_get_functions_tree')
+        pub.sendMessage('request_get_requirements_tree')
 
         _test_multi = test_export_dir + 'test_export_multi.xlsx'
 
-        pub.sendMessage('request_export_data', file_type='excel',
+        pub.sendMessage('request_export_data',
+                        file_type='excel',
                         file_name=_test_multi)
 
         assert isinstance(DUT._df_output_data, pd.core.frame.DataFrame)

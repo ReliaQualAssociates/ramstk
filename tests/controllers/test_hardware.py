@@ -265,7 +265,7 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT.on_get_all_attributes,
                                 'succeed_get_all_hardware_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_retrieve_hardware')
-        assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_hardware_tree')
+        assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_hardwares_tree')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_update_hardware')
 
         assert pub.isSubscribed(DUT._do_calculate_hardware,
@@ -520,7 +520,7 @@ class TestGetterSetter():
                 DUT._tree.get_node(1).data['design_mechanic'],
                 RAMSTKDesignMechanic)
 
-        pub.subscribe(on_message, 'succeed_get_hardware_tree')
+        pub.subscribe(on_message, 'succeed_get_hardwares_tree')
 
         pub.sendMessage('request_get_hardware_tree')
 
