@@ -20,7 +20,7 @@ jobs:
         run: |
           cur_ver=$(git describe --abbrev=0 --tags)
           new_ver=$(cat VERSION)
-          echo "::set-output name=new_ver::$(echo $new_ver)\n"
+          echo "::set-output name=new_ver::$(echo $new_ver)"
           echo "::set-output name=new_major::$(echo $new_ver | cut -d '.' -f1)\n"
           echo "::set-output name=new_minor::$(echo $new_ver | cut -d '.' -f2)\n"
           echo "::set-output name=new_patch::$(echo $new_ver | cut -d '.' -f3)\n"
