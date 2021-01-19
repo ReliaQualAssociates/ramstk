@@ -24,10 +24,8 @@ jobs:
         id: check_pr_labels
         uses: zwaldowski/match-label-action@v1
         with:
-          allowed: >
-            major
-            minor
-            patch
+          allowed: major, minor, patch
+
       - name: See results
         run: |
           echo ${{ steps.check_pr_labels_all.outputs.match }}
