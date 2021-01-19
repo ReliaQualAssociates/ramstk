@@ -1,5 +1,27 @@
 # Changelog
 
+## [v0.12.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.12.0) (2021-01-19)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.11.0...v0.12.0)
+
+**Implemented features:**
+
+- feat: add support for Python 3.8 [\#449](https://github.com/ReliaQualAssociates/ramstk/pull/449) ([weibullguy](https://github.com/weibullguy))
+
+**Implemented enhancements:**
+
+- enhance: add refresh and save buttons to database dialog [\#450](https://github.com/ReliaQualAssociates/ramstk/pull/450) ([weibullguy](https://github.com/weibullguy))
+
+**Closed issues:**
+
+- Error When Trying to Build Wheel for Numpy with release v-1.0.0 [\#372](https://github.com/ReliaQualAssociates/ramstk/issues/372)
+
+**Merged pull requests:**
+
+- chore: update release workflow only cut release on major/minor [\#448](https://github.com/ReliaQualAssociates/ramstk/pull/448) ([weibullguy](https://github.com/weibullguy))
+- chore: add tests for configuration.py to increase coverage [\#446](https://github.com/ReliaQualAssociates/ramstk/pull/446) ([weibullguy](https://github.com/weibullguy))
+- chore: create install targets [\#444](https://github.com/ReliaQualAssociates/ramstk/pull/444) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.11.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.11.0) (2021-01-16)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.10.0...v0.11.0)
