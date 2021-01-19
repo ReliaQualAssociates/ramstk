@@ -14,7 +14,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
-from ramstk.views.gtk3 import GObject, Gtk, Pango, _
+from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, Pango, _
+from ramstk.views.gtk3.widgets.button import RAMSTKButton, RAMSTKCheckButton
 from ramstk.views.gtk3.widgets.combo import RAMSTKComboBox
 from ramstk.views.gtk3.widgets.entry import RAMSTKEntry
 from ramstk.views.gtk3.widgets.label import do_make_label_group
@@ -67,7 +68,8 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         super().__init__(dlgtitle, **kwargs)
 
         # Initialize private dict attributes.
-        self._dao: BaseDatabase = kwargs['dao']
+        self._dao: BaseDatabase = kwargs.get('dao', BaseDatabase)
+        self._dic_icons = kwargs.get('icons', {})
 
         # Initialize private list attributes.
         self._lst_databases: List[str] = []
@@ -84,6 +86,9 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self._old_host: str = ''
 
         # Initialize public scalar attributes.
+        self.btnRefresh: RAMSTKButton = RAMSTKButton(label='')
+        self.btnSave: RAMSTKCheckButton = RAMSTKCheckButton(
+            label='Save Connection Parameters')
         self.cmbDialect: RAMSTKComboBox = RAMSTKComboBox()
         self.txtHost: RAMSTKEntry = RAMSTKEntry()
         self.txtPort: RAMSTKEntry = RAMSTKEntry()
@@ -102,7 +107,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.database: Dict[str, str] = {}
+        self.database: Dict[str, str] = kwargs.get('database', {})
         self.exists: bool = False
 
         self.__do_set_properties()
@@ -110,7 +115,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self.__do_load_combobox()
         self.__do_set_callbacks()
 
-        self.__do_load_databases(database=kwargs['database'])
+        self.__do_load_databases()
 
     def do_run(self) -> Gtk.ResponseType:
         """Run the RAMSTKFileChooser dialog.
@@ -121,87 +126,118 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         _return = Gtk.ResponseType.CANCEL
 
         if self.run() == Gtk.ResponseType.OK:
-            self.database = self._get_database()
+            self._get_database()
             self.exists = self.database['database'] in self._lst_databases
             _return = Gtk.ResponseType.OK
         elif self.run() == Gtk.ResponseType.CANCEL:
-            self.destroy()
+            _return = Gtk.ResponseType.CANCEL
 
         return _return
 
-    def _get_database(self) -> Dict[str, str]:
+    def _get_database(self):
         """Get the name of the selected database.
 
         :return: the database connection parameters.
         :rtype: dict
         """
-        _database: Dict[str, str] = {}
-
-        _database['dialect'] = self.cmbDialect.get_value()
-        _database['host'] = self.txtHost.do_get_text()
-        _database['port'] = self.txtPort.do_get_text()
-        _database['database'] = self.txtDatabase.do_get_text()
-        _database['user'] = self.txtUser.do_get_text()
-        _database['password'] = self.txtPassword.do_get_text()
+        self.database['dialect'] = self.cmbDialect.get_value()
+        self.database['host'] = self.txtHost.do_get_text()
+        self.database['port'] = self.txtPort.do_get_text()
+        self.database['database'] = self.txtDatabase.do_get_text()
+        self.database['user'] = self.txtUser.do_get_text()
+        self.database['password'] = self.txtPassword.do_get_text()
 
         # IF the host was changed, reload the database list, otherwise keep
         # going.
-        if _database['host'] != self._old_host:
-            self.__do_load_databases(_database)
+        if self.database['host'] != self._old_host:
+            self.__do_load_databases()
 
-        return _database
+    def _request_load_databases(self, __button: RAMSTKButton) -> None:
+        """Re-load the database list.
+
+        :param __button: the RAMSTKButton() that called this method on
+            'clicked'.
+        :return: None
+        :rtype: None
+        """
+        self.database['dialect'] = self.cmbDialect.get_value()
+        self.database['host'] = self.txtHost.do_get_text()
+        self.database['port'] = self.txtPort.do_get_text()
+        self.database['database'] = self.txtDatabase.do_get_text()
+        self.database['user'] = self.txtUser.do_get_text()
+        self.database['password'] = self.txtPassword.do_get_text()
+
+        self.__do_load_databases()
 
     def __do_load_combobox(self) -> None:
         """Load the dialect RAMSTKComboBox."""
         self.cmbDialect.do_load_combo([['postgres', '', '']])
 
-    def __do_load_databases(self, database: Dict[str, str]) -> None:
+    def __do_load_databases(self) -> None:
         """Read the database server and load the database list.
 
-        :param database: a dict containing the connection information for the
-            RAMSTK program databases.
         :return: None
         :rtype: None
         """
         _dialect = 0
 
-        self._old_host = database['host']
+        self._old_host = self.database['host']
 
-        self.txtHost.do_update(database['host'])
-        self.txtPort.do_update(database['port'])
-        self.txtDatabase.do_update(database['database'])
-        self.txtUser.do_update(database['user'])
-        self.txtPassword.do_update(database['password'])
+        self.txtHost.do_update(self.database['host'])
+        self.txtPort.do_update(self.database['port'])
+        self.txtDatabase.do_update(self.database['database'])
+        self.txtUser.do_update(self.database['user'])
+        self.txtPassword.do_update(self.database['password'])
 
         _model = self.tvwTreeView.get_model()
         _model.clear()
 
-        if (database['dialect'] == 'postgres'
-                and database['user'] != 'first_run'):
+        if (self.database['dialect'] == 'postgres'
+                and self.database['user'] != 'first_run'):
             _dialect = 1
-            _stored_db = database['database']
-            database['database'] = 'postgres'
+            _stored_db = self.database['database']
+            self.database['database'] = 'postgres'
 
-            for _db in self._dao.get_database_list(database):
+            for _db in self._dao.get_database_list(self.database):
                 _model.append([_db])
                 self._lst_databases.append(_db)
 
-            database['database'] = _stored_db
+            self.database['database'] = _stored_db
 
         self.cmbDialect.do_update(_dialect)
 
     def __do_set_callbacks(self) -> None:
         """Set widget callback methods."""
+        self.btnRefresh.connect('clicked', self._request_load_databases)
         self.tvwTreeView.selection.connect('changed', self.__on_row_change)
 
     def __do_set_properties(self) -> None:
         """Set the properties of the widgets."""
-        self.cmbDialect.do_set_properties(width=300)
-        self.txtHost.do_set_properties(width=300)
-        self.txtPort.do_set_properties(width=300)
-        self.txtDatabase.do_set_properties(width=300)
-        self.txtUser.do_set_properties(width=300)
-        self.txtPassword.do_set_properties(width=300)
+        _image = Gtk.Image()
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons['refresh'], 22, 22)
+        _image.set_from_pixbuf(_icon)
+        self.btnRefresh.set_image(_image)
+        self.btnRefresh.do_set_properties(
+            tooltip=_('Refresh server database list.'), width=50)
+        self.btnSave.do_set_properties(
+            tooltip=_('Save connection information to configuration file.'))
+        self.cmbDialect.do_set_properties(
+            tooltip=_('Select SQL server dialect for this connection.'),
+            width=300)
+        self.txtHost.do_set_properties(
+            tooltip=_('Enter the database server hostname.'), width=300)
+        self.txtPort.do_set_properties(
+            tooltip=_('Enter the port number the database server listens on.'),
+            width=300)
+        self.txtDatabase.do_set_properties(
+            tooltip=_('Enter the name of the database to connect.'), width=300)
+        self.txtUser.do_set_properties(
+            tooltip=_('Enter the user name for the database server.'),
+            width=300)
+        self.txtPassword.do_set_properties(
+            tooltip=_('Enter the user password for the database server.'),
+            width=300)
 
         self.tvwTreeView.selection = self.tvwTreeView.get_selection()
 
@@ -218,6 +254,9 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
             _fixed.put(self._lst_widgets[_idx], _x_pos + 10, _y_pos)
             _y_pos += 35
 
+        # Add the refresh and save buttons.
+        _fixed.put(self.btnRefresh, _x_pos + 315, 40)
+        _fixed.put(self.btnSave, _x_pos + 315, 180)
         self.vbox.pack_start(_fixed, True, True, 10)
 
         _model = Gtk.ListStore(GObject.TYPE_STRING)

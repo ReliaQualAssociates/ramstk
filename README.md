@@ -6,21 +6,21 @@
     <tr>
         <th>Documentation</th>
         <td>
-            <img alt="Read the Docs" src="https://img.shields.io/readthedocs/ramstk?label=RTD">
+            <a href='https://ramstk.readthedocs.io/en/latest/?badge=latest'><img src='https://readthedocs.org/projects/ramstk/badge/?version=latest' alt='Documentation Status' /></a>
         </td>
     </tr>
     <tr>
         <th>Tests</th>
         <td>
         <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/ReliaQualAssociates/ramstk/RAMSTK%20Test%20Suite?label=Build%20%26%20Test">
-        <img alt="Codecov" src="https://img.shields.io/codecov/c/github/ReliaQualAssociates/ramstk?label=Codecov">
-        <img alt="Coveralls github" src="https://img.shields.io/coveralls/github/ReliaQualAssociates/ramstk?label=Coveralls">
+        <a href="https://codecov.io/gh/ReliaQualAssociates/ramstk"><img src="https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg?token=sFOa7EjZAg"/></a>
+        <a href='https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master'><img src='https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master' alt='Coverage Status' /></a>
     </td>
     </tr>
     <tr>
         <th>Quality</th>
         <td>
-            <img alt="CodeFactor Grade" src="https://img.shields.io/codefactor/grade/github/ReliaQualAssociates/ramstk?label=CodeFactor">
+            <a href="https://www.codefactor.io/repository/github/reliaqualassociates/ramstk"><img src="https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge" alt="CodeFactor" /></a>
             <a href="https://www.deepcode.ai/app/gh/ReliaQualAssociates/ramstk/_/dashboard?utm_content=gh%2FReliaQualAssociates%2Framstk"><img alt="Deep Code" src="https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IlJlbGlhUXVhbEFzc29jaWF0ZXMiLCJyZXBvMSI6InJhbXN0ayIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjI1MTA4LCJpYXQiOjE2MDkxMzcwNTl9.R5P6VLkyK1LK6Jc5PjJ8QrLRq6zNuVxnzdjZCJbH7_k"></a>
             <img alt="Quality Gate" src="https://sonarcloud.io/api/project_badges/measure?project=ReliaQualAssociates_ramstk&metric=alert_status">
         </td>
@@ -55,7 +55,7 @@ RAMSTK is built on the concept of modules where a module is a collection of
 
 * Function Module
   - Functional decomposition
-  - Functional FMEA
+  - Hazards analysis
 * Requirements Module
   - Stakeholder input prioritization
   - Requirement development
@@ -66,7 +66,6 @@ RAMSTK is built on the concept of modules where a module is a collection of
       - AGREE apportionment
       - ARINC apportionment
       - Feasibility of Objectives
-  - Hazards analysis
   - Hardware reliability predictions using various methods
       - Similar items analysis
       - MIL-HDBK-217F parts count
@@ -87,10 +86,6 @@ RAMSTK is built on the concept of modules where a module is a collection of
 These instructions will get RAMSTK up and running on your local machine
 . Note that the Makefile contains all the commands needed to install or work
  with RAMSTK.  You should consult the help output for more information.
-
-GitHub and PyPi releases will be made available once RAMSTK reaches v1.0.0
-.  Until then, the only way to install RAMSTK is to clone the repository or
- download the source package and follow the instructions below.
 
 ### Prerequisites
 

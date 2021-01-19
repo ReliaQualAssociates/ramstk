@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, Tuple
+from typing import Any, Tuple
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager as RAMSTKProgramManager
@@ -49,7 +49,7 @@ def do_connect_to_site_db(conn_info: Any) -> BaseDatabase:
     ...
 
 
-def do_first_run(configuration: RAMSTKSiteConfiguration) -> Dict[str, str]:
+def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
     ...
 
 

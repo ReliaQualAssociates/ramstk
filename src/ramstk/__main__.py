@@ -10,8 +10,9 @@
 # Standard Library Imports
 import os
 import shutil
+import sys
 from time import sleep
-from typing import Dict, Tuple
+from typing import Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -62,30 +63,24 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
     return _site_db
 
 
-def do_first_run(configuration: RAMSTKSiteConfiguration) -> Dict[str, str]:
+def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
     """Raise dialog to setup site database.
 
     :param configuration: the RAMSTKSiteConfiguration() instance.
     :return: _site_db
     :rtype: dict
     """
-    _database = {
-        "dialect": '',
-        "host": '',
-        "port": '',
-        "database": '',
-        "user": '',
-        "password": ''
-    }
-
     _dialog = RAMSTKDatabaseSelect(
         dlgtitle=_("Set up RAMSTK Site Database Server Connection"),
         dao=BaseDatabase(),
-        database=configuration.RAMSTK_COM_INFO)
+        database=configuration.RAMSTK_COM_INFO,
+        icons={
+            'refresh':
+            configuration.RAMSTK_SITE_DIR + '/icons/32x32/view-refresh.png',
+            'save': configuration.RAMSTK_SITE_DIR + '/icons/32x32/save.png'
+        })
 
     if _dialog.do_run() == Gtk.ResponseType.OK:
-        _dialog.destroy()
-
         _site_dir = configuration.RAMSTK_SITE_DIR
         _home = os.path.expanduser('~')
         _user_dir = _home + '/.config/RAMSTK'
@@ -96,11 +91,11 @@ def do_first_run(configuration: RAMSTKSiteConfiguration) -> Dict[str, str]:
             shutil.copy(_site_dir + '/postgres_program_db.sql', _user_dir)
             os.makedirs(_user_dir + '/logs')
 
-        _database = _dialog.database
+        configuration.RAMSTK_COM_INFO = _dialog.database
+    else:
+        sys.exit(0)
 
-    _dialog.destroy()
-
-    return _database
+    _dialog.do_destroy()
 
 
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
@@ -224,7 +219,7 @@ def the_one_ring() -> None:
     site_configuration = do_read_site_configuration()
 
     if site_configuration.RAMSTK_COM_INFO['user'] == 'first_run':
-        site_configuration.RAMSTK_COM_INFO = do_first_run(site_configuration)
+        do_first_run(site_configuration)
         site_configuration.set_site_configuration()
 
     # Read the user configuration file and create a logger.  The user
