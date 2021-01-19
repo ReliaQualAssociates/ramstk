@@ -90,7 +90,15 @@ class CreateProject:
                           RAMSTK_PROG_INFO['dialect'])),
             dlgparent=self._parent,
             dao=BaseDatabase(),
-            database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+            database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
+            icons={
+                'refresh':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                + '/icons/32x32/view-refresh.png',
+                'save':
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                + '/icons/32x32/save.png'
+            })
 
         if _dialog.do_run() == Gtk.ResponseType.OK:
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = \
@@ -153,7 +161,15 @@ class OpenProject:
                               RAMSTK_PROG_INFO['dialect'])),
                 dlgparent=self._parent,
                 dao=BaseDatabase(),
-                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
+                icons={
+                    'refresh':
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                    + '/icons/32x32/view-refresh.png',
+                    'save':
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                    + '/icons/32x32/save.png'
+                })
 
             if _dialog.do_run() == Gtk.ResponseType.OK:
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = \
@@ -170,7 +186,10 @@ class OpenProject:
                                     database=self.RAMSTK_USER_CONFIGURATION.
                                     RAMSTK_PROG_INFO)
 
-            _dialog.destroy()
+                if _dialog.btnSave.get_active():
+                    self.RAMSTK_USER_CONFIGURATION.set_user_configuration()
+
+            _dialog.do_destroy()
 
     def __project_is_open(self) -> None:
         """Raise dialog explaining a project is already open.

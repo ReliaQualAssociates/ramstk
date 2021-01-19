@@ -1,12 +1,17 @@
 # Standard Library Imports
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional, Tuple
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase as BaseDatabase
+from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf
 from ramstk.views.gtk3 import GObject as GObject
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import Pango as Pango
 from ramstk.views.gtk3 import _ as _
+from ramstk.views.gtk3.widgets.button import RAMSTKButton as RAMSTKButton
+from ramstk.views.gtk3.widgets.button import (
+    RAMSTKCheckButton as RAMSTKCheckButton
+)
 from ramstk.views.gtk3.widgets.combo import RAMSTKComboBox as RAMSTKComboBox
 from ramstk.views.gtk3.widgets.entry import RAMSTKEntry as RAMSTKEntry
 from ramstk.views.gtk3.widgets.label import (
@@ -26,9 +31,12 @@ class RAMSTKDialog(Gtk.Dialog):
 
 class RAMSTKDatabaseSelect(RAMSTKDialog):
     _dao: Any = ...
+    _dic_icons: Any = ...
     _lst_databases: Any = ...
     _lst_labels: Any = ...
     _old_host: str = ...
+    btnRefresh: Any = ...
+    btnSave: Any = ...
     cmbDialect: Any = ...
     txtHost: Any = ...
     txtPort: Any = ...
@@ -46,13 +54,16 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
     def do_run(self) -> Gtk.ResponseType:
         ...
 
-    def _get_database(self) -> Dict[str, str]:
+    def _get_database(self) -> None:
+        ...
+
+    def _request_load_databases(self, __button: RAMSTKButton) -> None:
         ...
 
     def __do_load_combobox(self) -> None:
         ...
 
-    def __do_load_databases(self, database: Dict[str, str]) -> None:
+    def __do_load_databases(self) -> None:
         ...
 
     def __do_set_callbacks(self) -> None:
