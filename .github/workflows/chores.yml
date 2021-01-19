@@ -49,7 +49,7 @@ jobs:
           labels: '["major", "minor", "patch"]'
 
       - name: Get PR branch name
-        uses: andrevalentin/get-branch-name-by-pr@1.0.0
+        uses: andrevalentin/get-branch-name-by-pr@v1
         id: pr_name
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}

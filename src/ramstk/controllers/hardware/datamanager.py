@@ -88,7 +88,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage(
-            'succeed_get_hardware_tree',
+            'succeed_get_hardwares_tree',
             tree=self.tree,
         )
 

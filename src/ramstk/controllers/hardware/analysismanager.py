@@ -57,7 +57,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(super().on_get_all_attributes,
                       'succeed_get_all_hardware_attributes')
         pub.subscribe(super().on_get_tree, 'succeed_retrieve_hardware')
-        pub.subscribe(super().on_get_tree, 'succeed_get_hardware_tree')
+        pub.subscribe(super().on_get_tree, 'succeed_get_hardwares_tree')
         pub.subscribe(super().on_get_tree, 'succeed_update_hardware')
 
         pub.subscribe(self._do_calculate_hardware,
