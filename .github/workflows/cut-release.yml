@@ -31,6 +31,8 @@ jobs:
       - name: Tag master
         if: ${{ steps.versions.outputs.new_major > steps.versions.outputs.old_major || steps.versions.outputs.new_minor > steps.versions.outputs.old_minor }}
         run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git tag -a -m"v${{ steps.versions.outputs.new_ver }}" v${{ steps.versions.outputs.new_ver }}
           git push --tags
 
