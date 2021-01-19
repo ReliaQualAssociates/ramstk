@@ -20,18 +20,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Update draft release
-        id: draft_release
-        uses: release-drafter/release-drafter@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Get PR labels
         id: check_pr_labels
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["major", "minor"]'
+      - name: See results
+        run: echo "${{ steps.check_pr_labels.outputs.result }}"
+
+      - name: Update draft release
+        id: draft_release
+        if: ${{ steps.check_pr_labels.outputs.result }}
+        uses: release-drafter/release-drafter@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new milestone
         if: ${{ steps.check_pr_labels.outputs.result }}
