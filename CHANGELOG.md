@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.11.0...v0.12.0)
 
+**Implemented features:**
+
+- feat: add support for Python 3.8 [\#449](https://github.com/ReliaQualAssociates/ramstk/pull/449) ([weibullguy](https://github.com/weibullguy))
+
 **Implemented enhancements:**
 
 - enhance: add refresh and save buttons to database dialog [\#450](https://github.com/ReliaQualAssociates/ramstk/pull/450) ([weibullguy](https://github.com/weibullguy))
@@ -14,7 +18,6 @@
 
 **Merged pull requests:**
 
-- feat: add support for Python 3.8 [\#449](https://github.com/ReliaQualAssociates/ramstk/pull/449) ([weibullguy](https://github.com/weibullguy))
 - chore: update release workflow only cut release on major/minor [\#448](https://github.com/ReliaQualAssociates/ramstk/pull/448) ([weibullguy](https://github.com/weibullguy))
 - chore: add tests for configuration.py to increase coverage [\#446](https://github.com/ReliaQualAssociates/ramstk/pull/446) ([weibullguy](https://github.com/weibullguy))
 - chore: create install targets [\#444](https://github.com/ReliaQualAssociates/ramstk/pull/444) ([weibullguy](https://github.com/weibullguy))
