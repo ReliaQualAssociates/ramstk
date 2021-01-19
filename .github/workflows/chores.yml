@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Get PR labels
+      - name: Check for major/minor PR labels
         id: check_pr_labels
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
@@ -42,12 +42,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get PR labels
+      - name: Check for major/minor/patch PR labels
         id: check_pr_labels_all
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["major", "minor", "patch"]'
+      - name: See results
+        run: |
+          echo ${{ steps.check_pr_labels_all.outputs.result }}
+          echo ${{ steps.draft_release.outputs.name }}
 
       - name: Update VERSION and pyproject.toml file
         if: ${{ steps.check_pr_labels_all.outputs.result == 'true' }}
