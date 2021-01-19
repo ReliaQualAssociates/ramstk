@@ -15,20 +15,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  update_release_draft:
-    name: Draft Release Notes
+  create_new_milestone:
+    name: Create New Milestone
     runs-on: ubuntu-latest
     steps:
+
       - name: Update draft release
         id: draft_release
         uses: release-drafter/release-drafter@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  create_new_milestone:
-    name: Create New Milestone
-    runs-on: ubuntu-latest
-    steps:
       - name: Get PR labels
         id: check_pr_labels
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
@@ -44,13 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  bump_version_files:
-    name: Bump Version Files
-    runs-on: ubuntu-latest
-    steps:
-
       - name: Get PR labels
-        id: check_pr_labels
+        id: check_pr_labels_all
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -63,7 +55,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update VERSION and pyproject.toml file
-        if: ${{ steps.check_pr_labels.outputs.result }}
+        if: ${{ steps.check_pr_labels_all.outputs.result }}
         run: |
           echo "${{ steps.draft_release.outputs.name }}" > VERSION
           sed -i 's/\(^version =.*$\)/version = "${{ steps.draft_release.outputs.name }}"/' pyproject.toml
