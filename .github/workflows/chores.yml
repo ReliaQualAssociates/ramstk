@@ -1,4 +1,4 @@
-name: Pull Request QA
+name: Pull Request Chores
 
 on:
   pull_request:
@@ -6,18 +6,6 @@ on:
       - master
 
 jobs:
-  good_pr_title:
-    name: Ensure Conventional PR Title
-    runs-on: ubuntu-latest
-    steps:
-      - name: Ensure PR title follows conventional commits specification
-        uses: aslafy-z/conventional-pr-title-action@master
-        with:
-          success-state: Conventional commits compliant title detected.
-          failure-state: Pull request title is not conventional commits compliant!
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   pr-labeler:
     name: Label Pull Request
     runs-on: ubuntu-latest
@@ -32,7 +20,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update draft release
-        id: release_notes
+        id: draft_release
         uses: release-drafter/release-drafter@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create_new_milestone:
+    name: Create New Milestone
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR labels
+        id: check_pr_labels
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["major", "minor"]'
+
+      - name: Create new milestone
+        if: ${{ steps.check_pr_labels.outputs.result }}
+        uses: WyriHaximus/github-action-create-milestone@master
+        with:
+          title: "${{ steps.draft_release.outputs.tag_name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bump_version_files:
+    name: Bump Version Files
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Get PR labels
+        id: check_pr_labels
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["major", "minor", "patch"]'
+
+      - name: Get PR branch name
+        uses: andrevalentin/get-branch-name-by-pr@1.0.0
+        id: pr_name
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update VERSION and pyproject.toml file
+        if: ${{ steps.check_pr_labels.outputs.result }}
+        run: |
+          echo "${{ steps.draft_release.outputs.name }}" > VERSION
+          sed -i 's/\(^version =.*$\)/version = "${{ steps.draft_release.outputs.name }}"/' pyproject.toml
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
+
+      - name: Update PR
+        if: ${{ env.do_push == 1 }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: ${{ steps.pr_name.outputs.branch }}
