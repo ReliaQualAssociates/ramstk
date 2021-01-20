@@ -76,4 +76,4 @@ jobs:
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
         with:
-          base: echo ${{ github.ref }}
+          base: ${{ github.ref }}
