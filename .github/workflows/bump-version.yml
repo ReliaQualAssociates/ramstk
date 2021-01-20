@@ -41,7 +41,8 @@ jobs:
           echo ${{ steps.nexttag.outputs.v_major }}
           echo ${{ steps.nexttag.outputs.v_minor }}
           echo ${{ steps.nexttag.outputs.v_patch }}
-          echo ${{ env.GITHUB_BASE_REF }}
+          echo ${{ github.ref }}
+          echo ${{ github.base_ref }}
 
       - name: Check for new patch version
         if: contains(steps.check_pr_labels.outputs.labels, ' patch ')
@@ -75,4 +76,4 @@ jobs:
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
         with:
-          base: ${{ env.GITHUB_BASE_REF }}
+          base: echo ${{ github.ref }}
