@@ -54,6 +54,11 @@ jobs:
           echo "do_bump=1" >> $GITHUB_ENV
           echo "do_release=1" >> $GITHUB_ENV
 
+      - name: Check if VERSION has already been updated
+        run: |
+          file_ver=$(cat VERSION)
+          if [ $file_ver == ${{ env.RAMSTK_NEXT_VER }} ]; then echo "do_bump=0" >> $GITHUB_ENV; fi
+
       - name: Update VERSION and pyproject.toml file
         if: ${{ env.do_bump == 1 }}
         run: |
