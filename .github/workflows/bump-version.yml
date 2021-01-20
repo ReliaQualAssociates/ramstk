@@ -19,17 +19,16 @@ jobs:
         uses: WyriHaximus/github-action-get-previous-tag@v1
 
       - name: Get PR labels
-        id: check_pr-labels
+        id: check_pr_labels
         uses: joerick/pr-labels-action@v1.0.6
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF##*/})"
         id: extract_branch
 
       - name: See results
         run: |
-          echo ${{ steps.check_pr_labels.outputs.labels }}
           echo ${{ steps.extract_branch.outputs.branch }}
           echo ${{ steps.previoustag.outputs.tag }}
           echo ${{ steps.check_pr_labels.outputs.labels }}
