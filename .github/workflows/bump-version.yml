@@ -1,0 +1,72 @@
+name: Bump Version Files
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  bump_version_files:
+    name: Bump Version Number in VERSION and pyproject.toml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.2.0
+        with:
+          fetch-depth: 0
+
+      - name: Get Previous tag
+        id: previoustag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+
+      - name: Get PR labels
+        id: check_pr-labels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: See results
+        run: |
+          echo ${{ steps.check_pr_labels.outputs.labels }}
+          echo ${{ steps.extract_branch.outputs.branch }}
+          echo ${{ steps.previoustag.outputs.tag }}
+          echo ${{ steps.check_pr_labels.outputs.labels }}
+          echo ${{ steps.nexttag.outputs.v_major }}
+          echo ${{ steps.nexttag.outputs.v_minor }}
+          echo ${{ steps.nexttag.outputs.v_patch }}
+
+      - name: Check for new patch version
+        if: contains(steps.check_pr_labels.outputs.labels, ' patch ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.patch }}" >> $GITHUB_ENV"
+          echo "do_bump=1" >> $GITHUB_ENV
+
+      - name: Check for new minor version
+        if: contains(steps.check_pr_labels.outputs.labels, ' minor ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.v_minor }}" >> $GITHUB_ENV"
+          echo "do_bump=1" >> $GITHUB_ENV
+
+      - name: Check for new major version
+        if: contains(steps.check_pr_labels.outputs.labels, ' major ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.v_major }}" >> $GITHUB_ENV"
+          echo "do_bump=1" >> $GITHUB_ENV
+
+      - name: Update VERSION and pyproject.toml file
+        if: ${{ env.do_bump == 1 }}
+        run: |
+          echo "${{ env.RAMSTK_NEXT_VER }}" > VERSION
+          sed -i 's/\(^version =.*$\)/version = "${{ env.RAMSTK_NEXT_VER }}"/' pyproject.toml
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
+
+      - name: Update PR
+        if: ${{ env.do_push == 1 }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: ${{ steps.extract_branch.outputs.branch }}
