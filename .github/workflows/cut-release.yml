@@ -1,4 +1,4 @@
-name: Cut New Release
+name: Cut New Release Branch
 
 on:
   push:
@@ -36,13 +36,20 @@ jobs:
           git tag -a -m"v${{ steps.versions.outputs.new_ver }}" v${{ steps.versions.outputs.new_ver }}
           git push --tags
 
+      - name: Update CHANGELOG.md and cut release PR
+        if: ${{ steps.versions.outputs.new_major > steps.versions.outputs.old_major || steps.versions.outputs.new_minor > steps.versions.outputs.old_minor }}
+        uses: patrickjahns/chlgr@v1
+        with:
+          release-version: "v${{ steps.versions.outputs.new_ver }}"
+          release-branch: "release/v${{ steps.versions.outputs.new_ver }}"
+
       - name: Cut the release
         id: cut_release
         if: ${{ steps.versions.outputs.new_major > steps.versions.outputs.old_major || steps.versions.outputs.new_minor > steps.versions.outputs.old_minor }}
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ steps.versions.outputs.new_ver }}
-          release_name: v${{ steps.versions.outputs.new_ver }}
+          tag_name: "v${{ steps.versions.outputs.new_ver }}"
+          release_name: "v${{ steps.versions.outputs.new_ver }}"
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
