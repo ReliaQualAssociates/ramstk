@@ -73,5 +73,3 @@ jobs:
       - name: Update PR
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
-        with:
-          branch: ${{ steps.extract_branch.outputs.branch }}
