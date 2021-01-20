@@ -73,3 +73,5 @@ jobs:
       - name: Update PR
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
+        with:
+          base: ${{ env.GITHUB_BASE_REF }}
