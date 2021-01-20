@@ -82,8 +82,8 @@ jobs:
         if: ${{ env.do_release == 1}}
         uses: release-drafter/release-drafter@master
         with:
-          name: "v${{ env.RAMSTK_NEXT_VER }}"
-          tag: "v${{ env.RAMSTK_NEXT_VER }}"
+          name: "latest"
+          tag: "latest"
           version: "${{ env.RAMSTK_NEXT_VER }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
