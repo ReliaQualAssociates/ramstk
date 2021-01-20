@@ -76,4 +76,8 @@ jobs:
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
         with:
-          base: ${{ github.ref }}
+          commit-message: Bump version files
+          title: "chore: bump version files"
+          body: Bump VERSION and pyproject.toml to next version.
+          branch: chore/bump_version_files
+          base: ${{ github.base_ref }}
