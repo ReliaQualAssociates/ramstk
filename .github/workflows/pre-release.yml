@@ -1,0 +1,59 @@
+name: Create Pre-Release and Tag
+
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - "*"
+
+jobs:
+  pre_release:
+    name: Create Pre-Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Latest RAMSTK Build"
+
+  tag_master:
+    name: Tag Master on Major or Minor Version Bumps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get version information
+        id: versions
+        run: |
+          tag_ver=$(git describe --abbrev=0 --tags)
+          file_ver=$(cat VERSION)
+
+          tag_ver=$(echo $tag_ver | cut -d 'v' -f2)
+          tag_major=$(echo $tag_ver | cut -d '.' -f1)
+          tag_minor=$(echo $tag_ver | cut -d '.' -f2)
+
+          file_major=$(echo $tag_ver | cut -d '.' -f1)
+          file_minor=$(echo $tag_ver | cut -d '.' -f2)
+
+          echo "::set-output name=new_ver::$(echo $file_ver)"
+
+          if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]]; then echo "do_tag=1" >> $GITHUB_ENV
+
+      - name: Tag master
+        if: ${{ env.do_tag == 1 }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a -m"v${{ steps.versions.outputs.new_ver }}" v${{ steps.versions.outputs.new_ver }}
+          git push --tags
