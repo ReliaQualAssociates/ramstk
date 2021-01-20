@@ -34,14 +34,14 @@ jobs:
       - name: Check for new minor version
         if: contains(steps.check_pr_labels.outputs.labels, ' minor ')
         run: |
-          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.minor }}" >> $GITHUB_ENV"
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.minor }}" >> $GITHUB_ENV
           echo "do_bump=1" >> $GITHUB_ENV
           echo "do_release=1" >> $GITHUB_ENV
 
       - name: Check for new major version
         if: contains(steps.check_pr_labels.outputs.labels, ' major ')
         run: |
-          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.major }}" >> $GITHUB_ENV"
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.major }}" >> $GITHUB_ENV
           echo "do_bump=1" >> $GITHUB_ENV
           echo "do_release=1" >> $GITHUB_ENV
 
