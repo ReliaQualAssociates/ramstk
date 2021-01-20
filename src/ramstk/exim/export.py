@@ -3,7 +3,7 @@
 #       ramstk.exim.export.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Export module."""
 
 # Standard Library Imports
@@ -40,9 +40,8 @@ class Export:
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_data, 'succeed_get_functions_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_requirements_tree')
-        pub.subscribe(self._do_load_data, 'succeed_get_hardware_tree')
+        pub.subscribe(self._do_load_data, 'succeed_get_hardwares_tree')
         pub.subscribe(self._do_load_data, 'succeed_get_validations_tree')
-        pub.subscribe(self._do_load_output, 'request_load_output')
         pub.subscribe(self._do_export, 'request_export_data')
 
     def _do_export(self, file_type: str, file_name: str) -> None:
@@ -116,16 +115,6 @@ class Export:
 
             _writer.close()
 
-    @staticmethod
-    def _do_load_output(module: str) -> None:
-        """Load data from the requested RAMSTK module into a Pandas DataFrame.
-
-        :param module: the RAMSTK module to load for export.
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('request_get_{0:s}_tree'.format(module.lower()))
-
     def _do_load_data(self, tree: Tree) -> None:
         """Load the attribute data into a Pandas DataFrame.
 
@@ -133,20 +122,14 @@ class Export:
         :return: None
         :rtype: None
         """
-        _dic_temp = {}
         _module = tree.get_node(0).tag.lower()
         self._dic_output_data[_module] = {}
 
         # pylint: disable=unused-variable
-        for __, _node in enumerate(tree.nodes):
-            _tag = tree.nodes[_node].tag
+        for _node in tree.all_nodes()[1:]:
+            _tag = _node.tag
             try:
-                _attributes = tree.nodes[_node].data[_tag].get_attributes()
-                for _key in _attributes:
-                    _dic_temp[_key] = _attributes[_key]
-            # TODO: Remove KeyError once all modules are updated to use
-            #  plural form for _module attribute.
+                self._dic_output_data[_module][
+                    _node.identifier] = _node.data[_tag].get_attributes()
             except (KeyError, TypeError):
                 pass
-            self._dic_output_data[_module][
-                tree.nodes[_node].identifier] = _dic_temp

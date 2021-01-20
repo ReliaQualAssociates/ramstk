@@ -36,15 +36,6 @@ jobs:
           git tag -a -m"v${{ steps.versions.outputs.new_ver }}" v${{ steps.versions.outputs.new_ver }}
           git push --tags
 
-      - name: Create new milestone
-        id: create_milestone
-        if: ${{ steps.versions.outputs.new_major > steps.versions.outputs.old_major || steps.versions.outputs.new_minor > steps.versions.outputs.old_minor }}
-        uses: WyriHaximus/github-action-create-milestone@master
-        with:
-          title: "v${{ steps.versions.outputs.new_ver }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Cut the release
         id: cut_release
         if: ${{ steps.versions.outputs.new_major > steps.versions.outputs.old_major || steps.versions.outputs.new_minor > steps.versions.outputs.old_minor }}

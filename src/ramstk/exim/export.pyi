@@ -21,9 +21,5 @@ class Export:
     def _do_export_to_excel(self, file_name: str) -> None:
         ...
 
-    @staticmethod
-    def _do_load_output(module: str) -> None:
-        ...
-
     def _do_load_data(self, tree: Tree) -> None:
         ...

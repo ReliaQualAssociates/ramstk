@@ -51,8 +51,10 @@ class ExportProject(RAMSTKFileChooser):
 
         self.set_current_folder(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
 
-        for _module in ['function', 'requirement', 'hardware', 'validation']:
-            pub.sendMessage('request_load_output', module=_module)
+        for _module in [
+                'functions', 'requirements', 'hardwares', 'validations'
+        ]:
+            pub.sendMessage('request_get_{0}_tree'.format(_module))
 
         self._do_select_file()
 
@@ -85,12 +87,13 @@ class ExportProject(RAMSTKFileChooser):
             if os.path.exists(_filename):
                 _dialog = RAMSTKMessageDialog(self._parent)
                 _dialog.do_set_message(
-                    _("File {0:s} already exists.  "
-                      "Overwrite?", ).format(_filename))
+                    _("File {0} already exists.  Overwrite?").format(
+                        _filename))
                 _dialog.do_set_message_type('question')
                 _response = _dialog.do_run()
                 if _response == Gtk.ResponseType.YES:
                     _dialog.destroy()
+                    os.remove(_filename)
                     _cansave = True
                 else:
                     _dialog.destroy()
@@ -98,9 +101,11 @@ class ExportProject(RAMSTKFileChooser):
                 _cansave = True
 
             if _cansave:
-                pub.sendMessage('request_export_data',
-                                file_type=_filetype,
-                                file_name=_filename)
+                pub.sendMessage(
+                    'request_export_data',
+                    file_type=_filetype,
+                    file_name=_filename,
+                )
             else:
                 self._do_select_file()
 
