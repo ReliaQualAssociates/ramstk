@@ -41,6 +41,7 @@ jobs:
           echo ${{ steps.nexttag.outputs.v_major }}
           echo ${{ steps.nexttag.outputs.v_minor }}
           echo ${{ steps.nexttag.outputs.v_patch }}
+          echo ${{ env.GITHUB_BASE_REF }}
 
       - name: Check for new patch version
         if: contains(steps.check_pr_labels.outputs.labels, ' patch ')
