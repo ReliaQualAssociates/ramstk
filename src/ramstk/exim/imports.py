@@ -3,10 +3,11 @@
 #       ramstk.exim.imports.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Import module."""
 
 # Standard Library Imports
+import inspect
 import math
 from collections import OrderedDict
 from datetime import date
@@ -23,6 +24,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability,
@@ -62,7 +64,6 @@ def _get_input_value(mapper: Dict[str, Any], df_row: pd.Series, field: str,
     :param mapper: the field mapping dict to use as the Rosetta stone.
     :param df_row: the row from the pandas DataFrame containing the input
         data.
-    :type df_row: :class:`pandas.Series`
     :param field: the name of the RAMSTK database field to retrieve the
         data for.
     :param default: the default value to assign to the field.
@@ -227,7 +228,6 @@ class Import:
 
         :param dao: the BaseDatabase() instance (data access object)
             representing the connected RAMSTK Program database.
-        :type dao: :class:`ramstk.db.base.BaseDatabase`
         """
         self._dao = dao
 
@@ -271,16 +271,28 @@ class Import:
 
         try:
             self._dao.do_insert_many(_entities)  # type: ignore
-            pub.sendMessage('succeed_import_module', module=module)
-        except AttributeError:
-            pub.sendMessage('fail_import_module', module=module)
+            pub.sendMessage(
+                'succeed_import_module',
+                module=module,
+            )
+        except (AttributeError, DataAccessError):
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: There was a problem importing {0} records.  '
+                'This is usually caused by key violations; check the '
+                'ID and/or parent ID fields in the import file.').format(
+                    module, _method_name)
+            pub.sendMessage(
+                'fail_import_module',
+                error_message=_error_msg,
+            )
 
     def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation:
         """Insert a new Allocation record to the RAMSTK database.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _allocation; an instance of the RAMSTKAllocation database
             table record.
         :rtype: :class:`ramstk.models.programdb.RAMSTKAllocation`
@@ -301,7 +313,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMMSTKDesignElectric`
         """
@@ -432,7 +443,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMMSTKDesignMechanic`
         """
@@ -557,7 +567,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.ramskfunction.RAMSTKFunction`
         """
@@ -583,7 +592,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.ramstkhardware.RAMSTKHardware`
         """
@@ -637,7 +645,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMSTKMilHdbkF`
         """
@@ -653,7 +660,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.ramstknswc.RAMSTKNSWC`
         """
@@ -669,7 +675,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMSTKReliability`
         """
@@ -717,7 +722,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMSTKRequirement`
         """
@@ -756,7 +760,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _similar_item; an instance of the RAMSTKSimilarItem database
             table record.
         :rtype: :class:`ramstk.models.programdb.RAMSTKSimilarItem`
@@ -778,7 +781,6 @@ class Import:
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :type row: :class:`pandas.Series`
         :return: _entity
         :rtype: :class:`ramstk.dao.programdb.RAMSTKValidation.RAMSTKValidation`
         """
@@ -852,7 +854,10 @@ class Import:
         for _field in self._dic_field_map[module]:
             _db_fields.append(_field)
 
-        pub.sendMessage('succeed_read_db_fields', db_fields=_db_fields)
+        pub.sendMessage(
+            'succeed_read_db_fields',
+            db_fields=_db_fields,
+        )
 
     def _do_read_file(self, file_type: str, file_name: str) -> None:
         """Read contents of input file into a pandas DataFrame().
@@ -879,6 +884,7 @@ class Import:
         elif file_type == 'excel':
             self._df_input_data = pd.read_excel(file_name)
 
-        pub.sendMessage('succeed_read_import_file',
-                        import_fields=list(
-                            self._df_input_data.axes[1].tolist()[1:]))
+        pub.sendMessage(
+            'succeed_read_import_file',
+            import_fields=list(self._df_input_data.axes[1].tolist()[1:]),
+        )

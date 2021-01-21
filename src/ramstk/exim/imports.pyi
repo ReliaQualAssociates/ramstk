@@ -6,6 +6,7 @@ import pandas as pd
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase as BaseDatabase
+from ramstk.exceptions import DataAccessError as DataAccessError
 from ramstk.models.programdb import RAMSTKNSWC as RAMSTKNSWC
 from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
 from ramstk.models.programdb import (

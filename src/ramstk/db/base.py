@@ -16,11 +16,12 @@ from psycopg2 import sql  # type: ignore
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT  # type: ignore
 from pubsub import pub
 # noinspection PyPackageRequirements
-from sqlalchemy import create_engine, exc  # type: ignore
+from sqlalchemy import create_engine, exc
 # noinspection PyPackageRequirements,PyProtectedMember
 from sqlalchemy.engine import Engine  # type: ignore
 # noinspection PyPackageRequirements
 from sqlalchemy.orm import query, scoped_session, sessionmaker  # type: ignore
+from sqlalchemy.orm.exc import FlushError  # type: ignore
 
 # RAMSTK Package Imports
 from ramstk.exceptions import DataAccessError
@@ -253,7 +254,20 @@ class BaseDatabase:
                 "do_insert: Database error when attempting to add a record.  "
                 "Database returned:\n\t{0:s}".format(
                     str(_error.orig.pgerror.split(':')[2].strip())))
-            pub.sendMessage('fail_insert_record', error_message=_error_message)
+            pub.sendMessage(
+                'fail_insert_record',
+                error_message=_error_message,
+            )
+            raise DataAccessError(_error_message) from _error
+        except FlushError as _error:
+            self.session.rollback()
+            _error_message = (
+                "do_insert: Flush error when attempting to add records.  "
+                "Database returned:\n\t{0:s}".format(str(_error)))
+            pub.sendMessage(
+                'fail_insert_record',
+                error_message=_error_message,
+            )
             raise DataAccessError(_error_message) from _error
 
     def do_insert_many(self, records: List[object]) -> None:

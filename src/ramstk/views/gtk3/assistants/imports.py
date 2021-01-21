@@ -1,11 +1,10 @@
-# pylint: disable=non-parent-init-called
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.assistants.imports.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle "weibullguy" Rowland
+# Copyright 2007 - 2021 Doyle "weibullguy" Rowland
 """Import Assistant Module."""
 
 # Standard Library Imports
@@ -56,15 +55,132 @@ class ImportProject(Gtk.Assistant):
         # Initialize public scalar variables.
         self.RAMSTK_USER_CONFIGURATION = configuration
 
-        self.__set_properties()
+        self.__do_set_properties()
         self.__make_ui()
-        self.__load_combobox()
-        self.__set_callbacks()
+        self.__do_load_combobox()
+        self.__do_set_callbacks()
 
         pub.subscribe(self._do_load_db_fields, 'succeed_read_db_fields')
         pub.subscribe(self._do_load_import_fields, 'succeed_read_import_file')
 
-    def __load_combobox(self) -> None:
+    def _do_edit_cell(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
+                      model: Gtk.TreeModel) -> None:
+        """Handle Gtk.CellRenderer() edits.
+
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
+                         was edited.
+        :param new_text: the new text in the edited Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
+        :return: None
+        :rtype: None
+        """
+        _page = self.get_nth_page(2)
+
+        _db_field = model[path][0]
+        model[path][1] = new_text
+
+        pub.sendMessage('request_map_to_field',
+                        module=self._module,
+                        import_field=new_text,
+                        format_field=_db_field)
+
+        self.set_page_complete(_page, True)
+
+    def _do_load_db_fields(self, db_fields: List[str]) -> None:
+        """Load the Rosetta stone with the names of database fields.
+
+        :param list db_fields: the list of database field names.
+        :return: None
+        :rtype: None
+        """
+        _model = self.tvwFieldMap.get_model()
+        _model.clear()
+
+        for _field in db_fields:
+            _model.append(None, [_field, ''])
+
+    def _do_load_import_fields(self, import_fields: List[str]) -> None:
+        """Load the Rosetta stone with the import file field names.
+
+        :param list import_fields: the list of field names found in the
+            import file.
+        :return: None
+        :rtype: None
+        """
+        _cell = self.tvwFieldMap.get_column(1).get_cells()[0]
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        _cellmodel.append([''])
+
+        # pylint: disable=unused-variable
+        for __, _field in enumerate(import_fields):
+            _cellmodel.append([_field])
+
+    def _do_quit(self, __widget: Gtk.Widget) -> None:
+        """Quit the RAMSTK Import Assistant.
+
+        :param __widget: the Gtk.Widget() that called this method.
+        :return: None
+        :rtype: None
+        """
+        self.destroy()
+
+    def _do_request_import(self, __assistant: Gtk.Assistant) -> None:
+        """Request the data controller import new records.
+
+        :param __assistant: this Gtk.Assistant() instance.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage(
+            'request_import',
+            module=self._module,
+        )
+
+    def _do_select_file(self, filechooser: Gtk.FileChooser) -> None:
+        """Select the input file to be read.
+
+        :param filechooser: the Gtk.FileChooser() that called this method.
+        :return: None
+        :rtype: None
+        """
+        _file_type = ''
+        _page = self.get_nth_page(1)
+
+        _file = filechooser.get_filename()
+        # pylint: disable=unused-variable
+        __, _extension = os.path.splitext(_file)
+
+        if _extension == '.csv':
+            _file_type = 'csv'
+        elif _extension == '.txt':
+            _file_type = 'text'
+        elif _extension in ['.xls', '.xlsx', '.xlsm']:
+            _file_type = 'excel'
+
+        if _file is not None:
+            pub.sendMessage('request_read_import_file',
+                            file_type=_file_type,
+                            file_name=_file)
+
+        self.set_page_complete(_page, True)
+
+    def _on_combo_changed(self, combo: RAMSTKComboBox) -> None:
+        """Respond to Gtk.ComboBox() 'changed' signals.
+
+        :param Gtk.ComboBox combo: the Gtk.ComboBox() that called this method.
+        :return: None
+        :rtype: None
+        """
+        self._module = combo.get_value()
+
+        pub.sendMessage(
+            'request_db_fields',
+            module=self._module,
+        )
+
+    def __do_load_combobox(self) -> None:
         """Load the RAMSTKComboBox() widgets.
 
         :return: None
@@ -75,6 +191,48 @@ class ImportProject(Gtk.Assistant):
                                             [_("Hardware")],
                                             [_("Validation")]])
         self.cmbSelectModule.set_active(1)
+
+    def __do_set_callbacks(self) -> None:
+        """Set the callback methods and functions.
+
+        :return: None
+        :rtype: None
+        """
+        self.connect('cancel', self._do_quit)
+        self.connect('close', self._do_quit)
+        self.connect('apply', self._do_request_import)
+
+        # ----- COMBOBOX
+        self.cmbSelectModule.dic_handler_id[
+            'changed'] = self.cmbSelectModule.connect('changed',
+                                                      self._on_combo_changed)
+
+        # ----- FILECHOOSER
+        self._filechooser.connect('selection_changed', self._do_select_file)
+
+    def __do_set_properties(self) -> None:
+        """Set the properties of the Import Assistant and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.set_property('title', _("RAMSTK Import Assistant"))
+        self.resize(800, 400)
+        self.move(200, 100)
+
+        # ----- FILECHOOSER
+        _filefilter = Gtk.FileFilter()
+        _filefilter.set_name(_("Delimited Text Files"))
+        _filefilter.add_pattern('*.csv')
+        _filefilter.add_pattern('*.txt')
+        self._filechooser.add_filter(_filefilter)
+
+        _filefilter = Gtk.FileFilter()
+        _filefilter.set_name(_("Excel Files"))
+        _filefilter.add_pattern('*.xls*')
+        self._filechooser.add_filter(_filefilter)
+        self._filechooser.set_current_folder(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
 
     def __make_confirm_page(self):
         """Make the Import Assistant confirmation page.
@@ -203,161 +361,3 @@ class ImportProject(Gtk.Assistant):
         self.__make_confirm_page()
 
         self.show_all()
-
-    def __set_callbacks(self) -> None:
-        """Set the callback methods and functions.
-
-        :return: None
-        :rtype: None
-        """
-        self.connect('cancel', self._do_quit)
-        self.connect('close', self._do_quit)
-        self.connect('apply', self._do_request_import)
-
-        # ----- COMBOBOX
-        self.cmbSelectModule.dic_handler_id[
-            'changed'] = self.cmbSelectModule.connect('changed',
-                                                      self._on_combo_changed)
-
-        # ----- FILECHOOSER
-        self._filechooser.connect('selection_changed', self._do_select_file)
-
-    def __set_properties(self) -> None:
-        """Set the properties of the Import Assistant and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.set_property('title', _("RAMSTK Import Assistant"))
-        self.resize(800, 400)
-        self.move(200, 100)
-
-        # ----- FILECHOOSER
-        _filefilter = Gtk.FileFilter()
-        _filefilter.set_name(_("Delimited Text Files"))
-        _filefilter.add_pattern('*.csv')
-        _filefilter.add_pattern('*.txt')
-        self._filechooser.add_filter(_filefilter)
-
-        _filefilter = Gtk.FileFilter()
-        _filefilter.set_name(_("Excel Files"))
-        _filefilter.add_pattern('*.xls*')
-        self._filechooser.add_filter(_filefilter)
-        self._filechooser.set_current_folder(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
-
-    def _do_edit_cell(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      model: Gtk.TreeModel) -> None:
-        """Handle Gtk.CellRenderer() edits.
-
-        :param __cell: the Gtk.CellRenderer() that was edited.
-        :type __cell: :class:`Gtk.CellRenderer`
-        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
-                         was edited.
-        :param new_text: the new text in the edited Gtk.CellRenderer().
-        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
-        :type model: :class:`Gtk.TreeModel`
-        :return: None
-        :rtype: None
-        """
-        _page = self.get_nth_page(2)
-
-        _db_field = model[path][0]
-        model[path][1] = new_text
-
-        pub.sendMessage('request_map_to_field',
-                        module=self._module,
-                        import_field=new_text,
-                        format_field=_db_field)
-
-        self.set_page_complete(_page, True)
-
-    def _do_load_db_fields(self, db_fields: List[str]) -> None:
-        """Load the Rosetta stone with the names of database fields.
-
-        :param list db_fields: the list of database field names.
-        :return: None
-        :rtype: None
-        """
-        _model = self.tvwFieldMap.get_model()
-        _model.clear()
-
-        for _field in db_fields:
-            _model.append(None, [_field, ''])
-
-    def _do_load_import_fields(self, import_fields: List[str]) -> None:
-        """Load the Rosetta stone with the import file field names.
-
-        :param list import_fields: the list of field names found in the
-            import file.
-        :return: None
-        :rtype: None
-        """
-        _cell = self.tvwFieldMap.get_column(1).get_cells()[0]
-        _cellmodel = _cell.get_property('model')
-        _cellmodel.clear()
-        _cellmodel.append([''])
-
-        # pylint: disable=unused-variable
-        for __, _field in enumerate(import_fields):
-            _cellmodel.append([_field])
-
-    def _do_quit(self, __widget: Gtk.Widget) -> None:
-        """Quit the RAMSTK Import Assistant.
-
-        :param __widget: the Gtk.Widget() that called this method.
-        :type __widget: :class:`Gtk.Widget`
-        :return: None
-        :rtype: None
-        """
-        self.destroy()
-
-    def _do_request_import(self, __assistant: Gtk.Assistant) -> None:
-        """Request the data controller import new records.
-
-        :param __assistant: this Gtk.Assistant() instance.
-        :type __assistant: :class:`Gtk.Assistant`
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('request_import', module=self._module)
-
-    def _do_select_file(self, filechooser: Gtk.FileChooser) -> None:
-        """Select the input file to be read.
-
-        :param filechooser: the Gtk.FileChooser() that called this method.
-        :type filechooser: :class:`Gtk.FileChooser`
-        :return: None
-        :rtype: None
-        """
-        _file_type = ''
-        _page = self.get_nth_page(1)
-
-        _file = filechooser.get_filename()
-        # pylint: disable=unused-variable
-        __, _extension = os.path.splitext(_file)
-
-        if _extension == '.csv':
-            _file_type = 'csv'
-        elif _extension == '.txt':
-            _file_type = 'text'
-        elif _extension in ['.xls', '.xlsx', '.xlsm']:
-            _file_type = 'excel'
-
-        if _file is not None:
-            pub.sendMessage('request_read_import_file',
-                            file_type=_file_type,
-                            file_name=_file)
-
-        self.set_page_complete(_page, True)
-
-    def _on_combo_changed(self, combo: RAMSTKComboBox) -> None:
-        """Respond to Gtk.ComboBox() 'changed' signals.
-
-        :param Gtk.ComboBox combo: the Gtk.ComboBox() that called this method.
-        :return: None
-        :rtype: None
-        """
-        self._module = combo.get_value()
-
-        pub.sendMessage('request_db_fields', module=self._module)
