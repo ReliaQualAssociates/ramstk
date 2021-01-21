@@ -1,19 +1,21 @@
-name: Draft Release
+name: Draft Next Release
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
 jobs:
   draft_release:
-    name: Draft or Update Release
+    name: Draft Next Release
+    if: startsWith(github.head_ref, 'bump_version_files') == false && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref }}
 
       - name: Get PR labels
         id: check_pr_labels
@@ -52,6 +54,11 @@ jobs:
           echo "do_bump=1" >> $GITHUB_ENV
           echo "do_release=1" >> $GITHUB_ENV
 
+      - name: Check if VERSION has already been updated
+        run: |
+          file_ver=$(cat VERSION)
+          if [ $file_ver == ${{ env.RAMSTK_NEXT_VER }} ]; then echo "do_bump=0" >> $GITHUB_ENV; fi
+
       - name: Update VERSION and pyproject.toml file
         if: ${{ env.do_bump == 1 }}
         run: |
@@ -69,22 +76,14 @@ jobs:
           commit-message: Bump version files
           title: "chore: bump version files"
           body: Bump VERSION and pyproject.toml to next version.
-          branch: chore/bump_version_files
-          base: master
+          branch: bump_version_files/${{ github.head_ref }}
 
       - name: Draft release notes
         if: ${{ env.do_release == 1}}
         uses: release-drafter/release-drafter@master
         with:
-          name: "v${{ env.RAMSTK_NEXT_VER }}"
-          tag: "v${{ env.RAMSTK_NEXT_VER }}"
+          name: "latest"
+          tag: "latest"
           version: "${{ env.RAMSTK_NEXT_VER }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update CHANGELOG.md and cut release PR
-        if: $${{ env.do_release == 1 }}
-        uses: patrickjahns/chlgr@v1
-        with:
-          release-version: "v${{ env.RAMSTK_NEXT_VER }}"
-          release-branch: "release/v${{ env.RAMSTK_NEXT_VER }}"

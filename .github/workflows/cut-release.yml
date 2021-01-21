@@ -1,50 +1,17 @@
-name: Cut New Release
+name: Cut Tagged Release
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - "v*"
 
 jobs:
-  tag_and_release:
-    name: Tag and Release
+  tagged_release:
+    name: Release Tagged Version
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          fetch-depth: 0
-
-      - name: Get version information
-        id: versions
-        run: |
-          cur_ver=$(git describe --abbrev=0 --tags)
-          new_ver=$(cat VERSION)
-          echo "::set-output name=new_ver::$(echo $new_ver)"
-          echo "::set-output name=new_major::$(echo $new_ver | cut -d '.' -f1)\n"
-          echo "::set-output name=new_minor::$(echo $new_ver | cut -d '.' -f2)\n"
-          echo "::set-output name=new_patch::$(echo $new_ver | cut -d '.' -f3)\n"
-          echo "::set-output name=old_major::$(echo $cur_ver | cut -d '.' -f1)\n"
-          echo "::set-output name=old_minor::$(echo $cur_ver | cut -d '.' -f2)\n"
-          echo "::set-output name=old_patch::$(echo $cur_ver | cut -d '.' -f3)\n"
-
-      - name: Tag master
-        if: ${{ steps.versions.outputs.new_major > steps.versions.outputs.old_major || steps.versions.outputs.new_minor > steps.versions.outputs.old_minor }}
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -a -m"v${{ steps.versions.outputs.new_ver }}" v${{ steps.versions.outputs.new_ver }}
-          git push --tags
-
-      - name: Cut the release
-        id: cut_release
-        if: ${{ steps.versions.outputs.new_major > steps.versions.outputs.old_major || steps.versions.outputs.new_minor > steps.versions.outputs.old_minor }}
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ steps.versions.outputs.new_ver }}
-          release_name: v${{ steps.versions.outputs.new_ver }}
-          body_path: CHANGELOG.md
-          draft: false
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

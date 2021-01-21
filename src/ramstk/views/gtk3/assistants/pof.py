@@ -3,7 +3,7 @@
 #       ramstk.views.gtk3.assistants.fmea.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK (D)FME(C)A Assistants Module."""
 
 # RAMSTK Package Imports
@@ -37,7 +37,14 @@ class AddStressTestMethod(RAMSTKDialog):
 
         self.__make_ui()
 
-    def __make_ui(self):
+    def _cancel(self, __button: Gtk.Button) -> None:
+        """Destroy the assistant when the 'Cancel' button is pressed.
+
+        :param __button: the Gtk.Button() that called this method.
+        """
+        self.destroy()
+
+    def __make_ui(self) -> None:
         """Build the user interface.
 
         :return: None
@@ -69,11 +76,3 @@ class AddStressTestMethod(RAMSTKDialog):
         _fixed.show_all()
 
         self.set_default_size(250, -1)
-
-    def _cancel(self, __button):
-        """Destroy the assistant when the 'Cancel' button is pressed.
-
-        :param __button: the Gtk.Button() that called this method.
-        :type __button: :class:`Gtk.Button`
-        """
-        self.destroy()
