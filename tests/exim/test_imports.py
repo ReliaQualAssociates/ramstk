@@ -39,8 +39,11 @@ class TestImport():
         assert module == 'Function'
         print("\033[36m\nsucceed_import_module topic was broadcast.")
 
-    def on_fail_import_function(self, module):
-        assert module == 'Function'
+    def on_fail_import_function(self, error_message):
+        assert error_message == ('_do_import: There was a problem importing '
+                                 'Function records.  This is usually caused '
+                                 'by key violations; check the ID and/or '
+                                 'parent ID fields in the import file.')
         print("\033[35m\nfail_import_module topic was broadcast.")
 
     def on_succeed_import_requirement(self, module):
