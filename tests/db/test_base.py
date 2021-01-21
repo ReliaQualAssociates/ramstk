@@ -589,8 +589,5 @@ class TestSelectMethods():
 
         DUT.do_disconnect()
 
-        assert 'ramstk_test_db' in _databases
-        assert 'ramstk_common_ramstk' in _databases
         assert 'TestCommonDB' in _databases
         assert 'TestProgramDB' in _databases
-        assert 'ramstk_test_db_2' in _databases
