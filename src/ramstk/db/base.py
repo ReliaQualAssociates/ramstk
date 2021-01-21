@@ -175,9 +175,6 @@ class BaseDatabase:
         :return: None
         :rtype: None
         """
-        if self.cxnargs['dialect'] == 'sqlite':
-            self.session.execute("PRAGMA foreign_keys=ON")
-
         try:
             self.session.delete(item)
             self.session.commit()
@@ -386,7 +383,7 @@ class BaseDatabase:
 
         try:
             _last_id = self.session.execute(_sql_statement).first()[0]
-        except TypeError:
+        except (exc.ProgrammingError, TypeError):
             _last_id = 0
 
         return _last_id
