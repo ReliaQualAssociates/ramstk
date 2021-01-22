@@ -874,7 +874,7 @@ class FMEAPanel(RAMSTKPanel):
         self._lst_missions = []
         _model.append([""])
         for _node in tree.children(tree.root):
-            _lst_phases: List[str] = []
+            _lst_phases: List[str] = ['']
 
             _mission = _node.data['usage_profile'].get_attributes(
             )['description']
@@ -926,19 +926,15 @@ class FMEAPanel(RAMSTKPanel):
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"],
                                                        22, 22)
 
-        _mission = self._lst_missions[int(_entity.mission) - 1]
-        _mission_phase = self._dic_mission_phases[_mission][
-            int(_entity.mission_phase) - 1]
-
         _attributes = [
-            node.identifier, _entity.description, _mission, _mission_phase,
-            _entity.effect_local, _entity.effect_next, _entity.effect_end,
-            _entity.detection_method, _entity.other_indications,
-            _entity.isolation_method, _entity.design_provisions,
-            _entity.operator_actions, _entity.severity_class,
-            _entity.hazard_rate_source, _entity.mode_probability,
-            _entity.effect_probability, _entity.mode_ratio,
-            _entity.mode_hazard_rate, _entity.mode_op_time,
+            node.identifier, _entity.description, _entity.mission,
+            _entity.mission_phase, _entity.effect_local, _entity.effect_next,
+            _entity.effect_end, _entity.detection_method,
+            _entity.other_indications, _entity.isolation_method,
+            _entity.design_provisions, _entity.operator_actions,
+            _entity.severity_class, _entity.hazard_rate_source,
+            _entity.mode_probability, _entity.effect_probability,
+            _entity.mode_ratio, _entity.mode_hazard_rate, _entity.mode_op_time,
             _entity.mode_criticality, "", _severity, "", "", 0, "", "", "", "",
             "", 0, "", 0, "", _severity_new, "", "", 0, _entity.critical_item,
             _entity.single_point, 0, _entity.remarks, _icon
