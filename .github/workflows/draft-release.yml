@@ -24,9 +24,7 @@ jobs:
       - name: Get previous tag
         id: previoustag
         run: |
-          sha=$(git rev-list --tags --max-count=1 --skip=1)
-          tag=$(git describe | cut -d '-' -f1)
-          echo "::set-output name=tag::tag"
+          echo "::set-output name=tag::$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)"
 
       - name: Get next semantic version
         id: nexttag
