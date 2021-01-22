@@ -23,11 +23,10 @@ jobs:
 
       - name: Get previous tag
         id: previoustag
-        uses: weibullguy/github-action-get-previous-tag@master
-        with:
-          skip-tags: 1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sha=$(git rev-list --tags --max-count=1 --skip=1)
+          tag=$(git describe | cut -d '-' -f1)
+          echo "::set-output name=tag::tag"
 
       - name: Get next semantic version
         id: nexttag
