@@ -54,6 +54,7 @@ jobs:
           echo "do_release=1" >> $GITHUB_ENV
 
       - name: Check if VERSION has already been updated
+        if: ${{ env.do_bump == 1 }}
         run: |
           file_ver=$(cat VERSION)
           if [ $file_ver == ${{ env.RAMSTK_NEXT_VER }} ]; then echo "do_bump=0" >> $GITHUB_ENV; fi
