@@ -23,7 +23,7 @@ jobs:
 
       - name: Get previous tag
         id: previoustag
-        uses: weibullguy/github-action-get-previous-tag@v1
+        uses: weibullguy/github-action-get-previous-tag@master
         with:
           skip-tags: 1
         env:
