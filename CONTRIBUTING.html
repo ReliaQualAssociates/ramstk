@@ -168,6 +168,27 @@ done
 <li><p>Avoid platform-dependent code.</p></li>
 </ul>
 </div>
+<div class="section" id="branch-naming">
+<h4>Branch Naming<a class="headerlink" href="#branch-naming" title="Permalink to this headline">¶</a></h4>
+<p>RAMSTK uses GitHub actions to manage tagging and releasing.  Conditional actions are often based on pull request labels.  These labels, in turn, are automatically applied based on branch names.</p>
+<p>Major version bumps will occur whenever a pull request has the label ‘major’.  Major version changes seldom occur and, as such, will be labeled manually.  Minor and patch version bumps will occur when a pull request has the label ‘minor’ and ‘patch’ respectively.</p>
+<p>RAMSTK uses a GitHub action to apply the ‘minor’ and ‘patch’ labels to a pull request.  These labels are applied based on the pull request’s base branch name.  The file .gihub/pr-labeler.yml contains the up to date mapping between branch name and pull request label.  At the time of writing, the mapping is as follows:</p>
+<p>| Branch Name |      Label(s)      |
+| ———– | :—————– |
+| feature/*   | feature, minor     |
+| feat/*      | feature, minor     |
+| fix/*       | bug, patch         |
+| bugfix/*    | bug, patch         |
+| hotfix/*    | bug, patch         |
+| enhance/*   | enhancement, patch |
+| chore/*     | chore              |
+| test/*      | chore, quality     |
+| tests/*     | chore, quality     |
+| refactor/*  | chore, quality     |
+| doc/*       | docs               |
+| docs/*      | docs               |</p>
+<p>Please adhere to the branch naming convention above if you plan to open a pull request against RAMSTK.</p>
+</div>
 <div class="section" id="git-commit-messages">
 <h4>Git Commit Messages<a class="headerlink" href="#git-commit-messages" title="Permalink to this headline">¶</a></h4>
 <p>There is a commit message template in the root directory for RAMSTK named .gitcommitmessage.txt.  Use this template to build commit messages.</p>
@@ -186,16 +207,16 @@ done
 <h4>ISSUE Comments<a class="headerlink" href="#issue-comments" title="Permalink to this headline">¶</a></h4>
 <p>When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add an ISSUE comment using the following format:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ISSUE: &lt;One-line description of required work.</span>
-<span class="c1"># //</span>
-<span class="c1"># // Long and detailed description of work to be performed.</span>
+<span class="c1">#</span>
+<span class="c1"># Long and detailed description of work to be performed.</span>
 </pre></div>
 </div>
-<p>The github action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.</p>
+<p>The github action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.</p>
 </div>
 </div>
 <div class="section" id="process-guidelines">
 <h3>Process Guidelines<a class="headerlink" href="#process-guidelines" title="Permalink to this headline">¶</a></h3>
-<p>RAMSTK uses:</p>
+<p>RAMSTK attempts to use:</p>
 <ul class="simple">
 <li><p>Test driven development</p></li>
 <li><p>Trunk based development</p></li>
@@ -217,15 +238,43 @@ done
 <div class="section" id="always-statically-check-your-code">
 <h4>Always Statically Check Your Code<a class="headerlink" href="#always-statically-check-your-code" title="Permalink to this headline">¶</a></h4>
 <p>Statically check every file you edit between commits.  At a minimum, the following static checkers should be used:</p>
+<p>The Makefile in the root directory can be used to integrate these checkers with your editor/IDE if needed.  Depending on your editor/IDE and prefered workflow, you might have some or all run automatically as you code.  The current Makefile targets and tools associated with each are:</p>
+<p>| Makefile Target |     Tools    |
+| ————–: | :———– |
+| format          | yapf         |
+|                 | isort        |
+|                 | docformatter |
+| stylecheck      | pycodestyle  |
+|                 | pydocstyle   |
+| typecheck       | mypy         |
+| lint            | pylint       |
+| maintain        | mccabe       |
+|                 | radon mi     |
+|                 | radon hal    |
+|                 | radon cc     |</p>
+<p>My preference is to code, periodically run the checks above, and fix the errors/warnings raised.  Configuration for the various tools is found in either pyproject.toml or setup.cfg.  It is preferred that pyproject.toml be used if possible.</p>
+<p>When using pylint, the goal is not to achieve a score of 10/10, it is to create standard, maintainable code.  You are encouraged to aggressively refactor any code.  At a minimum, submit a quality type issue describing the proposed refactoring for you or another developer to work on later.</p>
+<p>In addition, it is recommended you install the pre-commit tasks found in .pre-commit-config.yaml.  This will result in the following checks being made before the commit:</p>
 <ul class="simple">
-<li><p>isort</p></li>
-<li><p>yapf</p></li>
-<li><p>pylint</p></li>
-<li><p>pycodestyle</p></li>
-<li><p>pydocstyle</p></li>
-<li><p>bandit</p></li>
+<li><p>Check docstring is first</p></li>
+<li><p>Check for merge conflicts</p></li>
+<li><p>Lint check TOML files</p></li>
+<li><p>Lint check yaml files</p></li>
+<li><p>Check for debug statements</p></li>
+<li><p>Fix end of files</p></li>
+<li><p>Prevent commits to the master branch</p></li>
+<li><p>Trim trailing whitespace</p></li>
+<li><p>Check code formatting with yapf</p></li>
+<li><p>Check import statements with isort</p></li>
+<li><p>Check docstring formatting with docformatter</p></li>
+<li><p>Check code style with pycodestyle</p></li>
+<li><p>Check docstring style with pydocstyle</p></li>
+<li><p>Check type hinting with mypy</p></li>
+<li><p>Check for lint with pylint</p></li>
+<li><p>Check for commented-out code with eradicate</p></li>
+<li><p>Check MANIFEST.in with check-manifest</p></li>
+<li><p>Check for packaging errors with pyroma</p></li>
 </ul>
-<p>The RunTests.py file in the tests directory can be used to integrate these checkers with your editor/IDE if needed.  Depending on your editor/IDE and prefered workflow, you might have some or all run automatically as you code.  My preference is code, static check periodically, and fix the errors/warnings raised.  When using pylint, the goal is not to acheive a score of 10/10, it is to create standard, maintainable code.  You are encouraged to aggressively refactor any code.  At a minimum, submit a quality type issue describing the proposed refactoring for you or another developer to work on later.</p>
 </div>
 <div class="section" id="double-check-before-you-create-a-pull-request">
 <h4>Double Check Before You Create a Pull Request<a class="headerlink" href="#double-check-before-you-create-a-pull-request" title="Permalink to this headline">¶</a></h4>
@@ -272,6 +321,7 @@ done
 <li><a class="reference internal" href="#for-developers-eyes-only">For Developers’ Eyes Only</a><ul>
 <li><a class="reference internal" href="#style-guidelines">Style Guidelines</a><ul>
 <li><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
+<li><a class="reference internal" href="#branch-naming">Branch Naming</a></li>
 <li><a class="reference internal" href="#git-commit-messages">Git Commit Messages</a></li>
 <li><a class="reference internal" href="#always-add-descriptive-log-messages">Always Add Descriptive Log Messages</a></li>
 <li><a class="reference internal" href="#use-issue-system-numbers">Use Issue System Numbers</a></li>
