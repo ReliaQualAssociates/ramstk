@@ -48,7 +48,7 @@ jobs:
 
           echo "::set-output name=new_ver::$(echo $file_ver)"
 
-          if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]]; then echo "do_tag=1" >> $GITHUB_ENV
+          if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]]; then echo "do_tag=1" >> $GITHUB_ENV; fi
 
       - name: Tag master
         if: ${{ env.do_tag == 1 }}
