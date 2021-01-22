@@ -1,10 +1,11 @@
+# pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.programdb.RAMSTKMissionPhase.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMissionPhase Table Module."""
 
 # Third Party Imports

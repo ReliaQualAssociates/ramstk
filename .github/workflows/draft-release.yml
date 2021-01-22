@@ -23,9 +23,8 @@ jobs:
 
       - name: Get previous tag
         id: previoustag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "::set-output name=tag::$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)"
 
       - name: Get next semantic version
         id: nexttag
@@ -55,6 +54,7 @@ jobs:
           echo "do_release=1" >> $GITHUB_ENV
 
       - name: Check if VERSION has already been updated
+        if: ${{ env.do_bump == 1 }}
         run: |
           file_ver=$(cat VERSION)
           if [ $file_ver == ${{ env.RAMSTK_NEXT_VER }} ]; then echo "do_bump=0" >> $GITHUB_ENV; fi

@@ -124,6 +124,31 @@ Please refer to the RAMSTK Coding Standards.
 * End all files with a newline.
 * Avoid platform-dependent code.
 
+#### Branch Naming
+
+RAMSTK uses GitHub actions to manage tagging and releasing.  Conditional actions are often based on pull request labels.  These labels, in turn, are automatically applied based on branch names.
+
+Major version bumps will occur whenever a pull request has the label 'major'.  Major version changes seldom occur and, as such, will be labeled manually.  Minor and patch version bumps will occur when a pull request has the label 'minor' and 'patch' respectively.
+
+RAMSTK uses a GitHub action to apply the 'minor' and 'patch' labels to a pull request.  These labels are applied based on the pull request's base branch name.  The file .gihub/pr-labeler.yml contains the up to date mapping between branch name and pull request label.  At the time of writing, the mapping is as follows:
+
+   | Branch Name |      Label(s)      |
+   | ----------- | :----------------- |
+   | feature/*   | feature, minor     |
+   | feat/*      | feature, minor     |
+   | fix/*       | bug, patch         |
+   | bugfix/*    | bug, patch         |
+   | hotfix/*    | bug, patch         |
+   | enhance/*   | enhancement, patch |
+   | chore/*     | chore              |
+   | test/*      | chore, quality     |
+   | tests/*     | chore, quality     |
+   | refactor/*  | chore, quality     |
+   | doc/*       | docs               |
+   | docs/*      | docs               |
+
+Please adhere to the branch naming convention above if you plan to open a pull request against RAMSTK.
+
 #### Git Commit Messages
 
 There is a commit message template in the root directory for RAMSTK named .gitcommitmessage.txt.  Use this template to build commit messages.
@@ -145,14 +170,14 @@ This doesn't mean that you don't need an understandable log message.  It should 
 When working on an issue, pull request, etc., you very well may find a section of code that needs work.  If this section of code is within the scope of your work, make the changes.  If it is out of scope, add an ISSUE comment using the following format:
 
     # ISSUE: <One-line description of required work.
-    # //
-    # // Long and detailed description of work to be performed.
+    #
+    # Long and detailed description of work to be performed.
 
-The github action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the develop or master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
+The github action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
 
 ### Process Guidelines
 
-RAMSTK uses:
+RAMSTK attempts to use:
 
 * Test driven development
 * Trunk based development
@@ -176,14 +201,46 @@ Run the code and correct all errors before committing.  Make sure that newly add
 
 Statically check every file you edit between commits.  At a minimum, the following static checkers should be used:
 
-* isort
-* yapf
-* pylint
-* pycodestyle
-* pydocstyle
-* bandit
+The Makefile in the root directory can be used to integrate these checkers with your editor/IDE if needed.  Depending on your editor/IDE and prefered workflow, you might have some or all run automatically as you code.  The current Makefile targets and tools associated with each are:
 
-The RunTests.py file in the tests directory can be used to integrate these checkers with your editor/IDE if needed.  Depending on your editor/IDE and prefered workflow, you might have some or all run automatically as you code.  My preference is code, static check periodically, and fix the errors/warnings raised.  When using pylint, the goal is not to acheive a score of 10/10, it is to create standard, maintainable code.  You are encouraged to aggressively refactor any code.  At a minimum, submit a quality type issue describing the proposed refactoring for you or another developer to work on later.
+   | Makefile Target |     Tools    |
+   | --------------: | :----------- |
+   | format          | yapf         |
+   |                 | isort        |
+   |                 | docformatter |
+   | stylecheck      | pycodestyle  |
+   |                 | pydocstyle   |
+   | typecheck       | mypy         |
+   | lint            | pylint       |
+   | maintain        | mccabe       |
+   |                 | radon mi     |
+   |                 | radon hal    |
+   |                 | radon cc     |
+
+My preference is to code, periodically run the checks above, and fix the errors/warnings raised.  Configuration for the various tools is found in either pyproject.toml or setup.cfg.  It is preferred that pyproject.toml be used if possible.
+
+When using pylint, the goal is not to achieve a score of 10/10, it is to create standard, maintainable code.  You are encouraged to aggressively refactor any code.  At a minimum, submit a quality type issue describing the proposed refactoring for you or another developer to work on later.
+
+In addition, it is recommended you install the pre-commit tasks found in .pre-commit-config.yaml.  This will result in the following checks being made before the commit:
+
+   * Check docstring is first
+   * Check for merge conflicts
+   * Lint check TOML files
+   * Lint check yaml files
+   * Check for debug statements
+   * Fix end of files
+   * Prevent commits to the master branch
+   * Trim trailing whitespace
+   * Check code formatting with yapf
+   * Check import statements with isort
+   * Check docstring formatting with docformatter
+   * Check code style with pycodestyle
+   * Check docstring style with pydocstyle
+   * Check type hinting with mypy
+   * Check for lint with pylint
+   * Check for commented-out code with eradicate
+   * Check MANIFEST.in with check-manifest
+   * Check for packaging errors with pyroma
 
 #### Double Check Before You Create a Pull Request
 

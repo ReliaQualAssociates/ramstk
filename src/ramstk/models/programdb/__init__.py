@@ -1,10 +1,10 @@
-# pylint: disable=unused-import
+# pylint: disable=duplicate-code# pylint: disable=unused-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.programdb.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK program database models package."""
 
 # RAMSTK Local Imports
