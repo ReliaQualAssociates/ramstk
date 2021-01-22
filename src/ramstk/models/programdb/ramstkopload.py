@@ -1,9 +1,10 @@
+# pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.programdb.RAMSTKOpLoad.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKOpLoad Table Module."""
 
 # Third Party Imports
