@@ -110,7 +110,9 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
     def __init__(self) -> None:
         ...
 
-    def _do_load_derating_curve(self, attributes: Dict[str, Any]) -> None:
+    def _do_load_derating_curve(self,
+                                attributes: Dict[str, Any],
+                                stress: str = ...) -> None:
         ...
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:

@@ -572,20 +572,21 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         pub.subscribe(self._do_load_panel,
                       'succeed_get_all_hardware_attributes')
 
-    def _do_load_derating_curve(self, attributes: Dict[str, Any]) -> None:
+    def _do_load_derating_curve(self,
+                                attributes: Dict[str, Any],
+                                stress: str = 'voltage') -> None:
         """Load the benign and harsh environment derating curves.
 
         :return: None
         :rtype: None
         """
-        # Plot the derating curve.
+        # Plot the derating curves.
         _x = [
             float(attributes['temperature_rated_min']),
             float(attributes['temperature_knee']),
             float(attributes['temperature_rated_max'])
         ]
 
-        self.pltPlot.axis.cla()
         self.pltPlot.axis.grid(True, which='both')
 
         self.pltPlot.do_load_plot(x_values=_x,
@@ -596,24 +597,26 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
                                   y_values=self._lst_derate_criteria[1],
                                   marker='b.-')
 
-        self.pltPlot.do_load_plot(x_values=[attributes['temperature_active']],
-                                  y_values=[attributes['voltage_ratio']],
-                                  marker='go')
+        self.pltPlot.do_load_plot(
+            x_values=[attributes['temperature_active']],
+            y_values=[attributes['{}_ratio'.format(stress)]],
+            marker='go')
 
         self.pltPlot.do_make_title(
-            _("Voltage Derating Curve for {0:s} at {1:s}").format(
-                attributes['part_number'], attributes['ref_des']),
+            _("{2} Derating Curve for {0} at {1}").format(
+                attributes['part_number'], attributes['ref_des'],
+                stress.title()),
             fontsize=12)
 
         self.pltPlot.do_make_legend(
             (_("Harsh Environment"), _("Mild Environment"),
-             _("Voltage Operating Point")))
+             _("{} Operating Point").format(stress.title())))
 
         self.pltPlot.do_make_labels(_("Temperature (\u2070C)"),
                                     x_pos=0,
                                     y_pos=-0.2,
                                     fontsize=10)
-        self.pltPlot.do_make_labels(_("Voltage Ratio"),
+        self.pltPlot.do_make_labels(_("{} Ratio").format(stress.title()),
                                     x_pos=-1,
                                     y_pos=0,
                                     set_x=False,
@@ -640,7 +643,13 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         self.chkOverstress.set_active(attributes['overstress'])
         self.txtReason.do_update(attributes['reason'])
 
-        self._do_load_derating_curve(attributes)
+        self.pltPlot.axis.cla()
+        if attributes['category_id'] in [2, 4]:
+            self._do_load_derating_curve(attributes, stress='voltage')
+        elif attributes['category_id'] == 3:
+            self._do_load_derating_curve(attributes, stress='power')
+        elif attributes['category_id'] in [6, 7]:
+            self._do_load_derating_curve(attributes, stress='current')
 
     def __make_ui(self) -> None:
         """Make the Hardware stress results page.
