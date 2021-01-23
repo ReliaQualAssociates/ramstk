@@ -23,6 +23,64 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
 
 
+def hazard_rate_from_specified_mtbf(mtbf: float, time: float = 1.0) -> float:
+    """Calculate the hazard rate given an MTBF.
+
+    This function calculates the hazard rate given an MTBF assuming an
+    exponential distribution.
+
+        >>> hazard_rate_from_specified_mtbf(10000.0, 1000000.0)
+        100.0
+
+        >>> hazard_rate_from_specified_mtbf(10000.0)
+        0.0001
+
+        >>> hazard_rate_from_specified_mtbf(0.0)
+        0.0
+
+    :param mtbf: the mean time between failure to convert to a hazard rate.
+    :param time: the time multiplier for the hazard rate.
+    :return: _hazard_rate; the hazard rate equivalent of the MTBF.
+    :rtype: float
+    """
+    try:
+        _hazard_rate = time / mtbf
+    except ZeroDivisionError:
+        _hazard_rate = 0.0
+
+    return _hazard_rate
+
+
+def mtbf_from_specified_hazard_rate(hazard_rate: float,
+                                    time: float = 1.0) -> float:
+    """Calculate the MTBF given a hazard rate.
+
+    This function calculates the MTBF given a hazard rate and assuming an
+    exponential distribution.
+
+        >>> mtbf_from_specified_hazard_rate(100.0, 1000000.0)
+        10000.0
+
+        >>> mtbf_from_specified_hazard_rate(0.0001)
+        10000.0
+
+        >>> mtbf_from_specified_hazard_rate(0.0)
+        1.0
+
+    :param hazard_rate: the hazard rate to convert to a mean time between
+        failure.
+    :param time: the time multiplier for the hazard rate.
+    :return: _hazard_rate; the hazard rate equivalent of the MTBF.
+    :rtype: float
+    """
+    try:
+        _mtbf = time / hazard_rate
+    except ZeroDivisionError:
+        _mtbf = 1.0
+
+    return _mtbf
+
+
 class AnalysisManager(RAMSTKAnalysisManager):
     """Contain the attributes and methods of the Hardware analysis manager.
 
@@ -166,7 +224,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :param node: the treelib.Node() at the top of the tree to to calculate.
         :return: _hazard_rate_active; the active hazard rate.
         :rtype: float
-        :raises: ZeroDivisionError when the specified MTBF is zero.
         """
         # ISSUE: Refactor _do_calculate_hazard_rates() to reduce complexity.
         # //
@@ -178,7 +235,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         _hardware: Dict[str, Any] = node.data
         _hazard_rate_active: float = 0.0
 
-        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
 
         if _hardware['hardware'].part != 1:
             for _node_id in node.successors(self._tree.identifier):
@@ -191,8 +248,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _hazard_rate_active = _hardware[
                 'reliability'].hazard_rate_specified / _time
         elif _hardware['reliability'].hazard_rate_type_id == 3:
-            _hazard_rate_active = (_time
-                                   / _hardware['reliability'].mtbf_specified)
+            _hazard_rate_active = hazard_rate_from_specified_mtbf(
+                _hardware['reliability'].mtbf_specified, _time)
 
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
@@ -265,24 +322,26 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # // assignees: weibullguy
         # // labels: low, quality, globalbacklog
         _hardware: Dict[str, Any] = node.data
-        _hazard_rate_active: float = 0
-        _mtbf_active: float = 0
+        _hazard_rate_active: float = 0.0
+        _mtbf_active: float = 1.0
 
-        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
 
         if _hardware['hardware'].part != 1:
             for _node_id in node.successors(self._tree.identifier):
                 _node = self._tree.get_node(_node_id)
                 _hazard_rate_active += 1.0 / self._do_calculate_mtbfs(_node)
+
             _mtbf_active = _time / _hazard_rate_active
 
         if _hardware['reliability'].hazard_rate_type_id == 1:
-            _mtbf_active = _time / _hardware['reliability'].hazard_rate_active
+            _mtbf_active = mtbf_from_specified_hazard_rate(_hardware[
+                'reliability'].hazard_rate_active, _time)
         elif _hardware['reliability'].hazard_rate_type_id == 2:
-            _mtbf_active = _time / _hardware[
-                'reliability'].hazard_rate_specified
+            _mtbf_active = mtbf_from_specified_hazard_rate(_hardware[
+                'reliability'].hazard_rate_specified, _time)
         elif _hardware['reliability'].hazard_rate_type_id == 3:
-            _mtbf_active = _hardware['reliability'].mtbf_specified
+            _mtbf_active = _hardware['reliability'].mtbf_specified or 1.0
         # If calculating using an s-distribution, the appropriate s-function
         # will estimate the variances.  Otherwise, assume an EXP distribution.
         elif _hardware['reliability'].hazard_rate_type_id == 4:
@@ -385,8 +444,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         _hardware: Dict[str, Any] = node.data
 
-        self._do_calculate_hazard_rates(node)
-        self._do_calculate_mtbfs(node)
+        if _hardware['reliability'].hazard_rate_type_id != 0:
+            self._do_calculate_hazard_rates(node)
+            self._do_calculate_mtbfs(node)
 
         _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
 
