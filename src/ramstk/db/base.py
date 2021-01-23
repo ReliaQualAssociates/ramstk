@@ -294,7 +294,10 @@ class BaseDatabase:
                 _filters[_key] = _values[_idx]
 
         _results = self.session.query(table).filter_by(**_filters)
-        _results = _results.order_by(_order)
+        if isinstance(_order, list):
+            _results = _results.order_by(*_order)
+        else:
+            _results = _results.order_by(_order)
 
         if _all:
             _results = _results.all()
