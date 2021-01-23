@@ -21,7 +21,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag -a -m"push latest tag" latest
+          git tag -f -a -m"push latest tag" latest
           git push --tags
 
       - name: Draft release notes
