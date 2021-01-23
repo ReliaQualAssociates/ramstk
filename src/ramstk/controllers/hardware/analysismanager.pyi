@@ -13,6 +13,15 @@ from ramstk.configuration import (
 )
 from ramstk.controllers import RAMSTKAnalysisManager as RAMSTKAnalysisManager
 
+def hazard_rate_from_specified_mtbf(mtbf: float, time: float = ...) -> float:
+    ...
+
+
+def mtbf_from_specified_hazard_rate(hazard_rate: float,
+                                    time: float = ...) -> float:
+    ...
+
+
 class AnalysisManager(RAMSTKAnalysisManager):
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[Any, Any]) -> None:

@@ -333,7 +333,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_hardware', node_id=self._record_id)
+        pub.sendMessage(
+            'request_calculate_hardware',
+            node_id=self._record_id,
+        )
 
     def _do_request_calculate_all_hardware(self,
                                            __button: Gtk.ToolButton) -> None:
@@ -343,7 +346,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_hardware', node_id=1)
+        pub.sendMessage(
+            'request_calculate_hardware',
+            node_id=1,
+        )
 
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         """Request to insert a new child assembly under the selected assembly.
@@ -352,9 +358,11 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_insert_hardware',
-                        parent_id=self._record_id,
-                        part=0)
+        pub.sendMessage(
+            'request_insert_hardware',
+            parent_id=self._record_id,
+            part=0,
+        )
 
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None:
         """Send request to insert a piece part to the selected Hardware item.

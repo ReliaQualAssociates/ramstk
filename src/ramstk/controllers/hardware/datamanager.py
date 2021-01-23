@@ -108,7 +108,7 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKHardware,
                 key=['revision_id'],
                 value=[self._revision_id],
-                order=RAMSTKHardware.parent_id):
+                order=[RAMSTKHardware.parent_id, RAMSTKHardware.ref_des]):
 
             _design_e = self._do_select_electrical(_hardware.hardware_id)
             _design_m = self._do_select_mechanical(_hardware.hardware_id)

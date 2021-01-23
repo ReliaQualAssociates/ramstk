@@ -17,12 +17,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Draft release notes
+        uses: release-drafter/release-drafter@master
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          name: "latest"
+          tag: "latest"
+          version: "latest"
           prerelease: true
-          title: "Latest RAMSTK Build"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   tag_master:
     name: Tag Master on Major or Minor Version Bumps
@@ -42,13 +45,15 @@ jobs:
           tag_ver=$(echo $tag_ver | cut -d 'v' -f2)
           tag_major=$(echo $tag_ver | cut -d '.' -f1)
           tag_minor=$(echo $tag_ver | cut -d '.' -f2)
+          tag_patch=$(echo $tag_ver | cut -d '.' -f3)
 
           file_major=$(echo $tag_ver | cut -d '.' -f1)
           file_minor=$(echo $tag_ver | cut -d '.' -f2)
+          file_patch=$(echo $tag_ver | cut -d '.' -f3)
 
           echo "::set-output name=new_ver::$(echo $file_ver)"
 
-          if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]]; then echo "do_tag=1" >> $GITHUB_ENV; fi
+          if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]] || [[ $file_patch > $tag_patch ]]; then echo "do_tag=1" >> $GITHUB_ENV; fi
 
       - name: Tag master
         if: ${{ env.do_tag == 1 }}

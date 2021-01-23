@@ -731,7 +731,8 @@ class TestUpdateMethods():
 
     def on_fail_update_hardware_wrong_data_type(self, error_message):
         assert error_message == (
-            'do_update: The value for one or more attributes for hardware ID 1 was the wrong type.'
+            'do_update: The value for one or more attributes for hardware ID '
+            '1 was the wrong type.'
         )
         print("\033[35m\nfail_update_hardware topic was broadcast")
 
@@ -846,20 +847,23 @@ class TestStressCalculations():
     """Class for stress-related calculations test suite."""
     def on_fail_stress_analysis_zero_current(self, error_message):
         assert error_message == (
-            '_do_calculate_current_ratio: Failed to calculate current ratio for hardware ID 3.  Rated current=0.0, operating current=0.05.'
+            '_do_calculate_current_ratio: Failed to calculate current ratio '
+            'for hardware ID 3.  Rated current=0.0, operating current=0.05.'
         )
         print("\033[35m\nfail_stress_analysis topic was broadcast")
 
     def on_fail_stress_analysis_zero_power(self, error_message):
         assert error_message == (
-            "_do_calculate_power_ratio: Failed to calculate power ratio for hardware ID 3.  Rated power=0.0, operating power=0.0125."
+            "_do_calculate_power_ratio: Failed to calculate power ratio for "
+            "hardware ID 3.  Rated power=0.0, operating power=0.0125."
         )
         print("\033[35m\nfail_stress_analysis topic was broadcast")
 
     def on_fail_stress_analysis_zero_voltage(self, error_message):
         assert error_message == (
             "_do_calculate_voltage_ratio: Failed to "
-            "calculate voltage ratio for hardware ID 3.  Rated voltage=0.0, operating ac voltage=0.002, operating DC voltage=0.25."
+            "calculate voltage ratio for hardware ID 3.  Rated voltage=0.0, "
+            "operating ac voltage=0.002, operating DC voltage=0.25."
         )
         print("\033[35m\nfail_stress_analysis topic was broadcast")
 
@@ -1374,8 +1378,7 @@ class TestAnalysisMethods():
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_specified_zero_mtbf(
             self, mock_program_dao, test_toml_user_configuration):
-        """do_calculate() should send the fail message when all hazard
-        rates=0.0."""
+        """do_calculate() should return zero when the specified MTBF=0.0."""
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR = dmHardware()
@@ -1383,9 +1386,11 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 3
+        DUT._tree.get_node(3).data['reliability'].mtbf_specified = 0.0
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(3))
 
-        with pytest.raises(ZeroDivisionError):
-            DUT._do_calculate_hazard_rates(DUT._tree.get_node(3))
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_active == 0.0
 
     @pytest.mark.unit
     def test_do_calculate_mtbf_specified_hazard_rate(
@@ -1399,11 +1404,11 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 2
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_specified = 100.0
 
         DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
 
-        assert DUT._tree.get_node(
-            3).data['reliability'].mtbf_active == pytest.approx(21505.3763441)
+        assert DUT._tree.get_node(3).data['reliability'].mtbf_active == 10000.0
 
     @pytest.mark.unit
     def test_do_calculate_mtbf_specified_zero_hazard_rate(
@@ -1419,8 +1424,9 @@ class TestAnalysisMethods():
         DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 2
         DUT._tree.get_node(3).data['reliability'].hazard_rate_specified = 0.0
 
-        with pytest.raises(ZeroDivisionError):
-            DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
+        DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
+
+        DUT._tree.get_node(3).data['reliability'].mtbf_active = 0.0
 
     @pytest.mark.unit
     def test_do_calculate_mtbf_specified_mtbf(self, mock_program_dao,
@@ -1434,11 +1440,11 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 3
+        DUT._tree.get_node(2).data['reliability'].mtbf_specified = 1500.00
 
         DUT._do_calculate_mtbfs(DUT._tree.get_node(2))
 
-        assert DUT._tree.get_node(
-            2).data['reliability'].mtbf_active == pytest.approx(1500.0)
+        assert DUT._tree.get_node(2).data['reliability'].mtbf_active == 1500.0
 
     @pytest.mark.unit
     def test_do_calculate_reliabilities(self, mock_program_dao,
@@ -1592,9 +1598,10 @@ class TestMilHdbk217FPredictions():
         DUT._tree.get_node(3).data['design_electric'].temperature_active = 45.0
         DUT._tree.get_node(3).data['design_electric'].power_operating = 0.05
 
-        with pytest.raises(ZeroDivisionError):
-            DUT._do_calculate_hardware(3)
-            DUT._tree.get_node(3).data['reliability'].hazard_rate_active = 0.0
+        DUT._do_calculate_hardware(3)
+
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_active == 0.0
 
     @pytest.mark.unit
     def test_do_calculate_part_mil_hdbk_217f_s_distribution(
