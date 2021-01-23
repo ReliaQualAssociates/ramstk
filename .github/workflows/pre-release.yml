@@ -22,7 +22,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git tag -f -a -m"push latest tag" latest
-          git push --tags
+          git push -f --tags
 
       - name: Draft release notes
         uses: release-drafter/release-drafter@master
