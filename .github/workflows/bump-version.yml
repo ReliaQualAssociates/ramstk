@@ -1,4 +1,4 @@
-name: Draft Next Release
+name: Bump Version Files
 
 on:
   pull_request:
@@ -6,8 +6,8 @@ on:
       - master
 
 jobs:
-  draft_release:
-    name: Draft Next Release
+  bump_version_files:
+    name: Bump Version Files
     if: startsWith(github.head_ref, 'bump_version_files') == false && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
@@ -69,7 +69,7 @@ jobs:
           git add .
           git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
 
-      - name: Update PR
+      - name: Cut pull request to merge updated version files
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
         with:
@@ -77,13 +77,3 @@ jobs:
           title: "chore: bump version files"
           body: Bump VERSION and pyproject.toml to next version.
           branch: bump_version_files/${{ github.head_ref }}
-
-      - name: Draft release notes
-        if: ${{ env.do_release == 1}}
-        uses: release-drafter/release-drafter@master
-        with:
-          name: "latest"
-          tag: "latest"
-          version: "${{ env.RAMSTK_NEXT_VER }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
