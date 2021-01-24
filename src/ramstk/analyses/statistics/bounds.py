@@ -220,7 +220,7 @@ def do_calculate_beta_bounds(
 
 def do_calculate_fisher_information(model: Callable,
                                     p0: List[float],
-                                    X: np.ndarray,
+                                    data: np.ndarray,
                                     noise=1.0) -> np.ndarray:
     """Calculate the Fisher information matrix for model.
 
@@ -244,7 +244,7 @@ def do_calculate_fisher_information(model: Callable,
     :param p0: point in parameter space where Fisher information matrix is
         evaluated.  Passed as a list in the same order as the parameter
         arguments to the model.  See the example above.
-    :param X: the data set to use for calculating the information matrix.
+    :param data: the data set to use for calculating the information matrix.
     :param noise: squared variance of the noise in data.
     :returns: _fisher; the Fisher information matrix.
     :rtype: ndarray
@@ -252,15 +252,15 @@ def do_calculate_fisher_information(model: Callable,
     _labels = inspect.getfullargspec(model)[0][1:]
     _p0dict = dict(zip(_labels, p0))
 
-    _D = np.zeros((len(p0), X.size))
+    _D = np.zeros((len(p0), data.size))
 
     for i, argname in enumerate(_labels):
         # pylint: disable=cell-var-from-loop
         _D[i, :] = [
             misc.derivative(
-                lambda p: model(x, **dict(_p0dict, **{argname: p})),
+                lambda p: model(_record, **dict(_p0dict, **{argname: p})),
                 _p0dict[argname],
-                dx=1.0e-6) for x in X
+                dx=1.0e-6) for _record in data
         ]
 
     _fisher = 1.0 / noise**2 * np.einsum('mk, nk', _D, _D)
