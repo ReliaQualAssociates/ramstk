@@ -21,8 +21,9 @@ from ramstk.analyses.statistics.bounds import do_calculate_fisher_information
 
 
 # pylint: disable=unsubscriptable-object
-def hazard_function(rate: List[float], start_time: float, end_time: float,
-                    step_time: float) -> OrderedDict[int, List[float]]:
+def hazard_function(
+        rate: List[float], start_time: float, end_time: float,
+        step_time: float) -> Dict[int, List[float]]:  # type: ignore
     """Calculate the hazard function for the exponential distribution.
 
     This method calculates the point estimate as well as the bounding
@@ -88,7 +89,6 @@ def likelihood_bounds(theta: float, loc: float, confidence: float,
     :rtype: tuple
     """
     _constant = chi2.ppf(confidence, 1) / 2.0
-    _log_lik_ratio = log_likelihood_ratio(theta, loc, data, _constant)
 
     # To find the lower bound, we provide root with a starting value for
     # theta less than the point estimate; in this case 1/100 the value.
@@ -126,6 +126,8 @@ def log_likelihood(theta: float, loc: float, data: np.ndarray) -> np.ndarray:
 
     :param theta: the scale parameter at which to evaluate the log-likelihood.
     :param loc: the location parameter at which to evaluate the log-likelihood.
+    :return: _log_likelihood
+    :rtype: float
     """
     # ISSUE: Extend log_likelihood() function to the two-parameter Exponential
     #
@@ -156,9 +158,9 @@ def log_likelihood(theta: float, loc: float, data: np.ndarray) -> np.ndarray:
     _interval_ll = np.sum(_interval_n * ((-theta * _interval_lt) -
                                          (-theta * _interval_rt)))
 
-    _logLik = _event_ll - _right_ll + _interval_ll
+    _log_likelihood = _event_ll - _right_ll + _interval_ll
 
-    return _logLik
+    return _log_likelihood
 
 
 def log_likelihood_ratio(theta: float,
@@ -332,9 +334,9 @@ def mle(data: np.ndarray, start: float,
     _parameters[0] = optimize.fsolve(partial_derivatives, _theta,
                                      args=(_data))[0]
 
-    _fI = do_calculate_fisher_information(log_pdf, _parameters,
-                                          _data[:, 3])  # type: ignore
-    _variance[0] = 1.0 / _fI[0, 0]
+    _fisher_information = do_calculate_fisher_information(
+        log_pdf, _parameters, _data[:, 3])  # type: ignore
+    _variance[0] = 1.0 / _fisher_information[0, 0]
 
     _gof[0] = log_likelihood(_parameters[0], _parameters[1], _data)
     _gof[1] = -2.0 * _gof[0] + 2.0
@@ -404,8 +406,9 @@ def partial_derivatives(theta: float, data: np.ndarray) -> np.ndarray:
 
 
 # pylint: disable=unsubscriptable-object
-def reliability_function(rate: List[float], start_time: float, end_time: float,
-                         step_time: float) -> OrderedDict[int, List[float]]:
+def reliability_function(
+        rate: List[float], start_time: float, end_time: float,
+        step_time: float) -> Dict[int, List[float]]:  # type: ignore
     """Calculate the reliability function for the exponential distribution.
 
     This function calculates the mean between start_time and end_time in
