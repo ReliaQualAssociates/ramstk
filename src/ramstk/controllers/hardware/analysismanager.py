@@ -277,7 +277,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: float
         """
         _hazard_rate_active: float = 0.0
-        _mtbf_active: float = 1.0
         _hardware: Dict[str, Any] = node.data
 
         _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
