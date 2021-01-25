@@ -45,6 +45,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_calculate_hardware(self, node_id: int) -> None:
         ...
 
+    def _do_calculate_hazard_rate_active(self, node: treelib.Node) -> Any:
+        ...
+
     def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
         ...
 

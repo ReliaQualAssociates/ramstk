@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Tuple
 # Third Party Imports
 import treelib
 from pubsub import pub
+# noinspection PyPackageRequirements
 from scipy.stats import expon, lognorm, norm, weibull_min
 
 # RAMSTK Package Imports
@@ -268,6 +269,40 @@ class AnalysisManager(RAMSTKAnalysisManager):
             node_id=node_id,
         )
 
+    def _do_calculate_hazard_rate_active(self, node: treelib.Node):
+        """Calculate the active hazard rate.
+
+        :param node: the treelib.Node() to calculate.
+        :return: _hazard_rate_active; the active hazard rate.
+        :rtype: float
+        """
+        _hazard_rate_active: float = 0.0
+        _mtbf_active: float = 1.0
+        _hardware: Dict[str, Any] = node.data
+
+        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
+
+        if _hardware['reliability'].hazard_rate_type_id == 1:
+            _hazard_rate_active = (self._do_predict_active_hazard_rate(node))
+        elif _hardware['reliability'].hazard_rate_type_id == 2:
+            _hazard_rate_active = _hardware[
+                'reliability'].hazard_rate_specified / _time
+        elif _hardware['reliability'].hazard_rate_type_id == 3:
+            _hazard_rate_active = (hazard_rate_from_specified_mtbf(
+                _hardware['reliability'].mtbf_specified, _time))
+        elif _hardware['reliability'].hazard_rate_type_id == 4:
+            # pylint: disable = unused-variable
+            _hazard_rate_active, __ = (
+                self._do_calculate_s_distribution(_hardware))
+
+        _hazard_rate_active = (_hazard_rate_active
+                               + _hardware['reliability'].add_adj_factor
+                               ) * _hardware['reliability'].mult_adj_factor * (
+                                   _hardware['hardware'].duty_cycle
+                                   / 100.0) * _hardware['hardware'].quantity
+
+        return _hazard_rate_active
+
     def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
         """Calculate the active, logistics, and mission hazard rates.
 
@@ -282,13 +317,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: _hazard_rate_active; the active hazard rate.
         :rtype: float
         """
-        # ISSUE: Refactor _do_calculate_hazard_rates() to reduce complexity.
-        # //
-        # // The _do_calculate_hazard_rates() method in the hardware
-        # // analysis manager has grade of B (CC = 7).  Refactor this method to
-        # // reduce it's complexity.
-        # // assignees: weibullguy
-        # // labels: low, quality, globalbacklog
         _hardware: Dict[str, Any] = node.data
 
         _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
@@ -304,27 +332,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._tree.get_node(_p_node).data[
                 'reliability'].hazard_rate_active = _hazard_rate_active
 
-        if _hardware['reliability'].hazard_rate_type_id == 1:
-            _hardware['reliability'].hazard_rate_active = (
-                self._do_predict_active_hazard_rate(node))
-        elif _hardware['reliability'].hazard_rate_type_id == 2:
-            _hardware['reliability'].hazard_rate_active = _hardware[
-                'reliability'].hazard_rate_specified / _time
-        elif _hardware['reliability'].hazard_rate_type_id == 3:
-            _hardware['reliability'].hazard_rate_active = (
-                hazard_rate_from_specified_mtbf(
-                    _hardware['reliability'].mtbf_specified, _time))
-        elif _hardware['reliability'].hazard_rate_type_id == 4:
-            _hardware['reliability'].hazard_rate_active, _hardware[
-                'reliability'].mtbf_active = (
-                    self._do_calculate_s_distribution(_hardware))
-
         _hardware['reliability'].hazard_rate_active = (
-            _hardware['reliability'].hazard_rate_active
-            + _hardware['reliability'].add_adj_factor
-        ) * _hardware['reliability'].mult_adj_factor * (
-            _hardware['hardware'].duty_cycle
-            / 100.0) * _hardware['hardware'].quantity
+            self._do_calculate_hazard_rate_active(node))
 
         _hardware['reliability'].hazard_rate_logistics = (
             _hardware['reliability'].hazard_rate_active
@@ -349,16 +358,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :param node: the treelib.Node() at the top of the tree to to calculate.
         :return: _mtbf_active; the active MTBF.
         :rtype: float
-        :raise: ZeroDivisionError if the logistics or mission hazard rate or
-            their variances are zero.
+        :raise: ZeroDivisionError if the logistics or mission hazard rate are
+            zero.
         """
-        # ISSUE: Refactor _do_calculate_mtbfs() to reduce complexity.
-        # //
-        # // The _do_calculate_mtbfs() method in the hardware
-        # // analysis manager has grade of B (CC = 7).  Refactor this method to
-        # // reduce it's complexity.
-        # // assignees: weibullguy
-        # // labels: low, quality, globalbacklog
         _hardware: Dict[str, Any] = node.data
         _hazard_rate_active: float = 0.0
         _mtbf_active: float = 1.0
@@ -371,22 +373,18 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _hazard_rate_active += 1.0 / self._do_calculate_mtbfs(_node)
 
             _mtbf_active = _time / _hazard_rate_active
-            _hardware['reliability'].mtbf_active = _mtbf_active
 
-        if _hardware['reliability'].hazard_rate_type_id == 1:
-            _hardware[
-                'reliability'].mtbf_active = mtbf_from_specified_hazard_rate(
-                    _hardware['reliability'].hazard_rate_active, _time)
-        elif _hardware['reliability'].hazard_rate_type_id == 2:
-            _hardware[
-                'reliability'].mtbf_active = mtbf_from_specified_hazard_rate(
-                    _hardware['reliability'].hazard_rate_specified, _time)
-        elif _hardware['reliability'].hazard_rate_type_id == 3:
-            _hardware['reliability'].mtbf_active = _hardware[
-                'reliability'].mtbf_specified or 1.0
-        elif _hardware['reliability'].hazard_rate_type_id == 4:
-            __, _hardware['reliability'].mtbf_active = (
-                self._do_calculate_s_distribution(_hardware))
+        if _hardware['reliability'].hazard_rate_type_id == 4:
+            # pylint: disable = unused-variable
+            __, _mtbf_active = self._do_calculate_s_distribution(_hardware)
+            _hardware['reliability'].mtbf_logistics = _mtbf_active
+        else:
+            _hardware['reliability'].mtbf_logistics = (
+                _time / _hardware['reliability'].hazard_rate_logistics)
+
+        _hardware['reliability'].mtbf_mission = (
+            _hardware['hardware'].mission_time
+            / _hardware['reliability'].hazard_rate_mission)
 
         return _mtbf_active
 
@@ -699,8 +697,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
             }
 
             try:
-                _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
-                    **_attributes)
+                _hazard_rate_active = (
+                    milhdbk217f.do_predict_active_hazard_rate(**_attributes))
             except KeyError:
                 _hazard_rate_active = 0.0
 
