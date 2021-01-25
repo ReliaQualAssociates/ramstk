@@ -15,12 +15,33 @@ from typing import Any, Dict, List
 # Third Party Imports
 import treelib
 from pubsub import pub
+from scipy.stats import expon
 
 # RAMSTK Package Imports
 from ramstk.analyses import derating, stress
 from ramstk.analyses.milhdbk217f import milhdbk217f
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
+
+
+def hazard_rate_from_s_distribution(dist: str = 'expon', **kwargs) -> float:
+    """Calculate the MTBF given a s-distribution and parameters.
+
+    :param dist: the name of the distribution to find the hazard rate.
+    :return: the calculated value of the hazard rate at time T.
+    :rtype: float
+    """
+    _location = kwargs.get('location', 0.0)
+    _scale = kwargs.get('scale', 1.0)
+    _shape = kwargs.get('shape', 1.0)
+    _time = kwargs.get('time', 1.0)
+
+    if dist == 'expon':
+        _hazard_rate = 1.0 / expon.mean(scale=_scale, loc=_location)
+    else:
+        _hazard_rate = 0.0
+
+    return _hazard_rate
 
 
 def hazard_rate_from_specified_mtbf(mtbf: float, time: float = 1.0) -> float:
@@ -49,6 +70,26 @@ def hazard_rate_from_specified_mtbf(mtbf: float, time: float = 1.0) -> float:
         _hazard_rate = 0.0
 
     return _hazard_rate
+
+
+def mtbf_from_s_distribution(dist: str = 'expon', **kwargs) -> float:
+    """Calculate the MTBF given a s-distribution and parameters.
+
+    :param dist: the name of the distribution to find the MTBF.
+    :return: the calculated value of the MTBF over time [0, T).
+    :rtype: float
+    """
+    _location = kwargs.get('location', 0.0)
+    _scale = kwargs.get('scale', 1.0)
+    _shape = kwargs.get('shape', 1.0)
+    _time = kwargs.get('time', 1.0)
+
+    if dist == 'expon':
+        _mtbf = expon.mean(scale=_scale, loc=_location)
+    else:
+        _mtbf = 0.0
+
+    return _mtbf
 
 
 def mtbf_from_specified_hazard_rate(hazard_rate: float,
@@ -280,12 +321,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
             # // * 3-parameter Weibull
             # // * Lognormal
             # // * Normal
-            _hardware['reliability'].hr_specified_variance = _hardware[
-                'reliability'].hazard_rate_specified**2.0
-            _hardware['reliability'].hr_logistics_variance = _hardware[
-                'reliability'].hazard_rate_logistics**2.0
-            _hardware['reliability'].hr_mission_variance = _hardware[
-                'reliability'].hazard_rate_mission**2.0
+            _hardware['reliability'].hazard_rate_active = (
+                hazard_rate_from_s_distribution(
+                    scale=_hardware['reliability'].scale_parameter))
 
         _hardware['reliability'].hazard_rate_active = (
             _hardware['reliability'].hazard_rate_active
@@ -348,13 +386,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _hardware['reliability'].hazard_rate_specified, _time)
         elif _hardware['reliability'].hazard_rate_type_id == 3:
             _mtbf_active = _hardware['reliability'].mtbf_specified or 1.0
-        # If calculating using an s-distribution, the appropriate s-function
-        # will estimate the variances.  Otherwise, assume an EXP distribution.
-        elif _hardware['reliability'].hazard_rate_type_id == 4:
-            _hardware['reliability'].mtbf_logistics_variance = (
-                1.0 / _hardware['reliability'].hr_logistics_variance)
-            _hardware['reliability'].mtbf_mission_variance = (
-                1.0 / _hardware['reliability'].hr_mission_variance)
+        elif _hardware[
+                'reliability'].hazard_rate_type_id == 4:  # pragma: no cover
+            _mtbf_active = mtbf_from_s_distribution(
+                scale=_hardware['reliability'].scale_parameter)
 
         _hardware['reliability'].mtbf_active = _mtbf_active
 

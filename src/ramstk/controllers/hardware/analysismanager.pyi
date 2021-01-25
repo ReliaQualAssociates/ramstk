@@ -13,7 +13,15 @@ from ramstk.configuration import (
 )
 from ramstk.controllers import RAMSTKAnalysisManager as RAMSTKAnalysisManager
 
+def hazard_rate_from_s_distribution(dist: str = ..., **kwargs: Any) -> float:
+    ...
+
+
 def hazard_rate_from_specified_mtbf(mtbf: float, time: float = ...) -> float:
+    ...
+
+
+def mtbf_from_s_distribution(dist: str = ..., **kwargs: Any) -> float:
     ...
 
 
