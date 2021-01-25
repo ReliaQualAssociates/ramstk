@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 # Third Party Imports
 import treelib
@@ -62,6 +62,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
         ...
 
     def _do_calculate_reliabilities(self, node: treelib.Node) -> None:
+        ...
+
+    @staticmethod
+    def _do_calculate_s_distribution(
+            hardware: Dict[str, object]) -> Tuple[float, float]:
         ...
 
     @staticmethod

@@ -10,12 +10,12 @@
 # Standard Library Imports
 import inspect
 from math import exp
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
 from pubsub import pub
-from scipy.stats import expon
+from scipy.stats import expon, lognorm, norm, weibull_min
 
 # RAMSTK Package Imports
 from ramstk.analyses import derating, stress
@@ -38,6 +38,17 @@ def hazard_rate_from_s_distribution(dist: str = 'expon', **kwargs) -> float:
 
     if dist == 'expon':
         _hazard_rate = 1.0 / expon.mean(scale=_scale, loc=_location)
+    elif dist == 'gaussian':
+        _hazard_rate = norm.pdf(_shape, loc=_location, scale=_scale) / norm.sf(
+            _shape, loc=_location, scale=_scale)
+    elif dist == 'lognorm':
+        _hazard_rate = lognorm.pdf(
+            _time, _shape, loc=_location, scale=_scale) / lognorm.sf(
+                _time, _shape, loc=_location, scale=_scale)
+    elif dist == 'weibull':
+        _hazard_rate = weibull_min.pdf(
+            _time, _shape, loc=_location, scale=_scale) / weibull_min.sf(
+                _time, _shape, loc=_location, scale=_scale)
     else:
         _hazard_rate = 0.0
 
@@ -82,10 +93,15 @@ def mtbf_from_s_distribution(dist: str = 'expon', **kwargs) -> float:
     _location = kwargs.get('location', 0.0)
     _scale = kwargs.get('scale', 1.0)
     _shape = kwargs.get('shape', 1.0)
-    _time = kwargs.get('time', 1.0)
 
     if dist == 'expon':
         _mtbf = expon.mean(scale=_scale, loc=_location)
+    elif dist == 'gaussian':
+        _mtbf = norm.mean(scale=_shape, loc=_scale)
+    elif dist == 'lognorm':
+        _mtbf = lognorm.mean(_shape, scale=_scale, loc=_location)
+    elif dist == 'weibull':
+        _mtbf = weibull_min.mean(_shape, scale=_scale, loc=_location)
     else:
         _mtbf = 0.0
 
@@ -277,6 +293,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
 
+        # Iterate through all parts if this is an assembly.
         if _hardware['hardware'].part != 1:
             _hazard_rate_active: float = 0.0
             _p_node = node.identifier
@@ -286,6 +303,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
             self._tree.get_node(_p_node).data[
                 'reliability'].hazard_rate_active = _hazard_rate_active
+
         if _hardware['reliability'].hazard_rate_type_id == 1:
             _hardware['reliability'].hazard_rate_active = (
                 self._do_predict_active_hazard_rate(node))
@@ -296,34 +314,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
             _hardware['reliability'].hazard_rate_active = (
                 hazard_rate_from_specified_mtbf(
                     _hardware['reliability'].mtbf_specified, _time))
-
-        # If calculating using an s-distribution, the appropriate s-function
-        # will estimate the variances.  Otherwise, assume an EXP distribution.
-        elif _hardware[
-                'reliability'].hazard_rate_type_id == 4:  # pragma: no cover
-            # ISSUE: Add s-Distribution Support for R(t) Predictions
-            # //
-            # // As an analyst, I want to be able to use s-distributions for
-            # // hardware reliability analysis so that I can use field data
-            # // results when modeling systems.
-            # //
-            # // I'd like to be able to select a distribution, enter it's
-            # // parameter(s), and have the reliability at time (t) calculated
-            # // and used in a system prediction.  The hazard rate will also
-            # // have to be calculated to be used in a prediction with other
-            # // methods such as MIL-HDBK-217.
-            # //
-            # // The following, minimum, s-distributions should be available:
-            # //
-            # // * 1-parameter Exponential
-            # // * 2-parameter Exponential
-            # // * 2-parameter Weibull
-            # // * 3-parameter Weibull
-            # // * Lognormal
-            # // * Normal
-            _hardware['reliability'].hazard_rate_active = (
-                hazard_rate_from_s_distribution(
-                    scale=_hardware['reliability'].scale_parameter))
+        elif _hardware['reliability'].hazard_rate_type_id == 4:
+            _hardware['reliability'].hazard_rate_active, _hardware[
+                'reliability'].mtbf_active = (
+                    self._do_calculate_s_distribution(_hardware))
 
         _hardware['reliability'].hazard_rate_active = (
             _hardware['reliability'].hazard_rate_active
@@ -377,21 +371,22 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _hazard_rate_active += 1.0 / self._do_calculate_mtbfs(_node)
 
             _mtbf_active = _time / _hazard_rate_active
+            _hardware['reliability'].mtbf_active = _mtbf_active
 
         if _hardware['reliability'].hazard_rate_type_id == 1:
-            _mtbf_active = mtbf_from_specified_hazard_rate(
-                _hardware['reliability'].hazard_rate_active, _time)
+            _hardware[
+                'reliability'].mtbf_active = mtbf_from_specified_hazard_rate(
+                    _hardware['reliability'].hazard_rate_active, _time)
         elif _hardware['reliability'].hazard_rate_type_id == 2:
-            _mtbf_active = mtbf_from_specified_hazard_rate(
-                _hardware['reliability'].hazard_rate_specified, _time)
+            _hardware[
+                'reliability'].mtbf_active = mtbf_from_specified_hazard_rate(
+                    _hardware['reliability'].hazard_rate_specified, _time)
         elif _hardware['reliability'].hazard_rate_type_id == 3:
-            _mtbf_active = _hardware['reliability'].mtbf_specified or 1.0
-        elif _hardware[
-                'reliability'].hazard_rate_type_id == 4:  # pragma: no cover
-            _mtbf_active = mtbf_from_s_distribution(
-                scale=_hardware['reliability'].scale_parameter)
-
-        _hardware['reliability'].mtbf_active = _mtbf_active
+            _hardware['reliability'].mtbf_active = _hardware[
+                'reliability'].mtbf_specified or 1.0
+        elif _hardware['reliability'].hazard_rate_type_id == 4:
+            __, _hardware['reliability'].mtbf_active = (
+                self._do_calculate_s_distribution(_hardware))
 
         return _mtbf_active
 
@@ -501,6 +496,63 @@ class AnalysisManager(RAMSTKAnalysisManager):
         for _node_id in node.successors(self._tree.identifier):
             _node = self._tree.get_node(_node_id)
             self._do_calculate_reliabilities(_node)
+
+    @staticmethod
+    def _do_calculate_s_distribution(
+            hardware: Dict[str, object]) -> Tuple[float, float]:
+        """Calculate the hazard rate or MTBF from a s-distribution.
+
+        :param hardware: the data package for the node to be calculated.
+        :return: _hazard_rate_active, _mtbf_active
+        :rtype: tuple
+        """
+        _hazard_rate_active = 0.0
+        _mtbf_active = 0.0
+        _location = hardware['reliability'].location_parameter  # type: ignore
+        _scale = hardware['reliability'].scale_parameter  # type: ignore
+        _shape = hardware['reliability'].shape_parameter  # type: ignore
+        _time = hardware['hardware'].mission_time  # type: ignore
+
+        try:
+            _dist = {
+                1: 'expon',
+                2: 'expon',
+                3: 'weibull',
+                4: 'weibull',
+                5: 'lognorm',
+                6: 'gaussian',
+            }[hardware['reliability'].failure_distribution_id]  # type: ignore
+
+            _hazard_rate_active = (hazard_rate_from_s_distribution(
+                dist=_dist,
+                location=_location,
+                scale=_scale,
+                shape=_shape,
+                time=_time))
+            _mtbf_active = (mtbf_from_s_distribution(dist=_dist,
+                                                     location=_location,
+                                                     scale=_scale,
+                                                     shape=_shape))
+        except KeyError:
+            _method_name: str = inspect.currentframe(  # type: ignore
+            ).f_code.co_name
+            _error_msg: str = (
+                '{1}: Failed to calculate hazard rate and MTBF for hardware '
+                'ID {0}.  Attempting to use the specified distribution '
+                'method without specifying a distribution.').format(
+                    str(hardware['hardware'].hardware_id),  # type: ignore
+                    _method_name)
+            pub.sendMessage(
+                'do_log_info',
+                logger_name='INFO',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_calculate_hazard_rate',
+                error_message=_error_msg,
+            )
+
+        return _hazard_rate_active, _mtbf_active
 
     @staticmethod
     def _do_calculate_voltage_ratio(node: treelib.Node) -> None:
