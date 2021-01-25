@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 # Third Party Imports
 import treelib
@@ -13,7 +13,15 @@ from ramstk.configuration import (
 )
 from ramstk.controllers import RAMSTKAnalysisManager as RAMSTKAnalysisManager
 
+def hazard_rate_from_s_distribution(dist: str = ..., **kwargs: Any) -> float:
+    ...
+
+
 def hazard_rate_from_specified_mtbf(mtbf: float, time: float = ...) -> float:
+    ...
+
+
+def mtbf_from_s_distribution(dist: str = ..., **kwargs: Any) -> float:
     ...
 
 
@@ -37,6 +45,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_calculate_hardware(self, node_id: int) -> None:
         ...
 
+    def _do_calculate_hazard_rate_active(self, node: treelib.Node) -> Any:
+        ...
+
     def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
         ...
 
@@ -54,6 +65,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
         ...
 
     def _do_calculate_reliabilities(self, node: treelib.Node) -> None:
+        ...
+
+    @staticmethod
+    def _do_calculate_s_distribution(
+            hardware: Dict[str, object]) -> Tuple[float, float]:
         ...
 
     @staticmethod
