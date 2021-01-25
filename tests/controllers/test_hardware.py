@@ -1120,6 +1120,14 @@ class TestStressCalculations():
 @pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestAnalysisMethods():
     """Class for testing analytical methods."""
+    def on_fail_calculate_hazard_rate(self, error_message):
+        assert error_message == ('_do_calculate_s_distribution: Failed to '
+                                 'calculate hazard rate and MTBF for '
+                                 'hardware ID 2.  Attempting to use the '
+                                 'specified distribution method without '
+                                 'specifying a distribution.')
+        print("\033[35m\nfail_update_hardware topic was broadcast")
+
     @pytest.mark.unit
     @pytest.mark.calculation
     def test_do_calculate_cost_part(self, mock_program_dao,
@@ -1418,6 +1426,8 @@ class TestAnalysisMethods():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
+        DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 1
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
         DUT._tree.get_node(2).data['reliability'].scale_parameter = 95.0
 
@@ -1425,6 +1435,84 @@ class TestAnalysisMethods():
 
         assert DUT._tree.get_node(2).data[
             'reliability'].hazard_rate_active == pytest.approx(0.02105263)
+        assert DUT._tree.get_node(2).data['reliability'].mtbf_active == 95.0
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_do_calculate_hazard_rate_s_weibull(self, mock_program_dao,
+                                                test_toml_user_configuration):
+        """_do_calculate_hazard_rates() should calculate reliability metrics
+        and update the attributes duct with results when specifying a s-weibull
+        distribution."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 4
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
+        DUT._tree.get_node(2).data['reliability'].scale_parameter = 33.9428
+        DUT._tree.get_node(2).data['reliability'].shape_parameter = 2.2938
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(2).data[
+            'reliability'].hazard_rate_active == pytest.approx(0.5469612)
+        assert DUT._tree.get_node(
+            2).data['reliability'].mtbf_active == pytest.approx(30.0695166)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_do_calculate_hazard_rate_s_lognorm(self, mock_program_dao,
+                                                test_toml_user_configuration):
+        """_do_calculate_hazard_rates() should calculate reliability metrics
+        and update the attributes duct with results when specifying a
+        s-lognormal distribution."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 5
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
+        DUT._tree.get_node(2).data['reliability'].scale_parameter = 3.516
+        DUT._tree.get_node(2).data['reliability'].shape_parameter = 0.9663
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(2).data[
+            'reliability'].hazard_rate_active == pytest.approx(0.07695384)
+        assert DUT._tree.get_node(
+            2).data['reliability'].mtbf_active == pytest.approx(5.6079870)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_do_calculate_hazard_rate_s_gaussian(self, mock_program_dao,
+                                                 test_toml_user_configuration):
+        """_do_calculate_hazard_rates() should calculate reliability metrics
+        and update the attributes duct with results when specifying a
+        s-Gaussian distribution."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 6
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
+        DUT._tree.get_node(2).data['reliability'].scale_parameter = 100.0
+        DUT._tree.get_node(2).data['reliability'].shape_parameter = 10.0
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(2).data[
+            'reliability'].hazard_rate_active == pytest.approx(0.01725235)
+        assert DUT._tree.get_node(2).data['reliability'].mtbf_active == 100.0
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1432,8 +1520,58 @@ class TestAnalysisMethods():
                                                 test_toml_user_configuration):
         """hazard_rate_from_s_distribution() should return 0.0 when passed an
         unknown s-distribution."""
-        assert hazard_rate_from_s_distribution(scale=100.0,
-                                               dist='weibull') == 0.0
+        assert hazard_rate_from_s_distribution(dist='doyles_d') == 0.0
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_do_calculate_hazard_rate_no_distribution(
+            self, mock_program_dao, test_toml_user_configuration):
+        """_do_calculate_hazard_rates() should broadcast the fail message when
+        a distribution ID outside the supported ones is selected."""
+        pub.subscribe(self.on_fail_calculate_hazard_rate,
+                      'fail_calculate_hazard_rate')
+
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 12
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
+        DUT._tree.get_node(2).data['reliability'].scale_parameter = 33.9428
+        DUT._tree.get_node(2).data['reliability'].shape_parameter = 2.2938
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+
+        pub.unsubscribe(self.on_fail_calculate_hazard_rate,
+                        'fail_calculate_hazard_rate')
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_do_calculate_hazard_rate_no_method(self, mock_program_dao,
+                                                test_toml_user_configuration):
+        """_do_calculate_hazard_rates() should return the existing active
+        hazard rate (adjusted by duty cycles and adjustment factors only) when
+        no analysis method is selected."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['hardware'].part = 1
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 0
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_active = 0.05
+        DUT._tree.get_node(2).data['reliability'].scale_parameter = 33.9428
+        DUT._tree.get_node(2).data['reliability'].shape_parameter = 2.2938
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(
+            2).data['reliability'].hazard_rate_active == 0.1
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1494,32 +1632,30 @@ class TestAnalysisMethods():
 
     @pytest.mark.unit
     @pytest.mark.calculation
-    def test_do_calculate_mtbf_s_exponential(self, mock_program_dao,
-                                             test_toml_user_configuration):
-        """do_calculate() should calculate reliability metrics and update the
-        attributes duct with results when specifying a s-exponential
-        distribution."""
+    def test_do_calculate_mtbf_s_unknown(self, mock_program_dao,
+                                         test_toml_user_configuration):
+        """mtbf_from_s_distribution() should return 0.0 when passed an unknown
+        s-distribution."""
+        assert mtbf_from_s_distribution(dist='doyles_d') == 0.0
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_do_calculate_mtbf_no_method(self, mock_program_dao,
+                                         test_toml_user_configuration):
+        """_do_calculate_mtbfs() should return 1.0 when no analysis method is
+        selected."""
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR = dmHardware()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
-        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
-        DUT._tree.get_node(2).data['reliability'].scale_parameter = 92.86985
+        DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 0
 
         DUT._do_calculate_mtbfs(DUT._tree.get_node(2))
 
         assert DUT._tree.get_node(
-            2).data['reliability'].mtbf_active == 92.86985
-
-    @pytest.mark.unit
-    @pytest.mark.calculation
-    def test_do_calculate_mtbf_s_unknown(self, mock_program_dao,
-                                         test_toml_user_configuration):
-        """hazard_rate_from_s_distribution() should return 0.0 when passed an
-        unknown s-distribution."""
-        assert mtbf_from_s_distribution(scale=100.0, dist='weibull') == 0.0
+            2).data['reliability'].mtbf_active == 1000000.0
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1691,6 +1827,8 @@ class TestMilHdbk217FPredictions():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
+        DUT._tree.get_node(2).data['hardware'].quantity = 2
+        DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 1
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
         DUT._tree.get_node(2).data['reliability'].scale_parameter = 92.86985
 
