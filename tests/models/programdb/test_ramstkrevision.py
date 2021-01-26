@@ -10,9 +10,19 @@
 
 # Third Party Imports
 import pytest
+from mocks import MockDAO, mock_ramstk_revision
 
 # RAMSTK Package Imports
 from ramstk.models.programdb import RAMSTKRevision
+
+
+@pytest.fixture(scope='function')
+def mock_program_dao(monkeypatch):
+    DAO = MockDAO()
+    DAO.table = mock_ramstk_revision
+
+    yield DAO
+
 
 ATTRIBUTES = {
     'availability_logistics': 1.0,
@@ -44,24 +54,24 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.usefixtures('test_program_dao')
+@pytest.mark.usefixtures('mock_program_dao')
 class TestRAMSTKRevision():
     """Class for testing the RAMSTKRevision model."""
-    @pytest.mark.integration
-    def test_ramstkrevision_create(self, test_program_dao):
-        """ __init__() should create an RAMSTKRevision model. """
-        DUT = test_program_dao.session.query(RAMSTKRevision).first()
+    @pytest.mark.unit
+    def test_ramstkrevision_create(self, mock_program_dao):
+        """__init__() should create an RAMSTKRevision model."""
+        DUT = mock_program_dao.do_select_all(RAMSTKRevision)[0]
 
         assert isinstance(DUT, RAMSTKRevision)
 
         # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_revision'
         assert DUT.revision_id == 1
-        assert DUT.availability_logistics == 1.0
-        assert DUT.availability_mission == 1.0
-        assert DUT.cost == 0.0
-        assert DUT.cost_failure == 0.0
-        assert DUT.cost_hour == 0.0
+        assert DUT.availability_logistics == 0.9986
+        assert DUT.availability_mission == 0.99934
+        assert DUT.cost == 12532.15
+        assert DUT.cost_failure == 0.0000352
+        assert DUT.cost_hour == 1.2532
         assert DUT.hazard_rate_active == 0.0
         assert DUT.hazard_rate_dormant == 0.0
         assert DUT.hazard_rate_logistics == 0.0
@@ -73,29 +83,29 @@ class TestRAMSTKRevision():
         assert DUT.mtbf_logistics == 0.0
         assert DUT.mtbf_mission == 0.0
         assert DUT.mttr == 0.0
-        assert DUT.name == 'Test Revision'
-        assert DUT.reliability_logistics == 1.0
-        assert DUT.reliability_mission == 1.0
-        assert DUT.remarks == ''
-        assert DUT.total_part_count == 1
-        assert DUT.revision_code == ''
-        assert DUT.program_time == 0.0
-        assert DUT.program_time_sd == 0.0
-        assert DUT.program_cost == 0.0
-        assert DUT.program_cost_sd == 0.0
+        assert DUT.name == 'Original Revision'
+        assert DUT.reliability_logistics == 0.99986
+        assert DUT.reliability_mission == 0.99992
+        assert DUT.remarks == 'This is the original revision.'
+        assert DUT.revision_code == 'Rev. -'
+        assert DUT.program_time == 2562
+        assert DUT.program_time_sd == 26.83
+        assert DUT.program_cost == 26492.83
+        assert DUT.program_cost_sd == 15.62
 
     @pytest.mark.integration
-    def test_get_attributes(self, test_program_dao):
-        """ get_attributes() should return a dict of {attr name:attr value} pairs. """
-        DUT = test_program_dao.session.query(RAMSTKRevision).first()
+    def test_get_attributes(self, mock_program_dao):
+        """get_attributes() should return a dict of {attr name:attr value}
+        pairs."""
+        DUT = mock_program_dao.do_select_all(RAMSTKRevision)[0]
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['availability_logistics'] == 1.0
-        assert _attributes['availability_mission'] == 1.0
-        assert _attributes['cost'] == 0.0
-        assert _attributes['cost_failure'] == 0.0
-        assert _attributes['cost_hour'] == 0.0
+        assert _attributes['availability_logistics'] == 0.9986
+        assert _attributes['availability_mission'] == 0.99934
+        assert _attributes['cost'] == 12532.15
+        assert _attributes['cost_failure'] == 0.0000352
+        assert _attributes['cost_hour'] == 1.2532
         assert _attributes['hazard_rate_active'] == 0.0
         assert _attributes['hazard_rate_dormant'] == 0.0
         assert _attributes['hazard_rate_logistics'] == 0.0
@@ -107,38 +117,39 @@ class TestRAMSTKRevision():
         assert _attributes['mtbf_logistics'] == 0.0
         assert _attributes['mtbf_mission'] == 0.0
         assert _attributes['mttr'] == 0.0
-        assert _attributes['name'] == 'Test Revision'
-        assert _attributes['reliability_logistics'] == 1.0
-        assert _attributes['reliability_mission'] == 1.0
-        assert _attributes['remarks'] == ''
-        assert _attributes['total_part_count'] == 1
-        assert _attributes['revision_code'] == ''
-        assert _attributes['program_time'] == 0.0
-        assert _attributes['program_time_sd'] == 0.0
-        assert _attributes['program_cost'] == 0.0
-        assert _attributes['program_cost_sd'] == 0.0
+        assert _attributes['name'] == 'Original Revision'
+        assert _attributes['reliability_logistics'] == 0.99986
+        assert _attributes['reliability_mission'] == 0.99992
+        assert _attributes['remarks'] == 'This is the original revision.'
+        assert _attributes['revision_code'] == 'Rev. -'
+        assert _attributes['program_time'] == 2562
+        assert _attributes['program_time_sd'] == 26.83
+        assert _attributes['program_cost'] == 26492.83
+        assert _attributes['program_cost_sd'] == 15.62
 
-    @pytest.mark.integration
-    def test_set_attributes(self, test_program_dao):
-        """ set_attributes() should return a zero error code on success. """
-        DUT = test_program_dao.session.query(RAMSTKRevision).first()
+    @pytest.mark.unit
+    def test_set_attributes(self, mock_program_dao):
+        """set_attributes() should return a zero error code on success."""
+        DUT = mock_program_dao.do_select_all(RAMSTKRevision)[0]
 
         assert DUT.set_attributes(ATTRIBUTES) is None
 
-    @pytest.mark.integration
-    def test_set_attributes_none_value(self, test_program_dao):
-        """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
-        DUT = test_program_dao.session.query(RAMSTKRevision).first()
+    @pytest.mark.unit
+    def test_set_attributes_none_value(self, mock_program_dao):
+        """set_attributes() should set an attribute to it's default value when
+        the attribute is passed with a None value."""
+        DUT = mock_program_dao.do_select_all(RAMSTKRevision)[0]
 
         ATTRIBUTES['mttr'] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
         assert DUT.get_attributes()['mttr'] == 0.0
 
-    @pytest.mark.integration
-    def test_set_attributes_unknown_attributes(self, test_program_dao):
-        """set_attributes() should raise an AttributeError when passed an unknown attribute."""
-        DUT = test_program_dao.session.query(RAMSTKRevision).first()
+    @pytest.mark.unit
+    def test_set_attributes_unknown_attributes(self, mock_program_dao):
+        """set_attributes() should raise an AttributeError when passed an
+        unknown attribute."""
+        DUT = mock_program_dao.do_select_all(RAMSTKRevision)[0]
 
         with pytest.raises(AttributeError):
             DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
