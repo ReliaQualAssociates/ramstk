@@ -57,12 +57,27 @@ jobs:
           file_major=$(echo $tag_ver | cut -d '.' -f1)
           file_minor=$(echo $tag_ver | cut -d '.' -f2)
           file_patch=$(echo $tag_ver | cut -d '.' -f3)
-
+          
+          echo "Tag: $tag_ver"
+          echo "VERSION: $file_ver"
+          echo "Tag major: $tag_major"
+          echo "Tag minor: $tag_minor"
+          echo "Tag patch: $tag_patch"
+          echo "File major: $file_major"
+          echo "File minor: $file_minor"
+          echo "File patch: $file_patch"
+          
           echo "::set-output name=new_ver::$(echo $file_ver)"
 
           if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]]; then echo "do_release=1" >> $GITHUB_ENV; fi
           if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]] || [[ $file_patch > $tag_patch ]]; then echo "do_tag=1" >> $GITHUB_ENV; fi
 
+      - name: Check
+        run: |
+          echo "${{ steps.versions.outputs.new_ver }}"
+          echo "${{ env.do_release }}"
+          echo "${{ env.do_tag }}"
+          
       - name: Push versioned tag
         if: ${{ env.do_tag == 1 }}
         run: |
