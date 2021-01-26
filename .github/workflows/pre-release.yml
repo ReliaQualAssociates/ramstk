@@ -46,7 +46,7 @@ jobs:
       - name: Get version information
         id: versions
         run: |
-          tag_ver=$(git describe --abbrev=0 --tags)
+          tag_ver=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
           file_ver=$(cat VERSION)
 
           tag_ver=$(echo $tag_ver | cut -d 'v' -f2)
@@ -54,9 +54,9 @@ jobs:
           tag_minor=$(echo $tag_ver | cut -d '.' -f2)
           tag_patch=$(echo $tag_ver | cut -d '.' -f3)
 
-          file_major=$(echo $tag_ver | cut -d '.' -f1)
-          file_minor=$(echo $tag_ver | cut -d '.' -f2)
-          file_patch=$(echo $tag_ver | cut -d '.' -f3)
+          file_major=$(echo $file_ver | cut -d '.' -f1)
+          file_minor=$(echo $file_ver | cut -d '.' -f2)
+          file_patch=$(echo $file_ver | cut -d '.' -f3)
           
           echo "Tag: $tag_ver"
           echo "VERSION: $file_ver"
