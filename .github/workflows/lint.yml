@@ -152,10 +152,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Lint code with pylint
+      - name: Lint documentation with rstcheck
         uses: weibullguy/python-lint-plus@master
         with:
-          python-root-list: "src/ramstk"
+          python-root-list: "docs/"
           use-black: false
           use-yapf: false
           use-isort: false
@@ -179,4 +179,4 @@ jobs:
           extra-mypy-options: ""
           extra-pylint-options: ""
           extra-flake8-options: ""
-          extra-rstcheck-options: "-r docs/"
+          extra-rstcheck-options: "-r"
