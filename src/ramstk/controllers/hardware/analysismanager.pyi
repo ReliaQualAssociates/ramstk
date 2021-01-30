@@ -6,6 +6,7 @@ import treelib
 
 # RAMSTK Package Imports
 from ramstk.analyses import derating as derating
+from ramstk.analyses import dormancy as dormancy
 from ramstk.analyses import stress as stress
 from ramstk.analyses.milhdbk217f import milhdbk217f as milhdbk217f
 from ramstk.configuration import (
@@ -45,7 +46,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_calculate_hardware(self, node_id: int) -> None:
         ...
 
-    def _do_calculate_hazard_rate_active(self, node: treelib.Node) -> Any:
+    def _do_calculate_hazard_rate_active(self, node: treelib.Node) -> float:
+        ...
+
+    @staticmethod
+    def _do_calculate_hazard_rate_dormant(node: treelib.Node) -> float:
         ...
 
     def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:

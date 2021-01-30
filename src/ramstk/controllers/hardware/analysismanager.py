@@ -19,7 +19,7 @@ from pubsub import pub
 from scipy.stats import expon, lognorm, norm, weibull_min
 
 # RAMSTK Package Imports
-from ramstk.analyses import derating, stress
+from ramstk.analyses import derating, dormancy, stress
 from ramstk.analyses.milhdbk217f import milhdbk217f
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.controllers import RAMSTKAnalysisManager
@@ -269,7 +269,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             node_id=node_id,
         )
 
-    def _do_calculate_hazard_rate_active(self, node: treelib.Node):
+    def _do_calculate_hazard_rate_active(self, node: treelib.Node) -> float:
         """Calculate the active hazard rate.
 
         :param node: the treelib.Node() to calculate.
@@ -302,6 +302,32 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _hazard_rate_active
 
+    @staticmethod
+    def _do_calculate_hazard_rate_dormant(node: treelib.Node) -> float:
+        """Calculate the dormant hazard rate.
+
+        :param node: the treelib.Node() to calculate.
+        :return: _hazard_rate_dormant; the dormant hazard rate.
+        :rtype: float
+        """
+        _hazard_rate_dormant: float = 0.0
+        _hardware: Dict[str, Any] = node.data
+
+        _hw_info = [
+            _hardware['hardware'].category_id,
+            _hardware['hardware'].subcategory_id,
+            _hardware['reliability'].hazard_rate_active,
+        ]
+        _env_info = [
+            _hardware['design_electric'].environment_active_id,
+            _hardware['design_electric'].environment_dormant_id,
+        ]
+
+        _hazard_rate_dormant = dormancy.do_calculate_dormant_hazard_rate(
+            _hw_info, _env_info)
+
+        return _hazard_rate_dormant
+
     def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
         """Calculate the active, logistics, and mission hazard rates.
 
@@ -333,14 +359,16 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         _hardware['reliability'].hazard_rate_active = (
             self._do_calculate_hazard_rate_active(node))
+        _hardware['reliability'].hazard_rate_dormant = (
+            self._do_calculate_hazard_rate_dormant(node))
 
         _hardware['reliability'].hazard_rate_logistics = (
             _hardware['reliability'].hazard_rate_active
-            + _hardware['reliability'].hazard_rate_dormant / _time
-            + _hardware['reliability'].hazard_rate_software / _time)
+            + _hardware['reliability'].hazard_rate_dormant
+            + _hardware['reliability'].hazard_rate_software)
         _hardware['reliability'].hazard_rate_mission = (
             _hardware['reliability'].hazard_rate_active
-            + _hardware['reliability'].hazard_rate_software / _time)
+            + _hardware['reliability'].hazard_rate_software)
 
         return _hardware['reliability'].hazard_rate_active
 
