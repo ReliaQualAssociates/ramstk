@@ -1370,7 +1370,7 @@ class TestAnalysisMethods():
         assert DUT._tree.get_node(3).data[
             'reliability'].hazard_rate_active == pytest.approx(0.0002324999)
         assert DUT._tree.get_node(3).data[
-            'reliability'].hazard_rate_logistics == pytest.approx(0.0002324999)
+            'reliability'].hazard_rate_logistics == pytest.approx(0.00034875)
         assert DUT._tree.get_node(3).data[
             'reliability'].hazard_rate_mission == pytest.approx(0.0002324999)
 
@@ -1391,7 +1391,7 @@ class TestAnalysisMethods():
         assert DUT._tree.get_node(2).data[
             'reliability'].hazard_rate_active == pytest.approx(1333.3333333)
         assert DUT._tree.get_node(2).data[
-            'reliability'].hazard_rate_logistics == pytest.approx(1333.3333333)
+            'reliability'].hazard_rate_logistics == pytest.approx(1360.0)
         assert DUT._tree.get_node(2).data[
             'reliability'].hazard_rate_mission == pytest.approx(1333.3333333)
 
@@ -1568,6 +1568,34 @@ class TestAnalysisMethods():
 
     @pytest.mark.unit
     @pytest.mark.calculation
+    def test_do_calculate_dormant_hazard_rate(self, mock_program_dao,
+                                              test_toml_user_configuration):
+        """_do_calculate_hazard_rate_dormant() should return a float value on
+        success."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(2).data['hardware'].category_id = 1
+        DUT._tree.get_node(2).data['hardware'].subcategory_id = 3
+        DUT._tree.get_node(2).data['design_electric'].environment_active_id = 3
+        DUT._tree.get_node(
+            2).data['design_electric'].environment_dormant_id = 2
+
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(2).data[
+            'reliability'].hazard_rate_dormant == pytest.approx(106.66667)
+        assert DUT._tree.get_node(2).data[
+               'reliability'].hazard_rate_logistics == pytest.approx(1440.0)
+        assert DUT._tree.get_node(2).data[
+                   'reliability'].hazard_rate_mission == pytest.approx(
+            1333.333)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
     def test_do_calculate_mtbf_specified_hazard_rate(
             self, mock_program_dao, test_toml_user_configuration):
         """do_calculate() should calculate reliability metrics and update the
@@ -1626,7 +1654,7 @@ class TestAnalysisMethods():
         DUT._do_calculate_reliabilities(DUT._tree.get_node(2))
 
         assert DUT._tree.get_node(
-            2).data['reliability'].mtbf_logistics == 750.0
+            2).data['reliability'].mtbf_logistics == pytest.approx(735.2941)
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1670,7 +1698,7 @@ class TestAnalysisMethods():
         DUT._do_calculate_reliabilities(DUT._tree.get_node(2))
 
         assert DUT._tree.get_node(2).data[
-            'reliability'].reliability_logistics == pytest.approx(0.9986676)
+            'reliability'].reliability_logistics == pytest.approx(0.9986409)
         assert DUT._tree.get_node(2).data[
             'reliability'].reliability_mission == pytest.approx(0.8751733)
         assert DUT._tree.get_node(3).data[
