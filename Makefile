@@ -156,9 +156,9 @@ pyversions:
 	pyenv versions
 
 requirements:
-	pip-compile --generate-hashes --output-file $(REQFILE) requirements.in
-	pip-compile --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
-	pip-compile --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
+	pip-compile --allow-unsafe --generate-hashes --output-file $(REQFILE) requirements.in
+	pip-compile --allow-unsafe --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
+	pip-compile --allow-unsafe --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 upgrade:
 	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(REQFILE) requirements.in

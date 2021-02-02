@@ -16,7 +16,7 @@ chardet==4.0.0 \
     --hash=sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa \
     --hash=sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5
     # via requests
-coverage==5.3.1 \
+coverage[toml]==5.3.1 \
     --hash=sha256:08b3ba72bd981531fd557f67beee376d6700fba183b167857038997ba30dd297 \
     --hash=sha256:2757fa64e11ec12220968f65d086b7a29b6583d16e9a544c889b22ba98555ef1 \
     --hash=sha256:3102bb2c206700a7d28181dbe04d66b30780cde1d1c02c5f3c165cf3d2489497 \
@@ -67,6 +67,7 @@ coverage==5.3.1 \
     --hash=sha256:fda29412a66099af6d6de0baa6bd7c52674de177ec2ad2630ca264142d69c6c7 \
     --hash=sha256:ff1330e8bc996570221b450e2d539134baa9465f5cb98aff0e0f73f34172e0ae
     # via
+    #   -r requirements-test.in
     #   coveralls
     #   pytest-cov
 coveralls==3.0.0 \
@@ -127,7 +128,9 @@ requests==2.25.1 \
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
     --hash=sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f
-    # via pytest
+    # via
+    #   coverage
+    #   pytest
 typing-extensions==3.7.4.3 \
     --hash=sha256:7cb407020f00f7bfc3cb3e7881628838e69d8f3fcab2f64742a5e76b2f841918 \
     --hash=sha256:99d4073b617d30288f569d3f13d2bd7548c3a7e4c8de87db09a9d29bb3a4a60c \

@@ -72,7 +72,7 @@ commonmark==0.9.1 \
     --hash=sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60 \
     --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9
     # via recommonmark
-coverage==5.3.1 \
+coverage[toml]==5.3.1 \
     --hash=sha256:08b3ba72bd981531fd557f67beee376d6700fba183b167857038997ba30dd297 \
     --hash=sha256:2757fa64e11ec12220968f65d086b7a29b6583d16e9a544c889b22ba98555ef1 \
     --hash=sha256:3102bb2c206700a7d28181dbe04d66b30780cde1d1c02c5f3c165cf3d2489497 \
@@ -530,6 +530,7 @@ toml==0.10.2 \
     #   -r requirements-test.txt
     #   build
     #   check-manifest
+    #   coverage
     #   pep517
     #   pre-commit
     #   pre-commit-hooks
@@ -606,9 +607,9 @@ zipp==3.4.0 \
     #   pep517
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==51.3.3 \
-    --hash=sha256:127ec775c4772bfaf2050557b00c4be6e019e52dc2e171a3fb1cd474783a2497 \
-    --hash=sha256:9f341a0ce18d9fac647177e19cbaef87a49ad3192231290342db2da6ab570d25
+setuptools==53.0.0 \
+    --hash=sha256:0e86620d658c5ca87a71a283bd308fcaeb4c33e17792ef6f081aec17c171347f \
+    --hash=sha256:1b18ef17d74ba97ac9c0e4b4265f123f07a8ae85d9cd093949fa056d3eeeead5
     # via
     #   check-manifest
     #   sphinx
