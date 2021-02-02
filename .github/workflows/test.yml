@@ -55,3 +55,17 @@ jobs:
         with:
           files: ./cobertura.xml
           flags: ${{ matrix.python }}
+
+      - name: Create Coveralls report
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel: true
+
+  upload_coveralls:
+    needs: test_suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload report to Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel-finished: true

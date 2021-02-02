@@ -344,8 +344,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
         """
         _hardware: Dict[str, Any] = node.data
 
-        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
-
         # Iterate through all parts if this is an assembly.
         if _hardware['hardware'].part != 1:
             _hazard_rate_active: float = 0.0
