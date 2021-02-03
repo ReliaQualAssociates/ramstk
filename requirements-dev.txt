@@ -177,19 +177,6 @@ imagesize==1.2.0 \
     --hash=sha256:6965f19a6a2039c7d48bca7dba2473069ff854c36ae6f19d2cde309d998228a1 \
     --hash=sha256:b1f6b5a4eab1f73479a50fb79fcf729514a900c341d8503d62a62dbc4127a2b1
     # via sphinx
-importlib-metadata==3.4.0 \
-    --hash=sha256:ace61d5fc652dc280e7b6b4ff732a9c2d40db2c0f92bc6cb74e07b73d53a1771 \
-    --hash=sha256:fa5daa4477a7414ae34e95942e4dd07f62adf589143c875c133c1e53c4eff38d
-    # via
-    #   -r requirements-test.txt
-    #   build
-    #   pep517
-    #   pluggy
-    #   pre-commit
-    #   pytest
-    #   sphinxcontrib-spelling
-    #   stevedore
-    #   virtualenv
 iniconfig==1.1.1 \
     --hash=sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3 \
     --hash=sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32
@@ -370,9 +357,9 @@ pyparsing==2.4.7 \
     # via
     #   -r requirements-test.txt
     #   packaging
-pytest-cov==2.11.0 \
-    --hash=sha256:626a8a6ab188656c4f84b67d22436d6c494699d917e567e0048dda6e7f59e028 \
-    --hash=sha256:e90e034cde61dacb1394639a33f449725c591025b182d69752c1dd0bfec639a7
+pytest-cov==2.11.1 \
+    --hash=sha256:359952d9d39b9f822d9d29324483e7ba04a3a17dd7d05aa6beb7ea01e359e5f7 \
+    --hash=sha256:bdb9fdb0b85a7cc825269a4c56b48ccaa5c7e365054b6038772c32ddcdc969da
     # via -r requirements-test.txt
 pytest==6.2.1 \
     --hash=sha256:1969f797a1a0dbd8ccf0fecc80262312729afea9c17f1d70ebf85c5e76c6f7c8 \
@@ -417,39 +404,6 @@ requests==2.25.1 \
     #   coveralls
     #   sphinx
     #   sphinxcontrib-issuetracker
-ruamel.yaml.clib==0.2.2 \
-    --hash=sha256:058a1cc3df2a8aecc12f983a48bda99315cebf55a3b3a5463e37bb599b05727b \
-    --hash=sha256:1236df55e0f73cd138c0eca074ee086136c3f16a97c2ac719032c050f7e0622f \
-    --hash=sha256:1f8c0a4577c0e6c99d208de5c4d3fd8aceed9574bb154d7a2b21c16bb924154c \
-    --hash=sha256:2602e91bd5c1b874d6f93d3086f9830f3e907c543c7672cf293a97c3fabdcd91 \
-    --hash=sha256:28116f204103cb3a108dfd37668f20abe6e3cafd0d3fd40dba126c732457b3cc \
-    --hash=sha256:2d24bd98af676f4990c4d715bcdc2a60b19c56a3fb3a763164d2d8ca0e806ba7 \
-    --hash=sha256:2fd336a5c6415c82e2deb40d08c222087febe0aebe520f4d21910629018ab0f3 \
-    --hash=sha256:30dca9bbcbb1cc858717438218d11eafb78666759e5094dd767468c0d577a7e7 \
-    --hash=sha256:44c7b0498c39f27795224438f1a6be6c5352f82cb887bc33d962c3a3acc00df6 \
-    --hash=sha256:464e66a04e740d754170be5e740657a3b3b6d2bcc567f0c3437879a6e6087ff6 \
-    --hash=sha256:46d6d20815064e8bb023ea8628cfb7402c0f0e83de2c2227a88097e239a7dffd \
-    --hash=sha256:4df5019e7783d14b79217ad9c56edf1ba7485d614ad5a385d1b3c768635c81c0 \
-    --hash=sha256:4e52c96ca66de04be42ea2278012a2342d89f5e82b4512fb6fb7134e377e2e62 \
-    --hash=sha256:5254af7d8bdf4d5484c089f929cb7f5bafa59b4f01d4f48adda4be41e6d29f99 \
-    --hash=sha256:52ae5739e4b5d6317b52f5b040b1b6639e8af68a5b8fd606a8b08658fbd0cab5 \
-    --hash=sha256:53b9dd1abd70e257a6e32f934ebc482dac5edb8c93e23deb663eac724c30b026 \
-    --hash=sha256:6c0a5dc52fc74eb87c67374a4e554d4761fd42a4d01390b7e868b30d21f4b8bb \
-    --hash=sha256:73b3d43e04cc4b228fa6fa5d796409ece6fcb53a6c270eb2048109cbcbc3b9c2 \
-    --hash=sha256:74161d827407f4db9072011adcfb825b5258a5ccb3d2cd518dd6c9edea9e30f1 \
-    --hash=sha256:75f0ee6839532e52a3a53f80ce64925ed4aed697dd3fa890c4c918f3304bd4f4 \
-    --hash=sha256:839dd72545ef7ba78fd2aa1a5dd07b33696adf3e68fae7f31327161c1093001b \
-    --hash=sha256:8be05be57dc5c7b4a0b24edcaa2f7275866d9c907725226cdde46da09367d923 \
-    --hash=sha256:8e8fd0a22c9d92af3a34f91e8a2594eeb35cba90ab643c5e0e643567dc8be43e \
-    --hash=sha256:a873e4d4954f865dcb60bdc4914af7eaae48fb56b60ed6daa1d6251c72f5337c \
-    --hash=sha256:ab845f1f51f7eb750a78937be9f79baea4a42c7960f5a94dde34e69f3cce1988 \
-    --hash=sha256:b1e981fe1aff1fd11627f531524826a4dcc1f26c726235a52fcb62ded27d150f \
-    --hash=sha256:b4b0d31f2052b3f9f9b5327024dc629a253a83d8649d4734ca7f35b60ec3e9e5 \
-    --hash=sha256:c6ac7e45367b1317e56f1461719c853fd6825226f45b835df7436bb04031fd8a \
-    --hash=sha256:daf21aa33ee9b351f66deed30a3d450ab55c14242cfdfcd377798e2c0d25c9f1 \
-    --hash=sha256:e9f7d1d8c26a6a12c23421061f9022bb62704e38211fe375c645485f38df34a2 \
-    --hash=sha256:f6061a31880c1ed6b6ce341215336e2f3d0c1deccd84957b6fa8ca474b41e89f
-    # via ruamel.yaml
 ruamel.yaml==0.16.12 \
     --hash=sha256:012b9470a0ea06e4e44e99e7920277edf6b46eee0232a04487ea73a7386340a5 \
     --hash=sha256:076cc0bc34f1966d920a49f18b52b6ad559fbe656a0748e3535cf7b3f29ebf9e
@@ -566,17 +520,12 @@ typed-ast==1.4.2 \
     --hash=sha256:d175297e9533d8d37437abc14e8a83cbc68af93cc9c1c59c2c292ec59a0697a3 \
     --hash=sha256:d746a437cdbca200622385305aedd9aef68e8a645e385cc483bdc5e488f07166 \
     --hash=sha256:e683e409e5c45d5c9082dc1daf13f6374300806240719f95dc783d1fc942af10
-    # via
-    #   astroid
-    #   mypy
+    # via mypy
 typing-extensions==3.7.4.3 \
     --hash=sha256:7cb407020f00f7bfc3cb3e7881628838e69d8f3fcab2f64742a5e76b2f841918 \
     --hash=sha256:99d4073b617d30288f569d3f13d2bd7548c3a7e4c8de87db09a9d29bb3a4a60c \
     --hash=sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f
-    # via
-    #   -r requirements-test.txt
-    #   importlib-metadata
-    #   mypy
+    # via mypy
 untokenize==0.1.1 \
     --hash=sha256:3865dbbbb8efb4bb5eaa72f1be7f3e0be00ea8b7f125c69cbd1f5fda926f37a2
     # via docformatter
@@ -597,13 +546,6 @@ yapf==0.30.0 \
     --hash=sha256:3000abee4c28daebad55da6c85f3cd07b8062ce48e2e9943c8da1b9667d48427 \
     --hash=sha256:3abf61ba67cf603069710d30acbc88cfe565d907e16ad81429ae90ce9651e0c9
     # via -r requirements-dev.in
-zipp==3.4.0 \
-    --hash=sha256:102c24ef8f171fd729d46599845e95c7ab894a4cf45f5de11a44cc7444fb1108 \
-    --hash=sha256:ed5eee1974372595f9e416cc7bbeeb12335201d8081ca8a0743c954d4446e5cb
-    # via
-    #   -r requirements-test.txt
-    #   importlib-metadata
-    #   pep517
 
 # The following packages are considered to be unsafe in a requirements file:
 setuptools==51.3.3 \
