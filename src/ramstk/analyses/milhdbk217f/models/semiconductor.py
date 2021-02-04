@@ -291,16 +291,14 @@ PI_M = [1.0, 2.0, 4.0]
 def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the application factor (piA) for the semiconductor device.
 
-    :param attributes: the attributes of the semiconductor being
-        calculated.
+    :param attributes: the attributes of the semiconductor being calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
     :rtype: dict
     :raise: IndexError if passed an unknown application ID.
     """
     if attributes['subcategory_id'] in [2, 3, 4, 8]:
-        attributes['piA'] = PI_A[attributes['subcategory_id']][
-            attributes['application_id'] - 1]
+        attributes = _get_hf_diode_application_factor(attributes)
     elif attributes['subcategory_id'] == 7:
         if attributes['application_id'] == 1:
             attributes['piA'] = 7.6
@@ -328,12 +326,7 @@ def calculate_electrical_stress_factor(
     :rtype: dict
     """
     if attributes['subcategory_id'] == 1:
-        if attributes['type_id'] > 5:
-            attributes['piS'] = 1.0
-        elif attributes['voltage_ratio'] <= 0.3:
-            attributes['piS'] = 0.054
-        else:
-            attributes['piS'] = attributes['voltage_ratio']**2.43
+        attributes = _get_lf_diode_electrical_stress_factor(attributes)
     elif attributes['subcategory_id'] in [3, 6]:
         attributes['piS'] = 0.045 * exp(3.1 * attributes['voltage_ratio'])
     elif attributes['subcategory_id'] == 10:
@@ -529,6 +522,7 @@ def calculate_power_rating_factor(
     """
     if attributes['subcategory_id'] == 2:
         if attributes['type_id'] == 4:
+            attributes['power_rated'] = attributes['power_rated'] or 1000.0
             attributes['piR'] = 0.326 * log(attributes['power_rated']) - 0.25
         else:
             attributes['piR'] = 1.0
@@ -701,5 +695,49 @@ def get_part_stress_quality_factor(
     else:
         attributes['piQ'] = PART_STRESS_PI_Q[attributes['subcategory_id']][
             attributes['quality_id'] - 1]
+
+    return attributes
+
+
+def _get_hf_diode_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default application ID for HF diodes.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 2:
+        if attributes['type_id'] == 6:
+            attributes['application_id'] = attributes['application_id'] or 2
+        else:
+            attributes['application_id'] = attributes['application_id'] or 3
+
+    attributes['piA'] = PI_A[attributes['subcategory_id']][
+        attributes['application_id'] - 1]
+
+    return attributes
+
+
+def _get_lf_diode_electrical_stress_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piS and set default voltage stress for LF diodes.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    if attributes['type_id'] < 5:
+        attributes['voltage_ratio'] = attributes['voltage_ratio'] or 0.7
+        if attributes['voltage_ratio'] <= 0.3:
+            attributes['piS'] = 0.054
+        else:
+            attributes['piS'] = attributes['voltage_ratio']**2.43
+    else:
+        attributes['piS'] = 1.0
 
     return attributes
