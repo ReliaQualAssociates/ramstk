@@ -87,7 +87,7 @@ matplotlib==3.3.4 \
 mpmath==1.1.0 \
     --hash=sha256:fc17abe05fbab3382b61a123c398508183406fa132e0223874578e20946499f6
     # via sympy
-numpy==1.20.0 \
+numpy==1.20.0 ; python_version >= "3.7" \
     --hash=sha256:0d28a54afcf46f1f9ebd163e49ad6b49087f22986fefd01a23ca0c1cdda25ca6 \
     --hash=sha256:1264c66129f5ef63187649dd43f1ca59532e8c098723643336a85131c0dcce3f \
     --hash=sha256:1abc02e30e3efd81a4571e00f8e62bf42e343c76698e0a3e11d9c2b3ee0d77a7 \
@@ -113,6 +113,7 @@ numpy==1.20.0 \
     --hash=sha256:eee454d3aa3955d0c0069a0f265fea47f1e1384c35a110a95efed358eb6e1562 \
     --hash=sha256:f1e9424e9aa3834ea27cc12f9c6ea8ace5da18ee60a720bb3a85b2f733f41782
     # via
+    #   -r requirements.in
     #   lifelines
     #   matplotlib
     #   pandas

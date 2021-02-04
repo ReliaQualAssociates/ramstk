@@ -95,11 +95,14 @@ I use [pip-tools](https://github.com/jazzband/pip-tools) to manage the
    with pip.
 
 ```shell
+$ make requirements
 $ pip install -r requirements.txt
 ```
 
 should get all the needed runtime requirements installed if they're not
-already.
+already.  The first command is needed to ensure the requirements.txt file is
+updated for your Python version; some dependency versions differ with Python
+version.
 
 If you're planning to do some development work on RAMSTK, the following
  would be the better approach:
@@ -109,6 +112,7 @@ $ pip install pyenv
 $ make mkvenv
 $ make usevenv ramstk-venv
 $ pip install pip-tools
+$ make requirements
 $ make depends
 ```
 

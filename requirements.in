@@ -1,5 +1,7 @@
 lifelines<0.15
 matplotlib
+numpy<1.20.0; python_version<'3.7'
+numpy>=1.20.0; python_version>='3.7'
 openpyxl
 pandas==1.1.5
 psycopg2

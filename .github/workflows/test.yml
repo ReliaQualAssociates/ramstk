@@ -42,11 +42,15 @@ jobs:
         run: |
           python -mvenv $VIRTUAL_ENV
 
-      - name: Install and test RAMSTK
+      - name: Install RAMSTK requirements
         run: |
           source $VIRTUAL_ENV/bin/activate
           pip install -U pip setuptools>12.0 urllib3 pip-tools
+          make requirements
           pip install -U -r requirements.txt -r requirements-test.txt
+
+      - name: Test RAMSTK with coverage
+        run: |
           make PREFIX=$VIRTUAL_ENV install
           xvfb-run --auto-servernum make coverage
 
