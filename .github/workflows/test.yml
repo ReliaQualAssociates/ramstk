@@ -63,6 +63,7 @@ jobs:
           parallel: true
 
   upload_coveralls:
+    name: Upload Coverage Results to Coveralls
     needs: test_suite
     runs-on: ubuntu-latest
     steps:
