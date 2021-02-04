@@ -109,36 +109,6 @@ def mtbf_from_s_distribution(dist: str = 'expon', **kwargs) -> float:
     return _mtbf
 
 
-def mtbf_from_specified_hazard_rate(hazard_rate: float,
-                                    time: float = 1.0) -> float:
-    """Calculate the MTBF given a hazard rate.
-
-    This function calculates the MTBF given a hazard rate and assuming an
-    exponential distribution.
-
-        >>> mtbf_from_specified_hazard_rate(100.0, 1000000.0)
-        10000.0
-
-        >>> mtbf_from_specified_hazard_rate(0.0001)
-        10000.0
-
-        >>> mtbf_from_specified_hazard_rate(0.0)
-        1.0
-
-    :param hazard_rate: the hazard rate to convert to a mean time between
-        failure.
-    :param time: the time multiplier for the hazard rate.
-    :return: _hazard_rate; the hazard rate equivalent of the MTBF.
-    :rtype: float
-    """
-    try:
-        _mtbf = time / hazard_rate
-    except ZeroDivisionError:
-        _mtbf = 1.0
-
-    return _mtbf
-
-
 class AnalysisManager(RAMSTKAnalysisManager):
     """Contain the attributes and methods of the Hardware analysis manager.
 
@@ -328,7 +298,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _hazard_rate_dormant
 
-    def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
+    def _do_calculate_hazard_rates(
+            self, node: treelib.Node) -> Tuple[float, float, float, float]:
         """Calculate the active, logistics, and mission hazard rates.
 
         Hazard rate types are:
@@ -347,30 +318,52 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # Iterate through all parts if this is an assembly.
         if _hardware['hardware'].part != 1:
             _hazard_rate_active: float = 0.0
+            _hazard_rate_dormant: float = 0.0
+            _hazard_rate_logistics: float = 0.0
+            _hazard_rate_mission: float = 0.0
             _p_node = node.identifier
             for _node_id in node.successors(self._tree.identifier):
                 _node = self._tree.get_node(_node_id)
-                _hazard_rate_active += self._do_calculate_hazard_rates(_node)
+                (_temp_hr_active, _temp_hr_dormant, _temp_hr_logistics,
+                 _temp_hr_mission) = self._do_calculate_hazard_rates(_node)
+                _hazard_rate_active += _temp_hr_active
+                _hazard_rate_dormant += _temp_hr_dormant
+                _hazard_rate_logistics += _temp_hr_logistics
+                _hazard_rate_mission += _temp_hr_mission
 
             self._tree.get_node(_p_node).data[
                 'reliability'].hazard_rate_active = _hazard_rate_active
+            self._tree.get_node(_p_node).data[
+                'reliability'].hazard_rate_dormant = _hazard_rate_dormant
+            self._tree.get_node(_p_node).data[
+                'reliability'].hazard_rate_logistics = _hazard_rate_logistics
+            self._tree.get_node(_p_node).data[
+                'reliability'].hazard_rate_mission = _hazard_rate_mission
 
-        _hardware['reliability'].hazard_rate_active = (
-            self._do_calculate_hazard_rate_active(node))
-        _hardware['reliability'].hazard_rate_dormant = (
-            self._do_calculate_hazard_rate_dormant(node))
+            self._do_calculate_mtbfs(self._tree.get_node(_p_node))
 
-        _hardware['reliability'].hazard_rate_logistics = (
-            _hardware['reliability'].hazard_rate_active
-            + _hardware['reliability'].hazard_rate_dormant
-            + _hardware['reliability'].hazard_rate_software)
-        _hardware['reliability'].hazard_rate_mission = (
-            _hardware['reliability'].hazard_rate_active
-            + _hardware['reliability'].hazard_rate_software)
+        else:
+            _hardware['reliability'].hazard_rate_active = (
+                self._do_calculate_hazard_rate_active(node))
+            _hardware['reliability'].hazard_rate_dormant = (
+                self._do_calculate_hazard_rate_dormant(node))
 
-        return _hardware['reliability'].hazard_rate_active
+            _hardware['reliability'].hazard_rate_logistics = (
+                _hardware['reliability'].hazard_rate_active
+                + _hardware['reliability'].hazard_rate_dormant
+                + _hardware['reliability'].hazard_rate_software)
+            _hardware['reliability'].hazard_rate_mission = (
+                _hardware['reliability'].hazard_rate_active
+                + _hardware['reliability'].hazard_rate_software)
 
-    def _do_calculate_mtbfs(self, node: treelib.Node) -> float:
+            self._do_calculate_mtbfs(node)
+
+        return (_hardware['reliability'].hazard_rate_active,
+                _hardware['reliability'].hazard_rate_dormant,
+                _hardware['reliability'].hazard_rate_logistics,
+                _hardware['reliability'].hazard_rate_mission)
+
+    def _do_calculate_mtbfs(self, node: treelib.Node) -> None:
         """Calculate the MTBF related metrics.
 
         Hazard rate types are:
@@ -381,37 +374,29 @@ class AnalysisManager(RAMSTKAnalysisManager):
             #. s-Distribution
 
         :param node: the treelib.Node() at the top of the tree to to calculate.
-        :return: _mtbf_active; the active MTBF.
-        :rtype: float
-        :raise: ZeroDivisionError if the logistics or mission hazard rate are
-            zero.
+        :return: None
+        :rtype: None
         """
         _hardware: Dict[str, Any] = node.data
-        _hazard_rate_active: float = 0.0
-        _mtbf_active: float = 1.0
 
         _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
 
-        if _hardware['hardware'].part != 1:
-            for _node_id in node.successors(self._tree.identifier):
-                _node = self._tree.get_node(_node_id)
-                _hazard_rate_active += 1.0 / self._do_calculate_mtbfs(_node)
-
-            _mtbf_active = _time / _hazard_rate_active
-
         if _hardware['reliability'].hazard_rate_type_id == 4:
             # pylint: disable = unused-variable
-            __, _mtbf_active = self._do_calculate_s_distribution(_hardware)
-            _hardware['reliability'].mtbf_logistics = _mtbf_active
+            __, _hardware['reliability'].mtbf_logistics = (
+                self._do_calculate_s_distribution(_hardware))
         else:
-            _hardware['reliability'].mtbf_logistics = (
-                _time / _hardware['reliability'].hazard_rate_logistics)
+            try:
+                _hardware['reliability'].mtbf_logistics = (
+                    _time / _hardware['reliability'].hazard_rate_logistics)
+            except ZeroDivisionError:
+                _hardware['reliability'].mtbf_logistics = 0.0
 
-        _hardware['reliability'].mtbf_mission = (
-            _hardware['hardware'].mission_time
-            / _hardware['reliability'].hazard_rate_mission)
-
-        return _mtbf_active
+        try:
+            _hardware['reliability'].mtbf_mission = (
+                _time / _hardware['reliability'].hazard_rate_mission)
+        except ZeroDivisionError:
+            _hardware['reliability'].mtbf_mission = 0.0
 
     def _do_calculate_part_count(self, node: treelib.Node) -> int:
         """Calculate the total part count of a hardware item.
@@ -505,9 +490,8 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         if _hardware['reliability'].hazard_rate_type_id != 0:
             self._do_calculate_hazard_rates(node)
-            self._do_calculate_mtbfs(node)
 
-        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER
+        _time = self.RAMSTK_USER_CONFIGURATION.RAMSTK_HR_MULTIPLIER or 1.0
 
         _hardware['reliability'].reliability_logistics = exp(
             -1.0 * _hardware['reliability'].hazard_rate_logistics / _time)

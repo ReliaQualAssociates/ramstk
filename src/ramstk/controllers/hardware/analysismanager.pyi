@@ -26,11 +26,6 @@ def mtbf_from_s_distribution(dist: str = ..., **kwargs: Any) -> float:
     ...
 
 
-def mtbf_from_specified_hazard_rate(hazard_rate: float,
-                                    time: float = ...) -> float:
-    ...
-
-
 class AnalysisManager(RAMSTKAnalysisManager):
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[Any, Any]) -> None:
@@ -53,10 +48,11 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_calculate_hazard_rate_dormant(node: treelib.Node) -> float:
         ...
 
-    def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
+    def _do_calculate_hazard_rates(
+            self, node: treelib.Node) -> Tuple[float, float, float, float]:
         ...
 
-    def _do_calculate_mtbfs(self, node: treelib.Node) -> float:
+    def _do_calculate_mtbfs(self, node: treelib.Node) -> None:
         ...
 
     def _do_calculate_part_count(self, node: treelib.Node) -> int:

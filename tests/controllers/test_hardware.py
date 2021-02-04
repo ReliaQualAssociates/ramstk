@@ -15,6 +15,7 @@ from __mocks__ import (
     MOCK_217F, MOCK_DESIGN_ELECTRIC, MOCK_DESIGN_MECHANIC,
     MOCK_HARDWARE, MOCK_NSWC, MOCK_RELIABILITY
 )
+from mocks import MockDAO, mock_ramstk_hardware
 from pubsub import pub
 from treelib import Tree
 
@@ -1386,14 +1387,16 @@ class TestAnalysisMethods():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
-        DUT._do_calculate_hazard_rates(DUT._tree.get_node(2))
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 3
+        DUT._tree.get_node(3).data['reliability'].mtbf_specified = 1000.0
+        DUT._do_calculate_hazard_rates(DUT._tree.get_node(3))
 
-        assert DUT._tree.get_node(2).data[
-            'reliability'].hazard_rate_active == pytest.approx(1333.3333333)
-        assert DUT._tree.get_node(2).data[
-            'reliability'].hazard_rate_logistics == pytest.approx(1360.0)
-        assert DUT._tree.get_node(2).data[
-            'reliability'].hazard_rate_mission == pytest.approx(1333.3333333)
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_active == 5000.0
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_logistics == 7500.0
+        assert DUT._tree.get_node(
+            3).data['reliability'].hazard_rate_mission == 5000.0
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1427,6 +1430,7 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 1
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
         DUT._tree.get_node(2).data['reliability'].scale_parameter = 95.0
@@ -1450,6 +1454,7 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 4
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
         DUT._tree.get_node(2).data['reliability'].scale_parameter = 33.9428
@@ -1474,6 +1479,7 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 5
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
         DUT._tree.get_node(2).data['reliability'].scale_parameter = 3.516
@@ -1498,6 +1504,7 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 6
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
         DUT._tree.get_node(2).data['reliability'].scale_parameter = 100.0
@@ -1532,6 +1539,7 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 12
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
         DUT._tree.get_node(2).data['reliability'].scale_parameter = 33.9428
@@ -1579,6 +1587,7 @@ class TestAnalysisMethods():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['hardware'].category_id = 1
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['hardware'].subcategory_id = 3
         DUT._tree.get_node(2).data['design_electric'].environment_active_id = 3
         DUT._tree.get_node(
@@ -1589,10 +1598,9 @@ class TestAnalysisMethods():
         assert DUT._tree.get_node(2).data[
             'reliability'].hazard_rate_dormant == pytest.approx(106.66667)
         assert DUT._tree.get_node(2).data[
-               'reliability'].hazard_rate_logistics == pytest.approx(1440.0)
+            'reliability'].hazard_rate_logistics == pytest.approx(1440.0)
         assert DUT._tree.get_node(2).data[
-                   'reliability'].hazard_rate_mission == pytest.approx(
-            1333.333)
+            'reliability'].hazard_rate_mission == pytest.approx(1333.333)
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1606,10 +1614,11 @@ class TestAnalysisMethods():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
-        DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(3).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(3).data['hardware'].part = 1
         DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 2
         DUT._tree.get_node(3).data['reliability'].hazard_rate_logistics = 100.0
-        DUT._tree.get_node(3).data['reliability'].hazard_rate_mission = 0.001
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_mission = 10.0
 
         DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
 
@@ -1620,10 +1629,10 @@ class TestAnalysisMethods():
 
     @pytest.mark.unit
     @pytest.mark.calculation
-    def test_do_calculate_mtbf_specified_zero_hazard_rate(
+    def test_do_calculate_mtbf_specified_zero_logistics_hazard_rate(
             self, mock_program_dao, test_toml_user_configuration):
-        """_do_calculate_mtbfs() should raise a ZeroDivisionError when passed a
-        zero logistics hazard rate."""
+        """_do_calculate_mtbfs() should set logistics MTBF=1.0 when logistics
+        hazard rate is 0.0."""
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR = dmHardware()
@@ -1633,8 +1642,29 @@ class TestAnalysisMethods():
         DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 2
         DUT._tree.get_node(3).data['reliability'].hazard_rate_logistics = 0.0
 
-        with pytest.raises(ZeroDivisionError):
-            DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
+        DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
+
+        assert DUT._tree.get_node(3).data['reliability'].mtbf_logistics == 0.0
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_do_calculate_mtbf_specified_zero_mission_hazard_rate(
+            self, mock_program_dao, test_toml_user_configuration):
+        """_do_calculate_mtbfs() should set mission MTBF=1.0 when mission
+        hazard rate is 0.0."""
+        DUT = amHardware(test_toml_user_configuration)
+
+        DATAMGR = dmHardware()
+        DATAMGR.do_connect(mock_program_dao)
+        DATAMGR.do_select_all(attributes={'revision_id': 1})
+
+        DUT._tree.get_node(3).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_type_id = 2
+        DUT._tree.get_node(3).data['reliability'].hazard_rate_mission = 0.0
+
+        DUT._do_calculate_mtbfs(DUT._tree.get_node(3))
+
+        assert DUT._tree.get_node(3).data['reliability'].mtbf_mission == 0.0
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1648,6 +1678,7 @@ class TestAnalysisMethods():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 3
         DUT._tree.get_node(2).data['reliability'].mtbf_specified = 1500.00
 
@@ -1668,8 +1699,8 @@ class TestAnalysisMethods():
     @pytest.mark.calculation
     def test_do_calculate_mtbf_no_method(self, mock_program_dao,
                                          test_toml_user_configuration):
-        """_do_calculate_mtbfs() should raise a ZeroDivisionError when no
-        analysis method is selected."""
+        """_do_calculate_mtbfs() should set logistics and mission MTBF=1.0 when
+        no calculation method is specified."""
         DUT = amHardware(test_toml_user_configuration)
 
         DATAMGR = dmHardware()
@@ -1678,8 +1709,10 @@ class TestAnalysisMethods():
 
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 0
 
-        with pytest.raises(ZeroDivisionError):
-            DUT._do_calculate_mtbfs(DUT._tree.get_node(2))
+        DUT._do_calculate_mtbfs(DUT._tree.get_node(2))
+
+        assert DUT._tree.get_node(2).data['reliability'].mtbf_logistics == 0.0
+        assert DUT._tree.get_node(2).data['reliability'].mtbf_mission == 0.0
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1693,6 +1726,7 @@ class TestAnalysisMethods():
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 3
 
         DUT._do_calculate_reliabilities(DUT._tree.get_node(2))
@@ -1834,8 +1868,10 @@ class TestMilHdbk217FPredictions():
         DUT._tree.get_node(3).data['design_electric'].temperature_active = 45.0
         DUT._tree.get_node(3).data['design_electric'].power_operating = 0.05
 
-        with pytest.raises(ZeroDivisionError):
-            DUT._do_calculate_hardware(3)
+        DUT._do_calculate_hardware(3)
+
+        assert DUT._tree.get_node(3).data['reliability'].mtbf_logistics == 0.0
+        assert DUT._tree.get_node(3).data['reliability'].mtbf_mission == 0.0
 
     @pytest.mark.unit
     def test_do_calculate_part_mil_hdbk_217f_s_distribution(
@@ -1850,6 +1886,7 @@ class TestMilHdbk217FPredictions():
         DATAMGR.do_select_all(attributes={'revision_id': 1})
 
         DUT._tree.get_node(2).data['hardware'].mission_time = 100.0
+        DUT._tree.get_node(2).data['hardware'].part = 1
         DUT._tree.get_node(2).data['hardware'].quantity = 2
         DUT._tree.get_node(2).data['reliability'].failure_distribution_id = 1
         DUT._tree.get_node(2).data['reliability'].hazard_rate_type_id = 4
@@ -1866,7 +1903,7 @@ class TestMilHdbk217FPredictions():
         assert DUT._tree.get_node(
             2).data['reliability'].mtbf_logistics == 92.86985
         assert DUT._tree.get_node(
-            2).data['reliability'].mtbf_mission == pytest.approx(4643.4925)
+            2).data['reliability'].mtbf_mission == pytest.approx(46434925.0)
         assert DUT._tree.get_node(2).data[
             'reliability'].reliability_logistics == pytest.approx(0.9999999)
         assert DUT._tree.get_node(2).data[
