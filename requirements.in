@@ -1,4 +1,4 @@
-lifelines<0.15
+lifelines
 matplotlib
 numpy<1.20.0; python_version<'3.7'
 numpy>=1.20.0; python_version>='3.7'
@@ -8,7 +8,8 @@ psycopg2
 pycairo<1.20.0
 pygobject>=3.27
 pypubsub
-scipy==1.5.4
+scipy<1.6.0; python_version<'3.7'
+scipy>=1.6.0; python_version>='3.7'
 sortedcontainers
 sqlalchemy-utils
 sqlalchemy>=1.3.0
