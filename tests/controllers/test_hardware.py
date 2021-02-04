@@ -15,7 +15,6 @@ from __mocks__ import (
     MOCK_217F, MOCK_DESIGN_ELECTRIC, MOCK_DESIGN_MECHANIC,
     MOCK_HARDWARE, MOCK_NSWC, MOCK_RELIABILITY
 )
-from mocks import MockDAO, mock_ramstk_hardware
 from pubsub import pub
 from treelib import Tree
 
