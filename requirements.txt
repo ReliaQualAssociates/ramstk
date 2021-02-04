@@ -4,6 +4,18 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --output-file=requirements.txt requirements.in
 #
+astor==0.8.1 \
+    --hash=sha256:070a54e890cefb5b3739d19f30f5a5ec840ffc9c50ffa7d23cc9fc1a38ebbfc5 \
+    --hash=sha256:6a6effda93f4e1ce9f618779b2dd1d9d84f1e32812c23a29b3fff6fd7f63fa5e
+    # via formulaic
+autograd-gamma==0.5.0 \
+    --hash=sha256:f27abb7b8bb9cffc8badcbf59f3fe44a9db39e124ecacf1992b6d952934ac9c4
+    # via lifelines
+autograd==1.3 \
+    --hash=sha256:a15d147577e10de037de3740ca93bfa3b5a7cdfbc34cfb9105429c3580a33ec4
+    # via
+    #   autograd-gamma
+    #   lifelines
 cycler==0.10.0 \
     --hash=sha256:1d8a5ae1ff6c5cf9b93e8811e581232ad8920aeec647c37316ceac982b08cb2d \
     --hash=sha256:cd7b2d1018258d7247a71425e9f26463dfb444d411c39569972f4ce586b0c9d8
@@ -11,9 +23,19 @@ cycler==0.10.0 \
 et-xmlfile==1.0.1 \
     --hash=sha256:614d9722d572f6246302c4491846d2c393c199cfa4edc9af593437691683335b
     # via openpyxl
+formulaic==0.2.1 \
+    --hash=sha256:98679026b926370fe652d0712c1a69924be53bff11452cff474e4c52d269f7dc \
+    --hash=sha256:ac781aa2d838ee40e2e54f0b524b133c7267689e1591d469f023970a74cad0a6
+    # via lifelines
 future==0.18.2 \
     --hash=sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d
-    # via treelib
+    # via
+    #   autograd
+    #   treelib
+interface-meta==1.2.2 \
+    --hash=sha256:917f4b9bac4c11662854eb6e849d9d751454d37276d33728f278a5bd843a940f \
+    --hash=sha256:e8e5c0cc0608a646e0f4f9b0feb9528e9c7c25db9e7626176a139a8aa1dde40c
+    # via formulaic
 jdcal==1.4.1 \
     --hash=sha256:1abf1305fce18b4e8aa248cf8fe0c56ce2032392bc64bbd61b5dff2a19ec8bba \
     --hash=sha256:472872e096eb8df219c23f2689fc336668bdb43d194094b5cc1707e1640acfc8
@@ -52,10 +74,9 @@ kiwisolver==1.3.1 \
     --hash=sha256:f8d6f8db88049a699817fd9178782867bf22283e3813064302ac59f61d95be05 \
     --hash=sha256:fd34fbbfbc40628200730bc1febe30631347103fc8d3d4fa012c21ab9c11eca9
     # via matplotlib
-lifelines==0.14.6 \
-    --hash=sha256:4c397debd434d5411497adf413fd68daece02fad0630c95f8d4229fb4cf3aa78 \
-    --hash=sha256:bd0554a948738b8b415478672c9d2923d4ddda01989b1159253804fcd767f6d2 \
-    --hash=sha256:d06ed463961f3151e641edfbf785cdda399ce7bf4ba4a53a0f9aa18ba351de5e
+lifelines==0.25.8 \
+    --hash=sha256:253429ef61b341bba033d2e89c79a20b946afcfd7af99e115e71c2dd4fdf1870 \
+    --hash=sha256:986af9b007aaa6dd49d08c5157736f55f9d905340a7f7c687ba0972aa6888b0f
     # via -r requirements.in
 matplotlib==3.3.4 \
     --hash=sha256:1de0bb6cbfe460725f0e97b88daa8643bcf9571c18ba90bb8e41432aaeca91d6 \
@@ -83,7 +104,9 @@ matplotlib==3.3.4 \
     --hash=sha256:e15fa23d844d54e7b3b7243afd53b7567ee71c721f592deb0727ee85e668f96a \
     --hash=sha256:ed4a9e6dcacba56b17a0a9ac22ae2c72a35b7f0ef0693aa68574f0b2df607a89 \
     --hash=sha256:f44149a0ef5b4991aaef12a93b8e8d66d6412e762745fea1faa61d98524e0ba9
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   lifelines
 mpmath==1.1.0 \
     --hash=sha256:fc17abe05fbab3382b61a123c398508183406fa132e0223874578e20946499f6
     # via sympy
@@ -114,6 +137,8 @@ numpy==1.20.0 ; python_version >= "3.7" \
     --hash=sha256:f1e9424e9aa3834ea27cc12f9c6ea8ace5da18ee60a720bb3a85b2f733f41782
     # via
     #   -r requirements.in
+    #   autograd
+    #   formulaic
     #   lifelines
     #   matplotlib
     #   pandas
@@ -151,6 +176,7 @@ pandas==1.1.5 \
     --hash=sha256:f10fc41ee3c75a474d3bdf68d396f10782d013d7f67db99c0efbfd0acb99701b
     # via
     #   -r requirements.in
+    #   formulaic
     #   lifelines
     #   statsmodels
 patsy==0.5.1 \
@@ -255,6 +281,8 @@ scipy==1.6.0 ; python_version >= "3.7" \
     --hash=sha256:f68d5761a2d2376e2b194c8e9192bbf7c51306ca176f1a0889990a52ef0d551f
     # via
     #   -r requirements.in
+    #   autograd-gamma
+    #   formulaic
     #   lifelines
     #   statsmodels
 six==1.15.0 \
@@ -348,6 +376,9 @@ toml==0.10.2 \
 treelib==1.6.1 \
     --hash=sha256:1cbfffb2d2b75ccac27d0200cee0507b6fbb0726e0afb9fae017ade5d2ce8788
     # via -r requirements.in
+wrapt==1.12.1 \
+    --hash=sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7
+    # via formulaic
 xlrd==2.0.1 \
     --hash=sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd \
     --hash=sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88
