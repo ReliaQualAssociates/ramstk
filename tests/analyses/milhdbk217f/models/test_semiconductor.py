@@ -97,10 +97,10 @@ def test_get_part_count_lambda_b(subcategory_id):
     _attributes['subcategory_id'] = subcategory_id
     _attributes['environment_active_id'] = 3
     _attributes['type_id'] = 1
-    _lambda_b = semiconductor.get_part_count_lambda_b(_attributes)
+    _attributes = semiconductor.get_part_count_lambda_b(_attributes)
 
-    assert isinstance(_lambda_b, float)
-    assert _lambda_b == {1: 0.049, 4: 0.16}[subcategory_id]
+    assert isinstance(_attributes, dict)
+    assert _attributes['lambda_b'] == {1: 0.049, 4: 0.16}[subcategory_id]
 
 
 @pytest.mark.unit
@@ -112,7 +112,7 @@ def test_get_part_count_lambda_b_no_environment():
     _attributes['environment_active_id'] = 32
     _attributes['type_id'] = 1
     with pytest.raises(IndexError):
-        _lambda_b = semiconductor.get_part_count_lambda_b(_attributes)
+        _attributes = semiconductor.get_part_count_lambda_b(_attributes)
 
 
 @pytest.mark.unit
@@ -124,7 +124,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     _attributes['environment_active_id'] = 3
     _attributes['type_id'] = 1
     with pytest.raises(KeyError):
-        _lambda_b = semiconductor.get_part_count_lambda_b(_attributes)
+        _attributes = semiconductor.get_part_count_lambda_b(_attributes)
 
 
 @pytest.mark.unit
@@ -136,7 +136,7 @@ def test_get_part_count_lambda_b_no_type():
     _attributes['environment_active_id'] = 3
     _attributes['type_id'] = 31
     with pytest.raises(KeyError):
-        _lambda_b = semiconductor.get_part_count_lambda_b(_attributes)
+        _attributes = semiconductor.get_part_count_lambda_b(_attributes)
 
 
 @pytest.mark.unit

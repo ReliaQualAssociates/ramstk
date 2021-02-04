@@ -94,17 +94,17 @@ I use [pip-tools](https://github.com/jazzband/pip-tools) to manage the
   is formated for use with the pip-sync command.  However, it will also work
    with pip.
 
-```sh
+```shell
 $ pip install -r requirements.txt
 ```
 
 should get all the needed runtime requirements installed if they're not
- already.
+already.
 
 If you're planning to do some development work on RAMSTK, the following
  would be the better approach:
 
-```sh
+```shell
 $ pip install pyenv
 $ make mkvenv
 $ make usevenv ramstk-venv
@@ -123,14 +123,14 @@ RAMSTK uses [postgresql](https://www.postgresql.org/) for it's database
 
 ### Download
 
-Install any missing RAMSTK dependencies using pip, your package manager, and
-/or build from source.  Then download the <version> of RAMSTK source from
- GitHub Releases you wish to install.
+Install any missing RAMSTK dependencies using pip, your package manager, and/or
+build from source.  Then download the \<version> of RAMSTK source from GitHub
+Releases you wish to install.
 
-```sh
-$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<tag>.tar.gz
-$ tar -xf v<tag>.tar.gz
-$ cd ramstk-<tag>
+```shell
+$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<version>.tar.gz
+$ tar -xf v<version>.tar.gz
+$ cd ramstk-<version>
 $ make install
 ```
 
@@ -139,30 +139,36 @@ The install target recognizes PREFIX=<non-default install path> so you can
   still a version 0 product, it's highly recommended that you install in a
    virtual environment.
 
-```sh
-$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<tag>.tar.gz
-$ tar -xf v<tag>.tar.gz
-$ cd ramstk-<tag>
+```shell
+$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<version>.tar.gz
+$ tar -xf v<version>.tar.gz
+$ cd ramstk-<version>
 $ make PREFIX=$VIRTUAL_ENV install
+```
+
+RAMSTK is also available from PyPi so you can use pip to install as well.
+
+```shell
+$ pip install
 ```
 
 ### Running the Tests
 
 To run the entire test suite for RAMSTK after installing, simply execute:
 
-```sh
+```shell
 $ make test
 ```
 
 To run the test suite with coverage, execute:
 
-```sh
+```shell
 $ make coverage
 ```
 
 To run specific tests or groups of tests, use pytest:
 
-```sh
+```shell
 $ pytest -m integration tests/modules/test_allocation.py
 $ pytest -m calculation tests/analyses/prediction
 ```

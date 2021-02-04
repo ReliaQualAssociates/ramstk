@@ -152,9 +152,6 @@ class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseTable):
         back_populates='mode',
         cascade='all,delete',
     )
-    # cause = relationship('RAMSTKCause',
-    #                      back_populates='mode',
-    #                      cascade='all,delete')
 
     is_mode = True
     is_mechanism = False

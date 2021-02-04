@@ -291,34 +291,26 @@ PI_M = [1.0, 2.0, 4.0]
 def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the application factor (piA) for the semiconductor device.
 
-    :param attributes: the attributes of the semiconductor being
-        calculated.
+    :param attributes: the attributes of the semiconductor being calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
     :rtype: dict
     :raise: IndexError if passed an unknown application ID.
     """
-    _subcategory_id: Any = attributes['subcategory_id']
-    _application_id: Any = attributes['application_id']
-    _duty_cycle: Any = attributes['duty_cycle']
-
-    _pi_a: Any = 1.0
-    if _subcategory_id in [2, 3, 4, 8]:
-        _pi_a = PI_A[_subcategory_id][_application_id - 1]
-    elif _subcategory_id == 7:
-        if _application_id == 1:
-            _pi_a = 7.6
+    if attributes['subcategory_id'] in [2, 3, 4, 8]:
+        attributes = _get_hf_diode_application_factor(attributes)
+    elif attributes['subcategory_id'] == 7:
+        if attributes['application_id'] == 1:
+            attributes['piA'] = 7.6
         else:
-            _pi_a = 0.06 * (_duty_cycle / 100.0) + 0.4
-    elif _subcategory_id == 13:
-        if _application_id == 1:
-            _pi_a = 4.4
+            attributes['piA'] = 0.06 * (attributes['duty_cycle'] / 100.0) + 0.4
+    elif attributes['subcategory_id'] == 13:
+        if attributes['application_id'] == 1:
+            attributes['piA'] = 4.4
         else:
-            _pi_a = sqrt(_duty_cycle / 100.0)
+            attributes['piA'] = sqrt(attributes['duty_cycle'] / 100.0)
     else:
-        _pi_a = 0.0
-
-    attributes['piA'] = _pi_a
+        attributes['piA'] = 0.0
 
     return attributes
 
@@ -333,29 +325,17 @@ def calculate_electrical_stress_factor(
         calculated.
     :rtype: dict
     """
-    _subcategory_id: Any = int(attributes['subcategory_id'])
-    _type_id: Any = int(attributes['type_id'])
-    _voltage_ratio: Any = float(attributes['voltage_ratio'])
-
-    _pi_s: Any = 1.0
-    if _subcategory_id == 1:
-        if _type_id > 5:
-            _pi_s = 1.0
-        elif _voltage_ratio <= 0.3:
-            _pi_s = 0.054
+    if attributes['subcategory_id'] == 1:
+        attributes = _get_lf_diode_electrical_stress_factor(attributes)
+    elif attributes['subcategory_id'] in [3, 6]:
+        attributes['piS'] = 0.045 * exp(3.1 * attributes['voltage_ratio'])
+    elif attributes['subcategory_id'] == 10:
+        if attributes['voltage_ratio'] <= 0.3:
+            attributes['piS'] = 0.1
         else:
-            _pi_s = _voltage_ratio**2.43
-    elif _subcategory_id in [3, 6]:
-        _pi_s = 0.045 * exp(3.1 * _voltage_ratio)
-    elif _subcategory_id == 10:
-        if _voltage_ratio <= 0.3:
-            _pi_s = 0.1
-        else:
-            _pi_s = _voltage_ratio**1.9
+            attributes['piS'] = attributes['voltage_ratio']**1.9
     else:
-        _pi_s = 0.0
-
-    attributes['piS'] = _pi_s
+        attributes['piS'] = 0.0
 
     return attributes
 
@@ -379,22 +359,16 @@ def calculate_junction_temperature(
         temperature is passed at <=0.0 or an unknown package ID when the
         junction-case thermal resistance is passed at <=0.0.
     """
-    _environment_active_id: Any = int(attributes['environment_active_id'])
-    _package_id: Any = int(attributes['package_id'])
-    _temperature_case: Any = float(attributes['temperature_case'])
-    _theta_jc: Any = float(attributes['theta_jc'])
-    _power_operating: Any = float(attributes['power_operating'])
+    if attributes['temperature_case'] <= 0.0:
+        attributes['temperature_case'] = CASE_TEMPERATURE[
+            attributes['environment_active_id'] - 1]
 
-    _temperature_junction: Any = 0.0
-    if _temperature_case <= 0.0:
-        _temperature_case = CASE_TEMPERATURE[_environment_active_id - 1]
-    if _theta_jc <= 0.0:
-        _theta_jc = THETA_JC[_package_id - 1]
-    _temperature_junction = (_temperature_case + _theta_jc * _power_operating)
+    if attributes['theta_jc'] <= 0.0:
+        attributes['theta_jc'] = THETA_JC[attributes['package_id'] - 1]
 
-    attributes['temperature_case'] = _temperature_case
-    attributes['temperature_junction'] = _temperature_junction
-    attributes['theta_jc'] = _theta_jc
+    attributes['temperature_junction'] = (
+        attributes['temperature_case']
+        + attributes['theta_jc'] * attributes['power_operating'])
 
     return attributes
 
@@ -406,10 +380,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         with updated values.
     :rtype: dict
     """
-    _lambda_b: Any = get_part_count_lambda_b(attributes)
-    attributes['lambda_b'] = _lambda_b
-
-    return attributes
+    return get_part_count_lambda_b(attributes)
 
 
 # pylint: disable=too-many-locals
@@ -432,50 +403,49 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     attributes = calculate_power_rating_factor(attributes)
     attributes = calculate_electrical_stress_factor(attributes)
 
-    _lambda_b: Any = attributes['lambda_b']
-    _pi_a: Any = attributes['piA']
-    _pi_e: Any = attributes['piE']
-    _pi_q: Any = attributes['piQ']
-    _pi_r: Any = attributes['piR']
-    _pi_s: Any = attributes['piS']
-    _pi_t: Any = attributes['piT']
-
     # Retrieve the construction factor (piC).
-    _construction_id: Any = attributes['construction_id']
-    _pi_c: Any = PI_C[_construction_id - 1]
-    attributes['piC'] = _pi_c
+    attributes['piC'] = PI_C[attributes['construction_id'] - 1]  # type: ignore
 
     # Retrieve the matching network factor (piM).
-    _matching_id: Any = attributes['matching_id']
-    _pi_m: Any = PI_M[_matching_id - 1]
-    attributes['piM'] = _pi_m
+    attributes['piM'] = PI_M[attributes['matching_id'] - 1]  # type: ignore
 
     # Calculate forward current factor (piI) and power degradation factor (piP)
-    _current_operating: Any = attributes['current_operating']
-    _pi_i: Any = _current_operating**0.68
-    attributes['piI'] = _pi_i
-    _power_ratio: Any = attributes['power_ratio']
-    _pi_p: Any = 1.0 / (2.0 * (1.0 - _power_ratio))
-    attributes['piP'] = _pi_p
+    attributes['piI'] = attributes['current_operating']**0.68  # type: ignore
+    attributes['piP'] = 1.0 / (  # type: ignore
+        2.0 * (1.0 - attributes['power_ratio']))  # type: ignore
 
-    _hazard_rate_active: Any = (_lambda_b * _pi_t * _pi_q * _pi_e)
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b']  # type: ignore
+        * attributes['piT'] * attributes['piQ'] * attributes['piE'])
 
     if attributes['subcategory_id'] == 1:
-        _hazard_rate_active = (_hazard_rate_active * _pi_s * _pi_c)
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piS'] * attributes['piC'])
     elif attributes['subcategory_id'] == 2:
-        _hazard_rate_active = (_hazard_rate_active * _pi_a * _pi_r)
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piA'] * attributes['piR'])
     elif attributes['subcategory_id'] == 3:
-        _hazard_rate_active = (_hazard_rate_active * _pi_a * _pi_r * _pi_s)
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piA'] * attributes['piR'] * attributes['piS'])
     elif attributes['subcategory_id'] == 4:
-        _hazard_rate_active = (_hazard_rate_active * _pi_a)
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piA'])
     elif attributes['subcategory_id'] in [6, 10]:
-        _hazard_rate_active = (_hazard_rate_active * _pi_r * _pi_s)
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piR'] * attributes['piS'])
     elif attributes['subcategory_id'] in [7, 8]:
-        _hazard_rate_active = (_hazard_rate_active * _pi_a * _pi_m)
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piA'] * attributes['piM'])
     elif attributes['subcategory_id'] == 13:
-        _hazard_rate_active = (_hazard_rate_active * _pi_i * _pi_a * _pi_p)
-
-    attributes['hazard_rate_active'] = _hazard_rate_active
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']  # type: ignore
+            * attributes['piI'] * attributes['piA'] * attributes['piP'])
 
     return attributes
 
@@ -492,13 +462,6 @@ def calculate_part_stress_lambda_b(
     :raise: IndexError if passed an unknown type ID.
     :raise: KeyError if passed an unkown subcategory ID.
     """
-    _subcategory_id: Any = attributes['subcategory_id']
-    _application_id: Any = attributes['application_id']
-    _type_id: Any = attributes['type_id']
-    _frequency_operating: Any = attributes['frequency_operating']
-    _power_operating: Any = attributes['power_operating']
-    _n_elements: Any = attributes['n_elements']
-
     _dic_lambdab_scalar: Dict[int, float] = {
         3: 0.00074,
         5: 0.0083,
@@ -517,27 +480,30 @@ def calculate_part_stress_lambda_b(
         13: [3.23, 5.65]
     }
 
-    _lambda_b: Any = 0.0
-    if _subcategory_id in [3, 5, 6, 10]:
-        _lambda_b = _dic_lambdab_scalar[_subcategory_id]
-    elif _subcategory_id == 7:
-        _lambda_b = 0.032 * exp(0.354 * _frequency_operating
-                                + 0.00558 * _power_operating)
-    elif _subcategory_id == 8:
-        if 1.0 < _frequency_operating <= 10.0 and _power_operating < 0.1:
-            _lambda_b = 0.052
+    if attributes['subcategory_id'] in [3, 5, 6, 10]:
+        attributes['lambda_b'] = _dic_lambdab_scalar[
+            attributes['subcategory_id']]
+    elif attributes['subcategory_id'] == 7:
+        attributes['lambda_b'] = 0.032 * exp(
+            0.354 * attributes['frequency_operating']
+            + 0.00558 * attributes['power_operating'])
+    elif attributes['subcategory_id'] == 8:
+        if 1.0 < attributes['frequency_operating'] <= 10.0 and attributes[
+                'power_operating'] < 0.1:
+            attributes['lambda_b'] = 0.052
         else:
-            _lambda_b = 0.0093 * exp(0.429 * _frequency_operating
-                                     + 0.486 * _power_operating)
-    elif _subcategory_id == 12:
-        if _application_id in [1, 3]:
-            _lambda_b = 0.00043 * _n_elements + 0.000043
+            attributes['lambda_b'] = 0.0093 * exp(
+                0.429 * attributes['frequency_operating']
+                + 0.486 * attributes['power_operating'])
+    elif attributes['subcategory_id'] == 12:
+        if attributes['application_id'] in [1, 3]:
+            attributes[
+                'lambda_b'] = 0.00043 * attributes['n_elements'] + 0.000043
         else:
-            _lambda_b = 0.00043 * _n_elements
+            attributes['lambda_b'] = 0.00043 * attributes['n_elements']
     else:
-        _lambda_b = _dic_lambdab_list[_subcategory_id][_type_id - 1]
-
-    attributes['lambda_b'] = _lambda_b
+        attributes['lambda_b'] = _dic_lambdab_list[
+            attributes['subcategory_id']][attributes['type_id'] - 1]
 
     return attributes
 
@@ -554,28 +520,21 @@ def calculate_power_rating_factor(
     :raise: TypeError if passed a string for the rated power or rated current.
     :raise: ValueError if passed a rated power <=0.0.
     """
-    _subcategory_id: Any = int(attributes['subcategory_id'])
-    _type_id: Any = int(attributes['type_id'])
-    _power_rated: Any = float(attributes['power_rated'])
-    _current_rated: Any = float(attributes['current_rated'])
-
-    _pi_r: Any = 1.0
-    if _subcategory_id == 2:
-        if _type_id == 4:
-            _pi_r = 0.326 * log(_power_rated) - 0.25
+    if attributes['subcategory_id'] == 2:
+        if attributes['type_id'] == 4:
+            attributes['power_rated'] = attributes['power_rated'] or 1000.0
+            attributes['piR'] = 0.326 * log(attributes['power_rated']) - 0.25
         else:
-            _pi_r = 1.0
-    elif _subcategory_id in [3, 6]:
-        if _power_rated < 0.1:
-            _pi_r = 0.43
+            attributes['piR'] = 1.0
+    elif attributes['subcategory_id'] in [3, 6]:
+        if attributes['power_rated'] < 0.1:
+            attributes['piR'] = 0.43
         else:
-            _pi_r = _power_rated**0.37
-    elif _subcategory_id == 10:
-        _pi_r = _current_rated**0.4
+            attributes['piR'] = attributes['power_rated']**0.37
+    elif attributes['subcategory_id'] == 10:
+        attributes['piR'] = attributes['current_rated']**0.4
     else:
-        _pi_r = 0.0
-
-    attributes['piR'] = _pi_r
+        attributes['piR'] = 0.0
 
     return attributes
 
@@ -591,40 +550,37 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     :raise: IndexError if passed an unknown type ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    _subcategory_id: Any = attributes['subcategory_id']
-    _type_id: Any = attributes['type_id']
-    _voltage_ratio: Any = attributes['voltage_ratio']
-    _temperature_junction: Any = attributes['temperature_junction']
-
-    if _subcategory_id in [1, 2]:
-        _factors = PI_T_LIST[_subcategory_id][_type_id - 1]
-    elif _subcategory_id == 7:
-        _factors = PI_T_DICT[_type_id]
+    if attributes['subcategory_id'] in [1, 2]:
+        _factors = PI_T_LIST[attributes['subcategory_id']][
+            attributes['type_id'] - 1]
+    elif attributes['subcategory_id'] == 7:
+        _factors = PI_T_DICT[attributes['type_id']]
     else:
-        _factors = PI_T_SCALAR[_subcategory_id]
+        _factors = PI_T_SCALAR[attributes['subcategory_id']]
 
-    _pi_t: Any = 1.0
-    if _subcategory_id == 7:
+    if attributes['subcategory_id'] == 7:
         _f0 = _factors[0]
         _f1 = _factors[1]
         _f2 = _factors[2]
-        if _voltage_ratio <= 0.4:
-            _pi_t = _f1 * exp(-_f0 *
-                              (1.0 /
-                               (_temperature_junction + 273.0) - 1.0 / 298.0))
+        if attributes['voltage_ratio'] <= 0.4:
+            attributes['piT'] = _f1 * exp(
+                -_f0 *
+                (1.0 /
+                 (attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
         else:
-            _pi_t = _f2 * (_voltage_ratio - 0.35) * exp(
-                -_f0 * (1.0 / (_temperature_junction + 273.0) - 1.0 / 298.0))
+            attributes['piT'] = _f2 * (
+                attributes['voltage_ratio'] - 0.35) * exp(
+                    -_f0 * (1.0 / (attributes['temperature_junction'] + 273.0)
+                            - 1.0 / 298.0))
     else:
-        _pi_t = exp(-_factors *
-                    (1.0 / (_temperature_junction + 273.0) - 1.0 / 298.0))
-
-    attributes['piT'] = _pi_t
+        attributes['piT'] = exp(
+            -_factors *
+            (1.0 / (attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
 
     return attributes
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
+def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
 
     This function retrieves the MIL-HDBK-217F hazard rate from the dictionary
@@ -683,19 +639,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
-    _subcategory_id: Any = attributes['subcategory_id']
-    _environment_active_id: Any = attributes['environment_active_id']
-    _type_id: Any = attributes['type_id']
-
-    _base_hr: float = 1.0
-    if _subcategory_id in [1, 2, 3, 8, 11, 13]:
-        _base_hr = PART_COUNT_LAMBDA_B_DICT[_subcategory_id][_type_id][
-            _environment_active_id - 1]
+    if attributes['subcategory_id'] in [1, 2, 3, 8, 11, 13]:
+        attributes['lambda_b'] = PART_COUNT_LAMBDA_B_DICT[
+            attributes['subcategory_id']][attributes['type_id']][
+                attributes['environment_active_id'] - 1]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B_LIST[_subcategory_id][
-            _environment_active_id - 1]
+        attributes['lambda_b'] = PART_COUNT_LAMBDA_B_LIST[
+            attributes['subcategory_id']][attributes['environment_active_id']
+                                          - 1]
 
-    return _base_hr
+    return attributes
 
 
 def get_part_count_quality_factor(
@@ -710,20 +663,16 @@ def get_part_count_quality_factor(
     :raise: IndexError if passed an unknown quality ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    _subcategory_id: Any = attributes['subcategory_id']
-    _quality_id: Any = attributes['quality_id']
-    _type_id: Any = attributes['type_id']
-
-    _pi_q: Any = 1.0
-    if _subcategory_id == 2:
-        if _type_id == 5:
-            _pi_q = PART_COUNT_PI_Q_HF_DIODE[1][_quality_id - 1]
+    if attributes['subcategory_id'] == 2:
+        if attributes['type_id'] == 5:
+            attributes['piQ'] = PART_COUNT_PI_Q_HF_DIODE[1][
+                attributes['quality_id'] - 1]
         else:
-            _pi_q = PART_COUNT_PI_Q_HF_DIODE[0][_quality_id - 1]
+            attributes['piQ'] = PART_COUNT_PI_Q_HF_DIODE[0][
+                attributes['quality_id'] - 1]
     else:
-        _pi_q = PART_COUNT_PI_Q[_subcategory_id][_quality_id - 1]
-
-    attributes['piQ'] = _pi_q
+        attributes['piQ'] = PART_COUNT_PI_Q[attributes['subcategory_id']][
+            attributes['quality_id'] - 1]
 
     return attributes
 
@@ -740,16 +689,55 @@ def get_part_stress_quality_factor(
     :raise: IndexError if passed an unknown quality ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    _subcategory_id: Any = attributes['subcategory_id']
-    _quality_id: Any = attributes['quality_id']
-    _type_id: Any = attributes['type_id']
-
-    _pi_q: Any = 1.0
-    if _subcategory_id == 2:
-        _pi_q = PART_STRESS_PI_Q_HF_DIODE[_type_id][_quality_id - 1]
+    if attributes['subcategory_id'] == 2:
+        attributes['piQ'] = PART_STRESS_PI_Q_HF_DIODE[attributes['type_id']][
+            attributes['quality_id'] - 1]
     else:
-        _pi_q = PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
+        attributes['piQ'] = PART_STRESS_PI_Q[attributes['subcategory_id']][
+            attributes['quality_id'] - 1]
 
-    attributes['piQ'] = _pi_q
+    return attributes
+
+
+def _get_hf_diode_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default application ID for HF diodes.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 2:
+        if attributes['type_id'] == 6:
+            attributes['application_id'] = attributes['application_id'] or 2
+        else:
+            attributes['application_id'] = attributes['application_id'] or 3
+
+    attributes['piA'] = PI_A[attributes['subcategory_id']][
+        attributes['application_id'] - 1]
+
+    return attributes
+
+
+def _get_lf_diode_electrical_stress_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piS and set default voltage stress for LF diodes.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    if attributes['type_id'] < 5:
+        attributes['voltage_ratio'] = attributes['voltage_ratio'] or 0.7
+        if attributes['voltage_ratio'] <= 0.3:
+            attributes['piS'] = 0.054
+        else:
+            attributes['piS'] = attributes['voltage_ratio']**2.43
+    else:
+        attributes['piS'] = 1.0
 
     return attributes
