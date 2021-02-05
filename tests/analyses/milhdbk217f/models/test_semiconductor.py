@@ -48,7 +48,8 @@ ATTRIBUTES = {
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 @pytest.mark.parametrize("type_id", [1, 5])
 def test_get_part_count_quality_factor(subcategory_id, type_id):
-    """get_part_count_quality_factor() should return a float value for piQ on success."""
+    """get_part_count_quality_factor() should return a float value for piQ on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['quality_id'] = 3
@@ -67,7 +68,8 @@ def test_get_part_count_quality_factor(subcategory_id, type_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_count_quality_factor_no_quality():
-    """get_part_count_quality_factor() should raise an IndexError when passed an unknown quality ID."""
+    """get_part_count_quality_factor() should raise an IndexError when passed
+    an unknown quality ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 2
     _attributes['quality_id'] = 33
@@ -79,7 +81,8 @@ def test_get_part_count_quality_factor_no_quality():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_count_quality_factor_no_subcategory():
-    """get_part_count_quality_factor() should raise a KeyError when passed an unknown subcategory ID."""
+    """get_part_count_quality_factor() should raise a KeyError when passed an
+    unknown subcategory ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 21
     _attributes['quality_id'] = 1
@@ -92,7 +95,8 @@ def test_get_part_count_quality_factor_no_subcategory():
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 4])
 def test_get_part_count_lambda_b(subcategory_id):
-    """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
+    """get_part_count_lambda_b() should return a float value for the base
+    hazard rate on success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['environment_active_id'] = 3
@@ -106,7 +110,8 @@ def test_get_part_count_lambda_b(subcategory_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_count_lambda_b_no_environment():
-    """get_part_count_lambda_b() should raise an IndexError if passed an unknown active environment ID."""
+    """get_part_count_lambda_b() should raise an IndexError if passed an
+    unknown active environment ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 1
     _attributes['environment_active_id'] = 32
@@ -118,7 +123,8 @@ def test_get_part_count_lambda_b_no_environment():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_count_lambda_b_no_subcategory():
-    """get_part_count_lambda_b() should raise a KeyError if passed an unknown subcategory ID."""
+    """get_part_count_lambda_b() should raise a KeyError if passed an unknown
+    subcategory ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 47
     _attributes['environment_active_id'] = 3
@@ -130,7 +136,8 @@ def test_get_part_count_lambda_b_no_subcategory():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_count_lambda_b_no_type():
-    """get_part_count_lambda_b() should raise a KeyError if passed an unknown type ID."""
+    """get_part_count_lambda_b() should raise a KeyError if passed an unknown
+    type ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 1
     _attributes['environment_active_id'] = 3
@@ -144,7 +151,8 @@ def test_get_part_count_lambda_b_no_type():
 @pytest.mark.parametrize("subcategory_id", [1, 2, 4])
 @pytest.mark.parametrize("type_id", [1, 5])
 def test_calculate_part_count(subcategory_id, type_id):
-    """calculate_part_count() should return the semiconductor attributes dict with updated values."""
+    """calculate_part_count() should return the semiconductor attributes dict
+    with updated values."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['type_id'] = type_id
@@ -167,7 +175,8 @@ def test_calculate_part_count(subcategory_id, type_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_get_part_stress_quality_factor(subcategory_id):
-    """get_part_stress_quality_factor() should return a float value for piQ on success."""
+    """get_part_stress_quality_factor() should return a float value for piQ on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['quality_id'] = 3
@@ -181,7 +190,8 @@ def test_get_part_stress_quality_factor(subcategory_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_stress_quality_factor_no_quality():
-    """get_part_stress_quality_factor() should raise an IndexError when passed an unknown quality ID."""
+    """get_part_stress_quality_factor() should raise an IndexError when passed
+    an unknown quality ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 2
     _attributes['quality_id'] = 31
@@ -193,7 +203,8 @@ def test_get_part_stress_quality_factor_no_quality():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_stress_quality_factor_no_subcategory():
-    """get_part_stress_quality_factor() should raise a KeyError when passed an unknown subcategory ID."""
+    """get_part_stress_quality_factor() should raise a KeyError when passed an
+    unknown subcategory ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 21
     _attributes['quality_id'] = 1
@@ -205,7 +216,8 @@ def test_get_part_stress_quality_factor_no_subcategory():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_stress_quality_factor_no_type():
-    """get_part_stress_quality_factor() should raise a KeyError when passed an unknown type ID."""
+    """get_part_stress_quality_factor() should raise a KeyError when passed an
+    unknown type ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 2
     _attributes['quality_id'] = 1
@@ -221,7 +233,8 @@ def test_get_part_stress_quality_factor_no_type():
 @pytest.mark.parametrize("application_id", [1, 2])
 def test_calculate_part_stress_lambda_b(subcategory_id, frequency_operating,
                                         application_id):
-    """calculate_part_stress_lambda_b() should return a float value for the base hazard rate on success."""
+    """calculate_part_stress_lambda_b() should return a float value for the
+    base hazard rate on success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['application_id'] = application_id
@@ -251,7 +264,8 @@ def test_calculate_part_stress_lambda_b(subcategory_id, frequency_operating,
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_no_type():
-    """calculate_part_stress_lambda_b() should raise an IndexError if passed an unknown type ID."""
+    """calculate_part_stress_lambda_b() should raise an IndexError if passed an
+    unknown type ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 1
     _attributes['application_id'] = 1
@@ -266,7 +280,8 @@ def test_calculate_part_stress_lambda_b_no_type():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_no_subcategory():
-    """calculate_part_stress_lambda_b() should raise a KeyError if passed an unknown subcategory ID."""
+    """calculate_part_stress_lambda_b() should raise a KeyError if passed an
+    unknown subcategory ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 2300
     _attributes['application_id'] = 1
@@ -281,7 +296,8 @@ def test_calculate_part_stress_lambda_b_no_subcategory():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_junction_temperature():
-    """calculate_junction_temperature() should return a float value for the junction temperature on success."""
+    """calculate_junction_temperature() should return a float value for the
+    junction temperature on success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['temperature_case'] = 38.2
     _attributes['environment_active_id'] = 1
@@ -297,7 +313,9 @@ def test_calculate_junction_temperature():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_junction_temperature_zero_case_temp():
-    """calculate_junction_temperature() should return a float value for the case temperature and the junction temperature when passed a case temperature <=0.0."""
+    """calculate_junction_temperature() should return a float value for the
+    case temperature and the junction temperature when passed a case
+    temperature <=0.0."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['temperature_case'] = -38.2
     _attributes['environment_active_id'] = 1
@@ -315,7 +333,8 @@ def test_calculate_junction_temperature_zero_case_temp():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_junction_temperature_zero_theta_jc():
-    """calculate_junction_temperature() should return a float value for the thetaJC and the junction temperature when passed a theta_jc <=0.0."""
+    """calculate_junction_temperature() should return a float value for the
+    thetaJC and the junction temperature when passed a theta_jc <=0.0."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['temperature_case'] = 38.2
     _attributes['environment_active_id'] = 1
@@ -333,7 +352,8 @@ def test_calculate_junction_temperature_zero_theta_jc():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_junction_temperature_zero_case_temp_no_environment():
-    """calculate_junction_temperature() should raise an IndexError when passed a case temperature <=0.0 and an unknown active environment_id."""
+    """calculate_junction_temperature() should raise an IndexError when passed
+    a case temperature <=0.0 and an unknown active environment_id."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['temperature_case'] = 0.0
     _attributes['environment_active_id'] = 31
@@ -347,7 +367,8 @@ def test_calculate_junction_temperature_zero_case_temp_no_environment():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_junction_temperature_zero_theta_jc_no_package():
-    """calculate_junction_temperature() should raise an IndexError when passed a theta_jc <=0.0 and an unknown package ID."""
+    """calculate_junction_temperature() should raise an IndexError when passed
+    a theta_jc <=0.0 and an unknown package ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['temperature_case'] = 38.2
     _attributes['environment_active_id'] = 1
@@ -363,7 +384,8 @@ def test_calculate_junction_temperature_zero_theta_jc_no_package():
 @pytest.mark.parametrize("subcategory_id", [1, 3, 7])
 @pytest.mark.parametrize("voltage_ratio", [0.4, 0.8])
 def test_calculate_temperature_factor(subcategory_id, voltage_ratio):
-    """calculate_temperature_factor() should return a float value for piT on success."""
+    """calculate_temperature_factor() should return a float value for piT on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['type_id'] = 1
@@ -385,7 +407,8 @@ def test_calculate_temperature_factor(subcategory_id, voltage_ratio):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_temperature_factor_no_subcategory():
-    """calculate_temperature_factor() should raise a KeyError if passed an unknown subcategory ID."""
+    """calculate_temperature_factor() should raise a KeyError if passed an
+    unknown subcategory ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 27
     _attributes['type_id'] = 1
@@ -398,7 +421,8 @@ def test_calculate_temperature_factor_no_subcategory():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_temperature_factor_no_type():
-    """calculate_temperature_factor() should raise an IndexError if passed an unknown type ID."""
+    """calculate_temperature_factor() should raise an IndexError if passed an
+    unknown type ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 2
     _attributes['type_id'] = 17
@@ -413,7 +437,8 @@ def test_calculate_temperature_factor_no_type():
 @pytest.mark.parametrize("subcategory_id", [1, 2, 7, 13])
 @pytest.mark.parametrize("application_id", [1, 2])
 def test_calculate_application_factor(subcategory_id, application_id):
-    """calculate_application_factor() should return a float value on success."""
+    """calculate_application_factor() should return a float value on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['application_id'] = application_id
@@ -440,9 +465,10 @@ def test_calculate_application_factor(subcategory_id, application_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_application_factor_no_application():
-    """calculate_application_factor() should raise an IndexError when passed an unknown application ID."""
+    """calculate_application_factor() should return the default piA when passed
+    an unknown application ID."""
     _attributes = copy.deepcopy(ATTRIBUTES)
-    _attributes['subcategory_id'] = 3
+    _attributes['subcategory_id'] = 4
     _attributes['application_id'] = 11
     _attributes['duty_cycle'] = 65.0
     with pytest.raises(IndexError):
@@ -452,7 +478,8 @@ def test_calculate_application_factor_no_application():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_application_factor_negative_duty_cycle():
-    """calculate_application_factor() should raise a ValueError when passed a negative value for the duty cycle."""
+    """calculate_application_factor() should raise a ValueError when passed a
+    negative value for the duty cycle."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 13
     _attributes['application_id'] = 2
@@ -467,7 +494,8 @@ def test_calculate_application_factor_negative_duty_cycle():
 @pytest.mark.parametrize("type_id", [1, 4])
 @pytest.mark.parametrize("power_rated", [0.075, 10.0])
 def test_calculate_power_rating_factor(subcategory_id, type_id, power_rated):
-    """calculate_power_rating_factor() should return a float value for piR on success."""
+    """calculate_power_rating_factor() should return a float value for piR on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['type_id'] = type_id
@@ -491,7 +519,8 @@ def test_calculate_power_rating_factor(subcategory_id, type_id, power_rated):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_power_rating_factor_negative_input():
-    """calculate_power_rating_factor() should raise a ValueError when passed a negative value for rated power."""
+    """calculate_power_rating_factor() should raise a ValueError when passed a
+    negative value for rated power."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = 2
     _attributes['type_id'] = 4
@@ -508,7 +537,8 @@ def test_calculate_power_rating_factor_negative_input():
 @pytest.mark.parametrize("voltage_ratio", [0.25, 0.75])
 def test_calculate_electrical_stress_factor(subcategory_id, type_id,
                                             voltage_ratio):
-    """calculate_electrical_stress_factor() should return a float value on success."""
+    """calculate_electrical_stress_factor() should return a float value on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes['subcategory_id'] = subcategory_id
     _attributes['type_id'] = type_id
@@ -534,7 +564,8 @@ def test_calculate_electrical_stress_factor(subcategory_id, type_id,
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 6, 7, 13])
 def test_calculate_part_stress(subcategory_id):
-    """calculate_part_stress() should return the semiconductor attributes dict with updated values on success."""
+    """calculate_part_stress() should return the semiconductor attributes dict
+    with updated values on success."""
     ATTRIBUTES['subcategory_id'] = subcategory_id
     ATTRIBUTES['type_id'] = 1
     _attributes = semiconductor.calculate_part_stress(**ATTRIBUTES)
@@ -567,7 +598,8 @@ def test_calculate_part_stress(subcategory_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_no_construction():
-    """calculate_part_stress() should raise an IndexError if passed an unknown construction ID."""
+    """calculate_part_stress() should raise an IndexError if passed an unknown
+    construction ID."""
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['construction_id'] = 5
     with pytest.raises(IndexError):
@@ -577,7 +609,8 @@ def test_calculate_part_stress_no_construction():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_no_matching():
-    """calculate_part_stress() should raise an IndexError if passed an unknown matching ID."""
+    """calculate_part_stress() should raise an IndexError if passed an unknown
+    matching ID."""
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['construction_id'] = 1
     ATTRIBUTES['matching_id'] = 6
