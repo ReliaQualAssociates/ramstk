@@ -37,6 +37,7 @@ WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
 RSTCHECK	= $(shell which rstcheck)
 CHKMANI		= $(shell which check-manifest)
 PYROMA		= $(shell which pyroma)
+TWINE		= $(shell which twine)
 
 # Data files.
 LAYOUTS		= $(shell ls ./data/layouts)
@@ -88,8 +89,7 @@ help:
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install."
 	@echo "	dist					build source and wheel packages."
-	@echo "	release					package and upload a release to PyPi. <FUTURE>"
-	@echo " sync						synchronize the local repository with the upstream repository."
+	@echo "	release					package and upload a release to PyPi."
 	@echo ""
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
 	@echo ""
@@ -129,6 +129,7 @@ clean-test:		## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 coverage: clean-test
+	$(info Running RAMSTK test suite with coverage ...)
 	py.test $(TESTOPTS) $(TESTFILE)
 
 depends:
@@ -214,6 +215,7 @@ test.gui:
 	py.test $(TESTOPTS) -m gui $(TESTFILE)
 
 test:
+	$(info Running RAMSTK test suite without coverage ...)
 	py.test $(TESTOPTS) -v -s $(TESTFILE)
 
 test-all:
@@ -221,14 +223,6 @@ test-all:
 
 reports: coverage
 	coverage html -d $(COVDIR)
-
-sync:
-	${GIT} checkout develop
-	${GIT} pull upstream develop
-	${GIT} push origin develop
-#	@echo "  ${GIT} checkout master"
-#	@echo "  ${GIT} pull upstream master"
-#	@echo "  ${GIT} push origin master"
 
 # This target is for use with IDE integration.
 format:
@@ -271,22 +265,28 @@ dupcheck:
 	$(PYLINT) --disable=all --enable=duplicate-code src/ramstk
 
 lintdocs:
+	$(info Linting documentation ...)
 	$(RSTCHECK) -r docs/api docs/user
 
 apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk
 
 docs: cleandocs
+	$(info Building documentation ...)
 	cd docs; $(MAKE) html -e
 
 cleandocs:
 	cd docs; rm -fr _build/html/*
 
-dist: clean
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
-
-release:
+packchk:
 	$(CHKMANI) .
 	$(PYROMA) .
+
+dist: clean
+	$(info Creating source distribution and wheel ...)
+	python setup.py sdist
+	python setup.py bdist_wheel
+
+release: packchk dist
+	$(info Build and upload artifacts to PyPi ...)
+	$(TWINE) upload dist/*
