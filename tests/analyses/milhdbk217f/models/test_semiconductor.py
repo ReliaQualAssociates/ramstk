@@ -518,6 +518,20 @@ def test_calculate_power_rating_factor(subcategory_id, type_id, power_rated):
 
 @pytest.mark.unit
 @pytest.mark.calculation
+def test_calculate_power_rating_factor_low_power_bjt():
+    """calculate_power_rating_factor() should set piR=0.43 for a low power BJT
+    with rated power < 0.1W."""
+    _attributes = copy.deepcopy(ATTRIBUTES)
+    _attributes['subcategory_id'] = 6
+    _attributes['power_rated'] = 0.05
+
+    _attributes = semiconductor.calculate_power_rating_factor(_attributes)
+
+    assert _attributes['piR'] == 0.43
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
 def test_calculate_power_rating_factor_negative_input():
     """calculate_power_rating_factor() should raise a ValueError when passed a
     negative value for rated power."""
