@@ -67,3 +67,11 @@ class MockDAO():
         :param record: the record to update in the "database" table.
         """
         pass
+
+    def get_last_id(self, table: str, field: str):
+        """Mock the get_last_id() method.
+
+        :param table: the name of the table to get the last used ID for.
+        :param field: the name of the field containing the last ID.
+        """
+        return len(self.table)
