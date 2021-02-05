@@ -336,6 +336,12 @@ class TestUpdateMethods:
             'ID 100.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
+    def on_fail_update_revision_wrong_data_type(self, error_message):
+        assert error_message == (
+            'do_update: The value for one or more attributes for revision ID '
+            '1 was the wrong type.')
+        print("\033[35m\nfail_update_revision topic was broadcast")
+
     def on_fail_update_revision_no_data_package(self, error_message):
         assert error_message == (
             'do_update: No data package found for revision ID 1.')
@@ -376,35 +382,46 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_fail_update_revision, 'fail_update_revision')
 
-    @pytest.mark.unit
-    def test_do_update_wrong_data_type(self, mock_program_dao):
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type(self, test_program_dao):
         """do_update() should raise the 'fail_update_validation' message when
         passed a Validation ID that doesn't exist in the tree."""
-        pub.subscribe(self.on_fail_update_revision_no_data_package,
+        pub.subscribe(self.on_fail_update_revision_wrong_data_type,
                       'fail_update_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
         DUT.tree.get_node(1).data['revision'].cost = None
 
         DUT.do_update(1)
 
-        pub.unsubscribe(self.on_fail_update_revision_no_data_package,
+        pub.unsubscribe(self.on_fail_update_revision_wrong_data_type,
                         'fail_update_revision')
 
+    @pytest.mark.integration
+    def test_do_update_root_node(self, test_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Function ID that has no data package."""
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+
+        DUT.do_update(0)
+
     @pytest.mark.unit
-    def test_do_update_root_node(self, mock_program_dao):
+    def test_do_update_no_data_package(self, test_program_dao):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
         pub.subscribe(self.on_fail_update_revision_no_data_package,
                       'fail_update_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
+        DUT.tree.get_node(1).data.pop('revision')
 
-        DUT.do_update(0)
+        DUT.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_revision_no_data_package,
                         'fail_update_revision')

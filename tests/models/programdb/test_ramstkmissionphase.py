@@ -63,9 +63,9 @@ ATTRIBUTES = {
 
 
 @pytest.mark.usefixtures('mock_program_dao')
-class TestRAMSTKMissionPhase():
+class TestRAMSTKMissionPhase:
     """Class for testing the RAMSTKMissionPhase model."""
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_ramstkmissionphase_create(self, mock_program_dao):
         """__init__() should create an RAMSTKPhase model."""
         DUT = mock_program_dao.do_select_all(RAMSTKMissionPhase)[0]
@@ -81,7 +81,7 @@ class TestRAMSTKMissionPhase():
         assert DUT.phase_start == 0.0
         assert DUT.phase_end == 0.0
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_get_attributes(self, mock_program_dao):
         """get_attributes() should return a tuple of attributes values on
         success."""
@@ -93,14 +93,14 @@ class TestRAMSTKMissionPhase():
         assert _attributes['phase_start'] == 0.0
         assert _attributes['phase_end'] == 0.0
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_attributes(self, mock_program_dao):
         """set_attributes() should return a zero error code on success."""
         DUT = mock_program_dao.do_select_all(RAMSTKMissionPhase)[0]
 
         assert DUT.set_attributes(ATTRIBUTES) is None
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_attributes_none_value(self, mock_program_dao):
         """set_attributes() should set an attribute to it's default value when
         the attribute is passed with a None value."""
@@ -111,7 +111,7 @@ class TestRAMSTKMissionPhase():
         assert DUT.set_attributes(ATTRIBUTES) is None
         assert DUT.get_attributes()['name'] == ''
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_attributes_unknown_attributes(self, mock_program_dao):
         """set_attributes() should raise an AttributeError when passed an
         unknown attribute."""
