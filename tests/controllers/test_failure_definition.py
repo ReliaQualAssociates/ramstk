@@ -249,6 +249,7 @@ class TestGetterSetter():
                         'succeed_get_failure_definition_tree')
 
 
+@pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_failure_definition(self, node_id, tree):
@@ -284,15 +285,15 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_failure_definition,
                         'succeed_insert_failure_definition')
 
-    @pytest.mark.unit
-    def test_do_insert_no_revision(self, mock_program_dao):
+    @pytest.mark.integration
+    def test_do_insert_no_revision(self, test_program_dao):
         """do_insert() should send the success message after successfully
         inserting a new failure definition."""
         pub.subscribe(self.on_fail_insert_failure_definition,
                       'fail_insert_failure_definition')
 
         DUT = dmFailureDefinition()
-        DUT.do_connect(mock_program_dao)
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._revision_id = 4
         DUT._do_insert_failure_definition()

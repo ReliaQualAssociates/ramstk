@@ -182,8 +182,8 @@ class DataManager(RAMSTKDataManager):
         """Add a new revision.
 
         :param parent_id: the ID of the parent entity.  Unused in this
-            method as failure definitions are not hierarchical.  Included to
-            keep method generic and compatible with PyPubSub MDS.
+            method as revisions have no parent.  Included to keep method
+            generic and compatible with PyPubSub MDS.
         :return: None
         :rtype: None
         :raise: AttributeError if not connected to a RAMSTK program database.
@@ -206,7 +206,7 @@ class DataManager(RAMSTKDataManager):
                 node_id=self.last_id,
                 tree=self.tree,
             )
-        except DataAccessError:
+        except (AttributeError, DataAccessError):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg: str = ('{0}: Failed to insert revision into program '

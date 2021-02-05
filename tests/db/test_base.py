@@ -152,7 +152,7 @@ class TestInsertMethods():
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         _revision = RAMSTKRevision()
-        _revision.revision_id = 3
+        _revision.revision_id = 4
 
         assert DUT.do_insert(_revision) is None
 

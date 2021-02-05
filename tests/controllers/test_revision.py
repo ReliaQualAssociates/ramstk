@@ -278,6 +278,7 @@ class TestGetterSetter:
                         'succeed_get_revision_tree')
 
 
+@pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_revision(self, node_id, tree):
@@ -286,7 +287,8 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_revision topic was broadcast")
 
     def on_fail_insert_revision(self, error_message):
-        assert error_message == ('An error occured with RAMSTK.')
+        assert error_message == ('_do_insert_revision: Failed to insert '
+                                 'revision into program database.')
         print("\033[35m\nfail_insert_revision topic was broadcast.")
 
     @pytest.mark.unit
@@ -310,14 +312,12 @@ class TestInsertMethods:
                         'succeed_insert_revision')
 
     @pytest.mark.unit
-    def test_do_insert_database_error(self, mock_program_dao):
+    def test_do_insert_database_error(self):
         """_do_insert_revision() should send the success message after
         successfully inserting a new revision."""
         pub.subscribe(self.on_fail_insert_revision, 'fail_insert_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
         DUT._do_insert_revision()
 
         pub.unsubscribe(self.on_fail_insert_revision, 'fail_insert_revision')
@@ -333,8 +333,7 @@ class TestUpdateMethods:
     def on_fail_update_revision(self, error_message):
         assert error_message == (
             'do_update: Attempted to save non-existent revision with revision '
-            'ID 100.'
-        )
+            'ID 100.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     def on_fail_update_revision_no_data_package(self, error_message):
