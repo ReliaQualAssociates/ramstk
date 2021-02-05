@@ -1,6 +1,6 @@
 [project]
 name = "ramstk"
-version = "0.14.0"
+version = "0.14.1"
 description = "A tool to manage RAMS data and analyses."
 authors = [
     "Doyle 'weibullguy' Rowland <info@reliaqual.com>"
