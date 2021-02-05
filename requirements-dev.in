@@ -2,6 +2,7 @@
 
 # Packaging
 check-manifest
+twine
 
 # Code formatting
 docformatter

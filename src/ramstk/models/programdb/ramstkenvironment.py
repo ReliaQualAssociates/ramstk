@@ -44,9 +44,6 @@ class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseTable):
         ForeignKey('ramstk_mission_phase.fld_phase_id'),
         nullable=False,
     )
-    # test_id = Column('fld_test_id', Integer,
-    #                  ForeignKey('ramstk_test.fld_test_id'),
-    #                  nullable=False)
     environment_id = Column(
         'fld_environment_id',
         Integer,

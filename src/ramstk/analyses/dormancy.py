@@ -4,7 +4,7 @@
 #       ramstk.analyses.Dormancy.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Dormancy Calculations Module."""
 
 # Standard Library Imports
@@ -81,7 +81,7 @@ DORMANT_HR_MULT = np.array([[[0.0, 0.08, 0.0, 0.0], [0.0, 0.08, 0.0, 0.0],
                                                          0.02]]])
 
 
-def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
+def do_calculate_dormant_hazard_rate(hw_info: List[Union[int, float]],
                                      env_info: List[int]) -> float:
     """Calculate the dormant hazard rate for a hardware item.
 
@@ -130,7 +130,7 @@ def do_calculate_dormant_hazard_rate(hw_info: Union[int, int, float],
         to calculate the dormant hazard rate.  Index 0 is the category ID,
         index 1 is the subcategory ID, and index 3 is the predicted hazard
         rate.
-    :param list env_info: the list of environment information.  Index 0
+    :param env_info: the list of environment information.  Index 0
         is the active environment ID per the table above and index 2 is the
         dormant (storage) environment ID per the table above.
     :rtype: float

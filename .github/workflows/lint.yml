@@ -34,6 +34,11 @@ jobs:
           use-mypy: false
           use-pylint: false
           use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
           extra-black-options: ""
           extra-yapf-options: "-r --style ./setup.cfg"
           extra-isort-options: "--settings-file ./pyproject.toml"
@@ -62,6 +67,11 @@ jobs:
           use-mypy: false
           use-pylint: false
           use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
           extra-black-options: ""
           extra-yapf-options: ""
           extra-isort-options: ""
@@ -89,6 +99,11 @@ jobs:
           use-mypy: true
           use-pylint: false
           use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
           extra-black-options: ""
           extra-yapf-options: ""
           extra-isort-options: ""
@@ -117,6 +132,11 @@ jobs:
           use-mypy: false
           use-pylint: true
           use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
           extra-black-options: ""
           extra-yapf-options: ""
           extra-isort-options: ""

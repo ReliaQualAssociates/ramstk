@@ -42,10 +42,11 @@ jobs:
         run: |
           python -mvenv $VIRTUAL_ENV
 
-      - name: Install and test RAMSTK
+      - name: Install RAMSTK dependencies and test with coverage
         run: |
           source $VIRTUAL_ENV/bin/activate
-          pip install -U pip setuptools>12.0 urllib3 pip-tools coverage[toml]
+          pip install -U pip setuptools>12.0 urllib3 pip-tools
+          make requirements
           pip install -U -r requirements.txt -r requirements-test.txt
           make PREFIX=$VIRTUAL_ENV install
           xvfb-run --auto-servernum make coverage
@@ -55,3 +56,18 @@ jobs:
         with:
           files: ./cobertura.xml
           flags: ${{ matrix.python }}
+
+      - name: Create Coveralls report
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel: true
+
+  upload_coveralls:
+    name: Upload Coverage Results to Coveralls
+    needs: test_suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload report to Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel-finished: true
