@@ -13,16 +13,29 @@ models."""
 # noinspection PyPackageRequirements
 import pytest
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO, mock_ramstk_failuredefinition
+from mocks import MockDAO
 
 # RAMSTK Package Imports
 from ramstk.models.programdb import RAMSTKFailureDefinition
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
 def mock_program_dao(monkeypatch):
+    _definition_1 = RAMSTKFailureDefinition()
+    _definition_1.revision_id = 1
+    _definition_1.definition_id = 1
+    _definition_1.definition = 'Mock Failure Definition 1'
+
+    _definition_2 = RAMSTKFailureDefinition()
+    _definition_2.revision_id = 1
+    _definition_2.definition_id = 2
+    _definition_2.definition = 'Mock Failure Definition 2'
+
     DAO = MockDAO()
-    DAO.table = mock_ramstk_failuredefinition
+    DAO.table = [
+        _definition_1,
+        _definition_2,
+    ]
 
     yield DAO
 

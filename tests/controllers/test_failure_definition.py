@@ -10,73 +10,39 @@
 
 # Third Party Imports
 import pytest
-from __mocks__ import MOCK_FAILURE_DEFINITIONS
+# noinspection PyUnresolvedReferences
+from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmFailureDefinition
 from ramstk.db.base import BaseDatabase
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFailureDefinition
-
-
-class MockDao:
-    _all_failure_definitions = []
-
-    def do_delete(self, record):
-        for _idx, _record in enumerate(self._all_failure_definitions):
-            if _record.definition_id == record.definition_id:
-                self._all_failure_definitions.pop(_idx)
-
-    def do_insert(self, record):
-        if record.revision_id == 1:
-            self._all_failure_definitions.append(record)
-        else:
-            raise DataAccessError('An error occured with RAMSTK.')
-
-    def _do_select_all_failure_definitions(self, table, value):
-        _idx = 1
-        self._all_failure_definitions = []
-        for _key in MOCK_FAILURE_DEFINITIONS:
-            _record = table()
-            _record.revision_id = value
-            _record.definition_id = _idx
-            _record.set_attributes(MOCK_FAILURE_DEFINITIONS[_key])
-            self._all_failure_definitions.append(_record)
-            _idx += 1
-
-        return self._all_failure_definitions
-
-    def do_select_all(self, table, key, value, order=None, _all=False):
-        _idx = 1
-        self._all_failure_definitions = []
-        for _key in MOCK_FAILURE_DEFINITIONS:
-            _record = table()
-            _record.revision_id = value
-            _record.definition_id = _idx
-            _record.set_attributes(MOCK_FAILURE_DEFINITIONS[_key])
-            self._all_failure_definitions.append(_record)
-            _idx += 1
-
-        return self._all_failure_definitions
-
-    def do_update(self, record):
-        for _key in MOCK_FAILURE_DEFINITIONS:
-            if _key == record.definition_id:
-                MOCK_FAILURE_DEFINITIONS[_key]['definition'] = \
-                    record.definition
-
-    def get_last_id(self, table, id_column):
-        return max(MOCK_FAILURE_DEFINITIONS.keys())
 
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    yield MockDao()
+    _definition_1 = RAMSTKFailureDefinition()
+    _definition_1.revision_id = 1
+    _definition_1.definition_id = 1
+    _definition_1.definition = 'Mock Failure Definition 1'
+
+    _definition_2 = RAMSTKFailureDefinition()
+    _definition_2.revision_id = 1
+    _definition_2.definition_id = 2
+    _definition_2.definition = 'Mock Failure Definition 2'
+
+    DAO = MockDAO()
+    DAO.table = [
+        _definition_1,
+        _definition_2,
+    ]
+
+    yield DAO
 
 
-class TestCreateControllers():
+class TestCreateControllers:
     """Class for controller initialization test suite."""
     @pytest.mark.unit
     def test_data_manager(self):
@@ -108,11 +74,12 @@ class TestCreateControllers():
                                 'request_insert_failure_definitions')
 
 
-class TestSelectMethods():
+class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
-        """do_select_all() should return a Tree() object populated with RAMSTKFailureDefinition instances on success."""
+        """do_select_all() should return a Tree() object populated with
+        RAMSTKFailureDefinition instances on success."""
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
@@ -124,7 +91,9 @@ class TestSelectMethods():
 
     @pytest.mark.unit
     def test_do_select_all_tree_loaded(self, mock_program_dao):
-        """do_select_all() should return a Tree() object populated with RAMSTKFailureDefinition instances on success when there is already a tree of definitions."""
+        """do_select_all() should return a Tree() object populated with
+        RAMSTKFailureDefinition instances on success when there is already a
+        tree of definitions."""
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
@@ -146,7 +115,7 @@ class TestSelectMethods():
         _failure_definition = DUT.do_select(1, table='failure_definition')
 
         assert isinstance(_failure_definition, RAMSTKFailureDefinition)
-        assert _failure_definition.definition == 'Failure Definition'
+        assert _failure_definition.definition == 'Mock Failure Definition 1'
 
     @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
@@ -178,8 +147,9 @@ class TestDeleteMethods():
             "\033[36m\nsucceed_delete_failure_definition topic was broadcast.")
 
     def on_fail_delete_failure_definition(self, error_message):
-        assert error_message == ('_do_delete: Attempted to delete non-existent failure '
-                                 'definition ID 10.')
+        assert error_message == (
+            '_do_delete: Attempted to delete non-existent failure '
+            'definition ID 10.')
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
     @pytest.mark.unit
@@ -221,26 +191,10 @@ class TestGetterSetter():
     """Class for testing methods that get or set."""
     def on_succeed_get_failure_definition_attrs(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes[1].revision_id == 1
-        assert attributes[1].definition == 'Failure Definition'
-        print(
-            "\033[36m\nsucceed_get_failure_definitions_attributes topic was broadcast"
-        )
-
-    def on_succeed_get_all_attrs(self, attributes):
-        assert isinstance(attributes, dict)
         assert attributes['revision_id'] == 1
-        assert attributes['name'] == 'Original Revision'
-        assert attributes['program_time'] == 2562
-        assert isinstance(attributes['failure_definitions'], dict)
-        assert isinstance(attributes['failure_definitions'][1],
-                          RAMSTKFailureDefinition)
-        assert attributes['failure_definitions'][1].revision_id == 1
-        assert isinstance(attributes['usage_profile'], Tree)
-        assert attributes['usage_profile'].get_node('1').data.revision_id == 1
-        print(
-            "\033[36m\nsucceed_get_all_revision_attributes topic was broadcast"
-        )
+        assert attributes['definition'] == 'Mock Failure Definition 1'
+        print("\033[36m\nsucceed_get_failure_definition_attributes topic was "
+              "broadcast")
 
     def on_succeed_get_failure_definition_tree(self, tree):
         assert isinstance(tree, Tree)
@@ -253,9 +207,10 @@ class TestGetterSetter():
 
     @pytest.mark.unit
     def test_do_get_attributes(self, mock_program_dao):
-        """_do_get_attributes() should return a dict of failure definition records on success."""
+        """_do_get_attributes() should return a dict of failure definition
+        records on success."""
         pub.subscribe(self.on_succeed_get_failure_definition_attrs,
-                      'succeed_get_failure_definitions_attributes')
+                      'succeed_get_failure_definition_attributes')
 
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
@@ -263,7 +218,7 @@ class TestGetterSetter():
         DUT.do_get_attributes(1, 'failure_definition')
 
         pub.unsubscribe(self.on_succeed_get_failure_definition_attrs,
-                        'succeed_get_failure_definitions_attributes')
+                        'succeed_get_failure_definition_attributes')
 
     @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
@@ -278,35 +233,6 @@ class TestGetterSetter():
 
         assert DUT.do_select(
             1, table='failure_definition').definition == 'Test Description'
-
-    @pytest.mark.unit
-    def test_do_set_all_attributes(self, mock_program_dao):
-        """do_set_all_attributes() should send the success message."""
-        DUT = dmFailureDefinition()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('request_set_all_failure_definition_attributes',
-                        attributes={'definition_id': 1,
-                                    'definition': 'Failure Definition'})
-        assert DUT.do_select(
-            1,
-            table='failure_definition').definition == 'Failure Definition'
-
-    @pytest.mark.unit
-    def test_do_set_all_attributes_extra_attribute(self, mock_program_dao):
-        """do_set_all_attributes() should send the success message."""
-        DUT = dmFailureDefinition()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('request_set_all_failure_definition_attributes',
-                        attributes={'definition_id': 1,
-                                    'definition': 'Failure Definition',
-                                    'funpack': 'Fun Packer'})
-        assert DUT.do_select(
-            1,
-            table='failure_definition').definition == 'Failure Definition'
 
     @pytest.mark.unit
     def test_on_get_tree(self, mock_program_dao):
@@ -326,20 +252,23 @@ class TestGetterSetter():
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_failure_definition(self, node_id, tree):
-        assert node_id == 2
+        assert node_id == 3
         assert isinstance(tree, Tree)
-        assert isinstance(tree[2].data['failure_definition'],
+        assert isinstance(tree[3].data['failure_definition'],
                           RAMSTKFailureDefinition)
         print(
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
     def on_fail_insert_failure_definition(self, error_message):
-        assert error_message == ('_do_insert_failure_definition: Attempting to add failure definition to non-existent revision 4.')
+        assert error_message == (
+            '_do_insert_failure_definition: Attempting to add failure '
+            'definition to non-existent revision 4.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
     def test_do_insert(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a new failure definition."""
+        """do_insert() should send the success message after successfully
+        inserting a new failure definition."""
         pub.subscribe(self.on_succeed_insert_failure_definition,
                       'succeed_insert_failure_definition')
 
@@ -357,7 +286,8 @@ class TestInsertMethods():
 
     @pytest.mark.unit
     def test_do_insert_no_revision(self, mock_program_dao):
-        """do_insert() should send the success message after successfully inserting a new failure definition."""
+        """do_insert() should send the success message after successfully
+        inserting a new failure definition."""
         pub.subscribe(self.on_fail_insert_failure_definition,
                       'fail_insert_failure_definition')
 
