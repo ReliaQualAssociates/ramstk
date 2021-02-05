@@ -260,12 +260,6 @@ class TestInsertMethods():
         print(
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
-    def on_fail_insert_failure_definition(self, error_message):
-        assert error_message == (
-            '_do_insert_failure_definition: Attempting to add failure '
-            'definition to non-existent revision 4.')
-        print("\033[35m\nfail_insert_function topic was broadcast.")
-
     @pytest.mark.unit
     def test_do_insert(self, mock_program_dao):
         """do_insert() should send the success message after successfully
@@ -285,56 +279,14 @@ class TestInsertMethods():
         pub.unsubscribe(self.on_succeed_insert_failure_definition,
                         'succeed_insert_failure_definition')
 
-    @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_program_dao):
-        """do_insert() should send the success message after successfully
-        inserting a new failure definition."""
-        pub.subscribe(self.on_fail_insert_failure_definition,
-                      'fail_insert_failure_definition')
 
-        DUT = dmFailureDefinition()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._revision_id = 4
-        DUT._do_insert_failure_definition()
-
-        pub.unsubscribe(self.on_fail_insert_failure_definition,
-                        'fail_insert_failure_definition')
-
-
-@pytest.mark.usefixtures('test_program_dao')
+@pytest.mark.usefixtures('mock_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_failure_definition(self, tree):
-        assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_update_failure_definition topic was broadcast")
-
     def on_fail_update_failure_definition(self, error_message):
         assert error_message == (
             'do_update: No data package found for failure definition ID 100.')
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_update_data_manager(self, test_program_dao):
-        """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update_failure_definition,
-                      'succeed_update_failure_definition')
-
-        DUT = dmFailureDefinition()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        _failure_definition = DUT.do_select(1, table='failure_definition')
-        _failure_definition.definition = 'Big test definition'
-
-        DUT.do_update(1)
-        _failure_definition = DUT.do_select(1, table='failure_definition')
-
-        assert _failure_definition.definition == 'Big test definition'
-
-        pub.unsubscribe(self.on_succeed_update_failure_definition,
-                        'succeed_update_failure_definition')
 
     @pytest.mark.unit
     def test_do_update_failure_definition_non_existent_id(
@@ -351,23 +303,3 @@ class TestUpdateMethods():
 
         pub.unsubscribe(self.on_fail_update_failure_definition,
                         'fail_update_failure_definition')
-
-    @pytest.mark.integration
-    def test_do_update_all_failure_definition(self, test_program_dao):
-        """do_update_all failure_definition() should return None on success."""
-        DUT = dmFailureDefinition()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        _failure_definition = DUT.do_select(1, table='failure_definition')
-        _failure_definition.definition = 'Big test definition #1'
-        _failure_definition = DUT.do_select(2, table='failure_definition')
-        _failure_definition.definition = 'Big test definition #2'
-
-        assert DUT.do_update_all() is None
-
-        _failure_definition = DUT.do_select(1, table='failure_definition')
-        assert _failure_definition.definition == 'Big test definition #1'
-
-        _failure_definition = DUT.do_select(2, table='failure_definition')
-        assert _failure_definition.definition == 'Big test definition #2'

@@ -14,7 +14,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmRevision
+from ramstk.controllers import dmFailureDefinition, dmRevision
 from ramstk.db.program import do_create_program_db, do_make_programdb_tables
 from ramstk.models.programdb import RAMSTKRevision
 
@@ -47,8 +47,40 @@ def test_do_create_program_db(test_simple_program_database):
 
 
 @pytest.mark.usefixtures('test_program_dao')
+class TestInsertMethods:
+    """Class to test data controller insert methods using actual database."""
+    def on_fail_insert_failure_definition(self, error_message):
+        assert error_message == (
+            '_do_insert_failure_definition: Attempting to add failure '
+            'definition to non-existent revision 4.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
+    @pytest.mark.integration
+    def test_do_insert_failure_definition_no_revision(self, test_program_dao):
+        """do_insert() should send the fail_insert_failure_definition message
+        when attempting to insert a new failure definition with a non-existent
+        revision ID."""
+        pub.subscribe(self.on_fail_insert_failure_definition,
+                      'fail_insert_failure_definition')
+
+        DUT = dmFailureDefinition()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT._revision_id = 4
+        DUT._do_insert_failure_definition()
+
+        pub.unsubscribe(self.on_fail_insert_failure_definition,
+                        'fail_insert_failure_definition')
+
+
+@pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods:
     """Class to test data controller update methods using actual database."""
+    def on_succeed_update_failure_definition(self, tree):
+        assert isinstance(tree, Tree)
+        print(
+            "\033[36m\nsucceed_update_failure_definition topic was broadcast")
+
     def on_succeed_update_revision(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_revision topic was broadcast")
@@ -60,7 +92,49 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update_data_manager(self, test_program_dao):
+    def test_do_update_failure_definition(self, test_program_dao):
+        """do_update() should send the succeed_update_failure_definition on
+        success."""
+        pub.subscribe(self.on_succeed_update_failure_definition,
+                      'succeed_update_failure_definition')
+
+        DUT = dmFailureDefinition()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        _failure_definition = DUT.do_select(1, table='failure_definition')
+        _failure_definition.definition = 'Big test definition'
+
+        DUT.do_update(1)
+        _failure_definition = DUT.do_select(1, table='failure_definition')
+
+        assert _failure_definition.definition == 'Big test definition'
+
+        pub.unsubscribe(self.on_succeed_update_failure_definition,
+                        'succeed_update_failure_definition')
+
+    @pytest.mark.integration
+    def test_do_update_all_failure_definition(self, test_program_dao):
+        """do_update_all failure_definition() should return None on success."""
+        DUT = dmFailureDefinition()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        _failure_definition = DUT.do_select(1, table='failure_definition')
+        _failure_definition.definition = 'Big test definition #1'
+        _failure_definition = DUT.do_select(2, table='failure_definition')
+        _failure_definition.definition = 'Big test definition #2'
+
+        assert DUT.do_update_all() is None
+
+        _failure_definition = DUT.do_select(1, table='failure_definition')
+        assert _failure_definition.definition == 'Big test definition #1'
+
+        _failure_definition = DUT.do_select(2, table='failure_definition')
+        assert _failure_definition.definition == 'Big test definition #2'
+
+    @pytest.mark.integration
+    def test_do_update_revision(self, test_program_dao):
         """do_update() should send the succeed_update_revision message on
         success."""
         pub.subscribe(self.on_succeed_update_revision,
