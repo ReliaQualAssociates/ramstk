@@ -183,12 +183,6 @@ PART_STRESS_PI_Q_HF_DIODE: Dict[int, List[float]] = {
     5: [0.5, 1.0, 1.8, 2.5],
     6: [0.5, 1.0, 5.0, 25.0, 50.0]
 }
-PI_A = {
-    2: [0.5, 2.5, 1.0],
-    3: [1.5, 0.7],
-    4: [1.5, 0.7, 2.0, 4.0, 8.0, 10.0],
-    8: [1.0, 4.0]
-}
 
 # Constants used to calculate the temperature factor (piT)
 PI_T_DICT: Dict[int, List[float]] = {
@@ -291,27 +285,24 @@ PI_M = [1.0, 2.0, 4.0]
 def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the application factor (piA) for the semiconductor device.
 
-    :param attributes: the attributes of the semiconductor being
-        calculated.
+    :param attributes: the attributes of the semiconductor being calculated.
     :return attributes: the updated attributes of the semiconductor being
         calculated.
     :rtype: dict
     :raise: IndexError if passed an unknown application ID.
     """
-    if attributes['subcategory_id'] in [2, 3, 4, 8]:
-        attributes['piA'] = PI_A[attributes['subcategory_id']][
-            attributes['application_id'] - 1]
-    elif attributes['subcategory_id'] == 7:
-        if attributes['application_id'] == 1:
-            attributes['piA'] = 7.6
-        else:
-            attributes['piA'] = 0.06 * (attributes['duty_cycle'] / 100.0) + 0.4
-    elif attributes['subcategory_id'] == 13:
-        if attributes['application_id'] == 1:
-            attributes['piA'] = 4.4
-        else:
-            attributes['piA'] = sqrt(attributes['duty_cycle'] / 100.0)
-    else:
+    _functions = {
+        2: _get_section_6_2_application_factor,
+        3: _get_section_6_3_application_factor,
+        4: _get_section_6_4_application_factor,
+        7: _get_section_6_7_application_factor,
+        8: _get_section_6_8_application_factor,
+        13: _get_section_6_13_application_factor,
+    }
+
+    try:
+        attributes = _functions[attributes['subcategory_id']](attributes)
+    except KeyError:
         attributes['piA'] = 0.0
 
     return attributes
@@ -327,21 +318,16 @@ def calculate_electrical_stress_factor(
         calculated.
     :rtype: dict
     """
-    if attributes['subcategory_id'] == 1:
-        if attributes['type_id'] > 5:
-            attributes['piS'] = 1.0
-        elif attributes['voltage_ratio'] <= 0.3:
-            attributes['piS'] = 0.054
-        else:
-            attributes['piS'] = attributes['voltage_ratio']**2.43
-    elif attributes['subcategory_id'] in [3, 6]:
-        attributes['piS'] = 0.045 * exp(3.1 * attributes['voltage_ratio'])
-    elif attributes['subcategory_id'] == 10:
-        if attributes['voltage_ratio'] <= 0.3:
-            attributes['piS'] = 0.1
-        else:
-            attributes['piS'] = attributes['voltage_ratio']**1.9
-    else:
+    _functions = {
+        1: _get_section_6_1_electrical_stress_factor,
+        3: _get_section_6_3_electrical_stress_factor,
+        6: _get_section_6_6_electrical_stress_factor,
+        10: _get_section_6_10_electrical_stress_factor,
+    }
+
+    try:
+        attributes = _functions[attributes['subcategory_id']](attributes)
+    except KeyError:
         attributes['piS'] = 0.0
 
     return attributes
@@ -528,15 +514,11 @@ def calculate_power_rating_factor(
     :raise: ValueError if passed a rated power <=0.0.
     """
     if attributes['subcategory_id'] == 2:
-        if attributes['type_id'] == 4:
-            attributes['piR'] = 0.326 * log(attributes['power_rated']) - 0.25
-        else:
-            attributes['piR'] = 1.0
-    elif attributes['subcategory_id'] in [3, 6]:
-        if attributes['power_rated'] < 0.1:
-            attributes['piR'] = 0.43
-        else:
-            attributes['piR'] = attributes['power_rated']**0.37
+        attributes = _get_section_6_2_power_rating_factor(attributes)
+    elif attributes['subcategory_id'] == 3:
+        attributes = _get_section_6_3_power_rating_factor(attributes)
+    elif attributes['subcategory_id'] == 6:
+        attributes = _get_section_6_6_power_rating_factor(attributes)
     elif attributes['subcategory_id'] == 10:
         attributes['piR'] = attributes['current_rated']**0.4
     else:
@@ -701,5 +683,322 @@ def get_part_stress_quality_factor(
     else:
         attributes['piQ'] = PART_STRESS_PI_Q[attributes['subcategory_id']][
             attributes['quality_id'] - 1]
+
+    return attributes
+
+
+def _get_section_6_1_electrical_stress_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piS and set default values for LF diodes.
+
+    This function is for MIL-HDBK-217F, Section 6.2 devices.  The
+    voltage stress ratio default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    if attributes['type_id'] < 5:
+        attributes['voltage_ratio'] = attributes['voltage_ratio'] or 0.7
+        if attributes['voltage_ratio'] <= 0.3:
+            attributes['piS'] = 0.054
+        else:
+            attributes['piS'] = attributes['voltage_ratio']**2.43
+    else:
+        attributes['piS'] = 1.0
+
+    return attributes
+
+
+def _get_section_6_2_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default values for HF diodes.
+
+    This function is for MIL-HDBK-217F, Section 6.2 devices.  The
+    application ID default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['application_id'] = attributes['application_id'] or 2
+
+    if attributes['type_id'] != 6:
+        attributes['application_id'] = attributes['application_id'] or 3
+
+    attributes['piA'] = [
+        0.5,
+        2.5,
+        1.0,
+    ][attributes['application_id'] - 1]
+
+    return attributes
+
+
+def _get_section_6_2_power_rating_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piR and set default values for HF diodes.
+
+    This function is for MIL-HDBK-217F, Section 6.3 devices.  The
+    rated power default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    if attributes['type_id'] == 4:
+        attributes['power_rated'] = attributes['power_rated'] or 1000.0
+        attributes['piR'] = 0.326 * log(attributes['power_rated']) - 0.25
+    else:
+        attributes['piR'] = 1.0
+
+    return attributes
+
+
+def _get_section_6_3_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default values for LF, LP BJT.
+
+    This function is for MIL-HDBK-217F, Section 6.3 devices.  The
+    application ID default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['application_id'] = attributes['application_id'] or {
+        0: 0,
+        1: 2,
+        2: 1,
+    }[attributes['type_id']]
+
+    attributes['piA'] = [
+        1.5,
+        0.7,
+    ][attributes['application_id'] - 1]
+
+    return attributes
+
+
+def _get_section_6_3_electrical_stress_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piS and set default values for LF, LP BJT.
+
+    This function is for MIL-HDBK-217F, Section 6.3 devices.  The
+    voltage stress ratio default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['voltage_ratio'] = attributes['voltage_ratio'] or {
+        0: 0.0,
+        1: 0.5,
+        2: 0.8,
+    }[attributes['type_id']]
+
+    attributes['piS'] = 0.045 * exp(3.1 * attributes['voltage_ratio'])
+
+    return attributes
+
+
+def _get_section_6_3_power_rating_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piR and set default values for LF, LP BJT.
+
+    This function is for MIL-HDBK-217F, Section 6.3 devices.  The rated power
+    default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['power_rated'] = attributes['power_rated'] or {
+        0: 0.0,
+        1: 0.5,
+        2: 100.0,
+    }[attributes['type_id']]
+
+    if attributes['power_rated'] < 0.1:
+        attributes['piR'] = 0.43
+    else:
+        attributes['piR'] = attributes['power_rated']**0.37
+
+    return attributes
+
+
+def _get_section_6_4_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default values for LF Si FET.
+
+    This function is for MIL-HDBK-217F, Section 6.4 devices.  The
+    application ID default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['application_id'] = attributes['application_id'] or 2
+
+    attributes['piA'] = [
+        1.5,
+        0.7,
+        2.0,
+        4.0,
+        8.0,
+        10.0,
+    ][attributes['application_id'] - 1]
+
+    return attributes
+
+
+def _get_section_6_6_electrical_stress_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piS and set default values for HF, LN BJT.
+
+    This function is for MIL-HDBK-217F, Section 6.6 devices.  The
+    voltage stress ratio default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['voltage_ratio'] = attributes['voltage_ratio'] or 0.7
+
+    attributes['piS'] = 0.045 * exp(3.1 * attributes['voltage_ratio'])
+
+    return attributes
+
+
+def _get_section_6_6_power_rating_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piR and set default values for HF, LN BJT.
+
+    This function is for MIL-HDBK-217F, Section 6.6 devices.  The rated power
+    default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['power_rated'] = attributes['power_rated'] or 0.5
+
+    if attributes['power_rated'] < 0.1:
+        attributes['piR'] = 0.43
+    else:
+        attributes['piR'] = attributes['power_rated']**0.37
+
+    return attributes
+
+
+def _get_section_6_7_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default values for HF and HP BJT devices.
+
+    This function is for MIL-HDBK-217F, Section 6.7 devices.  The
+    application ID and the duty cycle default values are also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['application_id'] = attributes['application_id'] or 2
+    attributes['duty_cycle'] = attributes['duty_cycle'] or 0.2
+
+    if attributes['application_id'] == 1:
+        attributes['piA'] = 7.6
+    else:
+        attributes['piA'] = 0.06 * (attributes['duty_cycle'] / 100.0) + 0.4
+
+    return attributes
+
+
+def _get_section_6_8_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default values for GaAs FET.
+
+    This function is for MIL-HDBK-217F, Section 6.8 devices.  The
+    application ID default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['application_id'] = attributes['application_id'] or 1
+
+    attributes['piA'] = [
+        1.0,
+        4.0,
+    ][attributes['application_id'] - 1]
+
+    return attributes
+
+
+def _get_section_6_10_electrical_stress_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piS and set default values for thyristors and SCR.
+
+    This function is for MIL-HDBK-217F, Section 6.10 devices.  The
+    rated current and voltage stress ratio default value is also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['current_rated'] = attributes['current_rated'] or 1.0
+    attributes['voltage_ratio'] = attributes['voltage_ratio'] or 0.7
+
+    if attributes['voltage_ratio'] <= 0.3:
+        attributes['piS'] = 0.1
+    else:
+        attributes['piS'] = attributes['voltage_ratio']**1.9
+
+    return attributes
+
+
+def _get_section_6_13_application_factor(
+        attributes: Dict[str, Any]) -> Dict[str, Any]:
+    """Get piA and set default values for laser diodes.
+
+    This function is for MIL-HDBK-217F, Section 6.13 devices.  The
+    application ID and the duty cycle default values are also set.
+
+    :param attributes: the attributes of the semiconductor being
+        calculated.
+    :return attributes: the updated attributes of the semiconductor being
+        calculated.
+    :rtype: dict
+    """
+    attributes['application_id'] = attributes['application_id'] or 2
+    attributes['duty_cycle'] = attributes['duty_cycle'] or 0.6
+
+    if attributes['application_id'] == 1:
+        attributes['piA'] = 4.4
+    else:
+        attributes['piA'] = sqrt(attributes['duty_cycle'] / 100.0)
 
     return attributes

@@ -279,8 +279,8 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
     .. important:: The calling object is responsible for handling any
         exceptions raised by or passed through this method.
 
-    :return: None
-    :rtype: None
+    :return: attributes['hazard_rate_active']
+    :rtype: float
     """
     try:
         if attributes['hazard_rate_method_id'] == 1:

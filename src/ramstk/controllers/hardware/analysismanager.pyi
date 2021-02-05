@@ -6,6 +6,7 @@ import treelib
 
 # RAMSTK Package Imports
 from ramstk.analyses import derating as derating
+from ramstk.analyses import dormancy as dormancy
 from ramstk.analyses import stress as stress
 from ramstk.analyses.milhdbk217f import milhdbk217f as milhdbk217f
 from ramstk.configuration import (
@@ -25,11 +26,6 @@ def mtbf_from_s_distribution(dist: str = ..., **kwargs: Any) -> float:
     ...
 
 
-def mtbf_from_specified_hazard_rate(hazard_rate: float,
-                                    time: float = ...) -> float:
-    ...
-
-
 class AnalysisManager(RAMSTKAnalysisManager):
     def __init__(self, configuration: RAMSTKUserConfiguration,
                  **kwargs: Dict[Any, Any]) -> None:
@@ -45,13 +41,18 @@ class AnalysisManager(RAMSTKAnalysisManager):
     def _do_calculate_hardware(self, node_id: int) -> None:
         ...
 
-    def _do_calculate_hazard_rate_active(self, node: treelib.Node) -> Any:
+    def _do_calculate_hazard_rate_active(self, node: treelib.Node) -> float:
         ...
 
-    def _do_calculate_hazard_rates(self, node: treelib.Node) -> float:
+    @staticmethod
+    def _do_calculate_hazard_rate_dormant(node: treelib.Node) -> float:
         ...
 
-    def _do_calculate_mtbfs(self, node: treelib.Node) -> float:
+    def _do_calculate_hazard_rates(
+            self, node: treelib.Node) -> Tuple[float, float, float, float]:
+        ...
+
+    def _do_calculate_mtbfs(self, node: treelib.Node) -> None:
         ...
 
     def _do_calculate_part_count(self, node: treelib.Node) -> int:
