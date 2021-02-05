@@ -325,7 +325,7 @@ def test_license_file():
     os.remove(_cwd + '/license.key')
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
     test_common_db = {
@@ -389,7 +389,7 @@ def test_common_dao():
     conn.close()
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
     # If there are existing test databases, delete them.

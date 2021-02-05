@@ -278,7 +278,7 @@ class TestGetterSetter:
                         'succeed_get_revision_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao')
+@pytest.mark.usefixtures('mock_program_dao')
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_revision(self, node_id, tree):
@@ -323,23 +323,13 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_fail_insert_revision, 'fail_insert_revision')
 
 
-@pytest.mark.usefixtures('test_program_dao')
+@pytest.mark.usefixtures('mock_program_dao')
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_revision(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_update_revision topic was broadcast")
-
-    def on_fail_update_revision(self, error_message):
+    def on_fail_update_revision_non_existent_id(self, error_message):
         assert error_message == (
             'do_update: Attempted to save non-existent revision with revision '
             'ID 100.')
-        print("\033[35m\nfail_update_revision topic was broadcast")
-
-    def on_fail_update_revision_wrong_data_type(self, error_message):
-        assert error_message == (
-            'do_update: The value for one or more attributes for revision ID '
-            '1 was the wrong type.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     def on_fail_update_revision_no_data_package(self, error_message):
@@ -347,67 +337,20 @@ class TestUpdateMethods:
             'do_update: No data package found for revision ID 1.')
         print("\033[35m\nfail_update_revision topic was broadcast")
 
-    @pytest.mark.integration
-    def test_do_update_data_manager(self, test_program_dao):
-        """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update_revision,
-                      'succeed_update_revision')
-
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all()
-
-        _revision = DUT.do_select(1, table='revision')
-        _revision.name = 'Test Revision'
-        DUT.do_update(1)
-
-        DUT.do_select_all()
-        _revision = DUT.do_select(1, table='revision')
-
-        assert _revision.name == 'Test Revision'
-
-        pub.unsubscribe(self.on_succeed_update_revision,
-                        'succeed_update_revision')
-
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
-        Revision ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_revision, 'fail_update_revision')
+        revision ID that doesn't exist."""
+        pub.subscribe(self.on_fail_update_revision_non_existent_id,
+                      'fail_update_revision')
 
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.do_update(100)
 
-        pub.unsubscribe(self.on_fail_update_revision, 'fail_update_revision')
-
-    @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_program_dao):
-        """do_update() should raise the 'fail_update_validation' message when
-        passed a Validation ID that doesn't exist in the tree."""
-        pub.subscribe(self.on_fail_update_revision_wrong_data_type,
-                      'fail_update_revision')
-
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all()
-        DUT.tree.get_node(1).data['revision'].cost = None
-
-        DUT.do_update(1)
-
-        pub.unsubscribe(self.on_fail_update_revision_wrong_data_type,
+        pub.unsubscribe(self.on_fail_update_revision_non_existent_id,
                         'fail_update_revision')
-
-    @pytest.mark.integration
-    def test_do_update_root_node(self, test_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Function ID that has no data package."""
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all()
-
-        DUT.do_update(0)
 
     @pytest.mark.unit
     def test_do_update_no_data_package(self, test_program_dao):
