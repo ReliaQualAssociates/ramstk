@@ -52,7 +52,7 @@ class TestInsertMethods:
     def on_fail_insert_failure_definition(self, error_message):
         assert error_message == (
             '_do_insert_failure_definition: Attempting to add failure '
-            'definition to non-existent revision 4.')
+            'definition to non-existent revision 40.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.integration
@@ -66,7 +66,7 @@ class TestInsertMethods:
         DUT = dmFailureDefinition()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT._revision_id = 4
+        DUT._revision_id = 40
         DUT._do_insert_failure_definition()
 
         pub.unsubscribe(self.on_fail_insert_failure_definition,
@@ -80,6 +80,12 @@ class TestUpdateMethods:
         assert isinstance(tree, Tree)
         print(
             "\033[36m\nsucceed_update_failure_definition topic was broadcast")
+
+    def on_fail_update_failure_definition_wrong_data_type(self, error_message):
+        assert error_message == (
+            'do_update: The value for one or more attributes for failure '
+            'definition ID 1 was the wrong type.')
+        print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     def on_succeed_update_revision(self, tree):
         assert isinstance(tree, Tree)
@@ -114,7 +120,7 @@ class TestUpdateMethods:
                         'succeed_update_failure_definition')
 
     @pytest.mark.integration
-    def test_do_update_all_failure_definition(self, test_program_dao):
+    def test_do_update_failure_definition_all(self, test_program_dao):
         """do_update_all failure_definition() should return None on success."""
         DUT = dmFailureDefinition()
         DUT.do_connect(test_program_dao)
@@ -132,6 +138,25 @@ class TestUpdateMethods:
 
         _failure_definition = DUT.do_select(2, table='failure_definition')
         assert _failure_definition.definition == 'Big test definition #2'
+
+    @pytest.mark.integration
+    def test_do_update_failure_definition_wrong_type(self, test_program_dao):
+        """do_update() should send the succeed_update_failure_definition on
+        success."""
+        pub.subscribe(self.on_fail_update_failure_definition_wrong_data_type,
+                      'fail_update_failure_definition')
+
+        DUT = dmFailureDefinition()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.get_node(1).data['failure_definition'].definition = {
+            1: 'Big test definition',
+        }
+
+        DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_failure_definition_wrong_data_type,
+                        'fail_update_failure_definition')
 
     @pytest.mark.integration
     def test_do_update_revision(self, test_program_dao):
@@ -157,7 +182,7 @@ class TestUpdateMethods:
                         'succeed_update_revision')
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_program_dao):
+    def test_do_update_revision_wrong_data_type(self, test_program_dao):
         """do_update() should send the fail_update_revision message when passed
         a revision ID that that has a wrong data type for one or more
         attributes."""
@@ -175,7 +200,7 @@ class TestUpdateMethods:
                         'fail_update_revision')
 
     @pytest.mark.integration
-    def test_do_update_root_node(self, test_program_dao):
+    def test_do_update_revision_root_node(self, test_program_dao):
         """do_update() should end the fail_update_revision message when passed
         a revision ID that has no data package."""
         DUT = dmRevision()

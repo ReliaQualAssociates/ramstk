@@ -249,7 +249,7 @@ class TestGetterSetter():
                         'succeed_get_failure_definition_tree')
 
 
-@pytest.mark.usefixtures('test_program_dao')
+@pytest.mark.usefixtures('mock_program_dao')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
     def on_succeed_insert_failure_definition(self, node_id, tree):
@@ -283,17 +283,22 @@ class TestInsertMethods():
 @pytest.mark.usefixtures('mock_program_dao')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
-    def on_fail_update_failure_definition(self, error_message):
+    def on_fail_update_failure_definition_non_existent_id(self, error_message):
         assert error_message == (
-            'do_update: No data package found for failure definition ID 100.')
+            'do_update: Attempted to save non-existent failure definition '
+            'with failure definition ID 100.')
+        print("\033[35m\nfail_update_failure_definition topic was broadcast")
+
+    def on_fail_update_failure_definition_no_data_package(self, error_message):
+        assert error_message == (
+            'do_update: No data package found for failure definition ID 1.')
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_update_failure_definition_non_existent_id(
-            self, mock_program_dao):
+    def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update_failure_definition() should broadcast the fail message
         when attempting to save a non-existent ID."""
-        pub.subscribe(self.on_fail_update_failure_definition,
+        pub.subscribe(self.on_fail_update_failure_definition_non_existent_id,
                       'fail_update_failure_definition')
 
         DUT = dmFailureDefinition()
@@ -301,5 +306,22 @@ class TestUpdateMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_update(100)
 
-        pub.unsubscribe(self.on_fail_update_failure_definition,
+        pub.unsubscribe(self.on_fail_update_failure_definition_non_existent_id,
+                        'fail_update_failure_definition')
+
+    @pytest.mark.unit
+    def test_do_update_no_data_package(self, mock_program_dao):
+        """do_update() should return a non-zero error code when passed a
+        Function ID that has no data package."""
+        pub.subscribe(self.on_fail_update_failure_definition_no_data_package,
+                      'fail_update_failure_definition')
+
+        DUT = dmFailureDefinition()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.get_node(1).data.pop('failure_definition')
+
+        DUT.do_update(1)
+
+        pub.unsubscribe(self.on_fail_update_failure_definition_no_data_package,
                         'fail_update_failure_definition')

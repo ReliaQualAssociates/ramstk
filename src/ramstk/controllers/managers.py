@@ -3,7 +3,7 @@
 #       ramstk.controllers.manager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package analysis manager."""
 
 # Standard Library Imports
@@ -250,8 +250,8 @@ class RAMSTKDataManager:
                 _method_name = inspect.currentframe(  # type: ignore
                 ).f_code.co_name
                 _error_msg: str = (
-                    '{2}: No data package for node ID {0} in module {'
-                    '1}.'.format(node_id[0], _table, _method_name))
+                    '{2}: No data package for node ID {0} in module '
+                    '{1}.'.format(node_id[0], _table, _method_name))
                 pub.sendMessage(
                     'do_log_debug',
                     logger_name='DEBUG',

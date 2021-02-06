@@ -353,14 +353,14 @@ class TestUpdateMethods:
                         'fail_update_revision')
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, test_program_dao):
+    def test_do_update_no_data_package(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
         pub.subscribe(self.on_fail_update_revision_no_data_package,
                       'fail_update_revision')
 
         DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
+        DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
         DUT.tree.get_node(1).data.pop('revision')
 

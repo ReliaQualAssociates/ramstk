@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Revision Package Data Model."""
 
 # Standard Library Imports
@@ -105,6 +105,9 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        _method_name: str = inspect.currentframe(  # type: ignore
+        ).f_code.co_name
+
         try:
             self.dao.do_update(self.tree.get_node(node_id).data['revision'])
             pub.sendMessage(
@@ -112,8 +115,6 @@ class DataManager(RAMSTKDataManager):
                 tree=self.tree,
             )
         except AttributeError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
             _error_msg: str = (
                 '{1}: Attempted to save non-existent revision with revision '
                 'ID {0}.').format(str(node_id), _method_name)
@@ -127,8 +128,6 @@ class DataManager(RAMSTKDataManager):
                 error_message=_error_msg,
             )
         except KeyError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
             _error_msg = ('{1}: No data package found for revision '
                           'ID {0}.').format(str(node_id), _method_name)
             pub.sendMessage(
@@ -142,8 +141,6 @@ class DataManager(RAMSTKDataManager):
             )
         except (DataAccessError, TypeError):
             if node_id != 0:
-                _method_name: str = inspect.currentframe(  # type: ignore
-                ).f_code.co_name
                 _error_msg = ('{1}: The value for one or more attributes for '
                               'revision ID {0} was the wrong type.').format(
                                   str(node_id), _method_name)
