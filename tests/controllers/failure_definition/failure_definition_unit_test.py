@@ -2,11 +2,12 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_revision.py is part of The RAMSTK Project
+#       tests.controllers.failure_definition.unit_test.py is part of
+#       The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing Revision algorithms and models."""
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Test class for testing failure definition module algorithms and models."""
 
 # Third Party Imports
 import pytest

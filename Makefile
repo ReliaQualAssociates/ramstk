@@ -122,7 +122,7 @@ clean-pyc:		## remove Python file artifacts
 	$(shell find . -name '*~' -exec rm -f {} +)
 	$(shell find . -name '__pycache__' -exec rm -fr {} +)
 
-clean-test:		## remove test and coverage artifacts
+clean-test:	clean-pyc	## remove test and coverage artifacts
 	rm -fr .tox/
 	rm -f .coverage
 	rm -fr .reports/coverage
@@ -202,13 +202,13 @@ uninstall:
 	${RM} "$(PREFIX)/share/pixmaps/RAMSTK.png"
 	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
 
-test.unit:
+test.unit: clean-pyc
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
 
 test.calc:
 	py.test $(TESTOPTS) -m calculation $(TESTFILE)
 
-test.integration:
+test.integration: clean-pyc
 	py.test $(TESTOPTS) -m integration $(TESTFILE)
 
 test.gui:
