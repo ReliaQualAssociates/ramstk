@@ -10,11 +10,8 @@
 
 # Third Party Imports
 import pytest
-from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmFailureDefinition, dmRevision
 from ramstk.db.program import do_create_program_db, do_make_programdb_tables
 from ramstk.models.programdb import RAMSTKRevision
 
