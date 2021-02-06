@@ -138,8 +138,6 @@ class RAMSTKDataManager:
         pub.subscribe(self.do_set_tree,
                       'succeed_calculate_{0}'.format(self._tag))
 
-        pub.subscribe(self._on_select_revision, 'selected_revision')
-
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
 
@@ -296,7 +294,3 @@ class RAMSTKDataManager:
         for _node in self.tree.all_nodes():
             self.do_update(_node.identifier)  # type: ignore
         pub.sendMessage('succeed_update_all')
-
-    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        """Set the revision ID for the data manager."""
-        self._revision_id = attributes['revision_id']
