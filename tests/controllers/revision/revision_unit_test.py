@@ -146,6 +146,15 @@ class TestSelectMethods:
         assert _revision.name == 'Original Revision'
 
     @pytest.mark.unit
+    def test_do_select_revision_tree_exists(self, mock_program_dao):
+        """do_select() should clear any existing tree when selecting
+        revisions."""
+        DUT = dmRevision()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all()
+        DUT.do_select_all()
+
+    @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
