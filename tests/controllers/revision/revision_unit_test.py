@@ -99,7 +99,7 @@ class TestCreateControllers:
         assert isinstance(DUT, dmRevision)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'revision'
+        assert DUT._tag == 'revisions'
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all,
@@ -346,7 +346,7 @@ class TestUpdateMethods:
         DUT = dmRevision()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
-        DUT.do_update(100)
+        DUT.do_update(100, table='revision')
 
         pub.unsubscribe(self.on_fail_update_revision_non_existent_id,
                         'fail_update_revision')
@@ -363,7 +363,7 @@ class TestUpdateMethods:
         DUT.do_select_all()
         DUT.tree.get_node(1).data.pop('revision')
 
-        DUT.do_update(1)
+        DUT.do_update(1, table='revision')
 
         pub.unsubscribe(self.on_fail_update_revision_no_data_package,
                         'fail_update_revision')

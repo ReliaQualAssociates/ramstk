@@ -78,7 +78,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_function_all(self, test_program_dao):
-        """do_update_all failure_definition() should return None on success."""
+        """do_update_all() should update all the functions in the database."""
         DUT = dmFunction()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})

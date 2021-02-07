@@ -45,10 +45,26 @@ class TestUpdateMethods:
 
         _revision = DUT.do_select(1, table='revision')
         _revision.name = 'Test Revision'
-        DUT.do_update(1)
+        DUT.do_update(1, table='revision')
 
         pub.unsubscribe(self.on_succeed_update_revision,
                         'succeed_update_revision')
+
+    @pytest.mark.integration
+    def test_do_update_revision_all(self, test_program_dao):
+        """do_update() should send the succeed_update_revision message on
+        success."""
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all()
+
+        _revision = DUT.do_select(1, table='revision')
+        _revision.name = 'Test Revision'
+
+        pub.sendMessage('request_update_all_revisions')
+
+        _revision = DUT.do_select(1, table='revision')
+        _revision.name == 'Test Revision'
 
     @pytest.mark.integration
     def test_do_update_revision_wrong_data_type(self, test_program_dao):
@@ -63,7 +79,7 @@ class TestUpdateMethods:
         DUT.do_select_all()
         DUT.tree.get_node(1).data['revision'].cost = None
 
-        DUT.do_update(1)
+        DUT.do_update(1, table='revision')
 
         pub.unsubscribe(self.on_fail_update_revision_wrong_data_type,
                         'fail_update_revision')
@@ -76,4 +92,4 @@ class TestUpdateMethods:
         DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
-        DUT.do_update(0)
+        DUT.do_update(0, table='revision')
