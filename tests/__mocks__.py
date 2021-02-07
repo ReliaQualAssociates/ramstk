@@ -553,8 +553,6 @@ MOCK_ENVIRONMENTS = {
     }
 }
 
-MOCK_FAILURE_DEFINITIONS = {1: {'definition': 'Failure Definition'}}
-
 MOCK_FUNCTIONS = {
     1: {
         'availability_logistics': 1.0,

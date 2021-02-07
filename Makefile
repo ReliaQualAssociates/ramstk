@@ -1,24 +1,28 @@
 .PHONY: clean clean-test clean-pyc clean-build docs help
 .DEFAULT: help
 
+SHELL := /bin/bash
+
 # These variables can be passed from the command line when invoking make.
 PREFIX		= /usr/local
 
 GITHUB_USER = ReliaQualAssociates
 TOKEN		= $(shell echo $(GITHUB_TOKEN))
 REPO		= ramstk
-REQFILE		= requirements.txt
-DEVREQFILE	= requirements-dev.txt
-TSTREQFILE	= requirements-test.txt
+REQFILE		= $(VIRTUAL_ENV)/requirements.txt
+DEVREQFILE	= $(VIRTUAL_ENV)/requirements-dev.txt
+TSTREQFILE	= $(VIRTUAL_ENV)/requirements-test.txt
 SRCFILE		= src/ramstk/
 TESTOPTS	= -x -c ./pyproject.toml --cache-clear
 TESTFILE	= tests/
+BASEVENV	= .venv
 VIRTENV		= ramstk-venv
 COVDIR		= .reports/coverage/html
 ROOT 		= $(shell git rev-parse --show-toplevel)
 
 # Shell commands:
-PY			= $(shell $(VIRTUALENVWRAPPER_PYTHON) -V | cut -d ' ' -f2)
+PYTHON		= $(shell which python)
+PY			= $(shell which python -V | cut -d ' ' -f2)
 MKDIR 		= mkdir -pv
 SED			= sed
 COPY 		= cp -v
@@ -122,29 +126,29 @@ clean-pyc:		## remove Python file artifacts
 	$(shell find . -name '*~' -exec rm -f {} +)
 	$(shell find . -name '__pycache__' -exec rm -fr {} +)
 
-clean-test:		## remove test and coverage artifacts
+clean-test:	clean-pyc	## remove test and coverage artifacts
+	@echo -e "\n\t\033[1;33mCleaning up old test run artifacts ...\033[0m\n"
 	rm -fr .tox/
 	rm -f .coverage
 	rm -fr .reports/coverage
 	rm -fr .pytest_cache
 
 coverage: clean-test
-	$(info Running RAMSTK test suite with coverage ...)
+	@echo -e "\n\t\033[1;32mRunning RAMSTK test suite with coverage ...\033[0m\n"
 	py.test $(TESTOPTS) $(TESTFILE)
 
 depends:
-	pip install -U pip-tools
+	pip install -U pip-tools wheel
 	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
-	pyenv rehash
 
 mkvenv:
-	pyenv virtualenv $(PY) $(VIRTENV)
+	python$(PY) -m venv $(BASEVENV)/$(VIRTENV)
 
 lsvenv:
-	pyenv virtualenvs
+	@echo $(shell ls $(BASEVENV) | sort)
 
 usevenv:
-	pyenv activate $(VIRTENV)
+	source $(BASEVENV)/$(VIRTENV)/bin/activate
 
 pyvailable:
 	pyenv install --list
@@ -157,17 +161,20 @@ pyversions:
 	pyenv versions
 
 requirements:
+	pip install -U pip-tools wheel
 	pip-compile --allow-unsafe --generate-hashes --output-file $(REQFILE) requirements.in
 	pip-compile --allow-unsafe --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
 	pip-compile --allow-unsafe --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 upgrade:
+	pip install -U pip-tools wheel
 	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(REQFILE) requirements.in
 	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
 	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
 
 # Targets to install and uninstall.
 install: clean-build clean-pyc
+	@echo -e "\n\t\033[1;32mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
 	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
@@ -197,25 +204,26 @@ install: clean-build clean-pyc
 	${COPY} "./data/RAMSTK.toml" "$(PREFIX)/share/RAMSTK/"
 
 uninstall:
+	@echo -e "\n\t\033[1;31mUninstalling RAMSTK :( ...\033[0m\n"
 	pip uninstall -y ramstk
 	${RMDIR} "$(PREFIX)/share/RAMSTK/"
 	${RM} "$(PREFIX)/share/pixmaps/RAMSTK.png"
 	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
 
-test.unit:
+test.unit: clean-test
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
 
-test.calc:
+test.calc: clean-test
 	py.test $(TESTOPTS) -m calculation $(TESTFILE)
 
-test.integration:
+test.integration: clean-test
 	py.test $(TESTOPTS) -m integration $(TESTFILE)
 
-test.gui:
+test.gui: clean-test
 	py.test $(TESTOPTS) -m gui $(TESTFILE)
 
 test:
-	$(info Running RAMSTK test suite without coverage ...)
+	@echo -e "\n\t\033[1;33mRunning RAMSTK test suite without coverage ...\033[0m\n"
 	py.test $(TESTOPTS) -v -s $(TESTFILE)
 
 test-all:

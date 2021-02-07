@@ -318,7 +318,8 @@ class BaseDatabase:
 
         try:
             self.session.commit()
-        except (exc.InvalidRequestError, exc.ProgrammingError) as _error:
+        except (exc.IntegrityError, exc.InvalidRequestError,
+                exc.ProgrammingError) as _error:
             self.session.rollback()
             _error_message = (
                 "There was an database error when attempting to update a "

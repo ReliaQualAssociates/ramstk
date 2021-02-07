@@ -3,7 +3,7 @@
 #       ramstk.controllers.manager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package analysis manager."""
 
 # Standard Library Imports
@@ -138,8 +138,6 @@ class RAMSTKDataManager:
         pub.subscribe(self.do_set_tree,
                       'succeed_calculate_{0}'.format(self._tag))
 
-        pub.subscribe(self._on_select_revision, 'selected_revision')
-
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
 
@@ -250,8 +248,8 @@ class RAMSTKDataManager:
                 _method_name = inspect.currentframe(  # type: ignore
                 ).f_code.co_name
                 _error_msg: str = (
-                    '{2}: No data package for node ID {0} in module {'
-                    '1}.'.format(node_id[0], _table, _method_name))
+                    '{2}: No data package for node ID {0} in module '
+                    '{1}.'.format(node_id[0], _table, _method_name))
                 pub.sendMessage(
                     'do_log_debug',
                     logger_name='DEBUG',
@@ -296,7 +294,3 @@ class RAMSTKDataManager:
         for _node in self.tree.all_nodes():
             self.do_update(_node.identifier)  # type: ignore
         pub.sendMessage('succeed_update_all')
-
-    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        """Set the revision ID for the data manager."""
-        self._revision_id = attributes['revision_id']

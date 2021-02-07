@@ -13,7 +13,7 @@ from datetime import date
 
 # Third Party Imports
 import pytest
-from mocks import MockDAO, mock_ramstk_programinfo
+from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
@@ -25,8 +25,34 @@ from ramstk.models.programdb import RAMSTKProgramInfo
 
 @pytest.fixture(scope="function")
 def mock_program_dao(monkeypatch):
+    _program_1 = RAMSTKProgramInfo()
+    _program_1.revision_id = 1
+    _program_1.function_active = 1
+    _program_1.requirement_active = 1
+    _program_1.hardware_active = 1
+    _program_1.software_active = 0
+    _program_1.rcm_active = 0
+    _program_1.testing_active = 0
+    _program_1.incident_active = 0
+    _program_1.survival_active = 0
+    _program_1.vandv_active = 1
+    _program_1.hazard_active = 1
+    _program_1.stakeholder_active = 1
+    _program_1.allocation_active = 1
+    _program_1.similar_item_active = 1
+    _program_1.fmea_active = 1
+    _program_1.pof_active = 1
+    _program_1.rbd_active = 0
+    _program_1.fta_active = 0
+    _program_1.created_on = date.today()
+    _program_1.created_by = ''
+    _program_1.last_saved = date.today()
+    _program_1.last_saved_by = ''
+
     DAO = MockDAO()
-    DAO.table = mock_ramstk_programinfo
+    DAO.table = [
+        _program_1,
+    ]
 
     yield DAO
 

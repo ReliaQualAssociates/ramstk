@@ -63,6 +63,3 @@ class RAMSTKDataManager:
 
     def do_update_all(self) -> None:
         ...
-
-    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        ...

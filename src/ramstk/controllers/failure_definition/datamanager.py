@@ -4,7 +4,7 @@
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Definition Package Data Model."""
 
 # Standard Library Imports
@@ -125,11 +125,38 @@ class DataManager(RAMSTKDataManager):
                 'succeed_update_failure_definitions',
                 tree=self.tree,
             )
-        except (AttributeError, KeyError, TypeError):
+        except AttributeError:
+            _error_msg: str = (
+                '{1}: Attempted to save non-existent failure definition with '
+                'failure definition ID {0}.').format(str(node_id),
+                                                     _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_failure_definition',
+                error_message=_error_msg,
+            )
+        except KeyError:
+            _error_msg = (
+                '{1}: No data package found for failure definition ID {0}.'
+            ).format(str(node_id), _method_name)
+            pub.sendMessage(
+                'do_log_debug',
+                logger_name='DEBUG',
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                'fail_update_failure_definition',
+                error_message=_error_msg,
+            )
+        except (DataAccessError, TypeError):
             if node_id != 0:
-                _error_msg: str = (
-                    '{1}: No data package found for failure definition ID {0}.'
-                ).format(str(node_id), _method_name)
+                _error_msg = ('{1}: The value for one or more attributes for '
+                              'failure definition ID {0} was the wrong '
+                              'type.').format(str(node_id), _method_name)
                 pub.sendMessage(
                     'do_log_debug',
                     logger_name='DEBUG',
