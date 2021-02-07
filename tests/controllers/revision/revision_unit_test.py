@@ -92,7 +92,7 @@ def mock_program_dao(monkeypatch):
 class TestCreateControllers:
     """Class for controller initialization test suite."""
     @pytest.mark.unit
-    def test_data_manager(self):
+    def test_data_manager_create(self):
         """__init__() should return a Revision data manager."""
         DUT = dmRevision()
 
@@ -302,7 +302,7 @@ class TestInsertMethods:
                         'succeed_insert_revision')
 
     @pytest.mark.unit
-    def test_do_insert_database_error(self):
+    def test_do_insert_revision_database_error(self):
         """_do_insert_revision() should send the success message after
         successfully inserting a new revision."""
         pub.subscribe(self.on_fail_insert_revision, 'fail_insert_revision')
