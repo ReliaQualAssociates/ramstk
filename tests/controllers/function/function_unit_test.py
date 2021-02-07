@@ -360,9 +360,7 @@ class TestUpdateMethods:
 
     def on_fail_update_function_no_data_package(self, error_message):
         assert error_message == (
-            'do_update: The value for one or more attributes for function ID '
-            '1 was the wrong type.'
-        )
+            'do_update: No data package found for function ID 1.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
     @pytest.mark.unit
@@ -375,7 +373,7 @@ class TestUpdateMethods:
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_update(100)
+        DUT.do_update(100, 'function')
 
         pub.unsubscribe(self.on_fail_update_function_non_existent_id,
                         'fail_update_function')
@@ -392,7 +390,7 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.tree.get_node(1).data.pop('function')
 
-        DUT.do_update(1)
+        DUT.do_update(1, 'function')
 
         pub.unsubscribe(self.on_fail_update_function_no_data_package,
                         'fail_update_function')

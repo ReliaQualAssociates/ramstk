@@ -58,7 +58,7 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_function topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update_data_manager(self, test_program_dao):
+    def test_do_update_function(self, test_program_dao):
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update_function,
                       'succeed_update_function')
@@ -68,13 +68,33 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={'revision_id': 1})
 
         DUT.tree.get_node(1).data['function'].name = 'Test Function'
-        DUT.do_update(1)
+        DUT.do_update(1, 'function')
 
         DUT.do_select_all(attributes={'revision_id': 1})
         assert DUT.tree.get_node(1).data['function'].name == 'Test Function'
 
         pub.unsubscribe(self.on_succeed_update_function,
                         'succeed_update_function')
+
+    @pytest.mark.integration
+    def test_do_update_function_all(self, test_program_dao):
+        """do_update_all failure_definition() should return None on success."""
+        DUT = dmFunction()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        _function = DUT.do_select(1, table='function')
+        _function.name = 'Big test function #1'
+        _function = DUT.do_select(2, table='function')
+        _function.name = 'Big test function #2'
+
+        pub.sendMessage('request_update_all_functions')
+
+        _function = DUT.do_select(1, table='function')
+        assert _function.name == 'Big test function #1'
+
+        _function = DUT.do_select(2, table='function')
+        assert _function.name == 'Big test function #2'
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_program_dao):
@@ -88,7 +108,7 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.tree.get_node(1).data['function'].name = {1: 1.56}
 
-        DUT.do_update(1)
+        DUT.do_update(1, 'function')
 
         pub.unsubscribe(self.on_fail_update_function_wrong_data_type,
                         'fail_update_function')
@@ -102,4 +122,4 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.tree.get_node(1).data['function'].name = {1: 1.56}
 
-        DUT.do_update(0)
+        DUT.do_update(0, 'function')
