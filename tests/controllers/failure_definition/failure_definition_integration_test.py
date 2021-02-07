@@ -12,6 +12,7 @@
 # Third Party Imports
 import pytest
 from pubsub import pub
+from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmFailureDefinition
@@ -72,7 +73,7 @@ class TestUpdateMethods:
         _failure_definition = DUT.do_select(1, table='failure_definition')
         _failure_definition.definition = 'Big test definition'
 
-        DUT.do_update(1)
+        DUT.do_update(1, table='failure_definition')
         _failure_definition = DUT.do_select(1, table='failure_definition')
 
         assert _failure_definition.definition == 'Big test definition'
@@ -92,7 +93,7 @@ class TestUpdateMethods:
         _failure_definition = DUT.do_select(2, table='failure_definition')
         _failure_definition.definition = 'Big test definition #2'
 
-        assert DUT.do_update_all() is None
+        pub.sendMessage('request_update_all_failure_definitions')
 
         _failure_definition = DUT.do_select(1, table='failure_definition')
         assert _failure_definition.definition == 'Big test definition #1'
@@ -114,7 +115,7 @@ class TestUpdateMethods:
             1: 'Big test definition',
         }
 
-        DUT.do_update(1)
+        DUT.do_update(1, table='failure_definition')
 
         pub.unsubscribe(self.on_fail_update_failure_definition_wrong_data_type,
                         'fail_update_failure_definition')

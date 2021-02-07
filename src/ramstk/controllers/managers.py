@@ -307,7 +307,7 @@ class RAMSTKDataManager:
         except AttributeError:
             _error_msg: str = (
                 '{1}: Attempted to save non-existent {2} with {2} ID {0}.'
-            ).format(str(node_id), _method_name, table)
+            ).format(str(node_id), _method_name, table.replace('_', ' '))
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
@@ -319,7 +319,7 @@ class RAMSTKDataManager:
             )
         except KeyError:
             _error_msg = ('{1}: No data package found for {2} ID {0}.').format(
-                str(node_id), _method_name, table)
+                str(node_id), _method_name, table.replace('_', ' '))
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',
@@ -333,7 +333,8 @@ class RAMSTKDataManager:
             if node_id != 0:
                 _error_msg = ('{1}: The value for one or more attributes for '
                               '{2} ID {0} was the wrong type.').format(
-                                  str(node_id), _method_name, table)
+                                  str(node_id), _method_name,
+                                  table.replace('_', ' '))
                 pub.sendMessage(
                     'do_log_debug',
                     logger_name='DEBUG',

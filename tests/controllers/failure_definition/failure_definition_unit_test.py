@@ -60,9 +60,9 @@ class TestCreateControllers:
                                 'request_get_failure_definition_attributes')
         assert pub.isSubscribed(DUT.do_select_all, 'selected_revision')
         assert pub.isSubscribed(DUT.do_update,
-                                'request_update_failure_definitions')
+                                'request_update_failure_definition')
         assert pub.isSubscribed(DUT.do_update_all,
-                                'request_update_all_failure_definitionss')
+                                'request_update_all_failure_definitions')
         assert pub.isSubscribed(DUT.do_get_tree,
                                 'request_get_failure_definition_tree')
         assert pub.isSubscribed(DUT.do_set_attributes,
@@ -228,9 +228,8 @@ class TestGetterSetter:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        pub.sendMessage('request_set_failure_definition_attributes',
-                        node_id=[1, 1, ''],
-                        package={'definition': 'Test Description'})
+        DUT.do_set_attributes(node_id=[1, 1, ''],
+                              package={'definition': 'Test Description'})
 
         assert DUT.do_select(
             1, table='failure_definition').definition == 'Test Description'
@@ -303,7 +302,7 @@ class TestUpdateMethods:
         DUT = dmFailureDefinition()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
-        DUT.do_update(100)
+        DUT.do_update(100, table='failure_definitions')
 
         pub.unsubscribe(self.on_fail_update_failure_definition_non_existent_id,
                         'fail_update_failure_definition')
@@ -320,7 +319,7 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.tree.get_node(1).data.pop('failure_definition')
 
-        DUT.do_update(1)
+        DUT.do_update(1, table='failure_definition')
 
         pub.unsubscribe(self.on_fail_update_failure_definition_no_data_package,
                         'fail_update_failure_definition')
