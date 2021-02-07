@@ -255,11 +255,9 @@ class TestGetterSetter:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
-        pub.sendMessage('request_set_revision_attributes',
-                        node_id=[
-                            1,
-                        ],
-                        package={'revision_code': '-'})
+        DUT.do_set_attributes(node_id=[
+            1,
+        ], package={'revision_code': '-'})
         assert DUT.do_select(1, table='revision').revision_code == '-'
 
     @pytest.mark.unit
