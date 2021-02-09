@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: windows-default
+  vmImage: 'vs2017-win2016'
 strategy:
   matrix:
     Python37:
