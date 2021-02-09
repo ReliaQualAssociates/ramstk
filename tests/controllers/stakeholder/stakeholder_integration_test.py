@@ -18,6 +18,7 @@ from treelib import Tree
 from ramstk.controllers import dmStakeholder
 
 
+@pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
     def on_fail_insert_no_revision(self, error_message):
@@ -44,7 +45,8 @@ class TestInsertMethods:
                         'fail_insert_stakeholder')
 
 
-class TestUpdateMethods():
+@pytest.mark.usefixtures('test_program_dao')
+class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)

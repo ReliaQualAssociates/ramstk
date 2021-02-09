@@ -309,10 +309,11 @@ class TestGetterSetter:
                                           test_toml_user_configuration):
         """_on_get_tree() should assign the data manager's tree to the _tree
         attribute in response to the succeed_get_function_tree message."""
+        DUT = amHazards(test_toml_user_configuration)
+
         DATAMGR = dmHazards()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1, 'function_id': 1})
-        DUT = amHazards(test_toml_user_configuration)
         DATAMGR.do_get_tree()
 
         assert isinstance(DUT._tree, Tree)

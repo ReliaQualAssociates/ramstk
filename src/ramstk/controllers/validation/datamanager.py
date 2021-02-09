@@ -104,66 +104,6 @@ class DataManager(RAMSTKDataManager):
             tree=self.tree,
         )
 
-    def do_update(self, node_id):
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the validation ID of the validation item to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['validation'])
-
-            pub.sendMessage(
-                'succeed_update_validation',
-                tree=self.tree,
-            )
-        except AttributeError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = (
-                '{1}: Attempted to save non-existent validation task with '
-                'validation ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_validation',
-                error_message=_error_msg,
-            )
-        except KeyError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg = ('{1}: No data package found for validation task ID '
-                          '{0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_validation',
-                error_message=_error_msg,
-            )
-        except TypeError:
-            if node_id != 0:
-                _method_name: str = inspect.currentframe(  # type: ignore
-                ).f_code.co_name
-                _error_msg = ('{1}: The value for one or more attributes for '
-                              'validation task ID {0} was the wrong '
-                              'type.').format(str(node_id), _method_name)
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error_msg,
-                )
-                pub.sendMessage(
-                    'fail_update_validation',
-                    error_message=_error_msg,
-                )
-
     def _do_delete(self, node_id: int) -> None:
         """Remove a Validation task.
 

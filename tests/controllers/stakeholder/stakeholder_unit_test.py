@@ -141,7 +141,7 @@ class TestSelectMethods:
                         'succeed_retrieve_stakeholders')
 
     @pytest.mark.unit
-    def test_do_select_all_tree_loaded(self, mock_program_dao):
+    def test_do_select_all_populated_tree(self, mock_program_dao):
         """do_select_all(1) should clear a populate Tree when selecting a new
         set of stakeholder records."""
         pub.subscribe(self.on_succeed_select_all,
@@ -210,7 +210,7 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_stakeholder topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete_stakeholder(self, mock_program_dao):
+    def test_do_delete(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib
         Tree."""
         pub.subscribe(self.on_succeed_delete, 'succeed_delete_stakeholder')
