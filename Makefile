@@ -13,7 +13,7 @@ REQFILE		= $(VIRTUAL_ENV)/requirements.txt
 DEVREQFILE	= $(VIRTUAL_ENV)/requirements-dev.txt
 TSTREQFILE	= $(VIRTUAL_ENV)/requirements-test.txt
 SRCFILE		= src/ramstk/
-TESTOPTS	= -x -c ./pyproject.toml --cache-clear
+TESTOPTS	=  -v -s -x -c ./pyproject.toml --cache-clear
 TESTFILE	= tests/
 BASEVENV	= .venv
 VIRTENV		= ramstk-venv
@@ -226,7 +226,7 @@ test.gui: clean-test
 
 test: clean-test
 	@echo -e "\n\t\033[1;33mRunning RAMSTK test suite without coverage ...\033[0m\n"
-	py.test $(TESTOPTS) -v -s $(TESTFILE)
+	py.test $(TESTOPTS) $(TESTFILE)
 
 test-all:
 	$(info "TODO: Need to add tox support for this target to work.")

@@ -10,9 +10,6 @@
 # Standard Library Imports
 from datetime import date, timedelta
 
-# Third Party Imports
-from treelib import Tree
-
 MOCK_217F = {
     1: {
         'A1': 0.0,
@@ -1004,63 +1001,6 @@ MOCK_RELIABILITY = {
     }
 }
 
-MOCK_REVISIONS = {
-    1: {
-        'availability_logistics': 0.9986,
-        'availability_mission': 0.99934,
-        'cost': 12532.15,
-        'cost_failure': 0.0000352,
-        'cost_hour': 1.2532,
-        'hazard_rate_active': 0.0,
-        'hazard_rate_dormant': 0.0,
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'hazard_rate_software': 0.0,
-        'mmt': 0.0,
-        'mcmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Original Revision',
-        'reliability_logistics': 0.99986,
-        'reliability_mission': 0.99992,
-        'remarks': 'This is the original revision.',
-        'revision_code': 'Rev. -',
-        'program_time': 2562,
-        'program_time_sd': 26.83,
-        'program_cost': 26492.83,
-        'program_cost_sd': 15.62
-    },
-    2: {
-        'availability_logistics': 1.0,
-        'availability_mission': 1.0,
-        'cost': 0.0,
-        'cost_failure': 0.0,
-        'cost_hour': 0.0,
-        'hazard_rate_active': 0.0,
-        'hazard_rate_dormant': 0.0,
-        'hazard_rate_logistics': 0.0,
-        'hazard_rate_mission': 0.0,
-        'hazard_rate_software': 0.0,
-        'mmt': 0.0,
-        'mcmt': 0.0,
-        'mpmt': 0.0,
-        'mtbf_logistics': 0.0,
-        'mtbf_mission': 0.0,
-        'mttr': 0.0,
-        'name': 'Revision A',
-        'reliability_logistics': 1.0,
-        'reliability_mission': 1.0,
-        'remarks': 'This is the second revision.',
-        'revision_code': 'Rev. A',
-        'program_time': 0,
-        'program_time_sd': 0.0,
-        'program_cost': 0.0,
-        'program_cost_sd': 0.0
-    }
-}
-
 MOCK_SIMILAR_ITEM = {
     1: {
         'change_description_1': '',
@@ -1242,105 +1182,6 @@ MOCK_STATUS = {
     }
 }
 
-MOCK_REQUIREMENTS = {
-    1: {
-        'derived': 0,
-        'description': '',
-        'figure_number': '',
-        'owner': 0,
-        'page_number': '',
-        'parent_id': 0,
-        'priority': 0,
-        'requirement_code': 'REL.1',
-        'specification': '',
-        'requirement_type': 0,
-        'validated': 0,
-        'validated_date': date.today(),
-        'q_clarity_0': 0,
-        'q_clarity_1': 0,
-        'q_clarity_2': 0,
-        'q_clarity_3': 0,
-        'q_clarity_4': 0,
-        'q_clarity_5': 0,
-        'q_clarity_6': 0,
-        'q_clarity_7': 0,
-        'q_clarity_8': 0,
-        'q_complete_0': 0,
-        'q_complete_1': 0,
-        'q_complete_2': 0,
-        'q_complete_3': 0,
-        'q_complete_4': 0,
-        'q_complete_5': 0,
-        'q_complete_6': 0,
-        'q_complete_7': 0,
-        'q_complete_8': 0,
-        'q_complete_9': 0,
-        'q_consistent_0': 0,
-        'q_consistent_1': 0,
-        'q_consistent_2': 0,
-        'q_consistent_3': 0,
-        'q_consistent_4': 0,
-        'q_consistent_5': 0,
-        'q_consistent_6': 0,
-        'q_consistent_7': 0,
-        'q_consistent_8': 0,
-        'q_verifiable_0': 0,
-        'q_verifiable_1': 0,
-        'q_verifiable_2': 0,
-        'q_verifiable_3': 0,
-        'q_verifiable_4': 0,
-        'q_verifiable_5': 0
-    },
-    2: {
-        'derived': 1,
-        'description': 'Derived requirement #1 for base requirement #1.',
-        'figure_number': '',
-        'owner': 0,
-        'page_number': '',
-        'parent_id': 1,
-        'priority': 0,
-        'requirement_code': 'REL.1.1',
-        'specification': '',
-        'requirement_type': 0,
-        'validated': 0,
-        'validated_date': date.today(),
-        'q_clarity_0': 0,
-        'q_clarity_1': 0,
-        'q_clarity_2': 0,
-        'q_clarity_3': 0,
-        'q_clarity_4': 0,
-        'q_clarity_5': 0,
-        'q_clarity_6': 0,
-        'q_clarity_7': 0,
-        'q_clarity_8': 0,
-        'q_complete_0': 0,
-        'q_complete_1': 0,
-        'q_complete_2': 0,
-        'q_complete_3': 0,
-        'q_complete_4': 0,
-        'q_complete_5': 0,
-        'q_complete_6': 0,
-        'q_complete_7': 0,
-        'q_complete_8': 0,
-        'q_complete_9': 0,
-        'q_consistent_0': 0,
-        'q_consistent_1': 0,
-        'q_consistent_2': 0,
-        'q_consistent_3': 0,
-        'q_consistent_4': 0,
-        'q_consistent_5': 0,
-        'q_consistent_6': 0,
-        'q_consistent_7': 0,
-        'q_consistent_8': 0,
-        'q_verifiable_0': 0,
-        'q_verifiable_1': 0,
-        'q_verifiable_2': 0,
-        'q_verifiable_3': 0,
-        'q_verifiable_4': 0,
-        'q_verifiable_5': 0
-    }
-}
-
 MOCK_STAKEHOLDERS = {
     1: {
         'customer_rank': 1,
@@ -1465,36 +1306,3 @@ MOCK_VALIDATIONS = {
         'time_variance': 0.0
     }
 }
-
-# Mock treelib Tree()'s.
-MOCK_FNCTN_TREE = Tree()
-MOCK_FNCTN_TREE.create_node(tag='function',
-                            identifier=0,
-                            parent=None,
-                            data=None)
-
-MOCK_HRDWR_TREE = Tree()
-MOCK_HRDWR_TREE.create_node(tag='hardware',
-                            identifier=0,
-                            parent=None,
-                            data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1', identifier=1, parent=0, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1', identifier=2, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS2', identifier=3, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS3', identifier=4, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS4', identifier=5, parent=1, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A1', identifier=6, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2', identifier=7, parent=5, data=None)
-MOCK_HRDWR_TREE.create_node(tag='S1:SS1:A2:C1',
-                            identifier=8,
-                            parent=7,
-                            data=None)
-
-MOCK_RQRMNT_TREE = Tree()
-MOCK_RQRMNT_TREE.create_node(tag='requirement',
-                             identifier=0,
-                             parent=None,
-                             data=None)
-MOCK_RQRMNT_TREE.create_node(tag='REL-0001', identifier=1, parent=0, data=None)
-MOCK_RQRMNT_TREE.create_node(tag='PRF-0002', identifier=2, parent=0, data=None)
-MOCK_RQRMNT_TREE.create_node(tag='FUN-0003', identifier=3, parent=0, data=None)
