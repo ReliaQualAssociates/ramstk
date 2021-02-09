@@ -211,18 +211,20 @@ uninstall:
 	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
 
 test.unit: clean-test
+	@echo -e "\n\t\033[1;33mRunning RAMSTK unit tests ...\033[0m\n"
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
 
 test.calc: clean-test
 	py.test $(TESTOPTS) -m calculation $(TESTFILE)
 
 test.integration: clean-test
+	@echo -e "\n\t\033[1;33mRunning RAMSTK integration tests ...\033[0m\n"
 	py.test $(TESTOPTS) -m integration $(TESTFILE)
 
 test.gui: clean-test
 	py.test $(TESTOPTS) -m gui $(TESTFILE)
 
-test:
+test: clean-test
 	@echo -e "\n\t\033[1;33mRunning RAMSTK test suite without coverage ...\033[0m\n"
 	py.test $(TESTOPTS) -v -s $(TESTFILE)
 

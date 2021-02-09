@@ -389,7 +389,7 @@ def test_common_dao():
     conn.close()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='class')
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
     # If there are existing test databases, delete them.

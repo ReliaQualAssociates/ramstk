@@ -661,49 +661,6 @@ MOCK_HARDWARE = {
     }
 }
 
-MOCK_HAZARDS = {
-    1: {
-        'assembly_effect': '',
-        'assembly_hri': 20,
-        'assembly_hri_f': 4,
-        'assembly_mitigation': '',
-        'assembly_probability': 'Level A - Frequent',
-        'assembly_probability_f': 'Level A - Frequent',
-        'assembly_severity': 'Medium',
-        'assembly_severity_f': 'Medium',
-        'function_1': '',
-        'function_2': '',
-        'function_3': '',
-        'function_4': '',
-        'function_5': '',
-        'potential_cause': '',
-        'potential_hazard': '',
-        'remarks': '',
-        'result_1': 0.0,
-        'result_2': 0.0,
-        'result_3': 0.0,
-        'result_4': 0.0,
-        'result_5': 0.0,
-        'system_effect': '',
-        'system_hri': 20,
-        'system_hri_f': 20,
-        'system_mitigation': '',
-        'system_probability': 'Level A - Frequent',
-        'system_probability_f': 'Level A - Frequent',
-        'system_severity': 'Medium',
-        'system_severity_f': 'Medium',
-        'user_blob_1': '',
-        'user_blob_2': '',
-        'user_blob_3': '',
-        'user_float_1': 0.0,
-        'user_float_2': 0.0,
-        'user_float_3': 0.0,
-        'user_int_1': 0,
-        'user_int_2': 0,
-        'user_int_3': 0
-    }
-}
-
 MOCK_MISSIONS = {
     1: {
         'description': '',
