@@ -213,7 +213,7 @@ class TestDeleteMethods:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all()
 
-        pub.sendMessage('request_delete_revision', node_id=300)
+        DUT._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id,
                         'fail_delete_revision')

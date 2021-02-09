@@ -357,9 +357,8 @@ class TestGetterSetter:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        pub.sendMessage('request_set_requirement_attributes',
-                        node_id=[1, -1],
-                        package={'requirement_code': 'REQ-0001'})
+        DUT.do_set_attributes(node_id=[1, -1],
+                              package={'requirement_code': 'REQ-0001'})
         assert DUT.do_select(
             1, table='requirement').requirement_code == 'REQ-0001'
 

@@ -119,8 +119,8 @@ class DataManager(RAMSTKDataManager):
             _method_name: str = inspect.currentframe(  # type: ignore
             ).f_code.co_name
             _error_msg: str = (
-                '{1}: Attempted to delete non-existent revision ID {'
-                '0}.').format(str(node_id), _method_name)
+                '{1}: Attempted to delete non-existent revision ID '
+                '{0}.').format(str(node_id), _method_name)
             pub.sendMessage(
                 'do_log_debug',
                 logger_name='DEBUG',

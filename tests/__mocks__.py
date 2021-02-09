@@ -1182,41 +1182,6 @@ MOCK_STATUS = {
     }
 }
 
-MOCK_STAKEHOLDERS = {
-    1: {
-        'customer_rank': 1,
-        'description': 'Stakeholder Input',
-        'group': '',
-        'improvement': 0.0,
-        'overall_weight': 0.0,
-        'planned_rank': 1,
-        'priority': 1,
-        'requirement_id': 0,
-        'stakeholder': '',
-        'user_float_1': 1.0,
-        'user_float_2': 1.0,
-        'user_float_3': 1.0,
-        'user_float_4': 1.0,
-        'user_float_5': 1.0
-    },
-    2: {
-        'customer_rank': 1,
-        'description': 'Stakeholder Input',
-        'group': '',
-        'improvement': 0.0,
-        'overall_weight': 0.0,
-        'planned_rank': 1,
-        'priority': 1,
-        'requirement_id': 0,
-        'stakeholder': '',
-        'user_float_1': 1.0,
-        'user_float_2': 1.0,
-        'user_float_3': 1.0,
-        'user_float_4': 1.0,
-        'user_float_5': 1.0
-    }
-}
-
 MOCK_VALIDATIONS = {
     1: {
         'acceptable_maximum': 30.0,
