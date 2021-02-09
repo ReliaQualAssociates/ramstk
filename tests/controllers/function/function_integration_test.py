@@ -21,18 +21,17 @@ from ramstk.controllers import dmFunction
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
-    def on_fail_insert_function_no_revision(self, error_message):
+    def on_fail_insert_no_revision(self, error_message):
         assert error_message == ('_do_insert_function: A database error '
                                  'occurred when attempting to add a child '
                                  'function to parent function ID 1.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_function_no_revision(self, test_program_dao):
+    def test_do_insert_no_revision(self, test_program_dao):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
-        pub.subscribe(self.on_fail_insert_function_no_revision,
-                      'fail_insert_function')
+        pub.subscribe(self.on_fail_insert_no_revision, 'fail_insert_function')
 
         DUT = dmFunction()
         DUT.do_connect(test_program_dao)
@@ -40,28 +39,27 @@ class TestInsertMethods:
         DUT._revision_id = 40
         DUT._do_insert_function(parent_id=1)
 
-        pub.unsubscribe(self.on_fail_insert_function_no_revision,
+        pub.unsubscribe(self.on_fail_insert_no_revision,
                         'fail_insert_function')
 
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_function(self, tree):
+    def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_update_function topic was broadcast")
 
-    def on_fail_update_function_wrong_data_type(self, error_message):
+    def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == ('do_update: The value for one or more '
                                  'attributes for function ID 1 was the wrong '
                                  'type.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update_function(self, test_program_dao):
+    def test_do_update(self, test_program_dao):
         """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update_function,
-                      'succeed_update_function')
+        pub.subscribe(self.on_succeed_update, 'succeed_update_function')
 
         DUT = dmFunction()
         DUT.do_connect(test_program_dao)
@@ -73,11 +71,10 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={'revision_id': 1})
         assert DUT.tree.get_node(1).data['function'].name == 'Test Function'
 
-        pub.unsubscribe(self.on_succeed_update_function,
-                        'succeed_update_function')
+        pub.unsubscribe(self.on_succeed_update, 'succeed_update_function')
 
     @pytest.mark.integration
-    def test_do_update_function_all(self, test_program_dao):
+    def test_do_update_all(self, test_program_dao):
         """do_update_all() should update all the functions in the database."""
         DUT = dmFunction()
         DUT.do_connect(test_program_dao)
@@ -100,7 +97,7 @@ class TestUpdateMethods:
     def test_do_update_wrong_data_type(self, test_program_dao):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
-        pub.subscribe(self.on_fail_update_function_wrong_data_type,
+        pub.subscribe(self.on_fail_update_wrong_data_type,
                       'fail_update_function')
 
         DUT = dmFunction()
@@ -110,7 +107,7 @@ class TestUpdateMethods:
 
         DUT.do_update(1, 'function')
 
-        pub.unsubscribe(self.on_fail_update_function_wrong_data_type,
+        pub.unsubscribe(self.on_fail_update_wrong_data_type,
                         'fail_update_function')
 
     @pytest.mark.integration

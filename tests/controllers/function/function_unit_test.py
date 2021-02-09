@@ -110,7 +110,7 @@ class TestCreateControllers:
 
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
-    def on_succeed_retrieve_functions(self, tree):
+    def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data['function'], RAMSTKFunction)
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
@@ -119,18 +119,18 @@ class TestSelectMethods:
     def test_do_select_all(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with
         RAMSTKFunction instances on success."""
-        pub.subscribe(self.on_succeed_retrieve_functions,
+        pub.subscribe(self.on_succeed_select_all,
                       'succeed_retrieve_functions')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        pub.unsubscribe(self.on_succeed_retrieve_functions,
+        pub.unsubscribe(self.on_succeed_select_all,
                         'succeed_retrieve_functions')
 
     @pytest.mark.unit
-    def test_do_select_function(self, mock_program_dao):
+    def test_do_select(self, mock_program_dao):
         """do_select() should return an instance of the RAMSTKFunction on
         success."""
         DUT = dmFunction()
@@ -167,26 +167,25 @@ class TestSelectMethods:
 
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_function(self, tree):
+    def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_function topic was broadcast.")
 
-    def on_fail_delete_function(self, error_message):
+    def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
             '_do_delete: Attempted to delete non-existent function ID 300.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
-    def on_fail_delete_function_no_tree(self, error_message):
+    def on_fail_delete_not_in_tree(self, error_message):
         assert error_message == (
             '_do_delete: Attempted to delete non-existent function ID 2.')
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete_function(self, mock_program_dao):
+    def test_do_delete(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        pub.subscribe(self.on_succeed_delete_function,
-                      'succeed_delete_function')
+        pub.subscribe(self.on_succeed_delete, 'succeed_delete_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
@@ -195,28 +194,28 @@ class TestDeleteMethods:
 
         assert DUT.last_id == 1
 
-        pub.unsubscribe(self.on_succeed_delete_function,
-                        'succeed_delete_function')
+        pub.unsubscribe(self.on_succeed_delete, 'succeed_delete_function')
 
     @pytest.mark.unit
-    def test_do_delete_function_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, mock_program_dao):
         """_do_delete() should send the fail message when attempting to delete
         a function ID that doesn't exist in the database."""
-        pub.subscribe(self.on_fail_delete_function, 'fail_delete_function')
+        pub.subscribe(self.on_fail_delete_non_existent_id,
+                      'fail_delete_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_delete(300)
 
-        pub.unsubscribe(self.on_fail_delete_function, 'fail_delete_function')
+        pub.unsubscribe(self.on_fail_delete_non_existent_id,
+                        'fail_delete_function')
 
     @pytest.mark.unit
-    def test_do_delete_function_not_in_tree(self, mock_program_dao):
+    def test_do_delete_not_in_tree(self, mock_program_dao):
         """_do_delete() should send the fail message when attempting to remove
         a node that doesn't exist from the tree."""
-        pub.subscribe(self.on_fail_delete_function_no_tree,
-                      'fail_delete_function')
+        pub.subscribe(self.on_fail_delete_not_in_tree, 'fail_delete_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
@@ -224,20 +223,20 @@ class TestDeleteMethods:
         DUT.tree.remove_node(2)
         DUT._do_delete(2)
 
-        pub.unsubscribe(self.on_fail_delete_function_no_tree,
+        pub.unsubscribe(self.on_fail_delete_not_in_tree,
                         'fail_delete_function')
 
 
 class TestGetterSetter:
     """Class for testing methods that get or set."""
-    def on_succeed_get_function_attrs(self, attributes):
+    def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes['function_id'] == 1
         assert attributes['name'] == 'Function Name'
         assert attributes['safety_critical'] == 0
         print("\033[36m\nsucceed_get_function_attributes topic was broadcast.")
 
-    def on_succeed_get_function_tree(self, tree):
+    def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data['function'], RAMSTKFunction)
         print("\033[36m\nsucceed_get_function_tree topic was broadcast")
@@ -246,13 +245,16 @@ class TestGetterSetter:
     def test_do_get_attributes(self, mock_program_dao):
         """_do_get_attributes() should return a dict of function attributes on
         success."""
-        pub.subscribe(self.on_succeed_get_function_attrs,
+        pub.subscribe(self.on_succeed_get_attributes,
                       'succeed_get_function_attributes')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_attributes(1, 'function')
+
+        pub.unsubscribe(self.on_succeed_get_attributes,
+                        'succeed_get_function_attributes')
 
     @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
@@ -266,9 +268,9 @@ class TestGetterSetter:
         assert DUT.do_select(1, table='function').function_code == '-'
 
     @pytest.mark.unit
-    def test_on_get_tree_data_manager(self, mock_program_dao):
+    def test_on_get_data_manager_tree(self, mock_program_dao):
         """on_get_tree() should return the function treelib Tree."""
-        pub.subscribe(self.on_succeed_get_function_tree,
+        pub.subscribe(self.on_succeed_get_data_manager_tree,
                       'succeed_get_function_tree')
 
         DUT = dmFunction()
@@ -276,34 +278,34 @@ class TestGetterSetter:
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_get_tree()
 
-        pub.unsubscribe(self.on_succeed_get_function_tree,
+        pub.unsubscribe(self.on_succeed_get_data_manager_tree,
                         'succeed_get_function_tree')
 
 
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_sibling_function(self, node_id, tree):
+    def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 3
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
-    def on_succeed_insert_child_function(self, node_id, tree):
+    def on_succeed_insert_child(self, node_id, tree):
         assert node_id == 3
         assert isinstance(tree, Tree)
         assert tree.get_node(3).data['function'].parent_id == 2
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
-    def on_fail_insert_function_no_parent(self, error_message):
+    def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             '_do_insert_function: Attempted to insert '
             'child function under non-existent function ID 40.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert_sibling_function(self, mock_program_dao):
+    def test_do_insert_sibling(self, mock_program_dao):
         """_do_insert_function() should send the success message after
         successfully inserting a sibling function."""
-        pub.subscribe(self.on_succeed_insert_sibling_function,
+        pub.subscribe(self.on_succeed_insert_sibling,
                       'succeed_insert_function')
 
         DUT = dmFunction()
@@ -316,13 +318,15 @@ class TestInsertMethods:
         assert DUT.tree.get_node(3).data['function'].function_id == 3
         assert DUT.tree.get_node(3).data['function'].name == 'New Function'
 
-        pub.unsubscribe(self.on_succeed_insert_sibling_function,
+        pub.unsubscribe(self.on_succeed_insert_sibling,
                         'succeed_insert_function')
 
     @pytest.mark.unit
-    def test_do_insert_child_function(self, mock_program_dao):
+    def test_do_insert_child(self, mock_program_dao):
         """_do_insert_function() should send the success message after
         successfully inserting a child function."""
+        pub.subscribe(self.on_succeed_insert_child, 'succeed_insert_function')
+
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
@@ -333,31 +337,32 @@ class TestInsertMethods:
         assert DUT.tree.get_node(3).data['function'].function_id == 3
         assert DUT.tree.get_node(3).data['function'].name == 'New Function'
 
+        pub.unsubscribe(self.on_succeed_insert_child,
+                        'succeed_insert_function')
+
     @pytest.mark.unit
-    def test_do_insert_function_no_revision(self, mock_program_dao):
+    def test_do_insert_no_parent(self, mock_program_dao):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
-        pub.subscribe(self.on_fail_insert_function_no_parent,
-                      'fail_insert_function')
+        pub.subscribe(self.on_fail_insert_no_parent, 'fail_insert_function')
 
         DUT = dmFunction()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_function(parent_id=40)
 
-        pub.unsubscribe(self.on_fail_insert_function_no_parent,
-                        'fail_insert_function')
+        pub.unsubscribe(self.on_fail_insert_no_parent, 'fail_insert_function')
 
 
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
-    def on_fail_update_function_non_existent_id(self, error_message):
+    def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             'do_update: Attempted to save non-existent function with function '
             'ID 100.')
         print("\033[35m\nfail_update_function topic was broadcast")
 
-    def on_fail_update_function_no_data_package(self, error_message):
+    def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
             'do_update: No data package found for function ID 1.')
         print("\033[35m\nfail_update_function topic was broadcast")
@@ -366,7 +371,7 @@ class TestUpdateMethods:
     def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Function ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_function_non_existent_id,
+        pub.subscribe(self.on_fail_update_non_existent_id,
                       'fail_update_function')
 
         DUT = dmFunction()
@@ -374,14 +379,14 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.do_update(100, 'function')
 
-        pub.unsubscribe(self.on_fail_update_function_non_existent_id,
+        pub.unsubscribe(self.on_fail_update_non_existent_id,
                         'fail_update_function')
 
     @pytest.mark.unit
     def test_do_update_no_data_package(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
-        pub.subscribe(self.on_fail_update_function_no_data_package,
+        pub.subscribe(self.on_fail_update_no_data_package,
                       'fail_update_function')
 
         DUT = dmFunction()
@@ -391,5 +396,5 @@ class TestUpdateMethods:
 
         DUT.do_update(1, 'function')
 
-        pub.unsubscribe(self.on_fail_update_function_no_data_package,
+        pub.unsubscribe(self.on_fail_update_no_data_package,
                         'fail_update_function')

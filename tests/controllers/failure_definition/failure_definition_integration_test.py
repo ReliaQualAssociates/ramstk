@@ -21,18 +21,18 @@ from ramstk.controllers import dmFailureDefinition
 @pytest.mark.usefixtures('test_program_dao')
 class TestInsertMethods:
     """Class to test data controller insert methods using actual database."""
-    def on_fail_insert_failure_definition_no_revision(self, error_message):
+    def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
             '_do_insert_failure_definition: Attempting to add failure '
             'definition to non-existent revision 40.')
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_failure_definition_no_revision(self, test_program_dao):
+    def test_do_insert_no_revision(self, test_program_dao):
         """do_insert() should send the fail_insert_failure_definition message
         when attempting to insert a new failure definition with a non-existent
         revision ID."""
-        pub.subscribe(self.on_fail_insert_failure_definition_no_revision,
+        pub.subscribe(self.on_fail_insert_no_revision,
                       'fail_insert_failure_definition')
 
         DUT = dmFailureDefinition()
@@ -41,29 +41,29 @@ class TestInsertMethods:
         DUT._revision_id = 40
         DUT._do_insert_failure_definition()
 
-        pub.unsubscribe(self.on_fail_insert_failure_definition_no_revision,
+        pub.unsubscribe(self.on_fail_insert_no_revision,
                         'fail_insert_failure_definition')
 
 
 @pytest.mark.usefixtures('test_program_dao')
 class TestUpdateMethods:
     """Class to test data controller update methods using actual database."""
-    def on_succeed_update_failure_definition(self, tree):
+    def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
         print(
             "\033[36m\nsucceed_update_failure_definition topic was broadcast")
 
-    def on_fail_update_failure_definition_wrong_data_type(self, error_message):
+    def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == (
             'do_update: The value for one or more attributes for failure '
             'definition ID 1 was the wrong type.')
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update_failure_definition(self, test_program_dao):
+    def test_do_update(self, test_program_dao):
         """do_update() should send the succeed_update_failure_definition on
         success."""
-        pub.subscribe(self.on_succeed_update_failure_definition,
+        pub.subscribe(self.on_succeed_update,
                       'succeed_update_failure_definition')
 
         DUT = dmFailureDefinition()
@@ -78,11 +78,11 @@ class TestUpdateMethods:
 
         assert _failure_definition.definition == 'Big test definition'
 
-        pub.unsubscribe(self.on_succeed_update_failure_definition,
+        pub.unsubscribe(self.on_succeed_update,
                         'succeed_update_failure_definition')
 
     @pytest.mark.integration
-    def test_do_update_failure_definition_all(self, test_program_dao):
+    def test_do_update_all(self, test_program_dao):
         """do_update_all failure_definition() should return None on success."""
         DUT = dmFailureDefinition()
         DUT.do_connect(test_program_dao)
@@ -102,10 +102,10 @@ class TestUpdateMethods:
         assert _failure_definition.definition == 'Big test definition #2'
 
     @pytest.mark.integration
-    def test_do_update_failure_definition_wrong_type(self, test_program_dao):
+    def test_do_update_wrong_data_type(self, test_program_dao):
         """do_update() should send the succeed_update_failure_definition on
         success."""
-        pub.subscribe(self.on_fail_update_failure_definition_wrong_data_type,
+        pub.subscribe(self.on_fail_update_wrong_data_type,
                       'fail_update_failure_definition')
 
         DUT = dmFailureDefinition()
@@ -117,5 +117,5 @@ class TestUpdateMethods:
 
         DUT.do_update(1, table='failure_definition')
 
-        pub.unsubscribe(self.on_fail_update_failure_definition_wrong_data_type,
+        pub.unsubscribe(self.on_fail_update_wrong_data_type,
                         'fail_update_failure_definition')
