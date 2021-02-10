@@ -2,11 +2,12 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_validation.py is part of The RAMSTK Project
+#       tests.controllers.validation.validation_integration_test.py is part of
+#       The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing Validation algorithms and models."""
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Test class for testing Validation module integrations."""
 
 # Standard Library Imports
 from datetime import date
@@ -91,7 +92,7 @@ class TestUpdateMethods:
         _validation = DUT.do_select(2, table='validation')
         _validation.description = 'Big test validation #2'
 
-        pub.sendMessage('request_update_all_validations')
+        DUT.do_update_all()
 
         assert DUT.do_select(
             1, table='validation').description == 'Big test validation #1'

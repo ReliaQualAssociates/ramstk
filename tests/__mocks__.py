@@ -7,8 +7,6 @@
 # Copyright 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """File for organizing mock structures."""
 
-# Standard Library Imports
-from datetime import date, timedelta
 
 MOCK_217F = {
     1: {
@@ -1166,18 +1164,5 @@ MOCK_SIMILAR_ITEM = {
         'user_int_3': 0,
         'user_int_4': 0,
         'user_int_5': 0
-    }
-}
-
-MOCK_STATUS = {
-    1: {
-        'cost_remaining': 284.98,
-        'date_status': date.today() - timedelta(days=1),
-        'time_remaining': 125.0
-    },
-    2: {
-        'cost_remaining': 212.32,
-        'date_status': date.today(),
-        'time_remaining': 112.5
     }
 }

@@ -77,6 +77,25 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update, 'succeed_update_stakeholders')
 
     @pytest.mark.integration
+    def test_do_update_all(self, test_program_dao):
+        """do_update_all() should update all the functions in the database."""
+        DUT = dmStakeholder()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+
+        _stakeholder = DUT.do_select(1, table='stakeholder')
+        _stakeholder.description = 'Big test stakeholder #1'
+        _stakeholder = DUT.do_select(2, table='stakeholder')
+        _stakeholder.description = 'Big test stakeholder #2'
+
+        DUT.do_update_all()
+
+        assert DUT.do_select(
+            1, table='stakeholder').description == 'Big test stakeholder #1'
+        assert DUT.do_select(
+            2, table='stakeholder').description == 'Big test stakeholder #2'
+
+    @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_program_dao):
         """do_update() should broadcast the fail update message when one or
         more attribute values is the wrong data type."""
