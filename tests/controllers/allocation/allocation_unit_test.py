@@ -2,16 +2,17 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_allocations.py is part of The RAMSTK
-#       Project
+#       tests.controllers.allocation.allocation_unit_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing Allocation BoM module algorithms and models."""
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Test class for testing Allocation module algorithms and models."""
 
 # Third Party Imports
 import pytest
-from __mocks__ import MOCK_ALLOCATION
+# noinspection PyUnresolvedReferences
+from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
@@ -19,61 +20,95 @@ from treelib import Tree
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amAllocation, dmAllocation
 from ramstk.db.base import BaseDatabase
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKAllocation
-
-
-class MockDao:
-    _all_allocation = []
-
-    def do_delete(self, record):
-        if record is None:
-            raise DataAccessError('')
-        else:
-            for _idx, _record in enumerate(self._all_allocation):
-                if _record.hardware_id == record.hardware_id:
-                    self._all_allocation.pop(_idx)
-
-    def do_insert(self, record):
-        if record.hardware_id == 5:
-            raise DataAccessError('An error occurred with RAMSTK.')
-        elif record == RAMSTKAllocation:
-            self._all_allocation.append(record)
-
-    def do_insert_many(self, records):
-        for _record in records:
-            self.do_insert(_record)
-
-    def do_select_all(self,
-                      table,
-                      key=None,
-                      value=None,
-                      order=None,
-                      _all=False):
-        if table == RAMSTKAllocation:
-            self._all_allocation = []
-            for _key in MOCK_ALLOCATION:
-                _record = table()
-                _record.revision_id = value
-                _record.hardware_id = _key
-                _record.set_attributes(MOCK_ALLOCATION[_key])
-                self._all_allocation.append(_record)
-
-            return self._all_allocation
-
-    def do_update(self, record):
-        for _key in MOCK_ALLOCATION:
-            if _key == record.hardware_id:
-                MOCK_ALLOCATION[_key]['mtbf_goal'] = float(record.mtbf_goal)
 
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    yield MockDao()
+    _allocation_1 = RAMSTKAllocation()
+    _allocation_1.revision_id = 1
+    _allocation_1.hardware_id = 1
+    _allocation_1.availability_alloc = 0.0
+    _allocation_1.env_factor = 1
+    _allocation_1.goal_measure_id = 1
+    _allocation_1.hazard_rate_alloc = 0.0
+    _allocation_1.hazard_rate_goal = 0.0
+    _allocation_1.included = 1
+    _allocation_1.int_factor = 1
+    _allocation_1.allocation_method_id = 1
+    _allocation_1.mission_time = 100.0
+    _allocation_1.mtbf_alloc = 0.0
+    _allocation_1.mtbf_goal = 0.0
+    _allocation_1.n_sub_systems = 1
+    _allocation_1.n_sub_elements = 1
+    _allocation_1.parent_id = 0
+    _allocation_1.percent_weight_factor = 0.0
+    _allocation_1.reliability_alloc = 1.0
+    _allocation_1.reliability_goal = 0.999
+    _allocation_1.op_time_factor = 1
+    _allocation_1.soa_factor = 1
+    _allocation_1.weight_factor = 1
+
+    _allocation_2 = RAMSTKAllocation()
+    _allocation_2.revision_id = 1
+    _allocation_2.hardware_id = 2
+    _allocation_2.availability_alloc = 0.0
+    _allocation_2.env_factor = 1
+    _allocation_2.goal_measure_id = 1
+    _allocation_2.hazard_rate_alloc = 0.0
+    _allocation_2.hazard_rate_goal = 0.0
+    _allocation_2.included = 1
+    _allocation_2.int_factor = 1
+    _allocation_2.allocation_method_id = 1
+    _allocation_2.mission_time = 100.0
+    _allocation_2.mtbf_alloc = 0.0
+    _allocation_2.mtbf_goal = 0.0
+    _allocation_2.n_sub_systems = 1
+    _allocation_2.n_sub_elements = 1
+    _allocation_2.parent_id = 1
+    _allocation_2.percent_weight_factor = 0.0
+    _allocation_2.reliability_alloc = 1.0
+    _allocation_2.reliability_goal = 0.9999
+    _allocation_2.op_time_factor = 1
+    _allocation_2.soa_factor = 1
+    _allocation_2.weight_factor = 1
+
+    _allocation_3 = RAMSTKAllocation()
+    _allocation_3.revision_id = 1
+    _allocation_3.hardware_id = 3
+    _allocation_3.availability_alloc = 0.0
+    _allocation_3.env_factor = 1
+    _allocation_3.goal_measure_id = 1
+    _allocation_3.hazard_rate_alloc = 0.0
+    _allocation_3.hazard_rate_goal = 0.0
+    _allocation_3.included = 1
+    _allocation_3.int_factor = 1
+    _allocation_3.allocation_method_id = 1
+    _allocation_3.mission_time = 100.0
+    _allocation_3.mtbf_alloc = 0.0
+    _allocation_3.mtbf_goal = 0.0
+    _allocation_3.n_sub_systems = 1
+    _allocation_3.n_sub_elements = 1
+    _allocation_3.parent_id = 2
+    _allocation_3.percent_weight_factor = 0.0
+    _allocation_3.reliability_alloc = 1.0
+    _allocation_3.reliability_goal = 0.99999
+    _allocation_3.op_time_factor = 1
+    _allocation_3.soa_factor = 1
+    _allocation_3.weight_factor = 1
+
+    DAO = MockDAO()
+    DAO.table = [
+        _allocation_1,
+        _allocation_2,
+        _allocation_3,
+    ]
+
+    yield DAO
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
-class TestCreateControllers():
+class TestCreateControllers:
     """Class for controller initialization test suite."""
     @pytest.mark.unit
     def test_data_manager_create(self):
@@ -130,8 +165,7 @@ class TestCreateControllers():
                                 'succeed_get_all_hardware_attributes')
 
 
-@pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
-class TestSelectMethods():
+class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
@@ -140,7 +174,7 @@ class TestSelectMethods():
         print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all_allocation(self, mock_program_dao):
+    def test_do_select_all(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with
         RAMSTKAllocation instances on success."""
         pub.subscribe(self.on_succeed_select_all,
@@ -169,6 +203,20 @@ class TestSelectMethods():
                         'succeed_retrieve_allocation')
 
     @pytest.mark.unit
+    def test_do_select(self, mock_program_dao):
+        """do_select() should return an instance of the RAMSTKAllocation on
+        success."""
+        DUT = dmAllocation()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
+
+        _allocation = DUT.do_select(1, table='allocation')
+
+        assert isinstance(_allocation, RAMSTKAllocation)
+        assert _allocation.included == 1
+        assert _allocation.parent_id == 0
+
+    @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
@@ -191,24 +239,29 @@ class TestSelectMethods():
 
 
 @pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
-class TestDeleteMethods():
+class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_allocation(self, tree):
+    def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_allocation topic was broadcast.")
 
-    def on_fail_delete_allocation_non_existent_id(self, error_message):
+    def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent allocation record with hardware ID 300."
-        )
+            "_do_delete: Attempted to delete non-existent allocation record "
+            "with hardware ID 300.")
         print("\033[36m\nfail_delete_allocation topic was broadcast.")
+
+    def on_fail_delete_not_in_tree(self, error_message):
+        assert error_message == (
+            '_do_delete: Attempted to delete non-existent allocation record '
+            'with hardware ID 2.')
+        print("\033[35m\nfail_delete_allocation topic was broadcast.")
 
     @pytest.mark.unit
     def test_do_delete(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        pub.subscribe(self.on_succeed_delete_allocation,
-                      'succeed_delete_allocation')
+        pub.subscribe(self.on_succeed_delete, 'succeed_delete_allocation')
 
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
@@ -218,31 +271,12 @@ class TestDeleteMethods():
 
         assert DUT.last_id == 2
 
-        pub.unsubscribe(self.on_succeed_delete_allocation,
-                        'succeed_delete_allocation')
-
-    @pytest.mark.skip
-    def test_do_delete_with_children(self, mock_program_dao):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
-        pub.subscribe(self.on_succeed_delete_allocation,
-                      'succeed_delete_allocation')
-
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
-
-        pub.sendMessage('request_delete_hardware', node_id=2)
-
-        assert DUT.last_id == 1
-
-        pub.unsubscribe(self.on_succeed_delete_allocation,
-                        'succeed_delete_allocation')
+        pub.unsubscribe(self.on_succeed_delete, 'succeed_delete_allocation')
 
     @pytest.mark.unit
     def test_do_delete_non_existent_id(self, mock_program_dao):
         """_do_delete() should send the fail message."""
-        pub.subscribe(self.on_fail_delete_allocation_non_existent_id,
+        pub.subscribe(self.on_fail_delete_non_existent_id,
                       'fail_delete_allocation')
 
         DUT = dmAllocation()
@@ -251,12 +285,29 @@ class TestDeleteMethods():
 
         pub.sendMessage('request_delete_hardware', node_id=300)
 
-        pub.subscribe(self.on_fail_delete_allocation_non_existent_id,
+        pub.unsubscribe(self.on_fail_delete_non_existent_id,
+                        'fail_delete_allocation')
+
+    @pytest.mark.unit
+    def test_do_delete_not_in_tree(self, mock_program_dao):
+        """_do_delete() should send the fail message when attempting to remove
+        a node that doesn't exist from the tree even if it exists in the
+        database."""
+        pub.subscribe(self.on_fail_delete_not_in_tree,
                       'fail_delete_allocation')
+
+        DUT = dmAllocation()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
+        DUT.tree.remove_node(2)
+        DUT._do_delete(2)
+
+        pub.unsubscribe(self.on_fail_delete_not_in_tree,
+                        'fail_delete_allocation')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
-class TestGetterSetter():
+class TestGetterSetter:
     """Class for testing methods that get or set."""
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
@@ -282,7 +333,7 @@ class TestGetterSetter():
         print(
             "\033[36m\nsucceed_get_allocation_attributes topic was broadcast.")
 
-    def on_succeed_get_tree(self, tree):
+    def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
             tree.get_node(1).data['allocation'], RAMSTKAllocation)
@@ -309,15 +360,16 @@ class TestGetterSetter():
                         'succeed_get_allocation_attributes')
 
     @pytest.mark.unit
-    def test_get_all_attributes_analysis_manager(self, mock_program_dao,
-                                                 test_toml_user_configuration):
+    def test_on_get_attributes(self, mock_program_dao,
+                               test_toml_user_configuration):
         """_get_all_attributes() should update the attributes dict on
         success."""
         # This test would require using the dmHardware() to get the attributes.
+        DUT = amAllocation(test_toml_user_configuration)
+
         DATAMGR = dmAllocation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
-        DUT = amAllocation(test_toml_user_configuration)
 
         pub.sendMessage('request_get_allocation_attributes',
                         node_id=2,
@@ -327,10 +379,12 @@ class TestGetterSetter():
         assert DUT._attributes['mtbf_alloc'] == 0.0
 
     @pytest.mark.unit
-    def test_on_get_tree(self, mock_program_dao, test_toml_user_configuration):
+    def test_on_get_data_manager_tree(self, mock_program_dao,
+                                      test_toml_user_configuration):
         """_on_get_tree() should assign the data manager's tree to the _tree
         attribute in response to the succeed_get_allocation_tree message."""
-        pub.subscribe(self.on_succeed_get_tree, 'succeed_get_allocation_tree')
+        pub.subscribe(self.on_succeed_get_data_manager_tree,
+                      'succeed_get_allocation_tree')
 
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
@@ -338,7 +392,7 @@ class TestGetterSetter():
 
         pub.sendMessage('request_get_allocation_tree')
 
-        pub.unsubscribe(self.on_succeed_get_tree,
+        pub.unsubscribe(self.on_succeed_get_data_manager_tree,
                         'succeed_get_allocation_tree')
 
     @pytest.mark.unit
@@ -363,10 +417,11 @@ class TestGetterSetter():
                                     test_toml_user_configuration, method_id):
         """do_calculate_goal() should return the proper allocation goal
         measure."""
+        DUT = amAllocation(test_toml_user_configuration)
+
         DATAMGR = dmAllocation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
-        DUT = amAllocation(test_toml_user_configuration)
 
         pub.sendMessage('request_get_allocation_tree')
         pub.sendMessage('request_get_allocation_attributes',
@@ -385,10 +440,10 @@ class TestGetterSetter():
             assert _goal == 0.9995
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
-class TestInsertMethods():
+@pytest.mark.usefixtures('test_toml_user_configuration')
+class TestInsertMethods:
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_allocation(self, node_id, tree):
+    def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 4
         assert isinstance(tree, Tree)
         assert isinstance(
@@ -398,15 +453,15 @@ class TestInsertMethods():
         assert tree.get_node(node_id).data['allocation'].parent_id == 1
         print("\033[36m\nsucceed_insert_allocation topic was broadcast.")
 
-    def on_fail_insert_allocation_db_error(self, error_message):
+    def on_fail_insert_no_parent(self, error_message):
         assert error_message == ('An error occurred with RAMSTK.')
         print("\033[35m\nfail_insert_allocation topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert(self, mock_program_dao):
+    def test_do_insert_sibling(self, mock_program_dao):
         """do_insert() should send the success message after successfully
         inserting a new sibling allocation assembly."""
-        pub.subscribe(self.on_succeed_insert_allocation,
+        pub.subscribe(self.on_succeed_insert_sibling,
                       'succeed_insert_allocation')
 
         DUT = dmAllocation()
@@ -417,94 +472,59 @@ class TestInsertMethods():
                         hardware_id=4,
                         parent_id=1)
 
-        pub.unsubscribe(self.on_succeed_insert_allocation,
+        pub.unsubscribe(self.on_succeed_insert_sibling,
                         'succeed_insert_allocation')
 
     @pytest.mark.unit
-    def test_do_insert_allocation_database_error(self, mock_program_dao):
+    def test_do_insert_no_parent(self, mock_program_dao):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
-        pub.subscribe(self.on_fail_insert_allocation_db_error,
-                      'fail_insert_allocation')
+        pub.subscribe(self.on_fail_insert_no_parent, 'fail_insert_allocation')
 
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
         DUT._do_insert_allocation(hardware_id=5, parent_id=0)
 
-        pub.unsubscribe(self.on_fail_insert_allocation_db_error,
+        pub.unsubscribe(self.on_fail_insert_no_parent,
                         'fail_insert_allocation')
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
-class TestUpdateMethods():
+@pytest.mark.usefixtures('test_toml_user_configuration')
+class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_allocation(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(2).data['allocation'].parent_id == 1
-        assert tree.get_node(
-            2).data['allocation'].percent_weight_factor == 0.9832
-        assert tree.get_node(2).data['allocation'].mtbf_goal == 12000
-        print("\033[36m\nsucceed_update_allocation topic was broadcast.")
-
-    def on_fail_update_allocation_non_existent_id(self, error_message):
+    def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
-            'do_update: Attempted to save non-existent allocation record ID '
-            '100.')
+            'do_update: Attempted to save non-existent allocation with '
+            'allocation ID 100.')
         print("\033[35m\nfail_update_allocation topic was broadcast")
 
-    def on_fail_update_allocation_no_data(self, error_message):
-        assert error_message == ('do_update: No data package found for '
-                                 'allocation record ID 1.')
-        print("\033[35m\nfail_update_allocation topic was broadcast")
-
-    def on_fail_update_allocation_wrong_data_type(self, error_message):
+    def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
-            'do_update: The value for one or more attributes for allocation '
-            'record ID 1 was the wrong type.')
+            'do_update: No data package found for allocation ID 1.')
         print("\033[35m\nfail_update_allocation topic was broadcast")
-
-    @pytest.mark.unit
-    def test_do_update_data_manager(self, mock_program_dao):
-        """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update_allocation,
-                      'succeed_update_allocation')
-
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
-
-        _allocation = DUT.do_select(2, table='allocation')
-        _allocation.percent_weight_factor = 0.9832
-        _allocation = DUT.do_select(2, table='allocation')
-        _allocation.mtbf_goal = 12000
-
-        pub.sendMessage('request_update_allocation', node_id=2)
-
-        pub.unsubscribe(self.on_succeed_update_allocation,
-                        'succeed_update_allocation')
 
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Allocation ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_allocation_non_existent_id,
+        pub.subscribe(self.on_fail_update_non_existent_id,
                       'fail_update_allocation')
 
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
 
-        DUT.do_update(100)
+        DUT.do_update(100, table='allocation')
 
-        pub.unsubscribe(self.on_fail_update_allocation_non_existent_id,
+        pub.unsubscribe(self.on_fail_update_non_existent_id,
                         'fail_update_allocation')
 
     @pytest.mark.unit
     def test_do_update_no_data_package(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a Hazard
         ID that has no data package."""
-        pub.subscribe(self.on_fail_update_allocation_no_data,
+        pub.subscribe(self.on_fail_update_no_data_package,
                       'fail_update_allocation')
 
         DUT = dmAllocation()
@@ -512,58 +532,14 @@ class TestUpdateMethods():
         DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
         DUT.tree.get_node(1).data.pop('allocation')
 
-        DUT.do_update(1)
+        DUT.do_update(1, table='allocation')
 
-        pub.unsubscribe(self.on_fail_update_allocation_no_data,
+        pub.unsubscribe(self.on_fail_update_no_data_package,
                         'fail_update_allocation')
 
-    @pytest.mark.unit
-    def test_do_update_wrong_data_type(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_allocation_wrong_data_type,
-                      'fail_update_allocation')
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
-        _allocation = DUT.do_select(1, table='allocation')
-        _allocation.mtbf_goal = {1: 2}
-
-        DUT.do_update(1)
-
-        pub.unsubscribe(self.on_fail_update_allocation_wrong_data_type,
-                        'fail_update_allocation')
-
-    @pytest.mark.unit
-    def test_do_update_wrong_data_type_root_node(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
-        _allocation = DUT.do_select(1, table='allocation')
-        _allocation.mtbf_goal = {1: 2}
-
-        DUT.do_update(0)
-
-    @pytest.mark.unit
-    def test_do_update_all(self, mock_program_dao):
-        """do_update_all() should return a zero error code on success."""
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1, 'hardware_id': 1})
-
-        def on_message(tree):
-            assert isinstance(tree, Tree)
-
-        pub.subscribe(on_message, 'succeed_update_allocation')
-
-        pub.sendMessage('request_update_all_allocation')
-
-
-@pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
-class TestAnalysisMethods():
+@pytest.mark.usefixtures('test_toml_user_configuration')
+class TestAnalysisMethods:
     """Class for allocation methods test suite."""
     def on_succeed_calculate_agree(self, tree):
         assert isinstance(tree, Tree)
