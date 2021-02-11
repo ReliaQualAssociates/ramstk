@@ -132,7 +132,7 @@ class TestRAMSTKEnvironment:
         assert DUT.set_attributes(ATTRIBUTES) is None
 
     @pytest.mark.unit
-    def test_set_attributes_none_value(self, mock_program_dao):
+    def test_set_attributes_set_default(self, mock_program_dao):
         """set_attributes() should set an attribute to it's default value when
         the attribute is passed with a None value."""
         DUT = mock_program_dao.do_select_all(RAMSTKEnvironment)[0]
