@@ -6,8 +6,8 @@
 #       Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKEnvironment module algorithms and
-models."""
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Class for testing the RAMSTKEnvironment module algorithms and models."""
 
 # Third Party Imports
 # noinspection PyPackageRequirements
