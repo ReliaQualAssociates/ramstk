@@ -2,16 +2,17 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_similar_item.py is part of The RAMSTK
-#       Project
+#       tests.controllers.similar_item.similar_item_unit_test.py is part of
+#       The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Similar Item module algorithms and models."""
 
 # Third Party Imports
 import pytest
-from __mocks__ import MOCK_SIMILAR_ITEM
+# noinspection PyUnresolvedReferences
+from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
@@ -19,66 +20,194 @@ from treelib import Tree
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amSimilarItem, dmSimilarItem
 from ramstk.db.base import BaseDatabase
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKSimilarItem
-
-
-class MockDao:
-    _all_similar_item = []
-
-    def do_delete(self, record):
-        if record is None:
-            raise DataAccessError('')
-        else:
-            for _idx, _record in enumerate(self._all_similar_item):
-                if _record.hardware_id == record.hardware_id:
-                    self._all_similar_item.pop(_idx)
-
-    def do_insert(self, record):
-        if record.hardware_id == 5:
-            raise DataAccessError('An error occurred with RAMSTK.')
-        elif record == RAMSTKSimilarItem:
-            self._all_similar_item.append(record)
-
-    def do_insert_many(self, records):
-        for _record in records:
-            self.do_insert(_record)
-
-    def do_select_all(self,
-                      table,
-                      key=None,
-                      value=None,
-                      order=None,
-                      _all=False):
-        if table == RAMSTKSimilarItem:
-            self._all_similar_item = []
-            for _key in MOCK_SIMILAR_ITEM:
-                _record = table()
-                _record.revision_id = value
-                _record.hardware_id = _key
-                _record.set_attributes(MOCK_SIMILAR_ITEM[_key])
-                self._all_similar_item.append(_record)
-
-        return self._all_similar_item
-
-    def do_update(self, record):
-        for _key in MOCK_SIMILAR_ITEM:
-            if _key == record.hardware_id:
-                MOCK_SIMILAR_ITEM[_key]['change_factor_1'] = float(
-                    record.change_factor_1)
-                MOCK_SIMILAR_ITEM[_key]['change_factor_2'] = float(
-                    record.change_factor_2)
-                MOCK_SIMILAR_ITEM[_key]['change_factor_3'] = float(
-                    record.change_factor_3)
 
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    yield MockDao()
+    _similar_item_1 = RAMSTKSimilarItem()
+    _similar_item_1.revision_id = 1
+    _similar_item_1.hardware_id = 1
+    _similar_item_1.change_description_1 = ''
+    _similar_item_1.change_description_2 = ''
+    _similar_item_1.change_description_3 = ''
+    _similar_item_1.change_description_4 = ''
+    _similar_item_1.change_description_5 = ''
+    _similar_item_1.change_description_6 = ''
+    _similar_item_1.change_description_7 = ''
+    _similar_item_1.change_description_8 = ''
+    _similar_item_1.change_description_9 = ''
+    _similar_item_1.change_description_10 = ''
+    _similar_item_1.change_factor_1 = 1.0
+    _similar_item_1.change_factor_2 = 1.0
+    _similar_item_1.change_factor_3 = 1.0
+    _similar_item_1.change_factor_4 = 1.0
+    _similar_item_1.change_factor_5 = 1.0
+    _similar_item_1.change_factor_6 = 1.0
+    _similar_item_1.change_factor_7 = 1.0
+    _similar_item_1.change_factor_8 = 1.0
+    _similar_item_1.change_factor_9 = 1.0
+    _similar_item_1.change_factor_10 = 1.0
+    _similar_item_1.environment_from_id = 0
+    _similar_item_1.environment_to_id = 0
+    _similar_item_1.function_1 = '0'
+    _similar_item_1.function_2 = '0'
+    _similar_item_1.function_3 = '0'
+    _similar_item_1.function_4 = '0'
+    _similar_item_1.function_5 = '0'
+    _similar_item_1.parent_id = 0
+    _similar_item_1.similar_item_method_id = 1
+    _similar_item_1.quality_from_id = 0
+    _similar_item_1.quality_to_id = 0
+    _similar_item_1.result_1 = 0.0
+    _similar_item_1.result_2 = 0.0
+    _similar_item_1.result_3 = 0.0
+    _similar_item_1.result_4 = 0.0
+    _similar_item_1.result_5 = 0.0
+    _similar_item_1.temperature_from = 30.0
+    _similar_item_1.temperature_to = 30.0
+    _similar_item_1.user_blob_1 = ''
+    _similar_item_1.user_blob_2 = ''
+    _similar_item_1.user_blob_3 = ''
+    _similar_item_1.user_blob_4 = ''
+    _similar_item_1.user_blob_5 = ''
+    _similar_item_1.user_float_1 = 0.0
+    _similar_item_1.user_float_2 = 0.0
+    _similar_item_1.user_float_3 = 0.0
+    _similar_item_1.user_float_4 = 0.0
+    _similar_item_1.user_float_5 = 0.0
+    _similar_item_1.user_int_1 = 0
+    _similar_item_1.user_int_2 = 0
+    _similar_item_1.user_int_3 = 0
+    _similar_item_1.user_int_4 = 0
+    _similar_item_1.user_int_5 = 0
+
+    _similar_item_2 = RAMSTKSimilarItem()
+    _similar_item_2.revision_id = 1
+    _similar_item_2.hardware_id = 2
+    _similar_item_2.change_description_1 = ''
+    _similar_item_2.change_description_2 = ''
+    _similar_item_2.change_description_3 = ''
+    _similar_item_2.change_description_4 = ''
+    _similar_item_2.change_description_5 = ''
+    _similar_item_2.change_description_6 = ''
+    _similar_item_2.change_description_7 = ''
+    _similar_item_2.change_description_8 = ''
+    _similar_item_2.change_description_9 = ''
+    _similar_item_2.change_description_10 = ''
+    _similar_item_2.change_factor_1 = 1.0
+    _similar_item_2.change_factor_2 = 1.0
+    _similar_item_2.change_factor_3 = 1.0
+    _similar_item_2.change_factor_4 = 1.0
+    _similar_item_2.change_factor_5 = 1.0
+    _similar_item_2.change_factor_6 = 1.0
+    _similar_item_2.change_factor_7 = 1.0
+    _similar_item_2.change_factor_8 = 1.0
+    _similar_item_2.change_factor_9 = 1.0
+    _similar_item_2.change_factor_10 = 1.0
+    _similar_item_2.environment_from_id = 0
+    _similar_item_2.environment_to_id = 0
+    _similar_item_2.function_1 = '0'
+    _similar_item_2.function_2 = '0'
+    _similar_item_2.function_3 = '0'
+    _similar_item_2.function_4 = '0'
+    _similar_item_2.function_5 = '0'
+    _similar_item_2.parent_id = 1
+    _similar_item_2.similar_item_method_id = 1
+    _similar_item_2.quality_from_id = 0
+    _similar_item_2.quality_to_id = 0
+    _similar_item_2.result_1 = 0.0
+    _similar_item_2.result_2 = 0.0
+    _similar_item_2.result_3 = 0.0
+    _similar_item_2.result_4 = 0.0
+    _similar_item_2.result_5 = 0.0
+    _similar_item_2.temperature_from = 30.0
+    _similar_item_2.temperature_to = 30.0
+    _similar_item_2.user_blob_1 = ''
+    _similar_item_2.user_blob_2 = ''
+    _similar_item_2.user_blob_3 = ''
+    _similar_item_2.user_blob_4 = ''
+    _similar_item_2.user_blob_5 = ''
+    _similar_item_2.user_float_1 = 0.0
+    _similar_item_2.user_float_2 = 0.0
+    _similar_item_2.user_float_3 = 0.0
+    _similar_item_2.user_float_4 = 0.0
+    _similar_item_2.user_float_5 = 0.0
+    _similar_item_2.user_int_1 = 0
+    _similar_item_2.user_int_2 = 0
+    _similar_item_2.user_int_3 = 0
+    _similar_item_2.user_int_4 = 0
+    _similar_item_2.user_int_5 = 0
+
+    _similar_item_3 = RAMSTKSimilarItem()
+    _similar_item_3.revision_id = 1
+    _similar_item_3.hardware_id = 3
+    _similar_item_3.change_description_1 = ''
+    _similar_item_3.change_description_2 = ''
+    _similar_item_3.change_description_3 = ''
+    _similar_item_3.change_description_4 = ''
+    _similar_item_3.change_description_5 = ''
+    _similar_item_3.change_description_6 = ''
+    _similar_item_3.change_description_7 = ''
+    _similar_item_3.change_description_8 = ''
+    _similar_item_3.change_description_9 = ''
+    _similar_item_3.change_description_10 = ''
+    _similar_item_3.change_factor_1 = 1.0
+    _similar_item_3.change_factor_2 = 1.0
+    _similar_item_3.change_factor_3 = 1.0
+    _similar_item_3.change_factor_4 = 1.0
+    _similar_item_3.change_factor_5 = 1.0
+    _similar_item_3.change_factor_6 = 1.0
+    _similar_item_3.change_factor_7 = 1.0
+    _similar_item_3.change_factor_8 = 1.0
+    _similar_item_3.change_factor_9 = 1.0
+    _similar_item_3.change_factor_10 = 1.0
+    _similar_item_3.environment_from_id = 0
+    _similar_item_3.environment_to_id = 0
+    _similar_item_3.function_1 = '0'
+    _similar_item_3.function_2 = '0'
+    _similar_item_3.function_3 = '0'
+    _similar_item_3.function_4 = '0'
+    _similar_item_3.function_5 = '0'
+    _similar_item_3.parent_id = 2
+    _similar_item_3.similar_item_method_id = 1
+    _similar_item_3.quality_from_id = 0
+    _similar_item_3.quality_to_id = 0
+    _similar_item_3.result_1 = 0.0
+    _similar_item_3.result_2 = 0.0
+    _similar_item_3.result_3 = 0.0
+    _similar_item_3.result_4 = 0.0
+    _similar_item_3.result_5 = 0.0
+    _similar_item_3.temperature_from = 30.0
+    _similar_item_3.temperature_to = 30.0
+    _similar_item_3.user_blob_1 = ''
+    _similar_item_3.user_blob_2 = ''
+    _similar_item_3.user_blob_3 = ''
+    _similar_item_3.user_blob_4 = ''
+    _similar_item_3.user_blob_5 = ''
+    _similar_item_3.user_float_1 = 0.0
+    _similar_item_3.user_float_2 = 0.0
+    _similar_item_3.user_float_3 = 0.0
+    _similar_item_3.user_float_4 = 0.0
+    _similar_item_3.user_float_5 = 0.0
+    _similar_item_3.user_int_1 = 0
+    _similar_item_3.user_int_2 = 0
+    _similar_item_3.user_int_3 = 0
+    _similar_item_3.user_int_4 = 0
+    _similar_item_3.user_int_5 = 0
+
+    DAO = MockDAO()
+    DAO.table = [
+        _similar_item_1,
+        _similar_item_2,
+        _similar_item_3,
+    ]
+
+    yield DAO
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
-class TestCreateControllers():
+class TestCreateControllers:
     """Class for controller initialization test suite."""
     @pytest.mark.unit
     def test_data_manager_create(self):
@@ -211,25 +340,30 @@ class TestSelectMethods():
         assert DUT.do_select(100, table='hardware') is None
 
 
-@pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
-class TestDeleteMethods():
+@pytest.mark.usefixtures('test_toml_user_configuration')
+class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
-    def on_succeed_delete_similar_item(self, tree):
+    def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_similar_item topic was broadcast.")
 
-    def on_fail_delete_similar_item_non_existent_id(self, error_message):
+    def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
             "_do_delete: Attempted to delete non-existent similar item "
             "record with hardware ID 300.")
+        print("\033[35m\nfail_delete_similar_item topic was broadcast.")
+
+    def on_fail_delete_not_in_tree(self, error_message):
+        assert error_message == (
+            '_do_delete: Attempted to delete non-existent similar item record '
+            'with hardware ID 2.')
         print("\033[35m\nfail_delete_similar_item topic was broadcast.")
 
     @pytest.mark.unit
     def test_do_delete(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        pub.subscribe(self.on_succeed_delete_similar_item,
-                      'succeed_delete_similar_item')
+        pub.subscribe(self.on_succeed_delete, 'succeed_delete_similar_item')
 
         DUT = dmSimilarItem()
         DUT.do_connect(mock_program_dao)
@@ -239,31 +373,12 @@ class TestDeleteMethods():
 
         assert DUT.last_id == 2
 
-        pub.unsubscribe(self.on_succeed_delete_similar_item,
-                        'succeed_delete_similar_item')
-
-    @pytest.mark.unit
-    def test_do_delete_with_children(self, mock_program_dao):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
-        pub.subscribe(self.on_succeed_delete_similar_item,
-                      'succeed_delete_similar_item')
-
-        DUT = dmSimilarItem()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('request_delete_hardware', node_id=2)
-
-        assert DUT.last_id == 1
-
-        pub.unsubscribe(self.on_succeed_delete_similar_item,
-                        'succeed_delete_similar_item')
+        pub.unsubscribe(self.on_succeed_delete, 'succeed_delete_similar_item')
 
     @pytest.mark.unit
     def test_do_delete_non_existent_id(self, mock_program_dao):
         """_do_delete() should send the fail message."""
-        pub.subscribe(self.on_fail_delete_similar_item_non_existent_id,
+        pub.subscribe(self.on_fail_delete_non_existent_id,
                       'fail_delete_similar_item')
 
         DUT = dmSimilarItem()
@@ -272,12 +387,29 @@ class TestDeleteMethods():
 
         pub.sendMessage('request_delete_hardware', node_id=300)
 
-        pub.unsubscribe(self.on_fail_delete_similar_item_non_existent_id,
+        pub.unsubscribe(self.on_fail_delete_non_existent_id,
+                        'fail_delete_similar_item')
+
+    @pytest.mark.unit
+    def test_do_delete_not_in_tree(self, mock_program_dao):
+        """_do_delete() should send the fail message when attempting to remove
+        a node that doesn't exist from the tree even if it exists in the
+        database."""
+        pub.subscribe(self.on_fail_delete_not_in_tree,
+                      'fail_delete_similar_item')
+
+        DUT = dmSimilarItem()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={'revision_id': 1})
+        DUT.tree.remove_node(2)
+        DUT._do_delete(2)
+
+        pub.unsubscribe(self.on_fail_delete_not_in_tree,
                         'fail_delete_similar_item')
 
 
 @pytest.mark.usefixtures('test_toml_user_configuration')
-class TestGetterSetter():
+class TestGetterSetter:
     """Class for testing methods that get or set."""
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
@@ -337,7 +469,7 @@ class TestGetterSetter():
         print("\033[36m\nsucceed_get_similar_item_attributes topic was "
               "broadcast.")
 
-    def on_succeed_get_tree(self, tree):
+    def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
             tree.get_node(1).data['similar_item'], RAMSTKSimilarItem)
@@ -364,14 +496,15 @@ class TestGetterSetter():
                         'succeed_get_similar_item_attributes')
 
     @pytest.mark.unit
-    def test_get_all_attributes_analysis_manager(self, mock_program_dao,
-                                                 test_toml_user_configuration):
+    def test_on_get_attributes(self, mock_program_dao,
+                               test_toml_user_configuration):
         """_get_all_attributes() should update the attributes dict on
         success."""
+        DUT = amSimilarItem(test_toml_user_configuration)
+
         DATAMGR = dmSimilarItem()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={'revision_id': 1})
-        DUT = amSimilarItem(test_toml_user_configuration)
 
         pub.sendMessage('request_get_similar_item_attributes',
                         node_id=2,
@@ -384,10 +517,10 @@ class TestGetterSetter():
         assert DUT._attributes['change_factor_1'] == 1.0
 
     @pytest.mark.unit
-    def test_on_get_tree(self, mock_program_dao, test_toml_user_configuration):
+    def test_on_get_data_manager_tree(self, mock_program_dao):
         """_on_get_tree() should assign the data manager's tree to the _tree
         attribute in response to the succeed_get_hardware_tree message."""
-        pub.subscribe(self.on_succeed_get_tree,
+        pub.subscribe(self.on_succeed_get_data_manager_tree,
                       'succeed_get_similar_item_tree')
 
         DATAMGR = dmSimilarItem()
@@ -396,7 +529,7 @@ class TestGetterSetter():
 
         pub.sendMessage('request_get_similar_item_tree')
 
-        pub.unsubscribe(self.on_succeed_get_tree,
+        pub.unsubscribe(self.on_succeed_get_data_manager_tree,
                         'succeed_get_similar_item_tree')
 
     @pytest.mark.unit
@@ -423,10 +556,10 @@ class TestGetterSetter():
                              table='similar_item').change_factor_1 == 0.003862
 
 
-@pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
-class TestInsertMethods():
+@pytest.mark.usefixtures('test_toml_user_configuration')
+class TestInsertMethods:
     """Class for testing the data manager insert() method."""
-    def on_succeed_insert_similar_item(self, node_id, tree):
+    def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 4
         assert isinstance(tree, Tree)
         assert isinstance(
@@ -436,15 +569,15 @@ class TestInsertMethods():
         assert tree.get_node(node_id).data['similar_item'].parent_id == 1
         print("\033[36m\nsucceed_insert_similar_item topic was broadcast.")
 
-    def on_fail_insert_similar_item_db_error(self, error_message):
+    def on_fail_insert_no_parent(self, error_message):
         assert error_message == ('An error occurred with RAMSTK.')
         print("\033[35m\nfail_insert_similar_item topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert(self, mock_program_dao):
+    def test_do_insert_sibling(self, mock_program_dao):
         """do_insert() should send the success message after successfully
         inserting a new sibling hardware assembly."""
-        pub.subscribe(self.on_succeed_insert_similar_item,
+        pub.subscribe(self.on_succeed_insert_sibling,
                       'succeed_insert_similar_item')
 
         DUT = dmSimilarItem()
@@ -455,14 +588,14 @@ class TestInsertMethods():
                         hardware_id=4,
                         parent_id=1)
 
-        pub.unsubscribe(self.on_succeed_insert_similar_item,
+        pub.unsubscribe(self.on_succeed_insert_sibling,
                         'succeed_insert_similar_item')
 
     @pytest.mark.unit
-    def test_do_insert_similar_item_database_error(self, mock_program_dao):
+    def test_do_insert_no_parent(self, mock_program_dao):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
-        pub.subscribe(self.on_fail_insert_similar_item_db_error,
+        pub.subscribe(self.on_fail_insert_no_parent,
                       'fail_insert_similar_item')
 
         DUT = dmSimilarItem()
@@ -470,74 +603,45 @@ class TestInsertMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT._do_insert_similar_item(hardware_id=5, parent_id=0)
 
-        pub.unsubscribe(self.on_fail_insert_similar_item_db_error,
+        pub.unsubscribe(self.on_fail_insert_no_parent,
                         'fail_insert_similar_item')
 
 
-@pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
-class TestUpdateMethods():
+@pytest.mark.usefixtures('test_toml_user_configuration')
+class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
-    def on_succeed_update_similar_item(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(2).data['similar_item'].parent_id == 1
-        assert tree.get_node(
-            2).data['similar_item'].percent_weight_factor == 0.9832
-        assert tree.get_node(2).data['similar_item'].mtbf_goal == 12000
-        print("\033[36m\nsucceed_update_similar_item topic was broadcast.")
-
-    def on_fail_update_similar_item_non_existent_id(self, error_message):
+    def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
-            'do_update: Attempted to save non-existent similar item record '
-            'ID 100.')
+            'do_update: Attempted to save non-existent similar item with '
+            'similar item ID 100.')
         print("\033[35m\nfail_update_similar_item topic was broadcast")
 
-    def on_fail_update_similar_item_no_data(self, error_message):
+    def on_fail_update_no_data_package(self, error_message):
         assert error_message == ('do_update: No data package found for '
-                                 'similar item record ID 1.')
+                                 'similar item ID 1.')
         print("\033[35m\nfail_update_similar_item topic was broadcast")
-
-    def on_fail_update_similar_item_wrong_data_type(self, error_message):
-        assert error_message == (
-            'do_update: The value for one or more attributes for similar item '
-            'record ID 1 was the wrong type.')
-        print("\033[35m\nfail_update_similar_item topic was broadcast")
-
-    @pytest.mark.unit
-    def test_do_update_data_manager(self, mock_program_dao):
-        """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update_similar_item,
-                      'succeed_update_similar_item')
-
-        DUT = dmSimilarItem()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        pub.sendMessage('request_update_similar_item', node_id=2)
-
-        pub.unsubscribe(self.on_succeed_update_similar_item,
-                        'succeed_update_similar_item')
 
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a
         Allocation ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_similar_item_non_existent_id,
+        pub.subscribe(self.on_fail_update_non_existent_id,
                       'fail_update_similar_item')
 
         DUT = dmSimilarItem()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={'revision_id': 1})
 
-        DUT.do_update(100)
+        DUT.do_update(100, table='similar_item')
 
-        pub.unsubscribe(self.on_fail_update_similar_item_non_existent_id,
+        pub.unsubscribe(self.on_fail_update_non_existent_id,
                         'fail_update_similar_item')
 
     @pytest.mark.unit
     def test_do_update_no_data_package(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a Hazard
         ID that has no data package."""
-        pub.subscribe(self.on_fail_update_similar_item_no_data,
+        pub.subscribe(self.on_fail_update_no_data_package,
                       'fail_update_similar_item')
 
         DUT = dmSimilarItem()
@@ -545,54 +649,10 @@ class TestUpdateMethods():
         DUT.do_select_all(attributes={'revision_id': 1})
         DUT.tree.get_node(1).data.pop('similar_item')
 
-        DUT.do_update(1)
+        DUT.do_update(1, table='similar_item')
 
-        pub.unsubscribe(self.on_fail_update_similar_item_no_data,
+        pub.unsubscribe(self.on_fail_update_no_data_package,
                         'fail_update_similar_item')
-
-    @pytest.mark.unit
-    def test_do_update_wrong_data_type(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_similar_item_wrong_data_type,
-                      'fail_update_similar_item')
-
-        DUT = dmSimilarItem()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        _similar_item = DUT.do_select(1, table='similar_item')
-        _similar_item.change_factor_1 = {1: 2}
-
-        DUT.do_update(1)
-
-        pub.unsubscribe(self.on_fail_update_similar_item_wrong_data_type,
-                        'fail_update_similar_item')
-
-    @pytest.mark.unit
-    def test_do_update_wrong_data_type_root_node(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
-        DUT = dmSimilarItem()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-        _similar_item = DUT.do_select(1, table='similar_item')
-        _similar_item.change_factor_1 = {1: 2}
-
-        DUT.do_update(0)
-
-    @pytest.mark.unit
-    def test_do_update_all(self, mock_program_dao):
-        """do_update_all() should return a zero error code on success."""
-        DUT = dmSimilarItem()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={'revision_id': 1})
-
-        def on_message(tree):
-            assert isinstance(tree, Tree)
-
-        pub.subscribe(on_message, 'succeed_update_similar_item')
-
-        pub.sendMessage('request_update_all_similar_items')
 
 
 @pytest.mark.usefixtures('mock_program_dao', 'test_toml_user_configuration')
@@ -682,7 +742,7 @@ class TestAnalysisMethods():
 
     @pytest.mark.unit
     def test_do_calculate_no_method(self, mock_program_dao,
-                                       test_toml_user_configuration):
+                                    test_toml_user_configuration):
         """do_calculate_goal() should calculate the Topic 644 similar item."""
         DUT = amSimilarItem(test_toml_user_configuration)
 
