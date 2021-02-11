@@ -92,8 +92,6 @@ class TestRAMSTKEnvironment:
         DUT = mock_program_dao.do_select_all(RAMSTKEnvironment)[0]
 
         assert isinstance(DUT, RAMSTKEnvironment)
-
-        # Verify class attributes are properly initialized.
         assert DUT.__tablename__ == 'ramstk_environment'
         assert DUT.phase_id == 1
         assert DUT.environment_id == 1
