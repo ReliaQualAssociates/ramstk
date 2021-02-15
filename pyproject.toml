@@ -41,6 +41,25 @@ documentation = "https://ramstk.readthedocs.io/en/latest/"
 requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
 [tool.isort]
 known_first_party = 'ramstk'
 known_third_party = ['dateutil','gi','lifelines','matplotlib','numpy','openpyxl','pandas','psycopg2','pubsub','pytest','scipy','setuptools','sortedcontainers','sql','sqlalchemy','sympy','toml','treelib','xlwt','ISOLATION_LEVEL_AUTOCOMMIT']
