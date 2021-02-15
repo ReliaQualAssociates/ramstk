@@ -36,7 +36,7 @@ PYCODESTYLE	= $(shell which pycodestyle)
 PYDOCSTYLE	= $(shell which pydocstyle)
 PYLINT		= $(shell which pylint)
 RADON		= $(shell which radon)
-YAPF        = $(shell which yapf)
+BLACK        = $(shell which black)
 WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
 RSTCHECK	= $(shell which rstcheck)
 CHKMANI		= $(shell which check-manifest)
@@ -55,7 +55,6 @@ MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count --config=./setup.cfg
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
-YAPF_ARGS	= --in-place
 
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
@@ -80,7 +79,7 @@ help:
 	@echo "	coverage				run the complete RAMSTK test suite with coverage."
 	@echo "	reports					generate an html coverage report in $(COVDIR)."
 	@echo "Targets related to static code checking tools (good for IDE integration):"
-	@echo "	format SRCFILE=<file>			format using isort and yapf.  Helpful to keymap in IDE or editor."
+	@echo "	format SRCFILE=<file>			format using black, isort, and docformatter.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
 	@echo "	typecheck SRCFILE=<file>		check using mypy.  Helpful to keymap in IDE or editor."
 	@echo "	lint SRCFILE=<file>			lint using pylint and flake8.  Helpful to keymap in IDE or editor."
@@ -234,25 +233,25 @@ reports: coverage
 
 # This target is for use with IDE integration.
 format:
-	$(info Autoformatting $(SRCFILE) ...)
-	$(YAPF) $(YAPF_ARGS) $(SRCFILE)
+	@echo -e "\n\t\033[1;32mAutoformatting $(SRCFILE) ...\033[0m\n"
+	$(BLACK) $(SRCFILE)
 	$(ISORT) $(ISORT_ARGS) $(SRCFILE)
 	$(DOCFORMATTER) $(DOCFORMATTER_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 stylecheck:
-	$(info Style checking $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mStyle checking $(SRCFILE) ...\033[0m\n"
 	$(PYCODESTYLE) $(PYCODESTYLE_ARGS) $(SRCFILE)
 	$(PYDOCSTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 typecheck:
-	$(info Type checking $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mType checking $(SRCFILE) ...\033[0m\n"
 	$(MYPY) $(MYPY_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 maintain:
-	$(info Checking maintainability of $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mChecking maintainability of $(SRCFILE) ...\033[0m\n"
 	$(PY) -m mccabe -m 10 $(SRCFILE)
 	$(RADON) mi -s $(SRCFILE)
 	$(RADON) hal $(SRCFILE)
@@ -265,7 +264,7 @@ security:
 
 # This target is for use with IDE integration.
 lint:
-	$(info Linting $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mLinting $(SRCFILE) ...\033[0m\n"
 	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
 
 dupcheck:
