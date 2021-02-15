@@ -195,4 +195,5 @@ class DataManager(RAMSTKDataManager):
             "environments": self.do_set_environment_tree,
         }[_module]
 
+        # noinspection PyArgumentList
         _function(tree)
