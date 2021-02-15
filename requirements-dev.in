@@ -5,13 +5,13 @@ check-manifest
 twine
 
 # Code formatting
+black
 docformatter
 isort
 pep8
 pre-commit
 pre-commit-hooks
 seed-isort-config
-yapf
 
 # Static code checking
 bandit
