@@ -37,16 +37,38 @@ classifiers = [
 requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
 [tool.isort]
-balanced_wrapping = true
 known_first_party = 'ramstk'
 known_third_party = ['dateutil','gi','lifelines','matplotlib','numpy','openpyxl','pandas','psycopg2','pubsub','pytest','scipy','setuptools','sortedcontainers','sql','sqlalchemy','sympy','toml','treelib','xlwt','ISOLATION_LEVEL_AUTOCOMMIT']
 import_heading_firstparty = 'RAMSTK Package Imports'
 import_heading_localfolder = 'RAMSTK Local Imports'
 import_heading_stdlib = 'Standard Library Imports'
 import_heading_thirdparty = 'Third Party Imports'
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
 use_parentheses = true
-multi_line_output = 5
+ensure_newline_before_comments = true
+line_length = 88
 
 [tool.coverage.run]
 branch = true
@@ -148,7 +170,7 @@ ignore-docstrings = true
 ignore-imports = true
 
 [tool.pylint.format]
-max-line-length = 80
+max-line-length = 88
 indent-string = '    '
 max-module-lines = 5000
 
