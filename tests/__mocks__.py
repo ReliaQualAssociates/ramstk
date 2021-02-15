@@ -443,42 +443,6 @@ MOCK_DESIGN_MECHANIC = {
     }
 }
 
-MOCK_ENVIRONMENTS = {
-    1: {
-        'name': 'Condition Name',
-        'units': 'Units',
-        'minimum': 0.0,
-        'maximum': 0.0,
-        'mean': 0.0,
-        'variance': 0.0,
-        'ramp_rate': 0.0,
-        'low_dwell_time': 0.0,
-        'high_dwell_time': 0.0
-    },
-    2: {
-        'name': 'Condition Name',
-        'units': 'Units',
-        'minimum': 0.0,
-        'maximum': 0.0,
-        'mean': 0.0,
-        'variance': 0.0,
-        'ramp_rate': 0.0,
-        'low_dwell_time': 0.0,
-        'high_dwell_time': 0.0
-    },
-    3: {
-        'name': 'Condition Name',
-        'units': 'Units',
-        'minimum': 0.0,
-        'maximum': 0.0,
-        'mean': 0.0,
-        'variance': 0.0,
-        'ramp_rate': 0.0,
-        'low_dwell_time': 0.0,
-        'high_dwell_time': 0.0
-    }
-}
-
 MOCK_HARDWARE = {
     1: {
         'alt_part_number': '',
@@ -584,40 +548,6 @@ MOCK_HARDWARE = {
         'total_part_count': 0,
         'total_power_dissipation': 0.0,
         'year_of_manufacture': 2019
-    }
-}
-
-MOCK_MISSIONS = {
-    1: {
-        'description': '',
-        'mission_time': 0.0,
-        'time_units': 'hours'
-    },
-    2: {
-        'description': 'Mission #2',
-        'mission_time': 0.0,
-        'time_units': 'hours'
-    }
-}
-
-MOCK_MISSION_PHASES = {
-    1: {
-        'description': '',
-        'name': '',
-        'phase_start': 0.0,
-        'phase_end': 0.0
-    },
-    2: {
-        'description': 'Phase #1 for mission #2',
-        'name': '',
-        'phase_start': 0.0,
-        'phase_end': 0.0
-    },
-    3: {
-        'description': 'Phase #2 for mission #2',
-        'name': '',
-        'phase_start': 0.0,
-        'phase_end': 0.0
     }
 }
 

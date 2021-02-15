@@ -36,7 +36,7 @@ PYCODESTYLE	= $(shell which pycodestyle)
 PYDOCSTYLE	= $(shell which pydocstyle)
 PYLINT		= $(shell which pylint)
 RADON		= $(shell which radon)
-YAPF        = $(shell which yapf)
+BLACK       = $(shell which black)
 WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
 RSTCHECK	= $(shell which rstcheck)
 CHKMANI		= $(shell which check-manifest)
@@ -55,7 +55,6 @@ MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count --config=./setup.cfg
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
-YAPF_ARGS	= --in-place
 
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
@@ -114,6 +113,7 @@ help:
 clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
 
 clean-build:	## remove build artifacts
+	@echo -e "\n\t\033[1;37;43mCleaning up old build artifacts ...\033[0m\n"
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
@@ -127,14 +127,13 @@ clean-pyc:		## remove Python file artifacts
 	$(shell find . -name '__pycache__' -exec rm -fr {} +)
 
 clean-test:	clean-pyc	## remove test and coverage artifacts
-	@echo -e "\n\t\033[1;33mCleaning up old test run artifacts ...\033[0m\n"
+	@echo -e "\n\t\033[1;37;43mCleaning up old test run artifacts ...\033[0m\n"
 	rm -fr .tox/
-	rm -f .coverage
 	rm -fr .reports/coverage
 	rm -fr .pytest_cache
 
 coverage: clean-test
-	@echo -e "\n\t\033[1;32mRunning RAMSTK test suite with coverage ...\033[0m\n"
+	@echo -e "\n\t\033[1;37;42mRunning RAMSTK test suite with coverage ...\033[0m\n"
 	py.test $(TESTOPTS) $(TESTFILE)
 
 depends:
@@ -174,7 +173,7 @@ upgrade:
 
 # Targets to install and uninstall.
 install: clean-build clean-pyc
-	@echo -e "\n\t\033[1;32mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
+	@echo -e "\n\t\033[1;37;42mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
 	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
@@ -204,28 +203,28 @@ install: clean-build clean-pyc
 	${COPY} "./data/RAMSTK.toml" "$(PREFIX)/share/RAMSTK/"
 
 uninstall:
-	@echo -e "\n\t\033[1;31mUninstalling RAMSTK :( ...\033[0m\n"
+	@echo -e "\n\t\033[1;31;47mUninstalling RAMSTK :( ...\033[0m\n"
 	pip uninstall -y ramstk
 	${RMDIR} "$(PREFIX)/share/RAMSTK/"
 	${RM} "$(PREFIX)/share/pixmaps/RAMSTK.png"
 	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
 
 test.unit: clean-test
-	@echo -e "\n\t\033[1;33mRunning RAMSTK unit tests ...\033[0m\n"
+	@echo -e "\n\t\033[1;37;1:43mRunning RAMSTK unit tests without coverage ...\033[0m\n"
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
 
 test.calc: clean-test
 	py.test $(TESTOPTS) -m calculation $(TESTFILE)
 
 test.integration: clean-test
-	@echo -e "\n\t\033[1;33mRunning RAMSTK integration tests ...\033[0m\n"
+	@echo -e "\n\t\033[1;37;1;43mRunning RAMSTK integration tests without coverage ...\033[0m\n"
 	py.test $(TESTOPTS) -m integration $(TESTFILE)
 
 test.gui: clean-test
 	py.test $(TESTOPTS) -m gui $(TESTFILE)
 
 test: clean-test
-	@echo -e "\n\t\033[1;33mRunning RAMSTK test suite without coverage ...\033[0m\n"
+	@echo -e "\n\t\033[1;37;1;45mRunning RAMSTK test suite without coverage ...\033[0m\n"
 	py.test $(TESTOPTS) $(TESTFILE)
 
 test-all:
@@ -236,8 +235,8 @@ reports: coverage
 
 # This target is for use with IDE integration.
 format:
-	$(info Autoformatting $(SRCFILE) ...)
-	$(YAPF) $(YAPF_ARGS) $(SRCFILE)
+	@echo -e "\n\t\033[1;37;42mAutoformatting $(SRCFILE) ...\033[0m\n"
+	$(BLACK) $(BLACK_ARGS) $(SRCFILE)
 	$(ISORT) $(ISORT_ARGS) $(SRCFILE)
 	$(DOCFORMATTER) $(DOCFORMATTER_ARGS) $(SRCFILE)
 
@@ -293,10 +292,11 @@ packchk:
 	$(PYROMA) .
 
 dist: clean
-	$(info Creating source distribution and wheel ...)
+	@echo -e "\n\t\033[33;47mCreating source distribution and wheel ...\033[0m\n"
 	python setup.py sdist
 	python setup.py bdist_wheel
 
 release: packchk dist
+	@echo -e "\n\t\033[33;47mBuilding and uploading artifacts to PyPi ...\033[0m\n"
 	$(info Build and upload artifacts to PyPi ...)
 	$(TWINE) upload dist/*

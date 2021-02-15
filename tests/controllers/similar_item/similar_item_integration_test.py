@@ -15,7 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import amSimilarItem, dmSimilarItem
+from ramstk.controllers import dmSimilarItem
 
 
 @pytest.mark.usefixtures('test_program_dao')

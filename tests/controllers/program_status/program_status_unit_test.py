@@ -14,6 +14,7 @@ from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
+
 # noinspection PyUnresolvedReferences
 from mocks import MockDAO
 from pubsub import pub
@@ -146,7 +147,6 @@ class TestSelectMethods:
         assert DUT.do_select(100, table='program_status') is None
 
 
-@pytest.mark.usefixtures('test_program_dao', 'test_toml_user_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
     def on_succeed_delete(self, tree):
