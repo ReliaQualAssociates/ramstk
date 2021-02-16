@@ -1,0 +1,7 @@
+coveralls
+coverage[toml]
+pytest
+pytest-cov
+pytest-icdiff
+pytest-sugar
+mock

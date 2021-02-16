@@ -201,25 +201,25 @@ coverage: clean-test
 
 # This target is for use with IDE integration.
 format:
-	$(info Autoformatting $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mAutoformatting $(SRCFILE) ...\033[0m\n"
 	$(BLACK) $(SRCFILE)
 	$(ISORT) $(ISORT_ARGS) $(SRCFILE)
 	$(DOCFORMATTER) $(DOCFORMATTER_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 stylecheck:
-	$(info Style checking $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mStyle checking $(SRCFILE) ...\033[0m\n"
 	$(PYCODESTYLE) $(PYCODESTYLE_ARGS) $(SRCFILE)
 	$(PYDOCSTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 typecheck:
-	$(info Type checking $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mType checking $(SRCFILE) ...\033[0m\n"
 	$(MYPY) $(MYPY_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 maintain:
-	$(info Checking maintainability of $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mChecking maintainability of $(SRCFILE) ...\033[0m\n"
 	$(PY) -m mccabe -m 10 $(SRCFILE)
 	$(RADON) mi -s $(SRCFILE)
 	$(RADON) hal $(SRCFILE)
@@ -232,7 +232,7 @@ security:
 
 # This target is for use with IDE integration.
 lint:
-	$(info Linting $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mLinting $(SRCFILE) ...\033[0m\n"
 	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
 
 dupcheck:
