@@ -131,10 +131,11 @@ requirements:
 
 depends:
 	pip install -U wheel
-	$(POETRY) install --no-root --remove-untracked
+	$(POETRY) install --no-root
 
 upgrade:
 	pip install -U wheel
+	$(POETRY) install --remove-untracked
 	$(POETRY) update
 
 # Targets to install and uninstall RAMSTK.

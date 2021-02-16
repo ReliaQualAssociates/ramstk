@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check code format with docformatter, isort, and yapf
+      - name: Check code format with black, isort, and docformatter
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
