@@ -25,8 +25,8 @@ jobs:
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
-          use-black: false
-          use-yapf: true
+          use-black: true
+          use-yapf: false
           use-isort: true
           use-docformatter: true
           use-pycodestyle: false
@@ -40,7 +40,7 @@ jobs:
           use-check-manifest: false
           use-pyroma: false
           extra-black-options: ""
-          extra-yapf-options: "-r --style ./setup.cfg"
+          extra-yapf-options: ""
           extra-isort-options: "--settings-file ./pyproject.toml"
           extra-docformatter-options: ""
           extra-pycodestyle-options: ""

@@ -253,7 +253,6 @@ docs: clean-docs
 
 # Targets for creating and publishing RAMSTK packages.
 packchk:
-	$(CHKMANI) .
 	$(PYROMA) .
 
 build: clean
