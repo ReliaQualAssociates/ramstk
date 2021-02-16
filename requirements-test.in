@@ -1,6 +1,0 @@
-coveralls
-coverage[toml]
-pytest
-pytest-cov
-pytest-sugar
-mock
