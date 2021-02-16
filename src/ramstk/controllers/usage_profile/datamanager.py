@@ -108,7 +108,7 @@ class DataManager(RAMSTKDataManager):
             self._do_load_missions()
 
             pub.sendMessage(
-                "succeed_retrieve_usage_profile",
+                "succeed_delete_usage_profile",
                 tree=self.tree,
             )
 
@@ -154,7 +154,7 @@ class DataManager(RAMSTKDataManager):
     def _do_load_mission_phases(self, mission_id: int) -> None:
         """Load the mission phases into the tree for the passed mission ID.
 
-        :param mission_id: the mission ID to load the phases for.
+        :param mission_id: the mission ID to add the new mission phase.
         :return: None
         :rtype: None
         """

@@ -9,38 +9,37 @@ PREFIX		= /usr/local
 GITHUB_USER = ReliaQualAssociates
 TOKEN		= $(shell echo $(GITHUB_TOKEN))
 REPO		= ramstk
-REQFILE		= $(VIRTUAL_ENV)/requirements.txt
-DEVREQFILE	= $(VIRTUAL_ENV)/requirements-dev.txt
-TSTREQFILE	= $(VIRTUAL_ENV)/requirements-test.txt
+
 SRCFILE		= src/ramstk/
-TESTOPTS	=  -v -s -x -c ./pyproject.toml --cache-clear
 TESTFILE	= tests/
-BASEVENV	= .venv
-VIRTENV		= ramstk-venv
-COVDIR		= .reports/coverage/html
+TESTOPTS	= -x -c ./pyproject.toml --cache-clear
+VIRTENV		= .venv
 ROOT 		= $(shell git rev-parse --show-toplevel)
+WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
+COVDIR		= .reports/coverage/html
 
 # Shell commands:
 PYTHON		= $(shell which python)
 PY			= $(shell which python -V | cut -d ' ' -f2)
-MKDIR 		= mkdir -pv
-SED			= sed
 COPY 		= cp -v
+MKDIR 		= mkdir -pv
 RM			= rm -fv
 RMDIR		= rm -fvr
+SED			= sed
 GIT			= $(shell which git)
-ISORT       = $(shell which isort)
+
+BLACK		= $(shell which black)
+CHKMANI		= $(shell which check-manifest)
 DOCFORMATTER	= $(shell which docformatter)
+ISORT       = $(shell which isort)
 MYPY		= $(shell which mypy)
+POETRY		= $(shell which poetry)
 PYCODESTYLE	= $(shell which pycodestyle)
 PYDOCSTYLE	= $(shell which pydocstyle)
 PYLINT		= $(shell which pylint)
-RADON		= $(shell which radon)
-BLACK       = $(shell which black)
-WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
-RSTCHECK	= $(shell which rstcheck)
-CHKMANI		= $(shell which check-manifest)
 PYROMA		= $(shell which pyroma)
+RADON		= $(shell which radon)
+RSTCHECK	= $(shell which rstcheck)
 TWINE		= $(shell which twine)
 
 # Data files.
@@ -59,30 +58,22 @@ PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
 	@echo ""
-	@echo "Targets related to use of pyenv:"
-	@echo "	pyvailable				list all the Python versions provided by pyenv."
-	@echo "	pystall PY=<version>			install the requested version of Python using pyenv."
-	@echo "	pyversions				list all the locally installed Python versions managed by pyenv."
-	@echo "	mkvenv PY=<version> VIRTENV=<name>	to create a virtual environment. VIRTENV defaults to $(VIRTENV) and PY defaults to the global Python version $(PY)."
-	@echo "	lsvenv					list all the available virtual environments."
-	@echo "	usevenv VIRTENV=<name>			use the VIRTENV requested."
-	@echo "Targets related to use of pip-tools:"
-	@echo "	requirements				create/update the requirements.txt, requirements-dev.txt, and requirements-test.txt files."
-	@echo "	upgrade					update the requirements (txt) files with the latest package versions available."
-	@echo "	depends					install the packages found in the requirements files into the current (virtual) environment."
-	@echo "Targets related to use of py.test/pytest/tox:"
+	@echo "Targets related to managing RAMSTK dependencies:"
+	@echo "	requirements				create/update the poetry.lock file."
+	@echo "	depends					install the packages found in the poetry.lock file into the current (virtual) environment."
+	@echo "	upgrade					update the poetry.lock file with the latest package versions available."
+	@echo "Targets related to testing RAMSTK:"
 	@echo "	test.unit				run all tests decorated with the 'unit' marker."
 	@echo "	test.calc				run all tests decorated with the 'calculation' marker."
 	@echo "	test.integration			run all tests decorated with the 'integration' marker."
 	@echo "	test					run the complete RAMSTK test suite without coverage."
 	@echo "	test-all				run the complete RAMSTK test suite on every Python version using tox. <FUTURE>"
 	@echo "	coverage				run the complete RAMSTK test suite with coverage."
-	@echo "	reports					generate an html coverage report in $(COVDIR)."
 	@echo "Targets related to static code checking tools (good for IDE integration):"
-	@echo "	format SRCFILE=<file>			format using isort and yapf.  Helpful to keymap in IDE or editor."
+	@echo "	format SRCFILE=<file>			format using black, isort, and docformatter.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
 	@echo "	typecheck SRCFILE=<file>		check using mypy.  Helpful to keymap in IDE or editor."
-	@echo "	lint SRCFILE=<file>			lint using pylint and flake8.  Helpful to keymap in IDE or editor."
+	@echo "	lint SRCFILE=<file>			lint using pylint.  Helpful to keymap in IDE or editor."
 	@echo "						If passing a directory, all files will be recusively checked."
 	@echo "	maintain SRCFILE=<file>			check maintainability using mccabe and radon.  Helpful to keymap in IDE or editor."
 	@echo "						Pass wildcard (*) at end of FILE=<file> path to analyze all files in directory."
@@ -90,7 +81,8 @@ help:
 	@echo "	docs					build API and user documentation."
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
-	@echo "	install 				install RAMSTK in the current (virtualenv) environment using pip install."
+	@echo "	install 				install RAMSTK in the current (virtualenv) environment."
+	@echo "	uninstall 				remove RAMSTK from the current (virtualenv) environment."
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi."
 	@echo ""
@@ -99,9 +91,6 @@ help:
 	@echo "	GITHUB_USER				set the name of the Github user.  Defaults to $(GITHUB_USER)"
 	@echo "	TOKEN					set the Github API token to use.  Defaults to environment variable GITHUB_TOKEN"
 	@echo "	REPO					set the name of the GitHub repository to generate the change log from.  Defaults to $(REPO)"
-	@echo "	REQFILE					set the name of the requirements file to write required runtime packages.  Defaults to $(REQFILE)"
-	@echo "	DEVREQFILE				set the name of the requirements file to write required development packages.  Defaults to $(DEVREQFILE)"
-	@echo "	DOCREQFILE				set the name of the requirements file to write required documentation packages.  Defaults to $(DOCREQFILE)"
 	@echo "	SRCFILE					set the file or directory to static code check.  Defaults to $(SRCFILE)"
 	@echo "	TESTOPTS				set additional options to pass to py.test/pytest.  Defaults to $(TESTOPTS)"
 	@echo "	TESTFILE				set the file or directory to test.  Defaults to $(TESTFILE)"
@@ -110,7 +99,8 @@ help:
 
 .PHONY: all test clean
 
-clean: clean-build clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
+# Targets for cleaning up after yourself.
+clean: clean-build clean-docs clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
 
 clean-build:	## remove build artifacts
 	@echo -e "\n\t\033[1;37;43mCleaning up old build artifacts ...\033[0m\n"
@@ -119,6 +109,9 @@ clean-build:	## remove build artifacts
 	rm -fr .eggs/
 	$(shell find . -name '*.egg-info' -exec rm -fr '{}' +)
 	$(shell find . -name '*.egg' -exec rm -fr '{}' +)
+
+clean-docs:
+	cd docs; rm -fr _build/html/*
 
 clean-pyc:		## remove Python file artifacts
 	$(shell find . -name '*.pyc' -exec rm -f {} +)
@@ -132,46 +125,20 @@ clean-test:	clean-pyc	## remove test and coverage artifacts
 	rm -fr .reports/coverage
 	rm -fr .pytest_cache
 
-coverage: clean-test
-	@echo -e "\n\t\033[1;37;42mRunning RAMSTK test suite with coverage ...\033[0m\n"
-	py.test $(TESTOPTS) $(TESTFILE)
+# Targets for managing RAMSTK dependencies.
+requirements:
+	$(POETRY) lock
 
 depends:
-	pip install -U pip-tools wheel
-	pip-sync $(REQFILE) $(TSTREQFILE) $(DEVREQFILE)
-
-mkvenv:
-	python$(PY) -m venv $(BASEVENV)/$(VIRTENV)
-
-lsvenv:
-	@echo $(shell ls $(BASEVENV) | sort)
-
-usevenv:
-	source $(BASEVENV)/$(VIRTENV)/bin/activate
-
-pyvailable:
-	pyenv install --list
-
-pystall:
-	pyenv install $(PY)
-	pyenv rehash
-
-pyversions:
-	pyenv versions
-
-requirements:
-	pip install -U pip-tools wheel
-	pip-compile --allow-unsafe --generate-hashes --output-file $(REQFILE) requirements.in
-	pip-compile --allow-unsafe --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
-	pip-compile --allow-unsafe --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
+	pip install -U wheel
+	$(POETRY) install --no-root
 
 upgrade:
-	pip install -U pip-tools wheel
-	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(REQFILE) requirements.in
-	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(TSTREQFILE) requirements-test.in
-	pip-compile --allow-unsafe --upgrade --generate-hashes --output-file $(DEVREQFILE) requirements-dev.in
+	pip install -U wheel
+	$(POETRY) install --remove-untracked
+	$(POETRY) update
 
-# Targets to install and uninstall.
+# Targets to install and uninstall RAMSTK.
 install: clean-build clean-pyc
 	@echo -e "\n\t\033[1;37;42mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
 	pip install . --prefix=$(PREFIX)
@@ -209,6 +176,7 @@ uninstall:
 	${RM} "$(PREFIX)/share/pixmaps/RAMSTK.png"
 	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
 
+# Targets for testing.
 test.unit: clean-test
 	@echo -e "\n\t\033[1;37;1:43mRunning RAMSTK unit tests without coverage ...\033[0m\n"
 	py.test $(TESTOPTS) -m unit $(TESTFILE)
@@ -230,30 +198,31 @@ test: clean-test
 test-all:
 	$(info "TODO: Need to add tox support for this target to work.")
 
-reports: coverage
-	coverage html -d $(COVDIR)
+coverage: clean-test
+	@echo -e "\n\t\033[1;37;42mRunning RAMSTK test suite with coverage ...\033[0m\n"
+	py.test $(TESTOPTS) $(TESTFILE)
 
 # This target is for use with IDE integration.
 format:
-	@echo -e "\n\t\033[1;37;42mAutoformatting $(SRCFILE) ...\033[0m\n"
+	@echo -e "\n\t\033[1;32mAutoformatting $(SRCFILE) ...\033[0m\n"
 	$(BLACK) $(BLACK_ARGS) $(SRCFILE)
 	$(ISORT) $(ISORT_ARGS) $(SRCFILE)
 	$(DOCFORMATTER) $(DOCFORMATTER_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 stylecheck:
-	$(info Style checking $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mStyle checking $(SRCFILE) ...\033[0m\n"
 	$(PYCODESTYLE) $(PYCODESTYLE_ARGS) $(SRCFILE)
 	$(PYDOCSTYLE) $(PYDOCSTYLE_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 typecheck:
-	$(info Type checking $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mType checking $(SRCFILE) ...\033[0m\n"
 	$(MYPY) $(MYPY_ARGS) $(SRCFILE)
 
 # This target is for use with IDE integration.
 maintain:
-	$(info Checking maintainability of $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mChecking maintainability of $(SRCFILE) ...\033[0m\n"
 	$(PY) -m mccabe -m 10 $(SRCFILE)
 	$(RADON) mi -s $(SRCFILE)
 	$(RADON) hal $(SRCFILE)
@@ -266,13 +235,14 @@ security:
 
 # This target is for use with IDE integration.
 lint:
-	$(info Linting $(SRCFILE) ...)
+	@echo -e "\n\t\033[1;32mLinting $(SRCFILE) ...\033[0m\n"
 	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
 
 dupcheck:
 	$(info Checking for duplicate code ...)
 	$(PYLINT) --disable=all --enable=duplicate-code src/ramstk
 
+# Targets for managing RAMSTK documentation.
 lintdocs:
 	$(info Linting documentation ...)
 	$(RSTCHECK) -r docs/api docs/user
@@ -280,23 +250,18 @@ lintdocs:
 apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk
 
-docs: cleandocs
+docs: clean-docs
 	$(info Building documentation ...)
 	cd docs; $(MAKE) html -e
 
-cleandocs:
-	cd docs; rm -fr _build/html/*
-
+# Targets for creating and publishing RAMSTK packages.
 packchk:
-	$(CHKMANI) .
 	$(PYROMA) .
 
-dist: clean
+build: clean
 	@echo -e "\n\t\033[33;47mCreating source distribution and wheel ...\033[0m\n"
-	python setup.py sdist
-	python setup.py bdist_wheel
+	$(POETRY) build
 
-release: packchk dist
+release: packchk build
 	@echo -e "\n\t\033[33;47mBuilding and uploading artifacts to PyPi ...\033[0m\n"
-	$(info Build and upload artifacts to PyPi ...)
-	$(TWINE) upload dist/*
+	$(POETRY) publish

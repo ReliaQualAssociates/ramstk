@@ -14,6 +14,7 @@ repos:
       rev: '20.8b1'
       hooks:
         - id: black
+          types_or: [python, pyi]
           language_version: python3
     - repo: https://github.com/PyCQA/isort
       rev: 5.7.0
@@ -50,7 +51,3 @@ repos:
       hooks:
         - id: eradicate
           args: []
-    - repo: https://github.com/mgedmin/check-manifest
-      rev: '0.46'
-      hooks:
-        - id: check-manifest
