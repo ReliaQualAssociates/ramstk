@@ -18,9 +18,7 @@ from treelib.exceptions import NodeIDAbsentError
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import (
-    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
-)
+from ramstk.models.programdb import RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
 
 
 class DataManager(RAMSTKDataManager):
@@ -30,7 +28,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKMissionPhase, and RAMSKTEnvironment data models.
     """
 
-    _tag = 'usage_profile'
+    _tag = "usage_profile"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a RAMSTKFailureDefinition, data manager instance."""
@@ -44,9 +42,9 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize public dictionary attributes.
         self.last_id: Dict[str, int] = {
-            'mission': -1,
-            'mission_phase': -1,
-            'environment': -1,
+            "mission": -1,
+            "mission_phase": -1,
+            "environment": -1,
         }
 
         # Initialize public list attributes.
@@ -54,26 +52,22 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes,
-                      'request_get_usage_profile_attributes')
-        pub.subscribe(super().do_update_all,
-                      'request_update_all_usage_profiles')
+        pub.subscribe(super().do_get_attributes, "request_get_usage_profile_attributes")
+        pub.subscribe(super().do_update_all, "request_update_all_usage_profiles")
 
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_get_tree, 'request_get_usage_profile_tree')
-        pub.subscribe(self.do_update, 'request_update_usage_profile')
+        pub.subscribe(self.do_select_all, "selected_revision")
+        pub.subscribe(self.do_get_tree, "request_get_usage_profile_tree")
+        pub.subscribe(self.do_update, "request_update_usage_profile")
 
-        pub.subscribe(self._do_delete, 'request_delete_usage_profile')
-        pub.subscribe(self._do_insert_environment,
-                      'request_insert_environment')
-        pub.subscribe(self._do_insert_mission, 'request_insert_mission')
-        pub.subscribe(self._do_insert_mission_phase,
-                      'request_insert_mission_phase')
-        pub.subscribe(self._do_set_attributes,
-                      'request_set_usage_profile_attributes')
-        pub.subscribe(self._do_set_attributes, 'lvw_editing_usage_profile')
-        pub.subscribe(self._do_set_all_attributes,
-                      'request_set_all_usage_profile_attributes')
+        pub.subscribe(self._do_delete, "request_delete_usage_profile")
+        pub.subscribe(self._do_insert_environment, "request_insert_environment")
+        pub.subscribe(self._do_insert_mission, "request_insert_mission")
+        pub.subscribe(self._do_insert_mission_phase, "request_insert_mission_phase")
+        pub.subscribe(self._do_set_attributes, "request_set_usage_profile_attributes")
+        pub.subscribe(self._do_set_attributes, "lvw_editing_usage_profile")
+        pub.subscribe(
+            self._do_set_all_attributes, "request_set_all_usage_profile_attributes"
+        )
 
     def do_get_tree(self) -> None:
         """Retrieve the revision treelib Tree.
@@ -82,7 +76,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage(
-            'succeed_get_usage_profile_tree',
+            "succeed_get_usage_profile_tree",
             tree=self.tree,
         )
 
@@ -93,48 +87,54 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes['revision_id']
+        self._revision_id = attributes["revision_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _mission in self.dao.do_select_all(RAMSTKMission,
-                                               key=['revision_id'],
-                                               value=[self._revision_id]):
-            self.tree.create_node(tag='mission',
-                                  identifier='{0:d}'.format(
-                                      _mission.mission_id),
-                                  parent=self._root,
-                                  data={'usage_profile': _mission})
-            self.last_id['mission'] = _mission.mission_id
+        for _mission in self.dao.do_select_all(
+            RAMSTKMission, key=["revision_id"], value=[self._revision_id]
+        ):
+            self.tree.create_node(
+                tag="mission",
+                identifier="{0:d}".format(_mission.mission_id),
+                parent=self._root,
+                data={"usage_profile": _mission},
+            )
+            self.last_id["mission"] = _mission.mission_id
 
-            for _phase in self.dao.do_select_all(RAMSTKMissionPhase,
-                                                 key=['mission_id'],
-                                                 value=[_mission.mission_id]):
-                self.tree.create_node(tag='mission_phase',
-                                      identifier='{0:d}.{1:d}'.format(
-                                          _mission.mission_id,
-                                          _phase.phase_id),
-                                      parent=str(_mission.mission_id),
-                                      data={'usage_profile': _phase})
-                self.last_id['mission_phase'] = _phase.phase_id
+            for _phase in self.dao.do_select_all(
+                RAMSTKMissionPhase, key=["mission_id"], value=[_mission.mission_id]
+            ):
+                self.tree.create_node(
+                    tag="mission_phase",
+                    identifier="{0:d}.{1:d}".format(
+                        _mission.mission_id, _phase.phase_id
+                    ),
+                    parent=str(_mission.mission_id),
+                    data={"usage_profile": _phase},
+                )
+                self.last_id["mission_phase"] = _phase.phase_id
 
                 for _environment in self.dao.do_select_all(
-                        RAMSTKEnvironment,
-                        key=['phase_id'],
-                        value=[_phase.phase_id]):
+                    RAMSTKEnvironment, key=["phase_id"], value=[_phase.phase_id]
+                ):
                     self.tree.create_node(
-                        tag='environment',
-                        identifier='{0:d}.{1:d}.{2:d}'.format(
-                            _mission.mission_id, _phase.phase_id,
-                            _environment.environment_id),
-                        parent='{0:d}.{1:d}'.format(_mission.mission_id,
-                                                    _phase.phase_id),
-                        data={'usage_profile': _environment})
-                    self.last_id['environment'] = _environment.environment_id
+                        tag="environment",
+                        identifier="{0:d}.{1:d}.{2:d}".format(
+                            _mission.mission_id,
+                            _phase.phase_id,
+                            _environment.environment_id,
+                        ),
+                        parent="{0:d}.{1:d}".format(
+                            _mission.mission_id, _phase.phase_id
+                        ),
+                        data={"usage_profile": _environment},
+                    )
+                    self.last_id["environment"] = _environment.environment_id
 
         pub.sendMessage(
-            'succeed_retrieve_usage_profile',
+            "succeed_retrieve_usage_profile",
             tree=self.tree,
         )
 
@@ -145,41 +145,39 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
 
         try:
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['usage_profile'])
+            self.dao.do_update(self.tree.get_node(node_id).data["usage_profile"])
             pub.sendMessage(
-                'succeed_update_usage_profile',
+                "succeed_update_usage_profile",
                 tree=self.tree,
             )
         except AttributeError:
             _error_msg: str = (
-                '{1}: Attempted to save non-existent usage profile ID {'
-                '0}.').format(str(node_id), _method_name)
+                "{1}: Attempted to save non-existent usage profile ID {" "0}."
+            ).format(str(node_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_update_usage_profile',
+                "fail_update_usage_profile",
                 error_message=_error_msg,
             )
         except (KeyError, TypeError):
             if node_id != 0:
                 _error_msg = (
-                    '{1}: No data package found for usage profile ID {'
-                    '0}.').format(str(node_id), _method_name)
+                    "{1}: No data package found for usage profile ID {" "0}."
+                ).format(str(node_id), _method_name)
                 pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
+                    "do_log_debug",
+                    logger_name="DEBUG",
                     message=_error_msg,
                 )
                 pub.sendMessage(
-                    'fail_update_usage_profile',
+                    "fail_update_usage_profile",
                     error_message=_error_msg,
                 )
 
@@ -191,27 +189,26 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            super().do_delete(node_id, 'usage_profile')
+            super().do_delete(node_id, "usage_profile")
 
             self.tree.remove_node(node_id)
 
             pub.sendMessage(
-                'succeed_delete_usage_profile',
+                "succeed_delete_usage_profile",
                 tree=self.tree,
             )
         except (DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                '{1}: Attempted to delete non-existent usage profile ID {0}.'
+                "{1}: Attempted to delete non-existent usage profile ID {0}."
             ).format(str(node_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_delete_usage_profile',
+                "fail_delete_usage_profile",
                 error_message=_error_msg,
             )
 
@@ -224,23 +221,24 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _last_id = self.dao.get_last_id('ramstk_environment',
-                                            'environment_id')
+            _last_id = self.dao.get_last_id("ramstk_environment", "environment_id")
             _environment = RAMSTKEnvironment()
             _environment.phase_id = phase_id
             _environment.environment_id = _last_id + 1
 
             self.dao.do_insert(_environment)
 
-            _phase_id = '{0:s}.{1:s}'.format(str(mission_id), str(phase_id))
-            _node_id = '{0:s}.{1:s}.{2:s}'.format(
-                str(mission_id), str(phase_id),
-                str(_environment.environment_id))
-            self.tree.create_node(tag='environment',
-                                  identifier=_node_id,
-                                  parent=_phase_id,
-                                  data={'usage_profile': _environment})
-            self.last_id['environment'] = _environment.environment_id
+            _phase_id = "{0:s}.{1:s}".format(str(mission_id), str(phase_id))
+            _node_id = "{0:s}.{1:s}.{2:s}".format(
+                str(mission_id), str(phase_id), str(_environment.environment_id)
+            )
+            self.tree.create_node(
+                tag="environment",
+                identifier=_node_id,
+                parent=_phase_id,
+                data={"usage_profile": _environment},
+            )
+            self.last_id["environment"] = _environment.environment_id
             pub.sendMessage(
                 "succeed_insert_usage_profile",
                 node_id=_node_id,
@@ -248,8 +246,8 @@ class DataManager(RAMSTKDataManager):
             )
         except DataAccessError as _error:
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error.msg,
             )
             pub.sendMessage(
@@ -264,20 +262,22 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _last_id = self.dao.get_last_id('ramstk_mission', 'mission_id')
+            _last_id = self.dao.get_last_id("ramstk_mission", "mission_id")
             _mission = RAMSTKMission()
             _mission.revision_id = self._revision_id
             _mission.mission_id = _last_id + 1
 
             self.dao.do_insert(_mission)
 
-            _node_id = '{0:d}'.format(_mission.mission_id)
+            _node_id = "{0:d}".format(_mission.mission_id)
 
-            self.tree.create_node(tag='mission',
-                                  identifier=_node_id,
-                                  parent=self._root,
-                                  data={'usage_profile': _mission})
-            self.last_id['mission'] = _mission.mission_id
+            self.tree.create_node(
+                tag="mission",
+                identifier=_node_id,
+                parent=self._root,
+                data={"usage_profile": _mission},
+            )
+            self.last_id["mission"] = _mission.mission_id
             pub.sendMessage(
                 "succeed_insert_usage_profile",
                 node_id=_node_id,
@@ -285,8 +285,8 @@ class DataManager(RAMSTKDataManager):
             )
         except DataAccessError as _error:
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error.msg,
             )
             pub.sendMessage(
@@ -302,28 +302,30 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _last_id = self.dao.get_last_id('ramstk_mission_phase', 'phase_id')
+            _last_id = self.dao.get_last_id("ramstk_mission_phase", "phase_id")
             _phase = RAMSTKMissionPhase()
             _phase.mission_id = mission_id
             _phase.phase_id = _last_id + 1
 
             self.dao.do_insert(_phase)
 
-            _node_id = '{0:d}.{1:d}'.format(mission_id, _phase.phase_id)
-            self.tree.create_node(tag='mission_phase',
-                                  identifier=_node_id,
-                                  parent=str(mission_id),
-                                  data={'usage_profile': _phase})
-            self.last_id['mission_phase'] = _phase.phase_id
+            _node_id = "{0:d}.{1:d}".format(mission_id, _phase.phase_id)
+            self.tree.create_node(
+                tag="mission_phase",
+                identifier=_node_id,
+                parent=str(mission_id),
+                data={"usage_profile": _phase},
+            )
+            self.last_id["mission_phase"] = _phase.phase_id
             pub.sendMessage(
-                'succeed_insert_usage_profile',
+                "succeed_insert_usage_profile",
                 node_id=_node_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error.msg,
             )
             pub.sendMessage(
@@ -343,35 +345,35 @@ class DataManager(RAMSTKDataManager):
 
         try:
             _attributes = self.do_select(
-                node_id[0], table='usage_profile').get_attributes()
+                node_id[0], table="usage_profile"
+            ).get_attributes()
             if _key in _attributes:
                 _attributes[_key] = _value
 
-                _level = len(node_id[0].split('.'))
+                _level = len(node_id[0].split("."))
                 for _attribute in {
-                        1: ['revision_id', 'mission_id'],
-                        2: ['mission_id', 'phase_id'],
-                        3: ['phase_id', 'environment_id'],
+                    1: ["revision_id", "mission_id"],
+                    2: ["mission_id", "phase_id"],
+                    3: ["phase_id", "environment_id"],
                 }[_level]:
                     _attributes.pop(_attribute)
 
-                self.do_select(
-                    node_id[0],
-                    table='usage_profile').set_attributes(_attributes)
+                self.do_select(node_id[0], table="usage_profile").set_attributes(
+                    _attributes
+                )
 
         except (AttributeError, TypeError) as _error:
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error,
             )
             pub.sendMessage(
-                'fail_set_usage_profile_attributes',
+                "fail_set_usage_profile_attributes",
                 node_id=node_id[0],
             )
 
-    def _do_set_all_attributes(self, attributes: Dict[str, Any],
-                               node_id: str) -> None:
+    def _do_set_all_attributes(self, attributes: Dict[str, Any], node_id: str) -> None:
         """Set all the attributes of the record associated with the Module ID.
 
         This is a helper function to set a group of attributes in a single
@@ -385,5 +387,6 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            self._do_set_attributes(node_id=[node_id, ''],
-                                    package={_key: attributes[_key]})
+            self._do_set_attributes(
+                node_id=[node_id, ""], package={_key: attributes[_key]}
+            )
