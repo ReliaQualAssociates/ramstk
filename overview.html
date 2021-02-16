@@ -49,78 +49,12 @@ electromechanical systems.</p>
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>Currently RAMSTK supports Python 3.7+ and requires the following Python
 packages to be installed somewhere in your PYTHONPATH.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lifelines</span>
-<span class="n">matplotlib</span>
-<span class="n">numpy</span><span class="o">&lt;</span><span class="mf">1.20</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span> <span class="n">python_version</span><span class="o">&lt;</span><span class="s1">&#39;3.7&#39;</span>
-<span class="n">numpy</span><span class="o">&gt;=</span><span class="mf">1.20</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span> <span class="n">python_version</span><span class="o">&gt;=</span><span class="s1">&#39;3.7&#39;</span>
-<span class="n">openpyxl</span>
-<span class="n">pandas</span><span class="o">==</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">5</span>
-<span class="n">psycopg2</span>
-<span class="n">pycairo</span>
-<span class="n">pygobject</span><span class="o">&gt;=</span><span class="mf">3.27</span>
-<span class="n">pypubsub</span>
-<span class="n">scipy</span><span class="o">&lt;</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span> <span class="n">python_version</span><span class="o">&lt;</span><span class="s1">&#39;3.7&#39;</span>
-<span class="n">scipy</span><span class="o">&gt;=</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span> <span class="n">python_version</span><span class="o">&gt;=</span><span class="s1">&#39;3.7&#39;</span>
-<span class="n">sortedcontainers</span>
-<span class="n">sqlalchemy</span><span class="o">-</span><span class="n">utils</span>
-<span class="n">sqlalchemy</span><span class="o">&gt;=</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span>
-<span class="n">statsmodels</span>
-<span class="n">sympy</span>
-<span class="n">toml</span>
-<span class="n">treelib</span><span class="o">&gt;=</span><span class="mf">1.5</span><span class="o">.</span><span class="mi">3</span>
-<span class="n">xlrd</span>
-<span class="n">XlsxWriter</span>
-<span class="n">xlwt</span>
-</pre></div>
-</div>
 <p>If you’re planning to help develop RAMSTK, the following Python packages will
 need to be installed. It is recommended you use a virtual environment for
 development, but you could install these in a user or system location if you
 choose.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">coveralls</span>
-<span class="n">coverage</span><span class="p">[</span><span class="n">toml</span><span class="p">]</span>
-<span class="n">pytest</span>
-<span class="n">pytest</span><span class="o">-</span><span class="n">cov</span>
-<span class="n">pytest</span><span class="o">-</span><span class="n">icdiff</span>
-<span class="n">pytest</span><span class="o">-</span><span class="n">sugar</span>
-<span class="n">mock</span>
-</pre></div>
-</div>
 <p>In order to build this documentation, you will need to install the following
 Python packages.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">-</span><span class="n">test</span><span class="o">.</span><span class="n">txt</span>
-
-<span class="c1"># Packaging</span>
-<span class="n">check</span><span class="o">-</span><span class="n">manifest</span>
-<span class="n">twine</span>
-
-<span class="c1"># Code formatting</span>
-<span class="n">black</span>
-<span class="n">docformatter</span>
-<span class="n">isort</span>
-<span class="n">pep8</span>
-<span class="n">pre</span><span class="o">-</span><span class="n">commit</span>
-<span class="n">pre</span><span class="o">-</span><span class="n">commit</span><span class="o">-</span><span class="n">hooks</span>
-<span class="n">seed</span><span class="o">-</span><span class="n">isort</span><span class="o">-</span><span class="n">config</span>
-
-<span class="c1"># Static code checking</span>
-<span class="n">bandit</span>
-<span class="n">mccabe</span>
-<span class="n">mypy</span>
-<span class="n">pycodestyle</span>
-<span class="n">pydocstyle</span>
-<span class="n">pylint</span>
-<span class="n">radon</span>
-
-<span class="c1"># Documentation</span>
-<span class="n">Babel</span>
-<span class="n">sphinx</span>
-<span class="n">sphinx_py3doc_enhanced_theme</span>
-<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">issuetracker</span>
-<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">spelling</span>
-<span class="n">recommonmark</span>
-</pre></div>
-</div>
 <p>If you’re building the documentation to host locally, you are free to use
 whatever Sphinx theme you’d like.  I happen to prefer the
 <a class="reference external" href="https://github.com/ionelmc/sphinx-py3doc-enhanced-theme">py3doc enhanced theme</a>.</p>
