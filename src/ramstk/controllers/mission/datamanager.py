@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Mission Package Data Model."""
+"""Mission Package Data Controller."""
 
 # Standard Library Imports
 import inspect
