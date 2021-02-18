@@ -62,7 +62,7 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for mode ID 4 was the "
             "wrong type."
         )
-        print("\033[35m\nfail_update_pof topic was broadcast")
+        print("\033[35m\nfail_update_mode topic was broadcast")
 
     @pytest.mark.integration
     def test_do_update(self, test_program_dao):
