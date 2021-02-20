@@ -21,6 +21,14 @@ from ramstk.controllers import dmMode
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
+    def on_fail_insert_no_parent(self, error_message):
+        assert error_message == (
+            "do_insert: Database error when attempting to add a record.  Database "
+            "returned:\n\tKey (fld_revision_id, fld_hardware_id)=(1, 100) is not "
+            'present in table "ramstk_hardware".'
+        )
+        print("\033[35m\nfail_insert_mechanism topic was broadcast.")
+
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a "
@@ -29,6 +37,20 @@ class TestInsertMethods:
             '"ramstk_hardware".'
         )
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
+
+    @pytest.mark.integration
+    def test_do_insert_no_parent(self, test_program_dao):
+        """_do_insert_mechanism() should send the fail message if attempting to
+        add an operating load to a non-existent mechanism ID."""
+        pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
+
+        DUT = dmMode()
+        DUT.do_connect(test_program_dao)
+        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
+        DUT._parent_id = 100
+        DUT._do_insert_mode()
+
+        pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_program_dao):

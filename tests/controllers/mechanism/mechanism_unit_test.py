@@ -313,7 +313,7 @@ class TestInsertMethods:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
 
-        DUT._do_insert_mechanism(6)
+        DUT._do_insert_mechanism()
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mechanism")
 
