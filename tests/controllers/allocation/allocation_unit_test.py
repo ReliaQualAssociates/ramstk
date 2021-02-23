@@ -608,9 +608,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(1).data["allocation"].mission_time = 100.0
         DUT._tree.get_node(1).data["allocation"].reliability_goal = 0.99732259
 
-        pub.sendMessage(
-            "request_calculate_allocation_goals", node=DUT._tree.get_node(1)
-        )
+        DUT._do_calculate_allocation_goals(DUT._tree.get_node(1))
 
         assert DUT._tree.get_node(1).data[
             "allocation"

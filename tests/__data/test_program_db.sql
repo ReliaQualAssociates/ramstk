@@ -294,7 +294,7 @@ CREATE TABLE ramstk_op_load (
     fld_description VARCHAR(512),
     fld_damage_model VARCHAR(512),
     fld_priority_id INTEGER,
-    PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_load_id),
+    PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id),
     FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id) REFERENCES ramstk_mechanism (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_op_load" VALUES(1,1,4,1,1,'Test Operating Load','',0);
@@ -311,12 +311,12 @@ CREATE TABLE ramstk_op_stress (
     fld_load_history VARCHAR(512),
     fld_measurable_parameter VARCHAR(512),
     fld_remarks VARCHAR,
-    PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_load_id, fld_stress_id),
-    FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_load_id) REFERENCES ramstk_op_load (fld_revision_id, fld_hardware_id, fld_mode_id, fld_load_id) ON DELETE CASCADE
+    PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id, fld_stress_id),
+    FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id) REFERENCES ramstk_op_load (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_op_stress" VALUES(1,1,4,1,1,1,'Test Operating Stress','','','');
-INSERT INTO "ramstk_op_stress" VALUES(1,1,5,1,1,1,'','','','');
-INSERT INTO "ramstk_op_stress" VALUES(1,1,6,1,1,1,'','','','');
+INSERT INTO "ramstk_op_stress" VALUES(1,1,4,1,1,1,'Test Operating Stress #1','Histogram','','');
+INSERT INTO "ramstk_op_stress" VALUES(1,1,5,1,1,1,'Test Operating Stress #2','Histogram','','');
+INSERT INTO "ramstk_op_stress" VALUES(1,1,6,1,1,1,'Test Operating Stress #3','Histogram','','');
 CREATE TABLE ramstk_test_method (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -327,8 +327,8 @@ CREATE TABLE ramstk_test_method (
     fld_description VARCHAR(512),
     fld_boundary_conditions VARCHAR(512),
     fld_remarks VARCHAR,
-    PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_load_id, fld_test_id),
-    FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_load_id) REFERENCES ramstk_op_load (fld_revision_id, fld_hardware_id, fld_mode_id, fld_load_id) ON DELETE CASCADE
+    PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id, fld_test_id),
+    FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id) REFERENCES ramstk_op_load (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_test_method" VALUES(1,1,4,1,1,1,'Test Test Method','','');
 INSERT INTO "ramstk_test_method" VALUES(1,1,5,1,1,1,'','','');
