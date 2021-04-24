@@ -282,9 +282,9 @@ CREATE TABLE ramstk_control (
     PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_cause_id, fld_control_id),
     FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_cause_id) REFERENCES ramstk_cause (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_cause_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_control" VALUES(1,1,4,1,1,1,'Test FMEA Control #1 for Cause ID 4','');
-INSERT INTO "ramstk_control" VALUES(1,1,5,1,1,1,'Test FMEA Control #1 for Cause ID 5','');
-INSERT INTO "ramstk_control" VALUES(1,1,6,1,1,1,'Test FMEA Control #1 for Cause ID 6','');
+INSERT INTO "ramstk_control" VALUES(1,1,4,1,1,1,'Test FMEA Control #1 for Mode ID 4','');
+INSERT INTO "ramstk_control" VALUES(1,1,5,1,1,1,'Test FMEA Control #1 for Mode ID 5','');
+INSERT INTO "ramstk_control" VALUES(1,1,6,1,1,1,'Test FMEA Control #1 for Mode ID 6','');
 CREATE TABLE ramstk_op_load (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -297,9 +297,9 @@ CREATE TABLE ramstk_op_load (
     PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id),
     FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id) REFERENCES ramstk_mechanism (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_op_load" VALUES(1,1,4,1,1,'Test Operating Load','',0);
-INSERT INTO "ramstk_op_load" VALUES(1,1,5,1,1,'','',0);
-INSERT INTO "ramstk_op_load" VALUES(1,1,6,1,1,'','',0);
+INSERT INTO "ramstk_op_load" VALUES(1,1,4,1,1,'Test Operating Load #1','',0);
+INSERT INTO "ramstk_op_load" VALUES(1,1,5,1,1,'Test Operating Load #2','',0);
+INSERT INTO "ramstk_op_load" VALUES(1,1,6,1,1,'Test Operating Load #3','',0);
 CREATE TABLE ramstk_op_stress (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -330,9 +330,9 @@ CREATE TABLE ramstk_test_method (
     PRIMARY KEY (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id, fld_test_id),
     FOREIGN KEY(fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id) REFERENCES ramstk_op_load (fld_revision_id, fld_hardware_id, fld_mode_id, fld_mechanism_id, fld_load_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_test_method" VALUES(1,1,4,1,1,1,'Test Test Method','','');
-INSERT INTO "ramstk_test_method" VALUES(1,1,5,1,1,1,'','','');
-INSERT INTO "ramstk_test_method" VALUES(1,1,6,1,1,1,'','','');
+INSERT INTO "ramstk_test_method" VALUES(1,1,4,1,1,1,'Test Test Method #1','','');
+INSERT INTO "ramstk_test_method" VALUES(1,1,5,1,1,1,'Test Test Method #2','','');
+INSERT INTO "ramstk_test_method" VALUES(1,1,6,1,1,1,'Test Test Method #3','','');
 CREATE TABLE ramstk_load_history (
     fld_load_history_id INTEGER NOT NULL,
     fld_description VARCHAR(512),

@@ -97,8 +97,13 @@ class DataManager(RAMSTKDataManager):
 
         for _opload in self.dao.do_select_all(
             RAMSTKOpLoad,
-            key=["revision_id", "hardware_id", "mechanism_id"],
-            value=[self._revision_id, self._hardware_id, self._parent_id],
+            key=["revision_id", "hardware_id", "mode_id", "mechanism_id"],
+            value=[
+                self._revision_id,
+                self._hardware_id,
+                self._mode_id,
+                self._parent_id,
+            ],
         ):
             self.tree.create_node(
                 tag="opload",

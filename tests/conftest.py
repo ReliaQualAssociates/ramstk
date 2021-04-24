@@ -5,7 +5,7 @@
 #       tests.conftest.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK test suite configuration module."""
 
 # Standard Library Imports
@@ -659,10 +659,9 @@ def test_common_dao():
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
     # This will create a RAMSTK Program database using the
-    # <DB>_test_program_db.sql file in devtools/ (where <DB> = the database
-    # engine to use) for each group of tests collected in a class.  Group tests
-    # in the class in such a way as to produce predictable behavior (e.g., all
-    # the tests for select() and select_all()).
+    # test_program_db.sql file in tests/__data for each group of tests collected in a
+    # class.  Group tests in the class in such a way as to produce predictable behavior
+    # (e.g., all the tests for select() and select_all()).
     test_program_db = {
         "dialect": "postgres",
         "user": "postgres",
