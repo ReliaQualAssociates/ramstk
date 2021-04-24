@@ -224,7 +224,7 @@ class TestSelectMethods:
         _control = DUT.do_select("4.1.1.1.c", table="control")
 
         assert isinstance(_control, RAMSTKControl)
-        assert _control.description == "Test FMEA Control #1 for Cause ID 4"
+        assert _control.description == "Test FMEA Control #1 for Mode ID 4"
         assert _control.type_id == ""
 
     @pytest.mark.integration
@@ -728,7 +728,7 @@ class TestGetterSetter:
     def on_succeed_get_control_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes["control_id"] == 1
-        assert attributes["description"] == ("Test FMEA Control #1 for Cause " "ID 4")
+        assert attributes["description"] == ("Test FMEA Control #1 for Mode ID 4")
         print("\033[36m\nsucceed_get_control_attributes topic was broadcast.")
 
     def on_succeed_get_action_attrs(self, attributes):

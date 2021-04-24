@@ -108,7 +108,7 @@ class DataManager(RAMSTKDataManager):
             self._do_load_missions()
 
             pub.sendMessage(
-                "succeed_delete_usage_profile",
+                "succeed_retrieve_usage_profile",
                 tree=self.tree,
             )
 

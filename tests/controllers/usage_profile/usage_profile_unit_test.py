@@ -23,17 +23,32 @@ from ramstk.db.base import BaseDatabase
 # noinspection PyPep8Naming
 class TestCreateControllers:
     """Class for controller initialization test suite."""
+
     @pytest.mark.unit
-    def test_data_manager(self):
+    def test_data_manager_create(self):
         """__init__() should return a Revision data manager."""
         DUT = dmUsageProfile()
 
         assert isinstance(DUT, dmUsageProfile)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == 'usage_profiles'
+        assert DUT._tag == "usage_profiles"
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT._on_insert, 'succeed_insert_environment')
-        assert pub.isSubscribed(DUT._on_insert, 'succeed_insert_mission')
-        assert pub.isSubscribed(DUT._on_insert, 'succeed_insert_mission_phase')
+        assert pub.isSubscribed(
+            DUT.do_set_environment_tree, "succeed_retrieve_environments"
+        )
+        assert pub.isSubscribed(DUT.do_set_mission_tree, "succeed_retrieve_missions")
+        assert pub.isSubscribed(
+            DUT.do_set_mission_phase_tree, "succeed_retrieve_mission_phases"
+        )
+        assert pub.isSubscribed(
+            DUT.do_set_environment_tree, "succeed_delete_environment"
+        )
+        assert pub.isSubscribed(DUT.do_set_mission_tree, "succeed_delete_mission")
+        assert pub.isSubscribed(
+            DUT.do_set_mission_phase_tree, "succeed_delete_mission_phase"
+        )
+        assert pub.isSubscribed(DUT._on_insert, "succeed_insert_environment")
+        assert pub.isSubscribed(DUT._on_insert, "succeed_insert_mission")
+        assert pub.isSubscribed(DUT._on_insert, "succeed_insert_mission_phase")
