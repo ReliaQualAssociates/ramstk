@@ -26,7 +26,7 @@ class TestInsertMethods:
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
             "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id, "
-            "fld_mechanism_id)=(1, 1, 0, 2) is not present in table "
+            "fld_mechanism_id)=(1, 1, 6, 100) is not present in table "
             '"ramstk_mechanism".'
         )
         print("\033[35m\nfail_insert_opload topic was broadcast.")
@@ -34,8 +34,9 @@ class TestInsertMethods:
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id)=(10, "
-            '1, 6) is not present in table "ramstk_mode".'
+            "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id, "
+            "fld_mechanism_id)=(10, 1, 6, 1) is not present in table "
+            '"ramstk_mechanism".'
         )
         print("\033[35m\nfail_insert_opload topic was broadcast.")
 
@@ -48,10 +49,16 @@ class TestInsertMethods:
         DUT = dmOpLoad()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 2}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 1,
+            }
         )
+
         DUT._parent_id = 100
-        DUT._do_insert_opload([100, 2])
+        DUT._do_insert_opload(100)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_opload")
 
@@ -64,10 +71,15 @@ class TestInsertMethods:
         DUT = dmOpLoad()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 2}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 1,
+            }
         )
         DUT._revision_id = 10
-        DUT._do_insert_opload(2)
+        DUT._do_insert_opload(1)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_opload")
 
@@ -97,9 +109,14 @@ class TestUpdateMethods:
         DUT = dmOpLoad()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 2}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 1,
+            }
         )
-
+        print(DUT.tree)
         DUT.tree.get_node(1).data["opload"].description = "Test failure opload"
         DUT.tree.get_node(1).data["opload"].rpn_detection = 4
         DUT.do_update(1, table="opload")
@@ -112,7 +129,12 @@ class TestUpdateMethods:
         DUT = dmOpLoad()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 2}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 1,
+            }
         )
 
         pub.sendMessage("request_update_all_oploads")
@@ -126,7 +148,12 @@ class TestUpdateMethods:
         DUT = dmOpLoad()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 2}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 1,
+            }
         )
 
         _opload = DUT.do_select(1, table="opload")
@@ -143,7 +170,12 @@ class TestUpdateMethods:
         DUT = dmOpLoad()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 2}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 1,
+            }
         )
 
         _opload = DUT.do_select(1, table="opload")

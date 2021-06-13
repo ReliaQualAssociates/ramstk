@@ -12,7 +12,7 @@ REPO		= ramstk
 
 SRCFILE		= src/ramstk/
 TESTFILE	= tests/
-TESTOPTS	= -x -c ./pyproject.toml --cache-clear
+TESTOPTS	= -x -v -c ./pyproject.toml --cache-clear
 VIRTENV		= .venv
 ROOT 		= $(shell git rev-parse --show-toplevel)
 WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
