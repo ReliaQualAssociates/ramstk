@@ -132,9 +132,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _table = list(self.tree.get_node(node_id).data.keys())[0]
-
-            super().do_delete(node_id, _table)
+            super().do_delete(node_id, "test_method")
 
             self.tree.remove_node(node_id)
 
