@@ -58,6 +58,7 @@ def mock_program_dao(monkeypatch):
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_data_manager_create(self):
         """__init__() should return a PoF data manager."""
@@ -90,6 +91,7 @@ class TestSelectMethods:
         assert isinstance(tree.get_node(1).data["opload"], RAMSTKOpLoad)
         print("\033[36m\nsucceed_retrieve_opload topic was broadcast.")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with
@@ -104,6 +106,7 @@ class TestSelectMethods:
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_all_populated_tree(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with
@@ -122,6 +125,7 @@ class TestSelectMethods:
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select(self, mock_program_dao):
         """do_select() should return an instance of the RAMSTKOpLoad on
@@ -138,6 +142,7 @@ class TestSelectMethods:
         assert _opload.description == "Test Operating Load #2"
         assert _opload.priority_id == 0
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_unknown_table(self, mock_program_dao):
         """do_select() should raise a KeyError when an unknown table name is
@@ -151,6 +156,7 @@ class TestSelectMethods:
         with pytest.raises(KeyError):
             DUT.do_select(2, table="scibbidy-bibbidy-doo")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, mock_program_dao):
         """do_select() should return None when a non-existent opload ID is
@@ -187,6 +193,7 @@ class TestDeleteMethods:
         )
         print("\033[35m\nfail_delete_opload topic was broadcast.")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_delete(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib Tree
@@ -202,6 +209,7 @@ class TestDeleteMethods:
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_opload")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_delete_non_existent_id(self, mock_program_dao):
         """_do_delete() should send the fail message when attempting to delete
@@ -217,6 +225,7 @@ class TestDeleteMethods:
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_opload")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_delete_not_in_tree(self, mock_program_dao):
         """_do_delete() should send the fail message when attempting to remove
@@ -250,6 +259,7 @@ class TestGetterSetter:
         assert isinstance(tree.get_node(2).data["opload"], RAMSTKOpLoad)
         print("\033[36m\nsucceed_get_opload_tree topic was broadcast")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_get_attributes(self, mock_program_dao):
         """do_get_attributes() should return a dict of mode attributes on
@@ -265,6 +275,7 @@ class TestGetterSetter:
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_set_attributes(self, mock_program_dao):
         """do_set_attributes() should return None when successfully setting
@@ -287,6 +298,7 @@ class TestGetterSetter:
         )
         assert DUT.do_select(1, table="opload").priority_id == 4
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_on_get_tree_data_manager(self, mock_program_dao):
         """on_get_tree() should return the PoF treelib Tree."""
@@ -314,6 +326,7 @@ class TestInsertMethods:
         assert isinstance(tree.get_node(3).data["opload"], RAMSTKOpLoad)
         print("\033[36m\nsucceed_insert_opload topic was broadcast.")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_insert_sibling(self, mock_program_dao):
         """_do_insert_opload() should send the success message after
@@ -345,6 +358,7 @@ class TestUpdateMethods:
         assert error_message == ("do_update: No data package found for opload ID 2.")
         print("\033[35m\nfail_update_opload topic was broadcast")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a PoF ID
@@ -360,6 +374,7 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_opload")
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_update_no_data_package(self, mock_program_dao):
         """do_update() should return a non-zero error code when passed a FMEA

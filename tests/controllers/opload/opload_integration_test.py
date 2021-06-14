@@ -7,7 +7,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Class for testing failure Mechanism integrations."""
+"""Class for testing operating load integrations."""
 
 # Third Party Imports
 import pytest
@@ -40,6 +40,7 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_opload topic was broadcast.")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_no_parent(self, test_program_dao):
         """_do_insert_opload() should send the fail message if attempting to
@@ -62,6 +63,7 @@ class TestInsertMethods:
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_opload")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_program_dao):
         """_do_insert_opload() should send the success message after
@@ -101,6 +103,7 @@ class TestUpdateMethods:
         )
         print("\033[35m\nfail_update_opload topic was broadcast")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update(self, test_program_dao):
         """do_update() should return a zero error code on success."""
@@ -123,6 +126,7 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_opload")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_all(self, test_program_dao):
         """do_update_all() should broadcast the succeed message on success."""
@@ -139,6 +143,7 @@ class TestUpdateMethods:
 
         pub.sendMessage("request_update_all_oploads")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_program_dao):
         """do_update() should return a non-zero error code when passed a
@@ -163,6 +168,7 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_opload")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_root_node(self, test_program_dao):
         """do_update() should return a non-zero error code when passed a
