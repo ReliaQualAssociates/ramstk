@@ -40,6 +40,7 @@ class TestSelectMethods:
         assert isinstance(tree.get_node("1.1.1t").data["pof"], RAMSTKTestMethod)
         print("\033[36m\nsucceed_retrieve_pof topic was broadcast.")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_on_select_all(self, test_program_dao):
         """on_select_all() should return a Tree() object populated with
@@ -92,6 +93,7 @@ class TestSelectMethods:
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_pof")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_on_select_all_populated_tree(self, test_program_dao):
         """on_select_all() should return a Tree() object populated with
@@ -152,6 +154,7 @@ class TestSelectMethods:
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete_test_method(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree
@@ -212,6 +215,7 @@ class TestDeleteMethods:
         assert DUT.tree.contains("1.1")
         assert DUT.tree.contains("1")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete_opstress(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree
@@ -272,6 +276,7 @@ class TestDeleteMethods:
         assert DUT.tree.contains("1.1")
         assert DUT.tree.contains("1")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete_opload(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree
@@ -469,6 +474,7 @@ class TestInsertMethods:
         pub.sendMessage("request_insert_opload", parent_id=40)
         pub.unsubscribe(self.on_fail_insert_no_mechanism, "fail_insert_opload")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_opstress(self, test_program_dao):
         """_do_insert_opstress() should send the success message after

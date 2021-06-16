@@ -21,6 +21,7 @@ from ramstk.db.base import BaseDatabase
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
+    @pytest.mark.pof
     @pytest.mark.unit
     def test_data_manager_create(self):
         """__init__() should return a PoF data manager."""
