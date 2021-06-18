@@ -12,7 +12,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKMode
 from pubsub import pub
 from treelib import Tree
 
@@ -24,7 +24,7 @@ from ramstk.models.programdb import RAMSTKMode
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _mode_1 = RAMSTKMode()
+    _mode_1 = MockRAMSTKMode()
     _mode_1.revision_id = 1
     _mode_1.hardware_id = 1
     _mode_1.mode_id = 1
@@ -54,7 +54,7 @@ def mock_program_dao(monkeypatch):
     _mode_1.mode_op_time = 0.0
     _mode_1.effect_probability = 0.8
 
-    _mode_2 = RAMSTKMode()
+    _mode_2 = MockRAMSTKMode()
     _mode_2.revision_id = 1
     _mode_2.hardware_id = 1
     _mode_2.mode_id = 2
@@ -124,7 +124,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mode"], RAMSTKMode)
+        assert isinstance(tree.get_node(1).data["mode"], MockRAMSTKMode)
         print("\033[36m\nsucceed_retrieve_mode topic was broadcast.")
 
     @pytest.mark.unit
@@ -164,7 +164,7 @@ class TestSelectMethods:
 
         _mode = DUT.do_select(1, table="mode")
 
-        assert isinstance(_mode, RAMSTKMode)
+        assert isinstance(_mode, MockRAMSTKMode)
         assert _mode.effect_probability == 0.8
         assert _mode.description == "Test Failure Mode #1"
 
@@ -266,8 +266,8 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mode"], RAMSTKMode)
-        assert isinstance(tree.get_node(2).data["mode"], RAMSTKMode)
+        assert isinstance(tree.get_node(1).data["mode"], MockRAMSTKMode)
+        assert isinstance(tree.get_node(2).data["mode"], MockRAMSTKMode)
         print("\033[36m\nsucceed_get_mode_tree topic was broadcast")
 
     @pytest.mark.unit

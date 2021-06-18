@@ -22,4 +22,5 @@ from .mock_ramstkhazardanalysis import MockRAMSTKHazardAnalysis
 from .mock_ramstkmechanism import MockRAMSTKMechanism
 from .mock_ramstkmission import MockRAMSTKMission
 from .mock_ramstkmissionphase import MockRAMSTKMissionPhase
+from .mock_ramstkmode import MockRAMSTKMode
 from .MockDAO import MockDAO
