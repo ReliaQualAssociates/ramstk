@@ -54,10 +54,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes,
                       'request_set_function_attributes')
         pub.subscribe(super().do_set_attributes, 'wvw_editing_function')
-        pub.subscribe(super().do_update_all, 'request_update_all_functions')
+        pub.subscribe(super().do_update, 'request_update_function')
 
         pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_update, 'request_update_function')
         pub.subscribe(self.do_get_tree, 'request_get_functions_tree')
 
         pub.subscribe(self._do_delete, 'request_delete_function')
@@ -103,63 +102,6 @@ class DataManager(RAMSTKDataManager):
             'succeed_retrieve_functions',
             tree=self.tree,
         )
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the node (function) ID of the function to save.
-        :return: None
-        :rtype: None
-        """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['function'])
-            pub.sendMessage(
-                'succeed_update_function',
-                tree=self.tree,
-            )
-        except AttributeError:
-            _error_msg: str = (
-                '{1}: Attempted to save non-existent function with function '
-                'ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_failure_definition',
-                error_message=_error_msg,
-            )
-        except KeyError:
-            _error_msg = (
-                '{1}: No data package found for function ID {0}.').format(
-                    str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_failure_definition',
-                error_message=_error_msg,
-            )
-        except (DataAccessError, TypeError):
-            if node_id != 0:
-                _error_msg = ('{1}: The value for one or more attributes for '
-                              'function ID {0} was the wrong type.').format(
-                                  str(node_id), _method_name)
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error_msg,
-                )
-                pub.sendMessage(
-                    'fail_update_failure_definition',
-                    error_message=_error_msg,
-                )
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a function.

@@ -83,6 +83,7 @@ pytest = "^6.2.2"
 pytest-cov = "^2.11.1"
 pytest-icdiff = "^0.5"
 pytest-sugar = "^0.9.4"
+pytest-xvfb = "^2.0.0"
 radon = "^4.3.2"
 recommonmark = "^0.7.1"
 seed-isort-config = "^2.2.0"
@@ -190,7 +191,8 @@ markers = [
 	'unit: mark the test as a unit test.',
 	'integration: mark the test as an integration test.',
 	'calculation: mark the test as test of a calculation method/function.',
-	'gui: mark the tests as test of a GUI component.'
+	'gui: mark the test as test of a GUI component.',
+	'pof: mark the test as a test of a Physics of Failure component.'
 ]
 
 [tool.pylint.master]
