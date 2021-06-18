@@ -25,59 +25,48 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
     ramstk_environment.
     """
 
-    __defaults__ = {
-        'description': '',
-        'name': '',
-        'phase_start': 0.0,
-        'phase_end': 0.0
-    }
-    __tablename__ = 'ramstk_mission_phase'
-    __table_args__ = {'extend_existing': True}
+    __defaults__ = {"description": "", "name": "", "phase_start": 0.0, "phase_end": 0.0}
+    __tablename__ = "ramstk_mission_phase"
+    __table_args__ = {"extend_existing": True}
 
     revision_id = Column(
-        'fld_revision_id',
+        "fld_revision_id",
         Integer,
-        ForeignKey('ramstk_revision.fld_revision_id'),
+        ForeignKey("ramstk_revision.fld_revision_id"),
         nullable=False,
     )
     mission_id = Column(
-        'fld_mission_id',
+        "fld_mission_id",
         Integer,
-        ForeignKey('ramstk_mission.fld_mission_id'),
+        ForeignKey("ramstk_mission.fld_mission_id"),
         nullable=False,
     )
     phase_id = Column(
-        'fld_phase_id',
+        "fld_phase_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
 
-    description = Column('fld_description',
-                         String,
-                         default=__defaults__['description'])
-    name = Column('fld_name', String(256), default=__defaults__['name'])
-    phase_start = Column('fld_phase_start',
-                         Float,
-                         default=__defaults__['phase_start'])
-    phase_end = Column('fld_phase_end',
-                       Float,
-                       default=__defaults__['phase_end'])
+    description = Column("fld_description", String, default=__defaults__["description"])
+    name = Column("fld_name", String(256), default=__defaults__["name"])
+    phase_start = Column("fld_phase_start", Float, default=__defaults__["phase_start"])
+    phase_end = Column("fld_phase_end", Float, default=__defaults__["phase_end"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision: relationship = relationship(
-        'RAMSTKRevision',
-        back_populates='phase',
+        "RAMSTKRevision",
+        back_populates="phase",
     )
     mission: relationship = relationship(
-        'RAMSTKMission',
-        back_populates='phase',
+        "RAMSTKMission",
+        back_populates="phase",
     )
     environment: relationship = relationship(
-        'RAMSTKEnvironment',
-        back_populates='phase',
-        cascade='delete',
+        "RAMSTKEnvironment",
+        back_populates="phase",
+        cascade="delete",
     )
 
     is_mission = False
@@ -91,12 +80,12 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: tuple
         """
         _values = {
-            'mission_id': self.mission_id,
-            'phase_id': self.phase_id,
-            'description': self.description,
-            'name': self.name,
-            'phase_start': self.phase_start,
-            'phase_end': self.phase_end,
+            "mission_id": self.mission_id,
+            "phase_id": self.phase_id,
+            "description": self.description,
+            "name": self.name,
+            "phase_start": self.phase_start,
+            "phase_end": self.phase_end,
         }
 
         return _values
