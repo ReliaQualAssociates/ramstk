@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKAllocation
 from pubsub import pub
 from treelib import Tree
 
@@ -26,7 +26,7 @@ from ramstk.models.programdb import RAMSTKAllocation
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _allocation_1 = RAMSTKAllocation()
+    _allocation_1 = MockRAMSTKAllocation()
     _allocation_1.revision_id = 1
     _allocation_1.hardware_id = 1
     _allocation_1.availability_alloc = 0.0
@@ -50,7 +50,7 @@ def mock_program_dao(monkeypatch):
     _allocation_1.soa_factor = 1
     _allocation_1.weight_factor = 1
 
-    _allocation_2 = RAMSTKAllocation()
+    _allocation_2 = MockRAMSTKAllocation()
     _allocation_2.revision_id = 1
     _allocation_2.hardware_id = 2
     _allocation_2.availability_alloc = 0.0
@@ -74,7 +74,7 @@ def mock_program_dao(monkeypatch):
     _allocation_2.soa_factor = 1
     _allocation_2.weight_factor = 1
 
-    _allocation_3 = RAMSTKAllocation()
+    _allocation_3 = MockRAMSTKAllocation()
     _allocation_3.revision_id = 1
     _allocation_3.hardware_id = 3
     _allocation_3.availability_alloc = 0.0
@@ -176,7 +176,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], MockRAMSTKAllocation)
         print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.unit
@@ -214,7 +214,7 @@ class TestSelectMethods:
 
         _allocation = DUT.do_select(1, table="allocation")
 
-        assert isinstance(_allocation, RAMSTKAllocation)
+        assert isinstance(_allocation, MockRAMSTKAllocation)
         assert _allocation.included == 1
         assert _allocation.parent_id == 0
 
@@ -336,7 +336,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], MockRAMSTKAllocation)
         print("\033[36m\nsucceed_get_allocation_tree topic was broadcast.")
 
     @pytest.mark.unit
