@@ -76,7 +76,7 @@ class TestProgramManager:
 
     def on_succeed_create_postgres_program(self, program_db, database):
         assert isinstance(program_db, BaseDatabase)
-        assert database["database"] == "ramstk_program_db2"
+        assert database["database"] == program_db.cxnargs["dbname"]
         print(
             "\033[36m\nsucceed_create_program_database topic was broadcast "
             "when creating postgres database"
@@ -124,7 +124,7 @@ class TestProgramManager:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": "TestProgramDB",
+            "database": test_program_dao.cxnargs["dbname"],
         }
 
         DUT = RAMSTKProgramManager()
@@ -230,10 +230,16 @@ class TestProgramManager:
 
         DUT = RAMSTKProgramManager()
         DUT.do_open_program(BaseDatabase(), test_program_db)
+
+        assert (
+            DUT.program_dao.database
+            == "postgresql+psycopg2://postgres:postgres@localhost:5432/TestProgramDB"
+        )
+
         DUT.do_close_program()
 
         assert DUT.program_dao.session is None
-        assert DUT.program_dao.database == ""
+        # assert DUT.program_dao.database == ""
 
         pub.unsubscribe(
             self.on_succeed_close_program, "succeed_disconnect_program_database"
@@ -313,7 +319,7 @@ class TestProgramManager:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": "ramstk_program_db2",
+            "database": test_bald_dao.cxnargs["dbname"],
         }
 
         DUT = RAMSTKProgramManager()

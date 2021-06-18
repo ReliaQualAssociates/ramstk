@@ -14,7 +14,9 @@ import gettext
 import glob
 import os
 import platform
+import random
 import shutil
+import string
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
@@ -658,6 +660,11 @@ def test_common_dao():
 @pytest.fixture(scope="class")
 def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
+    # Create a random name for the test database.  This ensures each test class uses
+    # a unique, clean database to test against.  This prevents "not bound to a
+    # Session" errors from sqlalchemy.
+    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
     # This will create a RAMSTK Program database using the
     # test_program_db.sql file in tests/__data for each group of tests collected in a
     # class.  Group tests in the class in such a way as to produce predictable behavior
@@ -668,7 +675,7 @@ def test_program_dao():
         "password": "postgres",
         "host": "localhost",
         "port": "5432",
-        "database": "TestProgramDB",
+        "database": db_name,
     }
 
     # Create the test database.
@@ -737,13 +744,15 @@ def test_program_dao():
 
 @pytest.fixture(scope="function")
 def test_bald_dao():
+    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
     test_program_db = {
         "dialect": "postgres",
         "user": "postgres",
         "password": "postgres",
         "host": "localhost",
         "port": "5432",
-        "database": "ramstk_program_db2",
+        "database": db_name,
     }
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
@@ -762,7 +771,7 @@ def test_bald_dao():
     cursor = conn.cursor()
     cursor.execute(
         sql.SQL("DROP DATABASE IF EXISTS {}").format(
-            sql.Identifier("ramstk_program_db2")
+            sql.Identifier(test_program_db["database"])
         )
     )
     cursor.close()
