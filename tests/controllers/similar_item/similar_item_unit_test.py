@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKSimilarItem
 from pubsub import pub
 from treelib import Tree
 
@@ -26,7 +26,7 @@ from ramstk.models.programdb import RAMSTKSimilarItem
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _similar_item_1 = RAMSTKSimilarItem()
+    _similar_item_1 = MockRAMSTKSimilarItem()
     _similar_item_1.revision_id = 1
     _similar_item_1.hardware_id = 1
     _similar_item_1.change_description_1 = ""
@@ -83,7 +83,7 @@ def mock_program_dao(monkeypatch):
     _similar_item_1.user_int_4 = 0
     _similar_item_1.user_int_5 = 0
 
-    _similar_item_2 = RAMSTKSimilarItem()
+    _similar_item_2 = MockRAMSTKSimilarItem()
     _similar_item_2.revision_id = 1
     _similar_item_2.hardware_id = 2
     _similar_item_2.change_description_1 = ""
@@ -140,7 +140,7 @@ def mock_program_dao(monkeypatch):
     _similar_item_2.user_int_4 = 0
     _similar_item_2.user_int_5 = 0
 
-    _similar_item_3 = RAMSTKSimilarItem()
+    _similar_item_3 = MockRAMSTKSimilarItem()
     _similar_item_3.revision_id = 1
     _similar_item_3.hardware_id = 3
     _similar_item_3.change_description_1 = ""
@@ -274,7 +274,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["similar_item"], RAMSTKSimilarItem)
+        assert isinstance(tree.get_node(1).data["similar_item"], MockRAMSTKSimilarItem)
         print("\033[36m\nsucceed_retrieve_similar_item topic was broadcast.")
 
     @pytest.mark.unit
@@ -312,7 +312,7 @@ class TestSelectMethods:
 
         _similar_item = DUT.do_select(1, table="similar_item")
 
-        assert isinstance(_similar_item, RAMSTKSimilarItem)
+        assert isinstance(_similar_item, MockRAMSTKSimilarItem)
         assert _similar_item.change_description_1 == ""
         assert _similar_item.temperature_from == 30.0
 
@@ -468,7 +468,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["similar_item"], RAMSTKSimilarItem)
+        assert isinstance(tree.get_node(1).data["similar_item"], MockRAMSTKSimilarItem)
         print("\033[36m\nsucceed_get_similar_item_tree topic was broadcast.")
 
     @pytest.mark.unit
