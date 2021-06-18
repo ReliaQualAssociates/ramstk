@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKOpStress
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKOpStress
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _opstress_1 = RAMSTKOpStress()
+    _opstress_1 = MockRAMSTKOpStress()
     _opstress_1.revision_id = 1
     _opstress_1.hardware_id = 1
     _opstress_1.mode_id = 1
@@ -37,7 +37,7 @@ def mock_program_dao(monkeypatch):
     _opstress_1.measurable_parameter = ""
     _opstress_1.remarks = ""
 
-    _opstress_2 = RAMSTKOpStress()
+    _opstress_2 = MockRAMSTKOpStress()
     _opstress_2.revision_id = 1
     _opstress_2.hardware_id = 1
     _opstress_2.mode_id = 1
@@ -96,7 +96,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["opstress"], RAMSTKOpStress)
+        assert isinstance(tree.get_node(1).data["opstress"], MockRAMSTKOpStress)
         print("\033[36m\nsucceed_retrieve_opstress topic was broadcast.")
 
     @pytest.mark.pof
@@ -170,7 +170,7 @@ class TestSelectMethods:
 
         _opstress = DUT.do_select(2, table="opstress")
 
-        assert isinstance(_opstress, RAMSTKOpStress)
+        assert isinstance(_opstress, MockRAMSTKOpStress)
         assert _opstress.description == "Test Operating Stress #2"
         assert _opstress.measurable_parameter == ""
 
@@ -318,7 +318,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(2).data["opstress"], RAMSTKOpStress)
+        assert isinstance(tree.get_node(2).data["opstress"], MockRAMSTKOpStress)
         print("\033[36m\nsucceed_get_opstress_tree topic was broadcast")
 
     @pytest.mark.pof
