@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKMission
 from pubsub import pub
 from treelib import Tree
 
@@ -25,14 +25,14 @@ from ramstk.models.programdb import RAMSTKMission
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _mission_1 = RAMSTKMission()
+    _mission_1 = MockRAMSTKMission()
     _mission_1.revision_id = 1
     _mission_1.mission_id = 1
     _mission_1.description = "Test mission #1"
     _mission_1.mission_time = 100.0
     _mission_1.time_units = "hours"
 
-    _mission_2 = RAMSTKMission()
+    _mission_2 = MockRAMSTKMission()
     _mission_2.revision_id = 1
     _mission_2.mission_id = 2
     _mission_2.description = "Test mission #2"
@@ -77,8 +77,8 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mission"], RAMSTKMission)
-        assert isinstance(tree.get_node(2).data["mission"], RAMSTKMission)
+        assert isinstance(tree.get_node(1).data["mission"], MockRAMSTKMission)
+        assert isinstance(tree.get_node(2).data["mission"], MockRAMSTKMission)
         print("\033[36m\nsucceed_retrieve_missions topic was broadcast.")
 
     @pytest.mark.unit
@@ -109,15 +109,14 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select(self, mock_program_dao):
-        """do_select() should return the RAMSTKMission instance on
-        success."""
+        """do_select() should return the RAMSTKMission instance on success."""
         DUT = dmMission()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
 
         _mission = DUT.do_select(1, table="mission")
 
-        assert isinstance(_mission, RAMSTKMission)
+        assert isinstance(_mission, MockRAMSTKMission)
         assert _mission.mission_id == 1
 
     @pytest.mark.unit
@@ -217,7 +216,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mission"], RAMSTKMission)
+        assert isinstance(tree.get_node(1).data["mission"], MockRAMSTKMission)
         print("\033[36m\nsucceed_get_mission_tree topic was broadcast")
 
     @pytest.mark.unit
