@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKTestMethod
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKTestMethod
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _test_method_1 = RAMSTKTestMethod()
+    _test_method_1 = MockRAMSTKTestMethod()
     _test_method_1.revision_id = 1
     _test_method_1.hardware_id = 1
     _test_method_1.mode_id = 1
@@ -36,7 +36,7 @@ def mock_program_dao(monkeypatch):
     _test_method_1.boundary_conditions = "Waters"
     _test_method_1.remarks = ""
 
-    _test_method_2 = RAMSTKTestMethod()
+    _test_method_2 = MockRAMSTKTestMethod()
     _test_method_2.revision_id = 1
     _test_method_2.hardware_id = 1
     _test_method_2.mode_id = 1
@@ -96,7 +96,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["test_method"], RAMSTKTestMethod)
+        assert isinstance(tree.get_node(1).data["test_method"], MockRAMSTKTestMethod)
         print("\033[36m\nsucceed_retrieve_test_method topic was broadcast.")
 
     @pytest.mark.pof
@@ -170,7 +170,7 @@ class TestSelectMethods:
 
         _test_method = DUT.do_select(2, table="test_method")
 
-        assert isinstance(_test_method, RAMSTKTestMethod)
+        assert isinstance(_test_method, MockRAMSTKTestMethod)
         assert _test_method.description == "Test Test Method #2"
         assert _test_method.boundary_conditions == "Sands"
 
@@ -318,7 +318,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(2).data["test_method"], RAMSTKTestMethod)
+        assert isinstance(tree.get_node(2).data["test_method"], MockRAMSTKTestMethod)
         print("\033[36m\nsucceed_get_test_method_tree topic was broadcast")
 
     @pytest.mark.pof
