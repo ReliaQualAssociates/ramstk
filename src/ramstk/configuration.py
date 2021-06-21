@@ -284,7 +284,7 @@ class RAMSTKSiteConfiguration:
             self.RAMSTK_COM_INFO["password"] = _config["backend"]["password"]
 
         else:
-            _error_msg = ("Failed to read Site configuration file " "{0:s}.").format(
+            _error_msg = ("Failed to read Site configuration file {0:s}.").format(
                 self.RAMSTK_SITE_CONF
             )
             pub.sendMessage("fail_get_site_configuration", error_message=_error_msg)
@@ -915,7 +915,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 self.RAMSTK_IMPORT_LOG = self.RAMSTK_LOG_DIR + "/ramstk_import.log"
 
         else:
-            _error_msg = ("Failed to read User configuration file " "{0:s}.").format(
+            _error_msg = ("Failed to read User configuration file {0:s}.").format(
                 self.RAMSTK_PROG_CONF
             )
             pub.sendMessage("fail_get_user_configuration", error_message=_error_msg)
