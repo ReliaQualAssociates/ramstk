@@ -10,8 +10,10 @@
 import gettext
 import glob
 import sys
+
 # pylint: disable=no-name-in-module
 from distutils import dir_util, file_util
+
 # pylint: disable=no-name-in-module
 from distutils.errors import DistutilsFileError
 from os import environ, makedirs
@@ -28,31 +30,55 @@ from ramstk.utilities import dir_exists, file_exists, get_install_prefix
 _ = gettext.gettext
 
 # Define global list constants.
-RAMSTK_ACTIVE_ENVIRONMENTS = [[_("Ground, Benign")], [_("Ground, Fixed")],
-                              [_("Ground, Mobile")], [_("Naval, Sheltered")],
-                              [_("Naval, Unsheltered")],
-                              [_("Airborne, Inhabited, Cargo")],
-                              [_("Airborne, Inhabited, Fighter")],
-                              [_("Airborne, Uninhabited, Cargo")],
-                              [_("Airborne, Uninhabited, Fighter")],
-                              [_("Airborne, Rotary Wing")],
-                              [_("Space, Flight")], [_("Missile, Flight")],
-                              [_("Missile, Launch")]]
-RAMSTK_DORMANT_ENVIRONMENTS = [[_("Airborne")], [_("Ground")], [_("Naval")],
-                               [_("Space")]]
+RAMSTK_ACTIVE_ENVIRONMENTS = [
+    [_("Ground, Benign")],
+    [_("Ground, Fixed")],
+    [_("Ground, Mobile")],
+    [_("Naval, Sheltered")],
+    [_("Naval, Unsheltered")],
+    [_("Airborne, Inhabited, Cargo")],
+    [_("Airborne, Inhabited, Fighter")],
+    [_("Airborne, Uninhabited, Cargo")],
+    [_("Airborne, Uninhabited, Fighter")],
+    [_("Airborne, Rotary Wing")],
+    [_("Space, Flight")],
+    [_("Missile, Flight")],
+    [_("Missile, Launch")],
+]
+RAMSTK_DORMANT_ENVIRONMENTS = [
+    [_("Airborne")],
+    [_("Ground")],
+    [_("Naval")],
+    [_("Space")],
+]
 
-RAMSTK_ALLOCATION_MODELS = [["Equal Apportionment"], ["ARINC Apportionment"],
-                            ["AGREE Apportionment"],
-                            ["Feasibility of Objectives"],
-                            ["Repairable Systems Apportionment"]]
+RAMSTK_ALLOCATION_MODELS = [
+    ["Equal Apportionment"],
+    ["ARINC Apportionment"],
+    ["AGREE Apportionment"],
+    ["Feasibility of Objectives"],
+    ["Repairable Systems Apportionment"],
+]
 
-RAMSTK_HR_TYPES = [[_("Assessed")], [_("Defined, Hazard Rate")],
-                   [_("Defined, MTBF")], [_("Defined, Distribution")]]
-RAMSTK_HR_MODELS = [[_("MIL-HDBK-217F Parts Count")],
-                    [_("MIL-HDBK-217F Parts Stress")], [_("NSWC-11")]]
-RAMSTK_HR_DISTRIBUTIONS = [[_("1P Exponential")], [_("2P Exponential")],
-                           [_("Gaussian")], [_("Lognormal")],
-                           [_("2P Weibull")], [_("3P Weibull")]]
+RAMSTK_HR_TYPES = [
+    [_("Assessed")],
+    [_("Defined, Hazard Rate")],
+    [_("Defined, MTBF")],
+    [_("Defined, Distribution")],
+]
+RAMSTK_HR_MODELS = [
+    [_("MIL-HDBK-217F Parts Count")],
+    [_("MIL-HDBK-217F Parts Stress")],
+    [_("NSWC-11")],
+]
+RAMSTK_HR_DISTRIBUTIONS = [
+    [_("1P Exponential")],
+    [_("2P Exponential")],
+    [_("Gaussian")],
+    [_("Lognormal")],
+    [_("2P Weibull")],
+    [_("3P Weibull")],
+]
 
 RAMSTK_CONTROL_TYPES = [_("Prevention"), _("Detection")]
 RAMSTK_COST_TYPES = [[_("Defined")], [_("Calculated")]]
@@ -61,85 +87,135 @@ RAMSTK_MTTR_TYPES = [[_("Defined")], [_("Calculated")]]
 RAMSTK_CRITICALITY = [
     [
         _("Catastrophic"),
-        _("Could result in death, permanent total disability, loss "
-          "exceeding $1M, or irreversible severe environmental damage that "
-          "violates law or regulation."), "I", 4
+        _(
+            "Could result in death, permanent total disability, loss "
+            "exceeding $1M, or irreversible severe environmental damage that "
+            "violates law or regulation."
+        ),
+        "I",
+        4,
     ],
     [
         _("Critical"),
-        _("Could result in permanent partial disability, injuries or "
-          "occupational illness that may result in hospitalization of at "
-          "least three personnel, loss exceeding $200K but less than $1M, "
-          "or reversible environmental damage causing a violation of law or "
-          "regulation."), "II", 3
+        _(
+            "Could result in permanent partial disability, injuries or "
+            "occupational illness that may result in hospitalization of at "
+            "least three personnel, loss exceeding $200K but less than $1M, "
+            "or reversible environmental damage causing a violation of law or "
+            "regulation."
+        ),
+        "II",
+        3,
     ],
     [
         _("Marginal"),
-        _("Could result in injury or occupational illness resulting in one "
-          "or more lost work days(s), loss exceeding $10K but less than "
-          "$200K, or mitigatible environmental damage without violation of "
-          "law or regulation where restoration activities can be "
-          "accomplished."), "III", 2
+        _(
+            "Could result in injury or occupational illness resulting in one "
+            "or more lost work days(s), loss exceeding $10K but less than "
+            "$200K, or mitigatible environmental damage without violation of "
+            "law or regulation where restoration activities can be "
+            "accomplished."
+        ),
+        "III",
+        2,
     ],
     [
         _("Negligble"),
-        _("Could result in injury or illness not resulting in a lost work "
-          "day, loss exceeding $2K but less than $10K, or minimal "
-          "environmental damage not violating law or regulation."), "IV", 1
-    ]
+        _(
+            "Could result in injury or illness not resulting in a lost work "
+            "day, loss exceeding $2K but less than $10K, or minimal "
+            "environmental damage not violating law or regulation."
+        ),
+        "IV",
+        1,
+    ],
 ]
-RAMSTK_FAILURE_PROBABILITY = [[_("Level E - Extremely Unlikely"), 1],
-                              [_("Level D - Remote"), 2],
-                              [_("Level C - Occasional"), 3],
-                              [_("Level B - Reasonably Probable"), 4],
-                              [_("Level A - Frequent"), 5]]
+RAMSTK_FAILURE_PROBABILITY = [
+    [_("Level E - Extremely Unlikely"), 1],
+    [_("Level D - Remote"), 2],
+    [_("Level C - Occasional"), 3],
+    [_("Level B - Reasonably Probable"), 4],
+    [_("Level A - Frequent"), 5],
+]
 
-RAMSTK_SW_DEV_ENVIRONMENTS = [[_("Organic"), 1.0, 0.76],
-                              [_("Semi-Detached"), 1.0, 1.0],
-                              [_("Embedded"), 1.0, 1.3]]
-RAMSTK_SW_DEV_PHASES = [[_("Concept/Planning (PCP)")],
-                        [_("Requirements Analysis (SRA)")],
-                        [_("Preliminary Design Review (PDR)")],
-                        [_("Critical Design Review (CDR)")],
-                        [_("Test Readiness Review (TRR)")], [_("Released")]]
-RAMSTK_SW_LEVELS = [[_("Software System"), 0], [_("Software Module"), 0],
-                    [_("Software Unit"), 0]]
-RAMSTK_SW_APPLICATION = [[_("Airborne"), 0.0128, 6.28],
-                         [_("Strategic"), 0.0092, 1.2],
-                         [_("Tactical"), 0.0078, 13.8],
-                         [_("Process Control"), 0.0018, 3.8],
-                         [_("Production Center"), 0.0085, 23.0],
-                         [_("Developmental"), 0.0123, 132.6]]
-RAMSTK_SW_TEST_METHODS = [[
-    _("Code Reviews"),
-    _("Code review is a systematic examination (often known as peer "
-      "review) of computer source code."),
-], [
-    _("Error/Anomaly Detection"),
-    _(""),
-], [
-    _("Structure Analysis"),
-    _(""),
-], [
-    _("Random Testing"),
-    _(""),
-], [
-    _("Functional Testing"),
-    _(""),
-], [
-    _("Branch Testing"),
-    _(""),
-]]
+RAMSTK_SW_DEV_ENVIRONMENTS = [
+    [_("Organic"), 1.0, 0.76],
+    [_("Semi-Detached"), 1.0, 1.0],
+    [_("Embedded"), 1.0, 1.3],
+]
+RAMSTK_SW_DEV_PHASES = [
+    [_("Concept/Planning (PCP)")],
+    [_("Requirements Analysis (SRA)")],
+    [_("Preliminary Design Review (PDR)")],
+    [_("Critical Design Review (CDR)")],
+    [_("Test Readiness Review (TRR)")],
+    [_("Released")],
+]
+RAMSTK_SW_LEVELS = [
+    [_("Software System"), 0],
+    [_("Software Module"), 0],
+    [_("Software Unit"), 0],
+]
+RAMSTK_SW_APPLICATION = [
+    [_("Airborne"), 0.0128, 6.28],
+    [_("Strategic"), 0.0092, 1.2],
+    [_("Tactical"), 0.0078, 13.8],
+    [_("Process Control"), 0.0018, 3.8],
+    [_("Production Center"), 0.0085, 23.0],
+    [_("Developmental"), 0.0123, 132.6],
+]
+RAMSTK_SW_TEST_METHODS = [
+    [
+        _("Code Reviews"),
+        _(
+            "Code review is a systematic examination (often known as peer "
+            "review) of computer source code."
+        ),
+    ],
+    [
+        _("Error/Anomaly Detection"),
+        _(""),
+    ],
+    [
+        _("Structure Analysis"),
+        _(""),
+    ],
+    [
+        _("Random Testing"),
+        _(""),
+    ],
+    [
+        _("Functional Testing"),
+        _(""),
+    ],
+    [
+        _("Branch Testing"),
+        _(""),
+    ],
+]
 
-RAMSTK_LIFECYCLE = [[_("Design")], [_("Reliability Growth")],
-                    [_("Reliability Qualification")], [_("Production")],
-                    [_("Storage")], [_("Operation")], [_("Disposal")]]
-RAMSTK_S_DIST = [["Constant Probability"], ["Exponential"], ["Gaussian"],
-                 ["LogNormal"], ["Uniform"], ["Weibull"]]
+RAMSTK_LIFECYCLE = [
+    [_("Design")],
+    [_("Reliability Growth")],
+    [_("Reliability Qualification")],
+    [_("Production")],
+    [_("Storage")],
+    [_("Operation")],
+    [_("Disposal")],
+]
+RAMSTK_S_DIST = [
+    ["Constant Probability"],
+    ["Exponential"],
+    ["Gaussian"],
+    ["LogNormal"],
+    ["Uniform"],
+    ["Weibull"],
+]
 
 
 class RAMSTKSiteConfiguration:
     """Class for site-wide RAMSTK configuration settings."""
+
     def __init__(self) -> None:
         """Initialize the RAMSTK site configuration class."""
         # Initialize private dictionary attributes.
@@ -175,22 +251,20 @@ class RAMSTKSiteConfiguration:
                 "dialect": "postgres",
                 "host": "",
                 "port": "5432",
-                "database": 'ramstk_common_ramstk',
+                "database": "ramstk_common_ramstk",
                 "user": "first_run",
-                "password": ""
-            }
+                "password": "",
+            },
         }
 
         try:
-            toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF,
-                                                    "w"))
-            pub.sendMessage('succeed_create_site_configuration')
+            toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF, "w"))
+            pub.sendMessage("succeed_create_site_configuration")
         except FileNotFoundError:
-            _error_msg = (
-                "Failed to write site configuration file {0:s}.".format(
-                    self.RAMSTK_SITE_CONF))
-            pub.sendMessage('fail_create_site_configuration',
-                            error_message=_error_msg)
+            _error_msg = "Failed to write site configuration file {0:s}.".format(
+                self.RAMSTK_SITE_CONF
+            )
+            pub.sendMessage("fail_create_site_configuration", error_message=_error_msg)
 
     def get_site_configuration(self) -> None:
         """Read the site configuration file.
@@ -201,19 +275,19 @@ class RAMSTKSiteConfiguration:
         if file_exists(self.RAMSTK_SITE_CONF):
             _config = toml.load(self.RAMSTK_SITE_CONF)
 
-            self.RAMSTK_COM_BACKEND = _config['backend']['dialect']
-            self.RAMSTK_COM_INFO["dialect"] = _config['backend']['dialect']
-            self.RAMSTK_COM_INFO["host"] = _config['backend']['host']
-            self.RAMSTK_COM_INFO["port"] = _config['backend']['port']
-            self.RAMSTK_COM_INFO["database"] = _config['backend']['database']
-            self.RAMSTK_COM_INFO["user"] = _config['backend']['user']
-            self.RAMSTK_COM_INFO["password"] = _config['backend']['password']
+            self.RAMSTK_COM_BACKEND = _config["backend"]["dialect"]
+            self.RAMSTK_COM_INFO["dialect"] = _config["backend"]["dialect"]
+            self.RAMSTK_COM_INFO["host"] = _config["backend"]["host"]
+            self.RAMSTK_COM_INFO["port"] = _config["backend"]["port"]
+            self.RAMSTK_COM_INFO["database"] = _config["backend"]["database"]
+            self.RAMSTK_COM_INFO["user"] = _config["backend"]["user"]
+            self.RAMSTK_COM_INFO["password"] = _config["backend"]["password"]
 
         else:
-            _error_msg = ("Failed to read Site configuration file "
-                          "{0:s}.").format(self.RAMSTK_SITE_CONF)
-            pub.sendMessage('fail_get_site_configuration',
-                            error_message=_error_msg)
+            _error_msg = ("Failed to read Site configuration file {0:s}.").format(
+                self.RAMSTK_SITE_CONF
+            )
+            pub.sendMessage("fail_get_site_configuration", error_message=_error_msg)
 
     def set_site_configuration(self) -> None:
         """Set the site-wide RAMSTK configuration file values."""
@@ -225,8 +299,8 @@ class RAMSTKSiteConfiguration:
                 "port": str(self.RAMSTK_COM_INFO["port"]),
                 "database": str(self.RAMSTK_COM_INFO["database"]),
                 "user": str(self.RAMSTK_COM_INFO["user"]),
-                "password": str(self.RAMSTK_COM_INFO["password"])
-            }
+                "password": str(self.RAMSTK_COM_INFO["password"]),
+            },
         }
         toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF, "w"))
 
@@ -389,22 +463,57 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize private list attributes.
         self._lst_colors = [
-            'allocationbg', 'allocationfg', 'fmeabg', 'fmeafg',
-            'failure_definitionbg', 'failure_definitionfg', 'functionbg',
-            'functionfg', 'hardwarebg', 'hardwarefg', 'hazardbg', 'hazardfg',
-            'pofbg', 'poffg', 'revisionbg', 'revisionfg', 'requirementfg',
-            'requirementbg', 'validationbg', 'validationfg', 'similar_itembg',
-            'similar_itemfg', 'stakeholderbg', 'stakeholderfg'
+            "allocationbg",
+            "allocationfg",
+            "fmeabg",
+            "fmeafg",
+            "failure_definitionbg",
+            "failure_definitionfg",
+            "functionbg",
+            "functionfg",
+            "hardwarebg",
+            "hardwarefg",
+            "hazardbg",
+            "hazardfg",
+            "pofbg",
+            "poffg",
+            "revisionbg",
+            "revisionfg",
+            "requirementfg",
+            "requirementbg",
+            "validationbg",
+            "validationfg",
+            "similar_itembg",
+            "similar_itemfg",
+            "stakeholderbg",
+            "stakeholderfg",
         ]
         self._lst_format_files = [
-            "allocation", "failure_definitions", "fmea", "function",
-            "hardware", "hazard", "pof", "requirement", "revision",
-            "similar_item", "stakeholders", "usage_profile", "validation"
+            "allocation",
+            "failure_definitions",
+            "fmea",
+            "function",
+            "hardware",
+            "hazard",
+            "pof",
+            "requirement",
+            "revision",
+            "similar_item",
+            "stakeholders",
+            "usage_profile",
+            "validation",
         ]
         self._lst_categories = [
-            'integratedcircuit', 'semiconductor', 'resistor', 'capacitor',
-            'inductor', 'relay', 'switch', 'connection', 'meter',
-            'miscellaneous'
+            "integratedcircuit",
+            "semiconductor",
+            "resistor",
+            "capacitor",
+            "inductor",
+            "relay",
+            "switch",
+            "connection",
+            "meter",
+            "miscellaneous",
         ]
 
         # Initialize private scalar attributes.
@@ -422,48 +531,41 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_DETECTION_METHODS: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
         self.RAMSTK_HAZARDS: Dict[str, Tuple[str, str]] = {}  # User.
-        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, Tuple[str, str, str,
-                                                       str]] = {}
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, Tuple[str, str, str, str]] = {}
         self.RAMSTK_INCIDENT_STATUS: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_INCIDENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}  # User.
-        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str,
-                                                   str]] = {}  # User.
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str,
-                                                           str]] = {}  # User.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str,
-                                                       str]] = {}  # Admin.
+        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str, str]] = {}  # User.
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str, str]] = {}  # User.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str, str]] = {}  # Admin.
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
         self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
         self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
-        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str,
-                                              str]] = {}  # Admin
+        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {}  # Admin
         self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
         self.RAMSTK_STRESS_LIMITS: Dict[int, List[float]] = {}  # User.
         self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}  # Static.
-        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str,
-                                           str]] = {}  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str,
-                                                     str]] = {}  # Admin.
+        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str, str]] = {}  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str, str]] = {}  # Admin.
 
         self.RAMSTK_COLORS: Dict[str, str] = {}
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
         self.RAMSTK_PAGE_NUMBER: Dict[int, str] = {
-            0: 'revision',
-            1: 'function',
-            2: 'requirement',
-            3: 'hardware',
-            4: 'validation',
+            0: "revision",
+            1: "function",
+            2: "requirement",
+            3: "hardware",
+            4: "validation",
         }
         self.RAMSTK_PROG_INFO: Dict[str, str] = {
-            "dialect": '',
-            "host": '',
-            "port": '',
-            "database": '',
-            "user": '',
-            "password": ''
+            "dialect": "",
+            "host": "",
+            "port": "",
+            "database": "",
+            "user": "",
+            "password": "",
         }
         self.RAMSTK_TABPOS = {
             "listbook": "top",
@@ -474,10 +576,11 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize public list attributes.
         self.RAMSTK_FAILURE_PROBABILITY = [
-            [_("Level E - Extremely Unlikely"), 1], [_("Level D - Remote"), 2],
+            [_("Level E - Extremely Unlikely"), 1],
+            [_("Level D - Remote"), 2],
             [_("Level C - Occasional"), 3],
             [_("Level B - Reasonably Probable"), 4],
-            [_("Level A - Frequent"), 5]
+            [_("Level A - Frequent"), 5],
         ]
         self.RAMSTK_RISK_POINTS = [4, 10]
 
@@ -525,12 +628,15 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 makedirs(self.RAMSTK_CONF_DIR)
                 self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
             except OSError:
-                _error_msg = ("User's configuration directory {0:s} does not "
-                              "exist and could not be created when attempting "
-                              "to create a new user configuration "
-                              "file.".format(self.RAMSTK_CONF_DIR))
-                pub.sendMessage('fail_create_user_configuration',
-                                error_message=_error_msg)
+                _error_msg = (
+                    "User's configuration directory {0:s} does not "
+                    "exist and could not be created when attempting "
+                    "to create a new user configuration "
+                    "file.".format(self.RAMSTK_CONF_DIR)
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
 
     def _do_make_data_dir(self) -> None:
         """Create the user data directory.
@@ -543,12 +649,14 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             try:
                 makedirs(self.RAMSTK_DATA_DIR)
             except OSError:
-                _error_msg = ("User's data directory {0:s} does not exist and "
-                              "could not be created when attempting to create "
-                              "a new user configuration file.".format(
-                                  self.RAMSTK_DATA_DIR))
-                pub.sendMessage('fail_create_user_configuration',
-                                error_message=_error_msg)
+                _error_msg = (
+                    "User's data directory {0:s} does not exist and "
+                    "could not be created when attempting to create "
+                    "a new user configuration file.".format(self.RAMSTK_DATA_DIR)
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
 
     def _do_make_icon_dir(self) -> None:
         """Create the user icon directory.
@@ -562,12 +670,14 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             try:
                 makedirs(self.RAMSTK_ICON_DIR)
             except OSError:
-                _error_msg = ("User's icon directory {0:s} does not exist and "
-                              "could not be created when attempting to create "
-                              "a new user configuration file.".format(
-                                  self.RAMSTK_ICON_DIR))
-                pub.sendMessage('fail_create_user_configuration',
-                                error_message=_error_msg)
+                _error_msg = (
+                    "User's icon directory {0:s} does not exist and "
+                    "could not be created when attempting to create "
+                    "a new user configuration file.".format(self.RAMSTK_ICON_DIR)
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
 
     def _do_make_log_dir(self) -> None:
         """Create the user log directory.
@@ -581,12 +691,14 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             try:
                 makedirs(self.RAMSTK_LOG_DIR)
             except OSError:
-                _error_msg = ("User's log directory {0:s} does not exist and "
-                              "could not be created when attempting to create "
-                              "a new user configuration file.".format(
-                                  self.RAMSTK_LOG_DIR))
-                pub.sendMessage('fail_create_user_configuration',
-                                error_message=_error_msg)
+                _error_msg = (
+                    "User's log directory {0:s} does not exist and "
+                    "could not be created when attempting to create "
+                    "a new user configuration file.".format(self.RAMSTK_LOG_DIR)
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
 
     def _do_make_program_dir(self) -> None:
         """Create the user program directory.
@@ -598,12 +710,14 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             try:
                 makedirs(self.RAMSTK_PROG_DIR)
             except OSError:
-                _error_msg = ("Program directory {0:s} does not exist and "
-                              "could not be created when attempting to create "
-                              "a new user configuration file.".format(
-                                  self.RAMSTK_PROG_DIR))
-                pub.sendMessage('fail_create_user_configuration',
-                                error_message=_error_msg)
+                _error_msg = (
+                    "Program directory {0:s} does not exist and "
+                    "could not be created when attempting to create "
+                    "a new user configuration file.".format(self.RAMSTK_PROG_DIR)
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
 
     def do_create_user_configuration(self) -> None:
         """Create the default user configuration file.
@@ -622,23 +736,24 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Copy format files from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_CONF_DIR.
-        for _file in glob.glob(self._INSTALL_PREFIX
-                               + "/share/RAMSTK/layouts/*.toml"):
+        for _file in glob.glob(self._INSTALL_PREFIX + "/share/RAMSTK/layouts/*.toml"):
             file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
 
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_ICON_DIR.
         try:
-            dir_util.copy_tree(self._INSTALL_PREFIX + "/share/RAMSTK/icons/",
-                               self.RAMSTK_ICON_DIR)
+            dir_util.copy_tree(
+                self._INSTALL_PREFIX + "/share/RAMSTK/icons/", self.RAMSTK_ICON_DIR
+            )
         except DistutilsFileError:
-            _error_msg = ('Attempt to copy RAMSTK icons from site-wide icon '
-                          'directory {0:s} to user\'s icon directory {1:s} '
-                          'failed.'.format(
-                              self._INSTALL_PREFIX + "/share/RAMSTK/icons/",
-                              self.RAMSTK_ICON_DIR))
-            pub.sendMessage('fail_copy_icons_to_user',
-                            error_message=_error_msg)
+            _error_msg = (
+                "Attempt to copy RAMSTK icons from site-wide icon "
+                "directory {0:s} to user's icon directory {1:s} "
+                "failed.".format(
+                    self._INSTALL_PREFIX + "/share/RAMSTK/icons/", self.RAMSTK_ICON_DIR
+                )
+            )
+            pub.sendMessage("fail_copy_icons_to_user", error_message=_error_msg)
 
         # Create the default RAMSTK user configuration file.
         _dic_user_configuration = {
@@ -653,7 +768,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "moduletabpos": "top",
                 "listtabpos": "bottom",
                 "worktabpos": "bottom",
-                "loglevel": "INFO"
+                "loglevel": "INFO",
             },
             "backend": {
                 "dialect": "postgres",
@@ -661,13 +776,13 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "port": "5432",
                 "database": "",
                 "user": "",
-                "password": ""
+                "password": "",
             },
             "directories": {
                 "datadir": self.RAMSTK_DATA_DIR,
                 "icondir": self.RAMSTK_ICON_DIR,
                 "logdir": self.RAMSTK_LOG_DIR,
-                "progdir": self.RAMSTK_PROG_DIR
+                "progdir": self.RAMSTK_PROG_DIR,
             },
             "layouts": {
                 "allocation": "allocation.toml",
@@ -682,67 +797,67 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "similar_item": "similar_item.toml",
                 "stakeholders": "stakeholder.toml",
                 "usage_profile": "usage_profile.toml",
-                "validation": "validation.toml"
+                "validation": "validation.toml",
             },
             "colors": {
-                'allocationbg': '#FFFFFF',
-                'allocationfg': '#000000',
-                'failure_definitionbg': '#FFFFFF',
-                'failure_definitionfg': '#000000',
-                'fmeabg': '#FFFFFF',
-                'fmeafg': '#000000',
-                'functionbg': '#FFFFFF',
-                'functionfg': '#000000',
-                'hardwarebg': '#FFFFFF',
-                'hardwarefg': '#000000',
-                'hazardbg': '#FFFFFF',
-                'hazardfg': '#000000',
-                'pofbg': '#FFFFFF',
-                'poffg': '#000000',
-                'requirementbg': '#FFFFFF',
-                'requirementfg': '#000000',
-                'revisionbg': '#FFFFFF',
-                'revisionfg': '#000000',
-                'similar_itembg': '#FFFFFF',
-                'similar_itemfg': '#000000',
-                'stakeholderbg': '#FFFFFF',
-                'stakeholderfg': '#000000',
-                'validationbg': '#FFFFFF',
-                'validationfg': '#000000'
+                "allocationbg": "#FFFFFF",
+                "allocationfg": "#000000",
+                "failure_definitionbg": "#FFFFFF",
+                "failure_definitionfg": "#000000",
+                "fmeabg": "#FFFFFF",
+                "fmeafg": "#000000",
+                "functionbg": "#FFFFFF",
+                "functionfg": "#000000",
+                "hardwarebg": "#FFFFFF",
+                "hardwarefg": "#000000",
+                "hazardbg": "#FFFFFF",
+                "hazardfg": "#000000",
+                "pofbg": "#FFFFFF",
+                "poffg": "#000000",
+                "requirementbg": "#FFFFFF",
+                "requirementfg": "#000000",
+                "revisionbg": "#FFFFFF",
+                "revisionfg": "#000000",
+                "similar_itembg": "#FFFFFF",
+                "similar_itemfg": "#000000",
+                "stakeholderbg": "#FFFFFF",
+                "stakeholderfg": "#000000",
+                "validationbg": "#FFFFFF",
+                "validationfg": "#000000",
             },
             "stress": {
-                'integratedcircuit':
-                [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                'semiconductor':
-                [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                'resistor':
-                [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                'capacitor':
-                [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
-                'inductor':
-                [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
-                'relay':
-                [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                'switch':
-                [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                'connection':
-                [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
-                'meter':
-                [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                'miscellaneous':
-                [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
-            }
+                "integratedcircuit": [
+                    0.8,
+                    0.9,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "semiconductor": [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                "resistor": [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                "capacitor": [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
+                "inductor": [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
+                "relay": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                "switch": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                "connection": [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
+                "meter": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                "miscellaneous": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            },
         }
 
         try:
-            toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF,
-                                                    "w"))
-            pub.sendMessage('succeed_create_user_configuration')
+            toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
+            pub.sendMessage("succeed_create_user_configuration")
         except TypeError:
-            _error_msg = ("User configuration file {0} is not a file.".format(
-                self.RAMSTK_PROG_CONF))
-            pub.sendMessage('fail_create_user_configuration',
-                            error_message=_error_msg)
+            _error_msg = "User configuration file {0} is not a file.".format(
+                self.RAMSTK_PROG_CONF
+            )
+            pub.sendMessage("fail_create_user_configuration", error_message=_error_msg)
 
     def get_user_configuration(self) -> None:
         """Read the RAMSTK user configuration file.
@@ -766,8 +881,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             # file keys are human-readable nouns.  This converts the noun key
             # to the equivalent integer key.
             for _category in enumerate(self._lst_categories):
-                self.RAMSTK_STRESS_LIMITS[
-                    _category[0] + 1] = _config["stress"][_category[1]]
+                self.RAMSTK_STRESS_LIMITS[_category[0] + 1] = _config["stress"][
+                    _category[1]
+                ]
 
             self.RAMSTK_BACKEND = _config["backend"]["dialect"]
             self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["dialect"]
@@ -783,30 +899,26 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_PROG_DIR = _config["directories"]["progdir"]
 
             self.RAMSTK_REPORT_SIZE = _config["general"]["reportsize"]
-            self.RAMSTK_HR_MULTIPLIER = float(
-                _config["general"]["frmultiplier"])
+            self.RAMSTK_HR_MULTIPLIER = float(_config["general"]["frmultiplier"])
             self.RAMSTK_DEC_PLACES = int(_config["general"]["decimal"])
             self.RAMSTK_MTIME = float(_config["general"]["calcreltime"])
             self.RAMSTK_MODE_SOURCE = _config["general"]["modesource"]
             self.RAMSTK_TABPOS["listbook"] = _config["general"]["listtabpos"]
-            self.RAMSTK_TABPOS["modulebook"] = _config["general"][
-                "moduletabpos"]
+            self.RAMSTK_TABPOS["modulebook"] = _config["general"]["moduletabpos"]
             self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
             self.RAMSTK_LOGLEVEL = _config["general"]["loglevel"]
-            if self.RAMSTK_LOG_DIR == '':
+            if self.RAMSTK_LOG_DIR == "":
                 self.RAMSTK_USER_LOG = "./ramstk_run.log"
                 self.RAMSTK_IMPORT_LOG = "./ramstk_import.log"
             else:
-                self.RAMSTK_USER_LOG = (self.RAMSTK_LOG_DIR
-                                        + "/ramstk_run.log")
-                self.RAMSTK_IMPORT_LOG = (self.RAMSTK_LOG_DIR
-                                          + "/ramstk_import.log")
+                self.RAMSTK_USER_LOG = self.RAMSTK_LOG_DIR + "/ramstk_run.log"
+                self.RAMSTK_IMPORT_LOG = self.RAMSTK_LOG_DIR + "/ramstk_import.log"
 
         else:
-            _error_msg = ("Failed to read User configuration file "
-                          "{0:s}.").format(self.RAMSTK_PROG_CONF)
-            pub.sendMessage('fail_get_user_configuration',
-                            error_message=_error_msg)
+            _error_msg = ("Failed to read User configuration file {0:s}.").format(
+                self.RAMSTK_PROG_CONF
+            )
+            pub.sendMessage("fail_get_user_configuration", error_message=_error_msg)
 
     def set_user_configuration(self) -> None:
         """Write changes to the user's configuration file.
@@ -825,7 +937,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "moduletabpos": self.RAMSTK_TABPOS["modulebook"],
                 "listtabpos": self.RAMSTK_TABPOS["listbook"],
                 "worktabpos": self.RAMSTK_TABPOS["workbook"],
-                "loglevel": self.RAMSTK_LOGLEVEL
+                "loglevel": self.RAMSTK_LOGLEVEL,
             },
             "backend": {
                 "dialect": self.RAMSTK_PROG_INFO["dialect"],
@@ -833,69 +945,54 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "port": str(self.RAMSTK_PROG_INFO["port"]),
                 "database": str(self.RAMSTK_PROG_INFO["database"]),
                 "user": str(self.RAMSTK_PROG_INFO["user"]),
-                "password": str(self.RAMSTK_PROG_INFO["password"])
+                "password": str(self.RAMSTK_PROG_INFO["password"]),
             },
             "directories": {
                 "datadir": self.RAMSTK_DATA_DIR,
                 "icondir": self.RAMSTK_ICON_DIR,
                 "logdir": self.RAMSTK_LOG_DIR,
-                "progdir": self.RAMSTK_PROG_DIR
+                "progdir": self.RAMSTK_PROG_DIR,
             },
             "layouts": {
-                "allocation":
-                self.RAMSTK_FORMAT_FILE['allocation'],
-                "failure_definitions":
-                self.RAMSTK_FORMAT_FILE['failure_definitions'],
-                "fmea":
-                self.RAMSTK_FORMAT_FILE['fmea'],
-                "function":
-                self.RAMSTK_FORMAT_FILE['function'],
-                "hardware":
-                self.RAMSTK_FORMAT_FILE['hardware'],
-                "hazard":
-                self.RAMSTK_FORMAT_FILE['hazard'],
-                "pof":
-                self.RAMSTK_FORMAT_FILE['pof'],
-                "requirement":
-                self.RAMSTK_FORMAT_FILE['requirement'],
-                "revision":
-                self.RAMSTK_FORMAT_FILE['revision'],
-                "similar_item":
-                self.RAMSTK_FORMAT_FILE['similar_item'],
-                "stakeholders":
-                self.RAMSTK_FORMAT_FILE['stakeholders'],
-                "usage_profile":
-                self.RAMSTK_FORMAT_FILE['usage_profile'],
-                "validation":
-                self.RAMSTK_FORMAT_FILE['validation']
+                "allocation": self.RAMSTK_FORMAT_FILE["allocation"],
+                "failure_definitions": self.RAMSTK_FORMAT_FILE["failure_definitions"],
+                "fmea": self.RAMSTK_FORMAT_FILE["fmea"],
+                "function": self.RAMSTK_FORMAT_FILE["function"],
+                "hardware": self.RAMSTK_FORMAT_FILE["hardware"],
+                "hazard": self.RAMSTK_FORMAT_FILE["hazard"],
+                "pof": self.RAMSTK_FORMAT_FILE["pof"],
+                "requirement": self.RAMSTK_FORMAT_FILE["requirement"],
+                "revision": self.RAMSTK_FORMAT_FILE["revision"],
+                "similar_item": self.RAMSTK_FORMAT_FILE["similar_item"],
+                "stakeholders": self.RAMSTK_FORMAT_FILE["stakeholders"],
+                "usage_profile": self.RAMSTK_FORMAT_FILE["usage_profile"],
+                "validation": self.RAMSTK_FORMAT_FILE["validation"],
             },
             "colors": {
-                'allocationbg': self.RAMSTK_COLORS['allocationbg'],
-                'allocationfg': self.RAMSTK_COLORS['allocationbg'],
-                'failure_definitionbg':
-                self.RAMSTK_COLORS['failure_definitionbg'],
-                'failure_definitionfg':
-                self.RAMSTK_COLORS['failure_definitionbg'],
-                'fmeabg': self.RAMSTK_COLORS['fmeabg'],
-                'fmeafg': self.RAMSTK_COLORS['fmeafg'],
-                "functionbg": self.RAMSTK_COLORS['functionbg'],
-                "functionfg": self.RAMSTK_COLORS['functionfg'],
-                "hardwarebg": self.RAMSTK_COLORS['hardwarebg'],
-                "hardwarefg": self.RAMSTK_COLORS['hardwarefg'],
-                "hazardbg": self.RAMSTK_COLORS['hazardbg'],
-                "hazardfg": self.RAMSTK_COLORS['hazardfg'],
-                'pofbg': self.RAMSTK_COLORS['pofbg'],
-                'poffg': self.RAMSTK_COLORS['poffg'],
-                "requirementbg": self.RAMSTK_COLORS['requirementbg'],
-                "requirementfg": self.RAMSTK_COLORS['requirementfg'],
-                "revisionbg": self.RAMSTK_COLORS['revisionbg'],
-                "revisionfg": self.RAMSTK_COLORS['revisionfg'],
-                'similar_itembg': self.RAMSTK_COLORS['similar_itembg'],
-                'similar_itemfg': self.RAMSTK_COLORS['similar_itemfg'],
-                "stakeholderbg": self.RAMSTK_COLORS['stakeholderbg'],
-                "stakeholderfg": self.RAMSTK_COLORS['stakeholderfg'],
-                "validationbg": self.RAMSTK_COLORS['validationbg'],
-                "validationfg": self.RAMSTK_COLORS['validationfg']
+                "allocationbg": self.RAMSTK_COLORS["allocationbg"],
+                "allocationfg": self.RAMSTK_COLORS["allocationbg"],
+                "failure_definitionbg": self.RAMSTK_COLORS["failure_definitionbg"],
+                "failure_definitionfg": self.RAMSTK_COLORS["failure_definitionbg"],
+                "fmeabg": self.RAMSTK_COLORS["fmeabg"],
+                "fmeafg": self.RAMSTK_COLORS["fmeafg"],
+                "functionbg": self.RAMSTK_COLORS["functionbg"],
+                "functionfg": self.RAMSTK_COLORS["functionfg"],
+                "hardwarebg": self.RAMSTK_COLORS["hardwarebg"],
+                "hardwarefg": self.RAMSTK_COLORS["hardwarefg"],
+                "hazardbg": self.RAMSTK_COLORS["hazardbg"],
+                "hazardfg": self.RAMSTK_COLORS["hazardfg"],
+                "pofbg": self.RAMSTK_COLORS["pofbg"],
+                "poffg": self.RAMSTK_COLORS["poffg"],
+                "requirementbg": self.RAMSTK_COLORS["requirementbg"],
+                "requirementfg": self.RAMSTK_COLORS["requirementfg"],
+                "revisionbg": self.RAMSTK_COLORS["revisionbg"],
+                "revisionfg": self.RAMSTK_COLORS["revisionfg"],
+                "similar_itembg": self.RAMSTK_COLORS["similar_itembg"],
+                "similar_itemfg": self.RAMSTK_COLORS["similar_itemfg"],
+                "stakeholderbg": self.RAMSTK_COLORS["stakeholderbg"],
+                "stakeholderfg": self.RAMSTK_COLORS["stakeholderfg"],
+                "validationbg": self.RAMSTK_COLORS["validationbg"],
+                "validationfg": self.RAMSTK_COLORS["validationfg"],
             },
             "stress": {
                 "integratedcircuit": self.RAMSTK_STRESS_LIMITS[1],
@@ -907,8 +1004,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "switch": self.RAMSTK_STRESS_LIMITS[7],
                 "connection": self.RAMSTK_STRESS_LIMITS[8],
                 "meter": self.RAMSTK_STRESS_LIMITS[9],
-                "miscellaneous": self.RAMSTK_STRESS_LIMITS[10]
-            }
+                "miscellaneous": self.RAMSTK_STRESS_LIMITS[10],
+            },
         }
 
         toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
@@ -931,8 +1028,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         if dir_exists(self.RAMSTK_CONF_DIR + self._data_sub_dir):
             self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
         else:
-            self.RAMSTK_DATA_DIR = (self._INSTALL_PREFIX
-                                    + "/share/RAMSTK/layouts")
+            self.RAMSTK_DATA_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/layouts"
 
         if dir_exists(self.RAMSTK_CONF_DIR + self._icon_sub_dir):
             self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
@@ -942,7 +1038,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         if dir_exists(self.RAMSTK_CONF_DIR + self._logs_sub_dir):
             self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
         else:
-            self.RAMSTK_LOG_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+            self.RAMSTK_LOG_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/logs"
 
         if dir_exists(self.RAMSTK_HOME_DIR + "/analyses/ramstk"):
             self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk"
