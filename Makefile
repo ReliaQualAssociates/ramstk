@@ -191,9 +191,8 @@ test.integration: clean-test
 test.gui: clean-test
 	py.test $(TESTOPTS) -m gui $(TESTFILE)
 
-test: clean-test
+test: test.unit test.integration
 	@echo -e "\n\t\033[1;37;1;45mRunning RAMSTK test suite without coverage ...\033[0m\n"
-	py.test $(TESTOPTS) $(TESTFILE)
 
 test-all:
 	$(info "TODO: Need to add tox support for this target to work.")
