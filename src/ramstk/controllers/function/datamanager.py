@@ -125,7 +125,7 @@ class DataManager(RAMSTKDataManager):
         except (AttributeError, DataAccessError, NodeIDAbsentError):
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                "{1}: Attempted to delete non-existent function ID {" "0}."
+                "{1}: Attempted to delete non-existent function ID {0}."
             ).format(str(node_id), _method_name)
             pub.sendMessage(
                 "do_log_debug",
