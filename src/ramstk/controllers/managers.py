@@ -292,6 +292,7 @@ class RAMSTKDataManager:
         :return: None
         :rtype: None
         """
+        _fail_topic = "fail_update_{}".format(table)
         _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
 
         try:
@@ -310,7 +311,7 @@ class RAMSTKDataManager:
                 message=_error_msg,
             )
             pub.sendMessage(
-                "fail_update_{}".format(table),
+                _fail_topic,
                 error_message=_error_msg,
             )
         except KeyError:
@@ -323,7 +324,7 @@ class RAMSTKDataManager:
                 message=_error_msg,
             )
             pub.sendMessage(
-                "fail_update_{}".format(table),
+                _fail_topic,
                 error_message=_error_msg,
             )
         except (DataAccessError, TypeError):
@@ -338,7 +339,7 @@ class RAMSTKDataManager:
                     message=_error_msg,
                 )
                 pub.sendMessage(
-                    "fail_update_{}".format(table),
+                    _fail_topic,
                     error_message=_error_msg,
                 )
 
